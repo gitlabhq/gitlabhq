@@ -208,7 +208,7 @@ If you want to do more advanced tasks, you can update your `.gitlab-ci.yml` file
 with [other CI/CD YAML keywords](../../../../ci/yaml/_index.md). You can validate
 your `.gitlab-ci.yml` file with the [CI Lint](../../../../ci/yaml/lint.md) tool that's included with GitLab.
 
-The following topics show other examples of other options you can add to your CI/CD file.
+The following sections show other options you can add to your CI/CD file.
 
 ### Deploy specific branches to a Pages site
 

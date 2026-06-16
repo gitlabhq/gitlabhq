@@ -1,6 +1,6 @@
 #import "./work_item_ancestors.fragment.graphql"
 
-subscription workItemAncestorsUpdated($id: WorkItemID!) {
+subscription workItemAncestorsUpdated($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItemUpdated(workItemId: $id) {
     ...WorkItemAncestors
   }

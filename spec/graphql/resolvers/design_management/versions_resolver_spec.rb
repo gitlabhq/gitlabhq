@@ -8,12 +8,12 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
 
   describe '#resolve' do
     let(:resolver) { described_class }
-    let_it_be(:issue) { create(:issue) }
-    let_it_be(:authorized_user) { create(:user) }
-    let_it_be(:first_version) { create(:design_version, issue: issue) }
-    let_it_be(:other_version) { create(:design_version, issue: issue) }
-    let_it_be(:first_design) { create(:design, issue: issue, versions: [first_version, other_version]) }
-    let_it_be(:other_design) { create(:design, :with_versions, issue: issue) }
+    let_it_be(:issue, freeze: false) { create(:issue) }
+    let_it_be(:authorized_user, freeze: false) { create(:user) }
+    let_it_be(:first_version, freeze: false) { create(:design_version, issue: issue) }
+    let_it_be(:other_version, freeze: false) { create(:design_version, issue: issue) }
+    let_it_be(:first_design, freeze: false) { create(:design, issue: issue, versions: [first_version, other_version]) }
+    let_it_be(:other_design, freeze: false) { create(:design, :with_versions, issue: issue) }
 
     let(:project) { issue.project }
     let(:params) { {} }
@@ -28,7 +28,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
     shared_examples 'a source of versions' do
       subject(:result) { resolve_versions(object)&.to_a }
 
-      let_it_be(:all_versions) { object.versions.ordered }
+      let_it_be(:all_versions, freeze: false) { object.versions.ordered }
 
       context 'when the user is not authorized' do
         let(:current_user) { create(:user) }
@@ -57,7 +57,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
       end
 
       context 'when constrained' do
-        let_it_be(:matching) { all_versions.earlier_or_equal_to(first_version) }
+        let_it_be(:matching, freeze: false) { all_versions.earlier_or_equal_to(first_version) }
 
         shared_examples 'a query for all_versions up to the first_version' do
           it { is_expected.to eq(matching) }
@@ -110,13 +110,13 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
     end
 
     describe 'a design collection' do
-      let_it_be(:object) { DesignManagement::DesignCollection.new(issue) }
+      let_it_be(:object, freeze: false) { DesignManagement::DesignCollection.new(issue) }
 
       it_behaves_like 'a source of versions'
     end
 
     describe 'a design' do
-      let_it_be(:object) { first_design }
+      let_it_be(:object, freeze: false) { first_design }
 
       it_behaves_like 'a source of versions'
     end

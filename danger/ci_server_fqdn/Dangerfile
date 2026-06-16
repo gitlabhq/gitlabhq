@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+ci_server_fqdn.check_ci_server_fqdn_usage

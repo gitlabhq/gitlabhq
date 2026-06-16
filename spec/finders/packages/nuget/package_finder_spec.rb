@@ -8,7 +8,7 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
   let_it_be_with_refind(:package1) { create(:nuget_package, project: project) }
-  let_it_be(:package2) { create(:nuget_package, :with_metadatum, name: package1.name, version: '2.0.0+ABC', project: project) }
+  let_it_be(:package2, freeze: false) { create(:nuget_package, :with_metadatum, name: package1.name, version: '2.0.0+ABC', project: project) }
   let_it_be(:package3) { create(:nuget_package, name: 'Another.Dummy.Package', project: project) }
   let_it_be(:other_package_1) { create(:nuget_package, name: package1.name, version: package1.version) }
   let_it_be(:other_package_2) { create(:nuget_package, name: package1.name, version: package2.version) }

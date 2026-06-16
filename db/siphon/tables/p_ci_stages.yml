@@ -6,6 +6,7 @@ ignored_columns:
 replication_targets:
   - name: clickhouse_main
     target: siphon_p_ci_stages
+    dedup_by_columns_lookup_table: siphon_p_ci_stages_pg_pkey_ordered
     dedup_by:
       - id
       - partition_id

@@ -1,0 +1,10 @@
+---
+name: publish_events_to_relay
+description: "Enables publishing CloudEvents from Rails to GitLab Relay via `Gitlab::Kas::Client#publish_events`."
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594102
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238362
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601527
+milestone: "19.1"
+group: group::ai coding
+type: wip
+default_enabled: false

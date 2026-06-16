@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::LinesUnfolder do
+RSpec.describe Gitlab::Diff::LinesUnfolder, feature_category: :code_review_workflow do
   let(:raw_diff) do
     <<-DIFF.strip_heredoc
       @@ -7,9 +7,6 @@
@@ -183,7 +183,7 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
     BLOB
   end
 
-  let(:project) { create(:project) }
+  let(:project) { build_stubbed(:project) }
 
   let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: raw_old_blob, size: 10)) }
 

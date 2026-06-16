@@ -7,8 +7,7 @@ require Rails.root.join(
 )
 
 RSpec.describe DropCiFinishedPipelinesAggregationShadowTables, :click_house, feature_category: :fleet_visibility do
-  let_it_be(:connection) { ::ClickHouse::Connection.new(:main) }
-
+  let(:connection) { ::ClickHouse::Connection.new(:main) }
   let(:migration) { described_class.new(connection) }
 
   def table_exists?(table_name)

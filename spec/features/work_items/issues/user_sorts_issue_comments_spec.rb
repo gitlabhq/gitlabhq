@@ -70,7 +70,7 @@ RSpec.describe 'Comment sort direction', feature_category: :team_planning do
   end
 
   def select_sort_order(order)
-    find_by_testid('work-item-sort').click
+    find_by_testid('work-item-sort').find('.gl-new-dropdown-toggle:not(.disabled)').click
     select_listbox_item(order)
   end
 
@@ -89,5 +89,6 @@ RSpec.describe 'Comment sort direction', feature_category: :team_planning do
   def add_comment(text)
     fill_in 'Add a reply', with: text
     click_button 'Comment'
+    expect(page).to have_field('Add a reply', with: '')
   end
 end

@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe 'PipelineTriggerDelete', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { build(:user) }
-  let_it_be(:project) { build(:project) }
+  let_it_be(:current_user, freeze: false) { build(:user) }
+  let_it_be(:project, freeze: false) { build(:project) }
 
   let(:mutation) { graphql_mutation(:pipeline_trigger_delete, params) }
 
-  let_it_be(:trigger) { create(:ci_trigger, owner: current_user, project: project) }
+  let_it_be(:trigger, freeze: false) { create(:ci_trigger, owner: current_user, project: project) }
   let(:id) { trigger.to_global_id.to_s }
 
   let(:params) do
@@ -28,6 +28,12 @@ RSpec.describe 'PipelineTriggerDelete', feature_category: :continuous_integratio
   context 'when authorized' do
     before_all do
       project.add_owner(current_user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_trigger do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
 
     context 'when the id is invalid' do

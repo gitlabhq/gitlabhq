@@ -7,6 +7,7 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
 
 export default {
+  name: 'ComponentsCommit',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

@@ -54,19 +54,45 @@ module RapidDiffs
       end
 
       def no_preview_reason
-        return if @diff_file.empty?
+        no_preview_reasons[matched_no_preview_reason]&.call
+      end
 
-        if @diff_file.too_large?
-          _("File size exceeds preview limit.")
-        elsif @diff_file.collapsed?
-          _("Preview size limit exceeded, changes collapsed.")
-        elsif !@diff_file.diffable?
-          _("Preview suppressed by a .gitattributes entry or the file's encoding is unsupported.")
-        elsif @diff_file.whitespace_only?
-          _("Contains only whitespace changes.")
-        elsif @diff_file.new_file? || @diff_file.content_changed?
-          _("No diff preview for this file type.")
-        end
+      def matched_no_preview_reason
+        return if @diff_file.empty?
+        return :too_large if @diff_file.too_large?
+        return :generated_collapsed if @diff_file.collapsed? && @diff_file.generated?
+        return :collapsed if @diff_file.collapsed?
+        return :not_diffable unless @diff_file.diffable?
+        return :whitespace_only if @diff_file.whitespace_only?
+
+        :file_type if @diff_file.new_file? || @diff_file.content_changed?
+      end
+      strong_memoize_attr :matched_no_preview_reason
+
+      def no_preview_reasons
+        {
+          too_large: -> { _("File size exceeds preview limit.") },
+          generated_collapsed: -> { generated_collapsed_message },
+          collapsed: -> { _("Preview size limit exceeded, changes collapsed.") },
+          not_diffable: -> { _("Preview suppressed by a .gitattributes entry or the file's encoding is unsupported.") },
+          whitespace_only: -> { _("Contains only whitespace changes.") },
+          file_type: -> { _("No diff preview for this file type.") }
+        }
+      end
+
+      def generated_collapsed_message
+        docs_link = helpers.link_to(
+          '',
+          helpers.help_page_path('user/project/merge_requests/changes.md', anchor: 'collapse-generated-files'),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+        helpers.safe_format(
+          _('Generated files are collapsed by default. To change this behavior, edit the ' \
+            '%{tagStart}.gitattributes%{tagEnd} file. %{linkStart}Learn more.%{linkEnd}'),
+          helpers.tag_pair(helpers.tag.code, :tagStart, :tagEnd),
+          helpers.tag_pair(docs_link, :linkStart, :linkEnd)
+        )
       end
 
       def expandable_inline?
@@ -113,7 +139,7 @@ module RapidDiffs
       def paragraphs_count
         count = 0
         count += 1 if has_description?
-        count += 1 if no_preview_reason
+        count += 1 if matched_no_preview_reason
         count
       end
     end

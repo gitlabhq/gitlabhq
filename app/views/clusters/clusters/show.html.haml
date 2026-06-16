@@ -35,6 +35,6 @@
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/advanced_settings_tab'
 
-      .tab-content.py-3
+      %div{ class: "tab-content !gl-py-5" }
         .tab-pane.active{ role: 'tabpanel' }
           = render_cluster_info_tab_content(params[:tab], expanded_by_default?)

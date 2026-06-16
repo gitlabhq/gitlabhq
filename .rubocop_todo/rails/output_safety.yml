@@ -14,7 +14,6 @@ Rails/OutputSafety:
     - 'app/helpers/emoji_helper.rb'
     - 'app/helpers/external_link_helper.rb'
     - 'app/helpers/form_helper.rb'
-    - 'app/helpers/groups_helper.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/labels_helper.rb'
     - 'app/helpers/markup_helper.rb'

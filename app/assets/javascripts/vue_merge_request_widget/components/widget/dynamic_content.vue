@@ -37,6 +37,7 @@ export default {
       default: -1,
     },
   },
+  emits: ['clickedAction'],
   computed: {
     statusIcon() {
       return this.data.icon?.name || undefined;

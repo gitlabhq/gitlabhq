@@ -1,0 +1,4 @@
+---
+name: Security AI workflow settings
+description: Settings that control security AI workflows such as SAST Vulnerability Resolution.
+feature_category: vulnerability_management

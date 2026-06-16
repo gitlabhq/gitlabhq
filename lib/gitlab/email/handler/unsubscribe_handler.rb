@@ -30,12 +30,14 @@ module Gitlab
 
         def execute
           raise SentNotificationNotFoundError unless sent_notification
+
+          log_email_handler
           return unless sent_notification.unsubscribable?
 
           noteable = sent_notification.noteable
           raise NoteableNotFoundError unless noteable
 
-          noteable.unsubscribe(sent_notification.recipient)
+          noteable.unsubscribe(sent_notification.recipient, sent_notification.project)
         end
 
         def metrics_event
@@ -45,6 +47,14 @@ module Gitlab
         private
 
         attr_reader :reply_token
+
+        def parent_namespace
+          sent_notification.namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_SENT_NOTIFICATION_ID => sent_notification.id }
+        end
 
         def sent_notification
           @sent_notification ||= SentNotification.for(reply_token)

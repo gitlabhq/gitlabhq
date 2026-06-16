@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
 require 'yaml'
 
 module RuboCop
@@ -62,6 +63,17 @@ module RuboCop
           end
 
           check_ee_only_consistency(node, doc_path)
+        end
+
+        def external_dependency_checksum
+          @external_dependency_checksum ||= begin
+            root = File.expand_path('../../..', __dir__)
+            digest = Digest::SHA256.new
+            Dir.glob(File.join(root, 'data/events/**/*.yml')).each do |path|
+              digest.update(path).file(path)
+            end
+            digest.hexdigest
+          end
         end
 
         private

@@ -5,6 +5,8 @@ module SystemCheck
   module Helpers
     include ::Gitlab::TaskHelpers
 
+    DOC_PATH_PATTERN = %r{\Adoc/\S+\z}
+
     # Write a line to stdout. Wraps +puts+ so that callers do not trigger
     # the +Rails/Output+ cop.
     def say(message = '')
@@ -18,16 +20,18 @@ module SystemCheck
 
     # Display a formatted list of references (documentation or links) where to find more information
     #
-    # @param [Array<String>] sources one or more references (documentation or links)
+    # @param [Array<String>] sources one or more references (documentation or links).
+    #   Sources starting with "doc/" are automatically converted to full help page URLs.
+    #   Full URLs (http/https) are displayed as-is.
     def for_more_information(*sources)
       say Rainbow('  For more information see:').blue
       sources.each do |source|
-        say "  #{source}"
+        say "  #{resolve_doc_url(source)}"
       end
     end
 
     def see_installation_guide_section(section)
-      "doc/install/installation.md in section \"#{section}\""
+      "doc/install/self_compiled/_index.md##{section.parameterize}"
     end
 
     # @deprecated This will no longer be used when all checks were executed using SystemCheck
@@ -73,6 +77,28 @@ module SystemCheck
 
     def sudo_gitlab(command)
       "sudo -u #{gitlab_user} -H #{command}"
+    end
+
+    private
+
+    # Converts a relative doc path to a full help page URL.
+    # Passes through sources that are already full URLs.
+    #
+    # @param source [String] a doc path (e.g. "doc/administration/geo/index.md")
+    #   or a full URL (e.g. "https://about.gitlab.com/solutions/geo/")
+    # @return [String] a full URL
+    def resolve_doc_url(source)
+      return source unless source.match?(DOC_PATH_PATTERN)
+
+      path = source.delete_prefix('doc/')
+      file_path, anchor = path.split('#', 2)
+
+      options = {}
+      options[:anchor] = anchor if anchor
+
+      # rubocop:disable Gitlab/DocumentationLinks/Link -- path is dynamically resolved from caller input
+      Rails.application.routes.url_helpers.help_page_url(file_path, **options)
+      # rubocop:enable Gitlab/DocumentationLinks/Link
     end
   end
 end

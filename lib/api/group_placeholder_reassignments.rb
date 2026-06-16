@@ -63,8 +63,8 @@ module API
         )
       end
 
-      desc 'Upload placeholder reassignments CSV file' do
-        detail 'Uploads a CSV file containing placeholder reassignments for a group'
+      desc 'Reassign placeholders' do
+        detail 'Reassigns placeholder users with an uploaded CSV file.'
         tags ['groups']
       end
       params do

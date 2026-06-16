@@ -1,0 +1,3 @@
+---
+name: read_duo_workflow
+description: Grants the ability to read duo workflow data, including checkpoint traces

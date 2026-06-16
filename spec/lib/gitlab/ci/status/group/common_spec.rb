@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Group::Common do
+RSpec.describe Gitlab::Ci::Status::Group::Common, feature_category: :continuous_integration do
   subject do
     Gitlab::Ci::Status::Core.new(double, double)
       .extend(described_class)

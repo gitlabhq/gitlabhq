@@ -85,6 +85,15 @@ export default {
       required: false,
       default: false,
     },
+    // Additional class(es) merged onto the GlSorting direction toggle. Lets callers
+    // visually suppress the toggle for directionless sorts (e.g. a backend-defined
+    // "priority" ordering with no asc/desc variant).
+    // TODO: replace with a first-class `directionless` flag on sortOptions entries.
+    sortDirectionToggleClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
     syncFilterAndSort: {
       type: Boolean,
       required: false,
@@ -140,6 +149,9 @@ export default {
     selectedSortDirection() {
       return this.sortDirectionAscending ? SORT_DIRECTION.ascending : SORT_DIRECTION.descending;
     },
+    mergedSortDirectionToggleClass() {
+      return ['!gl-shrink', '!gl-grow-0', this.sortDirectionToggleClass].filter(Boolean).join(' ');
+    },
     selectedSortOption() {
       return this.sortOptions.find((sortOption) => sortOption.id === this.sortById);
     },
@@ -178,8 +190,8 @@ export default {
         this.filterValue = newValue;
       }
     },
-    initialSortBy(newInitialSortBy) {
-      if (this.syncFilterAndSort && newInitialSortBy) {
+    initialSortBy(newInitialSortBy, oldInitialSortBy) {
+      if (this.syncFilterAndSort && newInitialSortBy !== oldInitialSortBy) {
         this.updateSelectedSortValues();
       }
     },
@@ -432,7 +444,7 @@ export default {
         ]"
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"
-        sort-direction-toggle-class="!gl-shrink !gl-grow-0"
+        :sort-direction-toggle-class="mergedSortDirectionToggleClass"
         @sortByChange="handleSortByChange"
         @sortDirectionChange="handleSortDirectionChange"
       />

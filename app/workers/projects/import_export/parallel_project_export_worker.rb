@@ -54,6 +54,15 @@ module Projects
 
         Gitlab::ExceptionLogFormatter.format!(exception, log_payload)
         Gitlab::Export::Logger.error(log_payload)
+
+        notify_user(job, project, message)
+      end
+
+      def self.notify_user(job, project, message)
+        user = User.find_by_id(job['args'].second)
+        return unless user
+
+        NotificationService.new.project_not_exported(project, user, [message])
       end
 
       def perform(project_export_job_id, user_id, after_export_strategy = {})

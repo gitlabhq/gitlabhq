@@ -14,6 +14,7 @@ import { __, s__ } from '~/locale';
 import MetricImageDetailsModal from './metric_image_details_modal.vue';
 
 export default {
+  name: 'MetricImagesTable',
   i18n: {
     modalDelete: __('Delete'),
     modalDescription: s__('Incident|Are you sure you wish to delete this image?'),

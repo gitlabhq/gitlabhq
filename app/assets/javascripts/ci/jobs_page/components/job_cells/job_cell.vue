@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
@@ -15,6 +16,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    CommitPopover,
     GlBadge,
     GlIcon,
     GlLink,
@@ -39,6 +41,9 @@ export default {
     },
     jobCommit() {
       return this.job.shortSha;
+    },
+    jobCommitObject() {
+      return this.job.pipeline?.commit;
     },
     jobCommitPath() {
       return this.job.commitPath;
@@ -72,6 +77,9 @@ export default {
     },
     jobStuck() {
       return this.job?.stuck;
+    },
+    popoverTargetId() {
+      return `pipeline-commit-popover-${this.jobCommitObject?.sha}`;
     },
   },
 };
@@ -127,13 +135,21 @@ export default {
       <span v-else>{{ __('none') }}</span>
       <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-strong gl-px-2">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" variant="subtle" />
-        <link-cell
-          :href="jobCommitPath"
-          class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
-          data-testid="job-sha"
-        >
-          {{ jobCommit }}
-        </link-cell>
+        <span :id="popoverTargetId">
+          <link-cell
+            :href="jobCommitPath"
+            class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
+            data-testid="job-sha"
+          >
+            {{ jobCommit }}
+          </link-cell>
+        </span>
+        <commit-popover
+          v-if="jobCommitObject"
+          :popover-target-id="popoverTargetId"
+          :commit="jobCommitObject"
+          class="gl-z-3"
+        />
       </div>
     </div>
 

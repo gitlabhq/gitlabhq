@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Environments::DeleteManagedResourcesService, feature_category: :deployment_management do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let(:user) { create(:user, developer_of: project) }
   let(:environment) { create(:environment, :stopped, project: project) }
-  let_it_be(:agent) { create(:cluster_agent, project: project) }
-  let_it_be(:build) { create(:ci_build, project: project) }
+  let_it_be(:agent, freeze: false) { create(:cluster_agent, project: project) }
+  let_it_be(:build, freeze: false) { create(:ci_build, project: project) }
 
   let!(:managed_resource) do
     create(:managed_resource, :completed, project: project, environment: environment, cluster_agent: agent,

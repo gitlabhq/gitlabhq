@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:secondary_email) { 'secondary@email.com' }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:secondary_email, freeze: false) { 'secondary@email.com' }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
   shared_examples 'members attribute transformer' do
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
     it 'returns nil when receives no data' do
       expect(subject.transform(context, nil)).to eq(nil)
@@ -153,15 +153,15 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
   end
 
   context 'with a project' do
-    let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, project: project) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import, project: project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     include_examples 'members attribute transformer'
   end
 
   context 'with a group' do
-    let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
-    let_it_be(:group) { create(:group) }
+    let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
+    let_it_be(:group, freeze: false) { create(:group) }
 
     include_examples 'members attribute transformer'
   end

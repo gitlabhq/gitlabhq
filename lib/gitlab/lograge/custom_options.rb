@@ -8,7 +8,7 @@ module Gitlab
 
       LIMITED_ARRAY_SENTINEL = { key: 'truncated', value: '...' }.freeze
       IGNORE_PARAMS = Set.new(%w[controller action format]).freeze
-      KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :ua, :queue_duration_s,
+      KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :user_is_bot, :ua, :queue_duration_s,
         :etag_route, :request_urgency, :target_duration_s] + \
         CLOUDFLARE_CUSTOM_HEADERS.values + \
         JSON_METADATA_HEADERS
@@ -32,7 +32,13 @@ module Gitlab
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
+        apdex_duration = ::Gitlab::RequestContext.apdex_duration_s
+        payload[:apdex_duration_s] = apdex_duration if apdex_duration
+
         payload[Labkit::Fields::CORRELATION_ID] = event.payload[Labkit::Fields::CORRELATION_ID] || Labkit::Correlation::CorrelationId.current_id
+
+        duo_workflow_id = Gitlab::SafeRequestStore[Gitlab::Middleware::DuoWorkflowId::STORE_KEY]
+        payload[Labkit::Fields::DUO_WORKFLOW_ID] = duo_workflow_id if duo_workflow_id
 
         # https://github.com/roidrage/lograge#logging-errors--exceptions
         exception = event.payload[:exception_object]

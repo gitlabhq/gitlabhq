@@ -15,7 +15,10 @@ module Gitlab
         def should_skip?
           return false unless @owner.is_a?(Class)
 
-          mutation_response_field? || permission_metadata_field? || edge_wrapper_field?
+          mutation_response_field? ||
+            permission_metadata_field? ||
+            edge_wrapper_field? ||
+            traversal_to_authorized_type?
         end
 
         private
@@ -24,6 +27,51 @@ module Gitlab
         # Authorization happens on the mutation field itself, not the response wrapper
         def mutation_response_field?
           !!(@owner <= ::Mutations::BaseMutation)
+        end
+
+        # Traversal fields whose return type already carries its own granular_token
+        # directive (e.g., GroupType.groupMembers -> GroupMemberType).
+        # Without this skip, every field on an authorized owner type would also
+        # demand the owner's permission (e.g., `read_group`) even though the
+        # child type's directive already gates any actual data access.
+        # Only applies when the field has no own directive: an explicit
+        # field-level directive always wins.
+        #
+        # The skip is only safe when the return type itself has authorized sub-fields
+        # (e.g., GroupMemberType -> UserType). Those deeper fields will run their own
+        # service check. For leaf return types (all scalar fields), we must not skip
+        # because an empty collection would leave the check unfired.
+        def traversal_to_authorized_type?
+          return false if field_has_own_directive?
+          return false unless owner_has_directive?
+          return false unless return_type_has_directive?
+
+          return_type_has_deeper_authorized_fields?
+        end
+
+        def field_has_own_directive?
+          granular_scope_directives_on(@field).any?
+        end
+
+        def owner_has_directive?
+          granular_scope_directives_on(@owner).any?
+        end
+
+        def return_type_has_directive?
+          granular_scope_directives_on(unwrap_type(@field.type)).any?
+        end
+
+        def return_type_has_deeper_authorized_fields?
+          rt = unwrap_type(@field.type)
+          return false unless rt.respond_to?(:fields)
+
+          rt.fields.any? { |_name, f| granular_scope_directives_on(unwrap_type(f.type)).any? }
+        end
+
+        def granular_scope_directives_on(field_or_type)
+          return [] unless field_or_type.respond_to?(:directives)
+
+          field_or_type.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
         end
 
         # Edge wrapper fields (e.g., `node`, `cursor`)

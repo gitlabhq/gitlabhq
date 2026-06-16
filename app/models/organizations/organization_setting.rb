@@ -38,3 +38,5 @@ module Organizations
     end
   end
 end
+
+::Organizations::OrganizationSetting.prepend_mod_with('Organizations::OrganizationSetting')

@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
       gitlab_partitions_dynamic._test_gitlab_partition_20220102]
   end
 
-  subject do
+  subject(:sorted_tables) do
     described_class.new(connection, tables).execute
   end
 
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
 
   describe '#execute' do
     it 'returns the tables sorted by the foreign keys dependency' do
-      expect(subject).to eq(
+      expect(sorted_tables).to eq(
         [
           ['_test_gitlab_main_references'],
           ['_test_gitlab_partition_parent'],
@@ -71,13 +71,58 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
       SQL
       connection.execute(statement)
 
-      expect(subject).to eq(
+      expect(sorted_tables).to eq(
         [
           ['_test_gitlab_partition_parent'],
           ['gitlab_partitions_dynamic._test_gitlab_partition_20220101'],
           ['gitlab_partitions_dynamic._test_gitlab_partition_20220102'],
           %w[_test_gitlab_main_items _test_gitlab_main_references]
         ])
+    end
+
+    context 'when a foreign key targets an attached partition' do
+      let(:tables) do
+        %w[_test_attached_partition_parent _test_attached_partition_part _test_attached_partition_referrer]
+      end
+
+      before do
+        # Use names that sort alphabetically *before* the referrer so that, without
+        # the fix, the parent ends up in an earlier SCC than the referrer - the
+        # exact ordering that triggered the production TRUNCATE failure on
+        # `uploads` / `vulnerability_archive_export_uploads` /
+        # `vulnerability_archive_export_upload_states`.
+        connection.execute(<<~SQL)
+          CREATE TABLE _test_attached_partition_parent (
+            id bigserial NOT NULL,
+            kind text NOT NULL,
+            PRIMARY KEY (id, kind)
+          ) PARTITION BY LIST(kind);
+
+          CREATE TABLE _test_attached_partition_part
+            PARTITION OF _test_attached_partition_parent
+            FOR VALUES IN ('foo');
+
+          CREATE UNIQUE INDEX idx_test_attached_partition_part_id
+            ON _test_attached_partition_part (id);
+
+          CREATE TABLE _test_attached_partition_referrer (
+            id serial NOT NULL PRIMARY KEY,
+            ref_id BIGINT NOT NULL,
+            CONSTRAINT fk_test_attached_partition FOREIGN KEY(ref_id)
+              REFERENCES _test_attached_partition_part(id)
+          );
+        SQL
+      end
+
+      it 'sorts the referencer before the partition parent so TRUNCATE cascade is safe',
+        :aggregate_failures do
+        flat = sorted_tables.flatten
+
+        expect(flat.index('_test_attached_partition_referrer'))
+          .to be < flat.index('_test_attached_partition_parent')
+        expect(flat.index('_test_attached_partition_referrer'))
+          .to be < flat.index('_test_attached_partition_part')
+      end
     end
   end
 end

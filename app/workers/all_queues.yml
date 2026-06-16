@@ -906,16 +906,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:expire_build_artifacts
-  :worker_name: ExpireBuildArtifactsWorker
-  :feature_category: :job_artifacts
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:export_prune_project_export_jobs
   :worker_name: Gitlab::Export::PruneProjectExportJobsWorker
   :feature_category: :importers
@@ -1124,6 +1114,16 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:namespaces_stuck_transfers_cancel_cron
+  :worker_name: Namespaces::StuckTransfersCancelCronWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
 - :name: cronjob:object_storage_delete_stale_direct_uploads
@@ -1473,7 +1473,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
 - :name: cronjob:update_container_registry_info
@@ -1516,6 +1516,26 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_human_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateHumanRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_non_human_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
@@ -1526,9 +1546,9 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:users_unconfirmed_secondary_emails_deletion_cron
-  :worker_name: Users::UnconfirmedSecondaryEmailsDeletionCronWorker
-  :feature_category: :user_management
+- :name: cronjob:version_version_check_cron
+  :worker_name: Gitlab::Version::VersionCheckCronWorker
+  :feature_category: :service_ping
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1536,9 +1556,9 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:version_version_check_cron
-  :worker_name: Gitlab::Version::VersionCheckCronWorker
-  :feature_category: :service_ping
+- :name: cronjob:work_items_traversal_ids_healing_cron
+  :worker_name: WorkItems::TraversalIdsHealingCronWorker
+  :feature_category: :portfolio_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2503,6 +2523,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :package_repositories
+- :name: package_repositories:packages_rubygems_create_spec_files
+  :worker_name: Packages::Rubygems::CreateSpecFilesWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_rubygems_extraction
   :worker_name: Packages::Rubygems::ExtractionWorker
   :feature_category: :package_registry
@@ -2867,7 +2897,7 @@
   :worker_name: Ci::BuildScheduleWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :cpu
   :weight: 5
   :idempotent: false
@@ -2907,8 +2937,8 @@
   :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
+  :urgency: :high
+  :resource_boundary: :cpu
   :weight: 5
   :idempotent: true
   :tags: []
@@ -4844,8 +4874,28 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_check_organization_isolation_status
+  :worker_name: Organizations::CheckOrganizationIsolationStatusWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: organizations_groups_transfer
   :worker_name: Organizations::Groups::TransferWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: organizations_hard_delete
+  :worker_name: Organizations::HardDeleteWorker
   :feature_category: :organization
   :has_external_dependencies: false
   :urgency: :low

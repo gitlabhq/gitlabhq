@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContentTypeWhitelist do
+RSpec.describe ContentTypeWhitelist, feature_category: :tooling do
   let_it_be(:model) { build_stubbed(:user) }
 
   let!(:uploader) do

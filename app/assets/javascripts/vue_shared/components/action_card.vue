@@ -8,6 +8,7 @@ export const VARIANTS = {
 };
 
 export default {
+  name: 'ActionCard',
   components: {
     GlIcon,
     GlLink,

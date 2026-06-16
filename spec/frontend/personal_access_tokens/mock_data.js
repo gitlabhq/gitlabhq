@@ -182,6 +182,10 @@ export const mockCreateMutationInput = {
     access: 'USER',
     permissions: ['read_user', 'follow_user'],
   },
+  instance: {
+    access: 'INSTANCE',
+    permissions: ['read_compliance_policy_setting'],
+  },
 };
 
 export const mockCreateMutationResponse = {
@@ -273,6 +277,14 @@ export const mockInstancePermissions = [
     boundaries: ['INSTANCE'],
   },
 ];
+
+export const mockGranularInstanceScope = {
+  access: 'INSTANCE',
+  namespace: null,
+  project: null,
+  permissions: mockInstancePermissions,
+  __typename: 'AccessTokenGranularScope',
+};
 
 export const mockAccessTokenPermissionsQueryResponse = {
   data: {

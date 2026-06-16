@@ -250,6 +250,7 @@ export default {
       'isBatchLoading',
       'isBatchLoadingError',
       'linkedFile',
+      'gitalyErrorMessage',
     ]),
     ...mapState(useLegacyDiffs, { diffFiles: 'diffFilesFiltered' }),
     ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
@@ -868,7 +869,7 @@ export default {
             :primary-button-text="__('Reload page')"
             @primaryAction="reloadPage"
           >
-            {{ __("Error: Couldn't load some or all of the changes.") }}
+            {{ gitalyErrorMessage || __("Error: Couldn't load some or all of the changes.") }}
           </gl-alert>
           <div v-if="isBatchLoading && !isBatchLoadingError" class="loading">
             <gl-loading-icon size="lg" />

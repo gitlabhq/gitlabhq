@@ -9,7 +9,6 @@ module WebHooks
       attr_writer :hooks, :hook
 
       before_action :hook_logs, only: :edit
-      before_action :push_webhook_signing_token_feature_flag, only: [:index, :edit, :create, :update]
       feature_category :webhooks
     end
 
@@ -105,18 +104,8 @@ module WebHooks
     end
 
     def hook_param_names
-      base = %i[enable_ssl_verification name description token url push_events_branch_filter
-        branch_filter_strategy custom_webhook_template]
-      base << :signing_token if Feature.enabled?(:webhook_signing_token, webhook_signing_token_actor)
-      base
-    end
-
-    def webhook_signing_token_actor
-      nil
-    end
-
-    def push_webhook_signing_token_feature_flag
-      push_frontend_feature_flag(:webhook_signing_token, webhook_signing_token_actor)
+      %i[enable_ssl_verification name description token url push_events_branch_filter
+        branch_filter_strategy custom_webhook_template signing_token]
     end
 
     def destroy_hook(hook)

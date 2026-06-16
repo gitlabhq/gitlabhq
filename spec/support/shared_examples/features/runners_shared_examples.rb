@@ -29,10 +29,11 @@ RSpec.shared_examples 'shows and resets runner registration token' do
       click_button('Reset token', match: :first)
     end
 
+    expect(find('.gl-toast')).to have_content('New registration token generated!')
+
     # new registration token
     click_on dropdown_text
     expect(find_field('token-value').value).not_to eq(registration_token)
-    expect(find('.gl-toast')).to have_content('New registration token generated!')
   end
 end
 
@@ -171,7 +172,7 @@ RSpec.shared_examples 'submits edit runner form' do
     it 'redirects to runner page and shows successful update' do
       expect(current_url).to match(runner_page_path)
 
-      expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+      expect(find_by_testid('alert-success')).to have_content('saved')
       expect(page).to have_content("#{s_('Runners|Description')} new-runner-description")
     end
   end

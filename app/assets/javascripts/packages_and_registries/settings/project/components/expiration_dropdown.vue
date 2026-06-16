@@ -2,6 +2,7 @@
 import { GlFormGroup, GlFormSelect } from '@gitlab/ui';
 
 export default {
+  name: 'ExpirationDropdown',
   components: {
     GlFormGroup,
     GlFormSelect,

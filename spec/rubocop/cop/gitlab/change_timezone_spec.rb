@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/change_timezone'
 
-RSpec.describe RuboCop::Cop::Gitlab::ChangeTimezone do
+RSpec.describe RuboCop::Cop::Gitlab::ChangeTimezone, feature_category: :tooling do
   context 'Time.zone=' do
     it 'registers an offense with no 2nd argument' do
       expect_offense(<<~RUBY)

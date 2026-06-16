@@ -16,31 +16,12 @@ module API
     allow_ai_workflows_access
 
     MAXIMUM_QUERY_LIMIT = 100
-    MODE_ANALYTICS = 'analytics'
-    DEFAULT_FIELDS = 'title'
 
     before do
       set_current_organization
     end
 
     helpers do
-      # Enable code suggestions if the feature flag is enabled for the project or group
-      def code_suggestions_enabled?(project: nil, group: nil)
-        return false unless project.present? || group.present?
-
-        if project.present?
-          project_record = ::Project.find_by_full_path(project)
-          return false unless project_record
-
-          return Feature.enabled?(:glql_code_suggestion_analytics_aggregation, project_record)
-        end
-
-        group_record = ::Group.find_by_full_path(group)
-        return false unless group_record
-
-        Feature.enabled?(:glql_code_suggestion_analytics_aggregation, group_record)
-      end
-
       def get_compile_context(
         fields: nil,
         dimensions: nil,
@@ -51,10 +32,8 @@ module API
         project: nil,
         group: nil
       )
-        code_suggestions_enabled = code_suggestions_enabled?(project: project, group: group)
-
         {
-          featureFlags: { glqlCodeSuggestions: code_suggestions_enabled },
+          featureFlags: {},
           username: user&.username,
           mode: mode,
           sort: sort,
@@ -90,8 +69,6 @@ module API
 
       def compile_glql(parsed_glql)
         config = parsed_glql[:config]
-
-        config['fields'] ||= DEFAULT_FIELDS if config['mode'] != MODE_ANALYTICS
 
         compile_context = get_compile_context(**{
           user: current_user,
@@ -146,8 +123,8 @@ module API
     end
 
     resource :glql do
-      desc 'Execute GLQL query' do
-        detail 'Execute a GLQL (GitLab Query Language) query'
+      desc 'Execute a GLQL query' do
+        detail 'Executes a GLQL query to search and filter GitLab resources.'
         success code: 200, model: ::API::Entities::Glql::Result
         failure [
           { code: 400, message: 'Bad request' },
@@ -165,6 +142,7 @@ module API
         optional :after, type: String,
           desc: 'Cursor for forward pagination. Use the `endCursor` from previous response to fetch the next page'
       end
+      route_setting :authorization, permissions: :read_glql, boundary_type: :user
       post do
         parsed_glql = parse_glql_yaml(params[:glql_yaml])
 
@@ -176,14 +154,8 @@ module API
         error!(glql_result[:errors].first[:message], 429) if glql_result[:rate_limited]
         error!(glql_result[:errors].first[:message], 400) if glql_result[:errors]
 
-        config = parsed_glql[:config]
-        transformed_result = if compiled_glql['mode'] == MODE_ANALYTICS
-                               transform_glql_result(glql_result, compiled_glql['fields'],
-                                 mode: compiled_glql['mode'])
-                             else
-                               transform_glql_result(glql_result, config['fields'])
-                             end
-
+        transformed_result = transform_glql_result(glql_result, compiled_glql['fields'],
+          mode: compiled_glql['mode'])
         error!(transformed_result['error'], 400) unless transformed_result['success']
 
         status 200

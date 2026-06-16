@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'SettingsSubSection',
   props: {
     heading: {
       type: String,

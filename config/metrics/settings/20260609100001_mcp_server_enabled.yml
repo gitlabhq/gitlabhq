@@ -1,0 +1,19 @@
+---
+key_path: settings.mcp_server_enabled
+description: Tracks whether the MCP server is enabled at the instance level on a Self-Managed instance
+product_group: ai_framework
+product_categories:
+  - mcp_server
+value_type: boolean
+status: active
+milestone: "19.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239759
+time_frame: none
+data_source: database
+instrumentation_class: McpServerEnabledMetric
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

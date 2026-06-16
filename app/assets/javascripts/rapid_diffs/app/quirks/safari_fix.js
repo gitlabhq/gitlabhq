@@ -1,9 +1,13 @@
 import { throttle } from 'lodash-es';
 
+const isSafari = () => /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 // Safari doesn't consider custom elements as Web Components when streaming ¯\_(ツ)_/¯
-export const fixWebComponentsStreamingOnSafari = (elementToObserve, DiffFile, DiffFileMounted) => {
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  if (!isSafari) return;
+export const fixWebComponentsStreamingOnSafari = (elementToObserve) => {
+  if (!isSafari()) return () => {};
+
+  const DiffFile = customElements.get('diff-file');
+  const DiffFileMounted = customElements.get('diff-file-mounted');
   const observer = new MutationObserver(
     throttle(
       () => {
@@ -26,4 +30,6 @@ export const fixWebComponentsStreamingOnSafari = (elementToObserve, DiffFile, Di
     childList: true,
     subtree: true,
   });
+
+  return () => observer.disconnect();
 };

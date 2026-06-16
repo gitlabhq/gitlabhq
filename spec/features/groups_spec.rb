@@ -225,7 +225,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'create a nested group', :js do
-    let_it_be(:group) { create(:group, path: 'foo', organization: current_organization) }
+    let_it_be(:group, freeze: false) { create(:group, path: 'foo', organization: current_organization) }
 
     context 'as admin' do
       let(:user) { create(:admin, organizations: [current_organization]) }
@@ -332,7 +332,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'group edit', :js do
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
 
     let(:path) { edit_group_path(group) }
     let(:new_name) { 'new-name' }
@@ -366,15 +366,18 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     end
 
     it 'marks the group for deletion' do
-      expect { remove_with_confirm('Delete', group.path) }.to change {
-        group.reload.self_deletion_scheduled?
-      }.from(false).to(true)
+      remove_with_confirm('Delete', group.path)
+
+      # Wait for the redirect to complete before asserting on the database. Reading
+      # `self_deletion_scheduled?` immediately after the Capybara action races the
+      # deletion request and is flaky.
       expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
+      expect(group.reload.self_deletion_scheduled?).to be(true)
     end
   end
 
   describe 'group page with markdown description' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
 
     let(:path) { group_path(group) }
 
@@ -416,7 +419,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'group page with nested groups', :js do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be(:nested_group) { create(:group, parent: group) }
     let_it_be(:project) { create(:project, namespace: group) }
 
@@ -458,7 +461,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'new subgroup / project button' do
-    let_it_be(:group, reload: true) do
+    let_it_be_with_reload(:group) do
       create(
         :group,
         project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS,
@@ -549,7 +552,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
   describe 'group README', :js do
     context 'with gitlab-profile project and README.md' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group, freeze: false) { create(:group) }
       let_it_be(:project) { create(:project, :public, :readme, namespace: group) }
 
       it 'renders README block on group page' do

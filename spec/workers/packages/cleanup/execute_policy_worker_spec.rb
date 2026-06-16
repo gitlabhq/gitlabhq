@@ -84,7 +84,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyWorker, feature_category: :packag
       end
 
       context 'with several eligible policies' do
-        let_it_be(:policy2) { create(:packages_cleanup_policy, :runnable) }
+        let_it_be(:policy2, freeze: false) { create(:packages_cleanup_policy, :runnable) }
         let_it_be(:package2) { create(:generic_package, project: policy2.project) }
 
         before do

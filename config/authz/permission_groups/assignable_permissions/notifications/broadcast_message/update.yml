@@ -1,0 +1,9 @@
+---
+name: update_broadcast_message
+description: Grants the ability to update broadcast messages
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_broadcast_message

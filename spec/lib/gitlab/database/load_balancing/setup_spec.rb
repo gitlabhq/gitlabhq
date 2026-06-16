@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Setup do
+RSpec.describe Gitlab::Database::LoadBalancing::Setup, feature_category: :database do
   shared_examples 'connection proxy with skippable load balancer' do
     context 'when uses_load_balancer is false' do
       before do

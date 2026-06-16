@@ -29,7 +29,7 @@ RSpec.describe Import::ImportRecordPreparer, feature_category: :importers do
         )
       end
 
-      let_it_be(:position) do
+      let_it_be(:position, freeze: false) do
         Gitlab::Diff::Position.new(
           base_sha: "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
           head_sha: "b83d6e391c22777fca1ed3012fce84f633d7fed0",
@@ -80,7 +80,7 @@ RSpec.describe Import::ImportRecordPreparer, feature_category: :importers do
         end
 
         context 'when the old path and position do not exist' do
-          let_it_be(:position) do
+          let_it_be(:position, freeze: false) do
             Gitlab::Diff::Position.new(
               old_path: nil,
               new_path: "lib/ruby/popen.rb",
@@ -99,7 +99,7 @@ RSpec.describe Import::ImportRecordPreparer, feature_category: :importers do
         end
 
         context 'when the new path and position do not exist' do
-          let_it_be(:position) do
+          let_it_be(:position, freeze: false) do
             Gitlab::Diff::Position.new(
               old_path: "files/ruby/popen.rb",
               new_path: nil,

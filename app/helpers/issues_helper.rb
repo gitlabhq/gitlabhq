@@ -96,7 +96,7 @@ module IssuesHelper
 
   def show_moved_service_desk_issue_warning?(issue)
     return false unless issue.moved_from
-    return false unless issue.from_service_desk?
+    return false unless issue.work_item_type&.service_desk?
 
     ::ServiceDesk.enabled?(issue.moved_from.project) &&
       !::ServiceDesk.enabled?(issue.project)

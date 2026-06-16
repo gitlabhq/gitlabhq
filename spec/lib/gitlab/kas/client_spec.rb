@@ -139,66 +139,320 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       it { expect(subject).to eq(agent_configurations) }
     end
 
-    describe '#send_autoflow_event' do
-      subject { client.send_autoflow_event(project: project, type: 'any-type', id: 'any-id', data: { 'any-data-key': 'any-data-value' }) }
-
-      context 'when autoflow_enabled FF is disabled' do
-        before do
-          stub_feature_flags(autoflow_enabled: false)
-        end
-
-        it { expect(subject).to be_nil }
+    describe '#publish_events' do
+      let(:topic) { 'test.topic' }
+      let(:event) do
+        Gitlab::Agent::Event::CloudEvent.new(
+          id: 'test-id',
+          source: 'test',
+          spec_version: '1.0',
+          type: 'com.example.test'
+        )
       end
 
-      context 'when autoflow_enabled FF is enabled' do
-        let_it_be(:autoflow_var1) { create(:ci_variable, project: project, key: 'test_key_1', value: 'test-value-1', environment_scope: 'autoflow/internal-use') }
-        let_it_be(:autoflow_var2) { create(:ci_variable, project: project, key: 'test_key_2', value: 'test-value-2', environment_scope: 'autoflow/internal-use') }
-        let_it_be(:other_var) { create(:ci_variable, project: project, key: 'test_key_3', value: 'test-value-3') }
-        let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
-        let(:request) { instance_double(Gitlab::Agent::AutoFlow::Rpc::CloudEventRequest) }
-        let(:event_param) { instance_double(Gitlab::Agent::Event::CloudEvent) }
-        let(:project_param) { instance_double(Gitlab::Agent::Event::Project) }
-        let(:response) { double(Gitlab::Agent::AutoFlow::Rpc::CloudEventResponse) }
+      let(:other_event) do
+        Gitlab::Agent::Event::CloudEvent.new(
+          id: 'other-id',
+          source: 'test',
+          spec_version: '1.0',
+          type: 'com.example.test'
+        )
+      end
+
+      context 'with one or more events' do
+        let(:stub) { instance_double(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub) }
+        let(:request) { instance_double(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest) }
 
         before do
-          stub_feature_flags(autoflow_enabled: true)
-
-          expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
+          expect(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub).to receive(:new)
             .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
             .and_return(stub)
-
-          expect(Gitlab::Agent::Event::Project).to receive(:new)
-            .with(id: project.id, full_path: project.full_path)
-            .and_return(project_param)
-
-          expect(Gitlab::Agent::Event::CloudEvent).to receive(:new)
-            .with(id: 'any-id', source: "GitLab", spec_version: "v1", type: 'any-type',
-              attributes: {
-                datacontenttype: Gitlab::Agent::Event::CloudEvent::CloudEventAttributeValue.new(
-                  ce_string: "application/json"
-                )
-              },
-              text_data: '{"any-data-key":"any-data-value"}'
-            )
-            .and_return(event_param)
-
-          expect(Gitlab::Agent::AutoFlow::Rpc::CloudEventRequest).to receive(:new)
-            .with(
-              event: event_param,
-              flow_project: project_param,
-              variables: {
-                "test_key_1" => "test-value-1",
-                "test_key_2" => "test-value-2"
-              }
-            )
-            .and_return(request)
-
-          expect(stub).to receive(:cloud_event)
-            .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
-            .and_return(response)
         end
 
-        it { expect(subject).to eq(response) }
+        it 'wraps a single event in an array before publishing', :aggregate_failures do
+          expect(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest).to receive(:new)
+            .with(topic: topic, events: [event])
+            .and_return(request)
+
+          response = Gitlab::Agent::EventsPlatform::Rpc::PublishResponse.new(message_ids: ['1234567890-0'])
+
+          expect(stub).to receive(:publish)
+            .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
+            .and_return(response)
+
+          expect(client.publish_events(topic: topic, events: event)).to eq(['1234567890-0'])
+        end
+
+        it 'publishes a batch of events and returns all message IDs', :aggregate_failures do
+          expect(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest).to receive(:new)
+            .with(topic: topic, events: [event, other_event])
+            .and_return(request)
+
+          response = Gitlab::Agent::EventsPlatform::Rpc::PublishResponse.new(
+            message_ids: %w[1234567890-0 1234567891-0]
+          )
+
+          expect(stub).to receive(:publish)
+            .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
+            .and_return(response)
+
+          expect(client.publish_events(topic: topic, events: [event, other_event]))
+            .to eq(%w[1234567890-0 1234567891-0])
+        end
+
+        it 'propagates gRPC errors from the stub', :aggregate_failures do
+          expect(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest).to receive(:new)
+            .with(topic: topic, events: [event])
+            .and_return(request)
+
+          expect(stub).to receive(:publish)
+            .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
+            .and_raise(GRPC::Unavailable.new('relay down'))
+
+          expect { client.publish_events(topic: topic, events: [event]) }
+            .to raise_error(GRPC::Unavailable)
+        end
+      end
+
+      context 'with no events' do
+        before do
+          expect(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub).not_to receive(:new)
+          expect(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest).not_to receive(:new)
+        end
+
+        it 'returns an empty array and skips the RPC call when events is nil' do
+          expect(client.publish_events(topic: topic, events: nil)).to eq([])
+        end
+
+        it 'returns an empty array and skips the RPC call when events is an empty array' do
+          expect(client.publish_events(topic: topic, events: [])).to eq([])
+        end
+      end
+
+      context 'when the publish_events_to_relay feature flag is disabled' do
+        before do
+          stub_feature_flags(publish_events_to_relay: false)
+
+          expect(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub).not_to receive(:new)
+          expect(Gitlab::Agent::EventsPlatform::Rpc::PublishRequest).not_to receive(:new)
+        end
+
+        it 'returns an empty array and skips the RPC call' do
+          expect(client.publish_events(topic: topic, events: event)).to eq([])
+        end
+      end
+    end
+
+    describe '#subscribe_events' do
+      let(:topic) { 'test.topic' }
+      let(:consumer_group) { 'rails-test' }
+      let(:stub) { instance_double(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub) }
+      let(:expected_metadata) { { 'authorization' => 'bearer test-token', **feature_flags } }
+
+      let(:event_one) do
+        Gitlab::Agent::Event::CloudEvent.new(
+          id: 'event-1', source: 'test', spec_version: '1.0', type: 'com.example.one'
+        )
+      end
+
+      let(:event_two) do
+        Gitlab::Agent::Event::CloudEvent.new(
+          id: 'event-2', source: 'test', spec_version: '1.0', type: 'com.example.two'
+        )
+      end
+
+      let(:server_responses) do
+        [
+          Gitlab::Agent::EventsPlatform::Rpc::SubscribeResponse.new(
+            message_id: '1747840000-0', event: event_one
+          ),
+          Gitlab::Agent::EventsPlatform::Rpc::SubscribeResponse.new(
+            message_id: '1747840001-0', event: event_two
+          )
+        ]
+      end
+
+      before do
+        allow(client).to receive(:stub_for).with(:events_platform).and_return(stub)
+      end
+
+      # Captures the requests the client sends back so we can assert on the SubscribeConfig and Acks
+      # in order. Drains the first request (SubscribeConfig) eagerly so it's captured even when no
+      # server responses are produced; subsequent requests (Acks) are pulled after each response to
+      # preserve the Config -> Response -> Ack -> Response -> Ack interleaving that exercises the
+      # per-event-ack contract.
+      def capture_subscribe(server_responses:, captured:)
+        allow(stub).to receive(:subscribe) do |requests, **_kwargs|
+          captured << requests.next
+
+          Enumerator.new do |y|
+            server_responses.each do |resp|
+              y << resp
+              captured << requests.next
+            end
+          end
+        end
+      end
+
+      it 'sends SubscribeConfig as the first request' do
+        captured = []
+        capture_subscribe(server_responses: [], captured: captured)
+
+        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+
+        expect(captured.first.config).to have_attributes(
+          topic: topic,
+          consumer_group: consumer_group,
+          event_types: []
+        )
+      end
+
+      it 'sends SubscribeConfig exactly once across the stream lifetime', :aggregate_failures do
+        captured = []
+        capture_subscribe(server_responses: server_responses, captured: captured)
+
+        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+
+        # The first request is the config; everything after must be an ack, never another config.
+        configs = captured.select { |req| req.request == :config }
+        expect(configs.length).to eq(1)
+        expect(captured.first.request).to eq(:config)
+        expect(captured.drop(1).map(&:request)).to all(eq(:ack))
+      end
+
+      it 'closes the request stream after the response stream ends' do
+        captured_requests_enum = nil
+        allow(stub).to receive(:subscribe) do |requests, **_kwargs|
+          captured_requests_enum = requests
+          # Drain the config message so the client moves into the response loop.
+          requests.next
+          # Empty response stream - the server immediately closes.
+          Enumerator.new { |_y| nil }
+        end
+
+        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+
+        # The `ensure` block in #subscribe_events pushes nil into the ack queue,
+        # which breaks the request enumerator's internal loop. Advancing the
+        # enumerator one more time should raise StopIteration.
+        expect { captured_requests_enum.next }.to raise_error(StopIteration)
+      end
+
+      it 'yields each CloudEvent from the server' do
+        capture_subscribe(server_responses: server_responses, captured: [])
+
+        received = []
+        client.subscribe_events(topic: topic, consumer_group: consumer_group) do |event|
+          received << event
+        end
+
+        expect(received).to eq([event_one, event_two])
+      end
+
+      it 'acknowledges each event after the block returns successfully' do
+        captured = []
+        capture_subscribe(server_responses: server_responses, captured: captured)
+
+        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+
+        # captured = [config, ack(event_one), ack(event_two)]
+        acks = captured.drop(1).map { |req| req.ack.message_ids.to_a }
+        expect(acks).to eq([['1747840000-0'], ['1747840001-0']])
+      end
+
+      it 'does not acknowledge an event if the block raises' do
+        captured = []
+        capture_subscribe(server_responses: server_responses, captured: captured)
+
+        expect do
+          client.subscribe_events(topic: topic, consumer_group: consumer_group) do |_|
+            raise 'boom'
+          end
+        end.to raise_error(RuntimeError, 'boom')
+
+        # captured = [config] - no ack was sent before the raise
+        expect(captured.length).to eq(1)
+      end
+
+      it 'forwards event_types as a server-side filter' do
+        captured = []
+        capture_subscribe(server_responses: [], captured: captured)
+
+        client.subscribe_events(
+          topic: topic,
+          consumer_group: consumer_group,
+          event_types: ['com.example.one', 'com.example.two']
+        ) { |_event| nil }
+
+        expect(captured.first.config.event_types.to_a).to eq(
+          ['com.example.one', 'com.example.two']
+        )
+      end
+
+      it 'passes the auth metadata and the default deadline to the stub' do
+        capture_subscribe(server_responses: [], captured: [])
+        frozen_now = Time.utc(2026, 6, 10, 12, 0, 0)
+        travel_to(frozen_now) do
+          client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        end
+
+        expect(stub).to have_received(:subscribe).with(
+          kind_of(Enumerator),
+          deadline: frozen_now + described_class::DEFAULT_SUBSCRIBE_DEADLINE,
+          metadata: expected_metadata
+        )
+      end
+
+      it 'allows the caller to override the deadline' do
+        capture_subscribe(server_responses: [], captured: [])
+        frozen_now = Time.utc(2026, 6, 10, 12, 0, 0)
+        travel_to(frozen_now) do
+          client.subscribe_events(
+            topic: topic,
+            consumer_group: consumer_group,
+            deadline: 5.minutes
+          ) { |_event| nil }
+        end
+
+        expect(stub).to have_received(:subscribe).with(
+          kind_of(Enumerator),
+          deadline: frozen_now + 5.minutes,
+          metadata: expected_metadata
+        )
+      end
+
+      it 'raises ArgumentError when no block is given' do
+        expect do
+          client.subscribe_events(topic: topic, consumer_group: consumer_group)
+        end.to raise_error(ArgumentError, /block is required/)
+      end
+
+      it 'propagates gRPC errors from the stub' do
+        allow(stub).to receive(:subscribe).and_raise(GRPC::Unavailable.new('relay down'))
+
+        expect do
+          client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        end.to raise_error(GRPC::Unavailable)
+      end
+
+      context 'when the subscribe_events_from_relay feature flag is disabled' do
+        before do
+          stub_feature_flags(subscribe_events_from_relay: false)
+        end
+
+        it 'returns nil and skips the RPC call' do
+          expect(stub).not_to receive(:subscribe)
+
+          expect(
+            client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+          ).to be_nil
+        end
+
+        it 'still raises ArgumentError when no block is given' do
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group)
+          end.to raise_error(ArgumentError, /block is required/)
+        end
       end
     end
 

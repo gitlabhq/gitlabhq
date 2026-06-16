@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with build, pipeline and artifacts' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
-  let_it_be(:project, reload: true) { create_default(:project, :public, :repository, group: group) }
-  let_it_be(:pipeline, reload: true) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:group) { create_default(:group, :allow_runner_registration_token) }
+  let_it_be_with_reload(:project) { create_default(:project, :public, :repository, group: group) }
+  let_it_be_with_reload(:pipeline) do
     create_default(
       :ci_pipeline,
       project: project,
@@ -18,8 +18,8 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
     create(:ci_build, :slsa_artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline, stage: "build")
   end
 
-  let_it_be(:runner) { create(:ci_runner, :hosted_runner) }
-  let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+  let_it_be(:runner, freeze: false) { create(:ci_runner, :hosted_runner) }
+  let_it_be(:runner_manager, freeze: false) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:id_token) { "jwt.jwt.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30" }
 
   let(:yaml_variables) do

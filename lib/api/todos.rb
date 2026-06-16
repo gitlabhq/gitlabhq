@@ -24,7 +24,8 @@ module API
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = :"#{type.singularize}_iid"
 
-        desc 'Create a to-do item on an issuable' do
+        desc 'Create a to-do item' do
+          detail 'Creates a to-do item.'
           success Entities::Todo
           tags %w[to-dos]
         end

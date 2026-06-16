@@ -10,6 +10,7 @@ import {
 import { i18n } from '../constants';
 
 export default {
+  name: 'JobSetupItem',
   i18n,
   components: {
     GlAccordionItem,

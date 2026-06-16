@@ -4,42 +4,47 @@ module Gitlab
   module GithubImport
     class Settings
       OPTIONAL_STAGES = {
-        single_endpoint_notes_import: {
-          label: 'Use alternative comments import method',
-          selected: false,
-          details: <<-TEXT.split("\n").map(&:strip).join(' ')
-            The default method can skip some comments in large projects because of limitations of the GitHub API.
-          TEXT
-        },
-        attachments_import: {
-          label: 'Import Markdown attachments (links)',
-          selected: false,
-          details: <<-TEXT.split("\n").map(&:strip).join(' ')
-            Import Markdown attachments (links) from repository comments, release posts, issue descriptions,
-            and pull request descriptions. These can include images, text, or binary attachments.
-            If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
-          TEXT
-        },
-        collaborators_import: {
-          label: 'Import collaborators',
-          selected: true,
-          details: <<-TEXT.split("\n").map(&:strip).join(' ')
-            Import direct repository collaborators who are not outside collaborators.
-            Imported collaborators who aren't members of the group you imported the project into consume seats on your GitLab instance.
-          TEXT
-        }
+        single_endpoint_notes_import: { selected: false },
+        attachments_import: { selected: false },
+        collaborators_import: { selected: true }
       }.freeze
 
       def self.stages_array(_current_user)
         OPTIONAL_STAGES.map do |stage_name, data|
           {
             name: stage_name.to_s,
-            label: s_(format("GitHubImport|%{text}", text: data[:label])),
+            label: stage_label(stage_name),
             selected: data[:selected],
-            details: s_(format("GitHubImport|%{text}", text: data[:details]))
+            details: stage_details(stage_name)
           }
         end
       end
+
+      def self.stage_label(stage_name)
+        {
+          single_endpoint_notes_import: s_('GitHubImporter|Use alternative comments import method'),
+          attachments_import: s_('GitHubImporter|Import Markdown attachments (links)'),
+          collaborators_import: s_('GitHubImporter|Import collaborators')
+        }[stage_name]
+      end
+      private_class_method :stage_label
+
+      def self.stage_details(stage_name)
+        {
+          single_endpoint_notes_import: s_('GitHubImporter|The default method can skip some comments in large ' \
+            'projects because of limitations of the GitHub API.'),
+          attachments_import: s_('GitHubImporter|Import Markdown attachments (links) from repository ' \
+            'comments, release posts, issue descriptions, and pull request ' \
+            'descriptions. These can include images, text, or binary attachments. ' \
+            'If not imported, links in Markdown to attachments break after you ' \
+            'remove the attachments from GitHub.'),
+          collaborators_import: s_('GitHubImporter|Import direct repository collaborators who are not ' \
+            'outside collaborators. Imported collaborators who aren\'t members ' \
+            'of the group you imported the project into consume seats on your ' \
+            'GitLab instance.')
+        }[stage_name]
+      end
+      private_class_method :stage_details
 
       def initialize(project)
         @project = project

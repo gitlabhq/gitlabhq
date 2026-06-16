@@ -1,6 +1,5 @@
 <script>
 import {
-  GlBadge,
   GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
@@ -12,21 +11,29 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS } from '../constants';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
+import { isExperimentVariant } from '~/experimentation/utils';
+import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
+import { HELP_MENU_TRACKING_DEFAULTS } from '../constants';
+
+const WHATS_NEW_EXPERIMENT = 'whats_new_placement';
+const WHATS_NEW_PLACEMENT = 'help_menu';
 
 export default {
+  WHATS_NEW_EXPERIMENT,
   components: {
-    GlBadge,
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
+    GitlabExperiment,
     GitlabVersionCheckBadge,
     HelpCenterUpgradeSubscription,
+    WhatsNewForYouMenuItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin({ property: 'nav_help_menu' })],
+  mixins: [Tracking.mixin({ property: 'nav_help_menu', experiment: WHATS_NEW_EXPERIMENT })],
   i18n: {
     help: __('Help'),
     support: __('Support'),
@@ -38,10 +45,8 @@ export default {
     feedback: __('Provide feedback'),
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
-    whatsnew: __("What's new"),
     terms: __('Terms and privacy'),
     privacy: __('Privacy statement'),
-    whatsnewToast: __("What's new moved to Help."),
   },
   inject: ['isSaas', 'isIconOnly'],
   props: {
@@ -50,22 +55,9 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showWhatsNewNotification: this.shouldShowWhatsNewNotification(),
-      whatsNewMostRecentReleaseUnreadCount: this.calculateWhatsNewMostRecentReleaseUnreadCount(),
-      toggleWhatsNewDrawer: null,
-    };
-  },
   computed: {
     showUpgradeSubscription() {
       return Boolean(this.sidebarData.free_group_upgrade_link);
-    },
-    showWhatsNewTopMenu() {
-      return !this.showUpgradeSubscription && this.showWhatsNewNotification;
-    },
-    showNotificationDot() {
-      return this.showUpgradeSubscription && this.showWhatsNewNotification;
     },
     itemGroups() {
       const groups = {
@@ -157,18 +149,7 @@ export default {
               },
               shortcut: '?',
             },
-            this.sidebarData.display_whats_new &&
-              !this.showWhatsNewTopMenu && {
-                text: this.$options.i18n.whatsnew,
-                action: this.showWhatsNew,
-                count: this.whatsNewMostRecentReleaseUnreadCount,
-                extraAttrs: {
-                  'data-track-action': 'click_button',
-                  'data-track-label': 'whats_new',
-                  'data-track-property': HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
-                },
-              },
-          ].filter(Boolean),
+          ],
         },
       };
 
@@ -194,59 +175,6 @@ export default {
     },
   },
   methods: {
-    shouldShowWhatsNewNotification() {
-      return (
-        this.sidebarData.display_whats_new &&
-        this.calculateWhatsNewMostRecentReleaseUnreadCount() > 0
-      );
-    },
-    calculateWhatsNewMostRecentReleaseUnreadCount() {
-      if (!this.sidebarData.display_whats_new) {
-        return 0;
-      }
-
-      return (
-        this.sidebarData.whats_new_most_recent_release_items_count -
-        this.sidebarData.whats_new_read_articles.length
-      );
-    },
-
-    async showWhatsNew() {
-      if (!this.toggleWhatsNewDrawer) {
-        const { default: toggleWhatsNewDrawer } = await import(
-          /* webpackChunkName: 'whatsNewApp' */ '~/whats_new'
-        );
-        this.toggleWhatsNewDrawer = toggleWhatsNewDrawer;
-
-        this.toggleWhatsNewDrawer(
-          {
-            versionDigest: this.sidebarData.whats_new_version_digest,
-            initialReadArticles: this.sidebarData.whats_new_read_articles,
-            markAsReadPath: this.sidebarData.whats_new_mark_as_read_path,
-            mostRecentReleaseItemsCount: this.sidebarData.whats_new_most_recent_release_items_count,
-          },
-          this.hideWhatsNewNotification,
-          this.updateWhatsNewNotificationBadge,
-        );
-      } else {
-        this.toggleWhatsNewDrawer();
-      }
-    },
-
-    hideWhatsNewNotification() {
-      if (this.showWhatsNewNotification && this.whatsNewMostRecentReleaseUnreadCount === 0) {
-        this.showWhatsNewNotification = false;
-
-        if (!this.showUpgradeSubscription) {
-          this.$toast.show(this.$options.i18n.whatsnewToast);
-        }
-      }
-    },
-
-    updateWhatsNewNotificationBadge(unreadCount) {
-      this.whatsNewMostRecentReleaseUnreadCount = unreadCount;
-    },
-
     trackingAttrs(label) {
       return {
         ...HELP_MENU_TRACKING_DEFAULTS,
@@ -258,9 +186,15 @@ export default {
       this.track('click_toggle', {
         label: show ? 'show_help_dropdown' : 'hide_help_dropdown',
       });
+
+      if (!show) return;
+
+      const isCandidate = isExperimentVariant(WHATS_NEW_EXPERIMENT, 'candidate');
+      if (this.sidebarData.display_whats_new && !isCandidate) {
+        this.track('render_whats_new_for_you_menu_item', { property: WHATS_NEW_PLACEMENT });
+      }
     },
   },
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET },
 };
 </script>
 
@@ -271,40 +205,8 @@ export default {
       :upgrade-link="sidebarData.free_group_upgrade_link"
     />
 
-    <gl-button
-      v-if="showWhatsNewTopMenu"
-      v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
-      class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5"
-      category="tertiary"
-      icon="compass"
-      data-testid="sidebar-whatsnew-button"
-      data-track-action="click_button"
-      data-track-label="whats_new"
-      data-track-property="nav_whats_new"
-      :aria-label="$options.i18n.whatsnew"
-      :button-text-classes="{
-        'gl-w-full gl-flex gl-items-center gl-justify-between !gl-text-default': !isIconOnly,
-        'gl-hidden': isIconOnly,
-      }"
-      @click="showWhatsNew"
-    >
-      {{ $options.i18n.whatsnew }}
-
-      <gl-badge
-        variant="neutral"
-        aria-hidden="true"
-        data-testid="notification-count"
-        class="gl-mr-1"
-      >
-        <span class="gl-m-1 gl-min-w-3">
-          {{ whatsNewMostRecentReleaseUnreadCount }}
-        </span>
-      </gl-badge>
-    </gl-button>
-
     <gl-disclosure-dropdown
       class="super-sidebar-help-center-dropdown"
-      :dropdown-offset="$options.dropdownOffset"
       block
       @shown="trackDropdownToggle(true)"
       @hidden="trackDropdownToggle(false)"
@@ -314,17 +216,11 @@ export default {
           v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle super-sidebar-nav-item btn-with-notification gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
+          class="application-chrome-nav-item super-sidebar-help-center-toggle super-sidebar-nav-item btn-with-notification gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"
         >
-          <span
-            v-if="showNotificationDot"
-            data-testid="notification-dot"
-            class="notification-dot-info"
-          ></span>
-
           {{ $options.i18n.help }}
         </gl-button>
       </template>
@@ -356,18 +252,16 @@ export default {
         <template #list-item="{ item }">
           <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
             {{ item.text }}
-            <gl-badge
-              v-if="item.count"
-              pill
-              class="!gl-bg-strong !gl-text-subtle"
-              aria-hidden="true"
-              >{{ item.count }}</gl-badge
-            >
-
-            <kbd v-else-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
+            <kbd v-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
           </span>
         </template>
       </gl-disclosure-dropdown-group>
+
+      <gitlab-experiment :name="$options.WHATS_NEW_EXPERIMENT">
+        <template #control>
+          <whats-new-for-you-menu-item :sidebar-data="sidebarData" placement="help_menu" />
+        </template>
+      </gitlab-experiment>
     </gl-disclosure-dropdown>
   </div>
 </template>

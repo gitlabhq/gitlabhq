@@ -17,12 +17,12 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :portfolio_man
   issue_with_all_filters = "issue with all filters"
 
   let_it_be(:group) { create_default(:group, :public) }
-  let_it_be(:project) { create_default(:project, :public, group: group) }
+  let_it_be(:project, freeze: false) { create_default(:project, :public, group: group) }
 
-  let_it_be(:label1) { create(:group_label, group: group, name: label_name1) }
-  let_it_be(:label2) { create(:group_label, group: group, name: label_name2) }
-  let_it_be(:assignee) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group).user }
-  let_it_be(:milestone) { create_default(:milestone, project: project, start_date: Date.today - 1, due_date: 7.days.from_now) }
+  let_it_be(:label1, freeze: false) { create(:group_label, group: group, name: label_name1) }
+  let_it_be(:label2, freeze: false) { create(:group_label, group: group, name: label_name2) }
+  let_it_be(:assignee, freeze: false) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group).user }
+  let_it_be(:milestone, freeze: false) { create_default(:milestone, project: project, start_date: Date.today - 1, due_date: 7.days.from_now) }
 
   before_all do
     create_default(:issue, project: project, title: issue_with_label1, labels: [label1])

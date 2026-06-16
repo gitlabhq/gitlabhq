@@ -102,6 +102,7 @@ export default {
       default: null,
     },
   },
+  emits: ['hide', 'input'],
   data() {
     return {
       query: '',
@@ -157,7 +158,6 @@ export default {
     extendedToggleButtonClass() {
       const classes = [
         {
-          '!gl-shadow-inner-1-red-500': !this.state,
           'gl-font-monospace': Boolean(this.selectedRef),
         },
         'gl-mb-0',
@@ -310,6 +310,7 @@ export default {
       :search-placeholder="i18n.searchPlaceholder"
       :toggle-class="extendedToggleButtonClass"
       :toggle-text="buttonText"
+      :state="state"
       :icon="dropdownIcon"
       :disabled="disabled"
       v-bind="$attrs"

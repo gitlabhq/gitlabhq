@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'PanelResizer',
   props: {
     startSize: {
       type: Number,

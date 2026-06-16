@@ -81,7 +81,7 @@ module Gitlab
             end
           end
 
-          sleep(SLEEP_TIME_IN_SECONDS)
+          sleep(SLEEP_TIME_IN_SECONDS) if batch_start < finish
         end
 
         { status: :completed, count: results }

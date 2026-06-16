@@ -40,6 +40,16 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
   it { is_expected.tap { expect_graphql_errors_to_be_empty } }
   it { expect { subject }.to change { ::Packages::Protection::Rule.count }.from(1).to(0) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_package_protection_rule do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:delete_packages_protection_rule, { id: package_protection_rule.to_global_id }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'with existing package protection rule belonging to other project' do
     let_it_be(:package_protection_rule) do
       create(:package_protection_rule, package_name_pattern: 'protection_rule_other_project')

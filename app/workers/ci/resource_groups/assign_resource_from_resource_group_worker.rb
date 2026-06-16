@@ -13,6 +13,9 @@ module Ci
       sidekiq_options retry: 3
       include PipelineQueue
 
+      urgency :high
+      worker_resource_boundary :cpu
+
       queue_namespace :pipeline_processing
       feature_category :continuous_delivery
 

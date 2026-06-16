@@ -79,7 +79,7 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
             expect(container_repository.reload.status).to eq('delete_scheduled')
             expect { perform_work }.to not_change(ContainerRepository, :count)
             expect(container_repository.reload.status).to eq(status_after_execution)
-            expect(container_repository.delete_started_at).to eq(nil)
+            expect(container_repository.delete_started_at).to be_nil
           end
         end
 
@@ -111,7 +111,7 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
             expect(container_repository.reload.status).to eq('delete_scheduled')
             expect { perform_work }.to not_change(ContainerRepository, :count)
             expect(container_repository.reload.status).to eq(status_after_execution)
-            expect(container_repository.delete_started_at).to eq(nil)
+            expect(container_repository.delete_started_at).to be_nil
           end
         end
 

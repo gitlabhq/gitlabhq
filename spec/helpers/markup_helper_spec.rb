@@ -562,6 +562,14 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
         expect(result).to include(html)
       end
 
+      it 'preserves blockquotes', :aggregate_failures do
+        object = create_object('> Quoted text')
+        result = helper.first_line_in_markdown(object, attribute, 100, project: project)
+
+        expect(result).to include('<blockquote')
+        expect(result).to include('Quoted text')
+      end
+
       it 'does not post-process truncated text', :request_store do
         object = create_object("hello \n\n [Test](README.md)")
 

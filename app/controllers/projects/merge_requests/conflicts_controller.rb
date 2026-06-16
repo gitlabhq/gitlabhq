@@ -70,6 +70,10 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
       render json: { redirect_to: project_merge_request_path(@project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Git::Conflict::Resolver::ResolutionError => e
       render status: :bad_request, json: { message: e.message }
+    rescue Gitlab::Git::CommandError => e
+      render status: :internal_server_error, json: { message: e.message }
+    rescue Gitlab::Git::PreReceiveError => e
+      render status: :unprocessable_entity, json: { message: e.message }
     end
   end
 

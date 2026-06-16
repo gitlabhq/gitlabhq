@@ -112,6 +112,7 @@ export default {
       default: false,
     },
   },
+  emits: ['dismissError', 'error', 'upload'],
   apollo: {
     designCollection: {
       query: getWorkItemDesignListQuery,
@@ -485,7 +486,7 @@ export default {
 <template>
   <div
     class="work-item-design-widget-container gl-rounded-base focus:gl-focus"
-    :class="{ 'gl-mt-5': hasDesignsAndVersions }"
+    :class="{ 'gl-mt-3': hasDesignsAndVersions }"
     :tabindex="0"
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"

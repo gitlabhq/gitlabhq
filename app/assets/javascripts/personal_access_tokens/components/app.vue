@@ -111,12 +111,14 @@ export default {
   watch: {
     filterObject: {
       handler() {
+        this.resetPagination();
         this.updateQueryParams();
       },
       deep: true,
     },
     sort: {
       handler() {
+        this.resetPagination();
         this.updateQueryParams();
       },
       deep: true,
@@ -126,6 +128,9 @@ export default {
     this.updateQueryParams();
   },
   methods: {
+    resetPagination() {
+      this.pagination = { first: PAGE_SIZE, after: null, last: null, before: null };
+    },
     updateQueryParams() {
       const params = {
         ...convertFiltersToQueryParams(this.filterObject),

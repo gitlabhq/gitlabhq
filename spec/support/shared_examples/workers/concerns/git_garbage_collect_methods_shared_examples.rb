@@ -78,6 +78,28 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
 
         expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
       end
+
+      it 'handles GRPC::AlreadyExists errors gracefully' do
+        repository_service = instance_double(Gitlab::GitalyClient::RepositoryService)
+
+        allow_next_instance_of(Projects::GitDeduplicationService) do |instance|
+          allow(instance).to receive(:execute)
+        end
+
+        allow(repository.raw_repository).to receive(:gitaly_repository_client).and_return(repository_service)
+        allow(repository_service).to receive(:optimize_repository)
+          .and_raise(GRPC::AlreadyExists.new('housekeeping already executing for repository'))
+
+        expect(Gitlab::GitLogger).to receive(:warn).with(
+          Labkit::Fields::LOG_MESSAGE => "Housekeeping already running for repository, skipping",
+          Labkit::Fields::CLASS_NAME => a_kind_of(String)
+        )
+        expect(subject).not_to receive(:after_gitaly_call)
+        expect(subject).not_to receive(:flush_ref_caches)
+        expect(subject).not_to receive(:update_repository_statistics)
+
+        expect { subject.perform(*params) }.not_to raise_error
+      end
     end
 
     context 'with different lease than the active one' do

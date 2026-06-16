@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
+RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy, feature_category: :database do
   before do
     create_list(:project, 3)
     create_list(:ci_instance_variable, 2)

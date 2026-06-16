@@ -3,6 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 
 export default {
+  name: 'RollbackModalManager',
   components: {
     ConfirmRollbackModal,
   },

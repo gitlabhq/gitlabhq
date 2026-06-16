@@ -18,6 +18,7 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['currentTime'],
+  emits: ['snooze-until'],
   data() {
     return {
       toggleId: uniqueId('snooze-todo-dropdown-toggle-btn-'),

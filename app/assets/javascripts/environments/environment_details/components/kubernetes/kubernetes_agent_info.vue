@@ -7,6 +7,7 @@ import { getAgentLastContact, getAgentStatus } from '~/clusters_list/clusters_ut
 import { AGENT_STATUSES, CONNECT_MODAL_ID } from '~/clusters_list/constants';
 
 export default {
+  name: 'KubernetesAgentInfo',
   components: {
     GlIcon,
     GlLink,

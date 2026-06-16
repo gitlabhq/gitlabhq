@@ -289,7 +289,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
     end
 
     describe '.authorize' do
-      let_it_be(:read_only_type) do
+      let_it_be(:read_only_type, freeze: false) do
         Class.new(described_class) do
           authorize :read_only
         end

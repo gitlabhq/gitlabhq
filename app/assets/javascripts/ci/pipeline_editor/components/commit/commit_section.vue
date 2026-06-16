@@ -18,6 +18,7 @@ import getCurrentBranch from '../../graphql/queries/client/current_branch.query.
 import CommitForm from './commit_form.vue';
 
 export default {
+  name: 'CommitSection',
   alertTexts: {
     [COMMIT_FAILURE]: s__('Pipelines|The GitLab CI configuration could not be updated.'),
     [COMMIT_SUCCESS]: __('Your changes have been successfully committed.'),

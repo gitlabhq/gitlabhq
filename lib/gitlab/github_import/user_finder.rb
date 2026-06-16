@@ -378,6 +378,7 @@ module Gitlab
       def log(message, username: nil)
         Logger.info(
           project_id: project.id,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           class: self.class.name,
           username: username,
           message: message

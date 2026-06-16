@@ -81,8 +81,3 @@ graph TD
   EE::Gitlab::Checks::PushRuleCheck -->|Only if pushing to a branch| EE::Gitlab::Checks::PushRules::BranchCheck
   Gitlab::Checks::ChangesAccess --> EE::Gitlab::Checks::FileSizeLimitCheck
 ```
-
-> [!note]
-> The `PushRuleCheck` only triggers checks in parallel if the
-> `parallel_push_checks` feature flag is enabled. Otherwise tag or branch check
-> runs first, then file size.

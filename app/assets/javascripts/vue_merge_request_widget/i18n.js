@@ -47,3 +47,4 @@ export const MR_WIDGET_CLOSED_RELOADING = __('Refreshing…');
 export const MR_WIDGET_CLOSED_REOPEN_FAILURE = __(
   'An error occurred. Unable to reopen this merge request.',
 );
+export const MR_WIDGET_DELETE_SOURCE_BRANCH = s__('mrWidget|Delete source branch');

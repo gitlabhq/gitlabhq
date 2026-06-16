@@ -69,7 +69,7 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     end
 
     context 'with a set of regexps' do
-      let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
+      let_it_be(:container_expiration_policy, freeze: false) { create(:container_expiration_policy) }
 
       subject { container_expiration_policy }
 
@@ -89,7 +89,7 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
       end
 
       context 'with a disabled container expiration policy' do
-        let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :disabled) }
+        let_it_be(:container_expiration_policy, freeze: false) { create(:container_expiration_policy, :disabled) }
 
         subject { container_expiration_policy }
 

@@ -317,9 +317,11 @@ export default {
           :label-for="selectId"
           :invalid-feedback="invalidFeedbackMessage"
           :state="exceptionState"
-          :description="formGroupDescription"
           data-testid="members-form-group"
         >
+          <template v-if="formGroupDescription" #label-description>
+            <span class="gl-text-subtle">{{ formGroupDescription }}</span>
+          </template>
           <slot name="select" v-bind="{ exceptionState, inputId: selectId }"></slot>
         </gl-form-group>
 

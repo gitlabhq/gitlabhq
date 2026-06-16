@@ -231,7 +231,7 @@ they match. Placeholders match text between forward slashes
 (`/`), so use placeholders to match single path segments.
 
 In addition, placeholders do not match empty strings. A rule like the following
-would **not** match a request URL like `/old/file`:
+would not match a request URL like `/old/file`:
 
 ```plaintext
 /old/:path /new/:path

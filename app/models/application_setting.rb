@@ -51,6 +51,10 @@ class ApplicationSetting < ApplicationRecord
 
   SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
 
+  # OAuth Time (seconds)
+  DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 7200 # 2hrs
+  MIN_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 300 # 5 mins
+
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
 
@@ -783,10 +787,30 @@ class ApplicationSetting < ApplicationRecord
 
   validates :diff_limits, json_schema: { filename: "application_setting_diff_limits" }
 
+  jsonb_accessor :oauth_settings,
+    oauth_access_token_expires_in: [:integer, { default: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN }]
+
+  validates :oauth_settings,
+    json_schema: { filename: "application_setting_oauth_settings" }
+
+  validates :oauth_access_token_expires_in,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: MIN_OAUTH_ACCESS_TOKEN_EXPIRES_IN,
+      less_than_or_equal_to: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
+    },
+    allow_nil: true
+
   jsonb_accessor :mcp_server_settings,
     mcp_server_enabled: [:boolean, { default: true }]
 
   validates :mcp_server_settings, json_schema: { filename: "application_setting_mcp_server_settings" }
+
+  jsonb_accessor :dependency_management_settings,
+    security_update_scheduler_max_concurrency: [:integer, { default: 30 }]
+
+  validates :dependency_management_settings,
+    json_schema: { filename: "application_setting_dependency_management_settings" }
 
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
@@ -837,7 +861,8 @@ class ApplicationSetting < ApplicationRecord
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
     root_moved_permanently_redirection: [:boolean, { default: false }],
     session_expire_from_init: [:boolean, { default: false }],
-    require_minimum_email_based_otp_for_users_with_passwords: [:boolean, { default: false }]
+    require_minimum_email_based_otp_for_users_with_passwords: [:boolean, { default: false }],
+    email_otp_enabled: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
@@ -869,6 +894,13 @@ class ApplicationSetting < ApplicationRecord
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :response_limits, json_schema: { filename: "application_setting_response_limits" }
+
+  jsonb_accessor :logging_settings,
+    logging_field_schema_version: [:integer, { default: 0 }],
+    logging_field_dual_emit_target: [:integer, { default: nil }]
+
+  validates :logging_settings, json_schema: { filename: "application_setting_logging_settings" }
+  validate :validate_logging_field_dual_emit_target
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
@@ -1370,12 +1402,11 @@ class ApplicationSetting < ApplicationRecord
     remember_me_enabled?
   end
 
+  # Overrides the belongs_to :push_rule association.
+  # This method and the push_rule_id column from application_settings should be removed together.
+  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/601603
   def push_rule
-    if Feature.enabled?(:update_organization_push_rules, Feature.current_request)
-      nil
-    else
-      super
-    end
+    nil
   end
 
   def custom_default_search_scope_set?
@@ -1438,6 +1469,15 @@ class ApplicationSetting < ApplicationRecord
   def should_reset_inactive_project_deletion_warning?
     saved_change_to_inactive_projects_delete_after_months? || saved_change_to_delete_inactive_projects?(from: true,
       to: false)
+  end
+
+  def validate_logging_field_dual_emit_target
+    return if logging_field_dual_emit_target.nil?
+    return if logging_field_dual_emit_target > logging_field_schema_version
+
+    errors.add(:logging_field_dual_emit_target,
+      format(_('must be greater than logging_field_schema_version (%{schema_version})'),
+        schema_version: logging_field_schema_version))
   end
 end
 

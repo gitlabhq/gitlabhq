@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Reenqueuer, feature_category: :sidekiq do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:worker_class) do
+  let_it_be(:worker_class, freeze: false) do
     Class.new do
       def self.name
         'Gitlab::Foo::Bar::DummyWorker'
@@ -81,7 +81,7 @@ RSpec.describe Reenqueuer, feature_category: :sidekiq do
       end
 
       it 'returns the original value from #perform' do
-        expect(job.perform).to eq(true)
+        expect(job.perform).to be(true)
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe Reenqueuer, feature_category: :sidekiq do
       end
 
       it 'returns the original value from #perform' do
-        expect(job.perform).to eq(false)
+        expect(job.perform).to be(false)
       end
     end
   end

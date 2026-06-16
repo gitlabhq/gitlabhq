@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe RemoteMirrorNotificationWorker, :mailer, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository, :remote_mirror) }
-  let_it_be(:mirror) { project.remote_mirrors.first }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :remote_mirror) }
+  let_it_be(:mirror, freeze: false) { project.remote_mirrors.first }
 
   describe '#perform' do
     it 'calls NotificationService#remote_mirror_update_failed when the mirror exists' do

@@ -37,7 +37,7 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
           expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
           expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-            message: 'Cancelling stale transfer_in_progress state',
+            message: 'Cancelling stale transfer state',
             group_id: group.id
           ))
         end

@@ -108,7 +108,7 @@ class MergeRequestDiff < ApplicationRecord
         .joins(:merge_request_diff_commits)
         .where(merge_request_diff_commits: { sha: sha })
 
-    if project_ids_list.any? { |id| Feature.enabled?(:merge_request_diff_commits_partition, Project.actor_from_id(id)) }
+    if project_ids_list.any? { |id| MergeRequestDiffCommit.read_new_commits_table?(id) }
       diff_commits_query = diff_commits_query.where(merge_request_diff_commits: { project_id: project_ids_list })
     end
 
@@ -710,6 +710,11 @@ class MergeRequestDiff < ApplicationRecord
   # +migrate_files_to_external_storage!+
   #
   # If this diff isn't in external storage, the method is a no-op.
+  #
+  # Although there are no callers in the codebase, this method is invoked
+  # manually (e.g. from a Rails console) to recover diffs when an external
+  # diff object is missing or corrupted on storage, so retain it.
+  # See https://gitlab.com/gitlab-com/request-for-help/-/work_items/3386#note_2739146033
   def migrate_files_to_database!
     return unless stored_externally?
     return if files_count == 0
@@ -754,12 +759,15 @@ class MergeRequestDiff < ApplicationRecord
     merge_request_diff_files.where(encoded_file_path: true).any?
   end
 
-  def partition_enabled?
+  def read_new_commits_table?
     return false unless merge_request&.target_project
 
-    Feature.enabled?(:merge_request_diff_commits_partition, merge_request.target_project)
+    target_project = merge_request.target_project
+
+    Feature.enabled?(:mr_diff_commits_read_new_table, target_project) &&
+      Feature.enabled?(:merge_request_diff_commits_partition, target_project)
   end
-  strong_memoize_attr :partition_enabled?
+  strong_memoize_attr :read_new_commits_table?
 
   private
 
@@ -1100,7 +1108,7 @@ class MergeRequestDiff < ApplicationRecord
 
   def metadata_sha_exists?(shas)
     diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    diff_commits_relation = diff_commits_relation.where(project_id: project_id) if partition_enabled?
+    diff_commits_relation = diff_commits_relation.where(project_id: project_id) if read_new_commits_table?
 
     MergeRequest::CommitsMetadata
       .where(project: project, sha: shas)
@@ -1114,7 +1122,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas_from_metadata(limit)
-    diff_commits_relation = if partition_enabled?
+    diff_commits_relation = if read_new_commits_table?
                               MergeRequestDiffCommit.for_merge_request_diff(id, project_id)
                             else
                               MergeRequestDiffCommit.for_merge_request_diff(id)
@@ -1123,7 +1131,7 @@ class MergeRequestDiff < ApplicationRecord
     diff_commits_relation.commit_shas_from_metadata(
       project_id: project_id,
       limit: limit,
-      partition_enabled: partition_enabled?
+      partition_enabled: read_new_commits_table?
     )
   end
 end

@@ -48,6 +48,7 @@ export default {
       default: null,
     },
   },
+  emits: ['sortChanged'],
   created() {
     this.fields = [
       { key: 'name', label: __('Project') },

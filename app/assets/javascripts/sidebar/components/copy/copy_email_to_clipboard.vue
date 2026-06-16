@@ -2,6 +2,7 @@
 import CopyableField from './copyable_field.vue';
 
 export default {
+  name: 'CopyEmailToClipboard',
   components: {
     CopyableField,
   },

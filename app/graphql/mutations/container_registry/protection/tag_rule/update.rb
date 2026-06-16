@@ -10,6 +10,8 @@ module Mutations
             'can modify container image tags matching a specified pattern.'
 
           authorize :admin_container_image
+          authorize_granular_token permissions: :update_container_registry_protection_tag_rule,
+            boundary_argument: :id, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::TagRule],

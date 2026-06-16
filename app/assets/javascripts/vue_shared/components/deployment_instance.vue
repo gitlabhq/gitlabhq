@@ -15,6 +15,7 @@
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'DeploymentInstance',
   components: {
     GlLink,
   },

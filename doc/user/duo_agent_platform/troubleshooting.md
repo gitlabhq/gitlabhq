@@ -106,6 +106,75 @@ To create push rules for the instance:
 1. Follow the previous steps to allow **Commit author's email** and **Branch name**.
 1. Select **Save push rules**.
 
+## Error: `Something went wrong while requesting a review from GitLab Duo`
+
+In GitLab 18.8 and earlier, this error message appears for Code Review Flow failures.
+The following are the common root causes:
+
+- The foundational flow service account was not created.
+- The group membership lock is preventing the service account from being added to projects.
+- You belong to multiple GitLab Duo namespaces and no default namespace is set.
+
+In GitLab 18.9 and later, more specific error messages appear instead.
+For more information, see [troubleshooting Code Review Flow](flows/foundational_flows/code_review.md#troubleshooting).
+
+### Foundational flow service account not created
+
+If a foundational flow is turned on but not working, the service account for the
+top-level group might not have been created successfully.
+
+To check whether the service account exists:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **Service Accounts**.
+1. Look for an account named `duo-[flow-name]-[top-level-group-name]`.
+
+If the account is missing, `CascadeSyncFoundationalFlowsWorker` might have failed to create it.
+To verify the account is missing, check the Sidekiq logs for the following error:
+
+```json
+{
+  "severity": "ERROR",
+  "meta.caller_id": "Ai::Catalog::Flows::CascadeSyncFoundationalFlowsWorker",
+  "message": "Cannot obtain an exclusive lease. There must be another instance already in execution.",
+  "lease_key": "sidekiq:concurrency_limit:{ai/catalog/flows/cascade_sync_foundational_flows_worker}",
+  "lease_timeout": 600
+}
+```
+
+To resolve this issue, [turn off foundational flows](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off) and turn them back on after 10 minutes.
+
+### Group membership locked
+
+If [membership is locked](../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) for the top-level group, foundational flows silently fail because the service account cannot be
+added to the required projects.
+
+To resolve this issue:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Clear the **Users cannot be added to projects in this group** checkbox, then select **Save changes**.
+1. [Turn off foundational flows](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off), then select **Save changes**.
+1. Turn the foundational flows back on, then select **Save changes**.
+1. Select the **Users cannot be added to projects in this group** checkbox, then select
+   **Save changes**.
+
+### Default GitLab Duo namespace not set
+
+In GitLab 18.3 and later, when you belong to multiple GitLab Duo namespaces and
+no default namespace is set, the GitLab Duo Agent Platform is turned off.
+
+In GitLab 18.8 and earlier, you might see the following error message:
+
+```plaintext
+Something went wrong while requesting a review from GitLab Duo.
+```
+
+In GitLab 18.9 and later, you might get a namespace-related error.
+
+To resolve this issue, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
 ## Error: `SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)`
 
 On GitLab Self-Managed instances that use custom or self-signed CA certificates, this message might display when GitLab Duo Agent Platform jobs fail during

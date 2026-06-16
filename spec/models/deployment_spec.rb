@@ -10,7 +10,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:pipeline_b) { create(:ci_pipeline, project: project) }
   let_it_be(:deployable) { create(:ci_build, project: project, pipeline: pipeline) }
-  let_it_be(:deployment) { create(:deployment, project: project, environment: environment, deployable: deployable) }
+  let_it_be(:deployment, freeze: false) do
+    create(:deployment, project: project, environment: environment, deployable: deployable)
+  end
 
   # environments
   let_it_be(:production) { create(:environment, :production, project: project) }

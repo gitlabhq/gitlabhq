@@ -26,11 +26,13 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
 
   it { expect(described_class).to require_graphql_authorizations(:create_organization) }
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_organization do
-    let(:boundary_object) { :instance }
-    let(:avatar) { nil }
-    let(:mutation) { graphql_mutation(:organization_create, params, 'errors') }
-    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  context 'when on GitLab.com', :saas do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_organization do
+      let(:boundary_object) { :instance }
+      let(:avatar) { nil }
+      let(:mutation) { graphql_mutation(:organization_create, params, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   def mutation_response
@@ -48,7 +50,18 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
     end
   end
 
-  context 'when the user has permission' do
+  context 'when on self-managed' do
+    let(:current_user) { user }
+    let(:avatar) { nil }
+
+    it_behaves_like 'a mutation that returns a top-level access error'
+
+    it 'does not create an organization' do
+      expect { create_organization }.not_to change { Organizations::Organization.count }
+    end
+  end
+
+  context 'when the user has permission', :saas do
     let(:current_user) { user }
 
     context 'when the params are invalid' do
@@ -88,6 +101,23 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
       end
 
       include_examples 'creating an organization'
+    end
+
+    context 'with visibility_level' do
+      let(:params) do
+        {
+          name: name,
+          path: path,
+          visibility: 'public'
+        }
+      end
+
+      it 'creates an organization with the given visibility level' do
+        create_organization
+
+        organization = Organizations::Organization.last
+        expect(organization.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+      end
     end
 
     include_examples 'creating an organization'

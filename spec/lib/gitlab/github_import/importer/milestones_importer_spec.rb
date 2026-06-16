@@ -82,6 +82,7 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
       expect(Gitlab::GithubImport::Logger).to receive(:error)
         .with(
           project_id: project.id,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           importer: described_class.name,
           message: ["Title can't be blank"],
           external_identifiers: { iid: 2, object_type: :milestone, title: nil }

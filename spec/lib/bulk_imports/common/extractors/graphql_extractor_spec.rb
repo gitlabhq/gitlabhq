@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor, feature_category: :importers do
   let(:graphql_client) { instance_double(BulkImports::Clients::Graphql) }
-  let(:import_entity) { create(:bulk_import_entity) }
+  let(:import_entity) { build_stubbed(:bulk_import_entity) }
   let(:response) { { 'data' => { 'foo' => 'bar' }, 'page_info' => {} } }
   let(:options) do
     {

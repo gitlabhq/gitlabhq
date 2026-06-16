@@ -122,6 +122,12 @@ As we are using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 i
    }
    ```
 
+   > [!note]
+   > If an external process tags objects in your S3 buckets (for example, AWS GuardDuty Malware
+   > Protection), add `s3:GetObjectTagging` to the object-level `Action` list for source buckets
+   > and `s3:PutObjectTagging` for destination buckets. Without these permissions, GitLab
+   > `CopyObject` operations fail with `AccessDenied` when copying tagged objects.
+
 1. Select **Next** to review the policy. Give your policy a name (we use `gl-s3-policy`), and select **Create policy**.
 
 ### Create an IAM Role
@@ -569,7 +575,7 @@ The steps for doing this vary depending on which registrar you use and is beyond
 ## PostgreSQL with RDS
 
 For our database server we use Amazon RDS for PostgreSQL which offers Multi AZ
-for redundancy ([Aurora is **not** supported](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10)). First we create a security group and subnet group, then we
+for redundancy ([Aurora is not supported](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10)). First we create a security group and subnet group, then we
 create the actual RDS instance.
 
 ### RDS Security Group
@@ -807,7 +813,7 @@ Because we're adding our SSL certificate at the load balancer, we do not need th
 > [!note]
 > If the `gitlab` user has the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role, GitLab can install the required extensions automatically. In that case, the manual steps below are not needed.
 
-From your GitLab instance, connect to the RDS instance to verify access and to install the [required PostgreSQL extensions](../postgresql_extensions.md).
+From your GitLab instance, connect to the RDS instance to verify access and to install the [required PostgreSQL extensions](../../administration/postgresql/extensions.md).
 
 To find the host or endpoint, go to **Amazon RDS** > **Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
 
@@ -817,7 +823,7 @@ For `-h`, use only the RDS endpoint hostname - omit the trailing colon and port 
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
 
-Then install each [required extension](../postgresql_extensions.md) using `CREATE EXTENSION`:
+Then install each [required extension](../../administration/postgresql/extensions.md) using `CREATE EXTENSION`:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS btree_gist;
@@ -1149,7 +1155,7 @@ and restore its Git data, database, attachments, LFS objects, and so on.
 
 Some important things to know:
 
-- The backup/restore tool **does not** store some configuration files, like secrets; you
+- The backup/restore tool does not store some configuration files, like secrets; you
   must [configure this yourself](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
   [backup GitLab using S3](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3).

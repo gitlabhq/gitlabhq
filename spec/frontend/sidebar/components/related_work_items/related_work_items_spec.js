@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import MRRelatedWorkItems from '~/sidebar/components/related_work_items/related_work_items.vue';
+import RelatedWorkItemsAddForm from '~/sidebar/components/related_work_items/related_work_items_add_form.vue';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 
@@ -43,10 +44,21 @@ const closingItem1 = mockLinkedItem({ title: 'Fix bug', linkType: 'CLOSES' });
 const closingItem2 = mockLinkedItem({ title: 'Update docs', linkType: 'CLOSES' });
 const mentionedItem = mockLinkedItem({ title: 'Refactor code', linkType: 'MENTIONED' });
 
-const buildQueryResponse = (linkedWorkItems = []) => ({
+const buildQueryResponse = (
+  linkedWorkItems = [],
+  { adminMergeRequest = true, includePermissions = true } = {},
+) => ({
   data: {
     mergeRequest: {
       id: MOCK_MERGE_REQUEST_ID,
+      ...(includePermissions
+        ? {
+            userPermissions: {
+              adminMergeRequest,
+              __typename: 'MergeRequestPermissions',
+            },
+          }
+        : {}),
       linkedWorkItems,
       __typename: 'MergeRequest',
     },
@@ -64,15 +76,19 @@ describe('MRRelatedWorkItems', () => {
   const findAllLinks = () => wrapper.findAllComponents(GlLink);
   const findNoneText = () => wrapper.find('.hide-collapsed.gl-text-subtle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAddButton = () => wrapper.findByTestId('add-work-item-button');
+  const findAddForm = () => wrapper.findComponent(RelatedWorkItemsAddForm);
 
   const createComponent = ({
     queryHandler = jest.fn().mockResolvedValue(buildQueryResponse()),
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(MRRelatedWorkItems, {
       apolloProvider: createMockApollo([[mergeRequestRelatedWorkItemsQuery, queryHandler]]),
       provide: {
         fullPath: 'group/project',
         id: '1',
+        ...provide,
       },
       stubs: {
         GlCollapse,
@@ -137,6 +153,22 @@ describe('MRRelatedWorkItems', () => {
     it('does not render collapse button', () => {
       expect(findCollapseButton().exists()).toBe(false);
     });
+  });
+
+  it('filters out null workItem entries and renders valid items', async () => {
+    const nullWorkItem = { linkType: 'CLOSES', workItem: null, __typename: 'LinkedWorkItem' };
+
+    createComponent({
+      queryHandler: jest
+        .fn()
+        .mockResolvedValue(buildQueryResponse([closingItem1, nullWorkItem, mentionedItem])),
+    });
+    await waitForPromises();
+
+    const links = findAllLinks();
+    expect(links).toHaveLength(2);
+    expect(links.at(0).text()).toBe('Fix bug');
+    expect(links.at(1).text()).toBe('Refactor code');
   });
 
   describe('with items (not exceeding collapse threshold)', () => {
@@ -352,6 +384,106 @@ describe('MRRelatedWorkItems', () => {
       await nextTick();
 
       expect(findDetailPanel().props('open')).toBe(true);
+    });
+  });
+
+  describe('when the user can administer the merge request', () => {
+    const glFeatures = { explicitMrWorkItemRelations: true };
+
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: jest
+          .fn()
+          .mockResolvedValue(buildQueryResponse([], { adminMergeRequest: true })),
+        provide: { glFeatures },
+      });
+      await waitForPromises();
+    });
+
+    it('renders the add work item button', () => {
+      expect(findAddButton().exists()).toBe(true);
+    });
+
+    it('renders the add form hidden by default', () => {
+      expect(findAddForm().exists()).toBe(true);
+      expect(findAddForm().props('visible')).toBe(false);
+    });
+
+    it('shows the add form when the add button is clicked', async () => {
+      findAddButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findAddForm().props('visible')).toBe(true);
+    });
+
+    it('hides the add form when it emits hide', async () => {
+      findAddButton().vm.$emit('click');
+      await nextTick();
+      expect(findAddForm().props('visible')).toBe(true);
+
+      findAddForm().vm.$emit('hide');
+      await nextTick();
+
+      expect(findAddForm().props('visible')).toBe(false);
+    });
+
+    it('hides the add form when it emits link', async () => {
+      findAddButton().vm.$emit('click');
+      await nextTick();
+      expect(findAddForm().props('visible')).toBe(true);
+
+      findAddForm().vm.$emit('link');
+      await nextTick();
+
+      expect(findAddForm().props('visible')).toBe(false);
+    });
+  });
+
+  describe('when the `explicitMrWorkItemRelations` feature flag is enabled', () => {
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: jest
+          .fn()
+          .mockResolvedValue(buildQueryResponse([], { adminMergeRequest: false })),
+        provide: { glFeatures: { explicitMrWorkItemRelations: true } },
+      });
+      await waitForPromises();
+    });
+
+    it('does not render the add work item button', () => {
+      expect(findAddButton().exists()).toBe(false);
+    });
+
+    it('does not render the add form', () => {
+      expect(findAddForm().exists()).toBe(false);
+    });
+  });
+
+  describe('when the `explicitMrWorkItemRelations` feature flag is disabled', () => {
+    it('queries with explicitMrWorkItemRelations set to false', async () => {
+      const queryHandler = jest.fn().mockResolvedValue(buildQueryResponse());
+      createComponent({
+        queryHandler,
+        provide: { glFeatures: { explicitMrWorkItemRelations: false } },
+      });
+      await waitForPromises();
+
+      expect(queryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ explicitMrWorkItemRelations: false }),
+      );
+    });
+
+    it('does not render the add work item button or form when permissions are not fetched', async () => {
+      createComponent({
+        queryHandler: jest
+          .fn()
+          .mockResolvedValue(buildQueryResponse([], { includePermissions: false })),
+        provide: { glFeatures: { explicitMrWorkItemRelations: false } },
+      });
+      await waitForPromises();
+
+      expect(findAddButton().exists()).toBe(false);
+      expect(findAddForm().exists()).toBe(false);
     });
   });
 });

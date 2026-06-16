@@ -265,8 +265,6 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      next if Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain]
-
       run_after_commit { build.execute_hooks }
     end
 
@@ -459,7 +457,7 @@ module Ci
       end
 
       before_transition running: [:failed] do |build|
-        if build.server_timeout_running?
+        if build.server_timeout_running? && !build.anchor_finished_at_to_pending_state?
           # If job was stuck or timed-out, only bill the set timeout.
           build.finished_at = build.started_at + build.timeout.seconds
         end
@@ -470,9 +468,12 @@ module Ci
                            .fabricate(build, transition.args.first)
 
         if reason_enum.failure_reason == :server_timeout_canceling
-          # If job was stuck or timed-out, only bill the set timeout.
           build.failure_reason = reason_enum.failure_reason
-          build.finished_at = build.started_at + build.timeout.seconds
+
+          unless build.anchor_finished_at_to_pending_state?
+            # If job was stuck or timed-out, only bill the set timeout.
+            build.finished_at = build.started_at + build.timeout.seconds
+          end
         end
       end
 
@@ -604,6 +605,17 @@ module Ci
       true
     end
 
+    # Avoid inflating billed duration with trace-flush latency after the runner
+    # reports completion.
+    override :set_finished_at
+    def set_finished_at(transition = nil)
+      return super unless anchor_finished_at_to_pending_state?
+
+      time = server_timeout_finished_at_for_transition(transition) || Time.current
+
+      self.finished_at = [pending_state&.created_at, time].compact.min
+    end
+
     def build_matcher
       strong_memoize(:build_matcher) do
         Gitlab::Ci::Matching::BuildMatcher.new({
@@ -613,6 +625,29 @@ module Ci
           project: project
         })
       end
+    end
+
+    def anchor_finished_at_to_pending_state?
+      Feature.enabled?(:ci_anchor_finished_at_to_pending_state, ::Project.actor_from_id(project_id))
+    end
+
+    def server_timeout_finished_at_for_transition(transition)
+      return unless transition
+      return unless started_at && timeout
+
+      timeout_finished_at = started_at + timeout.seconds
+
+      # Transition args may be either a failure-reason symbol or a Reason object.
+      reason = ::Gitlab::Ci::Build::Status::Reason.fabricate(self, transition.args.first)
+      failure_reason = reason.failure_reason.to_s
+
+      return timeout_finished_at if transition.from == 'running' &&
+        transition.to == 'failed' &&
+        failure_reason == 'server_timeout_running'
+
+      timeout_finished_at if transition.from == 'canceling' &&
+        transition.to == 'canceled' &&
+        failure_reason == 'server_timeout_canceling'
     end
 
     def auto_retry_allowed?

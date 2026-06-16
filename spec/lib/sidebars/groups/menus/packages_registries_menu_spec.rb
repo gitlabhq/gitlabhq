@@ -10,7 +10,7 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
     end
   end
 
-  let_it_be(:harbor_integration) { create(:harbor_integration, group: group, project: nil) }
+  let_it_be(:harbor_integration, freeze: false) { create(:harbor_integration, group: group, project: nil) }
 
   let(:user) { owner }
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
@@ -140,7 +140,9 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
           it_behaves_like 'the menu entry is available'
 
           context 'when the group settings exist' do
-            let_it_be(:dependency_proxy_group_setting) { create(:dependency_proxy_group_setting, group: group) }
+            let_it_be(:dependency_proxy_group_setting, freeze: false) do
+              create(:dependency_proxy_group_setting, group: group)
+            end
 
             it_behaves_like 'the menu entry is available'
 

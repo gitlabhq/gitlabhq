@@ -4,7 +4,7 @@ RSpec.shared_context 'with container for work items service' do |container_type|
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
 
-  let_it_be(:container) do
+  let_it_be(:container, freeze: false) do
     case container_type
     when :project then project
     when :project_namespace then project.project_namespace
@@ -12,17 +12,17 @@ RSpec.shared_context 'with container for work items service' do |container_type|
     end
   end
 
-  let_it_be(:container_args) do
+  let_it_be(:container_args, freeze: false) do
     case container_type
     when :project, :project_namespace then { project: project }
     when :group then { namespace: group }
     end
   end
 
-  let_it_be(:parent) { create(:work_item, **container_args) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:user_with_no_access) { create(:user) }
+  let_it_be(:parent, freeze: false) { create(:work_item, **container_args) }
+  let_it_be(:guest, freeze: false) { create(:user) }
+  let_it_be(:reporter, freeze: false) { create(:user) }
+  let_it_be(:user_with_no_access, freeze: false) { create(:user) }
 
   let(:widget_params) { {} }
   let(:extra_params) { {} }

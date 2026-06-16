@@ -7,15 +7,15 @@
 # It fixes the tests that relies on the fact that the same constants have the same object_id.
 # For example to make sure that stub_const works correctly.
 #
-# It overrides the new behavior that removes the constant first:
+# It overrides the new behavior that removes the constant first, which persists in Rails 8:
 #
-# https://github.com/rails/rails/blob/v7.2.2.1/activerecord/lib/active_record/migration.rb#L1198
+# https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/migration.rb#L1194
 
-# The following is a reminder for when we upgrade to Rails 7.3. In particular,
+# The following is a reminder for when we upgrade past Rails 8.0. In particular,
 # we need to pay special attention to ensure that our ActiveRecord overrides are
 # compatible.
 
-if ::ActiveRecord::VERSION::STRING >= "7.3"
+if ::ActiveRecord::VERSION::STRING >= "8.1"
   raise 'New version of active-record detected, please remove or update this patch'
 end
 

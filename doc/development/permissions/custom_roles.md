@@ -86,7 +86,6 @@ For example:
 > GroupPolicy.ability_map.map.select { |k,v| k == :read_group }
 => {:read_group=>
   [[:enable, #<Rule public_group>],
-   [:enable, #<Rule logged_in_viewable>],
    [:enable, #<Rule guest>],
    [:enable, #<Rule admin>],
    [:enable, #<Rule has_projects>],
@@ -111,7 +110,6 @@ policy = GroupPolicy.new(User.last,  Group.last)
 policy.debug(:read_group)
 
 - [0] enable when public_group ((@custom_guest_user1 : Group/139))
-- [0] enable when logged_in_viewable ((@custom_guest_user1 : Group/139))
 - [0] enable when admin ((@custom_guest_user1 : Group/139))
 - [0] enable when auditor ((@custom_guest_user1 : Group/139))
 - [14] prevent when all?(~public_group, ~admin, user_banned_from_group) ((@custom_guest_user1 : Group/139))
@@ -126,7 +124,6 @@ policy.debug(:read_group)
  @called_conditions=
   #<Set: {
    "/dp/condition/GroupPolicy/public_group/Group:139",
-   "/dp/condition/GroupPolicy/logged_in_viewable/User:83,Group:139",
    "/dp/condition/BasePolicy/admin/User:83",
    "/dp/condition/BasePolicy/auditor/User:83",
    "/dp/condition/GroupPolicy/user_banned_from_group/User:83,Group:139",

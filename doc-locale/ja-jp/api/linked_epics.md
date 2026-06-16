@@ -1,8 +1,8 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: リンクされたエピック 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: リンクされたエピックAPI (非推奨)
 ---
 
 {{< details >}}
@@ -15,37 +15,34 @@ title: リンクされたエピック
 {{< history >}}
 
 - GitLab 14.9で`related_epics_widget`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352493)されました。デフォルトでは有効になっています。
-- GitLab 15.0で[機能フラグ`related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089)が削除されました。
+- [機能フラグ`related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089)は、GitLab 15.0で削除されました。
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)になり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
 
-エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
+GitLabプランで関連エピック機能が利用できない場合、`403`ステータスコードが返されます。
 
-{{< /alert >}}
+## グループのすべての関連エピックリンクを一覧表示 {#list-all-related-epic-links-for-a-group}
 
-リンクされたエピック機能がGitLabプランで利用できない場合、`403`のステータスコードが返されます。
-
-## グループからリンクされたエピックリンクをリスト表示 {#list-related-epic-links-from-a-group}
-
-指定されたグループのリンクされたエピックリンクのリストを、グループ内およびサブグループ内で、ユーザー認可に従ってフィルタリングして取得します。関連するリンクされたエピックリンクにアクセスするには、ユーザーが`source_epic`と`target_epic`にアクセスできる必要があります。
+指定されたグループとそのサブグループのすべての関連エピックリンクを一覧表示します。ユーザーは、関連するエピックリンクを表示するために、`source_epic`と`target_epic`の両方にアクセスできる必要があります。
 
 ```plaintext
 GET /groups/:id/related_epic_links
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型           | 必須               | 説明                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `id`       | 整数または文字列 | はい | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `created_after` | 文字列 | いいえ | 指定された時刻以降に作成されたリンクされたエピックリンクを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
-| `created_before` | 文字列 | いいえ | 指定された時刻以前に作成されたリンクされたエピックリンクを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
-| `updated_after` | 文字列 | いいえ | 指定された時刻以降に更新されたリンクされたエピックリンクを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
-| `updated_before` | 文字列 | いいえ | 指定された時刻以前に更新されたリンクされたエピックリンクを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
+| `created_after` | 文字列 | いいえ | 指定された日時以降に作成された関連エピックリンクを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
+| `created_before` | 文字列 | いいえ | 指定された日時以前に作成された関連エピックリンクを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
+| `updated_after` | 文字列 | いいえ | 指定された日時以降に更新された関連エピックリンクを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
+| `updated_before` | 文字列 | いいえ | 指定された日時以前に更新された関連エピックリンクを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -53,7 +50,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/:id/related_epic_links"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -150,22 +147,22 @@ curl --request GET \
 ]
 ```
 
-## エピックからリンクされたエピックをリスト表示 {#list-linked-epics-from-an-epic}
+## エピックのすべてのリンクされたエピックを一覧表示 {#list-all-linked-epics-for-an-epic}
 
-指定されたエピックのリンクされたエピックのリストを、ユーザー認可に従ってフィルタリングして取得します。
+指定されたエピックのすべてのリンクされたエピックを一覧表示します。
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/related_epics
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型           | 必須               | 説明                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `epic_iid` | 整数        | はい | グループのエピックの内部ID                                             |
 | `id`       | 整数または文字列 | はい | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -173,7 +170,7 @@ curl --request GET \
  --url "https://gitlab.example.com/api/v4/groups/:id/epics/:epic_iid/related_epics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -228,7 +225,7 @@ curl --request GET \
 ]
 ```
 
-## リンクされたエピックリンクを作成 {#create-a-related-epic-link}
+## 関連エピックリンクを作成 {#create-a-related-epic-link}
 
 {{< history >}}
 
@@ -236,23 +233,23 @@ curl --request GET \
 
 {{< /history >}}
 
-2つのエピック間の双方向の関係を作成します。ユーザーは両方のグループに対して少なくともゲストロールを持っている必要があります。
+2つのエピック間の双方向の関係を作成します。ユーザーは両方のグループに対して、ゲスト、プランナー、レポーター、デベロッパー、メンテナー、またはオーナーのロールを持っている必要があります。
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/related_epics
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型           | 必須                    | 説明                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | 整数        | はい      | グループのエピックの内部ID。        |
 | `id`                | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `target_epic_iid`   | 整数または文字列 | はい      | 対象グループのエピックの内部ID。 |
-| `target_group_id`   | 整数または文字列 | はい      | ターゲットグループのまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `link_type`         | 文字列         | いいえ      | 関係のタイプ（`relates_to`、`blocks`、`is_blocked_by`）は、`relates_to`がデフォルトです。 |
+| `target_epic_iid`   | 整数または文字列 | はい      | ターゲットグループのエピックの内部ID。 |
+| `target_group_id`   | 整数または文字列 | はい      | IDまたはターゲットグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `link_type`         | 文字列         | いいえ      | 関係のタイプ (`relates_to`, `blocks`, `is_blocked_by`)。`relates_to`がデフォルトです。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -260,7 +257,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/26/epics/1/related_epics?target_group_id=26&target_epic_iid=5"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -355,7 +352,7 @@ curl --request POST \
 }
 ```
 
-## リンクされたエピックリンクを削除 {#delete-a-related-epic-link}
+## 関連エピックリンクを削除 {#delete-a-related-epic-link}
 
 {{< history >}}
 
@@ -363,21 +360,21 @@ curl --request POST \
 
 {{< /history >}}
 
-2つのエピック間の双方向の関係を削除します。ユーザーは両方のグループに対して少なくともゲストロールを持っている必要があります。
+指定された2つのエピック間の双方向の関係を削除します。ユーザーは両方のグループに対して、ゲスト、プランナー、レポーター、デベロッパー、メンテナー、またはオーナーのロールを持っている必要があります。
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                | 型           | 必須                    | 説明                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | 整数        | はい      | グループのエピックの内部ID。        |
 | `id`                     | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `related_epic_link_id`   | 整数または文字列 | はい      | リンクされたエピックリンクの内部ID。 |
+| `related_epic_link_id`   | 整数または文字列 | はい      | 関連するエピックリンクの内部ID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -385,7 +382,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/26/epics/1/related_epics/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

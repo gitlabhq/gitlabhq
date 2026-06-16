@@ -9,6 +9,8 @@ module Mutations
           description 'Deletes a protection rule for packages.'
 
           authorize :admin_package
+          authorize_granular_token permissions: :delete_package_protection_rule,
+            boundary_argument: :id, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::Packages::Protection::Rule],

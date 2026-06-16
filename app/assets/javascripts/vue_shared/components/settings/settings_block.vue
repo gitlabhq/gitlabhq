@@ -6,6 +6,7 @@ import { historyPushState } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
 export default {
+  name: 'SettingsBlock',
   components: { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon },
   props: {
     title: {

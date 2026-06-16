@@ -67,7 +67,7 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
 
       require 'spec_helper'
 
-      RSpec.describe #{migration_name}, feature_category: :global_search do
+      RSpec.describe #{migration_name}, feature_category: :vulnerability_management do
         it 'does something' do
           expect(true).to be true
         end
@@ -191,6 +191,99 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
         expect(changes).to be_empty
       end
     end
+
+    context 'when the group label is not found in groups.json' do
+      let(:logger) { instance_double(Gitlab::Housekeeper::Logger).as_null_object }
+
+      before do
+        keep.instance_variable_set(:@logger, logger)
+        keeps_groups_helper = instance_double(Keeps::Helpers::Groups,
+          group_for_group_label: nil,
+          available_reviewers_for_group: [])
+        allow(Keeps::Helpers::Groups).to receive(:instance).and_return(keeps_groups_helper)
+      end
+
+      it 'skips the migration and logs the bad label', :aggregate_failures do
+        expect(logger).to receive(:puts).with(/Skipping #{migration_version}.*not found in groups\.json/)
+
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+
+        expect(changes).to be_empty
+      end
+    end
+
+    context 'when the migration group has no available reviewers' do
+      let(:fallback_reviewers) { ['@fallback_engineer'] }
+      let(:migration_group_label) { 'group::some other team' }
+      let(:migration_group) { instance_double(Hash) }
+      let(:default_group) { instance_double(Hash) }
+
+      let(:yaml_file) do
+        file_path = tmp_dir.join(
+          described_class::MIGRATION_DOCS_PATH,
+          "#{migration_version}_#{migration_name.underscore}.yml"
+        )
+        FileUtils.mkdir_p(File.dirname(file_path))
+
+        File.write(file_path, {
+          'name' => migration_name,
+          'version' => migration_version,
+          'milestone' => migration_milestone,
+          'group' => migration_group_label
+        }.to_yaml)
+
+        file_path.to_s
+      end
+
+      before do
+        keeps_groups_helper = instance_double(Keeps::Helpers::Groups)
+        allow(Keeps::Helpers::Groups).to receive(:instance).and_return(keeps_groups_helper)
+        allow(keeps_groups_helper).to receive(:group_for_group_label)
+          .with(migration_group_label).and_return(migration_group)
+        allow(keeps_groups_helper).to receive(:group_for_group_label)
+          .with(described_class::DEFAULT_GROUP_LABEL).and_return(default_group)
+        allow(keeps_groups_helper).to receive(:available_reviewers_for_group)
+          .with(migration_group, reviewer_types: ['backend_engineers']).and_return([])
+        allow(keeps_groups_helper).to receive(:available_reviewers_for_group)
+          .with(default_group, reviewer_types: ['backend_engineers']).and_return(fallback_reviewers)
+      end
+
+      it 'falls back to the default group for the assignee', :aggregate_failures do
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+
+        expect(changes.size).to eq(1)
+        expect(changes.first.assignees).to include('@fallback_engineer')
+      end
+    end
+
+    context 'when no group has available reviewers' do
+      let(:logger) { instance_double(Gitlab::Housekeeper::Logger).as_null_object }
+
+      before do
+        keep.instance_variable_set(:@logger, logger)
+        keeps_groups_helper = instance_double(Keeps::Helpers::Groups,
+          group_for_group_label: groups[:foo].to_json,
+          available_reviewers_for_group: [])
+        allow(Keeps::Helpers::Groups).to receive(:instance).and_return(keeps_groups_helper)
+      end
+
+      it 'still yields a change but does not set an assignee', :aggregate_failures do
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+
+        expect(changes.size).to eq(1)
+        expect(changes.first.assignees).to be_empty
+      end
+
+      it 'logs that the MR will be unassigned' do
+        expect(logger).to receive(:puts).with(/No available reviewers for #{migration_version}.*unassigned/)
+
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+      end
+    end
   end
 
   describe '#make_change!' do
@@ -225,11 +318,42 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
       expect(migration_content).to include("#{migration_name}.prepend ::Search::Elastic::MigrationObsolete")
     end
 
-    it 'updates the spec file with deprecated shared example' do
+    it 'updates the spec file with deprecated shared example', :aggregate_failures do
       keep.make_change!(change)
 
       spec_content = File.read(spec_file)
       expect(spec_content).to include("it_behaves_like 'a deprecated Advanced Search migration', #{migration_version}")
+      expect(spec_content).to include('feature_category: :vulnerability_management')
+    end
+
+    context 'when the original spec has no feature_category' do
+      let(:spec_file) do
+        file_path = tmp_dir.join(
+          described_class::MIGRATIONS_SPECS_PATH,
+          "#{migration_version}_#{migration_name.underscore}_spec.rb"
+        )
+        FileUtils.mkdir_p(File.dirname(file_path))
+
+        File.write(file_path, <<~RUBY)
+          # frozen_string_literal: true
+
+          require 'spec_helper'
+
+          RSpec.describe #{migration_name} do
+            it 'does something' do
+              expect(true).to be true
+            end
+          end
+        RUBY
+
+        file_path.to_s
+      end
+
+      it 'falls back to :global_search' do
+        keep.make_change!(change)
+
+        expect(File.read(spec_file)).to include('feature_category: :global_search')
+      end
     end
 
     it 'includes all changed files in the change object' do
@@ -488,6 +612,32 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
         expect(prompt_generator).to receive(:fetch).once
           .with(migration_name, migration_name.underscore, 'other_file.rb')
           .and_return(nil)
+
+        keep.send(:ai_patch, migration_data, change)
+      end
+    end
+
+    context 'when migration_data uses the same path format the keep produces' do
+      let(:migration_data) do
+        {
+          file: migration_file,
+          spec_file: "#{described_class::MIGRATIONS_SPECS_PATH}/" \
+            "#{migration_version}_#{migration_name.underscore}_spec.rb",
+          yaml_filename: yaml_file,
+          yaml_content: YAML.load_file(yaml_file)
+        }
+      end
+
+      let(:canonical_spec_path) do
+        "ee/spec/elastic/migrate/#{migration_version}_#{migration_name.underscore}_spec.rb"
+      end
+
+      before do
+        allow(keep).to receive(:files_mentioning_migration).and_return([canonical_spec_path])
+      end
+
+      it 'excludes the spec file from AI patching' do
+        expect(prompt_generator).not_to receive(:fetch)
 
         keep.send(:ai_patch, migration_data, change)
       end

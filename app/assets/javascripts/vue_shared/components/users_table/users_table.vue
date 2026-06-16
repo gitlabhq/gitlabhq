@@ -16,6 +16,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'UsersTable',
   components: {
     GlSkeletonLoader,
     GlTable,

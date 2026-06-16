@@ -3,11 +3,11 @@
 RSpec.shared_context 'when a project repository contains a forked commit' do
   include ProjectForksHelper
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
-  let_it_be(:forked_project) { fork_project(project, project.owner, repository: true) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
+  let_it_be(:forked_project, freeze: false) { fork_project(project, project.owner, repository: true) }
 
-  let_it_be(:forked_commit_sha) do
+  let_it_be(:forked_commit_sha, freeze: false) do
     forked_project.repository.create_file(project.owner, 'file.txt', 'file', message: 'test', branch_name: 'master')
   end
 

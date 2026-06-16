@@ -27,3 +27,24 @@ graphql-verify:
       - public/-/graphql/introspection_result.json
       - public/-/graphql/introspection_result_no_deprecated.json
     when: always
+
+graphql-eager-load-verify:
+  variables:
+    SETUP_DB: "true"
+  extends:
+    - .default-retry
+    - .use-pg17
+    - .ruby-cache
+    - .default-before_script
+    - .graphql:rules:graphql-verify
+  stage: lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    # Regression guard for the security-orchestration load-order cycle
+    # (https://gitlab.com/gitlab-org/gitlab/-/work_items/601704). Must run in a fresh
+    # process: an already-booted/eager-loaded app or the built schema masks the cycle.
+    # Booting Rails reads application settings from the DB, hence SETUP_DB + .use-pg17.
+    # A raised NameError exits non-zero and fails the job.
+    - bundle exec rails runner 'Rails.application.eager_load!'

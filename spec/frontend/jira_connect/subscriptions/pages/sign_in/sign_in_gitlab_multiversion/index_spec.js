@@ -1,13 +1,21 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/index.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import VersionSelectForm from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/version_select_form.vue';
 
 import { updateInstallation, setApiBaseURL } from '~/jira_connect/subscriptions/api';
 import { reloadPage, persistBaseUrl, retrieveBaseUrl } from '~/jira_connect/subscriptions/utils';
-import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
+import {
+  GITLAB_COM_BASE_PATH,
+  I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+  FAILED_TO_UPDATE_DOC_LINK,
+} from '~/jira_connect/subscriptions/constants';
+import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import createStore from '~/jira_connect/subscriptions/store';
 
 jest.mock('~/jira_connect/subscriptions/api', () => {
   return {
@@ -16,9 +24,11 @@ jest.mock('~/jira_connect/subscriptions/api', () => {
   };
 });
 jest.mock('~/jira_connect/subscriptions/utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('SignInGitlabMultiversion', () => {
   let wrapper;
+  let store;
 
   const mockBasePath = 'gitlab.mycompany.com';
 
@@ -27,7 +37,9 @@ describe('SignInGitlabMultiversion', () => {
   const findSubtitle = () => wrapper.findByTestId('subtitle');
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(SignInGitlabMultiversion);
+    store = createStore();
+    jest.spyOn(store, 'commit');
+    wrapper = shallowMountExtended(SignInGitlabMultiversion, { store });
   };
 
   describe('when version is not selected', () => {
@@ -50,6 +62,42 @@ describe('SignInGitlabMultiversion', () => {
           expect(updateInstallation).toHaveBeenCalled();
           expect(persistBaseUrl).toHaveBeenCalledWith(mockBasePath);
           expect(reloadPage).toHaveBeenCalled();
+        });
+
+        describe('when updateInstallation rejects', () => {
+          it.each`
+            scenario                           | rejectedValue                                             | expectedMessage
+            ${'with a server `errors` field'}  | ${{ response: { data: { errors: 'Bad instance URL' } } }} | ${'Bad instance URL'}
+            ${'with a server `message` field'} | ${{ response: { data: { message: 'Unreachable' } } }}     | ${'Unreachable'}
+            ${'with no response body'}         | ${new Error('network')}                                   | ${I18N_UPDATE_INSTALLATION_ERROR_MESSAGE}
+          `('commits SET_ALERT $scenario', async ({ rejectedValue, expectedMessage }) => {
+            updateInstallation.mockRejectedValue(rejectedValue);
+
+            createComponent();
+
+            findVersionSelectForm().vm.$emit('submit', mockBasePath);
+            await waitForPromises();
+
+            expect(store.commit).toHaveBeenCalledWith(SET_ALERT, {
+              message: expectedMessage,
+              linkUrl: FAILED_TO_UPDATE_DOC_LINK,
+              variant: 'danger',
+            });
+            expect(persistBaseUrl).not.toHaveBeenCalled();
+            expect(reloadPage).not.toHaveBeenCalled();
+          });
+
+          it('reports the error to Sentry', async () => {
+            const error = new Error('network');
+            updateInstallation.mockRejectedValue(error);
+
+            createComponent();
+
+            findVersionSelectForm().vm.$emit('submit', mockBasePath);
+            await waitForPromises();
+
+            expect(Sentry.captureException).toHaveBeenCalledWith(error);
+          });
         });
       });
     });

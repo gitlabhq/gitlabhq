@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user) { project.creator }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:user, freeze: false) { project.creator }
 
   before do
     sign_in(user)
@@ -14,14 +14,13 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
     it 'updates the title' do
       issue = create(:issue, author: user, assignees: [user], project: project, title: 'new title')
 
+      visit project_issue_path(project, issue)
+
       using_session :other_session do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('h1', text: 'new title')
       end
-
-      sign_in(user)
-      visit project_issue_path(project, issue)
 
       click_button 'Edit title and description'
       fill_in 'Title', with: 'updated title'

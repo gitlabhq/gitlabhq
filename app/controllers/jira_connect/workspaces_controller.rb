@@ -12,7 +12,7 @@ module JiraConnect
     private
 
     def search_query
-      @_search_query ||= ActionController::Base.helpers.sanitize(params[:searchQuery].to_s)
+      @_search_query ||= ActionController::Base.helpers.sanitize(params.permit(:searchQuery)[:searchQuery].to_s)
     end
 
     def available_namespaces

@@ -52,7 +52,7 @@ more flexibility for complex cases.
 
 1. Create a flow configuration file in `/duo_workflow_service/agent_platform/v1/flows/configs/` (located either on your GDK under `PATH-TO-YOUR-GDK/gdk/gitlab-ai-gateway` or on the [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/duo_workflow_service/agent_platform/v1/flows/configs/)):
 
-   File: `/duo_workflow_service/agent_platform/v1/flows/configs/foundational_pirate_agent.yml`
+   File: `/duo_workflow_service/agent_platform/v1/flows/configs/foundational_pirate_agent/1.0.0.yml`
 
    ```yaml
    version: "v1"
@@ -196,6 +196,132 @@ still add it to their project at which point they can be used through triggers.
 
 Versioning of agents is not yet supported. Consider potential breaking changes to older GitLab versions
 before doing changes to an agent.
+
+## Context variables
+
+Context variables let you inject runtime information into a Duo Workflow Service agent's system prompt.
+Use them to make prompt sections conditional or pass more information — for example, customizing the prompt based
+on the user location, or pass data from a form.
+
+> [!note]
+> Context variables are only supported for agents defined in GitLab Duo Workflow Service.
+> Agents created in the AI Catalog cannot use context variables except orbit_enabled
+
+The end-to-end flow is:
+
+1. The GitLab monolith builds an `additional_context` payload and includes it in the `startWorkflow` request.
+1. GitLab Duo Workflow Service reads the `additional_context`, resolves the values to Jinja2 variables
+   using the component `inputs` mapping, and pre-renders the system prompt.
+1. Jinja2 variables in the prompt (for example, `{% if my_variable %}...{% endif %}`) are evaluated
+   with the resolved values. Unknown variables like `{{ goal }}` are preserved and resolved in a later pass.
+
+### Define context variables in the flow config
+
+In your flow YAML
+(`/duo_workflow_service/agent_platform/v1/flows/configs/<agent_name>/<version>.yml`), declare:
+
+1. A `flow.inputs` entry that describes the variable's category and schema.
+1. A component `inputs` entry that maps the variable using the `context:inputs.<category>.<field>` path.
+
+```yaml
+components:
+  - name: "my_agent"
+    type: AgentComponent
+    prompt_id: "my_agent_prompt"
+    inputs:
+      - from: "context:goal"
+        as: "goal"
+      - from: "context:inputs.my_context.my_first_var"
+        as: "my_first_var"
+        optional: true   # optional: true prevents an error when the variable is absent
+      - from: "context:inputs.my_context.my_second_var"
+        as: "my_second_var"
+        optional: true
+    toolset: []
+    ui_log_events: []
+
+flow:
+  inputs:
+    - category: my_context
+      input_schema:
+        my_var:
+          type: boolean
+          description: Whether the feature is available for this user
+  entry_point: "my_agent"
+```
+
+### Use context variables in the prompt template
+
+Use Jinja2 `{% if %}` blocks in the `prompt_template.system` field to conditionally include prompt sections:
+
+```yaml
+prompts:
+  - name: My Agent
+    prompt_id: "my_agent_prompt"
+    prompt_template:
+      system: |
+        You are a helpful agent.
+
+        Additional information {{ my_first_var }}
+
+        {% if my_second_var %}
+        <my_feature_integration>
+          You also have access to the my feature API. Use it when the user asks about...
+        </my_feature_integration>
+        {% endif %}
+      user: |
+        {{goal}}
+```
+
+### Wire context variables from the GitLab monolith
+
+Context variables reach the Duo Workflow Service through the `additionalContext` field of the
+`startWorkflow` call. Each entry has a `category`, a `content` field (a JSON string), and `metadata`.
+
+In `duo_agentic_chat_state_manager.vue`, inject the context envelope only when a foundational agent
+is active:
+
+```javascript
+const mergedAdditionalContext =
+  this.selectedFoundationalAgent && goal
+    ? [
+        {
+          category: 'my_context',
+          content: JSON.stringify({ my_first_var: 1,  my_second_var: this.myFeatureEnabled }),
+          metadata: '{}',
+        },
+        ...(additionalContext || []).filter((c) => c.category !== 'my_context'),
+      ]
+    : additionalContext || [];
+```
+
+### Filter internal categories from display and GraphQL
+
+Internal context categories (for example, `my_context`) must not be shown in the UI or serialized
+through GraphQL. Custom category names are not registered in the `AiAdditionalContextCategory` enum,
+and serialization causes errors.
+
+Filter them in `ee/app/assets/javascripts/ai/duo_agentic_chat/utils/workflow_utils.js`:
+
+```javascript
+const INTERNAL_CATEGORIES = new Set(['my_context']);
+msg.extras = {
+  contextItems: msg.additional_context.filter((c) => !INTERNAL_CATEGORIES.has(c.category)),
+};
+```
+
+Strip them in `ee/app/presenters/ai/duo_workflows/workflow_checkpoint_event_presenter.rb` before
+building `DuoMessage` objects:
+
+```ruby
+INTERNAL_CONTEXT_CATEGORIES = %w[my_context].freeze
+
+if msg['additional_context'].is_a?(Array)
+  msg['additional_context'] = msg['additional_context'].reject do |ctx|
+    INTERNAL_CONTEXT_CATEGORIES.include?(ctx['category'])
+  end
+end
+```
 
 ## Developing foundational agents locally
 

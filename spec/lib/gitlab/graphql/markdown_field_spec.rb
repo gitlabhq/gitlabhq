@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
     end
 
     context 'developer warnings' do
-      let_it_be(:expected_error) { /Only `method` is allowed to specify the markdown field/ }
+      let_it_be(:expected_error, freeze: false) { /Only `method` is allowed to specify the markdown field/ }
 
       it 'raises when passing a resolver' do
         expect { class_with_markdown_field(:test_html, null: true, resolver: 'not really') }
@@ -25,10 +25,10 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
     end
 
     context 'resolving markdown' do
-      let_it_be(:note) { build(:note, note: '# Markdown!') }
-      let_it_be(:expected_markdown) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
-      let_it_be(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-      let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: {}) }
+      let_it_be(:note, freeze: false) { build(:note, note: '# Markdown!') }
+      let_it_be(:expected_markdown, freeze: false) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
+      let_it_be(:query, freeze: false) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+      let_it_be(:context, freeze: false) { GraphQL::Query::Context.new(query: query, values: {}) }
 
       let(:type_class) { class_with_markdown_field(:note_html, null: false) }
       let(:type_instance) { type_class.authorized_new(note, context) }
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
       end
 
       describe 'basic verification that references work' do
-        let_it_be(:project) { create(:project, :public) }
+        let_it_be(:project, freeze: false) { create(:project, :public) }
 
         let(:issue) { create(:issue, project: project) }
         let(:note) { build(:note, note: "Referencing #{issue.to_reference(full: true)}") }
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
         end
 
         context 'when the issue is not publicly accessible' do
-          let_it_be(:project) { create(:project, :private) }
+          let_it_be(:project, freeze: false) { create(:project, :private) }
 
           it 'hides the references from users that are not allowed to see the reference' do
             expect(field.resolve(type_instance, {}, context)).not_to include(issue_path(issue))

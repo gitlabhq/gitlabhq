@@ -56,7 +56,7 @@ type upstream struct {
 	geoLocalRoutes        []routeEntry
 	geoProxyCableRoute    routeEntry
 	geoProxyRoute         routeEntry
-	geoProxyPollSleep     func(time.Duration)
+	geoProxyPollSleep     func(time.Duration) <-chan time.Time
 	geoPollerDone         chan struct{}
 	accessLogger          *logrus.Logger
 	loadShedder           *loadshedding.LoadShedder
@@ -124,7 +124,7 @@ func newUpstream(cfg config.Config, deps Dependencies, routesCallback func(*upst
 // It uses u.Config which is embedded in the upstream struct.
 func (u *upstream) initializeDefaults() {
 	if u.geoProxyPollSleep == nil {
-		u.geoProxyPollSleep = time.Sleep
+		u.geoProxyPollSleep = time.After
 	}
 	if u.Backend == nil {
 		u.Backend = DefaultBackend
@@ -256,14 +256,32 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 	return &u.geoProxyRoute
 }
 
+// isShuttingDown returns true if the shutdown signal has been received.
+func (u *upstream) isShuttingDown() bool {
+	select {
+	case <-u.shutdownChan:
+		return true
+	default:
+		return false
+	}
+}
+
 func (u *upstream) pollGeoProxyAPI() {
 	defer close(u.geoPollerDone)
 
 	// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
 	// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
 	for u.enableGeoProxyFeature {
+		if u.isShuttingDown() {
+			return
+		}
 		u.callGeoProxyAPI()
-		u.geoProxyPollSleep(geoProxyAPIPollingInterval)
+
+		select {
+		case <-u.shutdownChan:
+			return
+		case <-u.geoProxyPollSleep(geoProxyAPIPollingInterval):
+		}
 	}
 }
 

@@ -83,6 +83,13 @@ module Gitlab
         password = request.headers['Authorization']
         return unless password.present?
 
+        # `:http_token` carries a raw token as the whole Authorization header
+        # value (for example, RubyGems' `gem push` with GEM_HOST_API_KEY). When
+        # the header uses a recognized scheme, the credentials belong to that
+        # scheme's locator (`:http_basic_auth` / `:http_bearer_token`), so leave
+        # them alone to avoid claiming the same header twice.
+        return if password.match?(/\A(Basic|Bearer)\s/i)
+
         UsernameAndPassword.new(nil, password)
       end
 

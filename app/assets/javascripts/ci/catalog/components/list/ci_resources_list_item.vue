@@ -65,7 +65,7 @@ export default {
       return getIdFromGraphQLId(this.latestVersion.author.id);
     },
     authorProfileUrl() {
-      return this.latestVersion.author.webUrl;
+      return this.latestVersion.author.webPath;
     },
     components() {
       return this.resource?.versions?.nodes[0]?.components?.nodes || [];

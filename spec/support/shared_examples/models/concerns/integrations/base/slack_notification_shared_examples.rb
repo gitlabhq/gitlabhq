@@ -2,8 +2,8 @@
 
 RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
-    let_it_be(:integration) { create(factory, branches_to_be_notified: 'all', project: project) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:integration, freeze: false) { create(factory, branches_to_be_notified: 'all', project: project) }
 
     def usage_tracking_key(action)
       prefix = integration.send(:metrics_key_prefix)
@@ -20,7 +20,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
     end
 
     context 'when hook data includes a user object' do
-      let_it_be(:user) { create_default(:user) }
+      let_it_be(:user, freeze: false) { create_default(:user) }
 
       shared_examples 'increases the usage data counter' do |event|
         let(:event_name) { usage_tracking_key(event) }
@@ -44,7 +44,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'when event is not supported for usage log' do
-        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
@@ -57,7 +57,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for issue notification' do
-        let_it_be(:issue) { create(:issue, project: project) }
+        let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
         let(:data) { issue.to_hook_data(user) }
 
@@ -71,7 +71,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for deployment notification' do
-        let_it_be(:deployment) { create(:deployment, project: project, user: user) }
+        let_it_be(:deployment, freeze: false) { create(:deployment, project: project, user: user) }
 
         let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.current) }
 
@@ -79,7 +79,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for wiki_page notification' do
-        let_it_be(:wiki_page) do
+        let_it_be(:wiki_page, freeze: false) do
           create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page')
         end
 
@@ -95,7 +95,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for merge_request notification' do
-        let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
         let(:data) { merge_request.to_hook_data(user) }
 
@@ -103,7 +103,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for note notification' do
-        let_it_be(:issue_note) { create(:note_on_issue, project: project, note: 'issue note') }
+        let_it_be(:issue_note, freeze: false) { create(:note_on_issue, project: project, note: 'issue note') }
 
         let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user, :create) }
 
@@ -122,7 +122,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for confidential note notification' do
-        let_it_be(:confidential_issue_note) do
+        let_it_be(:confidential_issue_note, freeze: false) do
           create(:note_on_issue, project: project, note: 'issue note', confidential: true)
         end
 
@@ -132,7 +132,7 @@ RSpec.shared_examples Integrations::Base::SlackNotification do |factory:|
       end
 
       context 'for confidential issue notification' do
-        let_it_be(:issue) { create(:issue, project: project, confidential: true) }
+        let_it_be(:issue, freeze: false) { create(:issue, project: project, confidential: true) }
 
         let(:data) { issue.to_hook_data(user) }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers do
-  let_it_be(:project) { create(:project, :with_import_url) }
+  let_it_be(:project, freeze: false) { create(:project, :with_import_url) }
   let(:importer) { MyImporter.new(project, double) }
   let(:importer_class) do
     Class.new do
@@ -51,6 +51,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .to receive(:info)
           .with(
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'MyImporter',
             message: '1 object_types fetched'
           )
@@ -85,6 +86,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .to receive(:info)
           .with(
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'MyImporter',
             message: '0 object_types fetched'
           )
@@ -147,6 +149,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
             .to receive(:error)
             .with(
               project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               importer: 'MyImporter',
               message: containing_exactly(
                 'Title is invalid', 'Parent Exactly one of project, organization, group must be present'
@@ -193,6 +196,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .twice
           .with(
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'MyImporter',
             message: '5 object_types imported'
           )
@@ -267,6 +271,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .twice
           .with(
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'MyImporter',
             message: '5 object_types imported'
           )

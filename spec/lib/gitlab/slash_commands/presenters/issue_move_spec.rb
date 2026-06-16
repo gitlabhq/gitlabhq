@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::Presenters::IssueMove, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, developers: user) }
   let_it_be(:other_project) { create(:project, developers: user) }
-  let_it_be(:old_issue, reload: true) { create(:issue, project: project) }
+  let_it_be_with_reload(:old_issue) { create(:issue, project: project) }
 
   let(:attachment) { subject[:attachments].first }
   let(:new_issue) do

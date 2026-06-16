@@ -10,6 +10,8 @@ module API
           { namespace: { parent: :route } }
         ].freeze
 
+        NOTE_REFERENCE_PRELOADS = %i[author project noteable updated_by system_note_metadata].freeze
+
         FEATURE_PRELOADS = {
           description: [:last_edited_by],
           assignees: [:assignees],
@@ -18,7 +20,8 @@ module API
           start_and_due_date: [:dates_source],
           time_tracking: [{ timelogs: :user }],
           error_tracking: [:sentry_issue],
-          hierarchy: [{ work_item_parent: WORK_ITEM_REFERENCE_PRELOADS }]
+          hierarchy: [{ work_item_parent: WORK_ITEM_REFERENCE_PRELOADS }],
+          notifications: [:issue_assignees]
         }.freeze
 
         PROJECT_FEATURE_PRELOADS = {
@@ -35,7 +38,8 @@ module API
           moved_to_work_item_url: [:moved_to],
           promoted_to_epic_url: [:work_item_transition],
           web_url: [:author],
-          web_path: [:author]
+          web_path: [:author],
+          namespace: [{ namespace: :route }]
         }.freeze
 
         PROJECT_FIELD_PRELOADS = {
@@ -117,7 +121,99 @@ module API
           ).execute.first
         end
 
+        def count_preloads_for(work_items, field_keys, feature_keys)
+          preloads = {}
+          if field_keys.include?(:user_discussions_count)
+            preloads[:user_discussions_counts] = preload_user_discussions_counts(work_items)
+          end
+
+          preloads[:award_emoji_counts] = preload_award_emoji_counts(work_items) if feature_keys.include?(:award_emoji)
+
+          preloads
+        end
+
+        def build_children_relation(parent_work_item, state: nil, preloads: [])
+          relation = parent_work_item.work_item_children_by_relative_position
+          relation = relation.with_state(state) if state.to_s.in?(%w[opened closed])
+
+          # Unconditionally preload author and project / namespace / route so the :read_work_item policy check doesn't
+          # N+1 when loading those associations
+          all_preloads = (preloads + WORK_ITEM_REFERENCE_PRELOADS).uniq
+          relation.preload(*all_preloads) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+        end
+
+        def build_linked_items_relation(work_item, state: nil, link_type: nil, preloads: [])
+          # Unconditionally preload author and project / namespace / route so the :read_work_item policy check doesn't
+          # N+1 when loading those associations
+          all_preloads = (preloads + WORK_ITEM_REFERENCE_PRELOADS).uniq
+
+          relation = ::WorkItem.linked_items_for(work_item.id, link_type: link_type, preload: all_preloads)
+          relation = relation.with_state(state) if state.to_s.in?(%w[opened closed])
+          relation
+        end
+
+        def build_notes_relation(parent_work_item, notes_filter:)
+          # Preload the associations Entities::Note serializes per row (author, project, noteable)
+          # plus updated_by and system_note_metadata, otherwise rendering a page issues per-note
+          # queries proportional to per_page.
+          parent_work_item.notes
+            .with_notes_filter(notes_filter)
+            .preload(NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+            .reorder(order_options_with_tie_breaker) # rubocop:disable CodeReuse/ActiveRecord -- needed for stable ordering on `order_by` + `sort`
+        end
+
+        # Bulk-fetches Subscription rows for the given work items and current user so the
+        # notifications feature entity can read each work item's subscribed state from memory
+        # rather than triggering one query per item.
+        def preload_notifications_subscriptions(work_items, feature_keys)
+          return {} unless current_user && feature_keys.include?(:notifications) && work_items.present?
+
+          ::Subscription
+            .for_subscribables(work_items.map(&:id), ::WorkItem.polymorphic_name)
+            .for_user(current_user)
+            .index_by(&:subscribable_id)
+        end
+
+        # Preloads the project / group membership associated with the work items so the :read_project and :read_group
+        # policy checks don't N+1 on membership lookups
+        def preload_work_item_policies(work_items)
+          return unless current_user
+          return if work_items.blank?
+
+          projects = work_items.filter_map(&:project)
+          ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute if projects.any?
+
+          group_namespaces = (work_items.map(&:namespace) + projects.map(&:namespace))
+            .select { |namespace| namespace.type == ::Group.sti_name }
+          return if group_namespaces.empty?
+
+          ::Preloaders::GroupPolicyPreloader.new(group_namespaces, current_user).execute
+        end
+
         private
+
+        def preload_user_discussions_counts(work_items)
+          return {} if work_items.empty?
+
+          ::Note.count_for_collection(
+            work_items.map(&:id),
+            work_items.first.class.base_class.name,
+            'COUNT(DISTINCT discussion_id) AS count'
+          ).each_with_object({}) { |row, hash| hash[row.noteable_id] = row.count.to_i }
+        end
+
+        def preload_award_emoji_counts(work_items)
+          return {} if work_items.empty?
+
+          awardable_type = work_items.first.class.base_class.name
+          ::AwardEmoji
+            .votes_for_collection(work_items.map(&:id), awardable_type)
+            .each_with_object({}) do |row, hash|
+              counts = hash[row.awardable_id] ||= { up: 0, down: 0 }
+              key = row.name == ::AwardEmoji::UPVOTE_NAME ? :up : :down
+              counts[key] = row.count.to_i
+            end
+        end
 
         def work_items_parent_params(resource_parent)
           if resource_parent.is_a?(::Project)

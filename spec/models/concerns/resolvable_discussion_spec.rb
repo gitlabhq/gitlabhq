@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_workflow do
   subject { described_class.new([first_note, second_note, third_note]) }
 
-  let_it_be(:first_note, reload: true) { create(:discussion_note_on_merge_request) }
-  let_it_be(:noteable) { first_note.noteable }
+  let_it_be_with_reload(:first_note) { create(:discussion_note_on_merge_request) }
+  let_it_be(:noteable, freeze: false) { first_note.noteable }
   let_it_be_with_reload(:project) { first_note.project }
-  let_it_be(:second_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
-  let_it_be(:third_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
+  let_it_be_with_reload(:second_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
+  let_it_be_with_reload(:third_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
 
   let_it_be(:current_user) { create(:user) }
 

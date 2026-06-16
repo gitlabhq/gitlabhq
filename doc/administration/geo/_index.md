@@ -14,7 +14,7 @@ description: Geographically distribute GitLab.
 {{< /details >}}
 
 Geo is the solution for widely distributed development teams and for providing
-a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
+a warm-standby as part of a disaster recovery strategy. Geo is not an out of the box HA solution.
 
 > [!warning]
 > Geo undergoes significant changes from release to release. Upgrades are
@@ -132,17 +132,17 @@ Your Geo instance can be used for cloning and fetching projects, in addition to 
 
 When Geo is enabled, the:
 
-- Original instance is known as the **primary** site.
-- Replicating sites are known as **secondary** sites.
+- Original instance is known as the primary site.
+- Replicating sites are known as secondary sites.
 
 Keep in mind that:
 
-- **Secondary** sites talk to the **primary** site to:
+- Secondary sites talk to the primary site to:
   - Get user data for logins (API).
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
-- The **primary** site talks to the **secondary** sites for viewing replication details. The **primary** does a GraphQL query against the **secondary** site for sync and verification data (API).
-- You can push directly to a **secondary** site (for both HTTP and SSH,
-  including Git LFS), and it will proxy the requests to the **primary** site.
+- The primary site talks to the secondary sites for viewing replication details. The primary does a GraphQL query against the secondary site for sync and verification data (API).
+- You can push directly to a secondary site (for both HTTP and SSH,
+  including Git LFS), and it will proxy the requests to the primary site.
 - Some [known issues](#known-issues) exist when using Geo.
 
 ### Architecture
@@ -153,36 +153,36 @@ The following diagram illustrates the underlying architecture of Geo.
 
 In this diagram:
 
-- There is the **primary** site and the details of one **secondary** site.
-- Writes to the database can only be performed on the **primary** site. A **secondary** site receives database
+- There is the primary site and the details of one secondary site.
+- Writes to the database can only be performed on the primary site. A secondary site receives database
   updates by using [PostgreSQL streaming replication](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
 - If present, the [LDAP server](#ldap) should be configured to replicate for [Disaster Recovery](disaster_recovery/_index.md) scenarios.
-- A **secondary** site performs different type of synchronizations against the **primary** site, using a special
+- A secondary site performs different type of synchronizations against the primary site, using a special
   authorization protected by JWT:
   - Repositories are cloned/updated via Git over HTTPS.
   - Attachments, LFS objects, and other files are downloaded via HTTPS using a private API endpoint.
 
 From the perspective of a user performing Git operations:
 
-- The **primary** site behaves as a full read-write GitLab instance.
-- **Secondary** sites behave as full read-write GitLab instances. **Secondary** sites transparently proxy all operations to the **primary** site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, Git fetches are served by the **secondary** site when it is up-to-date.
+- The primary site behaves as a full read-write GitLab instance.
+- Secondary sites behave as full read-write GitLab instances. Secondary sites transparently proxy all operations to the primary site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, Git fetches are served by the secondary site when it is up-to-date.
 
 From the perspective of a user browsing the GitLab UI, or using the API:
 
-- The **primary** site behaves as a full read-write GitLab instance.
-- **Secondary** sites behave as full read-write GitLab instances. **Secondary** sites transparently proxy all operations to the **primary** site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, web UI assets are served by the **secondary** site.
+- The primary site behaves as a full read-write GitLab instance.
+- Secondary sites behave as full read-write GitLab instances. Secondary sites transparently proxy all operations to the primary site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, web UI assets are served by the secondary site.
 
 To simplify the diagram, some necessary components are omitted.
 
 - Git over SSH requires [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell).
 - Git over HTTPS required [`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
-A **secondary** site needs two different PostgreSQL databases:
+A secondary site needs two different PostgreSQL databases:
 
 - A read-only database instance that streams data from the main GitLab database.
-- A [read/write database instance (tracking database)](#geo-tracking-database) used internally by the **secondary** site to record what data has been replicated.
+- A [read/write database instance (tracking database)](#geo-tracking-database) used internally by the secondary site to record what data has been replicated.
 
-The **secondary** sites also run an additional daemon: [Geo Log Cursor](#geo-log-cursor).
+The secondary sites also run an additional daemon: [Geo Log Cursor](#geo-log-cursor).
 
 ## Requirements for running Geo
 
@@ -216,7 +216,7 @@ for more details.
 
 ### Firewall rules
 
-The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, you should open ports in both directions.
+The following table lists basic ports that must be open between the primary and secondary sites for Geo. To simplify failovers, you should open ports in both directions.
 
 | Source site | Source port | Destination site | Destination port | Protocol    |
 |-------------|-------------|------------------|------------------|-------------|
@@ -266,18 +266,18 @@ The tracking database instance is used as metadata to control what needs to be u
 - Fetch new LFS Objects.
 - Fetch changes from a repository that has recently been updated.
 
-Because the replicated database instance is read-only, we need this additional database instance for each **secondary** site.
+Because the replicated database instance is read-only, we need this additional database instance for each secondary site.
 
 ### Geo Log Cursor
 
 This daemon:
 
-- Reads a log of events replicated by the **primary** site to the **secondary** database instance.
+- Reads a log of events replicated by the primary site to the secondary database instance.
 - Updates the Geo Tracking Database instance with changes that must be executed.
 
-When something is marked to be updated in the tracking database instance, asynchronous jobs running on the **secondary** site execute the required operations and update the state.
+When something is marked to be updated in the tracking database instance, asynchronous jobs running on the secondary site execute the required operations and update the state.
 
-This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the **secondary** site is disconnected from the **primary** site as it is able to replay all the events in the correct order and become synchronized with the **primary** site again.
+This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the secondary site is disconnected from the primary site as it is able to replay all the events in the correct order and become synchronized with the primary site again.
 
 ## Known issues
 
@@ -285,13 +285,13 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 > These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
 - Git over SSH through a secondary Geo site does not work reliably. For more information, see [issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109), [issue #417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186), [issue #454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707), and [issue 585913](https://gitlab.com/gitlab-org/gitlab/-/issues/585913).
-- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
-- The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
+- Pushing directly to a secondary site redirects (for HTTP) or proxies (for SSH) the request to the primary site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
+- The primary site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the secondary site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
   GitLab instances based on our [Reference Architectures](../reference_architectures/_index.md), including automation of common daily tasks.
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
-- Real-time updates of issues/merge requests (for example, via long polling) doesn't work on **secondary** sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
+- Real-time updates of issues/merge requests (for example, via long polling) doesn't work on secondary sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. For more information, see [issue 9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/_index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
@@ -317,7 +317,7 @@ There is a complete list of all GitLab [data types](replication/datatypes.md) an
 
 ## Post-installation documentation
 
-After installing GitLab on the **secondary** sites and performing the initial configuration, see the following documentation for post-installation information.
+After installing GitLab on the secondary sites and performing the initial configuration, see the following documentation for post-installation information.
 
 ### Setting up Geo
 
@@ -329,7 +329,7 @@ For information on configuring Geo with Object storage, see [Geo with Object sto
 
 ### Replicating the container registry
 
-For more information on how to replicate the container registry, see [Container registry for a **secondary** site](replication/container_registry.md).
+For more information on how to replicate the container registry, see [Container registry for a secondary site](replication/container_registry.md).
 
 ### Set up a unified URL for Geo sites
 
@@ -353,9 +353,9 @@ For more information, see [Pausing and resuming replication](replication/pause_r
 
 ### Backfill
 
-When a **secondary** site is set up, it starts replicating missing data from
-the **primary** site in a process known as **backfill**. You can monitor the
-synchronization process on each Geo site from the **primary** site's **Geo Nodes**
+When a secondary site is set up, it starts replicating missing data from
+the primary site in a process known as **backfill**. You can monitor the
+synchronization process on each Geo site from the primary site's **Geo Nodes**
 dashboard in your browser.
 
 Failures that happen during a backfill are scheduled to be retried at the end
@@ -376,7 +376,7 @@ For more information on Geo security, see [Geo security review](replication/secu
 
 ## Remove Geo site
 
-For more information on removing a Geo site, see [Removing **secondary** Geo sites](replication/remove_geo_site.md).
+For more information on removing a Geo site, see [Removing secondary Geo sites](replication/remove_geo_site.md).
 
 ## Disable Geo
 

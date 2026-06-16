@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Release, feature_category: :release_orchestration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
   let_it_be_with_reload(:release) { create(:release, project: project, author: user) }
 
@@ -49,8 +49,8 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     describe 'scopes' do
-      let_it_be(:another_project) { create(:project) }
-      let_it_be(:another_release) { create(:release, project: another_project, tag: 'v2') }
+      let_it_be(:another_project, freeze: false) { create(:project) }
+      let_it_be(:another_release, freeze: false) { create(:release, project: another_project, tag: 'v2') }
 
       describe '.for_projects' do
         it 'returns releases for the given projects' do
@@ -127,11 +127,11 @@ RSpec.describe Release, feature_category: :release_orchestration do
   end
 
   describe 'latest releases' do
-    let_it_be(:yesterday) { Time.zone.now - 1.day }
+    let_it_be(:yesterday, freeze: false) { Time.zone.now - 1.day }
     let_it_be(:today) { Time.zone.now }
-    let_it_be(:tomorrow) { Time.zone.now + 1.day }
+    let_it_be(:tomorrow, freeze: false) { Time.zone.now + 1.day }
 
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2, freeze: false) { create(:project) }
 
     let_it_be(:project_release1) do
       create(:release, project: project, released_at: yesterday, created_at: tomorrow)
@@ -141,7 +141,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
       create(:release, project: project, released_at: tomorrow, created_at: yesterday)
     end
 
-    let_it_be(:project2_release1) do
+    let_it_be(:project2_release1, freeze: false) do
       create(:release, project: project2, released_at: yesterday, created_at: tomorrow)
     end
 
@@ -376,7 +376,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   end
 
   describe 'updating catalog resource version' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do
@@ -471,7 +471,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   describe '#related_deployments' do
     let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
     let_it_be(:ref) { release.tag }
-    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be(:environment, freeze: false) { create(:environment, project: project) }
     let_it_be_with_reload(:deployment) { create(:deployment, environment: environment, ref: ref) }
 
     it 'returns deployments for the release tag in the available environments' do

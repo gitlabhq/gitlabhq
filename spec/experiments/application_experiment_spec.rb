@@ -234,19 +234,18 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisitio
       expect(application_experiment.cache.read).to eq('candidate')
     end
 
-    it "doesn't cache a variant if we don't explicitly provide one" do
-      # by not caching "empty" variants, we effectively create a mostly
-      # optimal combination of caching and rollout flexibility. If we cached
-      # every control variant assigned, we'd inflate the cache size and
-      # wouldn't be able to roll out to subjects that we'd already assigned to
-      # the control.
+    it "caches the control variant when the actor is outside the rolled-out percentage" do
+      # As of gitlab-experiment 1.5.0, bucketed control users are cached. This
+      # lets `only_assigned: true` tracking calls find them at secondary sites.
+      # Without it, control users were silently undercounted.
+      # See https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/251
       stub_feature_flags(namespaced_stub: false) # simulate being not rolled out
 
-      expect(application_experiment.assigned.name).to eq(:control) # if we ask, it should be control
+      expect(application_experiment.assigned.name).to eq(:control)
 
       application_experiment.run
 
-      expect(application_experiment.cache.read).to be_nil
+      expect(application_experiment.cache.read).to eq('control')
     end
 
     it "caches a control variant if we assign it specifically" do

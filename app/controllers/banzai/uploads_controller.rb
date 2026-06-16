@@ -25,8 +25,9 @@ module Banzai
 
     def authorize_access!
       return if bypass_auth_checks_on_uploads?
+      return if can?(current_user, :"read_#{model.to_ability_name}", model)
 
-      render_404 unless can?(current_user, :"read_#{model.to_ability_name}", model)
+      route_not_found
     end
 
     def upload_model_class

@@ -13,8 +13,8 @@ title: Configure OpenID Connect with GCP Workload Identity Federation
 {{< /details >}}
 
 > [!warning]
-> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
+> `CI_JOB_JWT_V2` was [removed in GitLab 17.0](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).
+> Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration

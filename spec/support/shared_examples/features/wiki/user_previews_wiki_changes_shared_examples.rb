@@ -12,7 +12,7 @@ RSpec.shared_examples 'User previews wiki changes' do
   end
 
   shared_examples 'relative links' do
-    let_it_be(:page_content) do
+    let_it_be(:page_content, freeze: false) do
       <<~HEREDOC
         Some text so key event for [ does not trigger an incorrect replacement.
         [regular link](regular)
@@ -92,7 +92,7 @@ RSpec.shared_examples 'User previews wiki changes' do
 
       # the above generates two separate lists (not embedded) in CommonMark
       expect(preview).to have_content("sublist")
-      expect(preview).not_to have_xpath("//ol//li//ul")
+      expect(preview).to have_no_xpath("//ol//li//ul")
     end
 
     it "does not linkify double brackets inside code blocks as expected" do

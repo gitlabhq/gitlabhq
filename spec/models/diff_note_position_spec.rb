@@ -12,7 +12,7 @@ RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_wo
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:note) { create(:diff_note_on_merge_request) }
+    let_it_be(:note, freeze: false) { create(:diff_note_on_merge_request) }
     let(:record_attrs) do
       { diff_type: :head, line_code: line_code, position: diff_position, note_id: note.id }
     end
@@ -42,7 +42,7 @@ RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_wo
           end
 
           it 'uses the note project_id as sharding key' do
-            note.update_column(:project_id, nil)
+            note.update_columns(namespace_id: note.project.project_namespace_id, project_id: nil)
             described_class.create_or_update_for(note, params)
 
             expect(diff_note_position.namespace_id).to eq(note.namespace_id)
@@ -72,7 +72,7 @@ RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_wo
 
           it 'uses the note namespace_id as sharding key' do
             create(:diff_note_position, note: note)
-            note.update_column(:project_id, nil)
+            note.update_columns(namespace_id: note.project.project_namespace_id, project_id: nil)
             diff_note_position.update_column(:namespace_id, nil)
             described_class.create_or_update_for(note, params)
 

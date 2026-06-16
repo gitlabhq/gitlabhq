@@ -181,21 +181,9 @@ To view pipeline results:
 For more details, see
 [View security scan results in pipelines](security_scanning_results.md).
 
-#### Merge request security widget
+#### Merge request reports
 
-The security widget provides visibility into vulnerabilities detected in merge request pipelines.
-
-Prerequisites:
-
-- The Developer, Maintainer, or Owner role for the project.
-
-To view the security widget:
-
-1. Open a merge request.
-1. Review the security widget to see detected vulnerabilities.
-1. Select **Expand** to see detailed findings.
-
-For more details, see [View security scan results in merge requests](security_scanning_results.md).
+For security scan results in a merge request, see [merge request reports](../../project/merge_requests/reports.md).
 
 #### VS Code integration
 

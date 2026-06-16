@@ -282,13 +282,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         )
       end
 
-      it 'logs an error and exits' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(
-            instance_of(described_class::DuplicateDownstreamPipelineError),
-            bridge_id: bridge.id, project_id: bridge.project.id)
-          .and_call_original
+      it 'exits without creating a pipeline' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
         expect(subject).to be_error
         expect(subject.message).to eq("Already has a downstream pipeline")

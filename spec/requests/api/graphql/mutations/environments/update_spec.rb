@@ -17,6 +17,16 @@ RSpec.describe 'Update Environment', feature_category: :deployment_management do
     graphql_mutation(:environment_update, input)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_environment do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:environment_update, { id: environment_id, external_url: 'https://gitlab.com/' }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when updating external URL' do
     let(:input) do
       {

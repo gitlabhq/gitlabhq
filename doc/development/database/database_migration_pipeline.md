@@ -78,6 +78,21 @@ Some additional information is included at the bottom of the comment:
   database maintainers or with an access request. Details of the specific
   batched background migration batches sampled are also available.
 
+## Commit status check
+
+The trigger job also posts a `database-testing` commit status on the merge
+request's commit SHA. The status appears in the merge request pipeline view in
+a separate `external` stage.
+
+The status moves through three states:
+
+- `pending`: posted by the `db:gitlabcom-database-testing` job when it triggers
+  the downstream pipeline on `ops.gitlab.net`.
+- `success`: posted by the downstream pipeline when all jobs succeed.
+- `failed`: posted by the downstream pipeline when one or more jobs fail.
+
+The merge request cannot be merged until the status resolves to `success`.
+
 ## Test changes to the database testing pipeline
 
 To test a change to the database testing pipeline itself, you need:

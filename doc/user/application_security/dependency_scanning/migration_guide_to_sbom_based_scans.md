@@ -617,6 +617,7 @@ based on the Gemnasium analyzer and their status with the new dependency scannin
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `ADDITIONAL_CA_CERT_BUNDLE`      | Kept. Prefer `additional_ca_cert_bundle` spec input.                                                            |
 | `AST_ENABLE_MR_PIPELINES`        | Kept.                                                                                                           |
+| `DEPENDENCY_SCANNING_DISABLED`   | Kept.                                                                                                           |
 | `DS_ANALYZER_IMAGE`              | Kept.                                                                                                           |
 | `DS_EXCLUDED_ANALYZERS`          | Removed.                                                                                                        |
 | `DS_EXCLUDED_PATHS`              | Kept. Prefer `excluded_paths` spec input.                                                                       |

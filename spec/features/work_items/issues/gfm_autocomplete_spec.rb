@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
   include Features::AutocompleteHelpers
 
-  let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let_it_be(:user, freeze: false) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
 
   let_it_be(:group) { create(:group, maintainers: [user, user2]) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project, assignees: [user]) }
   let_it_be(:label) { create(:label, project: project, title: 'special+') }
   let_it_be(:label_scoped) { create(:label, project: project, title: 'scoped::label') }
   let_it_be(:label_with_spaces) { create(:label, project: project, title: 'Accepting merge requests') }

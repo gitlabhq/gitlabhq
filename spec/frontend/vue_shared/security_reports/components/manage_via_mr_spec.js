@@ -140,6 +140,28 @@ describe('ManageViaMr component', () => {
             expect(findButton().exists()).toBe(true);
             expect(findButton().props('disabled')).toBe(true);
           });
+
+          it('shows a tooltip explaining why the button is disabled', () => {
+            expect(findButton().element.parentElement.getAttribute('title')).toBe(
+              'Only security managers, maintainers, and owners can toggle this feature.',
+            );
+          });
+        });
+
+        describe('when user can configure', () => {
+          beforeEach(() => {
+            createComponent({
+              apolloProvider,
+              featureName,
+              featureType,
+              isFeatureConfigured: false,
+              canUserConfigure: true,
+            });
+          });
+
+          it('does not show a tooltip', () => {
+            expect(findButton().element.parentElement.getAttribute('title')).toBeNull();
+          });
         });
       });
 
@@ -164,7 +186,7 @@ describe('ManageViaMr component', () => {
         });
 
         it('should call redirect helper with correct value', async () => {
-          await wrapper.trigger('click');
+          await findButton().trigger('click');
           await waitForPromises();
           expect(visitUrl).toHaveBeenCalledTimes(1);
           expect(visitUrl).toHaveBeenCalledWith('testSuccessPath');
@@ -191,7 +213,7 @@ describe('ManageViaMr component', () => {
         });
 
         it('should catch and emit error', async () => {
-          await wrapper.trigger('click');
+          await findButton().trigger('click');
           await waitForPromises();
           expect(wrapper.emitted('error')).toEqual([[message]]);
           expect(findButton().props('loading')).toBe(false);

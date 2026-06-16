@@ -5,6 +5,7 @@ import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 import { SETTINGS_DROPDOWN } from '../i18n';
 
 export default {
+  name: 'SettingsDropdown',
   i18n: SETTINGS_DROPDOWN,
   toggleId: 'js-show-diff-settings',
   components: {

@@ -95,8 +95,8 @@ RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request, feature_c
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   before_all do
     project.add_maintainer(user)
@@ -125,17 +125,17 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
 
   runners_token = 'runnerstoken:intabulasreferre'
 
-  let_it_be(:project_variable_populated) do
+  let_it_be(:project_variable_populated, freeze: false) do
     create(
       :project,
       runners_token: runners_token
     )
   end
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project2, freeze: false) { create(:project) }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     sign_in(user)
@@ -186,8 +186,8 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
   end
 
   context 'for your work -> projects -> personal' do
-    let_it_be(:user_with_namespace) { create(:user, :with_namespace) }
-    let_it_be(:private_personal_project) do
+    let_it_be(:user_with_namespace, freeze: false) { create(:user, :with_namespace) }
+    let_it_be(:private_personal_project, freeze: false) do
       create(:project, :private, :with_avatar, namespace: user_with_namespace.namespace, description: 'foo bar baz')
     end
 
@@ -258,8 +258,10 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
   end
 
   context 'for your work -> projects -> inactive' do
-    let_it_be(:archived_project) { create(:project, :archived) }
-    let_it_be(:pending_deletion_project) { create(:project, marked_for_deletion_at: 1.month.ago, pending_delete: true) }
+    let_it_be(:archived_project, freeze: false) { create(:project, :archived) }
+    let_it_be(:pending_deletion_project, freeze: false) do
+      create(:project, marked_for_deletion_at: 1.month.ago, pending_delete: true)
+    end
 
     before_all do
       archived_project.add_reporter(user)

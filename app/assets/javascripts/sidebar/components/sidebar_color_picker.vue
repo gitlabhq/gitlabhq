@@ -2,6 +2,7 @@
 import { GlFormGroup, GlFormInput, GlLink, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'SidebarColorPicker',
   components: {
     GlFormInput,
     GlLink,
@@ -32,6 +33,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   computed: {
     selectedColor: {
       get() {

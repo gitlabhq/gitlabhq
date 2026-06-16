@@ -43,7 +43,7 @@ export default {
       return this.wikiPage?.subscribed ? 'notifications' : 'notifications-off';
     },
     subscribeTooltip() {
-      return this.wikiPage?.subscribed ? __('Notifications On') : __('Notifications Off');
+      return this.wikiPage?.subscribed ? __('Notifications are on') : __('Notifications are off');
     },
   },
 };

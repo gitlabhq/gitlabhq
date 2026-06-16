@@ -319,7 +319,7 @@ Reachability indicates whether a [component](#component) listed as a dependency 
 
 A [finding](#finding) that only exists in a report produced by an analyzer, and is yet to be
 persisted to the database. The report finding becomes a [vulnerability finding](#vulnerability-finding)
-once it's imported into the database.
+after it's imported into the database.
 
 ## Scan type (report type)
 

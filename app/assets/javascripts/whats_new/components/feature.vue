@@ -9,6 +9,7 @@ import { sprintf, __, s__ } from '~/locale';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 
 export default {
+  name: 'WhatsNewFeature',
   components: {
     GlBadge,
     GlIcon,
@@ -29,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-drawer', 'mark-article-as-read'],
   data() {
     return {
       articleOpen: false,

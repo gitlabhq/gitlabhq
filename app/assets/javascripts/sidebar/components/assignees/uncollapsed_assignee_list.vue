@@ -9,6 +9,7 @@ import UserNameWithStatus from './user_name_with_status.vue';
 const DEFAULT_RENDER_COUNT = 5;
 
 export default {
+  name: 'UncollapsedAssigneeList',
   components: {
     GlButton,
     AssigneeAvatarLink,

@@ -5,8 +5,9 @@ require 'tempfile'
 require 'tmpdir'
 require 'open3'
 require_relative '../../../scripts/lint/validate_fast_spec_helper_usage'
+require_relative '../../support/silence_stdout'
 
-RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_category: :tooling do
+RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_category: :tooling do
   describe '#initialize' do
     subject(:validator) { described_class.new(**kwargs) }
 
@@ -95,7 +96,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return(['', '', instance_double(Process::Status, success?: true)])
       end
 
-      it { expect(silence_output { run }).to be true }
+      it { expect(run).to be true }
 
       it 'prints success message' do
         stdout, _stderr, _result = capture_output { run }
@@ -110,7 +111,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return(['', 'fatal: bad revision', instance_double(Process::Status, success?: false)])
       end
 
-      it { expect(silence_output { run }).to be true }
+      it { expect(run).to be true }
 
       it 'prints warning message' do
         _stdout, stderr, _result = capture_output { run }
@@ -129,7 +130,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return([spec_file, '', instance_double(Process::Status, success?: true)])
       end
 
-      it { expect(silence_output { run }).to be true }
+      it { expect(run).to be true }
 
       it 'prints success message' do
         stdout, _stderr, _result = capture_output { run }
@@ -146,7 +147,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return([nonexistent_file, '', instance_double(Process::Status, success?: true)])
       end
 
-      it { expect(silence_output { run }).to be true }
+      it { expect(run).to be true }
 
       it 'skips nonexistent files and prints success message' do
         stdout, _stderr, _result = capture_output { run }
@@ -170,7 +171,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return(['1 example, 1 failure', '', instance_double(Process::Status, success?: false)])
       end
 
-      it { expect(silence_output { run }).to be true }
+      it { expect(run).to be true }
 
       it 'prints success message' do
         stdout, _stderr, _result = capture_output { run }
@@ -194,7 +195,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
           .and_return(['1 example, 0 failures', '', instance_double(Process::Status, success?: true)])
       end
 
-      it { expect(silence_output { run }).to be false }
+      it { expect(run).to be false }
 
       it 'prints failure message with file list' do
         stdout, _stderr, _result = capture_output { run }
@@ -205,7 +206,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
       end
 
       it 'populates can_use_fast_helper array' do
-        silence_output { run }
+        run
 
         expect(validator.can_use_fast_helper).to include(spec_file)
       end
@@ -237,7 +238,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
       end
 
       it 'returns false when at least one file can use fast_spec_helper' do
-        expect(silence_output { run }).to be false
+        expect(run).to be false
       end
 
       it 'only lists files that can use fast_spec_helper in the failure list' do
@@ -250,7 +251,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
       end
 
       it 'populates can_use_fast_helper with only convertible files' do
-        silence_output { run }
+        run
 
         expect(validator.can_use_fast_helper).to contain_exactly(spec_can_use_fast)
       end
@@ -296,7 +297,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
             .and_return(['1 example, 0 failures', '', instance_double(Process::Status, success?: true)])
         end
 
-        it { expect(silence_output { run }).to be false }
+        it { expect(run).to be false }
 
         it 'shows failure message without verbose headers' do
           stdout, _stderr, _result = capture_output { run }
@@ -369,10 +370,5 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_stdout, feature_categ
   ensure
     $stdout = original_stdout
     $stderr = original_stderr
-  end
-
-  def silence_output
-    _stdout, _stderr, result = capture_output { yield }
-    result
   end
 end

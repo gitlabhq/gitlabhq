@@ -44,6 +44,10 @@ module Sidebars
 
         private
 
+        # Feature Library metadata (`description`/`library_icon`/`tier`) is enrichment for the upcoming
+        # Feature Library modal; it has no effect on the current sidebar. Icons and copy are
+        # placeholders pending Design/Tech Writing sign-off (gitlab-org/gitlab#601393, gitlab-org/gitlab#593847).
+        # All Repository items are Free, so `tier` is omitted.
         def files_menu_item
           ::Sidebars::MenuItem.new(
             title: context.is_super_sidebar ? _('Repository') : _('Files'),
@@ -51,7 +55,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[tree blob blame edit_tree new_tree find_file] },
             container_html_options: { class: 'shortcuts-tree' },
-            item_id: :files
+            item_id: :files,
+            description: _('Browse and manage your repository files.'),
+            library_icon: 'doc-text'
           )
         end
 
@@ -64,7 +70,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[commit commits] },
             item_id: :commits,
-            container_html_options: { class: 'shortcuts-commits' }
+            container_html_options: { class: 'shortcuts-commits' },
+            description: _('View the commit history of your repository.'),
+            library_icon: 'commit'
           )
         end
 
@@ -74,7 +82,9 @@ module Sidebars
             link: project_branches_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :branches },
-            item_id: :branches
+            item_id: :branches,
+            description: _('Manage the branches of your repository.'),
+            library_icon: 'branch'
           )
         end
 
@@ -84,7 +94,9 @@ module Sidebars
             link: project_tags_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             item_id: :tags,
-            active_routes: { controller: :tags }
+            active_routes: { controller: :tags },
+            description: _('Tag specific points in your repository history.'),
+            library_icon: 'label'
           )
         end
 
@@ -98,7 +110,9 @@ module Sidebars
             link: link,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { path: 'graphs#show' },
-            item_id: :contributors
+            item_id: :contributors,
+            description: _('See commit statistics for each contributor.'),
+            library_icon: 'users'
           )
         end
 
@@ -111,7 +125,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :network },
             container_html_options: { class: 'shortcuts-network' },
-            item_id: :graphs
+            item_id: :graphs,
+            description: _('Visualize the branch and commit graph of your repository.'),
+            library_icon: 'chart'
           )
         end
 
@@ -121,7 +137,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             link: project_compare_index_path(context.project, from: context.project.repository.root_ref, to: context.current_ref),
             active_routes: { controller: :compare },
-            item_id: :compare
+            item_id: :compare,
+            description: _('Compare changes between branches, tags, or commits.'),
+            library_icon: 'comparison'
           )
         end
 

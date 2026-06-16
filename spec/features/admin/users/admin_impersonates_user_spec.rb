@@ -12,12 +12,12 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
 
   describe 'GET /admin/users/:id' do
     describe 'Impersonation' do
-      let_it_be(:another_user) { create(:user) }
+      let_it_be(:another_user, freeze: false) { create(:user) }
 
       context 'before impersonating' do
         subject { visit admin_user_path(user_to_visit) }
 
-        let_it_be(:user_to_visit) { another_user }
+        let_it_be(:user_to_visit, freeze: false) { another_user }
 
         shared_examples "user that cannot be impersonated" do
           it 'disables impersonate button' do
@@ -65,7 +65,7 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
         end
 
         context 'for user with expired password' do
-          let_it_be(:user_to_visit) do
+          let_it_be(:user_to_visit, freeze: false) do
             another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
             another_user
           end
@@ -142,7 +142,7 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
             stub_application_setting_enum('email_confirmation_setting', 'soft')
           end
 
-          let_it_be(:another_user) { create(:user, :unconfirmed) }
+          let_it_be(:another_user, freeze: false) { create(:user, :unconfirmed) }
           let(:warning_alert) { page.find(:css, '[data-testid="alert-warning"]') }
 
           context 'with an email that does not contain HTML' do

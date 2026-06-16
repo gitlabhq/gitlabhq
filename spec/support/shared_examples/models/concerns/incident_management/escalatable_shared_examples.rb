@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a model including Escalatable' do
-  let_it_be(:escalatable_factory) { factory_from_class(described_class) }
-  let_it_be(:triggered_escalatable, reload: true) { create(escalatable_factory, :triggered) }
-  let_it_be(:acknowledged_escalatable, reload: true) { create(escalatable_factory, :acknowledged) }
-  let_it_be(:resolved_escalatable, reload: true) { create(escalatable_factory, :resolved) }
-  let_it_be(:ignored_escalatable, reload: true) { create(escalatable_factory, :ignored) }
+  let_it_be(:escalatable_factory, freeze: false) { factory_from_class(described_class) }
+  let_it_be_with_reload(:triggered_escalatable) { create(escalatable_factory, :triggered) }
+  let_it_be_with_reload(:acknowledged_escalatable) { create(escalatable_factory, :acknowledged) }
+  let_it_be_with_reload(:resolved_escalatable) { create(escalatable_factory, :resolved) }
+  let_it_be_with_reload(:ignored_escalatable) { create(escalatable_factory, :ignored) }
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:status) }

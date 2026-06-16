@@ -160,7 +160,7 @@ describe('Policies selector component', () => {
         beforeEach(() => wrapper.setProps({ jobTokenPolicies }));
 
         it('adds the policy when there is no policy set for the resource', () => {
-          findPolicyDropdownAt(5).vm.$emit('select', 'READ_RELEASES');
+          findPolicyDropdownAt(6).vm.$emit('select', 'READ_RELEASES');
 
           expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
             ...jobTokenPolicies,
@@ -169,7 +169,7 @@ describe('Policies selector component', () => {
         });
 
         it('updates the policy when there is already a policy for the resource', () => {
-          findPolicyDropdownAt(2).vm.$emit('select', 'ADMIN_JOBS');
+          findPolicyDropdownAt(3).vm.$emit('select', 'ADMIN_JOBS');
 
           expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
             'ADMIN_JOBS',

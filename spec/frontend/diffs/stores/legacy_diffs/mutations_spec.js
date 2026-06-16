@@ -1268,4 +1268,22 @@ describe('DiffsStoreMutations', () => {
       ).toBe(true);
     });
   });
+
+  describe('SET_GITALY_ERROR_MESSAGE', () => {
+    it('sets gitalyErrorMessage state', () => {
+      const errorMessage = 'The git server, Gitaly, is not available at this time.';
+
+      store[types.SET_GITALY_ERROR_MESSAGE](errorMessage);
+
+      expect(store.gitalyErrorMessage).toBe(errorMessage);
+    });
+
+    it('clears gitalyErrorMessage when set to null', () => {
+      store.$patch({ gitalyErrorMessage: 'some error' });
+
+      store[types.SET_GITALY_ERROR_MESSAGE](null);
+
+      expect(store.gitalyErrorMessage).toBeNull();
+    });
+  });
 });

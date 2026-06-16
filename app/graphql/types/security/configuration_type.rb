@@ -41,6 +41,11 @@ module Types
         null: true,
         description: 'Whether container scanning for registry is enabled.'
 
+      field :license_scanning_for_cyclonedx_enabled,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Whether license scanning for CycloneDX SBOM files is enabled.'
+
       field :features,
         [Types::Security::ScanFeatureType],
         null: false,

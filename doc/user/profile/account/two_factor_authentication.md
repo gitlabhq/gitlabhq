@@ -132,6 +132,7 @@ account if you lose access.
 
 - Introduced in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `email_based_mfa`. Disabled by default.
 - Enabled on GitLab.com in GitLab 18.7, with progressive rollout to all users throughout 2026.
+- New application setting `email_otp_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599948) in GitLab 19.1. Disabled by default.
 
 {{< /history >}}
 
@@ -193,7 +194,7 @@ For more information, see the [Cisco Duo API documentation](https://duo.com/docs
    For Linux package installations:
 
    ```ruby
-    gitlab_rails['duo_auth_enabled'] = false
+    gitlab_rails['duo_auth_enabled'] = true
     gitlab_rails['duo_auth_integration_key'] = '<duo_integration_key_value>'
     gitlab_rails['duo_auth_secret_key'] = '<duo_secret_key_value>'
     gitlab_rails['duo_auth_hostname'] = '<duo_api_hostname>'

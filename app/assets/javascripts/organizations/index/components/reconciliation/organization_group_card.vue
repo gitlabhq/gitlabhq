@@ -19,14 +19,16 @@ export default {
       required: true,
     },
   },
+  computed: {
+    visibilityIcon() {
+      return VISIBILITY_TYPE_ICON[this.group.visibility];
+    },
+    visibilityTooltip() {
+      return GROUP_VISIBILITY_TYPE[this.group.visibility];
+    },
+  },
   methods: {
     numberToMetricPrefix,
-    visibilityIcon(visibility) {
-      return VISIBILITY_TYPE_ICON[visibility];
-    },
-    visibilityTooltip(visibility) {
-      return GROUP_VISIBILITY_TYPE[visibility];
-    },
   },
 };
 </script>
@@ -38,8 +40,8 @@ export default {
       <div class="gl-break-anywhere">
         <span class="gl-font-bold">{{ group.fullName }}</span
         ><gl-icon
-          v-gl-tooltip="visibilityTooltip(group.visibility)"
-          :name="visibilityIcon(group.visibility)"
+          v-gl-tooltip="visibilityTooltip"
+          :name="visibilityIcon"
           class="gl-ml-2"
           variant="subtle"
           data-testid="group-visibility"

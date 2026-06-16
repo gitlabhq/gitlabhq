@@ -10,6 +10,7 @@ import { showBlameButton } from '~/repository/utils/storage_info_utils';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
 
 export default {
+  name: 'BlobRepositoryActionsGroup',
   components: {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,

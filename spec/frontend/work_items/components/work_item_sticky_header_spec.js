@@ -120,7 +120,7 @@ describe('WorkItemStickyHeader', () => {
       const stickyHeader = findStickyHeader();
       expect(stickyHeader.classes()).toContain('gl-absolute');
       expect(stickyHeader.classes()).toContain('gl-left-0');
-      expect(stickyHeader.classes()).toContain('gl-top-10');
+      expect(stickyHeader.classes()).toContain('panel-top-offset-panel-header-height');
       expect(stickyHeader.classes()).not.toContain('gl-fixed');
     });
 
@@ -131,7 +131,7 @@ describe('WorkItemStickyHeader', () => {
       expect(stickyHeader.classes()).toContain('gl-fixed');
       expect(stickyHeader.classes()).not.toContain('gl-absolute');
       expect(stickyHeader.classes()).not.toContain('gl-left-0');
-      expect(stickyHeader.classes()).not.toContain('gl-top-10');
+      expect(stickyHeader.classes()).not.toContain('panel-top-offset-panel-header-height');
     });
   });
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::AlertManagementAlerts, feature_category: :incident_management do
   let_it_be(:creator) { create(:user) }
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(:project, :public, creator_id: creator.id, namespace: creator.namespace)
   end
 

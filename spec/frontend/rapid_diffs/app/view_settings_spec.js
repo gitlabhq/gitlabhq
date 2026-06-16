@@ -49,6 +49,7 @@ describe('View settings', () => {
       showWhitespace: true,
       diffViewType: 'parallel',
       updateUserEndpoint: '/update-user-endpoint',
+      fileByFileMode: false,
     };
     setHTMLFixture(`
       <div
@@ -66,6 +67,15 @@ describe('View settings', () => {
     expect(useDiffsView().viewType).toBe('parallel');
     expect(useDiffsView().showWhitespace).toBe(true);
     expect(useDiffsView().updateUserEndpoint).toBe('/update-user-endpoint');
+    expect(useDiffsView().fileByFileMode).toBe(false);
+    expect(useDiffsView().singleFileMode).toBe(false);
+  });
+
+  it('initializes file by file mode from app data', () => {
+    appData.fileByFileMode = true;
+    init();
+    expect(useDiffsView().fileByFileMode).toBe(true);
+    expect(useDiffsView().singleFileMode).toBe(true);
   });
 
   it('sets loaded files', () => {
@@ -95,7 +105,7 @@ describe('View settings', () => {
     expect(getProp('addedLines')).toBe(1);
     expect(getProp('removedLines')).toBe(2);
     expect(getProp('diffsCount')).toBe(3);
-    expect(getProp('fileByFileSupported')).toBe(false);
+    expect(getProp('fileByFileSupported')).toBe(true);
     expect(getProp('hideOnNarrowScreen')).toBe(false);
   });
 
@@ -125,5 +135,11 @@ describe('View settings', () => {
     init();
     await getVueInstance().$emit('toggleWhitespace', false);
     expect(useDiffsView().updateShowWhitespace).toHaveBeenCalledWith(false);
+  });
+
+  it('toggles file by file', async () => {
+    init();
+    await getVueInstance().$emit('toggleFileByFile', true);
+    expect(useDiffsView().toggleFileByFile).toHaveBeenCalledWith(true);
   });
 });

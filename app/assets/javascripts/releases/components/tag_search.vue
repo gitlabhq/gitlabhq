@@ -7,6 +7,7 @@ import { REF_TYPE_TAGS, SEARCH_DEBOUNCE_MS } from '~/ref/constants';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'TagSearch',
   components: {
     GlButton,
     GlDropdownItem,

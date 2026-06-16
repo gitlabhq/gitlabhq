@@ -12,6 +12,10 @@ module Gitlab
       def finder
         Wikis::PageMetaFinder
       end
+
+      def match_title(items, term)
+        items.search_by_title(term)
+      end
     end
   end
 end

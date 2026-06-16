@@ -5,10 +5,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   include HttpBasicAuthHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group, :public) }
+  let_it_be_with_reload(:group) { create(:group, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:package_name) { 'package-name' }
-  let_it_be(:project, reload: true) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
+  let_it_be_with_reload(:project) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
   let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true, groups: [group]) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
@@ -522,7 +522,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
       let(:params) { { tag: 'v1.2.99' } }
 
       before do
-        project.add_maintainer(user)
+        project.add_maintainer(user) # -- Does not work in before_all
       end
 
       it 'does not create a new package' do

@@ -62,3 +62,10 @@ export const pipelineExecutionPoliciesHelpPath = helpPagePath(
   'user/application_security/policies/pipeline_execution_policies',
   { anchor: 'content-type' },
 );
+
+// Values that can appear in the Gitlab Duo settings `visibleSettings` allowlist.
+// ALL_SETTINGS renders every Duo setting; named identifiers limit rendering to
+// just the named settings (e.g. Security Managers, who may update only the SAST
+// Vulnerability Resolution setting).
+export const ALL_SETTINGS = 'all';
+export const DUO_SAST_VR_WORKFLOW_ENABLED = 'duoSastVrWorkflowEnabled';

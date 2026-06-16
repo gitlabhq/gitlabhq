@@ -34,7 +34,7 @@ query getMergeRequestPipelines(
             id
             shortId
             title
-            webUrl
+            webPath
             author {
               id
               avatarUrl
@@ -79,6 +79,7 @@ query getMergeRequestPipelines(
           hasScheduledActions
           failedJobsCount
           downstream(first: 3) {
+            count
             nodes {
               id
               detailedStatus {

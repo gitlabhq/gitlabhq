@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/module_with_instance_variables'
 
-RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
+RSpec.describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables, feature_category: :tooling do
   let(:msg) { "Do not use instance variables in a module. [...]" }
 
   shared_examples('registering offense') do

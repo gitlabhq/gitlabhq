@@ -21,7 +21,7 @@ make use of the Support team's collected knowledge.
 > own risk.
 
 If you're on a [paid tier](https://about.gitlab.com/pricing/) and aren't sure
-how to use these commands, [contact Support](https://about.gitlab.com/support/)
+how to use these commands, [contact Support](https://support.gitlab.com/)
 for assistance with any issues you're having.
 
 ## Start a database console
@@ -319,7 +319,7 @@ To resolve the error, run `VACUUM` manually:
 ### GitLab database requirements
 
 See [database requirements](../../install/requirements.md#postgresql) and review and install the
-[required extension list](../../install/postgresql_extensions.md).
+[required extension list](../../install/requirements.md#extensions).
 
 ### Serialization errors in the `production/sidekiq` log
 

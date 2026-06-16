@@ -53,6 +53,11 @@ export default {
       required: false,
       default: false,
     },
+    readOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['validity-change', 'update-variables'],
   data() {
@@ -125,6 +130,8 @@ export default {
       }
     },
     addEmptyVariable() {
+      if (this.readOnly) return;
+
       const lastVar = this.variables[this.variables.length - 1];
       if (lastVar?.key === '' && lastVar?.value === '') {
         return;
@@ -214,6 +221,7 @@ export default {
                   :toggle-id="`pipeline-form-ci-variable-type-${index}`"
                   :items="$options.typeOptions"
                   :selected="variable.variableType"
+                  :disabled="readOnly"
                   block
                   data-testid="pipeline-form-ci-variable-type"
                   @select="setVariableType(index, $event)"
@@ -231,6 +239,7 @@ export default {
                   :id="`pipeline-form-ci-variable-key-${index}`"
                   :value="variable.key"
                   :state="!variable.error"
+                  :disabled="readOnly"
                   class="gl-self-start"
                   data-testid="pipeline-form-ci-variable-key-field"
                   @input="(key) => handleKeyChange(key, index)"
@@ -248,6 +257,7 @@ export default {
                   :id="`pipeline-form-ci-variable-value-${index}`"
                   :items="createListItemsFromVariableOptions(variable.valueOptions)"
                   :selected="variable.value"
+                  :disabled="readOnly"
                   data-testid="pipeline-form-ci-variable-value-dropdown"
                   @select="setVariableValue(index, $event)"
                 />
@@ -264,6 +274,7 @@ export default {
                   :id="`pipeline-form-ci-variable-value-${index}`"
                   v-model="variable.value"
                   :style="$options.textAreaStyle"
+                  :disabled="readOnly"
                   class="gl-min-h-7"
                   :no-resize="false"
                   data-testid="pipeline-form-ci-variable-value-field"
@@ -271,7 +282,7 @@ export default {
                 />
               </gl-form-group>
 
-              <template v-if="variables.length > 1">
+              <template v-if="!readOnly && variables.length > 1">
                 <gl-button
                   v-if="canRemove(index)"
                   class="@md/panel:gl-hidden"

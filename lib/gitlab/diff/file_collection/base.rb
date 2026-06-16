@@ -114,7 +114,7 @@ module Gitlab
         def decorate_diff!(diff)
           return diff if diff.is_a?(File)
 
-          stats = diff_stats_collection&.find_by_path(diff.new_path)
+          stats = diff_stats_for(diff)
 
           diff_file = Gitlab::Diff::File.new(diff,
             repository: project.repository,
@@ -132,6 +132,30 @@ module Gitlab
 
         def sort_diffs(diffs)
           Gitlab::Diff::FileCollectionSorter.new(diffs).sort
+        end
+
+        def diff_stats_for(diff)
+          collection = diff_stats_collection
+          return unless collection
+
+          return collection.find_by_path(diff.new_path) unless diff.renamed_file?
+
+          combine_rename_stats(
+            collection.find_by_path(diff.new_path),
+            collection.find_by_path(diff.old_path),
+            diff.new_path
+          )
+        end
+
+        def combine_rename_stats(new_path_stats, old_path_stats, path)
+          return old_path_stats unless new_path_stats
+          return new_path_stats unless old_path_stats
+
+          Gitaly::DiffStats.new(
+            path: path,
+            additions: new_path_stats.additions + old_path_stats.additions,
+            deletions: new_path_stats.deletions + old_path_stats.deletions
+          )
         end
 
         def self.max_blob_size(_) = nil

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/background_migration_missing_active_concern'
 
-RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationMissingActiveConcern do
+RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationMissingActiveConcern, feature_category: :database do
   shared_examples 'offense is not registered' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

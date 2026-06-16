@@ -7,7 +7,7 @@ class MergeRequestSerializer < BaseSerializer
   def represent(merge_request, opts = {}, entity = nil)
     entity ||= identified_entity(opts)
 
-    super(merge_request, opts, entity)
+    super
   end
 
   def identified_entity(opts)

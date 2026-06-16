@@ -129,6 +129,7 @@ export default {
       chat: s__('JobSource|Chat'),
       container_registry_push: s__('JobSource|Container Registry Push'),
       duo_workflow: s__('JobSource|Duo Agent Platform'),
+      dependency_management_security_update: s__('JobSource|Dependency Management Security Update'),
       external: s__('JobSource|External'),
       external_pull_request_event: s__('JobSource|External Pull Request'),
       merge_request_event: s__('JobSource|Merge Request'),

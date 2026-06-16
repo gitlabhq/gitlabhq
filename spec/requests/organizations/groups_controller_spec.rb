@@ -21,7 +21,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
     end
 
     context 'when the user is signed in' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         sign_in(user)
@@ -33,7 +33,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'as as admin', :enable_admin_mode do
-        let_it_be(:user) { create(:admin) }
+        let_it_be(:user, freeze: false) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -50,7 +50,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
   describe 'POST #create' do
     let_it_be(:params) { { group: { name: 'test-group', path: 'test-group' } } }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:organization) { create(:organization) }
 
     subject(:gitlab_request) { post groups_organization_path(organization), params: params, as: :json }
@@ -115,14 +115,14 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user, organization: organization) }
+        let_it_be(:user, freeze: false) { create(:user, organization: organization) }
 
         before do
           sign_in(user)
         end
 
         context 'as as admin', :enable_admin_mode do
-          let_it_be(:user) { create(:admin) }
+          let_it_be(:user, freeze: false) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
           it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -143,7 +143,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
         end
 
         context 'as an organization owner' do
-          let_it_be(:user) do
+          let_it_be(:user, freeze: false) do
             organization_user = create(:organization_owner, organization: organization)
             organization_user.user
           end
@@ -155,7 +155,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
     end
 
     context 'when group is not in organization' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
       let_it_be(:organization_2) { create(:organization) }
 
       subject(:gitlab_request) do
@@ -184,7 +184,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         before do
           sign_in(user)
@@ -202,7 +202,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       specify do
         gitlab_request
 
-        expect(group).to be_self_deletion_scheduled
+        expect(group.reload).to be_self_deletion_scheduled
       end
     end
 
@@ -233,14 +233,14 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user, organization: organization) }
+        let_it_be(:user, freeze: false) { create(:user, organization: organization) }
 
         before do
           sign_in(user)
         end
 
         context 'as as admin', :enable_admin_mode do
-          let_it_be(:user) { create(:admin) }
+          let_it_be(:user, freeze: false) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
           it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -298,6 +298,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
           context 'when group is already marked for deletion' do
             before do
+              group.schedule_deletion!(transition_user: user)
               create(:group_deletion_schedule, group: group)
             end
 
@@ -336,7 +337,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
         end
 
         context 'as an organization owner' do
-          let_it_be(:user) do
+          let_it_be(:user, freeze: false) do
             organization_user = create(:organization_owner, organization: organization)
             organization_user.user
           end
@@ -349,7 +350,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
     end
 
     context 'when group is not in organization' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
       let_it_be(:organization_2) { create(:organization) }
 
       subject(:gitlab_request) do
@@ -379,7 +380,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         before do
           sign_in(user)

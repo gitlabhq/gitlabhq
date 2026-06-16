@@ -440,6 +440,11 @@ Requires:
 
 - The `targets` method.
 
+> [!note]
+> The `targets` entries must be valid Ruby constant strings (resolvable through `constantize`).
+> For namespaced classes, use the full path.
+> For example, use `Elastic::MigrationIndexConfig` instead of `MigrationIndexConfig`.
+
 ```ruby
 class MigrationName < Elastic::Migration
   include ::Search::Elastic::MigrationReindexTaskHelper

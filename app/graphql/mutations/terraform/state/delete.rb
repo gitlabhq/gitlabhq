@@ -6,6 +6,9 @@ module Mutations
       class Delete < Base
         graphql_name 'TerraformStateDelete'
 
+        authorize_granular_token permissions: :delete_terraform_state, boundary_argument: :id,
+          boundary_type: :project
+
         def resolve(id:)
           state = authorized_find!(id: id)
           response = ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute

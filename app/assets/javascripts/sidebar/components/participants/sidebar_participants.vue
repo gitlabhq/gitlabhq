@@ -4,6 +4,7 @@ import { n__, sprintf } from '~/locale';
 import Participants from './participants.vue';
 
 export default {
+  name: 'SidebarParticipants',
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -44,6 +45,7 @@ export default {
       default: true,
     },
   },
+  emits: ['toggleSidebar'],
   computed: {
     participantLabel() {
       return sprintf(

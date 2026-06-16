@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/multiple_databases'
 
-RSpec.describe RuboCop::Cop::Database::MultipleDatabases do
+RSpec.describe RuboCop::Cop::Database::MultipleDatabases, feature_category: :database do
   it 'flags the use of ActiveRecord::Base.connection' do
     expect_offense(<<~RUBY)
     ActiveRecord::Base.connection.inspect

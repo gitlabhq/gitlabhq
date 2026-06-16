@@ -10,7 +10,11 @@ import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants';
-import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { unsortedFrequentItems, sortedFrequentItems } from './mock_data';
 
@@ -96,12 +100,20 @@ describe('Super sidebar utils spec', () => {
       expect(axiosMock.history.post[0].url).toBe(trackVisitsPath);
     });
 
-    it('logs an error to Sentry when the request fails', async () => {
+    it('logs an error to Sentry when the request fails with an unexpected status', async () => {
       axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       trackContextAccess(username, context, trackVisitsPath);
       await waitForPromises();
 
       expect(Sentry.captureException).toHaveBeenCalled();
+    });
+
+    it('does not log to Sentry when the request fails with a 422 status', async () => {
+      axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY);
+      trackContextAccess(username, context, trackVisitsPath);
+      await waitForPromises();
+
+      expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
     it('updates existing item frequency/access time if it was persisted to the local storage over 15 minutes ago', () => {

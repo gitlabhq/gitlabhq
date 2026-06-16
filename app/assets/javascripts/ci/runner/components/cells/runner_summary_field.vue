@@ -2,6 +2,7 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'RunnerSummaryField',
   components: {
     GlIcon,
   },

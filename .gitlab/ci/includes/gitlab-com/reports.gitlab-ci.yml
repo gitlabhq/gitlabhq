@@ -6,6 +6,7 @@ include:
       stage: "lint"
       enable_static_reachability: true
       excluded_paths: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"
+      disabled_resolution_jobs: "gradle,maven,python"
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
@@ -28,8 +29,13 @@ gitlab-advanced-sast:
   variables:
     GITLAB_ADVANCED_SAST_ENABLED: 'true'
     AST_ENABLE_MR_PIPELINES: 'true'
+    # Run on saas-linux-xlarge-amd64 (16 vCPU / 64 GB) with --multi-core 8.
+    # Validated across nine experimental rounds as the best Pareto point on
+    # job duration vs runner tier — see MR description.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/601931.
+    SAST_SCANNER_ALLOWED_CLI_OPTS: "--multi-core 8"
   tags:
-    - saas-linux-2xlarge-amd64
+    - saas-linux-xlarge-amd64
   rules: !reference [".reports:rules:gitlab-advanced-sast", rules]
 
 semgrep-sast:
@@ -60,52 +66,6 @@ dependency-scanning:
   before_script:
     # Remove sboms in test fixtures so that they are not ingested and scanned.
     - find spec ee/spec qa -path '**/fixtures/**/gl-sbom*.cdx.json' -delete
-
-# Analyze dependencies for malicious behavior
-# See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
-.package_hunter-base:
-  extends: .default-retry
-  stage: test
-  image:
-    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v3.0.1@sha256:ffa4af2810fed6922ba9d19badc4636043f54f70db19aebb8253e83142e5da16
-    entrypoint: [""]
-  variables:
-    HTR_user: '$PACKAGE_HUNTER_USER'
-    HTR_pass: '$PACKAGE_HUNTER_PASS'
-  needs: []
-  allow_failure: true
-  before_script:
-    - rm -r spec locale .git app/assets/images doc/
-    - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
-  script:
-    - DEBUG=* node /usr/src/app/cli.js analyze --format gitlab --manager ${PACKAGE_MANAGER} gitlab.tgz | tee ${CI_PROJECT_DIR}/gl-dependency-scanning-report.json
-  after_script:
-    - mkdir ~/.aws
-    - '[[ -z "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ]] || mv "${AWS_SIEM_REPORT_INGESTION_CREDENTIALS_FILE}" ~/.aws/credentials'
-    - npm install --no-save --ignore-scripts @aws-sdk/client-s3@3.49.0
-    - scripts/ingest-reports-to-siem || true  # Allow legacy report to fail as we'll remove it in the future anyway
-    - scripts/ingest-reports-to-siem-devo
-  artifacts:
-    paths:
-      - gl-dependency-scanning-report.json
-    access: 'developer'
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
-    expire_in: 1 week
-
-package_hunter-yarn:
-  extends:
-    - .package_hunter-base
-    - .reports:rules:package_hunter-yarn
-  variables:
-    PACKAGE_MANAGER: yarn
-
-package_hunter-bundler:
-  extends:
-    - .package_hunter-base
-    - .reports:rules:package_hunter-bundler
-  variables:
-    PACKAGE_MANAGER: bundler
 
 pajamas_adoption:
   extends:

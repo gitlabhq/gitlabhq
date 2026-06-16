@@ -7,6 +7,7 @@ import {
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 
 export default {
+  name: 'ReportListItem',
   components: {
     GlBadge,
     StatusIcon,

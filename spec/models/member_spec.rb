@@ -193,7 +193,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     context 'when access_level is nil' do
       let_it_be(:group) { create(:group) }
       let_it_be(:user) { create(:user) }
-      let_it_be(:member) { create(:group_member, source: group, user: user) }
+      let_it_be_with_reload(:member) { create(:group_member, source: group, user: user) }
 
       shared_examples 'returns the correct validation error' do
         specify do
@@ -209,7 +209,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       context 'for a subgroup member' do
         let_it_be(:subgroup) { create(:group, parent: group) }
-        let_it_be(:member) { create(:group_member, source: subgroup, user: user) }
+        let_it_be_with_reload(:member) { create(:group_member, source: subgroup, user: user) }
 
         it_behaves_like 'returns the correct validation error'
       end
@@ -347,7 +347,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       let_it_be(:subgroup) { create(:group, parent: group) }
       let_it_be(:project) { create(:project, group: group) }
 
-      let_it_be(:group_member) { create(:group_member, source: group, user: user) }
+      let_it_be_with_reload(:group_member) { create(:group_member, source: group, user: user) }
       let_it_be(:subgroup_member) { create(:group_member, source: subgroup, user: user) }
 
       let_it_be(:other_group_member) { create(:group_member, user: user, source: other_group) }
@@ -1465,7 +1465,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     context 'when after accepting invite' do
       let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
-      let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
+      let_it_be_with_reload(:member) { create(:group_member, :invited, source: group) }
       let_it_be(:email) { member.invite_email }
       let(:user) { build(:user, email: email) }
 
@@ -1487,7 +1487,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       context 'when member source is a project' do
         let_it_be(:project) { create(:project, namespace: group) }
-        let_it_be(:member) { create(:project_member, :invited, source: project, invite_email: email) }
+        let_it_be_with_reload(:member) { create(:project_member, :invited, source: project, invite_email: email) }
 
         it 'calls updates the two factor requirement' do
           expect(user).not_to receive(:require_two_factor_authentication_from_group)
@@ -1499,7 +1499,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     context 'when after accept request' do
       let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
-      let_it_be(:member, reload: true) { create(:group_member, :awaiting, source: group) }
+      let_it_be_with_reload(:member) { create(:group_member, :awaiting, source: group) }
 
       it 'calls updates the two factor requirement' do
         expect(member.user).to receive(:require_two_factor_authentication_from_group).and_call_original
@@ -1643,7 +1643,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   context 'for updating organization_users' do
     let_it_be(:organization) { create(:organization) }
     let_it_be(:group) { create(:group, organization: organization) }
-    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let(:member) { create(:group_member, source: group, user: user) }
 
     subject(:commit_member) { member }
@@ -1750,7 +1750,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
 
       context 'when member accept invite' do
-        let_it_be_with_reload(:member, reload: true) { create(:group_member, :invited, source: group) }
+        let_it_be_with_reload(:member) { create(:group_member, :invited, source: group) }
 
         subject(:commit_member) { member.accept_invite!(user) }
 
@@ -1792,7 +1792,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
 
       context 'when updating a non user_id/requested_at attribute' do
-        let_it_be(:member) { create(:group_member, :reporter, source: group) }
+        let_it_be_with_reload(:member) { create(:group_member, :reporter, source: group) }
 
         subject(:commit_member) { member.update!(access_level: GroupMember::DEVELOPER) }
 
@@ -1847,7 +1847,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'when after_update :post_update_hook' do
-    let_it_be(:member) { create(:group_member, :developer) }
+    let_it_be_with_reload(:member) { create(:group_member, :developer) }
 
     context 'when access_level is changed' do
       it 'enqueues the access granted mailer when access level has changed' do
@@ -2008,7 +2008,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'when after_commit :log_previous_state_on_update' do
-    let_it_be(:member) { create(:group_member) }
+    let_it_be_with_reload(:member) { create(:group_member) }
 
     it 'logs a message on member update' do
       expect(Gitlab::AppLogger)

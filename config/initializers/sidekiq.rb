@@ -37,6 +37,11 @@ Sidekiq::Cron.configure do |cfg|
   # it to `0` (essentially disables it). To avoid that, we do the check below and preserve the fallback to default value
   cfg.cron_poll_interval = Gitlab.config.cron_jobs.poll_interval if Gitlab.config.cron_jobs.poll_interval
   cfg.cron_poll_interval = 0 if queue_instance != Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
+
+  # sidekiq-cron's ScheduleLoader auto-loads config/schedule.yml on :startup, which conflicts
+  # with CronJobInitializer.execute that loads FOSS + EE + SaaS schedules. Disable it by
+  # pointing at a non-existent path.
+  cfg.cron_schedule_file = 'config/sidekiq_schedule_disabled.yml'
 end
 
 Sidekiq.configure_server do |config|

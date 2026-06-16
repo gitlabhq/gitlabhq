@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   let(:compare) { described_class.new(repository, base, head, straight: false) }
   let(:compare_straight) { described_class.new(repository, base, head, straight: true) }
@@ -45,6 +45,18 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
       let(:compare) { described_class.new(repository, nil, nil) }
 
       it { is_expected.to be_empty }
+    end
+
+    context 'with limit parameter' do
+      it 'passes the limit to Commit.between and does not cache the result' do
+        expect(Gitlab::Git::Commit).to receive(:between)
+          .with(repository, anything, anything, limit: 10)
+          .twice
+          .and_return([])
+
+        compare.commits(limit: 10)
+        compare.commits(limit: 10)
+      end
     end
   end
 

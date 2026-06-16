@@ -142,3 +142,64 @@
     margin-right: 0;
   }
 }
+
+// Opt-in layout for MarkdownEditor consumers that render the editor inside
+// a fixed-height container (side panels, modals, etc). Enabled by the
+// `:fill-container` prop on MarkdownEditor, which puts this class on the
+// editor's root `.md-area-wrapper`.
+.md-area-wrapper-fill {
+  &,
+  .md-content-editor-wrapper,
+  .md-area,
+  .md-write-holder,
+  .md-preview-holder,
+  .zen-backdrop,
+  .div-dropzone-wrapper,
+  .div-dropzone {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .md-content-editor-wrapper > .md-area {
+    overflow-y: auto;
+  }
+
+  .md .ProseMirror {
+    overflow-y: visible !important;
+    resize: none !important;
+    max-height: none !important;
+  }
+
+  .markdown-area.note-textarea {
+    flex: 1 1 0;
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto !important;
+    resize: none !important;
+    max-height: none !important;
+  }
+
+  .md-preview-holder {
+    overflow-y: auto;
+  }
+
+  .md-area,
+  .md-area:focus-within,
+  .md-area:hover,
+  .md-area-wrapper,
+  .zen-backdrop,
+  .div-dropzone-wrapper,
+  .div-dropzone {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .md-write-holder textarea:focus,
+  .zen-backdrop:not(.fullscreen) textarea:focus,
+  .md .ProseMirror:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}

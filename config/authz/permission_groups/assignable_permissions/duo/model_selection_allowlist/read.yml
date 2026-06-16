@@ -1,0 +1,10 @@
+---
+name: read_model_selection_allowlist
+description: Grants the ability to read the model selection allowlist configuration
+available_for:
+  - granular_access_token
+permissions:
+  - read_model_selection_allowlist
+boundaries:
+  - instance
+  - group

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge Request Creation', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
   let_it_be(:source_branch) { 'fix' }
   let_it_be(:target_branch) { 'master' }
 

@@ -6,6 +6,7 @@ import { __, s__, sprintf } from '~/locale';
 import { isValidURL } from '~/lib/utils/url_utility';
 
 export default {
+  name: 'MetricImageDetailsModal',
   components: {
     GlButton,
     GlForm,

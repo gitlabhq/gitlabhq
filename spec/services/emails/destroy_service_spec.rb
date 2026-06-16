@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Emails::DestroyService, feature_category: :user_management do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let!(:email) { create(:email, :confirmed, user: user) }
   let!(:notification_setting) { create(:notification_setting, user: user, notification_email: email.email) }
 

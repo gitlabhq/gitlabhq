@@ -29,7 +29,7 @@ RSpec.shared_examples 'a subscribeable graphql resource' do
 
   it 'subscribes to the resource' do
     expect(mutated_resource).to eq(resource)
-    expect(mutated_resource.subscribed?(user, project)).to eq(true)
+    expect(mutated_resource.subscribed?(user, project)).to be(true)
     expect(subject[:errors]).to be_empty
   end
 
@@ -39,7 +39,7 @@ RSpec.shared_examples 'a subscribeable graphql resource' do
     it 'unsubscribes from the discussion' do
       resource.subscribe(user, project)
 
-      expect(mutated_resource.subscribed?(user, project)).to eq(false)
+      expect(mutated_resource.subscribed?(user, project)).to be(false)
       expect(subject[:errors]).to be_empty
     end
   end

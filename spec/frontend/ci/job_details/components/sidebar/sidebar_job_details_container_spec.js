@@ -84,6 +84,7 @@ describe('Job Sidebar Details Container', () => {
       ['chat', 'Source: Chat'],
       ['container_registry_push', 'Source: Container Registry Push'],
       ['duo_workflow', 'Source: Duo Agent Platform'],
+      ['dependency_management_security_update', 'Source: Dependency Management Security Update'],
       ['external', 'Source: External'],
       ['external_pull_request_event', 'Source: External Pull Request'],
       ['merge_request_event', 'Source: Merge Request'],

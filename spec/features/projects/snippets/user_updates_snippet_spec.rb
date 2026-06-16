@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Snippets > User updates a snippet', :js, feature_cate
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
-  let_it_be(:snippet, reload: true) { create(:project_snippet, :repository, project: project, author: user) }
+  let_it_be_with_reload(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
 
   before do
     project.add_maintainer(user)

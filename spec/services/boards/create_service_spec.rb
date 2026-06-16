@@ -9,7 +9,7 @@ RSpec.describe Boards::CreateService, feature_category: :portfolio_management do
     subject(:service) { described_class.new(parent, user) }
 
     context 'when board parent is a project' do
-      let_it_be(:parent, reload: true) { create(:project) }
+      let_it_be_with_reload(:parent) { create(:project) }
 
       it_behaves_like 'boards create service'
 
@@ -24,7 +24,7 @@ RSpec.describe Boards::CreateService, feature_category: :portfolio_management do
     end
 
     context 'when board parent is a group' do
-      let_it_be(:parent, reload: true) { create(:group) }
+      let_it_be_with_reload(:parent) { create(:group) }
 
       it_behaves_like 'boards create service'
 

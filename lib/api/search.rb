@@ -130,7 +130,7 @@ module API
       end
 
       def project_scope_allowed?
-        ::Search::Navigation.new(user: current_user, project: @project).tab_enabled_for_project?(params[:scope].to_sym)
+        ::Search::Scopes.scope_allowed_for_project?(params[:scope].to_sym, current_user, @project)
       end
 
       def unavailable_work_item_types?

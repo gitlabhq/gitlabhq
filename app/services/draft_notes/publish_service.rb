@@ -68,7 +68,17 @@ module DraftNotes
         executing_user: executing_user
       )
 
-      set_discussion_resolve_status(note, draft)
+      unless note.persisted?
+        Gitlab::AppLogger.warn(
+          message: 'Draft note publish: note not persisted',
+          draft_note_id: draft.id,
+          merge_request_id: merge_request.id,
+          project_id: project.id,
+          errors: note.errors.full_messages
+        )
+      end
+
+      set_discussion_resolve_status(note, draft) if note.persisted?
       note
     end
 

@@ -5,6 +5,7 @@ import { GlButton, GlEmptyState } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'EmptyState',
   components: {
     GlButton,
     GlEmptyState,

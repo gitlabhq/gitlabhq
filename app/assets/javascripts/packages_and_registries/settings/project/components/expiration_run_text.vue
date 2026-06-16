@@ -7,6 +7,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 
 export default {
+  name: 'ExpirationRunText',
   components: {
     GlFormGroup,
     GlFormInput,

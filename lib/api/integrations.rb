@@ -88,6 +88,7 @@ module API
               requires setting[:name], type: setting[:type], desc: setting[:desc]
             end
           end
+          route_setting :authorization, skip_granular_token_authorization: :integration_token_auth
           post "#{path}/#{integration_slug.underscore}/trigger", urgency: :low do
             project = find_project(params[:id])
 
@@ -138,6 +139,7 @@ module API
     params do
       requires :text, type: String, desc: 'Text of the slack command'
     end
+    route_setting :authorization, skip_granular_token_authorization: :integration_token_auth
     post 'slack/trigger' do
       if result = Gitlab::SlashCommands::GlobalSlackHandler.new(params).trigger
         status result[:status] || 200

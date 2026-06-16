@@ -14,8 +14,7 @@ RSpec.describe 'layouts/fullscreen' do
   it 'renders a flex container' do
     render
 
-    expect(rendered).to have_selector(".gl--flex-full.gl-h-full")
-    expect(rendered).to have_selector(".gl--flex-full.gl-w-full")
+    expect(rendered).to have_selector(".gl-flex.gl-w-full.gl-h-full")
   end
 
   it 'renders flash container' do

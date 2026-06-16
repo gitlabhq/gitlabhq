@@ -22,6 +22,14 @@ module Directives
         description: 'Argument name containing the authorization boundary (path or GlobalID). ' \
           'Use for mutations and query fields where the boundary is passed as an argument.'
 
+      argument :traversal, GraphQL::Types::Boolean,
+        required: false,
+        description: 'When true, this directive only verifies the token is scoped to the boundary ' \
+          '(read_boundary), without enforcing the listed permissions. Use for entry-point fields ' \
+          'like Query.group(fullPath:) where downstream fields enforce the real permissions. ' \
+          'Only applies to project and group boundary types. All other boundary types ' \
+          'fall back to the regular permission check.'
+
       locations FIELD_DEFINITION, OBJECT
     end
   end

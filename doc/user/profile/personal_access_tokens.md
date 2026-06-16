@@ -38,40 +38,6 @@ On GitLab Self-Managed and GitLab Dedicated instances, administrators can use th
 [user tokens API](../../api/user_tokens.md#create-an-impersonation-token) to create impersonation
 tokens to authenticate as a specific user.
 
-## View token usage information
-
-{{< history >}}
-
-- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
-- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
-- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
-- Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
-
-{{< /history >}}
-
-The personal access tokens page displays information about your access tokens.
-
-From this page, you can perform the following actions:
-
-- Create, rotate, and revoke personal access tokens.
-- View all active and inactive personal access tokens.
-- View token information, including, scopes, assigned roles, and expiration dates.
-- View usage information, including usage dates, and of the last five distinct connection IP addresses.
-  > [!note]
-  > GitLab periodically updates token usage information when the token performs a Git operation or
-  > authenticates an operation with the [REST](../../api/rest/_index.md) or
-  > [GraphQL](../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
-  > token usage IP addresses update every minute.
-
-To view your personal access tokens:
-
-1. In the upper-right corner, select your avatar.
-1. Select **Edit profile**.
-1. In the left sidebar, select **Access** > **Personal access tokens**.
-
-Select the name of a token to open the details panel. By default, only active tokens are displayed.
-Use the search bar to filter the list of access tokens.
-
 ## Create a personal access token
 
 {{< history >}}
@@ -164,6 +130,84 @@ Scopes define the actions available when you authenticate with a personal access
 > If you have enabled [external authorization](../../administration/settings/external_authorization.md),
 > personal access tokens cannot access container or package registries. To restore access,
 > turn off external authorization.
+
+## Authenticate with an access token
+
+Use an access token to authenticate with the GitLab REST API, Git over HTTPS, and
+third-party tools that integrate with GitLab.
+
+### Use REST API
+
+Pass your token in the `PRIVATE-TOKEN` header:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects"
+```
+
+For full details, see
+[REST API authentication](../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+
+### Use Git over HTTPS
+
+Use your token as the password when Git prompts for credentials:
+
+- Username: Any non-empty string (GitLab does not validate this value).
+- Password: Your personal access token.
+
+For example:
+
+```shell
+git clone https://oauth2:<your_access_token>@gitlab.example.com/gitlab-org/gitlab.git
+```
+
+### Use third-party tools and IDE extensions
+
+Tools that integrate with GitLab, such as IDE extensions, CI/CD tools, and automation
+scripts, accept a personal access token for authentication. See the documentation for each tool:
+
+- [GitLab CLI (`glab`)](../../editor_extensions/gitlab_cli/_index.md)
+- [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md)
+- [GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/_index.md)
+
+For CI/CD pipelines, [CI/CD job tokens](../../ci/jobs/ci_job_token.md) are recommended instead.
+
+For personal access token security guidance, see
+[token security considerations](../../security/tokens/_index.md#security-considerations).
+
+## View token usage information
+
+{{< history >}}
+
+- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
+- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
+- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
+- Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
+
+{{< /history >}}
+
+The personal access tokens page displays information about your access tokens.
+
+From this page, you can perform the following actions:
+
+- Create, rotate, and revoke personal access tokens.
+- View all active and inactive personal access tokens.
+- View token information, including, scopes, assigned roles, and expiration dates.
+- View usage information, including usage dates, and of the last five distinct connection IP addresses.
+  > [!note]
+  > GitLab periodically updates token usage information when the token performs a Git operation or
+  > authenticates an operation with the [REST](../../api/rest/_index.md) or
+  > [GraphQL](../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
+  > token usage IP addresses update every minute.
+
+To view your personal access tokens:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
+
+Select the name of a token to open the details panel. By default, only active tokens are displayed.
+Use the search bar to filter the list of access tokens.
 
 ## Rotate a personal access token
 
@@ -281,6 +325,29 @@ Prerequisites:
 
 You can now create personal access tokens for a service account user with no expiry date.
 
+## Clone repository using personal access token
+
+To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
+
+```shell
+git clone https://<username>:<personal_token>@gitlab.com/gitlab-org/gitlab.git
+```
+
+This method saves your personal access token in your bash history. To avoid this, run the following command:
+
+```shell
+git clone https://<username>@gitlab.com/gitlab-org/gitlab.git
+```
+
+When asked for your password for `https://gitlab.com`, enter your personal access token.
+
+The `username` in the `clone` command:
+
+- Can be any string value.
+- Must not be an empty string.
+
+Remember this if you set up an automation pipeline that depends on authentication.
+
 ## Disable access tokens
 
 {{< details >}}
@@ -361,84 +428,6 @@ To disable the enterprise users' personal access tokens:
 1. Select **Save changes**.
 
 When you delete or block an enterprise user account, their personal access tokens are automatically revoked.
-
-## Use DPoP with personal access tokens
-
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `dpop_authentication`. Disabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
-
-Demonstrating Proof of Possession (DPoP) enhances the security of your personal access tokens,
-and minimizes the effects of unintended token leaks. When you enable this feature on your
-account, all REST and GraphQL API requests containing a PAT must also provide a signed DPoP header. Creating a
-signed DPoP header requires your corresponding private SSH key.
-
-> [!note]
-> If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
->
-> DPoP header is not required for Git operations over HTTPS that include an access token.
-
-Prerequisites:
-
-- You must [add at least one public SSH key](../ssh.md#add-an-ssh-key-to-your-gitlab-account)
-  to your account, with a **Usage type** of **Signing** or **Authentication & Signing**.
-  - Your SSH key type must be RSA.
-- You must have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md)
-  for your GitLab account.
-
-To require DPoP on all calls to the REST and GraphQL APIs:
-
-1. In the upper-right corner, select your avatar.
-1. Select **Edit profile**.
-1. In the left sidebar, select **Access** > **Personal access tokens**.
-1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
-1. Select **Save changes**.
-1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),
-   run this command in your terminal. Replace `<your_access_token>` with your access token, and `~/.ssh/id_rsa`
-   with the location of your private key:
-
-   ```shell
-    glab auth dpop-gen --pat "<your_access_token>" --private-key ~/.ssh/id_rsa
-   ```
-
-The DPoP header you generated in the CLI can be used:
-
-- With the REST API:
-
-  ```shell
-  curl --header "PRIVATE-TOKEN: <your_access_token>" \
-    --header "DPoP: <dpop-from-glab>" \
-    "https://gitlab.example.com/api/v4/projects"
-  ```
-
-- With GraphQL:
-
-  ```shell
-   curl --request POST \
-   --header "Content-Type: application/json" \
-   --header "PRIVATE-TOKEN: <your_access_token>" \
-   --header "DPoP: <dpop-from-glab>" \
-   --data '{
-   "query": "query { currentUser { id } }"
-   }' \
-   "https://gitlab.example.com/api/graphql"
-  ```
-
-To learn more about DPoP, see the blueprint
-[Sender Constraining Personal Access Tokens](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/security-feature-blueprints/-/tree/main/sender_constraining_access_tokens).
 
 ## Create a personal access token programmatically
 
@@ -524,34 +513,83 @@ This code can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
 ```
 
-## Clone repository using personal access token
+## Use DPoP with personal access tokens
 
 {{< details >}}
 
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
-To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
+{{< history >}}
 
-```shell
-git clone https://<username>:<personal_token>@gitlab.com/gitlab-org/gitlab.git
-```
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `dpop_authentication`. Disabled by default.
 
-This method saves your personal access token in your bash history. To avoid this, run the following command:
+{{< /history >}}
 
-```shell
-git clone https://<username>@gitlab.com/gitlab-org/gitlab.git
-```
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
-When asked for your password for `https://gitlab.com`, enter your personal access token.
+Demonstrating Proof of Possession (DPoP) enhances the security of your personal access tokens,
+and minimizes the effects of unintended token leaks. When you enable this feature on your
+account, all REST and GraphQL API requests containing a PAT must also provide a signed DPoP header. Creating a
+signed DPoP header requires your corresponding private SSH key.
 
-The `username` in the `clone` command:
+> [!note]
+> If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
+>
+> DPoP header is not required for Git operations over HTTPS that include an access token.
 
-- Can be any string value.
-- Must not be an empty string.
+Prerequisites:
 
-Remember this if you set up an automation pipeline that depends on authentication.
+- You must [add at least one public SSH key](../ssh.md#add-an-ssh-key-to-your-gitlab-account)
+  to your account, with a **Usage type** of **Signing** or **Authentication & Signing**.
+  - Your SSH key type must be RSA.
+- You must have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md)
+  for your GitLab account.
+
+To require DPoP on all calls to the REST and GraphQL APIs:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
+1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
+1. Select **Save changes**.
+1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),
+   run this command in your terminal. Replace `<your_access_token>` with your access token, and `~/.ssh/id_rsa`
+   with the location of your private key:
+
+   ```shell
+    glab auth dpop-gen --pat "<your_access_token>" --private-key ~/.ssh/id_rsa
+   ```
+
+The DPoP header you generated in the CLI can be used:
+
+- With the REST API:
+
+  ```shell
+  curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --header "DPoP: <dpop-from-glab>" \
+    "https://gitlab.example.com/api/v4/projects"
+  ```
+
+- With GraphQL:
+
+  ```shell
+   curl --request POST \
+   --header "Content-Type: application/json" \
+   --header "PRIVATE-TOKEN: <your_access_token>" \
+   --header "DPoP: <dpop-from-glab>" \
+   --data '{
+   "query": "query { currentUser { id } }"
+   }' \
+   "https://gitlab.example.com/api/graphql"
+  ```
+
+To learn more about DPoP, see the blueprint
+[Sender Constraining Personal Access Tokens](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/security-feature-blueprints/-/tree/main/sender_constraining_access_tokens).
 
 ## Alternatives to personal access tokens
 
@@ -567,4 +605,8 @@ For authentication in CI/CD jobs, consider:
 - [Group access tokens](../group/settings/group_access_tokens.md)
 - [Project access tokens](../project/settings/project_access_tokens.md)
 - [Personal access tokens API](../../api/personal_access_tokens.md)
-- [REST API endpoints with fine-grained personal access token support](../../auth/tokens/fine_grained_access_tokens.md)
+- [Fine-grained permissions for personal access tokens](../../auth/tokens/fine_grained_access_tokens.md)
+- [REST API endpoints with fine-grained personal access token support](../../auth/tokens/fine_grained_access_tokens_rest.md)
+- [GraphQL fields with fine-grained personal access token support](../../auth/tokens/fine_grained_access_tokens_graphql.md)
+- [Permissions Assistant](../duo_agent_platform/agents/foundational_agents/permissions_assistant.md),
+  a GitLab Duo agent that helps you select fine-grained permissions when creating a token

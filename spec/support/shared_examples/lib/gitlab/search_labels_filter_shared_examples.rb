@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'search results filtered by labels' do
-  let_it_be(:project_label) { create(:label, project: project) }
-  let_it_be(:labeled_issue) { create(:labeled_issue, labels: [project_label], project: project, title: 'foo project') }
-  let_it_be(:unlabeled_issue) { create(:issue, project: project, title: 'foo unlabeled') }
+  let_it_be(:project_label, freeze: false) { create(:label, project: project) }
+  let_it_be(:labeled_issue, freeze: false) do
+    create(:labeled_issue, labels: [project_label], project: project, title: 'foo project')
+  end
+
+  let_it_be(:unlabeled_issue, freeze: false) { create(:issue, project: project, title: 'foo unlabeled') }
 
   before do
     ::Elastic::ProcessBookkeepingService.track!(labeled_issue)

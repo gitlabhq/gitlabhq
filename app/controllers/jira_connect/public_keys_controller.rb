@@ -18,7 +18,7 @@ module JiraConnect
     private
 
     def public_key
-      JiraConnect::PublicKey.find(params[:id])
+      JiraConnect::PublicKey.find(params.permit(:id)[:id])
     end
 
     def public_key_storage_enabled?

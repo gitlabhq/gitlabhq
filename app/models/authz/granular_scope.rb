@@ -64,6 +64,12 @@ module Authz
       # rubocop:enable Database/AvoidUsingPluckWithoutLimit
     end
 
+    def expanded_permissions
+      Array(permissions)
+        .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
+        .compact.map(&:to_sym)
+    end
+
     def build_copy
       self.class.build(attributes.slice(*COPYABLE_ATTRIBUTES))
     end

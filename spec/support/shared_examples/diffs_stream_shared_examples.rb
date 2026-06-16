@@ -7,6 +7,15 @@ RSpec.shared_examples 'diffs stream tests' do
     expect(response).to have_gitlab_http_status(:success)
   end
 
+  it 'includes server timing metrics', :aggregate_failures do
+    go
+
+    expect(response.body).to include('server-timings')
+    expect(response.body).to match(/streaming="[\d.]+"/)
+    expect(response.body).to match(/rpc="[\d.]+"/)
+    expect(response.body).to match(/rendering="[\d.]+"/)
+  end
+
   context 'when offset is given' do
     context 'when offset is 1' do
       let(:offset) { 1 }
@@ -23,11 +32,12 @@ RSpec.shared_examples 'diffs stream tests' do
     context 'when offset is the same as the number of diffs' do
       let(:offset) { diff_files.size }
 
-      it 'no diffs are streamed' do
+      it 'no diffs are streamed', :aggregate_failures do
         go
 
         expect(response.body).to not_include('diff-file')
         expect(response.body).to include('server-timings')
+        expect(response.body).to match(/streaming="[\d.]+"/)
       end
     end
   end

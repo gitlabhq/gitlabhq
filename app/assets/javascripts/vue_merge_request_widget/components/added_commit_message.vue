@@ -7,6 +7,7 @@ import { n__, s__, sprintf } from '~/locale';
 const mergeCommitCount = s__('mrWidgetCommitsAdded|%{strongStart}1%{strongEnd} merge commit');
 
 export default {
+  name: 'AddedCommitMessage',
   components: {
     GlSprintf,
     GlLink,

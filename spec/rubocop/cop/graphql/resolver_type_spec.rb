@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/graphql/resolver_type'
 
-RSpec.describe RuboCop::Cop::Graphql::ResolverType do
+RSpec.describe RuboCop::Cop::Graphql::ResolverType, feature_category: :api do
   it 'adds an offense when there is no type annotation' do
     expect_offense(<<~RUBY)
       module Resolvers

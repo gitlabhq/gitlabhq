@@ -5,6 +5,7 @@ import updateDockerHubCredentialsMutation from '~/packages_and_registries/settin
 const SECRET_PLACEHOLDER = '*****';
 
 export default {
+  name: 'DockerHubAuthenticationSection',
   components: {
     GlAlert,
     GlButton,

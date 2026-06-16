@@ -49,7 +49,7 @@ To ensure all repositories are synchronized, `Geo::RepositoryRegistrySyncWorker`
 runs periodically in the background on secondary sites. Specifically, this worker:
 
 - Queries the tracking database for registries that need syncing. These can be:
-  - Unsynced: Projects that have never been synced on the **secondary**
+  - Unsynced: Projects that have never been synced on the secondary
     site and so do not exist yet.
   - Updated recently: Projects that have a `last_repository_updated_at`
     timestamp that is more recent than the `last_repository_successful_sync_at`

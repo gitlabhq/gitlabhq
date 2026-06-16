@@ -1430,4 +1430,23 @@ describe('DiffsStoreMutations', () => {
       ).toBe(true);
     });
   });
+
+  describe('SET_GITALY_ERROR_MESSAGE', () => {
+    it('sets gitalyErrorMessage state', () => {
+      const state = {};
+      const errorMessage = 'The git server, Gitaly, is not available at this time.';
+
+      mutations[types.SET_GITALY_ERROR_MESSAGE](state, errorMessage);
+
+      expect(state.gitalyErrorMessage).toBe(errorMessage);
+    });
+
+    it('clears gitalyErrorMessage when set to null', () => {
+      const state = { gitalyErrorMessage: 'some error' };
+
+      mutations[types.SET_GITALY_ERROR_MESSAGE](state, null);
+
+      expect(state.gitalyErrorMessage).toBeNull();
+    });
+  });
 });

@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'cluster application version specs' do |application_name|
   describe 'update_available?' do
-    let_it_be(:cluster) { create(:cluster, :provided_by_gcp) }
+    let_it_be(:cluster, freeze: false) { create(:cluster, :provided_by_gcp) }
 
     let(:version) { '0.0.0' }
 

@@ -21,7 +21,7 @@ RSpec.describe Organizations::ArtifactRegistryController, feature_category: :org
     end
 
     context 'when the user is signed in' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         sign_in(user)
@@ -33,7 +33,7 @@ RSpec.describe Organizations::ArtifactRegistryController, feature_category: :org
       end
 
       context 'as as admin', :enable_admin_mode do
-        let_it_be(:user) { create(:admin) }
+        let_it_be(:user, freeze: false) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'

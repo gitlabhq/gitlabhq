@@ -1,4 +1,5 @@
 <script>
+import { mapActions, mapState } from 'pinia';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -10,6 +11,7 @@ import axios from '~/lib/utils/axios_utils';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { Mousetrap } from '~/lib/mousetrap';
 import { InternalEvents } from '~/tracking';
 
@@ -49,6 +51,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsPeekOn']),
     filterSearchShortcutKey() {
       if (this.shortcutsDisabled) {
         return null;
@@ -84,6 +87,7 @@ export default {
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, ['resetFileTreeBrowserAllStates']),
     focusSearchInput() {
       this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
         label: 'shortcut',
@@ -159,6 +163,9 @@ export default {
       this.$router.push(result.routerPath);
       this.searchQuery = '';
       this.showSearchPanel = false;
+      if (this.fileTreeBrowserIsPeekOn) {
+        this.resetFileTreeBrowserAllStates();
+      }
     },
     handleKeydown(event) {
       const { key } = event;
@@ -233,7 +240,7 @@ export default {
         :placeholder="$options.i18n.searchLabel"
         :aria-label="$options.i18n.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
-        class="gl-border gl-w-full gl-rounded-lg gl-border-section gl-bg-section gl-px-3 gl-py-2 gl-text-secondary focus:gl-outline-none focus:gl-focus"
+        class="gl-border gl-w-full gl-rounded-lg gl-border-section gl-bg-section gl-py-2 gl-pl-3 gl-pr-7 gl-text-secondary focus:gl-outline-none focus:gl-focus"
         @input="onSearchInput(searchQuery)"
         @focus="onSearchFocus"
         @keydown.escape="clearSearch"

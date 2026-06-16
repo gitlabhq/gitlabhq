@@ -116,6 +116,17 @@ export default {
       default: '',
     },
   },
+  emits: [
+    'addIssuableFormBlur',
+    'addIssuableFormCancel',
+    'addIssuableFormInput',
+    'addIssuableFormSubmit',
+    'hideForm',
+    'pendingIssuableRemoveRequest',
+    'relatedIssueRemoveRequest',
+    'saveReorder',
+    'showForm',
+  ],
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;

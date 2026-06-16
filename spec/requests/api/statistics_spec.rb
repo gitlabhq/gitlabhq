@@ -23,6 +23,12 @@ RSpec.describe API::Statistics, 'Statistics', :aggregate_failures, feature_categ
   describe "GET /application/statistics" do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_statistic do
+      let(:boundary_object) { :instance }
+      let(:user) { create(:admin) }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'when no user' do
       it "returns authentication error" do
         get api(path, nil)

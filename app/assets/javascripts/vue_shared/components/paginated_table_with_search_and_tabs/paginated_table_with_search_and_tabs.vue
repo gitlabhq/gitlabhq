@@ -18,6 +18,7 @@ import { initialPaginationState, defaultPageSize } from './constants';
 import { isAny } from './utils';
 
 export default {
+  name: 'PaginatedTableWithSearchAndTabs',
   components: {
     GlAlert,
     GlBadge,

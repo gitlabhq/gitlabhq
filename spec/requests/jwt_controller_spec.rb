@@ -582,8 +582,8 @@ RSpec.describe JwtController, feature_category: :system_access do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :private, group: group) }
     let_it_be(:bot_user) { create(:user, :project_bot) }
-    let_it_be(:group_access_token) { create(:personal_access_token, :dependency_proxy_scopes, user: bot_user) }
-    let_it_be(:group_deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+    let_it_be(:group_access_token, freeze: false) { create(:personal_access_token, :dependency_proxy_scopes, user: bot_user) }
+    let_it_be(:group_deploy_token, freeze: false) { create(:deploy_token, :group, :dependency_proxy_scopes) }
     let_it_be(:gdeploy_token) { create(:group_deploy_token, deploy_token: group_deploy_token, group: group) }
     let_it_be(:project_deploy_token) { create(:deploy_token, :project, :dependency_proxy_scopes) }
     let_it_be(:pdeploy_token) { create(:project_deploy_token, deploy_token: project_deploy_token, project: project) }

@@ -27,7 +27,7 @@ and adapt your configuration if you use other external services.
 
 **[diagram source - GitLab team members only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)**
 
-The topology diagram assumes the **primary** and **secondary** Geo sites
+The topology diagram assumes the primary and secondary Geo sites
 are located in two separate locations, on their own virtual network
 with private IP addresses. The network is configured such that all machines in
 one geographic location can communicate with each other using their private IP addresses.
@@ -38,7 +38,7 @@ The only external way to access the two Geo sites is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the previous example.
 
 > [!note]
-> The **primary** and **secondary** Geo sites must be able to communicate to each other over HTTPS.
+> The primary and secondary Geo sites must be able to communicate to each other over HTTPS.
 
 ## Redis and PostgreSQL for multiple nodes
 
@@ -55,22 +55,22 @@ For more information on setting up a multi-node PostgreSQL cluster and Redis clu
 
 ## Prerequisites: Two independently working GitLab multi-node sites
 
-One GitLab site serves as the Geo **primary** site. Use the
+One GitLab site serves as the Geo primary site. Use the
 [GitLab reference architectures documentation](../../reference_architectures/_index.md)
 to set this up. You can use different reference architecture sizes for each Geo site. If
 you already have a working GitLab instance that is in-use, it can be used as a
-**primary** site.
+primary site.
 
-The second GitLab site serves as the Geo **secondary** site. Again, use the
+The second GitLab site serves as the Geo secondary site. Again, use the
 [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up.
 It's a good idea to sign in and test it. However, be aware that its data is
-wiped out as part of the process of replicating from the **primary** site.
+wiped out as part of the process of replicating from the primary site.
 
-## Configure a GitLab site to be the Geo **primary** site
+## Configure a GitLab site to be the Geo primary site
 
-The following steps enable a GitLab site to serve as the Geo **primary** site.
+The following steps enable a GitLab site to serve as the Geo primary site.
 
-### Step 1: Configure the **primary** frontend nodes
+### Step 1: Configure the primary frontend nodes
 
 > [!note]
 > Do not use [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
@@ -92,7 +92,7 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
-### Step 2: Define the site as the **primary** site
+### Step 2: Define the site as the primary site
 
 1. Execute the following command on one of the frontend nodes:
 
@@ -108,14 +108,14 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfi
 > [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
 > and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
 
-## Configure the other GitLab site to be a Geo **secondary** site
+## Configure the other GitLab site to be a Geo secondary site
 
-A **secondary** site is similar to any other GitLab multi-node site, with three
+A secondary site is similar to any other GitLab multi-node site, with three
 major differences:
 
-- The main PostgreSQL database is a read-only replica of the Geo **primary** site's
+- The main PostgreSQL database is a read-only replica of the Geo primary site's
   PostgreSQL database.
-- There is an additional PostgreSQL database for each Geo **secondary** site,
+- There is an additional PostgreSQL database for each Geo secondary site,
   called the "Geo tracking database", which tracks the replication and verification
   state of various resources.
 - There is an additional GitLab service [`geo-logcursor`](../_index.md#geo-log-cursor)
@@ -124,23 +124,23 @@ Therefore, we set up the multi-node components one by one and include deviations
 from the typical multi-node setup. However, we highly recommend configuring a
 brand-new GitLab site first, as if it were not part of a Geo setup. This allows
 verifying that it is a working GitLab site. And only then should it be modified
-for use as a Geo **secondary** site. This helps to separate Geo setup problems from
+for use as a Geo secondary site. This helps to separate Geo setup problems from
 unrelated multi-node configuration problems.
 
-### Step 1: Configure the Redis and Gitaly services on the Geo **secondary** site
+### Step 1: Configure the Redis and Gitaly services on the Geo secondary site
 
 Configure the following services, again using the non-Geo multi-node
 documentation:
 
 - [Configuring Redis for GitLab](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application) for multiple nodes.
 - [Gitaly](../../gitaly/_index.md), which stores data that is
-  synchronized from the Geo **primary** site.
+  synchronized from the Geo primary site.
 
 > [!note]
 > [NFS](../../nfs.md) can be used in place of Gitaly but is not
 > recommended.
 
-### Step 2: Configure the Geo tracking database on the Geo **secondary** site
+### Step 2: Configure the Geo tracking database on the Geo secondary site
 
 The Geo tracking database cannot be run in a multi-node PostgreSQL cluster,
 see [Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database).
@@ -200,7 +200,7 @@ If using an external PostgreSQL instance, refer also to
 
 After enabling streaming replication, `gitlab-rake db:migrate:status:geo` fails until [configuration of the secondary site is complete](#step-7-copy-secrets-and-add-the-secondary-site-in-the-application), specifically [Geo configuration - Step 3. Add the secondary site](configuration.md#step-3-add-the-secondary-site).
 
-### Step 4: Configure the frontend application nodes on the Geo **secondary** site
+### Step 4: Configure the frontend application nodes on the Geo secondary site
 
 > [!note]
 > Do not use [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
@@ -213,7 +213,7 @@ Configure the GitLab Rails application nodes following the relevant steps
 outlined in the [reference architectures](../../reference_architectures/_index.md),
 then make the following modifications:
 
-1. Edit `/etc/gitlab/gitlab.rb` on each application node in the Geo **secondary**
+1. Edit `/etc/gitlab/gitlab.rb` on each application node in the Geo secondary
    site, and add the following:
 
    ```ruby
@@ -307,7 +307,7 @@ services are enabled on the "frontend" nodes:
 Verify these services exist by running `sudo gitlab-ctl status` on the frontend
 application nodes.
 
-### Step 5: Set up the LoadBalancer for the Geo **secondary** site
+### Step 5: Set up the LoadBalancer for the Geo secondary site
 
 The minimal [architecture diagram](#architecture-overview) shows a load
 balancer at each geographic location to route traffic to the application nodes.
@@ -315,7 +315,7 @@ balancer at each geographic location to route traffic to the application nodes.
 See [Load Balancer for GitLab with multiple nodes](../../load_balancer.md) for
 more information.
 
-### Step 6: Configure the backend application nodes on the Geo **secondary** site
+### Step 6: Configure the backend application nodes on the Geo secondary site
 
 The minimal [architecture diagram](#architecture-overview) shows all application services
 running together on the same machines. However, for multiple nodes we
@@ -324,7 +324,7 @@ running together on the same machines. However, for multiple nodes we
 For example, a Sidekiq node could be configured similarly to the frontend
 application nodes documented previously, with some changes to run only the `sidekiq` service:
 
-1. Edit `/etc/gitlab/gitlab.rb` on each Sidekiq node in the Geo **secondary**
+1. Edit `/etc/gitlab/gitlab.rb` on each Sidekiq node in the Geo secondary
    site, and add the following:
 
    ```ruby
@@ -386,4 +386,4 @@ application nodes documented previously, with some changes to run only the `side
 
 ### Step 7: Copy secrets and add the secondary site in the application
 
-1. [Configure GitLab](configuration.md) to set the **primary** and **secondary** sites.
+1. [Configure GitLab](configuration.md) to set the primary and secondary sites.

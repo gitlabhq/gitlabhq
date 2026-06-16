@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: :insider_threat do
+RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat do
   include AdminModeHelper
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
 
   before do
     enable_admin_mode!(admin)
@@ -13,8 +13,8 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
   end
 
   describe 'GET #index' do
-    let!(:open_report) { create(:abuse_report) }
-    let!(:closed_report) { create(:abuse_report, :closed) }
+    let_it_be(:open_report) { create(:abuse_report) }
+    let_it_be(:closed_report) { create(:abuse_report, :closed) }
 
     it 'returns open reports by default' do
       get admin_abuse_reports_path
@@ -52,7 +52,7 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
   end
 
   describe 'PUT #update' do
-    let_it_be(:report) { create(:abuse_report) }
+    let_it_be(:report, freeze: false) { create(:abuse_report) }
 
     let(:params) { {} }
     let(:expected_params) { ActionController::Parameters.new(params).permit! }

@@ -12,7 +12,8 @@ module API
 
       namespace 'admin' do
         resource 'migrations', only: [] do
-          desc 'List pending database migrations' do
+          desc 'List all pending migrations' do
+            detail 'Lists all pending migrations for the instance.'
             success [
               { code: 200, message: '200 OK' }
             ]
@@ -46,7 +47,10 @@ module API
         end
 
         resources 'migrations/:timestamp/mark' do
-          desc 'Mark the migration as successfully executed' do
+          desc 'Update status of a migration' do
+            detail 'Updates the status of a migration to indicate a successful execution. This prevent them from ' \
+              'being executed by the `db:migrate` tasks. Use this API to skip failing migrations after you ' \
+              'determine they are safe to skip.'
             success [
               { code: 201, message: '201 Created' }
             ]

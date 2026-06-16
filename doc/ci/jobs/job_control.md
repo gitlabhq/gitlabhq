@@ -95,12 +95,6 @@ and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
 #### Retry a manual job with updated variables
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96199) in GitLab 15.7.
-
-{{< /history >}}
-
 When you retry a manual job that was previously run with manually-specified variables,
 you can update the variables or use the same variables.
 
@@ -446,12 +440,6 @@ deploy:
 Quotes around the `dependencies` entry are required.
 
 ### Specify a parallelized job using needs with multiple parallelized jobs
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
-
-{{< /history >}}
 
 Use [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) to create
 [job dependencies](../yaml/needs.md) between multiple parallelized jobs.

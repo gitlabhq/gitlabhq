@@ -3,9 +3,9 @@
 require 'spec_helper'
 RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
-    let_it_be(:current_user, reload: true) { create(:user) }
+    let_it_be_with_reload(:current_user) { create(:user) }
     let_it_be(:group) { create(:group) }
-    let_it_be(:token, reload: true) { create(:resource_access_token, resource: group) }
+    let_it_be_with_reload(:token) { create(:resource_access_token, resource: group) }
 
     before_all do
       token.user.members.first.update!(expires_at: token.expires_at)

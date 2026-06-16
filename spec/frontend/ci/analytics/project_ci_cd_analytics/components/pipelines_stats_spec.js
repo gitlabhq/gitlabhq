@@ -1,6 +1,8 @@
 import { GlSkeletonLoader, GlLink } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import PipelinesStats from '~/ci/analytics/project_ci_cd_analytics/components/pipelines_stats.vue';
 
 const mockFailedPipelinesPath = '/pipelines?status=failed';
@@ -13,6 +15,8 @@ describe('PipelinesStats', () => {
   const findStatById = (identifier) =>
     findAllSingleStats().find((stat) => stat.attributes('id') === identifier);
   const findFailedPipelinesLink = () => wrapper.findComponent(GlLink);
+  const findFailureRateHelpPopover = () =>
+    wrapper.find('[data-testid="failure-ratio-help-popover"]');
 
   const createWrapper = ({ props } = {}) => {
     wrapper = shallowMount(PipelinesStats, {
@@ -98,6 +102,21 @@ describe('PipelinesStats', () => {
         'data-event-tracking': 'click_view_all_link_in_pipeline_analytics',
       });
     });
+
+    it('renders a help popover next to the Failure rate stat explaining the formula', () => {
+      const popover = findFailureRateHelpPopover();
+
+      expect(popover.exists()).toBe(true);
+      expect(popover.findComponent(HelpPopover).props('options')).toEqual({
+        title: 'How this is calculated?',
+        content:
+          "Rate = failed_pipelines / (success + failed). Canceled and skipped pipelines aren't included. Success rate is the inverse.",
+      });
+    });
+
+    it('does not render the help popover on the Success rate stat', () => {
+      expect(wrapper.find('[data-testid="success-ratio-help-popover"]').exists()).toBe(false);
+    });
   });
 
   describe('when data is zero', () => {
@@ -126,7 +145,10 @@ describe('PipelinesStats', () => {
   });
 
   describe('when data is invalid', () => {
+    let captureExceptionSpy;
+
     beforeEach(() => {
+      captureExceptionSpy = jest.spyOn(Sentry, 'captureException').mockImplementation(() => {});
       createWrapper({
         props: {
           aggregate: {
@@ -138,10 +160,18 @@ describe('PipelinesStats', () => {
       });
     });
 
+    afterEach(() => {
+      captureExceptionSpy.mockRestore();
+    });
+
     it('renders stats with no values', () => {
       expect(findStatById('total-pipeline-runs').props('value')).toBe('-');
       expect(findStatById('failure-ratio').props('value')).toBe('-');
       expect(findStatById('success-ratio').props('value')).toBe('-');
+    });
+
+    it('reports the parse error to Sentry', () => {
+      expect(captureExceptionSpy).toHaveBeenCalled();
     });
   });
 });

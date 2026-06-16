@@ -11,6 +11,7 @@ import {
   INLINE_DIFF_LINES_KEY,
 } from '~/diffs/constants';
 import * as utils from '~/diffs/store/utils';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import { noteableDataMock } from 'jest/notes/mock_data';
 import { getDiffFileMock } from '../mock_data/diff_file';
@@ -1102,6 +1103,49 @@ describe('DiffsStoreUtils', () => {
       expect(utils.markTreeEntriesLoaded({ priorEntries: entries, loadedFiles: loaded })).toEqual(
         outcome,
       );
+    });
+  });
+
+  describe('extractGitalyErrorMessage', () => {
+    const gitalyErrorMessage = 'The git server, Gitaly, is not available at this time.';
+
+    it('returns error message from 503 response', () => {
+      const error = {
+        response: {
+          status: HTTP_STATUS_SERVICE_UNAVAILABLE,
+          data: { error: gitalyErrorMessage },
+        },
+      };
+
+      expect(utils.extractGitalyErrorMessage(error)).toBe(gitalyErrorMessage);
+    });
+
+    it('returns null when 503 response has no error field', () => {
+      const error = {
+        response: {
+          status: 503,
+          data: {},
+        },
+      };
+
+      expect(utils.extractGitalyErrorMessage(error)).toBeNull();
+    });
+
+    it('returns null for non-503 errors', () => {
+      const error = {
+        response: {
+          status: 500,
+          data: { error: 'Some other error' },
+        },
+      };
+
+      expect(utils.extractGitalyErrorMessage(error)).toBeNull();
+    });
+
+    it('returns null when error has no response', () => {
+      const error = new Error('Network error');
+
+      expect(utils.extractGitalyErrorMessage(error)).toBeNull();
     });
   });
 });

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'boards recent visit' do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#visited' do
     it 'creates a visit if one does not exists' do
@@ -9,7 +9,7 @@ RSpec.shared_examples 'boards recent visit' do
     end
 
     shared_examples 'was visited previously' do
-      let_it_be(:visit) do
+      let_it_be(:visit, freeze: false) do
         create(visit_relation,
           board_parent_relation => board_parent,
           board_relation => board,

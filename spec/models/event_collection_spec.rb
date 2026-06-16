@@ -6,27 +6,30 @@ RSpec.describe EventCollection do
   include DesignManagementTestHelpers
 
   describe '#to_a' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project_empty_repo, group: group) }
-    let_it_be(:projects) { Project.where(id: project.id) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project_empty_repo, group: group) }
+    let_it_be(:projects, freeze: false) { Project.where(id: project.id) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request) }
 
     before do
       enable_design_management
     end
 
     context 'with project events' do
-      let_it_be(:push_event_payloads) do
+      let_it_be(:push_event_payloads, freeze: false) do
         Array.new(9) do
           create(:push_event_payload, event: create(:push_event, project: project, author: user))
         end
       end
 
-      let_it_be(:merge_request_events) { create_list(:event, 10, :merged, project: project, target: merge_request) }
-      let_it_be(:closed_issue_event) { create(:closed_issue_event, project: project, author: user) }
-      let_it_be(:wiki_page_event) { create(:wiki_page_event, project: project) }
-      let_it_be(:design_event) { create(:design_event, project: project) }
+      let_it_be(:merge_request_events, freeze: false) do
+        create_list(:event, 10, :merged, project: project, target: merge_request)
+      end
+
+      let_it_be(:closed_issue_event, freeze: false) { create(:closed_issue_event, project: project, author: user) }
+      let_it_be(:wiki_page_event, freeze: false) { create(:wiki_page_event, project: project) }
+      let_it_be(:design_event, freeze: false) { create(:design_event, project: project) }
 
       let(:push_events) { push_event_payloads.map(&:event) }
 
@@ -120,17 +123,62 @@ RSpec.describe EventCollection do
 
         expect(events).to match_array(push_events)
       end
+
+      context 'when transferred events exist' do
+        it 'excludes transferred events when exclude_transferred_events is enabled', :aggregate_failures do
+          transferred_event = create(
+            :event,
+            :transferred,
+            project: project,
+            target: project,
+            target_type: 'Project',
+            author: user
+          )
+          non_transferred_event = create(:event, :joined, project: project, author: user)
+
+          events = described_class.new(projects, transfer_options: { exclude_transferred_events: true }).to_a
+
+          expect(events.map(&:id)).to include(non_transferred_event.id)
+          expect(events.map(&:id)).not_to include(transferred_event.id)
+        end
+      end
+
+      context 'when ancestor group transfer events exist' do
+        let_it_be(:source_group, freeze: false) { create(:group) }
+        let_it_be(:target_group) { create(:group) }
+        let_it_be(:source_project) { create(:project_empty_repo, group: source_group) }
+        let(:source_projects) { Project.where(id: source_project.id) }
+
+        it 'includes ancestor group transfer events for project activity' do
+          source_group.update!(parent: target_group)
+          group_transfer_event = create(
+            :event,
+            :transferred,
+            project: nil,
+            group: source_group,
+            target: source_group,
+            target_type: 'Group',
+            author: user
+          )
+          events = described_class.new(
+            source_projects,
+            transfer_options: { ancestor_group_ids: source_group.self_and_ancestors.select(:id) }
+          ).to_a
+
+          expect(events.map(&:id)).to include(group_transfer_event.id)
+        end
+      end
     end
 
     context 'with multiple projects' do
-      let_it_be(:project_1) { create(:project_empty_repo, name: 'Project Z') }
-      let_it_be(:project_1_event) { create(:wiki_page_event, project: project_1) }
+      let_it_be(:project_1, freeze: false) { create(:project_empty_repo, name: 'Project Z') }
+      let_it_be(:project_1_event, freeze: false) { create(:wiki_page_event, project: project_1) }
 
-      let_it_be(:project_2) { create(:project_empty_repo, name: 'Project A') }
-      let_it_be(:project_2_event) { create(:wiki_page_event, project: project_2) }
+      let_it_be(:project_2, freeze: false) { create(:project_empty_repo, name: 'Project A') }
+      let_it_be(:project_2_event, freeze: false) { create(:wiki_page_event, project: project_2) }
 
       context 'when projects param has an order by clause' do
-        let_it_be(:projects_sorted_by_name) do
+        let_it_be(:projects_sorted_by_name, freeze: false) do
           Project.where(id: [project_1.id, project_2.id]).limit(1).order(:name)
         end
 
@@ -170,9 +218,56 @@ RSpec.describe EventCollection do
         expect(subject).to match_array([event1])
       end
 
+      context 'when transferred project and group events exist' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+
+        it 'includes transferred project and subgroup events for parent group activity', :aggregate_failures do
+          project_transfer_event = create(
+            :event,
+            :transferred,
+            project: project,
+            target: project,
+            target_type: 'Project',
+            author: user
+          )
+
+          subgroup_group_transfer_event = create(
+            :event,
+            :transferred,
+            project: nil,
+            group: subgroup,
+            target_type: nil,
+            target_id: nil,
+            author: user
+          )
+
+          group_transfer_event = create(
+            :event,
+            :transferred,
+            project: nil,
+            group: group,
+            target_type: nil,
+            target_id: nil,
+            author: user
+          )
+
+          events = described_class.new(
+            projects,
+            groups: groups,
+            transfer_options: { current_group_id: group.id }
+          ).to_a
+
+          expect(events.map(&:id)).to include(
+            project_transfer_event.id,
+            subgroup_group_transfer_event.id,
+            group_transfer_event.id
+          )
+        end
+      end
+
       context 'with pagination through events' do
-        let_it_be(:project_events) { create_list(:event, 10, project: project) }
-        let_it_be(:group_events) { create_list(:event, 10, group: group, author: user) }
+        let_it_be(:project_events, freeze: false) { create_list(:event, 10, project: project) }
+        let_it_be(:group_events, freeze: false) { create_list(:event, 10, group: group, author: user) }
 
         let(:subject) { described_class.new(projects, limit: 10, offset: 5, groups: groups).to_a }
 

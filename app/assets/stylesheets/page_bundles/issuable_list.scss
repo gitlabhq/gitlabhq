@@ -197,6 +197,7 @@
   }
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific modal element
 .gl-modal:has(.saved-view-confirm-modal) {
   .modal-body {
     min-height: auto;

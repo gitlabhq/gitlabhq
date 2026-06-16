@@ -20,6 +20,7 @@ export default {
       default: '',
     },
   },
+  emits: ['start-replying'],
 };
 </script>
 

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/idempotent_worker'
 
-RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker do
+RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker, feature_category: :scalability do
   before do
     allow(cop)
       .to receive(:in_worker?)

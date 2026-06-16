@@ -10,6 +10,7 @@ import DropdownHeader from './dropdown_header.vue';
 import { isDropdownVariantStandalone, isDropdownVariantSidebar } from './utils';
 
 export default {
+  name: 'DropdownContentsWidget',
   components: {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,

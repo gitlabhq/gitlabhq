@@ -37,10 +37,14 @@ test-coverage:export-rspec-and-e2e:
     - echo "Merging E2E test mappings with Crystalball mappings..."
     - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
     - ruby scripts/coverage/backend_coverage_exporter.rb || true
+    - echo "Exporting E2E per-test coverage (Coverband backend + Istanbul frontend)..."
+    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-backend/coverband-coverage-*.json' || true
+    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-per-test-frontend/per-test-coverage-e2e-frontend-*.json' || true
   artifacts:
     paths:
       - coverage-backend/
       - coverage-e2e-backend/
+      - coverage-e2e-per-test-frontend/
       - coverage/
       - crystalball/
       - rspec/
@@ -81,6 +85,47 @@ test-coverage:export-jest-and-e2e:
       - jest-test-mapping/
       - e2e-test-reports/
     expire_in: 7d
+
+test-coverage:export-per-test-rspec:
+  extends:
+    - .coverage-export-base
+    - .per-test-coverage:rules:delta
+  stage: post-qa
+  needs:
+    - job: per-test-coverage:trigger
+      artifacts: false
+  variables:
+    JOB_PATTERN: '^rspec(-ee)? .+ per-test-coverage( [0-9]+/[0-9]+)?$'
+  script:
+    # Stream: download a batch of shards, insert them into ClickHouse, delete
+    # them, then fetch the next batch. The old download-all-then-insert model
+    # held every shard's ndjson on disk at once, and a full-bucket capture
+    # exhausted the runner (Errno::ENOSPC).
+    - |
+      ruby scripts/coverage/download_per_test_coverage_artifacts.rb \
+        --pattern "$JOB_PATTERN" \
+        --batch-size 10 \
+        --output-glob 'tmp/per-test-coverage-rspec-*.ndjson' \
+        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-rspec-*.ndjson' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt"
+
+test-coverage:export-per-test-jest:
+  extends:
+    - .coverage-export-base
+    - .per-test-coverage:rules:delta
+  stage: post-qa
+  needs:
+    - job: per-test-coverage:trigger
+      artifacts: false
+  variables:
+    JOB_PATTERN: '^jest per-test-coverage( [0-9]+/[0-9]+)?$'
+  script:
+    # Stream (see export-per-test-rspec): batch download, insert, delete, repeat.
+    - |
+      ruby scripts/coverage/download_per_test_coverage_artifacts.rb \
+        --pattern "$JOB_PATTERN" \
+        --batch-size 10 \
+        --output-glob 'tmp/per-test-coverage-jest-*.json' \
+        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-jest-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt"
 
 test-coverage:export-workhorse:
   extends:

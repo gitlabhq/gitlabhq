@@ -12,6 +12,7 @@ module API
     allow_mcp_access_create
 
     helpers Helpers::IssuesHelpers
+    helpers Helpers::MilestonesHelpers
     helpers Helpers::Authz::PostfilteringHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
@@ -104,10 +105,15 @@ module API
         optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
+        optional :milestone, type: String, limit: 255,
+          desc: 'The title of a project or ancestor-group milestone to assign the issue to. ' \
+            'Mutually exclusive with `milestone_id`.'
+        mutually_exclusive :milestone_id, :milestone
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :remove_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
+        optional :start_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential', allow_blank: false
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
         optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
@@ -322,6 +328,7 @@ module API
         authorize! :create_issue, user_project
 
         issue_params = declared_params(include_missing: false)
+        resolve_milestone_title!(user_project, issue_params)
         validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
         issue_params = convert_parameters_from_legacy_format(issue_params).merge(scope_validator: validator)
         begin
@@ -373,6 +380,7 @@ module API
         authorize! :update_issue, issue
 
         update_params = declared_params(include_missing: false)
+        resolve_milestone_title!(user_project, update_params)
 
         validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
         update_params = convert_parameters_from_legacy_format(update_params).merge(scope_validator: validator)
@@ -544,14 +552,17 @@ module API
       get ':id/issues/:issue_iid/closed_by' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_request_ids = MergeRequestsClosingIssues.where(issue_id: issue).select(:merge_request_id)
+        merge_request_ids = MergeRequestsClosingIssues.link_type_closes.where(issue_id: issue).select(:merge_request_id)
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'List participants for an issue' do
+      desc 'List all participants in an issue' do
+        detail 'Lists all users that are participants in a specified issue. If the project is private or the issue ' \
+          'is confidential, you need to provide credentials to authorize. In most cases, you should authenticate with a ' \
+          'personal access token.'
         success Entities::UserBasic
         tags ['issues']
       end

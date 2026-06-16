@@ -51,7 +51,7 @@ export default {
     :is="component"
     :aria-label="ariaLabel"
     :href="href"
-    class="dashboard-shortcuts-button gl-relative gl-flex gl-items-center gl-justify-center"
+    class="application-chrome-nav-item gl-relative gl-flex gl-items-center gl-justify-center"
   >
     <gl-icon aria-hidden="true" :name="icon" class="gl-shrink-0" />
     <span v-if="countExists" aria-hidden="true" class="gl-text-sm gl-font-semibold">{{

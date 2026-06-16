@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 
 export default {
+  name: 'EnvironmentsEmptyState',
   components: {
     GlButton,
     GlEmptyState,

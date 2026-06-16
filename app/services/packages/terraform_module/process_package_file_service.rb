@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rubygems/package'
+
 module Packages
   module TerraformModule
     class ProcessPackageFileService

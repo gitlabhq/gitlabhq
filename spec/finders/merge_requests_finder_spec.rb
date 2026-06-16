@@ -58,17 +58,17 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'using a group handle' do
-          let_it_be(:issuable_parent) { create(:project) }
-          let_it_be(:issuable_attributes) { { source_project: issuable_parent, target_project: issuable_parent } }
-          let_it_be(:issuable_factory) { :merge_request }
-          let_it_be(:factory_params) { [:simple, :unique_branches] }
-          let_it_be(:search_params) { { project_id: issuable_parent.id } }
+          let_it_be(:issuable_parent, freeze: false) { create(:project) }
+          let_it_be(:issuable_attributes, freeze: false) { { source_project: issuable_parent, target_project: issuable_parent } }
+          let_it_be(:issuable_factory, freeze: false) { :merge_request }
+          let_it_be(:factory_params, freeze: false) { [:simple, :unique_branches] }
+          let_it_be(:search_params, freeze: false) { { project_id: issuable_parent.id } }
 
           it_behaves_like 'filterable by group handle for', :author
         end
 
         context 'filters by author or assignee' do
-          let_it_be(:merge_request6) do
+          let_it_be(:merge_request6, freeze: false) do
             create(
               :merge_request, :simple, :unique_branches, assignees: [user], reviewers: [create(:user)],
               source_project: project1, target_project: project1
@@ -345,35 +345,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
         end
 
-        context 'with mr_lookup_by_checking_traversal_ids_on_join feature flag' do
-          context 'when the flag is enabled' do
-            it_behaves_like 'filtering by group'
-
-            it 'uses the traversal_ids JOIN on project_namespace_id in the generated SQL' do
-              finder = described_class.new(user, { group_id: group.id, include_subgroups: true })
-              sql = finder.execute.to_sql
-
-              expect(sql).to include('ns.id = projects.project_namespace_id')
-              expect(sql).to include('ns.traversal_ids @>')
-            end
-          end
-
-          context 'when the flag is disabled' do
-            before do
-              stub_feature_flags(mr_lookup_by_checking_traversal_ids_on_join: false)
-            end
-
-            it_behaves_like 'filtering by group'
-
-            it 'does not use the traversal_ids JOIN on project_namespace_id in the generated SQL' do
-              finder = described_class.new(user, { group_id: group.id, include_subgroups: true })
-              sql = finder.execute.to_sql
-
-              expect(sql).not_to include('ns.id = projects.project_namespace_id')
-              expect(sql).not_to include('ns.traversal_ids @>')
-            end
-          end
-        end
+        it_behaves_like 'filtering by group'
 
         context 'with group_mr_in_operator_optimization feature flag' do
           # Minimal params that satisfy idx_mrs_on_target_id_and_created_at_and_state_id:
@@ -856,11 +828,11 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'using a group handle' do
-          let_it_be(:issuable_parent) { create(:project) }
-          let_it_be(:issuable_attributes) { { source_project: issuable_parent, target_project: issuable_parent } }
-          let_it_be(:issuable_factory) { :merge_request }
-          let_it_be(:factory_params) { [:simple, :unique_branches] }
-          let_it_be(:search_params) { { project_id: issuable_parent.id } }
+          let_it_be(:issuable_parent, freeze: false) { create(:project) }
+          let_it_be(:issuable_attributes, freeze: false) { { source_project: issuable_parent, target_project: issuable_parent } }
+          let_it_be(:issuable_factory, freeze: false) { :merge_request }
+          let_it_be(:factory_params, freeze: false) { [:simple, :unique_branches] }
+          let_it_be(:search_params, freeze: false) { { project_id: issuable_parent.id } }
 
           it_behaves_like 'filterable by group handle for', :assignees
         end
@@ -984,7 +956,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'by more than a single reviewer with username' do
-          let_it_be(:merge_request6) do
+          let_it_be(:merge_request6, freeze: false) do
             create(
               :merge_request, assignees: [user], author: user, reviewers: [user2, create(:user)],
               source_project: project1, target_project: project1,
@@ -1186,6 +1158,42 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           let(:params) { { approved_by_usernames: user2.username, sort: 'milestone' } }
 
           it 'returns merge requests approved by that user' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request3)
+          end
+        end
+
+        context 'combined with search and CTE optimisation' do
+          # Regression for PG::GroupingError when approved_by + search wraps the
+          # relation in a CTE - the outer GROUP BY must cover every issuable column.
+          it 'does not raise when approved_by_usernames=<username> and search are combined' do
+            params = {
+              approved_by_usernames: user2.username,
+              search: 'test',
+              attempt_project_search_optimizations: true
+            }
+
+            expect { described_class.new(user, params).execute.load }.not_to raise_error
+          end
+
+          it 'does not raise when approved_by_usernames=None and search are combined' do
+            params = {
+              approved_by_usernames: 'None',
+              search: 'test',
+              attempt_project_search_optimizations: true
+            }
+
+            expect { described_class.new(user, params).execute.load }.not_to raise_error
+          end
+
+          it 'returns merge requests approved by that user' do
+            params = {
+              approved_by_usernames: user2.username,
+              search: merge_request3.title,
+              attempt_project_search_optimizations: true
+            }
+
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to contain_exactly(merge_request3)

@@ -122,6 +122,7 @@ export const generateMockPipeline = ({
     __typename: 'Project',
   },
   downstream: {
+    count: 0,
     nodes: [],
     __typename: 'PipelineConnection',
   },
@@ -214,8 +215,7 @@ export const mockPipelineUpdateResponse = {
         sha: '577d7917b5d80ef8cd8e543186aae41ccd870022',
         shortId: '577d7917',
         title: 'Edit .gitlab-ci.yml',
-        webUrl:
-          'http://gdk.test:3000/root/ci-project/-/commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
+        webPath: '/root/ci-project/-/commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
         author: {
           id: 'gid://gitlab/User/1',
           avatarUrl:
@@ -305,6 +305,7 @@ export const mockPipelineUpdateResponse = {
       failedJobsCount: 0,
       __typename: 'Pipeline',
       downstream: {
+        count: 0,
         nodes: [],
         __typename: 'PipelineConnection',
       },
@@ -347,8 +348,7 @@ export const mockPipelines = [
       sha: 'ab708cdcfd838846528c736f36ac2d2fea4508fb',
       shortId: 'ab708cdc',
       title: 'Update .gitlab-ci.yml file',
-      webUrl:
-        'http://gdk.test:3000/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      webPath: '/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
       author: {
         id: 'gid://gitlab/User/1',
         avatarUrl:
@@ -378,7 +378,7 @@ export const mockPipelines = [
     path: '/root/ci-project/-/pipelines/701',
     retryable: true,
     cancelable: false,
-    downstream: { __typename: 'PipelineConnection', nodes: [] },
+    downstream: { count: 0, __typename: 'PipelineConnection', nodes: [] },
     stages: {
       nodes: [
         {
@@ -466,8 +466,7 @@ export const mockPipelines = [
       sha: 'ab708cdcfd838846528c736f36ac2d2fea4508fb',
       shortId: 'ab708cdc',
       title: 'Update .gitlab-ci.yml file',
-      webUrl:
-        'http://gdk.test:3000/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
+      webPath: '/root/ci-project/-/commit/ab708cdcfd838846528c736f36ac2d2fea4508fb',
       author: {
         id: 'gid://gitlab/User/1',
         avatarUrl:
@@ -497,7 +496,7 @@ export const mockPipelines = [
     path: '/root/ci-project/-/pipelines/699',
     retryable: true,
     cancelable: false,
-    downstream: { __typename: 'PipelineConnection', nodes: [] },
+    downstream: { count: 0, __typename: 'PipelineConnection', nodes: [] },
     stages: {
       nodes: [
         {
@@ -650,7 +649,7 @@ export const generateMockDownstreamPipeline = ({ id = '100', status = 'RUNNING' 
   },
   sourceJob: {
     id: `gid://gitlab/Ci::Build/${id}`,
-    name: `trigger-job-${id}`,
+
     retried: false,
     __typename: 'CiBuild',
   },
@@ -667,6 +666,7 @@ export const generateMockDownstreamResponse = (pipelinesWithDownstream = []) => 
           nodes: pipelinesWithDownstream.map(({ pipelineId, downstreamNodes }) => ({
             id: `gid://gitlab/Ci::Pipeline/${pipelineId}`,
             downstream: {
+              count: downstreamNodes.length,
               nodes: downstreamNodes,
               __typename: 'PipelineConnection',
             },
@@ -680,6 +680,25 @@ export const generateMockDownstreamResponse = (pipelinesWithDownstream = []) => 
     },
   },
 });
+
+export const mockDownstreamPipelineUpdateResponse = {
+  data: {
+    ciPipelineStatusUpdated: {
+      id: 'gid://gitlab/Ci::Pipeline/100',
+      detailedStatus: {
+        id: 'success-100-100',
+        name: 'SUCCESS',
+        icon: 'status_success',
+        text: 'Passed',
+        detailsPath: '/root/ci-project/-/pipelines/100',
+        tooltip: 'passed',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      __typename: 'Pipeline',
+    },
+  },
+};
 
 export const generateSinglePipelineResponse = (pipeline) => ({
   data: {

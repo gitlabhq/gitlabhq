@@ -87,6 +87,25 @@ If you would like a review by a technical writer, post a message in the `#docs` 
 Technical writers do not need to review the content, however, and any Maintainer
 other than the MR author can merge.
 
+### Merge request approval settings
+
+The `gitlab-org/gitlab` project enforces the following approval settings to satisfy the
+CHG-04 control of the GitLab
+[Change Management Controls](https://handbook.gitlab.com/handbook/security/security-and-technology-policies/change-management-policy/):
+
+- [Prevent approval by merge request creator](../user/project/merge_requests/approvals/settings.md#prevent-approval-by-merge-request-creator).
+- [Prevent approvals by users who add commits](../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
+- [Prevent editing approval rules in merge requests](../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests).
+- [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
+
+To update code owners in the `CODEOWNERS` file, follow the
+[code owners approvals process](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#code-owner-approvals).
+
+> [!note]
+> Rebasing locally or applying suggestions counts as adding a commit and resets approvals.
+> Approvals are not reset when rebasing from the UI or with the
+> [`/rebase` quick action](../user/project/quick_actions.md#rebase).
+
 ### Reviewer values
 
 As a reviewer or as a reviewee, make sure to familiarize yourself with

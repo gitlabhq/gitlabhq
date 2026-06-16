@@ -21,6 +21,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'RunnerAwsInstructions',
   components: {
     GlButton,
     GlSprintf,

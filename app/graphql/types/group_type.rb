@@ -535,7 +535,7 @@ module Types
     end
 
     def marked_for_deletion_on
-      group.marked_for_deletion_on
+      group.self_deletion_scheduled_deletion_created_on
     end
 
     def permanent_deletion_date

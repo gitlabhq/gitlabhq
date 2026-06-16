@@ -7,9 +7,9 @@ RSpec.describe 'Pipeline Editor (JavaScript fixtures)', feature_category: :pipel
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-  let_it_be(:user) { project.first_owner }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace) }
+  let_it_be(:user, freeze: false) { project.first_owner }
 
   describe GraphQL::Query, type: :request do
     let(:content) do

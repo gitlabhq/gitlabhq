@@ -105,7 +105,7 @@ export default {
 
 <template>
   <div
-    style="height: var(--blame-line-height)"
+    style="height: var(--source-line-height)"
     class="gl-flex gl-w-full gl-items-center gl-gap-3"
     data-testid="blame-commit-info"
   >
@@ -149,7 +149,7 @@ export default {
       icon="doc-versions"
       data-event-tracking="click_previous_blame_on_blob_page"
       data-testid="view-previous-blame-button"
-      style="min-height: var(--blame-line-height)"
+      style="min-height: var(--source-line-height)"
       class="!gl-text-subtle focus:!gl-focus-inset"
       :class="{ 'gl-invisible': !previousBlameUrl }"
     />

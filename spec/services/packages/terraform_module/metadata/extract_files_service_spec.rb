@@ -142,7 +142,7 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
     end
 
     context 'when processing a tar archive' do
-      let_it_be(:package_file) { build(:package_file, :terraform_module) }
+      let_it_be(:package_file, freeze: false) { build(:package_file, :terraform_module) }
       let(:archive_file) { Gem::Package::TarReader.new(Zlib::GzipReader.open(package_file.file.path)) }
 
       it_behaves_like 'extracting metadata'
@@ -178,7 +178,7 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
     end
 
     context 'when processing a zip archive' do
-      let_it_be(:package_file) { build(:package_file, :terraform_module, zip: true) }
+      let_it_be(:package_file, freeze: false) { build(:package_file, :terraform_module, zip: true) }
       let(:archive_file) { Zip::File.open(package_file.file.path) }
 
       it_behaves_like 'extracting metadata'
@@ -204,7 +204,7 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
     context 'for getting module_type from path' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be(:archive_file) { Zip::File.new('', create: true) }
+      let_it_be(:archive_file, freeze: false) { Zip::File.new('', create: true) }
 
       where(:path, :module_type) do
         'README'                              | :root

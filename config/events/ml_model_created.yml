@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: mlops
+product_categories:
+- mlops
 milestone: "16.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139798
 tiers:

@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Delete a timelog', feature_category: :team_planning do
   include GraphqlHelpers
-  let_it_be(:author) { create(:user) }
+  let_it_be(:author, freeze: false) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:timelog, freeze: false) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
   let(:current_user) { nil }
   let(:mutation) { graphql_mutation(:timelogDelete, { 'id' => timelog.to_global_id.to_s }) }

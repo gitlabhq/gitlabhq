@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'PageHeading',
   inject: {
     injectedHeadingTag: {
       from: 'panelHeadingTag',

@@ -25,7 +25,7 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
     it 'marks the group for deletion', :freeze_time do
       result
 
-      expect(group.marked_for_deletion_on).to eq(Time.zone.today)
+      expect(group.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
       expect(group.deleting_user).to eq(user)
     end
 
@@ -115,11 +115,11 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
     end
   end
 
-  context 'when group is already marked for deletion' do
+  context 'when group is already marked for deletion', :freeze_time do
     let(:deletion_date) { 3.days.ago }
     let(:group) do
-      create(:group_with_deletion_schedule,
-        marked_for_deletion_on: deletion_date,
+      create(:group_with_deletion_schedule, :deletion_scheduled,
+        deletion_scheduled_at: deletion_date,
         owners: user,
         deleting_user: user)
     end
@@ -127,7 +127,7 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
     it 'does not change the attributes associated with delayed deletion' do
       expect(result).to be_error
       expect(group).to be_self_deletion_scheduled
-      expect(group.self_deletion_scheduled_deletion_created_on).to eq(deletion_date.to_date)
+      expect(group.self_deletion_scheduled_deletion_created_on).to eq(deletion_date)
       expect(group.deleting_user).to eq(user)
     end
 
@@ -145,11 +145,11 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
     end
   end
 
-  context 'when group ancestor is already marked for deletion' do
+  context 'when group ancestor is already marked for deletion', :freeze_time do
     let(:deletion_date) { 3.days.ago }
     let(:group_ancestor) do
-      create(:group_with_deletion_schedule,
-        marked_for_deletion_on: deletion_date,
+      create(:group_with_deletion_schedule, :deletion_scheduled,
+        deletion_scheduled_at: deletion_date,
         owners: user,
         deleting_user: user)
     end

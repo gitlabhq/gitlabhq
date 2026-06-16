@@ -7,15 +7,15 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { project.first_owner }
-  let_it_be(:commit) { create(:commit, project: project) }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:user, freeze: false) { project.first_owner }
+  let_it_be(:commit, freeze: false) { create(:commit, project: project) }
 
   let(:query_path) { 'ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql' }
 
   context 'with successful pipeline' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(
         :ci_pipeline,
         :merged_result_pipeline,
@@ -33,7 +33,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
       )
     end
 
-    let_it_be(:builds) { create_list(:ci_build, 3, :success, pipeline: pipeline, ref: 'master') }
+    let_it_be(:builds, freeze: false) { create_list(:ci_build, 3, :success, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_success.json" do
       query = get_graphql_query_as_string(query_path)
@@ -45,7 +45,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   end
 
   context 'with running pipeline' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(
         :ci_pipeline,
         project: project,
@@ -58,7 +58,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
       )
     end
 
-    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
+    let_it_be(:build, freeze: false) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_running.json" do
       query = get_graphql_query_as_string(query_path)
@@ -70,7 +70,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   end
 
   context 'with running pipeline and no permissions' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(
         :ci_pipeline,
         project: project,
@@ -83,7 +83,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
       )
     end
 
-    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
+    let_it_be(:build, freeze: false) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_running_no_permissions.json" do
       guest = create(:user)
@@ -98,7 +98,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   end
 
   context 'with running pipeline and duration' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(
         :ci_pipeline,
         project: project,
@@ -112,7 +112,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
       )
     end
 
-    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
+    let_it_be(:build, freeze: false) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_running_with_duration.json" do
       query = get_graphql_query_as_string(query_path)
@@ -124,7 +124,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   end
 
   context 'with failed pipeline' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(
         :ci_pipeline,
         project: project,
@@ -138,7 +138,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
       )
     end
 
-    let_it_be(:build) { create(:ci_build, :canceled, pipeline: pipeline, ref: 'master') }
+    let_it_be(:build, freeze: false) { create(:ci_build, :canceled, pipeline: pipeline, ref: 'master') }
 
     it "graphql/pipelines/pipeline_header_failed.json" do
       query = get_graphql_query_as_string(query_path)

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/graphql/old_types'
 
-RSpec.describe RuboCop::Cop::Graphql::OldTypes do
+RSpec.describe RuboCop::Cop::Graphql::OldTypes, feature_category: :api do
   using RSpec::Parameterized::TableSyntax
 
   where(:old_type, :message) do

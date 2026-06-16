@@ -73,6 +73,25 @@ RSpec.describe Gitlab::Database::Batch::Strategies::PrimaryKey, '#next_batch', f
     end
   end
 
+  it 'selects only the cursor columns so the batching query can be an index only scan' do
+    queries = []
+    subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*args|
+      event = ActiveSupport::Notifications::Event.new(*args)
+      queries << event.payload[:sql]
+    end
+
+    begin
+      batching_strategy.next_batch(:namespaces, batch_min_value: [namespace1.id], batch_size: 3,
+        job_class: job_class)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+    end
+
+    expect(queries).to include(
+      a_string_matching(/SELECT "namespaces"\."id" FROM/i)
+    )
+  end
+
   context 'with scope_to' do
     let(:scoped_job_class) do
       Class.new(Gitlab::BackgroundOperation::BaseOperationWorker) do

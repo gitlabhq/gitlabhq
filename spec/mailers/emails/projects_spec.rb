@@ -25,7 +25,7 @@ RSpec.describe Emails::Projects do
     end
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#prometheus_alert_fired_email' do
     let(:default_title) { Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE }
@@ -285,9 +285,9 @@ RSpec.describe Emails::Projects do
   end
 
   describe '#project_scheduled_for_deletion' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:frozen_time) { Time.new(2023, 10, 15, 12, 0, 0) }
-    let_it_be(:project) { create(:project, marked_for_deletion_on: frozen_time) }
+    let_it_be(:project, freeze: false) { create(:project, marked_for_deletion_on: frozen_time) }
 
     let(:deletion_adjourned_period) { 7 }
     let(:deletion_date) { (frozen_time.to_date + deletion_adjourned_period.days).strftime('%B %-d, %Y') }

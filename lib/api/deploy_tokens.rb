@@ -29,7 +29,7 @@ module API
     end
 
     desc 'List all deploy tokens' do
-      detail 'Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access. This feature was introduced in GitLab 12.9.'
+      detail 'Lists all deploy tokens for the instance.'
       success Entities::DeployToken
       failure [
         { code: 401, message: 'Unauthorized' },
@@ -63,8 +63,8 @@ module API
         use :pagination
         use :filter_params
       end
-      desc 'List project deploy tokens' do
-        detail "Get a list of a project's deploy tokens. This feature was introduced in GitLab 12.9."
+      desc 'List all project deploy tokens' do
+        detail 'Lists all project deploy tokens.'
         success Entities::DeployToken
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -98,7 +98,7 @@ module API
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a project deploy token' do
-        detail 'Creates a new deploy token for a project. This feature was introduced in GitLab 12.9.'
+        detail 'Creates a project deploy token.'
         success Entities::DeployTokenWithToken
         failure [
           { code: 400, message: 'Bad request' },
@@ -122,8 +122,8 @@ module API
         end
       end
 
-      desc 'Get a project deploy token' do
-        detail "Get a single project's deploy token by ID. This feature was introduced in GitLab 14.9."
+      desc 'Retrieve a project deploy token' do
+        detail 'Retrieves a project deploy token.'
         success Entities::DeployToken
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -144,7 +144,8 @@ module API
       end
 
       desc 'Delete a project deploy token' do
-        detail 'This feature was introduced in GitLab 12.9.'
+        detail 'Deletes a project deploy token.'
+        success code: 204, message: 'Resource deleted'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
@@ -174,8 +175,8 @@ module API
         use :pagination
         use :filter_params
       end
-      desc 'List group deploy tokens' do
-        detail "Get a list of a group's deploy tokens. This feature was introduced in GitLab 12.9."
+      desc 'List all group deploy tokens' do
+        detail 'Lists all group deploy tokens.'
         success Entities::DeployToken
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -209,7 +210,7 @@ module API
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a group deploy token' do
-        detail 'Creates a new deploy token for a group. This feature was introduced in GitLab 12.9.'
+        detail 'Creates a group deploy token.'
         success Entities::DeployTokenWithToken
         failure [
           { code: 400, message: 'Bad request' },
@@ -233,7 +234,8 @@ module API
         end
       end
 
-      desc 'Get a group deploy token' do
+      desc 'Retrieve a group deploy token' do
+        detail 'Retrieves a group deploy token.'
         detail "Get a single group's deploy token by ID. This feature was introduced in GitLab 14.9. "
         success Entities::DeployToken
         failure [
@@ -255,7 +257,8 @@ module API
       end
 
       desc 'Delete a group deploy token' do
-        detail 'Removes a deploy token from the group. This feature was introduced in GitLab 12.9.'
+        detail 'Deletes a group deploy token.'
+        success code: 204, message: 'Resource deleted'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }

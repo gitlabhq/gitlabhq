@@ -6,30 +6,37 @@ module Bitbucket
 
     attr_reader :expires_at, :expires_in, :refresh_token, :token
 
-    def initialize(options = {})
+    def initialize(options = {}, refresh_strategy: nil)
       @api_version   = options.fetch(:api_version, Bitbucket::Connection::DEFAULT_API_VERSION)
       @base_uri      = options.fetch(:base_uri, Bitbucket::Connection::DEFAULT_BASE_URI)
       @default_query = options.fetch(:query, Bitbucket::Connection::DEFAULT_QUERY)
 
-      @token         = options[:token]
-      @expires_at    = options[:expires_at]
-      @expires_in    = options[:expires_in]
-      @refresh_token = options[:refresh_token]
+      @token            = options[:token]
+      @expires_at       = options[:expires_at]
+      @expires_in       = options[:expires_in]
+      @refresh_token    = options[:refresh_token]
+      @refresh_strategy = refresh_strategy
     end
 
     def get(path, extra_query = {})
-      response = retry_with_exponential_backoff do
-        refresh! if expired?
+      get_with_retry(path, extra_query).parsed
+    end
 
-        connection.get(build_url(path), params: @default_query.merge(extra_query))
-      end
-
-      response.parsed
+    def get_response_code(path, extra_query = {})
+      get_with_retry(path, extra_query).status
+    rescue OAuth2::Error => e
+      e.response.status
     end
 
     delegate :expired?, to: :connection
 
     def refresh!
+      return @refresh_strategy.refresh(self) if @refresh_strategy
+
+      perform_refresh!
+    end
+
+    def perform_refresh!
       response = connection.refresh!
 
       @token         = response.token
@@ -39,7 +46,23 @@ module Bitbucket
       @connection    = nil
     end
 
+    def adopt_credentials(token:, expires_at:, expires_in:, refresh_token:)
+      @token         = token
+      @expires_at    = expires_at
+      @expires_in    = expires_in
+      @refresh_token = refresh_token
+      @connection    = nil
+    end
+
     private
+
+    def get_with_retry(path, extra_query = {})
+      retry_with_exponential_backoff do
+        refresh! if expired?
+
+        connection.get(build_url(path), params: @default_query.merge(extra_query))
+      end
+    end
 
     def client
       @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)

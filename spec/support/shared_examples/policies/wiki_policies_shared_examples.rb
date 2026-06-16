@@ -9,7 +9,7 @@ RSpec.shared_examples 'model with wiki policies' do
 
   subject { described_class.new(user, container) }
 
-  let_it_be(:wiki_permissions) do
+  let_it_be(:wiki_permissions, freeze: false) do
     {}.tap do |permissions|
       permissions[:guest] = %i[read_wiki]
       permissions[:reporter] = permissions[:guest] + %i[download_wiki_code]

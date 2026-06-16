@@ -13,6 +13,8 @@ describe('initIssuablePopovers', () => {
   let comment1;
   let milestone1;
   let iteration1;
+  let commit1;
+  let commit2;
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -40,6 +42,12 @@ describe('initIssuablePopovers', () => {
       <div id="seven" class="gfm-iteration" data-iteration="1" data-namespace-path="group/project" data-reference-type="iteration">
         Iteration 1
       </div>
+      <a id="eight" class="gfm gfm-commit has-tooltip" title="Fix bug in feature" data-commit="abc123de" data-project-path="gitlab-org/gitlab-test" data-reference-type="commit">
+        abc123de
+      </a>
+      <a id="nine" class="gfm gfm-commit" data-commit="abc123de" data-reference-type="commit">
+        abc123de
+      </a>
     `);
 
     mr1 = document.querySelector('#one');
@@ -50,6 +58,8 @@ describe('initIssuablePopovers', () => {
     comment1 = document.querySelector('#note_1');
     milestone1 = document.querySelector('#six');
     iteration1 = document.querySelector('#seven');
+    commit1 = document.querySelector('#eight');
+    commit2 = document.querySelector('#nine');
   });
 
   describe('init function', () => {
@@ -186,6 +196,55 @@ describe('initIssuablePopovers', () => {
           iteration: '1',
           referenceType: 'iteration',
           target: iteration1,
+        }),
+      );
+    });
+  });
+
+  describe('commit popovers', () => {
+    beforeEach(() => {
+      jest.spyOn(popover, 'handleIssuablePopoverMount').mockImplementation(jest.fn());
+    });
+
+    it('adds a mouseenter listener for commit elements with data-commit and data-project-path', () => {
+      commit1.addEventListener = jest.fn();
+      initIssuablePopovers([commit1], popover.handleIssuablePopoverMount);
+
+      expect(commit1.addEventListener).toHaveBeenCalled();
+    });
+
+    it('does not add a listener for commit elements missing data-project-path', () => {
+      commit2.addEventListener = jest.fn();
+      initIssuablePopovers([commit2], popover.handleIssuablePopoverMount);
+
+      expect(commit2.addEventListener).not.toHaveBeenCalled();
+    });
+
+    it('removes title attribute and has-tooltip class on mouseenter', async () => {
+      initIssuablePopovers([commit1], popover.handleIssuablePopoverMount);
+
+      await commit1.dispatchEvent(new Event('mouseenter', { target: commit1 }));
+
+      expect(commit1.getAttribute('title')).toBeNull();
+      expect(commit1.classList.contains('has-tooltip')).toBe(false);
+    });
+
+    it('calls mount function with only commit-specific props', async () => {
+      initIssuablePopovers([commit1], popover.handleIssuablePopoverMount);
+
+      await commit1.dispatchEvent(new Event('mouseenter', { target: commit1 }));
+
+      expect(popover.handleIssuablePopoverMount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          referenceType: 'commit',
+          target: commit1,
+        }),
+      );
+
+      expect(popover.handleIssuablePopoverMount).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          namespacePath: expect.anything(),
+          iid: expect.anything(),
         }),
       );
     });

@@ -19,6 +19,7 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getJobQuery from '../graphql/queries/get_job.query.graphql';
 import jobCiStatusUpdatedSubscription from '../graphql/subscriptions/job_ci_status_updated.subscription.graphql';
+import JobSourceBadge from './job_source_badge.vue';
 
 export default {
   name: 'JobHeader',
@@ -31,6 +32,7 @@ export default {
     GlTooltip,
     PageHeading,
     TimeagoTooltip,
+    JobSourceBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -168,7 +170,10 @@ export default {
   <div v-else>
     <page-heading v-if="job" data-testid="job-header-content">
       <template #heading>
-        <span data-testid="job-name">{{ job.name }}</span>
+        <span class="gl-flex gl-items-center" data-testid="job-name">
+          {{ job.name }}
+          <job-source-badge v-if="job.source" :source="job.source" />
+        </span>
       </template>
 
       <template #actions>

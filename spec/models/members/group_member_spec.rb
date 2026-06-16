@@ -41,11 +41,11 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
   end
 
   describe '.max_access_members' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }
 
-    let_it_be(:user) { create(:user) }
-    let_it_be(:developer_member) { create(:group_member, :developer, group: group, user: user) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:developer_member, freeze: false) { create(:group_member, :developer, group: group, user: user) }
 
     let(:group_ids) { [group.id] }
 
@@ -75,7 +75,7 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
   end
 
   describe '#prevent_role_assignement?' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be_with_reload(:current_user) { create(:user) }
     let_it_be_with_reload(:member) do
       create(:group_member, access_level: Gitlab::Access::GUEST, group: group)
@@ -184,7 +184,7 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
   end
 
   describe '#permissible_access_level_roles' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
 
     it 'returns Gitlab::Access.options_with_owner' do
       result = described_class.permissible_access_level_roles(group.first_owner, group)
@@ -221,7 +221,7 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
 
   describe '#last_owner_of_the_group?' do
     let_it_be(:parent_group) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent_group) }
+    let_it_be(:group, freeze: false) { create(:group, parent: parent_group) }
     let_it_be(:group_member) { create(:group_member, :owner, source: group) }
 
     subject { group_member.last_owner_of_the_group? }
@@ -263,15 +263,15 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
 
       context 'and there is another owner' do
         context 'and that other owner is a project bot' do
-          let_it_be(:project_bot) { create(:user, :project_bot) }
-          let_it_be(:other_owner_bot) { create(:group_member, :owner, source: group, user: project_bot) }
+          let_it_be(:project_bot, freeze: false) { create(:user, :project_bot) }
+          let_it_be(:other_owner_bot, freeze: false) { create(:group_member, :owner, source: group, user: project_bot) }
 
           it { is_expected.to be(true) }
         end
 
         context 'and that other owner is not a project bot' do
-          let_it_be(:other_user) { create(:user) }
-          let_it_be(:other_owner) { create(:group_member, :owner, source: group, user: other_user) }
+          let_it_be(:other_user, freeze: false) { create(:user) }
+          let_it_be(:other_owner, freeze: false) { create(:group_member, :owner, source: group, user: other_user) }
 
           it { is_expected.to be(false) }
         end
@@ -320,11 +320,11 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
   end
 
   context 'authorization refresh on addition/updation/deletion' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be(:project_a) { create(:project, group: group) }
     let_it_be(:project_b) { create(:project, group: group) }
     let_it_be(:project_c) { create(:project, group: group) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     shared_examples_for 'calls AuthorizedProjectsWorker inline to recalculate authorizations' do
       # this is inline with the overridden behaviour in stubbed_member.rb

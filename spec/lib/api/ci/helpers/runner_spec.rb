@@ -572,4 +572,48 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
       end
     end
   end
+
+  describe '#ensure_job_router_enabled_for_runner!' do
+    let_it_be(:runner) { create(:ci_runner, :instance) }
+
+    let(:error_message) { 'Job Router is not available. Please contact your administrator.' }
+
+    subject(:ensure_enabled) { helper.ensure_job_router_enabled_for_runner!(runner) }
+
+    before do
+      allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
+    end
+
+    context 'when KAS is enabled and the Job Router is enabled for the runner' do
+      it 'does not render an error' do
+        expect(helper).not_to receive(:render_api_error!)
+
+        ensure_enabled
+      end
+    end
+
+    context 'when KAS is disabled' do
+      before do
+        allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
+      end
+
+      it 'renders a 501 error' do
+        expect(helper).to receive(:render_api_error!).with(error_message, 501)
+
+        ensure_enabled
+      end
+    end
+
+    context 'when the Job Router is disabled for the runner' do
+      before do
+        stub_feature_flags(job_router: false, job_router_instance_runners: false)
+      end
+
+      it 'renders a 501 error' do
+        expect(helper).to receive(:render_api_error!).with(error_message, 501)
+
+        ensure_enabled
+      end
+    end
+  end
 end

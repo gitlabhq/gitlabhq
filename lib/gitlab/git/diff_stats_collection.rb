@@ -34,7 +34,7 @@ module Gitlab
 
       def indexed_by_path
         strong_memoize(:indexed_by_path) do
-          index_by { |stats| stats.path }
+          index_by(&:path)
         end
       end
     end

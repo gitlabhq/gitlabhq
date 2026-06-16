@@ -38,11 +38,13 @@ module Webauthn
         )
       rescue ActiveRecord::RecordInvalid => err
         ServiceResponse.error(
-          message: err.message
+          message: err.message,
+          payload: registration
         )
       rescue WebAuthn::Error => err
         ServiceResponse.error(
-          message: webauthn_human_readable_errors(err.class.name)
+          message: webauthn_human_readable_errors(err.class.name),
+          payload: registration
         )
       end
     end

@@ -62,6 +62,7 @@ module Gitlab
         gon.instance_token_prefix = Authn::TokenField::PrefixHelper.instance_prefix
       end
 
+      gon.fluid_layout               = false
       gon.keyboard_shortcuts_enabled = current_user ? current_user.keyboard_shortcuts_enabled : true
       gon.broadcast_message_dismissal_path =
         current_user ? Gitlab::Routing.url_helpers.broadcast_message_dismissals_path : nil
@@ -88,6 +89,8 @@ module Gitlab
       gon.time_display_relative = current_user.time_display_relative
       gon.time_display_format = current_user.time_display_format
 
+      gon.fluid_layout = current_user.fluid?
+
       return unless current_user.user_preference
 
       gon.text_editor = current_user.user_preference.text_editor
@@ -106,9 +109,7 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
-      push_frontend_feature_flag(:show_work_items_sidebar_count, current_user)
       push_frontend_feature_flag(:explore_analytics_dashboards, current_user)
-      push_frontend_feature_flag(:glql_code_suggestion_analytics_aggregation, current_user, type: :gitlab_com_derisk)
 
       push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
     end

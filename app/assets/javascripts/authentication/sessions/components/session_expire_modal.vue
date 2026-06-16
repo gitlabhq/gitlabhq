@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import { INTERVAL_SESSION_MODAL, BROADCAST_CHANNEL } from '../constants';
 
 export default {
+  name: 'SessionExpireModal',
   components: {
     GlModal,
   },

@@ -348,6 +348,31 @@ ci-job-token-policies-verify:
   script:
     - bundle exec rake ci:job_tokens:check_policies
 
+api-high-impact-entity-baseline-check:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .rails:rules:api-high-impact-entity-baseline-check
+  stage: lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    - bundle exec rake gitlab:api:check_high_impact_entity_baseline
+
+api-high-impact-entity-baseline-check:notify:
+  extends:
+    - .rails:rules:api-high-impact-entity-baseline-check:notify
+  stage: lint
+  needs:
+    - job: api-high-impact-entity-baseline-check
+      artifacts: false
+  script:
+    - 'scripts/slack alerts-api-platform ":warning: New high-impact API entities detected. Baseline drift found in weekly check. See ${CI_JOB_URL}" warning "GitLab Bot"'
+
 templates-shellcheck:
   extends:
     - .ci-templates:rules:shellcheck
@@ -375,7 +400,10 @@ ping-appsec-for-sast-findings:
     - !reference [.ping-appsec-for-sast-findings:rules, rules]
   variables:
     # Project Access Token bot ID for /gitlab-com/gl-security/product-security/appsec/sast-custom-rules
-    BOT_USER_ID: 19650678
+    BOT_USER_ID: 26792702
+    # Set SAST_TRIAGE_ENABLED=1 below to opt this job into shadow-mode Duo triage. Can also be set via a project-level CI/CD variable.
+    # See: scripts/sast_triage_classifier.rb and work item gitlab-com/gl-security/product-security/appsec/appsec-team#1448
+    SAST_TRIAGE_ENABLED: "0"
   needs:
     - !reference [.lint-base, needs]
     - semgrep-appsec-custom-rules
@@ -383,6 +411,12 @@ ping-appsec-for-sast-findings:
     - apk update
     - apk add ruby
     - ruby scripts/semgrep_result_processor.rb
+  artifacts:
+    expire_in: 90 days
+    when: always
+    paths:
+      - gl-sast-triage-verdicts.json
+    access: 'developer'
 
 ping-appsec-for-dependency-review:
   stage: lint

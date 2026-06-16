@@ -9,15 +9,15 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
   indices = (0..).take(range.size)
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:one_sibling, reload: true) { create(:project, creator: user, namespace: user.namespace) }
-  let_it_be(:one_free_space, reload: true) { create(:project, creator: user, namespace: user.namespace) }
-  let_it_be(:fully_occupied, reload: true) { create(:project, creator: user, namespace: user.namespace) }
-  let_it_be(:no_issues, reload: true) { create(:project, creator: user, namespace: user.namespace) }
-  let_it_be(:three_sibs, reload: true) { create(:project, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:one_sibling) { create(:project, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:one_free_space) { create(:project, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:fully_occupied) { create(:project, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:no_issues) { create(:project, creator: user, namespace: user.namespace) }
+  let_it_be_with_reload(:three_sibs) { create(:project, creator: user, namespace: user.namespace) }
 
   let(:start) { ((range.first + range.last) / 2.0).floor }
 
-  let_it_be(:full_set) do
+  let_it_be(:full_set, freeze: false) do
     range.each_with_index.map do |pos, i|
       create(:issue, iid: i.succ, project: fully_occupied, relative_position: pos)
     end
@@ -25,11 +25,11 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
 
   let_it_be(:sole_sibling) { create(:issue, iid: 1, project: one_sibling, relative_position: nil) }
   let_it_be(:one_sibling_set) { [sole_sibling] }
-  let_it_be(:one_free_space_set) do
+  let_it_be(:one_free_space_set, freeze: false) do
     indices.drop(1).map { |iid| create(:issue, project: one_free_space, iid: iid.succ) }
   end
 
-  let_it_be(:three_sibs_set) do
+  let_it_be(:three_sibs_set, freeze: false) do
     [1, 2, 3].map { |iid| create(:issue, iid: iid, project: three_sibs) }
   end
 

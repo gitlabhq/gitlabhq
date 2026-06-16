@@ -1,0 +1,20 @@
+---
+data_category: optional
+key_path: usage_activity_by_stage_monthly.manage.project_imports.gitlab_project_migration
+description: Count of projects imported via Direct Transfer
+product_group: import
+product_categories:
+- importers
+value_type: number
+status: active
+time_frame: 28d
+data_source: database
+instrumentation_class: CountImportedProjectsMetric
+options:
+  import_type: gitlab_project_migration
+tiers:
+- free
+- premium
+- ultimate
+milestone: "19.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236319

@@ -3,6 +3,7 @@ import AlertManagementEmptyState from './alert_management_empty_state.vue';
 import AlertManagementTable from './alert_management_table.vue';
 
 export default {
+  name: 'AlertManagementListWrapper',
   components: {
     AlertManagementEmptyState,
     AlertManagementTable,

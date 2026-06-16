@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
 import { CONTEXT_TYPE, GROUPS_APP_OPTIONS, MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
+import { initSecurityManagerRoleBanner } from '~/security_manager_role_banner';
 
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 const APP_OPTIONS = {
@@ -67,3 +68,4 @@ initMembersApp(
 
 initInviteGroupsModal();
 initInviteGroupTrigger();
+initSecurityManagerRoleBanner();

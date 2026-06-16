@@ -67,9 +67,6 @@ describe('WorkItemBulkEditParent component', () => {
         [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
       ]),
       provide: {
-        glFeatures: {
-          workItemConfigurableTypes: true,
-        },
         workItemTypesConfiguration: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', isGroupWorkItemType: false },
           { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', isGroupWorkItemType: false },

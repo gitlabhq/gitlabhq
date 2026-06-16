@@ -31,7 +31,6 @@ class Namespace < ApplicationRecord
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
-  ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
   ignore_column :file_template_project_id, remove_with: '19.2', remove_after: '2026-06-18'
   ignore_column :custom_project_templates_group_id, remove_with: '19.2', remove_after: '2026-06-18'
   ignore_column :push_rule_id, remove_with: '19.2', remove_after: '2026-06-18'
@@ -85,6 +84,10 @@ class Namespace < ApplicationRecord
   has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
 
   has_one :namespace_descendants, class_name: 'Namespaces::Descendants'
+
+  has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting',
+    foreign_key: :group_id, inverse_of: :namespace
+
   attribute :description
   accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
 
@@ -235,6 +238,11 @@ class Namespace < ApplicationRecord
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
+  scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
+
+  def self.ordered_ids_after(cursor, limit:)
+    id_after(cursor).order(:id).limit(limit).ids
+  end
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :project_namespaces, -> { where(type: Namespaces::ProjectNamespace.sti_name) }

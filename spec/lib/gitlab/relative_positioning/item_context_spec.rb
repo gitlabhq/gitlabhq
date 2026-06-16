@@ -11,7 +11,7 @@ RSpec.describe Gitlab::RelativePositioning::ItemContext do
   indices = (0..).take(range.size)
 
   let_it_be(:default_user) { create_default(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:start) { ((range.first + range.last) / 2.0).floor }
   let(:subjects) { issues.map { |i| described_class.new(i.reset, range) } }

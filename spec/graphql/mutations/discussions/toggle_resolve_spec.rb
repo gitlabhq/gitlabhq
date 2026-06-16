@@ -151,7 +151,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
     end
 
     context 'when discussion is on a merge request' do
-      let_it_be(:noteable) { create(:merge_request, source_project: project, author: author) }
+      let_it_be(:noteable, freeze: false) { create(:merge_request, source_project: project, author: author) }
 
       let(:discussion) { create(:diff_note_on_merge_request, noteable: noteable, project: project).to_discussion }
       let(:issuable) { noteable }
@@ -160,7 +160,9 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
     end
 
     context 'when discussion is on a design' do
-      let_it_be(:noteable) { create(:design, :with_file, issue: create(:issue, project: project, author: author)) }
+      let_it_be(:noteable, freeze: false) do
+        create(:design, :with_file, issue: create(:issue, project: project, author: author))
+      end
 
       let(:discussion) { create(:diff_note_on_design, noteable: noteable, project: project).to_discussion }
       let(:issuable) { noteable.issue }

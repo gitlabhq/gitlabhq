@@ -12,11 +12,11 @@ title: ユーザーSSHおよびGPGキーAPI
 
 {{< /details >}}
 
-このAPIを使用して、ユーザーのSSHおよびGPGキーを操作します。詳細については、[SSHキー](../user/ssh.md)および[GPGキー](../user/project/repository/signed_commits/gpg.md)を参照してください。
+このAPIを使用して、ユーザーの[SSHキー](../user/ssh.md)および[GPGキー](../user/project/repository/signed_commits/gpg.md)を操作します。
 
 ## すべてのSSHキーを一覧表示 {#list-all-ssh-keys}
 
-ユーザーアカウントのすべてのSSHキーを一覧表示します。
+自分のユーザーアカウントのすべてのSSHキーを一覧表示します。
 
 結果をフィルタリングするには、`page`および`per_page` [ページネーションパラメータ](rest/_index.md#offset-based-pagination)を使用します。
 
@@ -58,7 +58,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## ユーザーのすべてのSSHキーを一覧表示 {#list-all-ssh-keys-for-a-user}
 
-指定されたユーザーアカウントのすべてのSSHキーを一覧表示します。このエンドポイントでは認証は不要です。
+指定されたユーザーアカウントのすべてのSSHキーを一覧表示します。このエンドポイントは認証を必要としません。
 
 ```plaintext
 GET /users/:id_or_username/keys
@@ -79,7 +79,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## SSHキーを取得する {#retrieve-an-ssh-key}
 
-ユーザーアカウントのSSHキーを取得します。
+自分のユーザーアカウントのSSHキーを取得します。
 
 前提条件: 
 
@@ -116,7 +116,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## ユーザーのSSHキーを取得する {#retrieve-an-ssh-key-for-a-user}
 
-指定されたユーザーアカウントのSSHキーを取得します。このエンドポイントでは認証は不要です。
+指定されたユーザーアカウントのSSHキーを取得します。このエンドポイントは認証を必要としません。
 
 ```plaintext
 GET /users/:id/keys/:key_id
@@ -156,7 +156,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-ユーザーアカウントにSSHキーを追加します。
+自分のユーザーアカウントにSSHキーを追加します。
 
 前提条件: 
 
@@ -172,13 +172,13 @@ POST /user/keys
 |:-------------|:-------|:---------|:------------|
 | `title`      | 文字列 | はい      | キーのタイトル |
 | `key`        | 文字列 | はい      | 公開キーの値 |
-| `expires_at` | 文字列 | いいえ       | キーのISO形式（`YYYY-MM-DD`）での有効期限。 |
-| `usage_type` | 文字列 | いいえ       | キーの利用スコープ。指定可能な値: `auth`、`signing`、または`auth_and_signing`。デフォルト値: `auth_and_signing` |
+| `expires_at` | 文字列 | いいえ       | キーのISO形式 (`YYYY-MM-DD`) の有効期限。 |
+| `usage_type` | 文字列 | いいえ       | キーの使用スコープ。可能な値: `auth`、`signing`または`auth_and_signing`。デフォルト値: `auth_and_signing` |
 
 以下を返します:
 
-- 成功した場合は、ステータスが`201 Created`の作成されたキー。
-- エラーを説明するメッセージを含む`400 Bad Request`エラー:
+- 成功した場合、ステータス`201 Created`とともに作成されたキー。
+- エラーを説明するメッセージとともに`400 Bad Request`エラー:
 
   ```json
   {
@@ -204,7 +204,7 @@ POST /user/keys
 }
 ```
 
-## ユーザーのSSHキーを追加 {#add-an-ssh-key-for-a-user}
+## ユーザーにSSHキーを追加 {#add-an-ssh-key-for-a-user}
 
 {{< history >}}
 
@@ -232,13 +232,13 @@ POST /users/:id/keys
 | `id`         | 整数 | はい      | ユーザーアカウントのID |
 | `title`      | 文字列  | はい      | キーのタイトル |
 | `key`        | 文字列  | はい      | 公開キーの値  |
-| `expires_at` | 文字列  | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。 |
-| `usage_type` | 文字列  | いいえ       | キーの利用スコープ。指定可能な値: `auth`、`signing`、または`auth_and_signing`。デフォルト値: `auth_and_signing` |
+| `expires_at` | 文字列  | いいえ       | キーのISO形式 (`YYYY-MM-DD`) の有効期限。 |
+| `usage_type` | 文字列  | いいえ       | キーの使用スコープ。可能な値: `auth`、`signing`または`auth_and_signing`。デフォルト値: `auth_and_signing` |
 
 以下を返します:
 
-- 成功した場合は、ステータスが`201 Created`の作成されたキー。
-- エラーを説明するメッセージを含む`400 Bad Request`エラー:
+- 成功した場合、ステータス`201 Created`とともに作成されたキー。
+- エラーを説明するメッセージとともに`400 Bad Request`エラー:
 
   ```json
   {
@@ -266,7 +266,7 @@ POST /users/:id/keys
 
 ## SSHキーを削除する {#delete-an-ssh-key}
 
-ユーザーアカウントからSSHキーを削除します。
+自分のユーザーアカウントからSSHキーを削除します。
 
 前提条件: 
 
@@ -284,8 +284,8 @@ DELETE /user/keys/:key_id
 
 以下を返します:
 
-- 操作が成功した場合は`204 No Content`ステータスコード。
-- リソースが見つからなかった場合は`404`ステータスコード。
+- 操作が成功した場合のステータス`204 No Content`。
+- リソースが見つからない場合のステータス`404`。
 
 ## ユーザーのSSHキーを削除 {#delete-an-ssh-key-for-a-user}
 
@@ -308,7 +308,7 @@ DELETE /users/:id/keys/:key_id
 
 ## すべてのGPGキーを一覧表示 {#list-all-gpg-keys}
 
-ユーザーアカウントのすべてのGPGキーを一覧表示します。
+自分のユーザーアカウントのすべてのGPGキーを一覧表示します。
 
 前提条件: 
 
@@ -339,7 +339,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## ユーザーのすべてのGPGキーを一覧表示 {#list-all-gpg-keys-for-a-user}
 
-指定されたユーザーアカウントのすべてのGPGキーを一覧表示します。このエンドポイントでは認証は不要です。
+指定されたユーザーアカウントのすべてのGPGキーを一覧表示します。このエンドポイントは認証を必要としません。
 
 ```plaintext
 GET /users/:id/gpg_keys
@@ -372,7 +372,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## GPGキーを取得する {#retrieve-a-gpg-key}
 
-ユーザーアカウントのGPGキーを取得します。
+自分のユーザーアカウントのGPGキーを取得します。
 
 前提条件: 
 
@@ -407,7 +407,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## ユーザーのGPGキーを取得する {#retrieve-a-gpg-key-for-a-user}
 
-指定されたユーザーアカウントのGPGキーを取得します。このエンドポイントでは認証は不要です。
+指定されたユーザーアカウントのGPGキーを取得します。このエンドポイントは認証を必要としません。
 
 ```plaintext
 GET /users/:id/gpg_keys/:key_id
@@ -439,7 +439,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## GPGキーを追加 {#add-a-gpg-key}
 
-ユーザーアカウントにGPGキーを追加します。
+自分のユーザーアカウントにGPGキーを追加します。
 
 前提条件: 
 
@@ -476,7 +476,7 @@ curl --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
 ]
 ```
 
-## ユーザーのGPGキーを追加 {#add-a-gpg-key-for-a-user}
+## ユーザーにGPGキーを追加 {#add-a-gpg-key-for-a-user}
 
 指定されたユーザーアカウントにGPGキーを追加します。
 
@@ -516,7 +516,7 @@ curl --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
 
 ## GPGキーを削除 {#delete-a-gpg-key}
 
-ユーザーアカウントからGPGキーを削除します。
+自分のユーザーアカウントからGPGキーを削除します。
 
 前提条件: 
 

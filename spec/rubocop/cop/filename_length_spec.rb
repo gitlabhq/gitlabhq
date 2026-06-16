@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/filename_length'
 
-RSpec.describe RuboCop::Cop::FilenameLength do
+RSpec.describe RuboCop::Cop::FilenameLength, feature_category: :tooling do
   it 'does not flag files with names 100 characters long' do
     expect_no_offenses('puts "it does not matter"', 'a' * 100)
   end

@@ -8,6 +8,7 @@ import {
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { findHierarchyWidget } from '~/work_items/utils';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
 import searchUserProjectsToMove from '~/work_items/graphql/search_user_projects_to_move.query.graphql';
@@ -19,6 +20,7 @@ export default {
   directives: {
     GlTooltip,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     visible: {
       type: Boolean,
@@ -42,6 +44,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hideModal'],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -92,6 +95,7 @@ export default {
           id: this.workItemId,
           pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
           endCursor: '',
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {

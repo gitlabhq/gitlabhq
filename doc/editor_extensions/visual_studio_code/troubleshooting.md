@@ -264,8 +264,9 @@ To troubleshoot GitLab Duo errors in VS Code:
    are on.
 1. Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 1. Review diagnostics output:
-   1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
-      <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. In VS Code, open the Command Palette:
+      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
    1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
 1. If the diagnostics indicate that the feature is not turned on:
    1. In VS Code, open the Settings editor:
@@ -275,6 +276,12 @@ To troubleshoot GitLab Duo errors in VS Code:
    1. Find the **GitLab ›** section for the missing feature and select the checkbox to turn it on.
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
    [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
+1. If the diagnostics indicate that all Agentic Chat checks pass and you still do not
+   see the panel, it might be hidden in your [custom VS Code layout](https://code.visualstudio.com/docs/configure/custom-layout).
+   1. In VS Code, open the Command Palette:
+      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. Run the command `View: Show GitLab Duo Agent Platform` or `View: Toggle GitLab Duo Agent Platform`.
 
 For support with Code Suggestions, see [troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
 

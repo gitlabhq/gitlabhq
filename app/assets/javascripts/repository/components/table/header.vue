@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 export default {
+  name: 'TableHeader',
   data() {
     return {
       showCommitColumns: window.gon?.show_commit_columns !== false,

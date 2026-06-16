@@ -6,7 +6,7 @@ RSpec.describe 'getting a wiki page', feature_category: :wiki do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :private, developers: user) }
+  let_it_be(:project, freeze: false) { create(:project, :private, developers: user) }
 
   let(:slug) { wiki_page_meta.slugs.first.slug }
   let(:global_id) { wiki_page_meta.to_gid.to_s }
@@ -24,7 +24,7 @@ RSpec.describe 'getting a wiki page', feature_category: :wiki do
   end
 
   context 'for project wikis' do
-    let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let_it_be(:wiki_page_meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, container: project) }
 
     it_behaves_like 'a working graphql query that returns data'
 
@@ -91,7 +91,7 @@ RSpec.describe 'getting a wiki page', feature_category: :wiki do
     end
 
     describe 'discussions' do
-      let_it_be(:discussion) do
+      let_it_be(:discussion, freeze: false) do
         create(:discussion_note_on_wiki_page, noteable: wiki_page_meta, author: user, project: project).to_discussion
       end
 

@@ -45,6 +45,28 @@ RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_ca
     end
   end
 
+  describe 'Security Manager role banner' do
+    context 'when current user can admin project members' do
+      before do
+        project.add_owner(user)
+      end
+
+      it 'renders the banner mount point' do
+        render
+
+        expect(rendered).to have_selector('#js-security-manager-role-banner')
+      end
+    end
+
+    context 'when current user cannot admin project members' do
+      it 'does not render the banner mount point' do
+        render
+
+        expect(rendered).not_to have_selector('#js-security-manager-role-banner')
+      end
+    end
+  end
+
   context 'when user can not invite members or group for the project' do
     context 'when project can be shared' do
       it 'renders as expected', :aggregate_failures do

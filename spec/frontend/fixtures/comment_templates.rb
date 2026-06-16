@@ -7,7 +7,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
   include ApiHelpers
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
   before do
     sign_in(current_user)

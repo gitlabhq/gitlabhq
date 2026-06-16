@@ -41,7 +41,7 @@ The GitLab Support Team has collected a lot of information about troubleshooting
 The following documents are used by the Support Team or by customers
 with direct guidance from a Support Team member. GitLab administrators may find the
 information useful for troubleshooting. However, if you are experiencing trouble with your
-GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
+GitLab instance, you should check your [support options](https://support.gitlab.com/)
 before referring to these documents.
 
 > [!warning]

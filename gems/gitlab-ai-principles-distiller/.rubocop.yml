@@ -1,0 +1,23 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gitlab/HTTParty:
+  Enabled: false
+
+Rails/Output:
+  Enabled: false
+
+# This gem ships standalone (no ActiveSupport at runtime). Disable Rails
+# cops that depend on Rails monkeypatches like Time.zone.
+Rails/TimeZone:
+  Enabled: false
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+Rails/NegateInclude:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 25
+  AllowSubject: true

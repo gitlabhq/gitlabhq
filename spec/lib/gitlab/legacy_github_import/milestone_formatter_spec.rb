@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
-  let_it_be(:project) { create(:project, :with_import_url, :import_user_mapping_enabled) }
+  let_it_be(:project, freeze: false) { create(:project, :with_import_url, :import_user_mapping_enabled) }
 
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }

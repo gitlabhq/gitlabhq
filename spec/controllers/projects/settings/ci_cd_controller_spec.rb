@@ -76,7 +76,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
 
       it 'resets runner registration token' do
         expect { request }.to change { project.reload.runners_token }
-        expect(flash[:toast]).to eq('New runners registration token has been generated!')
+        expect(flash[:toast]).to eq('New runners registration token has been generated.')
       end
 
       it 'redirects the user to admin runners page' do

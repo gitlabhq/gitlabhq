@@ -34,7 +34,7 @@ module WorkItems
         [:widgets, :award_emoji] => { award_emoji: :awardable },
         [:widgets, :children] => { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         [:widgets, :closing_merge_requests] => {
-          merge_requests_closing_issues: { merge_request: [:target_project, :author] }
+          merge_request_closing_issues: { merge_request: [:target_project, :author] }
         },
         [:widgets, :due_date] => :dates_source,
         [:widgets, :has_parent] => :work_item_parent,
@@ -53,7 +53,7 @@ module WorkItems
         [:features, :award_emoji, :award_emoji] => { award_emoji: :awardable },
         [:features, :description, :last_edited_by] => :last_edited_by,
         [:features, :development, :closing_merge_requests] => {
-          merge_requests_closing_issues: { merge_request: [:target_project, :author] }
+          merge_request_closing_issues: { merge_request: [:target_project, :author] }
         },
         [:features, :hierarchy, :children] => {
           work_item_children_by_relative_position: [:author, { project: :project_feature }]

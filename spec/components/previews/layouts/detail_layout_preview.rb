@@ -40,6 +40,10 @@ module Layouts
           tag.p('Detail layout sidebar slot.')
         end
 
+        c.with_activity do
+          tag.p('Detail layout activity slot.')
+        end
+
         tag.p('Detail layout default slot.')
       end
     end

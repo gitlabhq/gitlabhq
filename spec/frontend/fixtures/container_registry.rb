@@ -8,9 +8,9 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
   include JavaScriptFixturesHelpers
 
   describe GraphQL::Query, type: :request do
-    let_it_be(:group) { create(:group, path: 'container-registry-group') }
-    let_it_be(:project) { create(:project, group: group, path: 'container-registry-project') }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group, path: 'container-registry-group') }
+    let_it_be(:project, freeze: false) { create(:project, group: group, path: 'container-registry-project') }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     describe 'Protected container image tags' do
       base_path = 'packages_and_registries/settings/project/graphql'
@@ -93,7 +93,7 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
           let(:mutation) { get_graphql_query_as_string(delete_container_protection_tag_rule_mutation_path) }
 
           context 'when there are no errors' do
-            let_it_be(:container_protection_tag_rule) do
+            let_it_be(:container_protection_tag_rule, freeze: false) do
               create(:container_registry_protection_tag_rule,
                 project: project,
                 minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
@@ -198,7 +198,7 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
         end
 
         describe 'updating a rule' do
-          let_it_be(:container_protection_tag_rule) do
+          let_it_be(:container_protection_tag_rule, freeze: false) do
             create(:container_registry_protection_tag_rule,
               project: project,
               minimum_access_level_for_push: Gitlab::Access::MAINTAINER,

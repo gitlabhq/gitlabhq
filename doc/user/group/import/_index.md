@@ -88,6 +88,9 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-p
 - Direct transfer does not support consolidating groups or projects from different source groups
   into a single destination group. To consolidate groups or projects, either restructure on the
   source instance before migration, or restructure on the destination instance [after placeholder user reassignment is complete](../../import/mapping/reassignment.md#completing-the-reassignment). See [issue 589460](https://gitlab.com/gitlab-org/gitlab/-/work_items/589460).
+- If the destination namespace belongs to a different organization than the source, and either
+  organization is marked as isolated, migrations by direct transfer fail. For more information, see
+  [issue 595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674).
 
 ## Estimating migration duration
 

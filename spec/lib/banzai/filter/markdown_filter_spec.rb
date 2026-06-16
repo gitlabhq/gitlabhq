@@ -44,13 +44,44 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :markdown do
   end
 
   describe 'code block' do
-    it 'adds language to lang attribute when specified' do
-      result = filter("```html\nsome code\n```", no_sourcepos: true)
+    context 'with feature flag use_css_language_classes disabled (default)' do
+      before do
+        stub_feature_flags(use_css_language_classes: false)
+      end
 
-      expect(result).to start_with('<pre lang="html"><code>')
+      it 'adds language to lang attribute when specified' do
+        result = filter("```html\nsome code\n```", no_sourcepos: true)
+
+        expect(result).to start_with('<pre lang="html"><code>')
+      end
+
+      it 'does not add language attribute when not specified' do
+        result = filter("```\nsome code\n```", no_sourcepos: true)
+
+        expect(result).to start_with('<pre><code>')
+      end
+
+      it 'works with utf8 chars in language' do
+        result = filter("```日\nsome code\n```", no_sourcepos: true)
+
+        expect(result).to start_with('<pre lang="日"><code>')
+      end
+
+      it 'works with additional language parameters' do
+        result = filter("```ruby:red gem foo\nsome code\n```", no_sourcepos: true)
+
+        expect(result).to include('lang="ruby:red"')
+        expect(result).to include('data-meta="gem foo"')
+      end
     end
 
-    it 'does not add language to lang attribute when not specified' do
+    it 'adds language to CSS class when specified' do
+      result = filter("```html\nsome code\n```", no_sourcepos: true)
+
+      expect(result).to start_with('<pre><code class="language-html">')
+    end
+
+    it 'does not add language attribute when not specified' do
       result = filter("```\nsome code\n```", no_sourcepos: true)
 
       expect(result).to start_with('<pre><code>')
@@ -59,13 +90,13 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :markdown do
     it 'works with utf8 chars in language' do
       result = filter("```日\nsome code\n```", no_sourcepos: true)
 
-      expect(result).to start_with('<pre lang="日"><code>')
+      expect(result).to start_with('<pre><code class="language-日">')
     end
 
     it 'works with additional language parameters' do
       result = filter("```ruby:red gem foo\nsome code\n```", no_sourcepos: true)
 
-      expect(result).to include('lang="ruby:red"')
+      expect(result).to include('class="language-ruby:red"')
       expect(result).to include('data-meta="gem foo"')
     end
   end
@@ -161,31 +192,70 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :markdown do
   end
 
   describe 'math support' do
-    it 'recognizes math syntax' do
-      text = <<~MARKDOWN
-        $`2+2`$ + $3+3$ + $$4+4$$
+    context 'with feature flag use_css_language_classes disabled' do
+      before do
+        stub_feature_flags(use_css_language_classes: false)
+      end
 
-        $$
-        5+5
-        $$
+      it 'recognizes math syntax' do
+        text = <<~MARKDOWN
+          $`2+2`$ + $3+3$ + $$4+4$$
 
-        ```math
-        6+6
-        ```
-      MARKDOWN
+          $$
+          5+5
+          $$
 
-      expected = <<~EXPECTED
-        <p><code data-math-style="inline">2+2</code> + <span data-math-style="inline">3+3</span> + <span data-math-style="display">4+4</span></p>
-        <p><span data-math-style="display">
-        5+5
-        </span></p>
-        <pre lang="math" data-math-style="display"><code>6+6
-        </code></pre>
-      EXPECTED
+          ```math
+          6+6
+          ```
+        MARKDOWN
 
-      result = filter(text, no_sourcepos: true)
+        expected = <<~EXPECTED
+          <p><code data-math-style="inline">2+2</code> + <span data-math-style="inline">3+3</span> + <span data-math-style="display">4+4</span></p>
+          <p><span data-math-style="display">
+          5+5
+          </span></p>
+          <pre lang="math" data-math-style="display"><code>6+6
+          </code></pre>
+        EXPECTED
 
-      expect(result).to eq(expected.strip)
+        result = filter(text, no_sourcepos: true)
+
+        expect(result).to eq(expected.strip)
+      end
+    end
+
+    context 'with feature flag use_css_language_classes enabled' do
+      before do
+        stub_feature_flags(use_css_language_classes: true)
+      end
+
+      it 'recognizes math syntax' do
+        text = <<~MARKDOWN
+          $`2+2`$ + $3+3$ + $$4+4$$
+
+          $$
+          5+5
+          $$
+
+          ```math
+          6+6
+          ```
+        MARKDOWN
+
+        expected = <<~EXPECTED
+          <p><code data-math-style="inline">2+2</code> + <span data-math-style="inline">3+3</span> + <span data-math-style="display">4+4</span></p>
+          <p><span data-math-style="display">
+          5+5
+          </span></p>
+          <pre><code class="language-math" data-math-style="display">6+6
+          </code></pre>
+        EXPECTED
+
+        result = filter(text, no_sourcepos: true)
+
+        expect(result).to eq(expected.strip)
+      end
     end
   end
 

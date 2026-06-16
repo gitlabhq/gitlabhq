@@ -62,7 +62,12 @@ module Resolvers
           artifacts: [:job_artifacts],
           pipeline: [:user],
           kind: [:metadata, :job_definition, :error_job_messages],
-          retryable: [:metadata, :job_definition, :error_job_messages],
+
+          # TODO: remove the `pipeline: [:project]` when rolling out ci_pipeline_archival_setting
+          # @see https://gitlab.com/gitlab-org/gitlab/-/issues/600946
+          retryable: [:metadata, :job_definition, :error_job_messages, { pipeline: [:project] }],
+          playable: [{ pipeline: [:project] }],
+
           project: [{ project: [:route, { namespace: [:route] }] }],
           commit_path: [:pipeline, { project: { namespace: [:route] } }],
           ref_path: [{ project: [:route, { namespace: [:route] }] }],

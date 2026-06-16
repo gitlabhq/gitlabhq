@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Aws::Role do
+RSpec.describe Aws::Role, feature_category: :deployment_management do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_length_of(:role_external_id).is_at_least(1).is_at_most(64) }
 
@@ -53,7 +53,7 @@ RSpec.describe Aws::Role do
       end
 
       context 'for an existing record' do
-        let(:role) { create(:aws_role) }
+        let(:role) { build_stubbed(:aws_role) }
 
         it 'does not call #ensure_role_external_id!' do
           expect(role).not_to receive(:ensure_role_external_id!)

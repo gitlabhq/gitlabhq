@@ -28,7 +28,7 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
     [no_dates, no_end, no_start, fully_past, fully_future, covers_today, closed]
   end
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_milestone] do
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_milestone do
     let(:user) { create(:user, reporter_of: project) }
     let(:boundary_object) { project }
     let(:request) do

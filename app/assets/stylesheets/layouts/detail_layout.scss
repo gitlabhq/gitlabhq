@@ -13,10 +13,81 @@ $detail-layout-gap: 2rem;
   @apply gl-m-5;
 }
 
+.gl-detail-layout-container {
+  --gl-detail-layout-gap: #{$detail-layout-gap};
+  display: grid;
+  gap: var(--gl-detail-layout-gap);
+}
+
+.gl-detail-layout-widgets {
+  min-width: 0; // Allow grid item to shrink below its content size, preventing overflow of the visible area
+}
+
 .gl-detail-layout-container-has-sidebar {
-  @include gl-container-width-up(lg) {
-    display: grid;
-    grid-template-columns: minmax(67%, 1fr) $detail-layout-sidebar-width;
-    column-gap: $detail-layout-gap;
+  // Set explicit minimum grid column size instead of implicit `auto`
+  // so contents don't overflow in smaller viewports
+  grid-template-columns: minmax(0, 1fr);
+
+  @include gl-container-width-down(md, panel) {
+    display: block;
+  }
+
+  @include gl-container-width-up(md) {
+    $detail-layout-sidebar-min-width: 13rem;
+    grid-template-columns: minmax(67%, 1fr) minmax($detail-layout-sidebar-min-width, $detail-layout-sidebar-width);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'content sidebar'
+      'widgets sidebar'
+      'activity sidebar';
+
+    > .gl-detail-layout-content {
+      grid-area: content;
+    }
+
+    > .gl-detail-layout-sidebar {
+      grid-area: sidebar;
+      position: sticky;
+      top: var(--detail-layout-sidebar-top, var(--work-item-sticky-header-height, 0));
+      align-self: start;
+      height: var(
+        --detail-layout-sidebar-height,
+        calc(
+          var(--panel-content-inner-height, #{$calc-application-viewport-height}) -
+            var(--work-item-sticky-header-height, 0)
+        )
+      );
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    > .gl-detail-layout-widgets {
+      grid-area: widgets;
+    }
+
+    > .gl-detail-layout-activity {
+      grid-area: activity;
+    }
+    // stylelint-disable-next-line gitlab/no-has -- need to adjust grid template areas based on presence of slots
+    &:not(:has(> .gl-detail-layout-activity)) {
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        'content sidebar'
+        'widgets sidebar';
+    }
+
+    // stylelint-disable-next-line gitlab/no-has -- need to adjust grid template areas based on presence of slots
+    &:not(:has(> .gl-detail-layout-widgets)) {
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        'content sidebar'
+        'activity sidebar';
+    }
+
+    // stylelint-disable-next-line gitlab/no-has -- need to adjust grid template areas based on presence of slots
+    &:not(:has(> .gl-detail-layout-widgets)):not(:has(> .gl-detail-layout-activity)) {
+      grid-template-rows: 1fr;
+      grid-template-areas: 'content sidebar';
+    }
   }
 }

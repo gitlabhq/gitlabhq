@@ -45,13 +45,38 @@ RSpec.describe Packages::CreateEventService, feature_category: :package_registry
               'counts.package_events_i_package_pull_package_by_user',
               *common_metrics,
               'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-              'redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly'
+              'redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly',
+              "redis_hll_counters.user_packages.i_package_#{label}_user_monthly",
+              "redis_hll_counters.user_packages.i_package_#{label}_user_weekly"
             ).and not_increment_usage_metrics(
               'counts.package_events_i_package_pull_package_by_deploy_token',
               'counts.package_events_i_package_pull_package_by_guest',
               'redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly',
               'redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly'
             )
+        end
+
+        it 'writes to the legacy Redis HLL key via key override' do
+          legacy_key_prefix = "{hll_counters}_i_package_#{label}_user-"
+
+          allow(Gitlab::Redis::HLL).to receive(:add).and_call_original
+
+          service
+
+          expect(Gitlab::Redis::HLL).to have_received(:add)
+            .with(hash_including(key: start_with(legacy_key_prefix)))
+            .at_least(:once)
+        end
+
+        it 'reads the migrated metric using the legacy Redis key' do
+          metric_key = "redis_hll_counters.user_packages.i_package_#{label}_user_monthly"
+          definition = Gitlab::Usage::MetricDefinition.definitions[metric_key]
+
+          expect(Gitlab::Redis::HLL).to receive(:count) do |args|
+            expect(args[:keys]).to all(start_with("{hll_counters}_i_package_#{label}_user-"))
+          end
+
+          Gitlab::Usage::Metric.new(definition).with_value
         end
       end
 
@@ -98,7 +123,8 @@ RSpec.describe Packages::CreateEventService, feature_category: :package_registry
               'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
               'redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly',
               'redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly',
-              'redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly'
+              'redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_weekly',
+              "redis_hll_counters.user_packages.i_package_#{label}_user_monthly"
             )
         end
       end

@@ -115,6 +115,12 @@ Doorkeeper.configure do
   # the Web IDE would treat all tokens as expired if this value is `300` or less.
   access_token_expires_in 7200
 
+  # Accepts a lambda to dynamically change the static :access_token_expires_in
+  #
+  # See https://github.com/doorkeeper-gem/doorkeeper/blob/main/lib/doorkeeper/oauth/authorization/token.rb#L27
+  #
+  custom_access_token_expires_in { Gitlab::CurrentSettings.oauth_access_token_expires_in }
+
   # Use a custom class for generating the application secret.
   # https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-application-secret-generator
   application_secret_generator 'Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken'

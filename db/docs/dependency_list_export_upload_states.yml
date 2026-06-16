@@ -1,0 +1,15 @@
+---
+table_name: dependency_list_export_upload_states
+description: Separate table for Dependency List Export Upload verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237370
+milestone: '19.1'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::DependencyListExportUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+  namespace_id: namespaces
+  project_id: projects
+organization_transfer_support: todo

@@ -10,7 +10,7 @@ import {
   GlTooltipDirective,
   GlAnimatedChevronLgRightDownIcon,
 } from '@gitlab/ui';
-import { isListDraggable } from '~/boards/boards_util';
+import { getBoardListTitleId, isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -125,6 +125,9 @@ export default {
     },
     listTitle() {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
+    },
+    listTitleId() {
+      return getBoardListTitleId(this.list.id);
     },
     listStatus() {
       return this.list?.status || {};
@@ -408,6 +411,7 @@ export default {
       />
       <!-- EE end -->
       <h2
+        :id="listTitleId"
         class="gl-text-bold board-title-text gl-text-base"
         :class="{
           'gl-hidden': list.collapsed && isSwimlanesHeader,

@@ -2,7 +2,11 @@ import { GlIcon, GlLink, GlButton, GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import PersonalAccessTokenGranularScopes from '~/personal_access_tokens/components/personal_access_token_granular_scopes.vue';
-import { mockGranularGroupScope, mockGranularUserScope } from '../mock_data';
+import {
+  mockGranularGroupScope,
+  mockGranularUserScope,
+  mockGranularInstanceScope,
+} from '../mock_data';
 
 describe('PersonalAccessTokenGranularScopes', () => {
   let wrapper;
@@ -20,10 +24,12 @@ describe('PersonalAccessTokenGranularScopes', () => {
   const findToggleButtons = () => wrapper.findAllComponents(GlButton);
   const findGroupToggleButton = () => findToggleButtons().at(0);
   const findUserToggleButton = () => findToggleButtons().at(1);
+  const findInstanceToggleButton = () => findToggleButtons().at(2);
 
   const findCollapses = () => wrapper.findAllComponents(GlCollapse);
   const findGroupCollapse = () => findCollapses().at(0);
   const findUserCollapse = () => findCollapses().at(1);
+  const findInstanceCollapse = () => findCollapses().at(2);
 
   describe('group access descriptions', () => {
     it('renders personal projects description', () => {
@@ -124,7 +130,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
   describe('permissions', () => {
     beforeEach(() => {
       createComponent({
-        scopes: [mockGranularGroupScope, mockGranularUserScope],
+        scopes: [mockGranularGroupScope, mockGranularUserScope, mockGranularInstanceScope],
       });
     });
 
@@ -134,6 +140,21 @@ describe('PersonalAccessTokenGranularScopes', () => {
 
     it('renders user permissions toggle', () => {
       expect(findUserToggleButton().text()).toContain('User permissions (2)');
+    });
+
+    it('renders global (instance) permissions toggle', () => {
+      expect(findInstanceToggleButton().text()).toContain('Global permissions (1)');
+    });
+
+    it('renders global permissions with their categories, resources and actions', () => {
+      expect(findInstanceCollapse().text()).toContain('Application security');
+      expect(findInstanceCollapse().text()).toContain('Compliance policy setting: Read');
+    });
+
+    it('does not render namespace access description for instance scopes', () => {
+      createComponent({ scopes: [mockGranularInstanceScope] });
+
+      expect(wrapper.text()).not.toContain('Group and project access');
     });
 
     it('renders group permissions with their categories, resources and actions', () => {

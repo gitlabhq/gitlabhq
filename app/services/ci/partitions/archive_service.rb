@@ -27,7 +27,12 @@ module Ci
         archive_builds_older_than.present? && partition.current_until < archive_builds_older_than
       end
 
+      # Partition archival has no per-project context, so the ci_pipeline_archival_setting
+      # feature flag is evaluated against :instance here. Per-project evaluations happen
+      # at Ci::Pipeline#archived? and Ci::CreateCommitStatusService#first_matching_pipeline.
       def archive_builds_older_than
+        return unless ::Feature.enabled?(:ci_pipeline_archival_setting, :instance)
+
         Gitlab::CurrentSettings.archive_builds_older_than
       end
       strong_memoize_attr :archive_builds_older_than

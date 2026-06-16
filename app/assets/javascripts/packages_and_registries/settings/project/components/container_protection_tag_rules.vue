@@ -28,6 +28,7 @@ const I18N_MINIMUM_ACCESS_LEVEL_TO_PUSH = s__('ContainerRegistry|Minimum access 
 const I18N_MINIMUM_ACCESS_LEVEL_TO_DELETE = s__('ContainerRegistry|Minimum access level to delete');
 
 export default {
+  name: 'ContainerProtectionTagRules',
   components: {
     ContainerProtectionTagRuleForm,
     CrudComponent,

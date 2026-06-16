@@ -81,6 +81,20 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       expect(result.payload).to have_attributes(organization_id: organization.id)
     end
 
+    context 'when GitLab URL contains embedded credentials' do
+      let(:source_hostname) { 'https://gitlab.example.com' }
+
+      before do
+        allow(Settings.gitlab).to receive(:url).and_return('https://user:secret@gitlab.example.com')
+      end
+
+      it_behaves_like 'a success response'
+
+      it 'persists the sanitized source hostname' do
+        expect(result.payload.reload.source_hostname).to eq(source_hostname)
+      end
+    end
+
     it 'enqueues the export worker' do
       expect(Import::Offline::ExportWorker).to receive(:perform_async).with(Integer)
 

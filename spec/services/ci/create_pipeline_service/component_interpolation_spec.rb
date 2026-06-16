@@ -4,20 +4,22 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_composition do
   context 'for spec:component' do
-    let_it_be(:project) { create(:project, :small_repo) }
-    let_it_be(:user)    { project.first_owner }
+    let_it_be(:project, freeze: false) { create(:project, :small_repo) }
+    let_it_be(:user, freeze: false) { project.first_owner }
 
-    let_it_be(:components_project) do
+    let_it_be(:components_project, freeze: false) do
       create(:project, :small_repo, creator: user, namespace: user.namespace)
     end
 
-    let_it_be(:catalog_resource) { create(:ci_catalog_resource, :published, project: components_project) }
+    let_it_be(:catalog_resource, freeze: false) do
+      create(:ci_catalog_resource, :published, project: components_project)
+    end
 
-    let_it_be(:component_name) { 'my-component' }
-    let_it_be(:component_version) { '0.1.1' }
-    let_it_be(:component_file_path) { "templates/#{component_name}/template.yml" }
+    let_it_be(:component_name, freeze: false) { 'my-component' }
+    let_it_be(:component_version, freeze: false) { '0.1.1' }
+    let_it_be(:component_file_path, freeze: false) { "templates/#{component_name}/template.yml" }
 
-    let_it_be(:component_yaml) do
+    let_it_be(:component_yaml, freeze: false) do
       <<~YAML
       spec:
         component: [name, sha, version, reference]
@@ -37,7 +39,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       YAML
     end
 
-    let_it_be(:component_sha) do
+    let_it_be(:component_sha, freeze: false) do
       components_project.repository.create_file(
         user, component_file_path, component_yaml, message: 'Add my first CI component', branch_name: 'master'
       )
@@ -64,7 +66,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when the component path is with a full version' do
-        let_it_be(:component_path) do
+        let_it_be(:component_path, freeze: false) do
           "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_version}"
         end
 
@@ -86,7 +88,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when the component path is with a partial version' do
-        let_it_be(:component_path) do
+        let_it_be(:component_path, freeze: false) do
           "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@0.1"
         end
 
@@ -108,7 +110,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when the component path is with latest' do
-        let_it_be(:component_path) do
+        let_it_be(:component_path, freeze: false) do
           "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@~latest"
         end
 
@@ -130,7 +132,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when the component path is with sha' do
-        let_it_be(:component_path) do
+        let_it_be(:component_path, freeze: false) do
           "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_sha}"
         end
 
@@ -153,10 +155,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the component includes nested local files that uses component context' do
-      let_it_be(:component_name) { 'parent-component' }
-      let_it_be(:component_file_path) { "templates/#{component_name}/template.yml" }
-      let_it_be(:local_file_path) { 'templates/local.yml' }
-      let_it_be(:nested_local_file_path) { 'templates/nested-local.yml' }
+      let_it_be(:component_name, freeze: false) { 'parent-component' }
+      let_it_be(:component_file_path, freeze: false) { "templates/#{component_name}/template.yml" }
+      let_it_be(:local_file_path, freeze: false) { 'templates/local.yml' }
+      let_it_be(:nested_local_file_path, freeze: false) { 'templates/nested-local.yml' }
 
       let(:component_path) do
         "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_version}"
@@ -169,7 +171,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         YAML
       end
 
-      let_it_be(:component_yaml) do
+      let_it_be(:component_yaml, freeze: false) do
         <<~YAML
         spec:
           component: [name, sha, version, reference]
@@ -183,7 +185,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         YAML
       end
 
-      let_it_be(:local_yaml) do
+      let_it_be(:local_yaml, freeze: false) do
         <<~YAML
         spec:
           component: [name, sha]
@@ -197,7 +199,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         YAML
       end
 
-      let_it_be(:nested_local_yaml) do
+      let_it_be(:nested_local_yaml, freeze: false) do
         <<~YAML
         spec:
           component: [name, sha]
@@ -208,7 +210,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         YAML
       end
 
-      let_it_be(:parent_component_sha) do
+      let_it_be(:parent_component_sha, freeze: false) do
         components_project.repository.create_file(
           user, nested_local_file_path, nested_local_yaml,
           message: 'Add nested local file', branch_name: 'master'
@@ -223,7 +225,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         )
       end
 
-      let_it_be(:component_version) { '0.2.0' }
+      let_it_be(:component_version, freeze: false) { '0.2.0' }
 
       before_all do
         components_project.repository.add_tag(user, component_version, parent_component_sha)

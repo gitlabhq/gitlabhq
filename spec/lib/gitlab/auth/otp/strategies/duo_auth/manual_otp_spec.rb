@@ -3,26 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp, feature_category: :system_access do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:otp_code) { 42 }
+  let_it_be(:otp_code, freeze: false) { 42 }
 
-  let_it_be(:hostname) { 'duo_auth.example.com' }
-  let_it_be(:integration_key) { 'int3gr4t1on' }
-  let_it_be(:secret_key) { 's3cr3t' }
+  let_it_be(:hostname, freeze: false) { 'duo_auth.example.com' }
+  let_it_be(:integration_key, freeze: false) { 'int3gr4t1on' }
+  let_it_be(:secret_key, freeze: false) { 's3cr3t' }
 
-  let_it_be(:duo_response_builder) { Struct.new(:body) }
+  let_it_be(:duo_response_builder, freeze: false) { Struct.new(:body) }
 
-  let_it_be(:response_status) { 200 }
+  let_it_be(:response_status, freeze: false) { 200 }
 
-  let_it_be(:duo_auth_url) { "https://#{hostname}/auth/v2/auth/" }
-  let_it_be(:params) do
+  let_it_be(:duo_auth_url, freeze: false) { "https://#{hostname}/auth/v2/auth/" }
+  let_it_be(:params, freeze: false) do
     { username: user.username,
       factor: "passcode",
       passcode: otp_code }
   end
 
-  let_it_be(:manual_otp) { described_class.new(user) }
+  let_it_be(:manual_otp, freeze: false) { described_class.new(user) }
 
   subject(:response) { manual_otp.validate(otp_code) }
 

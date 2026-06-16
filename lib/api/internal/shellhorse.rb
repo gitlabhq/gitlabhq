@@ -55,6 +55,8 @@ module API
               desc: 'ID of the SSH key used for authentication. Present when a deploy key authenticates via SSH.'
             optional :username, type: String,
               desc: 'Username of the user performing the git operation.'
+            optional :namespace_path, type: String,
+              desc: 'Namespace path for SSH certificate scoped access.'
           end
 
           route_setting :authorization, skip_granular_token_authorization: :gitlab_shared_secret_auth

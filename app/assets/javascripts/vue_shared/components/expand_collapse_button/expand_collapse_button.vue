@@ -53,7 +53,7 @@ export default {
     :aria-controls="anchorId"
     category="tertiary"
     :size="size"
-    class="-gl-mr-2 gl-ml-3 !gl-p-0"
+    class="-gl-mr-2 !gl-p-0"
     @click="$emit('click')"
   >
     <gl-animated-chevron-lg-down-up-icon :is-on="!isCollapsed" variant="default" />

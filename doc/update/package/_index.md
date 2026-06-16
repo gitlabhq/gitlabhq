@@ -203,6 +203,107 @@ sudo zypper install gitlab-ce
 
 {{< /tabs >}}
 
+### Pre-download a package from the official repository
+
+To reduce installation time during upgrades or test that a package is accessible,
+you can download it from the official repository and later install it:
+
+{{< tabs >}}
+
+{{< tab title="Ubuntu/Debian" >}}
+
+```shell
+# GitLab Enterprise Edition
+sudo apt-get install --download-only gitlab-ee=<version>-ee.0
+sudo apt-get install /var/cache/apt/archives/gitlab-ee_<version>-ee.0_amd64.deb
+
+# GitLab Community Edition
+sudo apt-get install --download-only gitlab-ce=<version>-ce.0
+sudo apt-get install /var/cache/apt/archives/gitlab-ce_<version>-ce.0_amd64.deb
+```
+
+{{< /tab >}}
+
+{{< tab title="Amazon Linux 2" >}}
+
+```shell
+# GitLab Enterprise Edition
+sudo yumdownloader gitlab-ee-<version>-ee.0.amazon2
+sudo yum install ./gitlab-ee-<version>-ee.0.amazon2.x86_64.rpm
+
+# GitLab Community Edition
+sudo yumdownloader gitlab-ce-<version>-ce.0.amazon2
+sudo yum install ./gitlab-ce-<version>-ce.0.amazon2.x86_64.rpm
+```
+
+{{< /tab >}}
+
+{{< tab title="RHEL/Oracle Linux/AlmaLinux 8/9" >}}
+
+```shell
+# GitLab Enterprise Edition (el9)
+sudo dnf download gitlab-ee-<version>-ee.0.el9
+sudo dnf install ./gitlab-ee-<version>-ee.0.el9.x86_64.rpm
+
+# GitLab Enterprise Edition (el8)
+sudo dnf download gitlab-ee-<version>-ee.0.el8
+sudo dnf install ./gitlab-ee-<version>-ee.0.el8.x86_64.rpm
+
+# GitLab Community Edition (el9)
+sudo dnf download gitlab-ce-<version>-ce.0.el9
+sudo dnf install ./gitlab-ce-<version>-ce.0.el9.x86_64.rpm
+
+# GitLab Community Edition (el8)
+sudo dnf download gitlab-ce-<version>-ce.0.el8
+sudo dnf install ./gitlab-ce-<version>-ce.0.el8.x86_64.rpm
+```
+
+{{< /tab >}}
+
+{{< tab title="Amazon Linux 2023" >}}
+
+```shell
+# GitLab Enterprise Edition
+sudo dnf download gitlab-ee-<version>-ee.0.amazon2023
+sudo dnf install ./gitlab-ee-<version>-ee.0.amazon2023.x86_64.rpm
+
+# GitLab Community Edition
+sudo dnf download gitlab-ce-<version>-ce.0.amazon2023
+sudo dnf install ./gitlab-ce-<version>-ce.0.amazon2023.x86_64.rpm
+```
+
+{{< /tab >}}
+
+{{< tab title="OpenSUSE Leap 15.5" >}}
+
+```shell
+# GitLab Enterprise Edition
+sudo zypper install --download-only gitlab-ee-<version>-ee.0.sles15.x86_64
+sudo zypper install /var/cache/zypp/packages/gitlab_gitlab-ee/Packages/g/gitlab-ee-<version>-ee.sles15.x86_64.rpm
+
+# GitLab Community Edition
+sudo zypper install --download-only gitlab-ce-<version>-ce.0.sles15.x86_64
+sudo zypper install /var/cache/zypp/packages/gitlab_gitlab-ce/Packages/g/gitlab-ce-<version>-ce.sles15.x86_64.rpm
+```
+
+{{< /tab >}}
+
+{{< tab title="SUSE Enterprise Server 12.2/12.5" >}}
+
+```shell
+# GitLab Enterprise Edition
+sudo zypper install --download-only gitlab-ee-<version>-ee.0.sles12.x86_64
+sudo zypper install /var/cache/zypp/packages/gitlab_gitlab-ee/Packages/g/gitlab-ee-<version>-ee.0.sles12.x86_64.rpm
+
+# GitLab Community Edition
+sudo zypper install --download-only gitlab-ce-<version>-ce.0.sles12.x86_64
+sudo zypper install /var/cache/zypp/packages/gitlab_gitlab-ce/Packages/g/gitlab-ce-<version>-ce.0.sles12.x86_64.rpm
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Upgrade with a downloaded package
 
 If you don't want to use the official repositories, you can

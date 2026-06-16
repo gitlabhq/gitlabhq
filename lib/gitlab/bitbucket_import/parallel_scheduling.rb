@@ -69,7 +69,7 @@ module Gitlab
       end
 
       def client
-        @client ||= Bitbucket::Client.new(project.import_data.credentials)
+        @client ||= ::Import::BitbucketImport::ClientFactory.for(project)
       end
 
       # Returns the ID to use for the cache used for checking if an object has

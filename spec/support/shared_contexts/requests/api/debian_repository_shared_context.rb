@@ -17,41 +17,41 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   let_it_be(:private_component, freeze: true) { create("debian_#{container_type}_component", distribution: private_distribution, name: 'existing-component') }
   let_it_be(:private_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'all') }
   let_it_be(:private_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: private_distribution, name: 'existing-arch') }
-  let_it_be(:private_component_file) { create("debian_#{container_type}_component_file", component: private_component, architecture: private_architecture) }
-  let_it_be(:private_component_file_sources) { create("debian_#{container_type}_component_file", :sources, component: private_component) }
-  let_it_be(:private_component_file_di) { create("debian_#{container_type}_component_file", :di_packages, component: private_component, architecture: private_architecture) }
-  let_it_be(:private_component_file_older_sha256) { create("debian_#{container_type}_component_file", :older_sha256, component: private_component, architecture: private_architecture) }
-  let_it_be(:private_component_file_sources_older_sha256) { create("debian_#{container_type}_component_file", :sources, :older_sha256, component: private_component) }
-  let_it_be(:private_component_file_di_older_sha256) { create("debian_#{container_type}_component_file", :di_packages, :older_sha256, component: private_component, architecture: private_architecture) }
+  let_it_be(:private_component_file, freeze: false) { create("debian_#{container_type}_component_file", component: private_component, architecture: private_architecture) }
+  let_it_be(:private_component_file_sources, freeze: false) { create("debian_#{container_type}_component_file", :sources, component: private_component) }
+  let_it_be(:private_component_file_di, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, component: private_component, architecture: private_architecture) }
+  let_it_be(:private_component_file_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :older_sha256, component: private_component, architecture: private_architecture) }
+  let_it_be(:private_component_file_sources_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :sources, :older_sha256, component: private_component) }
+  let_it_be(:private_component_file_di_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, :older_sha256, component: private_component, architecture: private_architecture) }
 
   let_it_be(:public_distribution, freeze: true) { create("debian_#{container_type}_distribution", :with_file, container: public_container, codename: 'existing-codename') }
   let_it_be(:public_distribution_key, freeze: true) { create("debian_#{container_type}_distribution_key", distribution: public_distribution) }
   let_it_be(:public_component, freeze: true) { create("debian_#{container_type}_component", distribution: public_distribution, name: 'existing-component') }
   let_it_be(:public_architecture_all, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'all') }
   let_it_be(:public_architecture, freeze: true) { create("debian_#{container_type}_architecture", distribution: public_distribution, name: 'existing-arch') }
-  let_it_be(:public_component_file) { create("debian_#{container_type}_component_file", component: public_component, architecture: public_architecture) }
-  let_it_be(:public_component_file_sources) { create("debian_#{container_type}_component_file", :sources, component: public_component) }
-  let_it_be(:public_component_file_di) { create("debian_#{container_type}_component_file", :di_packages, component: public_component, architecture: public_architecture) }
-  let_it_be(:public_component_file_older_sha256) { create("debian_#{container_type}_component_file", :older_sha256, component: public_component, architecture: public_architecture) }
-  let_it_be(:public_component_file_sources_older_sha256) { create("debian_#{container_type}_component_file", :sources, :older_sha256, component: public_component) }
-  let_it_be(:public_component_file_di_older_sha256) { create("debian_#{container_type}_component_file", :di_packages, :older_sha256, component: public_component, architecture: public_architecture) }
+  let_it_be(:public_component_file, freeze: false) { create("debian_#{container_type}_component_file", component: public_component, architecture: public_architecture) }
+  let_it_be(:public_component_file_sources, freeze: false) { create("debian_#{container_type}_component_file", :sources, component: public_component) }
+  let_it_be(:public_component_file_di, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, component: public_component, architecture: public_architecture) }
+  let_it_be(:public_component_file_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :older_sha256, component: public_component, architecture: public_architecture) }
+  let_it_be(:public_component_file_sources_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :sources, :older_sha256, component: public_component) }
+  let_it_be(:public_component_file_di_older_sha256, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, :older_sha256, component: public_component, architecture: public_architecture) }
 
   if container_type == :group
-    let_it_be(:private_project) { create(:project, :private, group: private_container) }
-    let_it_be(:public_project) { create(:project, :public, group: public_container) }
-    let_it_be(:private_project_distribution) { create(:debian_project_distribution, container: private_project, codename: 'existing-codename') }
-    let_it_be(:public_project_distribution) { create(:debian_project_distribution, container: public_project, codename: 'existing-codename') }
+    let_it_be(:private_project, freeze: false) { create(:project, :private, group: private_container) }
+    let_it_be(:public_project, freeze: false) { create(:project, :public, group: public_container) }
+    let_it_be(:private_project_distribution, freeze: false) { create(:debian_project_distribution, container: private_project, codename: 'existing-codename') }
+    let_it_be(:public_project_distribution, freeze: false) { create(:debian_project_distribution, container: public_project, codename: 'existing-codename') }
 
     let(:project) { { private: private_project, public: public_project }[visibility_level] }
   else
-    let_it_be(:private_project) { private_container }
-    let_it_be(:public_project) { public_container }
-    let_it_be(:private_project_distribution) { private_distribution }
-    let_it_be(:public_project_distribution) { public_distribution }
+    let_it_be(:private_project, freeze: false) { private_container }
+    let_it_be(:public_project, freeze: false) { public_container }
+    let_it_be(:private_project_distribution, freeze: false) { private_distribution }
+    let_it_be(:public_project_distribution, freeze: false) { public_distribution }
   end
 
-  let_it_be(:private_package) { create(:debian_package, project: private_project, published_in: private_project_distribution, with_changes_file: true) }
-  let_it_be(:public_package) { create(:debian_package, project: public_project, published_in: public_project_distribution, with_changes_file: true) }
+  let_it_be(:private_package, freeze: false) { create(:debian_package, project: private_project, published_in: private_project_distribution, with_changes_file: true) }
+  let_it_be(:public_package, freeze: false) { create(:debian_package, project: public_project, published_in: public_project_distribution, with_changes_file: true) }
 
   let(:visibility_level) { :public }
 

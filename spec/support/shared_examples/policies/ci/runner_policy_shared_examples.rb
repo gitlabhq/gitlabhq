@@ -23,7 +23,7 @@ RSpec.shared_examples 'a policy allowing accessing group runner/runner manager d
     end
 
     context 'when user belongs to subgroup only' do
-      let_it_be(:subgroup_member) do
+      let_it_be(:subgroup_member, freeze: false) do
         create(:user).tap { |subgroup_member| subgroup.add_member(subgroup_member, user_role) }
       end
 
@@ -49,14 +49,14 @@ RSpec.shared_examples 'a policy allowing accessing group runner/runner manager d
     end
 
     context "when user is not #{user_role} in associated group" do
-      let_it_be(:user_with_role) { create(:user) }
+      let_it_be(:user_with_role, freeze: false) { create(:user) }
 
       let(:user) { user_with_role }
 
       it { expect_disallowed ability }
 
       context "when user is #{user_role} in a group invited to group as #{user_role}" do
-        let_it_be(:invited_group) { create(:group, name: "#{user_role}s", path: "#{user_role}s") }
+        let_it_be(:invited_group, freeze: false) { create(:group, name: "#{user_role}s", path: "#{user_role}s") }
 
         before_all do
           invited_group.add_member(user_with_role, user_role)
@@ -67,7 +67,7 @@ RSpec.shared_examples 'a policy allowing accessing group runner/runner manager d
       end
 
       context "when user is a reporter in a group invited to group as #{user_role}" do
-        let_it_be(:invited_group) do
+        let_it_be(:invited_group, freeze: false) do
           create(:group, name: "#{user_role}s", path: "#{user_role}s", reporters: user_with_role)
         end
 
@@ -127,8 +127,8 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
     it { expect_disallowed ability }
 
     context 'with group invited as maintainer to group containing runner' do
-      let_it_be(:invited_group) { create(:group) }
-      let_it_be(:runner) { create(:ci_runner, :group, :with_runner_manager, groups: [invited_group]) }
+      let_it_be(:invited_group, freeze: false) { create(:group) }
+      let_it_be(:runner, freeze: false) { create(:ci_runner, :group, :with_runner_manager, groups: [invited_group]) }
 
       before_all do
         create(:group_group_link, :maintainer, shared_group: group, shared_with_group: invited_group)
@@ -160,26 +160,26 @@ RSpec.shared_context 'with runner policy environment' do
   let_it_be_with_reload(:other_project) { create(:project) }
   let_it_be_with_reload(:group_without_project) { create(:group, name: 'top-level2', path: 'top-level2') }
 
-  let_it_be(:guest) { create(:user, guest_of: group) }
-  let_it_be(:reporter) { create(:user, reporter_of: group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
-  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: group) }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: group) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
+  let_it_be(:maintainer, freeze: false) { create(:user, maintainer_of: group) }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager, creator: developer) }
-  let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
-  let_it_be(:subgroup_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
-  let_it_be(:project_runner) do
+  let_it_be(:instance_runner, freeze: false) { create(:ci_runner, :instance, :with_runner_manager, creator: developer) }
+  let_it_be(:group_runner, freeze: false) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
+  let_it_be(:subgroup_runner, freeze: false) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
+  let_it_be(:project_runner, freeze: false) do
     create(:ci_runner, :project, :with_runner_manager, projects: [owner_project, other_project])
   end
 
-  let_it_be(:runner_on_group_without_project) do
+  let_it_be(:runner_on_group_without_project, freeze: false) do
     create(:ci_runner, :group, :with_runner_manager, groups: [group_without_project])
   end
 end
 
 RSpec.shared_examples 'runner policy not allowed for levels lower than maintainer' do |ability|
   context 'without access' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     it_behaves_like 'does not allow accessing runners/runner managers on any scope', ability
   end
@@ -209,13 +209,13 @@ RSpec.shared_examples 'runner policy with project runner' do |ability|
   it { expect_allowed ability }
 
   context 'when user is developer in an associated project' do
-    let_it_be(:user) { create(:user, developer_of: other_project) }
+    let_it_be(:user, freeze: false) { create(:user, developer_of: other_project) }
 
     it { expect_disallowed ability }
   end
 
   context 'when user is maintainer in an associated project' do
-    let_it_be(:user) { create(:user, maintainer_of: other_project) }
+    let_it_be(:user, freeze: false) { create(:user, maintainer_of: other_project) }
 
     it { expect_allowed ability }
   end
@@ -293,7 +293,7 @@ end
 
 RSpec.shared_examples 'runner policy for admin user' do
   |ability, scope: %i[instance_runner group_runner project_runner]|
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user, freeze: false) { create(:admin) }
 
   if scope.include?(:instance_runner)
     context 'with instance runner' do
@@ -338,7 +338,7 @@ end
 
 RSpec.shared_examples 'runner policy' do |ability, scope: %i[instance_runner group_runner project_runner]|
   context 'without access' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     it_behaves_like 'does not allow accessing runners/runner managers on any scope', ability
   end

@@ -1,0 +1,48 @@
+---
+name: siphon_ci_pipeline_metadata
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, pipeline_id) ORDER BY (traversal_path, pipeline_id) SETTINGS index_granularity
+  = 2048
+primary_key: traversal_path, pipeline_id
+sorting_key: traversal_path, pipeline_id
+settings:
+  index_granularity: '2048'
+columns:
+- name: project_id
+  type: Int64
+- name: pipeline_id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: name
+  type: Nullable(String)
+- name: auto_cancel_on_new_commit
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: auto_cancel_on_job_failure
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: partition_id
+  type: Int64
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

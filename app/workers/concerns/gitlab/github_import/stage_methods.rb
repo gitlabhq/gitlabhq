@@ -26,15 +26,17 @@ module Gitlab
 
       # project_id - The ID of the GitLab project to import the data into.
       def perform(project_id)
-        info(project_id, message: 'starting stage')
+        project = Project.find_by_id(project_id)
+        info(project_id, message: 'starting stage', Labkit::Fields::GL_ORGANIZATION_ID => project&.organization_id)
 
-        return unless (project = Project.find_by_id(project_id))
+        return unless project
 
         if project.import_state&.completed?
           info(
             project_id,
             message: 'Project import is no longer running. Stopping worker.',
-            import_status: project.import_state.status
+            import_status: project.import_state.status,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           )
 
           return
@@ -64,9 +66,14 @@ module Gitlab
       def try_import(client, project)
         import(client, project)
 
-        info(project.id, message: 'stage finished')
+        info(project.id, message: 'stage finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue RateLimitError, UserFinder::FailedToObtainLockError => e
-        info(project.id, message: "stage retrying", exception_class: e.class.name)
+        info(
+          project.id,
+          message: "stage retrying",
+          exception_class: e.class.name,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+        )
 
         rate_limit_resets_in = e.try(:reset_in) || client.rate_limit_resets_in
         self.class.perform_in(rate_limit_resets_in, project.id)
@@ -80,7 +87,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           import_stage: self.class.name
-        )
+        ).compact
       end
 
       def import_settings(project)

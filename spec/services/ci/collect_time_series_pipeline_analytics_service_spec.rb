@@ -20,6 +20,8 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
     { count: status_groups, duration_statistics: duration_percentile_symbols }
   end
 
+  let(:expected_one_second_before_label_statistics) { { count: { any: 1 } } }
+
   let(:service) do
     described_class.new(
       current_user: current_user,
@@ -190,11 +192,11 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       let(:from_time) { 1.second.before(starting_time) }
       let(:to_time) { 1.second.before(ending_time) }
 
-      it 'does not include job starting 1 second before start of week' do
+      it 'returns the time series for the requested window' do
         expect(result).to be_success
         expect(result.errors).to eq([])
         expect(result.payload[:time_series]).to eq(filter_time_series([
-          { label: Time.utc(2022, 12, 31), **no_pipeline_statistics },
+          { label: Time.utc(2022, 12, 31), **expected_one_second_before_label_statistics },
           *expected_time_series
         ], **time_series_filters))
       end
@@ -276,5 +278,25 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
     let_it_be(:current_user) { create(:admin) }
 
     it_behaves_like 'a service returning time series analytics'
+  end
+
+  context 'with pipeline_analytics_siphon flag disabled' do
+    before do
+      stub_feature_flags(pipeline_analytics_siphon: false)
+    end
+
+    # MV path is hour-bucketed; the pipeline that started 1s before the week
+    # falls into the previous hourly bucket and is excluded. Siphon reads raw
+    # started_at and shows it under its own date bucket. Remove once the flag
+    # and the MV path are gone.
+    let(:expected_one_second_before_label_statistics) { no_pipeline_statistics }
+
+    it_behaves_like 'a service returning time series analytics'
+
+    context 'when user is an admin' do
+      let_it_be(:current_user) { create(:admin) }
+
+      it_behaves_like 'a service returning time series analytics'
+    end
   end
 end

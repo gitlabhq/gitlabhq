@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe API::DependencyProxy, :api, feature_category: :virtual_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:blob) { create(:dependency_proxy_blob) }
-  let_it_be(:group, reload: true) { blob.group }
+  let_it_be_with_reload(:group) { blob.group }
 
   before do
-    group.add_owner(user)
+    group.add_owner(user) # -- Does not work in before_all
     stub_config(dependency_proxy: { enabled: true })
     stub_last_activity_update
   end
@@ -33,7 +33,7 @@ RSpec.describe API::DependencyProxy, :api, feature_category: :virtual_registry d
           let(:user) { create(:user) }
 
           before do
-            group.add_maintainer(user)
+            group.add_maintainer(user) # -- Does not work in before_all
           end
 
           it_behaves_like 'returning response status', :forbidden

@@ -145,9 +145,9 @@ export default {
         </gl-button>
       </gl-popover>
     </template>
-    <gl-disclosure-dropdown v-else data-testid="rapid-diffs-dropdown">
+    <gl-disclosure-dropdown v-else data-testid="rapid-diffs-dropdown" class="gl-align-top">
       <template #toggle="{ accessibilityAttributes }">
-        <gl-button v-bind="accessibilityAttributes" category="tertiary">
+        <gl-button v-bind="accessibilityAttributes" category="tertiary" class="gl-align-top">
           {{ $options.i18n.rapidDiffsEnabled }}
           <gl-badge variant="neutral" data-testid="rapid-diffs-beta-badge">
             {{ $options.i18n.beta }}

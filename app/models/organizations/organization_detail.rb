@@ -15,8 +15,11 @@ module Organizations
 
     cache_markdown_field :description, pipeline: :description
 
+    ignore_column :deletion_scheduled_at, remove_with: '19.2', remove_after: '2026-06-19'
+
     belongs_to :organization, inverse_of: :organization_detail
 
+    scope :with_organization_ids, ->(organization_ids) { where(organization_id: organization_ids) }
     validates :organization, presence: true
     validates :description, length: { maximum: 1024 }
     validates :state_metadata,
@@ -27,8 +30,8 @@ module Organizations
       last_updated_at: :datetime,
       last_changed_by_user_id: :integer,
       last_error: :string,
-      deletion_error: :string,
-      deletion_scheduled_by_user_id: :integer,
+      hard_deletion_error: :string,
+      soft_deletion_scheduled_by_user_id: :integer,
       confirmed_at: :datetime,
       confirmed_by_user_id: :integer
 

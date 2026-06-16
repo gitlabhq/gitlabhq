@@ -28,6 +28,7 @@ and thumbs-ups. React with emoji on:
 - [Merge requests](project/merge_requests/_index.md) and [snippets](snippets.md).
 - [Epics](group/epics/_index.md).
 - [Objectives and key results](okrs.md).
+- [Wiki pages](project/wiki/_index.md).
 - Anywhere else you can have a comment thread.
 
 ![Emoji reaction picker with various categories, including search box.](img/award_emoji_select_v14_6.png)

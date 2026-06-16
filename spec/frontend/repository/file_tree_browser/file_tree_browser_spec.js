@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import AccessorUtilities from '~/lib/utils/accessor';
 import FileTreeBrowser, {
   TREE_WIDTH,
   FILE_TREE_BROWSER_STORAGE_KEY,
@@ -196,6 +197,31 @@ describe('FileTreeBrowser', () => {
         createComponent();
 
         expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: ${TREE_WIDTH}px;`);
+      });
+
+      describe('when localStorage is unavailable', () => {
+        it('does not read localStorage and uses the default width', () => {
+          jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+          localStorage.getItem.mockClear();
+
+          createComponent();
+
+          expect(localStorage.getItem).not.toHaveBeenCalledWith(FILE_TREE_BROWSER_STORAGE_KEY);
+          expect(findFileBrowserHeight().attributes('style')).toBe(
+            `--tree-width: ${TREE_WIDTH}px;`,
+          );
+        });
+
+        it('does not write to localStorage when the panel is resized', async () => {
+          jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+          createComponent();
+          localStorage.setItem.mockClear();
+
+          await findPanelResizer().vm.$emit('resize-end', 400);
+
+          expect(localStorage.setItem).not.toHaveBeenCalled();
+          expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: 400px;`);
+        });
       });
     });
 

@@ -150,6 +150,8 @@ module Tasks
           puts "Batch Size: #{@batch_size}"
           puts "Sleep between batches: #{@batch_sleep}s"
           puts "Feature Flag (:email_based_mfa) enabled: #{::Feature.enabled?(:email_based_mfa) ? 'Yes' : 'No'}" # rubocop:disable Gitlab/FeatureFlagWithoutActor -- We explicitly want to validate it is enabled for all actors
+          puts "Application Setting (email_otp_enabled) enabled: " \
+            "#{::Gitlab::CurrentSettings.email_otp_enabled? ? 'Yes' : 'No'}"
 
           prompt = TTY::Prompt.new
           confirmed = prompt.yes?("Is this correct?", default: false)

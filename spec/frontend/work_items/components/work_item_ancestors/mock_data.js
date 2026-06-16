@@ -121,6 +121,38 @@ export const workItemAncestorsQueryResponse = {
   },
 };
 
+// Mirror of `workItemAncestorsQueryResponse` but with the hierarchy widget moved
+// from `widgets[]` to the `features.hierarchy` field.
+export const workItemAncestorsFeaturesQueryResponse = (() => {
+  const {
+    widgets: [hierarchyWidget],
+    ...workItemBase
+  } = workItemAncestorsQueryResponse.data.workItem;
+
+  return {
+    data: {
+      workItem: {
+        ...workItemBase,
+        features: {
+          __typename: 'WorkItemFeatures',
+          hierarchy: {
+            ...hierarchyWidget,
+            ancestors: {
+              nodes: hierarchyWidget.ancestors.nodes.map(({ widgets, ...node }) => ({
+                ...node,
+                features: {
+                  __typename: 'WorkItemFeatures',
+                  hierarchy: widgets[0],
+                },
+              })),
+            },
+          },
+        },
+      },
+    },
+  };
+})();
+
 export const workItemInaccessibleAncestorsQueryResponse = {
   data: {
     workItem: {

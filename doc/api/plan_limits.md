@@ -100,7 +100,7 @@ PUT /application/plan_limits
 | `npm_max_file_size`               | integer | no       | Maximum NPM package file size in bytes. |
 | `nuget_max_file_size`             | integer | no       | Maximum NuGet package file size in bytes. |
 | `max_pipelines_per_merge_train`   | integer | no       | Maximum number of parallel pipelines per merge train. Default value: `20`. Minimum value: `1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0. |
-| `pipeline_hierarchy_size`         | integer | no       | Maximum number of downstream pipelines in a pipeline's hierarchy tree. Default value: `1000`. Values greater than 1000 are [not recommended](../administration/instance_limits.md#limit-pipeline-hierarchy-size). |
+| `pipeline_hierarchy_size`         | integer | no       | Maximum number of downstream pipelines in a pipeline's hierarchy tree. Default value: `1000`. Values greater than 1000 are [not recommended](../administration/cicd/limits.md#limit-pipeline-hierarchy-size). |
 | `pypi_max_file_size`              | integer | no       | Maximum PyPI package file size in bytes. |
 | `terraform_module_max_file_size`  | integer | no       | Maximum Terraform Module package file size in bytes. |
 | `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in MiB. |

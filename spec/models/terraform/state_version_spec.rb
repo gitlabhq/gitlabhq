@@ -10,6 +10,8 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:build).class_name('Ci::Build').optional }
 
+  it { is_expected.to delegate_method(:project).to(:terraform_state).allow_nil }
+
   it_behaves_like 'object storable' do
     let(:locally_stored) do
       terraform_state_version = create(:terraform_state_version)

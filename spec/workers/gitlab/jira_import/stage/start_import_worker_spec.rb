@@ -13,7 +13,7 @@ RSpec.describe Gitlab::JiraImport::Stage::StartImportWorker, feature_category: :
   end
 
   describe '#perform' do
-    let_it_be(:jira_import, reload: true) { create(:jira_import_state, project: project, jid: jid) }
+    let_it_be_with_reload(:jira_import) { create(:jira_import_state, project: project, jid: jid) }
 
     context 'when import is not scheduled' do
       it 'exits because import not started' do

@@ -28,6 +28,7 @@ const ICON_DATA = {
 };
 
 export default {
+  name: 'RunnerTypeIcon',
   components: {
     GlIcon,
   },

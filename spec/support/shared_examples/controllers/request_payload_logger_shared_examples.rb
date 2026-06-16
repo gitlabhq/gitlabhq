@@ -8,6 +8,7 @@ RSpec.shared_examples 'RequestPayloadLogger information appended' do
       expect(payload[:remote_ip]).to be_present
       expect(payload[:username]).to eq(user.username)
       expect(payload[:user_id]).to be_present
+      expect(payload[:user_is_bot]).to eq(user.bot?)
       expect(payload[:ua]).to be_present
     end
 

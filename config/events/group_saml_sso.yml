@@ -4,6 +4,8 @@ action: group_saml_sso
 identifiers:
 - user
 product_group: authentication
+product_categories:
+- system_access
 milestone: '15.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170427
 tiers:

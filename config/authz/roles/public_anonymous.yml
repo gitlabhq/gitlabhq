@@ -57,6 +57,7 @@ project:
   - read_merge_request_context_commit
   - read_merge_request_diff
   - read_merge_request_draft_note
+  - read_merge_request_iid
   - read_merge_request_merge_ref
   - read_merge_request_participant
   - read_merge_request_pipeline

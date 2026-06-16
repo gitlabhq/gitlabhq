@@ -51,7 +51,7 @@ html:not(.page-with-panels) .file-tree-browser  {
   width: var(--tree-width);
 
   @include gl-container-width-down(lg) {
-    width: 250px;
+    width: min(80vw, 320px);
   }
 }
 

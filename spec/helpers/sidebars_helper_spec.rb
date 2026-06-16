@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SidebarsHelper, feature_category: :navigation do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:current_organization) { build_stubbed(:common_organization) }
+  let_it_be(:current_organization, freeze: false) { build_stubbed(:common_organization) }
 
   before do
     Current.organization = current_organization
@@ -15,10 +15,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     include_context 'custom session'
 
     let(:user) { build(:user) }
-    let_it_be(:group) { build(:group) }
-    let_it_be(:group_with_id) { build_stubbed(:group) }
-    let_it_be(:panel) { {} }
-    let_it_be(:panel_type) { 'project' }
+    let_it_be(:group, freeze: false) { build(:group) }
+    let_it_be(:group_with_id, freeze: false) { build_stubbed(:group) }
+    let_it_be(:panel, freeze: false) { {} }
+    let_it_be(:panel_type, freeze: false) { 'project' }
     let(:project) { nil }
     let(:current_user_mode) { Gitlab::Auth::CurrentUserMode.new(user) }
     let(:context_with_group_id) do
@@ -142,9 +142,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         todos_dashboard_path: dashboard_todos_path,
         projects_path: dashboard_projects_path,
         groups_path: dashboard_groups_path,
-        gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
-        canary_toggle_com_url: Gitlab.canary_toggle_com_url,
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,
@@ -235,7 +233,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe "shortcut links" do
       describe "as the anonymous user" do
-        let_it_be(:user) { nil }
+        let_it_be(:user, freeze: false) { nil }
         let(:global_shortcut_links) do
           [
             {
@@ -261,7 +259,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
 
         context 'in a project' do
-          let_it_be(:project) { build_stubbed(:project) }
+          let_it_be(:project, freeze: false) { build_stubbed(:project) }
 
           it 'returns project-specific shortcut links' do
             expect(subject[:shortcut_links]).to eq(global_shortcut_links)
@@ -275,7 +273,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
 
         context 'in a project' do
-          let_it_be(:project) { build_stubbed(:project) }
+          let_it_be(:project, freeze: false) { build_stubbed(:project) }
 
           it 'returns project-specific shortcut links' do
             expect(subject[:shortcut_links]).to eq([
@@ -319,32 +317,41 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           end
         end
 
-        let(:expected_menu_item_groups) do
-          [
-            menu_item(
-              href: new_project_path,
-              text: "New project/repository",
-              id: "general_new_project"
-            ),
-            menu_item(
-              href: new_group_path,
-              text: "New group",
-              id: "general_new_group"
-            ),
-            menu_item(
-              href: new_organization_path,
-              text: s_('Organization|New organization'),
-              id: "general_new_organization"
-            ),
-            menu_item(
-              href: new_snippet_path,
-              text: "New snippet",
-              id: "general_new_snippet"
-            )
-          ]
+        let(:new_project_menu_item) do
+          menu_item(href: new_project_path, text: "New project/repository", id: "general_new_project")
         end
 
-        include_examples '"Create new" menu groups without headers'
+        let(:new_group_menu_item) do
+          menu_item(href: new_group_path, text: "New group", id: "general_new_group")
+        end
+
+        let(:new_organization_menu_item) do
+          menu_item(
+            href: new_organization_path,
+            text: s_('Organization|New organization'),
+            id: "general_new_organization"
+          )
+        end
+
+        let(:new_snippet_menu_item) do
+          menu_item(href: new_snippet_path, text: "New snippet", id: "general_new_snippet")
+        end
+
+        context 'when on GitLab.com', :saas do
+          let(:expected_menu_item_groups) do
+            [new_project_menu_item, new_group_menu_item, new_organization_menu_item, new_snippet_menu_item]
+          end
+
+          include_examples '"Create new" menu groups without headers'
+        end
+
+        context 'when on self-managed' do
+          let(:expected_menu_item_groups) do
+            [new_project_menu_item, new_group_menu_item, new_snippet_menu_item]
+          end
+
+          include_examples '"Create new" menu groups without headers'
+        end
       end
 
       context 'with headers' do
@@ -446,7 +453,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe 'current context' do
       context 'when current context is a project' do
-        let_it_be(:project) { build(:project) }
+        let_it_be(:project, freeze: false) { build(:project) }
 
         subject do
           helper.super_sidebar_context(user, group: nil, project: project, panel: panel, panel_type: panel_type)

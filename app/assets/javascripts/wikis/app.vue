@@ -9,6 +9,7 @@ import WikiAlert from './components/wiki_alert.vue';
 import WikiNotesApp from './wiki_notes/components/wiki_notes_app.vue';
 
 export default {
+  name: 'WikisApp',
   components: {
     GlAlert,
     WikiHeader,

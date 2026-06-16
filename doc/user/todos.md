@@ -149,7 +149,7 @@ To-do items are marked as done if you:
 - Resolve a design discussion thread.
 - Accept or deny a project or group membership request.
 
-To-do items are **not** marked as done if you:
+To-do items are not marked as done if you:
 
 - Add a linked item (like a linked issue).
 - Add a child item (like child epic or task).

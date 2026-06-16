@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:milestone_expired) { build(:milestone, due_date: Date.today.prev_month) }
-  let_it_be(:milestone_closed) { build(:milestone, :closed) }
-  let_it_be(:milestone_upcoming) { build(:milestone, start_date: Date.today.next_month) }
-  let_it_be(:milestone_open) { build(:milestone) }
-  let_it_be(:milestone_closed_and_expired) { build(:milestone, :closed, due_date: Date.today.prev_month) }
+  let_it_be(:milestone_expired, freeze: false) { build(:milestone, due_date: Date.today.prev_month) }
+  let_it_be(:milestone_closed, freeze: false) { build(:milestone, :closed) }
+  let_it_be(:milestone_upcoming, freeze: false) { build(:milestone, start_date: Date.today.next_month) }
+  let_it_be(:milestone_open, freeze: false) { build(:milestone) }
+  let_it_be(:milestone_closed_and_expired, freeze: false) { build(:milestone, :closed, due_date: Date.today.prev_month) }
 
   describe '#timebox_date_range' do
     let(:yesterday) { Date.yesterday }
@@ -48,8 +48,8 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   end
 
   describe '#recent_releases_with_counts' do
-    let_it_be(:project) { milestone_open.project }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:project, freeze: false) { milestone_open.project }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     subject { helper.recent_releases_with_counts(milestone_open, user) }
 
@@ -66,7 +66,7 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   end
 
   describe '#milestone_releases_tooltip_list' do
-    let_it_be(:project) { milestone_upcoming.project }
+    let_it_be(:project, freeze: false) { milestone_upcoming.project }
 
     it 'returns comma separated list of the names of supplied releases and adds the more count when defined' do
       test_releases = create_list(:release, 3, project: project, milestones: [milestone_upcoming], released_at: '2022-01-01T18:00:00Z')
@@ -112,9 +112,9 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   end
 
   describe 'work items feature flag behavior' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:milestone) { create(:milestone, project: project, title: 'Project Milestone') }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:milestone, freeze: false) { create(:milestone, project: project, title: 'Project Milestone') }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -129,7 +129,7 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
       end
 
       context 'with group' do
-        let_it_be(:group) { create(:group) }
+        let_it_be(:group, freeze: false) { create(:group) }
 
         before do
           assign(:project, nil)
@@ -201,8 +201,8 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
       end
 
       context 'with group' do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:group_milestone) { create(:milestone, group: group, title: 'Group Milestone') }
+        let_it_be(:group, freeze: false) { create(:group) }
+        let_it_be(:group_milestone, freeze: false) { create(:milestone, group: group, title: 'Group Milestone') }
 
         before do
           assign(:project, nil)

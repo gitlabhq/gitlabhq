@@ -22,22 +22,4 @@ RSpec.describe 'capybara_wait_for_requests', feature_category: :tooling do
       page_visitor.visit('http://test.com')
     end
   end
-
-  context 'for Capybara::Node::Actions::WaitForRequestsAfterClickButton' do
-    let(:node) do
-      Class.new do
-        def click_button(locator = nil, **_options)
-          locator
-        end
-
-        prepend Capybara::Node::Actions::WaitForRequestsAfterClickButton
-      end.new
-    end
-
-    it 'waits for requests after a click button' do
-      expect(node).to receive(:wait_for_requests)
-
-      node.click_button
-    end
-  end
 end

@@ -10,9 +10,9 @@ module API
       before { check_if_backoff_required! }
 
       resource :runners do
-        desc 'Register a new runner' do
+        desc 'Create a runner' do
+          detail 'Creates a runner.'
           tags ['ci_runners']
-          detail "Register a new runner for the instance"
           success Entities::Ci::RunnerRegistrationDetails
           failure [[400, 'Bad Request'], [403, 'Forbidden'], [410, 'Gone']]
         end
@@ -75,7 +75,9 @@ module API
         end
 
         desc 'Delete a registered runner' do
+          detail 'Deletes a specified registered runner.'
           summary "Delete a runner by authentication token"
+          success code: 204, message: 'Resource deleted'
           failure [[403, 'Forbidden']]
           tags ['ci_runners']
         end
@@ -93,7 +95,8 @@ module API
 
         desc 'Delete a registered runner manager' do
           summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
-          http_codes [[204, 'Runner manager was deleted'], [400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
+          success code: 204, message: 'Runner manager was deleted'
+          failure [[400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
           tags ['ci_runners']
         end
         params do
@@ -116,10 +119,10 @@ module API
           end
         end
 
-        desc 'Validate authentication credentials' do
-          summary "Verify authentication for a registered runner"
-          success Entities::Ci::RunnerRegistrationDetails
-          http_codes [[200, 'Credentials are valid'], [403, 'Forbidden'], [422, 'Runner is orphaned']]
+        desc 'Verify authentication for a registered runner' do
+          detail 'Verifies authentication for a registered runner.'
+          success code: 200, model: Entities::Ci::RunnerRegistrationDetails, message: 'Credentials are valid'
+          failure [[403, 'Forbidden'], [422, 'Runner is orphaned']]
           tags ['ci_runners']
         end
         params do
@@ -134,7 +137,8 @@ module API
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
         end
 
-        desc 'Reset runner authentication token with current token' do
+        desc 'Reset a runner authentication token with the current token' do
+          detail 'Resets a runner authentication token with the token used to authenticate the request.'
           success Entities::Ci::ResetTokenResult
           failure [[403, 'Forbidden'], [422, 'Unprocessable Entity']]
           tags ['ci_runners']
@@ -159,7 +163,8 @@ module API
           end
 
           desc 'Discover Job Router information' do
-            detail 'This endpoint can be used by the runner to retrieve information about the Job Router.'
+            detail 'Discovers Job Router information for a runner. You must provide a valid runner ' \
+              'authentication token.'
             success Entities::Ci::JobRouter::DiscoveryInformation
             failure [
               { code: 403, message: '403 Forbidden' },
@@ -182,41 +187,23 @@ module API
 
       resource :jobs do
         helpers ::API::Helpers::RateLimiter
+        helpers ::API::Ci::Helpers::JobRequest
 
         before { set_application_context }
 
         desc 'Request a job' do
-          success Entities::Ci::JobRequest::Response
-          http_codes [[201, 'Job was scheduled'],
-            [204, 'No job for Runner'],
-            [403, 'Forbidden'],
+          success [
+            { code: 201, model: Entities::Ci::JobRequest::Response, message: 'Job was scheduled' },
+            { code: 204, message: 'No job for Runner' }
+          ]
+          failure [[403, 'Forbidden'],
             [409, 'Conflict'],
             [422, 'Runner is orphaned'],
             [429, 'Too Many Requests']]
           tags ['jobs']
         end
         params do
-          requires :token, type: String, desc: "Runner's authentication token"
-          optional :system_id, type: String, desc: "Runner's system identifier"
-          optional :last_update, type: String, desc: "Runner's queue last_update token"
-          optional :info, type: Hash, desc: "Runner's metadata" do
-            optional :name, type: String, desc: "Runner's name"
-            optional :version, type: String, desc: "Runner's version"
-            optional :revision, type: String, desc: "Runner's revision"
-            optional :platform, type: String, desc: "Runner's platform"
-            optional :architecture, type: String, desc: "Runner's architecture"
-            optional :executor, type: String, desc: "Runner's executor"
-            optional :features, type: Hash, desc: "Runner's features"
-            optional :config, type: Hash, desc: "Runner's config" do
-              optional :gpus, type: String, desc: 'GPUs enabled'
-            end
-            optional :labels, type: Hash, desc: "Runner's labels"
-          end
-          optional :session, type: Hash, desc: "Runner's session data" do
-            optional :url, type: String, desc: "Session's url"
-            optional :certificate, type: String, desc: "Session's certificate"
-            optional :authorization, type: String, desc: "Session's authorization"
-          end
+          use :request_job_params
         end
 
         # Since we serialize the build output ourselves to ensure Gitaly
@@ -238,43 +225,18 @@ module API
 
           authenticate_runner!(creation_state: :finished)
 
-          unless current_runner.active?
-            header 'X-GitLab-Last-Update', current_runner.ensure_runner_queue_value
-            break no_content!
-          end
+          result = acquire_ci_job!(declared_params(include_missing: false))
 
-          runner_params = declared_params(include_missing: false)
-
-          if current_runner.runner_queue_value_latest?(runner_params[:last_update])
-            header 'X-GitLab-Last-Update', runner_params[:last_update]
-            Gitlab::Metrics.add_event(:build_not_found_cached)
-            break no_content!
-          end
-
-          new_update = current_runner.ensure_runner_queue_value
-          result = ::Ci::RegisterJobService.new(current_runner, current_runner_manager).execute(runner_params)
-
-          if result.valid?
-            if result.build_json
-              Gitlab::Metrics.add_event(:build_found)
-              env['api.format'] = :build_json
-              body result.build_json
-            else
-              Gitlab::Metrics.add_event(:build_not_found)
-              header 'X-GitLab-Last-Update', new_update
-              no_content!
-            end
-          else
-            # We received build that is invalid due to concurrency conflict
-            Gitlab::Metrics.add_event(:build_invalid)
-            conflict!
-          end
+          env['api.format'] = :build_json
+          body result.build_json
         end
 
         desc 'Update a job' do
-          http_codes [[200, 'Job was updated'],
-            [202, 'Update accepted'],
-            [400, 'Unknown parameters'],
+          success [
+            { code: 200, message: 'Job was updated' },
+            { code: 202, message: 'Update accepted' }
+          ]
+          failure [[400, 'Unknown parameters'],
             [403, 'Forbidden'],
             [409, 'Conflict'],
             [429, 'Too Many Requests']]
@@ -313,8 +275,8 @@ module API
         end
 
         desc 'Append a patch to the job trace' do
-          http_codes [[202, 'Trace was patched'],
-            [400, 'Missing Content-Range header'],
+          success code: 202, message: 'Trace was patched'
+          failure [[400, 'Missing Content-Range header'],
             [403, 'Forbidden'],
             [416, 'Range not satisfiable'],
             [429, 'Too Many Requests']]
@@ -356,8 +318,8 @@ module API
         end
 
         desc 'Authorize uploading job artifact' do
-          http_codes [[200, 'Upload allowed'],
-            [403, 'Forbidden'],
+          success code: 200, message: 'Upload allowed'
+          failure [[403, 'Forbidden'],
             [405, 'Artifacts support not enabled'],
             [413, 'File too large'],
             [429, 'Too Many Requests']]
@@ -397,9 +359,8 @@ module API
         end
 
         desc 'Upload a job artifact' do
-          success Entities::Ci::JobRequest::Response
-          http_codes [[201, 'Artifact uploaded'],
-            [400, 'Bad request'],
+          success code: 201
+          failure [[400, 'Bad request'],
             [403, 'Forbidden'],
             [405, 'Artifacts support not enabled'],
             [413, 'File too large'],
@@ -443,9 +404,11 @@ module API
         end
 
         desc 'Download the artifacts file for job' do
-          http_codes [[200, 'Download allowed'],
-            [302, 'Found'],
-            [401, 'Unauthorized'],
+          success [
+            { code: 200, message: 'Download allowed' },
+            { code: 302, message: 'Found' }
+          ]
+          failure [[401, 'Unauthorized'],
             [403, 'Forbidden'],
             [404, 'Artifact not found'],
             [429, 'Too Many Requests']]

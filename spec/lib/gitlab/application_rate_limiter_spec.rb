@@ -753,17 +753,95 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
     context 'when the adapter does not apply' do
       it 'does not dispatch when the key is not handled by the adapter' do
+        # Every rate_limits key now has a registry entry, so stub the registry
+        # empty to exercise the "key absent from SupportedRateLimits" branch.
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits)
+          .to receive(:all).and_return({})
+
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run_peek!)
 
-        described_class.throttled?(:notification_emails, scope: user)
+        described_class.throttled?(:users_get_by_id, scope: user)
       end
 
-      it 'does not dispatch when a resource is provided' do
+      it 'does not dispatch when a resource is provided for an INCR-mode key' do
+        # The strategy becomes IncrementPerActionedResource (SADD/SCARD), which
+        # would diverge silently from labkit's INCR-mode rule for this key, so
+        # dispatch is gated on the spec being count_distinct (set-mode).
         stub_feature_flags(rate_limiter_use_labkit_users_get_by_id: true)
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
 
         described_class.throttled?(:users_get_by_id, scope: user, resource: user)
+      end
+    end
+
+    context 'with an IncrementPerActionedResource strategy on a count_distinct key' do
+      let_it_be(:project) { create(:project) }
+      let(:count_distinct_spec) do
+        {
+          limiter_name: 'applimiter_distinct',
+          rule_name: 'limit_distinct_by_user',
+          characteristics: %i[user],
+          count_distinct: :project_id,
+          action: :block,
+          flag_scope: :cohort_4
+        }
+      end
+
+      before do
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all)
+          .and_return(users_get_by_id: count_distinct_spec)
+        stub_feature_flags(rate_limiter_use_labkit_cohort_4: true,
+          rate_limiter_use_labkit_cohort_4_enforce: false)
+      end
+
+      it 'dispatches to the labkit adapter and forwards the resource id and overrides' do
+        expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!)
+          .with(:users_get_by_id, scope: user,
+            context: { resource_id: project.id, threshold: 5, interval: 60 }, cost: nil).and_return(false)
+
+        described_class.throttled?(:users_get_by_id, scope: user, resource: project,
+          threshold: 5, interval: 60)
+      end
+    end
+
+    context 'with a cost-mode key via resource_usage_throttled?', :request_store do
+      let(:resource_key) { :main_db_duration_s }
+
+      before do
+        Gitlab::SafeRequestStore.begin!
+        Gitlab::SafeRequestStore[resource_key] = 5.0
+      end
+
+      context 'when the use_labkit flag is on (enforce off)' do
+        before do
+          stub_feature_flags(rate_limiter_use_labkit_cohort_5: true,
+            rate_limiter_use_labkit_cohort_5_enforce: false)
+        end
+
+        it 'dispatches to the adapter forwarding the resolved threshold, interval and cost' do
+          expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!)
+            .with(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+              context: hash_including(threshold: 1234, interval: 77), cost: 5.0).and_return(false)
+
+          described_class.resource_usage_throttled?(:main_db_duration_limit_per_worker,
+            scope: 'SomeWorker', resource_key: resource_key, threshold: 1234, interval: 77)
+        end
+      end
+
+      context 'when the use_labkit flag is off' do
+        before do
+          stub_feature_flags(rate_limiter_use_labkit_cohort_5: false,
+            rate_limiter_use_labkit_cohort_5_enforce: false)
+        end
+
+        it 'stays on the legacy path and does not dispatch to the adapter', :aggregate_failures do
+          expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
+          expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run_peek!)
+
+          described_class.resource_usage_throttled?(:main_db_duration_limit_per_worker,
+            scope: 'SomeWorker', resource_key: resource_key, threshold: 1234, interval: 77)
+        end
       end
     end
 

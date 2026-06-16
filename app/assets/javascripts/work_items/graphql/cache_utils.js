@@ -49,7 +49,7 @@ import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
   draftData?.namespace?.workItem?.features
-    ? draftData?.namespace?.workItem?.notes
+    ? draftData?.namespace?.workItem?.features.notes
     : findNotesWidget(draftData?.namespace?.workItem);
 
 const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
@@ -76,7 +76,8 @@ export const updateCacheAfterCreatingNote = (currentNotes, newNote, { prepend = 
   return produce(currentNotes, (draftData) => {
     const notesWidget = getNotesWidgetFromSourceData(draftData);
 
-    if (!notesWidget.discussions) {
+    // Early return if notesWidget or discussions is not available
+    if (!notesWidget || !notesWidget.discussions) {
       return;
     }
 
@@ -113,7 +114,8 @@ export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData) => 
   return produce(currentNotes, (draftData) => {
     const notesWidget = getNotesWidgetFromSourceData(draftData);
 
-    if (!notesWidget.discussions) {
+    // Early return if notesWidget or discussions is not available
+    if (!notesWidget || !notesWidget.discussions) {
       return;
     }
 
@@ -149,7 +151,8 @@ function updateNoteAwardEmojiCache(currentNotes, note, callback) {
   return produce(currentNotes, (draftData) => {
     const notesWidget = getNotesWidgetFromSourceData(draftData);
 
-    if (!notesWidget.discussions) {
+    // Early return if notesWidget or discussions is not available
+    if (!notesWidget || !notesWidget.discussions) {
       return;
     }
 
@@ -189,7 +192,10 @@ export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) =
 export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   const queryArgs = {
     query: getWorkItemTreeQuery,
-    variables: { id },
+    variables: {
+      id,
+      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+    },
   };
   const sourceData = cache.readQuery(queryArgs);
 
@@ -221,36 +227,43 @@ export const addHierarchyChildren = ({ cache, id, newChildren }) => {
   const cacheId = cache.identify({ __typename: 'WorkItem', id });
   if (!cacheId) return;
 
+  const mergeChildrenIntoHierarchy = (hierarchy) => {
+    const existingChildren = hierarchy.children || {};
+    const existingNodes = existingChildren.nodes || [];
+    const existingIds = existingNodes.map((n) => n.id);
+
+    // Filter duplicates
+    const uniqueNewChildren = newChildren.filter((child) => !existingIds.includes(child.id));
+
+    // Separate open/closed
+    const openChildren = uniqueNewChildren.filter((child) => child.state !== STATE_CLOSED);
+    const closedChildren = uniqueNewChildren.filter((child) => child.state === STATE_CLOSED);
+
+    // Merge order: open first → existing → closed
+    const mergedNodes = [...openChildren, ...existingNodes, ...closedChildren];
+
+    return {
+      ...hierarchy,
+      children: {
+        ...existingChildren,
+        nodes: mergedNodes,
+      },
+      count: mergedNodes.length,
+      hasChildren: mergedNodes.length > 0,
+    };
+  };
+
   cache.modify({
     id: cacheId,
     fields: {
+      features(existing) {
+        if (!existing?.hierarchy) return existing;
+        return { ...existing, hierarchy: mergeChildrenIntoHierarchy(existing.hierarchy) };
+      },
       widgets(existing = []) {
         return existing.map((widget) => {
           if (widget.type !== WIDGET_TYPE_HIERARCHY) return widget;
-
-          const existingChildren = widget.children || {};
-          const existingNodes = existingChildren.nodes || [];
-          const existingIds = existingNodes.map((n) => n.id);
-
-          // Filter duplicates
-          const uniqueNewChildren = newChildren.filter((child) => !existingIds.includes(child.id));
-
-          // Separate open/closed
-          const openChildren = uniqueNewChildren.filter((child) => child.state !== STATE_CLOSED);
-          const closedChildren = uniqueNewChildren.filter((child) => child.state === STATE_CLOSED);
-
-          // Merge order: open first → existing → closed
-          const mergedNodes = [...openChildren, ...existingNodes, ...closedChildren];
-
-          return {
-            ...widget,
-            children: {
-              ...existingChildren,
-              nodes: mergedNodes,
-            },
-            count: mergedNodes.length,
-            hasChildren: mergedNodes.length > 0,
-          };
+          return mergeChildrenIntoHierarchy(widget);
         });
       },
     },
@@ -260,7 +273,10 @@ export const addHierarchyChildren = ({ cache, id, newChildren }) => {
 export const removeHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
     query: getWorkItemTreeQuery,
-    variables: { id },
+    variables: {
+      id,
+      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+    },
   };
   const sourceData = cache.readQuery(queryArgs);
 
@@ -1081,11 +1097,14 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
     return null;
   }
 
+  const variables = {
+    id: parentId,
+    useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+  };
+
   const parent = cache.readQuery({
     query: workItemByIdQuery,
-    variables: {
-      id: parentId,
-    },
+    variables,
   });
 
   if (!parent) {
@@ -1110,9 +1129,7 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
 
   cache.writeQuery({
     query: workItemByIdQuery,
-    variables: {
-      id: parentId,
-    },
+    variables,
     data: updatedParent,
   });
 

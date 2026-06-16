@@ -1,8 +1,8 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title:  API
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: CI Lint API
 ---
 
 {{< details >}}
@@ -12,11 +12,11 @@ title:  API
 
 {{< /details >}}
 
-このAPIを使用して、[GitLab CI/CD設定を検証します](../ci/yaml/lint.md)。
+このAPIを使用して、[GitLab CI/CD設定を検証する](../ci/yaml/lint.md)ことができます。
 
-これらのエンドポイントは、JSONエンコードされたYAMLコンテンツを使用します。場合によっては、リクエストを行う前に、[`jq`](https://jqlang.org/)のようなサードパーティツールを使用してYAMLコンテンツを適切にフォーマットすると便利なことがあります。これは、CI/CD設定のフォーマットを維持したい場合に役立ちます。
+これらのエンドポイントは、JSONエンコードされたYAMLコンテンツを使用します。場合によっては、[`jq`](https://jqlang.org/)のようなサードパーティツールを使用して、リクエストを行う前にYAMLコンテンツを適切にフォーマットすると便利です。CI/CD設定の形式を維持したい場合に役立ちます。
 
-たとえば、次のコマンドはJQを使用して、指定されたYAMLファイルを適切にエスケープし、JSONとしてエンコードし、APIにリクエストを送信します。
+例えば、次のコマンドはJQを使用して、指定されたYAMLファイルを適切にエスケープし、JSONとしてエンコードし、APIへのリクエストを行います。
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
@@ -43,7 +43,7 @@ jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
        - echo "hello world"
    ```
 
-1. 入力YAMLファイル（`example-gitlab-ci.yml`）をエスケープしてエンコードし、それをGitLab APIに`POST`するには、`curl`と`jq`を組み合わせた1行のコマンドを作成します:
+1. 入力YAMLファイル（`example-gitlab-ci.yml`）をエスケープしてエンコードし、それをGitLab APIに`POST`するには、`curl`と`jq`を組み合わせた1行コマンドを作成します:
 
    ```shell
    jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
@@ -52,24 +52,24 @@ jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
        --data @-
    ```
 
-## このAPIからのレスポンスを解析する {#parse-responses-from-this-api}
+## このAPIからの応答を解析する {#parse-responses-from-this-api}
 
-CI Lint APIからのレスポンスをリフォーマットするには、次のいずれかを実行します:
+CI Lint APIからの応答を再フォーマットするには、次のいずれかの方法を使用します:
 
-- CI Lintレスポンスを直接`jq`にパイプします。
-- APIレスポンスをテキストファイルとして保存し、次のように`jq`に引数として提供します:
+- CI Lint応答を`jq`に直接パイプします。
+- API応答をテキストファイルとして保存し、`jq`に引数として次のように提供します:
 
   ```shell
   jq --raw-output '.merged_yaml | fromjson' <your_input_here>
   ```
 
-たとえば、次のJSON配列:
+例えば、このJSON配列:
 
 ```json
 {"valid":"true","errors":[],"merged_yaml":"---\n.api_test:\n  rules:\n  - if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    changes:\n    - src/api/*\ndeploy:\n  rules:\n  - when: manual\n    allow_failure: true\n  extends:\n  - \".api_test\"\n  script:\n  - echo \"hello world\"\n"}
 ```
 
-解析およびリフォーマットすると、結果のYAMLファイルには次のものが含まれます:
+解析および再フォーマットされると、結果のYAMLファイルには以下が含まれます:
 
 ```yaml
 .api_test:
@@ -87,12 +87,12 @@ deploy:
   - echo "hello world"
 ```
 
-## 新しいCI/CD設定を検証します {#validate-a-new-cicd-configuration}
+## CI/CD設定を検証する {#validate-cicd-configuration}
 
-指定されたプロジェクトの新しい`.gitlab-ci.yml`設定を検証します。このエンドポイントは、プロジェクトのコンテキストでCI/CD設定を検証します。以下を含みます:
+指定されたプロジェクトの`.gitlab-ci.yml`設定を検証します。このエンドポイントは、CI/CD設定をプロジェクトのコンテキストで検証します。これには以下が含まれます:
 
-- プロジェクトのCI/CD変数の使用。
-- プロジェクトのファイルで`include:local`エントリを検索します。
+- プロジェクトのCI/CD変数を使用します。
+- プロジェクトファイル内で`include:local`エントリを検索します。
 
 ```plaintext
 POST /projects/:id/ci/lint
@@ -101,14 +101,15 @@ POST /projects/:id/ci/lint
 | 属性      | 型    | 必須 | 説明 |
 |----------------|---------|----------|-------------|
 | `content`      | 文字列  | はい      | CI/CD設定コンテンツ。 |
-| `dry_run`      | ブール値 | いいえ       | [パイプライン作成シミュレーション](../ci/yaml/lint.md#simulate-a-pipeline)を実行するか、静的チェックのみを実行します。デフォルトは`false`です。 |
-| `include_jobs` | ブール値 | いいえ       | 静的チェックまたはパイプラインシミュレーションに存在するジョブのリストをレスポンスに含めるかどうか。デフォルトは`false`です。 |
-| `ref`          | 文字列  | いいえ       | `dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。未設定の場合、デフォルトはプロジェクトのデフォルトブランチです。 |
+| `dry_run`      | ブール値 | いいえ       | [パイプライン](../ci/yaml/lint.md#simulate-a-pipeline)作成シミュレーションを実行するか、静的チェックのみを行います。デフォルトは`false`です。 |
+| `include_jobs` | ブール値 | いいえ       | 静的チェックまたはパイプラインシミュレーションに存在するジョブのリストを応答に含めるかどうか。デフォルトは`false`です。 |
+| `ref`          | 文字列  | いいえ       | `dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。設定されていない場合、プロジェクトのデフォルトブランチが使用されます。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "Content-Type: application/json" \
+curl --request POST \
+  --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint" \
   --data @- <<'EOF'
 {
@@ -135,7 +136,7 @@ EOF
 
 レスポンス例:
 
-- 検証済みの設定:
+- 有効な設定:
 
   ```json
   {
@@ -161,19 +162,19 @@ EOF
   }
   ```
 
-## 既存のCI/CD設定を検証します {#validate-an-existing-cicd-configuration}
+## 既存のCI/CD設定を検証する {#validate-existing-cicd-configuration}
 
 {{< history >}}
 
-- `sha`属性は、GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/369212)されました。
-- `sha`と`ref`は、GitLab 16.10で`content_ref`と`dry_run_ref`に[名前が変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098)されました。
+- GitLab 16.5で`sha`属性が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/369212)されました。
+- GitLab 16.10で`sha`と`ref`は`content_ref`と`dry_run_ref`に[名称変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098)されました。
 
 {{< /history >}}
 
-指定されたプロジェクトの既存の`.gitlab-ci.yml`設定を検証します。このエンドポイントは、プロジェクトのコンテキストでCI/CD設定を検証します。以下を含みます:
+指定されたプロジェクトの既存の`.gitlab-ci.yml`設定を検証します。このエンドポイントは、CI/CD設定をプロジェクトのコンテキストで検証します。これには以下が含まれます:
 
-- プロジェクトのCI/CD変数の使用。
-- プロジェクトのファイルで`include:local`エントリを検索します。
+- プロジェクトのCI/CD変数を使用します。
+- プロジェクトファイル内で`include:local`エントリを検索します。
 
 ```plaintext
 GET /projects/:id/ci/lint
@@ -181,22 +182,23 @@ GET /projects/:id/ci/lint
 
 | 属性      | 型    | 必須 | 説明 |
 |----------------|---------|----------|-------------|
-| `content_ref`  | 文字列  | いいえ       | CI/CD設定コンテンツは、このコミットSHA、ブランチ、またはタグから取得されます。設定されていない場合、プロジェクトのデフォルトブランチのヘッドのSHAにデフォルト設定されます。 |
+| `content_ref`  | 文字列  | いいえ       | CI/CD設定コンテンツは、このコミットSHA、ブランチ、またはタグから取得されます。設定されていない場合、プロジェクトのデフォルトブランチのHEAD SHAが使用されます。 |
 | `dry_run`      | ブール値 | いいえ       | パイプライン作成シミュレーションを実行するか、または静的チェックのみ実行します。 |
-| `dry_run_ref`  | 文字列  | いいえ       | `dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。未設定の場合、デフォルトはプロジェクトのデフォルトブランチです。 |
-| `include_jobs` | ブール値 | いいえ       | 静的チェックまたはパイプラインシミュレーションに存在するジョブのリストをレスポンスに含めるかどうか。デフォルトは`false`です。 |
-| `ref`          | 文字列  | いいえ       | （非推奨）`dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。未設定の場合、デフォルトはプロジェクトのデフォルトブランチです。代わりに`dry_run_ref`を使用してください。 |
-| `sha`          | 文字列  | いいえ       | （非推奨）CI/CD設定コンテンツは、このコミットSHA、ブランチ、またはタグから取得されます。設定されていない場合、プロジェクトのデフォルトブランチのヘッドのSHAにデフォルト設定されます。代わりに`content_ref`を使用してください。 |
+| `dry_run_ref`  | 文字列  | いいえ       | `dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。設定されていない場合、プロジェクトのデフォルトブランチが使用されます。 |
+| `include_jobs` | ブール値 | いいえ       | 静的チェックまたはパイプラインシミュレーションに存在するジョブのリストを応答に含めるかどうか。デフォルトは`false`です。 |
+| `ref`          | 文字列  | いいえ       | （非推奨）`dry_run`が`true`の場合、CI/CD YAML設定を検証するために使用するブランチまたはタグコンテキストを設定します。設定されていない場合、プロジェクトのデフォルトブランチが使用されます。代わりに`dry_run_ref`を使用してください。 |
+| `sha`          | 文字列  | いいえ       | （非推奨）CI/CD設定コンテンツは、このコミットSHA、ブランチ、またはタグから取得されます。設定されていない場合、プロジェクトのデフォルトブランチのHEAD SHAが使用されます。代わりに`content_ref`を使用してください。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 ```
 
 レスポンス例:
 
-- 検証済みの設定、`include.yml`を[含まれるファイル](../ci/yaml/_index.md#include)として、`include_jobs`を`true`に設定:
+- `include.yml`が[インクルードファイル](../ci/yaml/_index.md#include)として含まれ、`include_jobs`が`true`に設定された有効な設定:
 
   ```json
   {

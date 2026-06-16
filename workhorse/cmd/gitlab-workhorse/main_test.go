@@ -786,11 +786,14 @@ func startWorkhorseServer(t *testing.T, authBackend string) *httptest.Server {
 
 func startWorkhorseServerWithConfig(t *testing.T, cfg *config.Config) *httptest.Server {
 	testhelper.ConfigureSecret()
+	shutdownChan := make(chan struct{})
 	u := upstream.NewUpstream(*cfg, upstream.Dependencies{
 		AccessLogger: logrus.StandardLogger(),
+		ShutdownChan: shutdownChan,
 	})
 	newServer := httptest.NewServer(u)
 	t.Cleanup(func() {
+		close(shutdownChan)
 		newServer.Close()
 	})
 	return newServer

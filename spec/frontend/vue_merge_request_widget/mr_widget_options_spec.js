@@ -87,6 +87,8 @@ describe('MrWidgetOptions', () => {
             ...getStateQueryResponse.data.project.mergeRequest,
             mergeError: mrData.mergeError || null,
             mergeTrainCar: null,
+            commitCount:
+              mrData.commitCount ?? getStateQueryResponse.data.project.mergeRequest.commitCount,
             detailedMergeStatus:
               mrData.detailedMergeStatus ||
               getStateQueryResponse.data.project.mergeRequest.detailedMergeStatus,
@@ -335,7 +337,7 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('formattedHumanAccess', () => {
-        it('renders empty string when user is a tool admin but not a member of project', () => {
+        it('renders empty string when user is a tool admin but not a member of project', async () => {
           createComponent({
             updatedMrData: {
               human_access: null,
@@ -343,9 +345,11 @@ describe('MrWidgetOptions', () => {
               has_ci: false,
             },
           });
+          await waitForPromises();
+
           expect(findSuggestPipeline().props('humanAccess')).toBe('');
         });
-        it('renders human access when user is a member of the project', () => {
+        it('renders human access when user is a member of the project', async () => {
           createComponent({
             updatedMrData: {
               human_access: 'Owner',
@@ -353,6 +357,8 @@ describe('MrWidgetOptions', () => {
               has_ci: false,
             },
           });
+          await waitForPromises();
+
           expect(findSuggestPipeline().props('humanAccess')).toBe('owner');
         });
       });
@@ -754,33 +760,25 @@ describe('MrWidgetOptions', () => {
         });
       });
     });
-
-    it('should not suggest pipelines when feature flag is not present', () => {
-      createComponent();
-      expect(findSuggestPipeline().exists()).toBe(false);
-    });
   });
 
   describe('suggestPipeline', () => {
-    beforeEach(() => {
-      mock.onAny().reply(HTTP_STATUS_OK);
+    it('should suggest pipelines when none exist', async () => {
+      await createComponent({ updatedMrData: { has_ci: false, commitCount: 1 } });
+      await waitForPromises();
+
+      expect(findSuggestPipeline().exists()).toBe(true);
     });
 
-    describe('given feature flag is enabled', () => {
-      it('should suggest pipelines when none exist', async () => {
-        await createComponent({ updatedMrData: { has_ci: false } });
-        expect(findSuggestPipeline().exists()).toBe(true);
-      });
+    it.each([{ merge_request_add_ci_config_path: null }, { has_ci: true }, { commitCount: 0 }])(
+      'with %s, should not suggest pipeline',
+      async (data) => {
+        await createComponent({ updatedMrData: { has_ci: false, ...data } });
+        await waitForPromises();
 
-      it.each([{ merge_request_add_ci_config_path: null }, { has_ci: true }])(
-        'with %s, should not suggest pipeline',
-        async (obj) => {
-          await createComponent({ updatedMrData: { has_ci: false, ...obj } });
-
-          expect(findSuggestPipeline().exists()).toBe(false);
-        },
-      );
-    });
+        expect(findSuggestPipeline().exists()).toBe(false);
+      },
+    );
   });
 
   describe('merge error', () => {

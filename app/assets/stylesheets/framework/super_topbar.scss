@@ -32,4 +32,19 @@
     @apply dark:gl-bg-alpha-light-8 #{!important};
     @apply dark:gl-border-alpha-light-16 #{!important};
   }
+
+  // Free trial button
+  .gl-button.topbar-signup-button {
+    @apply gl-bg-neutral-800;
+    @apply gl-border-neutral-800;
+    @apply dark:gl-bg-neutral-100;
+    @apply dark:gl-border-neutral-100;
+  }
+
+  // Organization switcher button
+  .organization-switcher-button .gl-button-text {
+    display: flex;
+    align-items: center;
+    gap: var(--gl-spacing-scale-2);
+  }
 }

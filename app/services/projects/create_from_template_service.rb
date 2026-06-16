@@ -34,10 +34,16 @@ module Projects
     private
 
     def validate_template!
-      return true if built_in_template || sample_data_template
+      return true if sample_data_template
+
+      return built_in_template_allowed? if built_in_template
 
       project.errors.add(:template_name, _("'%{template_name}' is unknown or invalid") % { template_name: template_name })
       false
+    end
+
+    def built_in_template_allowed?
+      true
     end
 
     def built_in_template

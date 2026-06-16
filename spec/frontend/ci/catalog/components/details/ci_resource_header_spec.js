@@ -354,7 +354,7 @@ describe('CiResourceHeader', () => {
               name: versionName,
               path: '/path',
               createdAt: isLatest ? '2025-01-01' : '2023-01-01',
-              author: { id: 1, name: 'author', state: 'active', webUrl: '/user/1' },
+              author: { id: 1, name: 'author', state: 'active', webPath: '/user/1' },
             },
           ],
         },

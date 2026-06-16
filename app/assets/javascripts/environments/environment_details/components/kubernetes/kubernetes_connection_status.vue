@@ -5,6 +5,7 @@ import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/co
 import KubernetesConnectionStatusBadge from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status_badge.vue';
 
 export default {
+  name: 'KubernetesConnectionStatus',
   components: {
     KubernetesConnectionStatusBadge,
   },

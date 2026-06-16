@@ -5,6 +5,7 @@ import TagFieldExisting from './tag_field_existing.vue';
 import TagFieldNew from './tag_field_new.vue';
 
 export default {
+  name: 'TagField',
   components: {
     TagFieldExisting,
     TagFieldNew,

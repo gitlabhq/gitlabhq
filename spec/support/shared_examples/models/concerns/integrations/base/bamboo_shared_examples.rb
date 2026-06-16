@@ -7,7 +7,7 @@ RSpec.shared_examples Integrations::Base::Bamboo do
   let(:bamboo_url) { 'http://gitlab.com/bamboo' }
   let(:bamboo_update_url) { 'http://gitlab.com/bamboo/updateAndBuild.action?buildKey=foo&os_authType=basic' }
 
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project, freeze: false) { build(:project) }
 
   subject(:integration) { build(:bamboo_integration, project: project, bamboo_url: bamboo_url) }
 

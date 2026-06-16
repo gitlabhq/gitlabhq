@@ -5,6 +5,7 @@ import { s__, sprintf } from '~/locale';
 import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
 
 export default {
+  name: 'FormUrlMaskItem',
   components: {
     GlButton,
     GlFormGroup,
@@ -42,6 +43,7 @@ export default {
       default: null,
     },
   },
+  emits: ['input', 'remove'],
   computed: {
     keyInputId() {
       return this.inputId('key');

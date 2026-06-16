@@ -2,7 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { createTestingPinia } from '@pinia/testing';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from '~/lib/utils/cookies';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { createAlert } from '~/alert';
 import {
@@ -134,7 +138,7 @@ describe('~/merge_conflicts/store', () => {
       expect(window.location.assign).toHaveBeenCalledWith('hrefPath');
     });
 
-    it('on error shows an alert and resets isSubmitting', async () => {
+    it('on error shows a generic alert and resets isSubmitting', async () => {
       axiosMock.onPost(resolveConflictsPath).reply(HTTP_STATUS_BAD_REQUEST);
 
       await store.submitResolvedConflicts(resolveConflictsPath);
@@ -142,6 +146,18 @@ describe('~/merge_conflicts/store', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'Failed to save merge conflict resolutions. Please try again.',
       });
+      expect(store.isSubmitting).toBe(false);
+    });
+
+    it('on errors shows the server error message when provided and resets isSubmitting', async () => {
+      axiosMock.onPost(resolveConflictsPath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
+        message: 'Push rejected: commit abc123 contains the forbidden phrase "reject-commit"',
+      });
+      await store.submitResolvedConflicts(resolveConflictsPath);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Push rejected: commit abc123 contains the forbidden phrase "reject-commit"',
+      });
+
       expect(store.isSubmitting).toBe(false);
     });
   });

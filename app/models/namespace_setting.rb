@@ -88,6 +88,9 @@ class NamespaceSetting < ApplicationRecord
     future_date: true,
     if: :granular_tokens_enforced_after_changed?
 
+  before_validation :clear_granular_tokens_enforced_after,
+    if: -> { enforce_granular_tokens_changed? && !enforce_granular_tokens }
+
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
 
@@ -116,6 +119,8 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
+    enforce_granular_tokens
+    granular_tokens_enforced_after
   ].freeze
 
   # matches the size set in the database constraint
@@ -235,6 +240,10 @@ class NamespaceSetting < ApplicationRecord
   end
 
   private
+
+  def clear_granular_tokens_enforced_after
+    self.granular_tokens_enforced_after = nil
+  end
 
   def validate_enterprise_bypass_expires_at
     if enterprise_bypass_expires_at.blank?

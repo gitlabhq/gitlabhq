@@ -4,6 +4,7 @@ import GlLicensedFeaturesPlugin from '../../../vue_shared/gl_licensed_features_p
 import GlFeatureFlagsPlugin from '../../../vue_shared/gl_feature_flags_plugin';
 import GlAbilitiesPlugin from '../../../vue_shared/gl_abilities_plugin';
 import Translate from '../../../vue_shared/translate';
+import { vueErrorHandler } from '../../../sentry/vue_error_handler';
 
 import { logDevNotice } from '../../logger';
 import { compatConfig } from './compat_config';
@@ -12,8 +13,9 @@ export * from '@vue/compat';
 
 class GitLabPatchedVue extends VueCompatOriginal {
   constructor(rawConfig, ...rest) {
-    if (rawConfig?.name) {
-      logDevNotice(`[V] Using Vue.js 3 (with @vue/compat) for ${rawConfig.name}`);
+    const appName = rawConfig?.name;
+    if (appName) {
+      logDevNotice(`[V] Using Vue.js 3 (with @vue/compat) for ${appName}`);
     }
 
     const config = rawConfig?.el ? { ...rawConfig } : rawConfig;
@@ -29,6 +31,15 @@ class GitLabPatchedVue extends VueCompatOriginal {
     super(config, ...rest);
     if (originalEl) {
       const fragment = new DocumentFragment();
+
+      // Mark Vue 3 apps in production
+      for (const node of config.el.childNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // Can be located with `document.querySelectorAll('[data-gitlab-vue3-app]')`
+          node.dataset.gitlabVue3App = appName || '';
+        }
+      }
+
       fragment.replaceChildren(...config.el.childNodes);
       originalEl.replaceWith(fragment);
     }
@@ -46,6 +57,10 @@ if (typeof jest === 'undefined') {
   GitLabPatchedVue.use(GlFeatureFlagsPlugin);
   GitLabPatchedVue.use(GlAbilitiesPlugin);
   GitLabPatchedVue.use(Translate);
+
+  if (process.env.NODE_ENV === 'production') {
+    GitLabPatchedVue.config.errorHandler = vueErrorHandler;
+  }
 }
 
 export default GitLabPatchedVue;

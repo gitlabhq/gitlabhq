@@ -15,6 +15,7 @@ import {
 const trackingLabel = 'quickstart_dropdown';
 
 export default {
+  name: 'CliCommands',
   components: {
     CodeInstruction,
     GlDisclosureDropdown,

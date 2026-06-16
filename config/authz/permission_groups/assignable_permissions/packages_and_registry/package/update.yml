@@ -1,0 +1,10 @@
+---
+name: update_package
+description: Grants the ability to update packages
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_package_cleanup_policy
+  - update_package_protection_rule

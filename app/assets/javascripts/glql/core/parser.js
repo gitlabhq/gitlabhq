@@ -1,11 +1,6 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
-import {
-  DEFAULT_DISPLAY_FIELDS,
-  DEFAULT_DISPLAY_TYPE,
-  MODE_STANDARD,
-  MODE_ANALYTICS,
-} from '../constants';
+import { DEFAULT_DISPLAY_TYPE, MODE_STANDARD } from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlFeatureFlags } from '../utils/feature_flags';
 
@@ -15,10 +10,6 @@ export const parseYAMLConfig = (frontmatter) => {
   const config = jsYaml.safeLoad(frontmatter) || {};
 
   config.display = config.display || DEFAULT_DISPLAY_TYPE;
-
-  if (config.mode !== MODE_ANALYTICS && !config.fields) {
-    config.fields = DEFAULT_DISPLAY_FIELDS;
-  }
 
   return config;
 };

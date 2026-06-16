@@ -4,6 +4,9 @@ action: select_abuse_category
 identifiers:
 - user
 product_group: authorization
+product_categories:
+- insider_threat
+- instance_resiliency
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167137
 tiers:

@@ -9,6 +9,7 @@ query getCatalogResources(
   $sortValue: CiCatalogResourceSort
   $verificationLevel: CiCatalogResourceVerificationLevel
   $topics: [String!]
+  $groupIds: [GroupID!]
   $after: String
   $before: String
   $first: Int = 20
@@ -21,6 +22,7 @@ query getCatalogResources(
     sort: $sortValue
     verificationLevel: $verificationLevel
     topics: $topics
+    groupIds: $groupIds
     after: $after
     before: $before
     first: $first

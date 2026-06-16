@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a redacted search results' do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:accessible_group) { create(:group, :private) }
-  let_it_be(:accessible_project) { create(:project, :repository, :private, name: 'accessible_project') }
+  let_it_be(:accessible_group, freeze: false) { create(:group, :private) }
+  let_it_be(:accessible_project, freeze: false) { create(:project, :repository, :private, name: 'accessible_project') }
 
-  let_it_be(:group_member) { create(:group_member, group: accessible_group, user: user) }
+  let_it_be(:group_member, freeze: false) { create(:group_member, group: accessible_group, user: user) }
 
-  let_it_be(:inaccessible_group) { create(:group, :private) }
-  let_it_be(:inaccessible_project) { create(:project, :repository, :private, name: 'inaccessible_project') }
+  let_it_be(:inaccessible_group, freeze: false) { create(:group, :private) }
+  let_it_be(:inaccessible_project, freeze: false) do
+    create(:project, :repository, :private, name: 'inaccessible_project')
+  end
 
   let(:search) { 'anything' }
 

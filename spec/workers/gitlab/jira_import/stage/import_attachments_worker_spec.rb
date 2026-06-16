@@ -10,7 +10,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportAttachmentsWorker, feature_categ
   end
 
   describe '#perform' do
-    let_it_be(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
+    let_it_be(:jira_import, freeze: false) { create(:jira_import_state, :scheduled, project: project) }
 
     context 'when import did not start' do
       it_behaves_like 'cannot do Jira import'

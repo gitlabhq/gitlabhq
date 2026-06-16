@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/api/grape_array_missing_coerce'
 
-RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
+RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce, feature_category: :api do
   let(:msg) do
     "This Grape parameter defines an Array but is missing a coerce_with definition. " \
     "For more details, see " \

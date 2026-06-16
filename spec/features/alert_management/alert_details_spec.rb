@@ -17,14 +17,12 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
 
   context 'when a developer displays the alert' do
     it 'shows the alert' do
-      page.within('.alert-management-details') do
-        expect(find('h2')).to have_content(alert.title)
-      end
+      expect(find_by_testid('page-heading')).to have_content(alert.title)
     end
 
     it 'shows the alert tabs' do
-      page.within('.alert-management-details') do
-        alert_tabs = find_by_testid('alertDetailsTabs')
+      within_testid('detail-layout-container') do
+        alert_tabs = find_by_testid('alert-details-tabs')
 
         expect(alert_tabs).to have_content('Alert details')
         expect(alert_tabs).to have_content('Metrics')
@@ -34,10 +32,10 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
 
     it 'shows the right sidebar mounted with correct widgets' do
       page.within('.layout-page') do
-        sidebar = find('.right-sidebar')
+        sidebar = find_by_testid('alert-sidebar')
 
-        expect(sidebar).to have_selector('.alert-status')
-        expect(sidebar).to have_selector('.alert-assignees')
+        expect(sidebar).to have_selector('[data-testid="status"]')
+        expect(sidebar).to have_selector('[data-testid="unassigned-users"]')
         expect(sidebar).to have_content('Triggered')
       end
     end
@@ -46,21 +44,21 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
       expect(page).to have_selector('[data-testid="alert-todo-button"]')
       todo_button = find_by_testid('alert-todo-button')
 
-      expect(todo_button).to have_content('Add a to-do item')
+      expect(todo_button['aria-label']).to eq('Add a to-do item')
       find_by_testid('alert-todo-button').click
       wait_for_requests
 
-      expect(todo_button).to have_content('Mark to-do items done')
+      expect(todo_button['aria-label']).to eq('Mark to-do items done')
     end
 
     it 'updates the alert status from the right sidebar' do
-      page.within('.alert-status') do
+      within_testid('sidebar-status') do
         alert_status = find_by_testid('status')
 
         expect(alert_status).to have_content('Triggered')
 
-        find('.gl-button').click
-        find('.gl-new-dropdown-item', text: 'Acknowledged').click
+        click_button('Edit')
+        find('[role="option"]', text: 'Acknowledged').click
 
         wait_for_requests
 
@@ -69,16 +67,14 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
     end
 
     it 'updates the alert assignee from the right sidebar' do
-      page.within('.right-sidebar') do
-        alert_assignee = find('.alert-assignees')
-
-        expect(alert_assignee).to have_content('None - assign yourself')
+      within_testid('alert-sidebar') do
+        expect(page).to have_content('None - assign yourself')
 
         find_by_testid('unassigned-users').click
 
         wait_for_requests
 
-        expect(alert_assignee).to have_content('Assignee Edit Sidney Jones')
+        expect(find_by_testid('assigned-users')).to have_content('Sidney Jones')
       end
     end
   end

@@ -14,11 +14,11 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 517
+- Number of attributes: 518
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 298 (57.99999999999999%)
 - Number of attributes on GitLab.com different from the defaults: 223 (43.0%)
-- Number of attributes with `clusterwide` set: 517 (100.0%)
+- Number of attributes with `clusterwide` set: 518 (100.0%)
 - Number of attributes with `clusterwide: true` set: 141 (27.0%)
 
 ## Individual columns
@@ -128,6 +128,7 @@ title: Application Settings analysis
 | `delete_unconfirmed_users` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `deletion_adjourned_period` | `false` | `integer` | `integer` | `true` | `30` | `false` | `false`| `true` |
 | `deny_all_requests_except_allowed` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `dependency_management_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `dependency_proxy_ttl_group_policy_worker_capacity` | `false` | `smallint` | `` | `true` | `2` | `false` | `false`| `false` |
 | `diagram_proxy` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `diagramsnet_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
@@ -325,6 +326,7 @@ title: Application Settings analysis
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
+| `oauth_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `observability_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `outbound_local_requests_whitelist` | `false` | `character` | `array of strings` | `true` | `'{}'::character` | `true` | `true`| `true` |

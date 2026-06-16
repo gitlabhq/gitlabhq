@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective, GlButton, GlAttributeList } from '@gitlab/u
 import { MountingPortal } from 'portal-vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import { s__, __, sprintf } from '~/locale';
 import { timeFormattedAsDate, timeFormattedAsDateFull } from '../utils';
 import PersonalAccessTokenStatusBadge from './personal_access_token_status_badge.vue';
@@ -17,6 +18,7 @@ export default {
   components: {
     DynamicPanel,
     MountingPortal,
+    DetailLayout,
     CrudComponent,
     GlIcon,
     GlButton,
@@ -157,22 +159,13 @@ export default {
         />
       </template>
 
-      <section>
-        <div>
-          <div class="gl-flex gl-items-center">
-            <div>
-              <h2 class="gl-heading-1 !gl-mt-5 gl-mb-2">
-                {{ token.name }}
-              </h2>
-              <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
-                <personal-access-token-status-badge :token="token" />
-                <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
-                  {{ createdOnText }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <detail-layout :heading="token.name">
+        <template #description>
+          <personal-access-token-status-badge :token="token" />
+          <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
+            {{ createdOnText }}
+          </span>
+        </template>
 
         <gl-attribute-list :items="attributesList" class="gl-mt-4" description-class="gl-ml-6">
           <template #description="{ item }">
@@ -210,7 +203,7 @@ export default {
           <personal-access-token-granular-scopes v-if="isTokenGranular" :scopes="token.scopes" />
           <personal-access-token-legacy-scopes v-else :scopes="token.scopes" />
         </crud-component>
-      </section>
+      </detail-layout>
     </dynamic-panel>
   </mounting-portal>
 </template>

@@ -93,6 +93,7 @@ export default class PerformanceBarStore {
     // GraphQL requests are the exception: because all GraphQL requests
     // go to the same URL, we set a higher limit of 10 to allow
     // capturing different queries a page may make.
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- URL suffix check to identify GraphQL endpoint, not constructing a URL
     const requestsLimit = requestUrl.endsWith('/api/graphql') ? 10 : 2;
 
     return this.requests.filter((request) => request.url === requestUrl).length < requestsLimit;

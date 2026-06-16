@@ -62,6 +62,8 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
             select_listbox_item(issue.title)
           end
 
+          expect(page).to have_content "added #{issue.to_reference} as parent item"
+
           trigger_change_type('Issue')
 
           expect(page).to have_button('Change type', disabled: true)

@@ -58,6 +58,15 @@ RSpec.describe 'JobArtifactsDestroy', feature_category: :job_artifacts do
       expect(job.reload.job_artifacts.count).to be(0)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_job_artifact do
+      let(:boundary_object) { job.project }
+      let(:mutation) do
+        graphql_mutation(:job_artifacts_destroy, { id: job.to_global_id.to_s }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when the the project this job belongs to is undergoing stats refresh' do
       it 'destroys no artifacts and returns the correct error' do
         allow_next_found_instance_of(Project) do |project|

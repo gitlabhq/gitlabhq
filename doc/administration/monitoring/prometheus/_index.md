@@ -457,7 +457,7 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 
 ### `/var/opt/gitlab/prometheus` consumes too much disk space
 
-If you are **not** using Prometheus monitoring:
+If you are not using Prometheus monitoring:
 
 1. [Disable Prometheus](_index.md#configuring-prometheus).
 1. Delete the data under `/var/opt/gitlab/prometheus`.

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe "projectTextReplace", feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, owner_of: project) }
   let_it_be(:repo) { project.repository }
 

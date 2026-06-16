@@ -5,8 +5,7 @@ require 'spec_helper'
 require Rails.root.join 'db/click_house/post_migrate/main/20251210231344_backfill_agent_platform_sessions.rb'
 
 RSpec.describe BackfillAgentPlatformSessions, :click_house, feature_category: :database do
-  let_it_be(:connection) { ::ClickHouse::Connection.new(:main) }
-
+  let(:connection) { ::ClickHouse::Connection.new(:main) }
   let(:migration) { described_class.new(connection) }
 
   before do

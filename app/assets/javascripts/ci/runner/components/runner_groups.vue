@@ -3,6 +3,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import RunnerAssignedItem from './runner_assigned_item.vue';
 
 export default {
+  name: 'RunnerGroups',
   components: {
     CrudComponent,
     RunnerAssignedItem,

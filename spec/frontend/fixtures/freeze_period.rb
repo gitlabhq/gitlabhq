@@ -6,8 +6,8 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)', feature_category: :releas
   include JavaScriptFixturesHelpers
   include TimeZoneHelper
 
-  let_it_be(:project) { create(:project, :repository, path: 'freeze-periods-project') }
-  let_it_be(:user) { project.first_owner }
+  let_it_be(:project, freeze: false) { create(:project, :repository, path: 'freeze-periods-project') }
+  let_it_be(:user, freeze: false) { project.first_owner }
 
   after(:all) do
     remove_repository(project)

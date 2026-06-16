@@ -18,7 +18,7 @@ module Admin
     }.freeze
 
     def index
-      # Just render the view
+      @database_information = ::Gitlab::Database::DatabaseInformation.execute
     end
 
     def run_collation_check

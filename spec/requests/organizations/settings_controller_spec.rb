@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::SettingsController, feature_category: :organization do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization, freeze: true) { create(:organization) }
 
   describe 'GET #general' do
     subject(:gitlab_request) { get general_settings_organization_path(organization) }
@@ -21,7 +21,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
     end
 
     context 'when the user is signed in' do
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
 
       before do
         sign_in(user)
@@ -33,7 +33,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
       end
 
       context 'as as admin', :enable_admin_mode do
-        let_it_be(:user) { create(:admin) }
+        let_it_be_with_reload(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'

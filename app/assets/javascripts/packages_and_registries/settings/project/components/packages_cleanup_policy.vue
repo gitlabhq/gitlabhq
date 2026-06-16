@@ -10,6 +10,7 @@ import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/proje
 import PackagesCleanupPolicyForm from './packages_cleanup_policy_form.vue';
 
 export default {
+  name: 'PackagesCleanupPolicy',
   components: {
     GlAlert,
     PackagesCleanupPolicyForm,

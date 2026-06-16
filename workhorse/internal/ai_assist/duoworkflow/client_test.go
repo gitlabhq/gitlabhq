@@ -222,6 +222,45 @@ func TestExecuteWorkflow(t *testing.T) {
 	})
 }
 
+func TestExecuteWorkflowErrorPreservesGRPCStatus(t *testing.T) {
+	// Point at a port with nothing listening so the connection attempt fails
+	// immediately with codes.Unavailable.
+	config := &api.DuoWorkflowServiceConfig{
+		URI:     "localhost:1", // port 1 is reserved and always refused
+		Headers: map[string]string{},
+		Secure:  false,
+	}
+	client, err := NewClient(config, "test-agent/1.0", "")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = client.Close() })
+
+	_, err = client.ExecuteWorkflow(context.Background())
+	require.Error(t, err)
+
+	// The wrapped error must carry the original gRPC status so callers can
+	// inspect it (e.g. status.Code(err) == codes.Unavailable).
+	require.Equal(t, codes.Unavailable, status.Code(err))
+	// The wrapping message must be present.
+	require.ErrorContains(t, err, "failed to open workflow stream")
+}
+
+func TestTrackSelfHostedExecuteWorkflowErrorPreservesGRPCStatus(t *testing.T) {
+	config := &api.DuoWorkflowServiceConfig{
+		URI:     "localhost:1",
+		Headers: map[string]string{},
+		Secure:  false,
+	}
+	client, err := NewClient(config, "test-agent/1.0", "")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = client.Close() })
+
+	_, err = client.TrackSelfHostedExecuteWorkflow(context.Background())
+	require.Error(t, err)
+
+	require.Equal(t, codes.Unavailable, status.Code(err))
+	require.ErrorContains(t, err, "failed to open self-hosted tracking stream")
+}
+
 func createTestClient(t *testing.T, server *testServer) *Client {
 	config := &api.DuoWorkflowServiceConfig{
 		URI:     server.Addr,

@@ -33,8 +33,8 @@ RSpec.shared_examples Integrations::Base::Irker do
   end
 
   describe 'Execute' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:irker) { described_class.new }
     let(:irker_server) { TCPServer.new('localhost', 0) }

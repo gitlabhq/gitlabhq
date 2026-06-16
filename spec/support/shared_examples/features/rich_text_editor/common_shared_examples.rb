@@ -130,6 +130,11 @@ RSpec.shared_examples 'rich text editor - common' do
       click_on 'Insert a 2×2 table'
 
       switch_to_content_editor
+
+      within(content_editor_testid) do
+        expect(page).to have_content('header')
+      end
+
       type_in_content_editor '* list item'
 
       expect(page).to have_text(

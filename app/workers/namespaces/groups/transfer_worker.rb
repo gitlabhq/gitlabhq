@@ -5,6 +5,7 @@ module Namespaces
   module Groups
     class TransferWorker
       include ApplicationWorker
+      include Namespaces::TransferWorkerHelper
 
       data_consistency :sticky
       sidekiq_options retry: 3
@@ -16,6 +17,10 @@ module Namespaces
 
       LEASE_TIMEOUT = 30.minutes.to_i
 
+      def self.lease_key(group_id)
+        "namespaces_groups_transfer_worker:#{group_id}"
+      end
+
       def perform(group_id, new_parent_group_id, user_id)
         group = Group.find_by_id(group_id)
         return unless group
@@ -25,7 +30,7 @@ module Namespaces
 
         new_parent_group = Group.find_by_id(new_parent_group_id) if new_parent_group_id
 
-        lease_key = ['namespaces_groups_transfer_worker', group_id].join(':')
+        lease_key = self.class.lease_key(group_id)
         exclusive_lease = Gitlab::ExclusiveLease.new(lease_key, uuid: jid, timeout: LEASE_TIMEOUT)
         lease = exclusive_lease.try_obtain
 
@@ -39,13 +44,7 @@ module Namespaces
       private
 
       def execute_transfer(group, new_parent_group, user, exclusive_lease)
-        if group.transfer_in_progress?
-          Gitlab::AppLogger.warn(
-            message: 'Cancelling stale transfer_in_progress state',
-            group_id: group.id
-          )
-          group.cancel_transfer!
-        end
+        cancel_stale_transfer_state(group, group_id: group.id)
 
         group.schedule_transfer!(transition_user: user) unless group.transfer_scheduled?
         group.start_transfer!(transition_user: user)

@@ -1,0 +1,9 @@
+---
+name: create_duo_workflow_direct_access_token
+description: Grants the ability to create direct access tokens for duo workflows
+available_for:
+  - granular_access_token
+permissions:
+  - create_duo_workflow_direct_access_token
+boundaries:
+  - user

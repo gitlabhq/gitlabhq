@@ -573,7 +573,7 @@ The following IPs are used as an example:
 First, make sure to [install](../../install/package/_index.md#supported-platforms)
 the Linux package **on each node**. Be sure to only add the GitLab
 package repository and install GitLab for your chosen operating system,
-but do **not** provide the `EXTERNAL_URL` value.
+but do not provide the `EXTERNAL_URL` value.
 
 #### PostgreSQL nodes
 
@@ -1253,7 +1253,7 @@ The following IPs will be used as an example:
 First, make sure to [install](../../install/package/_index.md#supported-platforms)
 the Linux package on the Praefect PostgreSQL node. Be sure to only add the GitLab
 package repository and install GitLab for your chosen operating system,
-but do **not** provide the `EXTERNAL_URL` value.
+but do not provide the `EXTERNAL_URL` value.
 
 1. SSH in to the Praefect PostgreSQL node.
 1. Create a strong password to be used for the Praefect PostgreSQL user. Take note of this password as `<praefect_postgresql_password>`.
@@ -1571,7 +1571,7 @@ On each node:
 1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux package
    of your choice. Be sure to only add the GitLab
    package repository and install GitLab for your chosen operating system,
-   but do **not** provide the `EXTERNAL_URL` value.
+   but do not provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
@@ -1645,7 +1645,7 @@ On each node:
         storage: [
            {
               name: 'gitaly-1',
-              path: '/var/opt/gitlab/git-data',
+              path: '/var/opt/gitlab/git-data/repositories',
            },
         ],
      }
@@ -1659,7 +1659,7 @@ On each node:
         storage: [
            {
               name: 'gitaly-2',
-              path: '/var/opt/gitlab/git-data',
+              path: '/var/opt/gitlab/git-data/repositories',
            },
         ],
      }
@@ -1673,7 +1673,7 @@ On each node:
         storage: [
            {
               name: 'gitaly-3',
-              path: '/var/opt/gitlab/git-data',
+              path: '/var/opt/gitlab/git-data/repositories',
            },
         ],
      }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	_ "net/http/pprof" // nolint:gosec
@@ -77,7 +78,7 @@ func main() {
 type alreadyPrintedError struct{ error }
 
 // setupFlagSet initializes and configures the flag set for command line parsing
-func setupFlagSet(arg0 string, boot *bootConfig, cfg *config.Config) (fset *flag.FlagSet, configFile, authBackend, cableBackend *string) {
+func setupFlagSet(arg0 string, boot *bootConfig, cfg *config.Config) (fset *flag.FlagSet, configFile, authBackend, cableBackend, iamServiceBackend *string) {
 	fset = flag.NewFlagSet(arg0, flag.ContinueOnError)
 	fset.Usage = func() {
 		_, _ = fmt.Fprintf(fset.Output(), "Usage of %s:\n", arg0)
@@ -107,6 +108,9 @@ func setupFlagSet(arg0 string, boot *bootConfig, cfg *config.Config) (fset *flag
 	cableBackend = fset.String("cableBackend", "", "ActionCable backend")
 	fset.StringVar(&cfg.CableSocket, "cableSocket", "", "Optional: Unix domain socket to dial cableBackend at")
 
+	// IAM Auth service backend (AUTH-011). When unset, OAuth IAM proxy routing is disabled.
+	iamServiceBackend = fset.String("iamServiceURL", "", "Optional: URL of the IAM Auth service for OAuth request routing during the AUTH-011 gradual rollout")
+
 	fset.StringVar(&cfg.DocumentRoot, "documentRoot", "public", "Path to static files content")
 	fset.DurationVar(&cfg.ProxyHeadersTimeout, "proxyHeadersTimeout", 5*time.Minute, "How long to wait for response headers when proxying the request")
 	fset.BoolVar(&cfg.DevelopmentMode, "developmentMode", false, "Allow the assets to be served from Rails app")
@@ -116,7 +120,7 @@ func setupFlagSet(arg0 string, boot *bootConfig, cfg *config.Config) (fset *flag
 	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50, "Long polling duration for job requesting for runners")
 	fset.BoolVar(&cfg.PropagateCorrelationID, "propagateCorrelationID", false, "Reuse existing Correlation-ID from the incoming request header `X-Request-ID` if present")
 
-	return fset, configFile, authBackend, cableBackend
+	return fset, configFile, authBackend, cableBackend, iamServiceBackend
 }
 
 // buildConfig may print messages to os.Stderr if err != nil. If err is
@@ -126,7 +130,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg := config.NewDefaultConfig()
 	cfg.Version = Version
 
-	fset, configFile, authBackend, cableBackend := setupFlagSet(arg0, boot, cfg)
+	fset, configFile, authBackend, cableBackend, iamServiceBackend := setupFlagSet(arg0, boot, cfg)
 
 	if err := fset.Parse(args); err != nil {
 		return nil, nil, alreadyPrintedError{err}
@@ -152,6 +156,24 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 		}
 	} else {
 		cfg.CableBackend = cfg.Backend
+	}
+
+	// Allow the IAM service URL to be set via env var as well as CLI flag,
+	// so cloud-native deployments can configure it through standard container
+	// env injection without templating a CLI arg. CLI flag wins when both are
+	// set. The bare IAM_SERVICE_URL name follows the convention established
+	// by the auth-architecture sandbox-config (see !27), where the same name
+	// was first introduced. Reusing this name lets a follow-up sandbox MR
+	// re-add it to global.extraEnv without introducing a new convention.
+	iamURL := *iamServiceBackend
+	if iamURL == "" {
+		iamURL = os.Getenv("IAM_SERVICE_URL")
+	}
+	if iamURL != "" {
+		cfg.IAMServiceURL, err = parseAuthBackend(iamURL)
+		if err != nil {
+			return nil, nil, fmt.Errorf("iamServiceURL: %v", err)
+		}
 	}
 
 	cfgFromFile, err := config.LoadConfigFromFile(configFile)
@@ -270,11 +292,22 @@ func setupMonitoring(cfg config.Config, finalErrors chan<- error) error {
 
 // run() lets us use normal Go error handling; there is no log.Fatal in run().
 func run(boot bootConfig, cfg config.Config) error {
-	closer, err := startLogging(boot.logFile, boot.logFormat)
+	// Set global labkit v1 logrus logger
+	// NOTE: To be removed after all log call sites are modified to use
+	//	 labkit v2 logger
+	v1LogFileCloser, err := configureLoggingV1(boot.logFile, boot.logFormat)
 	if err != nil {
 		return err
 	}
-	defer closer.Close() //nolint:errcheck
+	defer v1LogFileCloser.Close() //nolint:errcheck
+
+	// Configure labkit v2 slog logger
+	v2Logger, v2LogFileCloser, err := configureLoggingV2(boot.logFile, boot.logFormat)
+	if err != nil {
+		return err
+	}
+	defer v2LogFileCloser.Close() //nolint:errcheck
+	slog.SetDefault(v2Logger)
 
 	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
 	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")

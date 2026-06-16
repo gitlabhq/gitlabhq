@@ -3,9 +3,9 @@
 RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, maintainer_of: project) }
-  let_it_be(:variables) { { path: project.full_path } }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:current_user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:variables, freeze: false) { { path: project.full_path } }
 
   let(:fields) { all_graphql_fields_for("#{access_level_kind.to_s.classify}AccessLevel") }
   let(:access_levels) { protected_branch.public_send("#{access_level_kind}_access_levels") }
@@ -44,7 +44,7 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   end
 
   context 'when request AccessLevel type objects as a guest user' do
-    let_it_be(:protected_branch) { create(:protected_branch, project: project) }
+    let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project) }
 
     before do
       project.add_guest(current_user)
@@ -58,7 +58,7 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   end
 
   context 'when request AccessLevel type objects as a maintainer' do
-    let_it_be(:protected_branch) do
+    let_it_be(:protected_branch, freeze: false) do
       create(:protected_branch, "maintainers_can_#{access_level_kind}", project: project)
     end
 

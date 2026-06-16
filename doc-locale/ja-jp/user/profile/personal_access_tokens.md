@@ -22,7 +22,7 @@ title: パーソナルアクセストークン
   - 任意の空白以外の値をユーザー名として使用します。
   - パーソナルアクセストークンをパスワードとして使用します。
 
-> [!note] 
+> [!note]
 > [2要素認証（2FA）](account/two_factor_authentication.md)または[SAML](../../integration/saml.md#password-generation-for-users-created-through-saml)が有効になっている場合、パーソナルアクセストークンで認証する必要があります。
 
 [GitLabマネージドTerraformステートバックエンド](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)や[コンテナレジストリ](../packages/container_registry/authenticate_with_container_registry.md)など、ユーザー名を必要とする一部のGitLab機能では、GitLabユーザー名とパーソナルアクセストークンを使用します。これらのケースでは、ユーザー名は必須ですが、認証の一部として評価されません。詳細については、[イシュー212953](https://gitlab.com/gitlab-org/gitlab/-/issues/212953)を参照してください。
@@ -48,7 +48,7 @@ GitLab Self-ManagedおよびGitLab Dedicatedインスタンスでは、管理者
 - アクティブおよび非アクティブなすべてのパーソナルアクセストークンを表示します。
 - トークン情報（スコープ、割り当てられたロール、有効期限を含む）を表示します。
 - 使用状況の情報（使用日、および最後の5つの異なる接続IPアドレスを含む）を表示します。
-  > [!note] 
+  > [!note]
   > GitLabは、トークンがGit操作を実行したり、[REST](../../api/rest/_index.md)または[GraphQL](../../api/graphql/_index.md) APIで操作を認証したりすると、トークンの使用状況情報を定期的に更新します。トークンの使用時間は10分ごとに、トークン使用IPアドレスは1分ごとに更新されます。
 
 パーソナルアクセストークンを表示するには:
@@ -117,7 +117,7 @@ https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+A
 
 スコープは、パーソナルアクセストークンで認証する際に利用できるアクションを定義します。以下のスコープが利用可能です:
 
-> [!note] 
+> [!note]
 > [きめ細かいパーソナルアクセストークン](../../auth/tokens/fine_grained_access_tokens.md)は異なるスコープを使用します。
 
 | スコープ                    | 説明 |
@@ -140,7 +140,7 @@ https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+A
 | `sudo`                   | 管理者として認証されている場合、システム内の任意のユーザーとしてAPIアクションを実行する権限を許可します。 |
 | `read_user`              | `/user` APIエンドポイントを介して、認証済みユーザーのプロファイルへの読み取り専用アクセスを許可します。これには、ユーザー名、公開メール、および氏名が含まれます。また、[`/users`](../../api/users.md)の下にある読み取り専用APIエンドポイントへのアクセスも許可します。 |
 
-> [!warning] 
+> [!warning]
 > [外部認可](../../administration/settings/external_authorization.md)を有効にしている場合、パーソナルアクセストークンはコンテナまたはパッケージレジストリにアクセスできません。アクセスを復元するには、外部認可を無効にします。
 
 ## パーソナルアクセストークンをローテーションする {#rotate-a-personal-access-token}

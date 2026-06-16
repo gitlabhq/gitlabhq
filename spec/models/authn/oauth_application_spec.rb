@@ -17,6 +17,34 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     expect(application.plaintext_secret).to match(/gloas-\h{64}/)
   end
 
+  describe 'feature flag actor' do
+    it 'acts as a Flipper actor via FeatureGate' do
+      expect(described_class.include?(FeatureGate)).to be(true)
+      expect(application.flipper_id).to eq("Authn::OauthApplication:#{application.id}")
+    end
+
+    it 'is registered as a supported feature flag model' do
+      expect(Feature::SUPPORTED_MODELS).to include('Authn::OauthApplication')
+    end
+  end
+
+  describe '#iam_routing_enabled?' do
+    let(:other_application) { create(:oauth_application) }
+
+    it 'is false when the feature flag is disabled' do
+      stub_feature_flags(proxy_oauth_requests_to_iam_service: false)
+
+      expect(application.iam_routing_enabled?).to be(false)
+    end
+
+    it 'is true only for the targeted application when the flag is enabled for it' do
+      stub_feature_flags(proxy_oauth_requests_to_iam_service: application)
+
+      expect(application.iam_routing_enabled?).to be(true)
+      expect(other_application.iam_routing_enabled?).to be(false)
+    end
+  end
+
   it 'allows dynamic scopes' do
     application.scopes = 'api user:*'
     expect(application).to be_valid

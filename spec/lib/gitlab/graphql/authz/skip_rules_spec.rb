@@ -83,5 +83,63 @@ RSpec.describe Gitlab::Graphql::Authz::SkipRules, feature_category: :permissions
         it { is_expected.to be true }
       end
     end
+
+    context 'when the field traverses from an authorized type to another authorized type' do
+      # GroupMemberType has a `user` field returning UserType which has a directive,
+      # so GroupMemberType has deeper authorized fields -> skip fires.
+      let(:owner) { Types::GroupType }
+      let(:field_type) { Types::GroupMemberType.connection_type }
+
+      it 'skips authorization when the return type has deeper authorized sub-fields' do
+        is_expected.to be true
+      end
+
+      context 'when the field has its own granular_token directive' do
+        let(:directive) { create_directive(boundary: 'itself', permissions: ['read_group']) }
+        let(:field) { create_field_with_directive(directive: directive, type: field_type, owner: owner) }
+
+        it 'does not skip — an explicit field-level directive always wins' do
+          is_expected.to be false
+        end
+      end
+
+      context 'when the owner type has no granular_token directive' do
+        let(:owner) do
+          Class.new(GraphQL::Schema::Object) { graphql_name 'OwnerWithoutGranularToken' }
+        end
+
+        it 'does not skip — there is no parent tax to drop' do
+          is_expected.to be false
+        end
+      end
+
+      context 'when the return type has no granular_token directive' do
+        let(:field_type) { GraphQL::Types::String }
+
+        it 'does not skip — owner-level directive is the authoritative gate' do
+          is_expected.to be false
+        end
+      end
+
+      context 'when the return type is a list of authorized objects' do
+        let(:field_type) { [Types::GroupMemberType] }
+
+        it 'unwraps the list and still skips' do
+          is_expected.to be true
+        end
+      end
+
+      context 'when the return type has no deeper authorized sub-fields (leaf type)' do
+        # LabelType fields (id, archived, lock_on_merge, description_html) all return
+        # scalars with no directives, so it is a leaf. Skipping would leave an empty
+        # collection unchecked, so the skip must not fire.
+        let(:owner) { Types::GroupType }
+        let(:field_type) { Types::LabelType.connection_type }
+
+        it 'does not skip — leaf return types must be checked at the collection level' do
+          is_expected.to be false
+        end
+      end
+    end
   end
 end

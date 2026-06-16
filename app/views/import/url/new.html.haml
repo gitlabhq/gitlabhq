@@ -6,6 +6,7 @@
 
 -# Only added for fix in .project-destination-select
 - add_page_specific_style 'page_bundles/projects'
+- effective_namespace = @namespace || current_user.namespace
 
 .js-vue-import-by-url-app{ data: {
   import_by_url_validate_path: validate_import_url_path,
@@ -15,6 +16,6 @@
   new_project_path: new_project_path(anchor: 'import_project'),
   new_project_form_path: projects_path,
   user_namespace_id: current_user.namespace_id.to_s,
-  user_namespace_full_path: current_user.namespace.full_path,
-  namespace_id: @namespace&.id.to_s,
-  namespace_full_path: @namespace&.full_path } }
+  namespace_id: effective_namespace.id.to_s,
+  namespace_full_path: effective_namespace.full_path,
+  namespace_visibility: effective_namespace.visibility } }

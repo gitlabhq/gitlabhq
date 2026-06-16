@@ -20,6 +20,8 @@ module Spec
 
             click_button button_text
           end
+
+          expect(page).to have_no_selector('[role="dialog"]')
         end
       end
     end

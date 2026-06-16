@@ -32,6 +32,7 @@ import AgentToken from './agent_token.vue';
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_MODAL });
 
 export default {
+  name: 'InstallAgentModal',
   modalId: INSTALL_AGENT_MODAL_ID,
   i18n: I18N_AGENT_MODAL,
   EVENT_ACTIONS_OPEN,

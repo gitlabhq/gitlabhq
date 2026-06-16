@@ -67,7 +67,7 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
           it 'group runners may be disabled for a project' do
             visit_group_runners_tab
 
-            find_by_testid('group-runners-toggle').find('button').click
+            find_by_testid('group-runners-toggle').find('button:not(.is-disabled)').click
 
             expect(page).to have_content 'Group runners are turned off'
             expect(project.reload.group_runners_enabled).to be false

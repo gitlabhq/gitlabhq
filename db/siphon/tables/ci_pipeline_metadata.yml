@@ -1,0 +1,13 @@
+---
+table: ci_pipeline_metadata
+database: ci
+replication_targets:
+- name: clickhouse_main
+  target: siphon_ci_pipeline_metadata
+  dedup_by:
+  - pipeline_id
+  dedup_by_columns_lookup_table: siphon_ci_pipeline_metadata_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - project_id

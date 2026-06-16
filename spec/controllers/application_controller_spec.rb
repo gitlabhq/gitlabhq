@@ -1253,6 +1253,44 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
+  describe '#after_sign_out_path_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:default_path) { '/users/sign_in' }
+
+    controller(described_class) do
+      skip_before_action :authenticate_user!
+
+      def index
+        redirect_to after_sign_out_path_for(User.last)
+      end
+    end
+
+    subject do
+      get :index
+      response
+    end
+
+    where(:auto_sign_in_configured, :omniauth_enabled, :admin_path, :expected_redirect) do
+      false | true  | nil                                             | ref(:default_path)
+      false | true  | 'http://company.example.com/goodbye'            | 'http://company.example.com/goodbye'
+      true  | true  | nil                                             | '/users/sign_in?auto_sign_in=false'
+      true  | true  | 'http://company.example.com/goodbye'            | 'http://company.example.com/goodbye?auto_sign_in=false'
+      true  | true  | 'http://company.example.com/goodbye?foo=bar'    | 'http://company.example.com/goodbye?auto_sign_in=false&foo=bar'
+      true  | false | nil                                             | ref(:default_path)
+    end
+
+    with_them do
+      before do
+        stub_omniauth_setting(auto_sign_in_with_provider: :saml) if auto_sign_in_configured
+        stub_application_setting(after_sign_out_path: admin_path) if admin_path
+        allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(omniauth_enabled)
+      end
+
+      it { is_expected.to redirect_to(expected_redirect) }
+    end
+  end
+
   describe '#set_current_ip_address' do
     controller(described_class) do
       def index; end

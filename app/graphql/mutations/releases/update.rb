@@ -32,6 +32,8 @@ module Mutations
           'GitLab Premium customers can specify group milestones.'
 
       authorize :update_release
+      authorize_granular_token permissions: :update_release,
+        boundary_argument: :project_path, boundary_type: :project
 
       def ready?(**args)
         if args.key?(:released_at) && args[:released_at].nil?

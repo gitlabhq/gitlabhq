@@ -322,24 +322,23 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- creates are required in this case
   describe '#project_import_complete' do
-    let(:user) { create(:user) }
-    let(:owner) { create(:owner) }
-    let(:group) { create(:group) }
-    let(:project) { create(:project, creator: user, import_url: 'https://user:password@example.com') }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, creator: user, import_url: 'https://user:password@example.com') }
     let(:user_mapping_enabled) { true }
 
     subject { Notify.project_import_complete(project.id, user.id, user_mapping_enabled, project.safe_import_url) }
 
     context 'when user mapping is enabled' do
       context 'with placeholder users awaiting reassignment' do
-        before do
+        before_all do
           create(:import_source_user, namespace: group)
 
           project.update!(namespace: group)
         end
 
         context 'when user is a group owner' do
-          before do
+          before_all do
             group.add_owner(user)
           end
 
@@ -363,7 +362,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
       end
 
       context 'without placeholder users awaiting reassignment' do
-        before do
+        before_all do
           group.add_owner(user)
         end
 

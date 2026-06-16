@@ -3,11 +3,11 @@
 require 'spec_helper'
 require 'zlib'
 
-RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
+RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor, feature_category: :importers do
   let_it_be(:tmpdir) { Dir.mktmpdir }
-  let_it_be(:import) { create(:bulk_import) }
+  let_it_be(:import, freeze: false) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
-  let_it_be(:entity) { create(:bulk_import_entity, :with_portable, bulk_import: import) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, :with_portable, bulk_import: import) }
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 

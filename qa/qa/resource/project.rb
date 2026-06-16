@@ -518,7 +518,13 @@ module QA
       end
 
       def visit_job(job_name)
-        url = job_by_name(job_name)[:web_url]
+        # The job may not be listed yet immediately after the pipeline is created, so wait for it
+        # to appear before dereferencing it to avoid a NoMethodError on a nil lookup.
+        job = Support::Waiter.wait_until(sleep_interval: 3, message: "Waiting for job '#{job_name}' to be created") do
+          job_by_name(job_name)
+        end
+
+        url = job[:web_url]
         Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)}'s job #{job_name} at #{url}")
         visit(url)
         Support::WaitForRequests.wait_for_requests

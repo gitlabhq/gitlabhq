@@ -47,6 +47,7 @@ export default {
       required: true,
     },
   },
+  emits: ['panel-change'],
 
   data() {
     return {

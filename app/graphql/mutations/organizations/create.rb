@@ -16,6 +16,10 @@ module Mutations
         required: true,
         description: 'Path for the organization.'
 
+      argument :visibility, Types::Organizations::VisibilityEnum,
+        required: false,
+        description: 'Visibility for the organization.'
+
       def resolve(args)
         authorize!(:global)
 

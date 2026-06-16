@@ -1,0 +1,9 @@
+---
+name: delete_user
+description: Grants the ability to delete users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_user

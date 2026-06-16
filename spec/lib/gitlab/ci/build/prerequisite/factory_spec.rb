@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Prerequisite::Factory do
-  let(:build) { create(:ci_build) }
+RSpec.describe Gitlab::Ci::Build::Prerequisite::Factory, feature_category: :continuous_delivery do
+  let(:build) { build_stubbed(:ci_build) }
 
   describe '.for_build' do
     let(:kubernetes_namespace) do

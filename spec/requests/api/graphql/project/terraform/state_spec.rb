@@ -54,6 +54,31 @@ RSpec.describe 'query a single terraform state', feature_category: :infrastructu
     post_graphql(query, current_user: current_user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_terraform_state] do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql(
+        graphql_query_for(:project, { fullPath: project.full_path },
+          query_graphql_field(:terraformState, { name: terraform_state.name }, 'id name')),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_terraform_state] do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql(
+        graphql_query_for(:project, { fullPath: project.full_path },
+          query_graphql_field(:terraformState, { name: terraform_state.name },
+            query_graphql_field(:latestVersion, {}, 'id'))),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   it_behaves_like 'a working graphql query'
 
   it 'returns terraform state data' do

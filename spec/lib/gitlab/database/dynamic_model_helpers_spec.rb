@@ -26,6 +26,20 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers, feature_category: :databas
       expect(model.inheritance_column).to eq('_type_disabled')
     end
 
+    it 'uses the given connection' do
+      expect(model.connection).to equal(connection)
+    end
+
+    it 'uses the connection pool from the given connection' do
+      expect(model.connection_pool).to equal(connection.pool)
+    end
+
+    it 'yields a connection from the correct pool via with_connection' do
+      model.with_connection do |conn|
+        expect(conn.pool).to equal(connection.pool)
+      end
+    end
+
     context 'for primary key' do
       subject(:model) do
         described_class.define_batchable_model(table_name, connection: connection, primary_key: primary_key)

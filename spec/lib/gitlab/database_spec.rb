@@ -397,11 +397,11 @@ RSpec.describe Gitlab::Database, feature_category: :database do
 
     it 'does return a valid schema for a replica connection' do
       with_replica_pool_for(ActiveRecord::Base) do |main_replica_pool|
-        expect(described_class.gitlab_schemas_for_connection(main_replica_pool.connection)).to include(:gitlab_main, :gitlab_shared)
+        expect(described_class.gitlab_schemas_for_connection(main_replica_pool.lease_connection)).to include(:gitlab_main, :gitlab_shared)
       end
 
       with_replica_pool_for(Ci::ApplicationRecord) do |ci_replica_pool|
-        expect(described_class.gitlab_schemas_for_connection(ci_replica_pool.connection)).to include(:gitlab_ci, :gitlab_shared)
+        expect(described_class.gitlab_schemas_for_connection(ci_replica_pool.lease_connection)).to include(:gitlab_ci, :gitlab_shared)
       end
     end
 

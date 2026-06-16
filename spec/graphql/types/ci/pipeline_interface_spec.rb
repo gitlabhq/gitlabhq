@@ -7,8 +7,8 @@ RSpec.describe Types::Ci::PipelineInterface, feature_category: :continuous_integ
     expect(described_class.graphql_name).to eq('PipelineInterface')
   end
 
-  it 'has the expected fields' do
-    expected_fields = %w[id iid path project user]
+  it 'has the expected fields', :aggregate_failures do
+    expected_fields = %w[commit id iid path project user]
 
     expect(described_class.own_fields.size).to eq(expected_fields.size)
     expect(described_class).to include_graphql_fields(*expected_fields)

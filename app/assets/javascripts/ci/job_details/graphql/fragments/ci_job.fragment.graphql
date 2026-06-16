@@ -7,4 +7,5 @@ fragment BaseCiJob on CiJob {
       ...ManualCiVariable
     }
   }
+  source
 }

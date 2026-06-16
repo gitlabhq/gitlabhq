@@ -4,6 +4,10 @@ module Organizations
   module Stateful
     extend ActiveSupport::Concern
 
+    # States in which an organization is being deleted. These are hidden from
+    # non-admin users (see Organizations::OrganizationsFinder).
+    DELETION_STATES = %i[soft_deleted deletion_in_progress].freeze
+
     included do
       include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionContext
       include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks
@@ -14,21 +18,20 @@ module Organizations
 
       enum :state, {
         unconfirmed: 0,
-        deletion_scheduled: 1,
+        soft_deleted: 1,
         deletion_in_progress: 2,
         confirmed: 3,
         active: 4
       }, instance_methods: false
 
+      scope :excluding_deletion_states, -> { where.not(state: DELETION_STATES) }
+
       state_machine :state, initial: :unconfirmed do
         before_transition :update_state_metadata
-        before_transition on: :schedule_deletion, do: :ensure_transition_user
-        before_transition on: :schedule_deletion, do: :ensure_organization_is_empty
-        before_transition on: :schedule_deletion, do: :set_deletion_schedule_data
-        before_transition on: :cancel_deletion, do: :clear_deletion_schedule_data
-        # We don't call :set_deletion_schedule_data on :reschedule_deletion
-        # as it would change the actual deletion date/time.
-        before_transition on: :reschedule_deletion, do: :set_deletion_error_data
+        before_transition on: [:soft_delete, :hard_delete, :abort_hard_deletion], do: :ensure_transition_user
+        before_transition on: [:soft_delete, :hard_delete], do: :ensure_organization_is_empty
+        before_transition on: :soft_delete, do: :set_soft_deletion_data
+        before_transition on: :restore, do: :clear_soft_deletion_data
         before_transition on: :confirm, do: :ensure_confirmed_by_user
         before_transition on: :confirm, do: :set_confirmation_data
 
@@ -40,20 +43,20 @@ module Organizations
           transition confirmed: :active
         end
 
-        event :schedule_deletion do
-          transition active: :deletion_scheduled
+        event :soft_delete do
+          transition active: :soft_deleted
         end
 
-        event :start_deletion do
-          transition deletion_scheduled: :deletion_in_progress
+        event :hard_delete do
+          transition soft_deleted: :deletion_in_progress
         end
 
-        event :cancel_deletion do
-          transition %i[deletion_scheduled deletion_in_progress] => :active
+        event :abort_hard_deletion do
+          transition deletion_in_progress: :soft_deleted
         end
 
-        event :reschedule_deletion do
-          transition deletion_in_progress: :deletion_scheduled
+        event :restore do
+          transition soft_deleted: :active
         end
 
         after_transition :log_transition
@@ -63,10 +66,10 @@ module Organizations
 
       private
 
-      def ensure_organization_is_empty(_transition)
+      def ensure_organization_is_empty(transition)
         return true if empty?
 
-        errors.add(:state, 'schedule_deletion transition requires the organization to be empty')
+        errors.add(:state, "#{transition.event} transition requires the organization to be empty")
         false
       end
 
@@ -86,6 +89,18 @@ module Organizations
           confirmed_at: Time.current.as_json,
           confirmed_by_user_id: confirmed_by_user(transition).id
         )
+      end
+
+      def set_soft_deletion_data(transition)
+        self.soft_deleted_at = Time.current
+        state_metadata.merge!(
+          soft_deletion_scheduled_by_user_id: transition_user(transition).id
+        )
+      end
+
+      def clear_soft_deletion_data(_transition)
+        self.soft_deleted_at = nil
+        state_metadata.except!('soft_deletion_scheduled_by_user_id')
       end
 
       def stateful_detail

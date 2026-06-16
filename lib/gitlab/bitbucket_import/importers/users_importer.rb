@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def client
-          @client ||= Bitbucket::Client.new(project.import_data.credentials)
+          @client ||= ::Import::BitbucketImport::ClientFactory.for(project)
         end
 
         def workspace_key

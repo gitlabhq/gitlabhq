@@ -5,9 +5,9 @@ require "spec_helper"
 RSpec.describe 'Update work items user preferences', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:group, :private) }
-  let_it_be(:work_item_type) { build(:work_item_system_defined_type, :incident) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:namespace, freeze: false) { create(:group, :private) }
+  let_it_be(:work_item_type, freeze: false) { build(:work_item_system_defined_type, :incident) }
 
   let(:sorting_value) { 'CREATED_ASC' }
   let(:display_settings) { { 'hiddenMetadataKeys' => %w[assignee labels milestone] } }
@@ -101,7 +101,7 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
       end
 
       context 'when sort value is not available' do
-        let_it_be(:sorting_value) { 'DUE_DATE_ASC' }
+        let_it_be(:sorting_value, freeze: false) { 'DUE_DATE_ASC' }
 
         it 'updates the user preferences successfully' do
           post_graphql_mutation(mutation, current_user: user)
@@ -117,7 +117,7 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
       end
 
       context 'when display settings are not valid' do
-        let_it_be(:display_settings) { { 'hiddenMetadataKeys' => 'test' } }
+        let_it_be(:display_settings, freeze: false) { { 'hiddenMetadataKeys' => 'test' } }
 
         it 'updates the user preferences successfully' do
           post_graphql_mutation(mutation, current_user: user)
@@ -150,13 +150,13 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
   end
 
   context 'when namespace is a group' do
-    let_it_be(:namespace) { create(:group, :private) }
+    let_it_be(:namespace, freeze: false) { create(:group, :private) }
 
     it_behaves_like 'updating work items user preferences'
   end
 
   context 'when namespace is a project' do
-    let_it_be(:namespace) { create(:project, :private) }
+    let_it_be(:namespace, freeze: false) { create(:project, :private) }
 
     it_behaves_like 'updating work items user preferences'
   end

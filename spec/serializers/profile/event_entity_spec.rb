@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Profile::EventEntity, feature_category: :user_profile do
-  let_it_be(:group) { create(:group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
-  let_it_be(:project) { build(:project_empty_repo, group: group) }
-  let_it_be(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted user for merge_request author and event ownership
+  let_it_be(:group, freeze: false) { create(:group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs a persisted record for the serializer
+  let_it_be(:project, freeze: false) { build(:project_empty_repo, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted user for merge_request author and event ownership
   let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, target_project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted merge request for note association
   let_it_be(:note, freeze: false) { build(:note_on_merge_request, noteable: merge_request, project: project) }
 

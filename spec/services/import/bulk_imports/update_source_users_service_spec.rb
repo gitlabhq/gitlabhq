@@ -133,6 +133,22 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
         service.execute
       end
     end
+
+    context 'when the import is offline' do
+      let_it_be(:offline_bulk_import) { create(:bulk_import, :with_configuration, :with_offline_configuration) }
+
+      let(:service_args) do
+        { bulk_import: offline_bulk_import, namespace: portable }
+      end
+
+      it 'queries source users with offline transfer import type' do
+        expect(Import::SourceUser).to receive(:source_users_with_missing_information).with(
+          hash_including(import_type: Import::SOURCE_OFFLINE_TRANSFER)
+        ).and_return(Import::SourceUser.none)
+
+        service.execute
+      end
+    end
   end
 
   describe '#fetch_users_data' do
@@ -323,6 +339,49 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
               error: 'Error!',
               bulk_import_id: bulk_import.id,
               importer: Import::SOURCE_DIRECT_TRANSFER
+            )
+          )
+        end
+
+        update_source_user
+      end
+    end
+
+    context 'when the import is offline' do
+      let_it_be(:offline_bulk_import) { create(:bulk_import, :with_configuration, :with_offline_configuration) }
+      let_it_be(:offline_source_hostname) { offline_bulk_import.configuration.url }
+
+      let_it_be(:offline_import_source_user) do
+        create(:import_source_user,
+          namespace: portable,
+          import_type: Import::SOURCE_OFFLINE_TRANSFER,
+          source_hostname: offline_source_hostname,
+          source_username: nil,
+          source_name: nil
+        )
+      end
+
+      let(:data) do
+        graphql_response_node(
+          gid: "gid://gitlab/User/#{offline_import_source_user.source_user_identifier}",
+          name: 'John Doe',
+          username: 'john_doe'
+        )
+      end
+
+      let(:service_args) do
+        { bulk_import: offline_bulk_import, namespace: portable }
+      end
+
+      it 'logs with offline transfer importer' do
+        allow_next_instance_of(Import::SourceUsers::UpdateService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error!'))
+        end
+
+        expect_next_instance_of(::BulkImports::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            hash_including(
+              importer: Import::SOURCE_OFFLINE_TRANSFER
             )
           )
         end

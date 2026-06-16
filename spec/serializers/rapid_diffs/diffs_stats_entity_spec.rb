@@ -21,11 +21,22 @@ RSpec.describe RapidDiffs::DiffsStatsEntity, feature_category: :code_review_work
       expect(diffs_stats).to include(
         {
           diffs_stats: {
-            added_lines: 118,
+            added_lines: 119,
             removed_lines: 9,
-            diffs_count: 20
+            diffs_count: 20,
+            real_size: '20'
           }
         })
+    end
+
+    context 'when the diff collection overflows hard limits' do
+      before do
+        allow(diffs_resource).to receive(:real_size).and_return('20+')
+      end
+
+      it 'exposes real_size with a "+" suffix' do
+        expect(diffs_stats[:diffs_stats]).to include(real_size: '20+')
+      end
     end
 
     where(:safe_lines, :safe_files, :safe_bytes, :safe_limits, :expected_overflow) do

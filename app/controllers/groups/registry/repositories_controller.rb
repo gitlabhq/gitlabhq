@@ -12,6 +12,10 @@ module Groups
       feature_category :container_registry
       urgency :low
 
+      before_action only: [:index, :show] do
+        push_frontend_feature_flag(:container_registry_display_supported_platforms, group.root_ancestor)
+      end
+
       def index
         respond_to do |format|
           format.html

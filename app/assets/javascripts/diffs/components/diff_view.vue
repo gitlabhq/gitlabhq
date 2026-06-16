@@ -16,6 +16,7 @@ import DiffRow from './diff_row.vue';
 import { isHighlighted } from './diff_row_utils';
 
 export default {
+  name: 'DiffView',
   components: {
     DiffExpansionCell,
     DiffRow,

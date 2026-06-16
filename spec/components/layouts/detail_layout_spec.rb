@@ -145,6 +145,44 @@ RSpec.describe Layouts::DetailLayout, feature_category: :design_system do
       end
     end
 
+    describe 'widgets' do
+      let(:widgets) { 'Widgets' }
+
+      it 'renders widgets content when slot is provided' do
+        render_inline described_class.new(heading: heading) do |c|
+          c.with_widgets { widgets }
+          content
+        end
+
+        expect(page).to have_css('[data-testid="detail-layout-widgets"]', text: widgets)
+      end
+
+      it 'does not render when no widgets slot is provided' do
+        render_inline described_class.new(heading: heading) { content }
+
+        expect(page).not_to have_css('[data-testid="detail-layout-widgets"]')
+      end
+    end
+
+    describe 'activity' do
+      let(:activity) { 'Activity' }
+
+      it 'renders activity content when slot is provided' do
+        render_inline described_class.new(heading: heading) do |c|
+          c.with_activity { activity }
+          content
+        end
+
+        expect(page).to have_css('[data-testid="detail-layout-activity"]', text: activity)
+      end
+
+      it 'does not render when no activity slot is provided' do
+        render_inline described_class.new(heading: heading) { content }
+
+        expect(page).not_to have_css('[data-testid="detail-layout-activity"]')
+      end
+    end
+
     describe 'default' do
       it 'renders body when default slot is provided' do
         render_inline described_class.new(heading: heading) do

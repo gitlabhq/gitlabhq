@@ -48,6 +48,17 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     )
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_container_repository_protection_rule do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:delete_container_protection_repository_rule,
+        { id: container_protection_rule.to_global_id }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'with existing container registry protection rule belonging to other project' do
     let_it_be(:container_protection_rule) { create(:container_registry_protection_rule) }
 

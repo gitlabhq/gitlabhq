@@ -23,6 +23,7 @@ import DiffView from './diff_view.vue';
 import ImageDiffOverlay from './image_diff_overlay.vue';
 
 export default {
+  name: 'DiffContent',
   components: {
     GlLoadingIcon,
     GlButton,

@@ -6,9 +6,10 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 
-import { AUTHOR_ENDPOINT_PATH, AUTHOR_PARAM, NOT_AUTHOR_PARAM } from '../../constants';
+import { AUTHOR_PARAM, NOT_AUTHOR_PARAM } from '../../constants';
 
 export default {
   name: 'AuthorFilter',
@@ -64,7 +65,7 @@ export default {
   methods: {
     ...mapActions(['setQuery', 'applyQuery']),
     getDropdownAPIEndpoint() {
-      const endpoint = `${gon.relative_url_root || ''}${AUTHOR_ENDPOINT_PATH}`;
+      const endpoint = autocompleteUsersPath({ format: 'json' });
       const params = {
         current_user: true,
         active: true,

@@ -1,7 +1,5 @@
 <script>
 import { GlAlert, GlFormGroup, GlFormInput, GlFormTextarea, GlLink, GlSprintf } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
 import FormUrlApp from './form_url_app.vue';
 import FormCustomHeaders from './form_custom_headers.vue';
 import WebhookFormTriggerList from './webhook_form_trigger_list.vue';
@@ -21,7 +19,6 @@ export default {
     WebhookFormTriggerList,
     WebhookTokenInput,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     initialUrl: {
       type: String,
@@ -96,7 +93,7 @@ export default {
 <template>
   <div>
     <gl-alert
-      v-if="glFeatures.webhookSigningToken && initialSecretToken"
+      v-if="initialSecretToken"
       variant="warning"
       :dismissible="false"
       class="gl-mb-5"
@@ -144,18 +141,13 @@ export default {
     />
 
     <webhook-token-input
-      v-if="glFeatures.webhookSigningToken"
       :has-existing-token="hasSigningToken"
       :docs-path="signingTokenDocsPath"
       input-name="hook[signing_token]"
     />
 
     <gl-form-group
-      :label="
-        glFeatures.webhookSigningToken
-          ? s__('Webhooks|Secret token (not recommended)')
-          : s__('Webhooks|Secret token')
-      "
+      :label="s__('Webhooks|Secret token (not recommended)')"
       label-for="webhook-secret-token"
     >
       <template #description>
@@ -170,9 +162,7 @@ export default {
             <code>{{ content }}</code>
           </template>
         </gl-sprintf>
-        <template v-if="glFeatures.webhookSigningToken">
-          {{ ' ' + s__('Webhooks|Signing tokens are more secure.') }}
-        </template>
+        {{ ' ' + s__('Webhooks|Signing tokens are more secure.') }}
       </template>
       <gl-form-input
         id="webhook-secret-token"

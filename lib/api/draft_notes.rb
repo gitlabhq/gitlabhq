@@ -90,7 +90,8 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc "Get a list of merge request draft notes" do
+      desc 'List all merge request draft notes' do
+        detail 'Lists all merge request draft notes.'
         success Entities::DraftNote
         is_array true
         failure [
@@ -108,7 +109,8 @@ module API
         present load_draft_notes(params: params), with: Entities::DraftNote
       end
 
-      desc "Get a single draft note" do
+      desc 'Retrieve a draft note' do
+        detail 'Retrieves a draft note for a specified merge request.'
         success Entities::DraftNote
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -132,7 +134,8 @@ module API
         end
       end
 
-      desc "Create a new draft note" do
+      desc 'Create a draft note' do
+        detail 'Creates a draft note for a specified merge request.'
         success Entities::DraftNote
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -165,7 +168,8 @@ module API
         end
       end
 
-      desc "Modify an existing draft note" do
+      desc 'Update a draft note' do
+        detail 'Updates a draft note for a specified merge request.'
         success Entities::DraftNote
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -196,7 +200,8 @@ module API
         end
       end
 
-      desc "Delete a draft note" do
+      desc 'Delete a draft note' do
+        detail 'Deletes a draft note for a specified merge request.'
         success Entities::DraftNote
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -224,7 +229,8 @@ module API
         end
       end
 
-      desc "Publish a pending draft note" do
+      desc 'Publish a draft note' do
+        detail 'Publishes a draft note for a specified merge request.'
         success code: 204
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -251,7 +257,9 @@ module API
         end
       end
 
-      desc "Bulk publish all pending draft notes" do
+      desc 'Publish all pending draft notes' do
+        detail 'Publishes all pending draft notes for a specified merge request that belong to the currently ' \
+          'authenticated user.'
         success code: 204
         failure [
           { code: 401, message: 'Unauthorized' },

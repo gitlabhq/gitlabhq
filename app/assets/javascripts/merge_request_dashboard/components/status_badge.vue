@@ -6,6 +6,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BADGE_METHODS } from '../utils/status_badge';
 
 export default {
+  name: 'StatusBadge',
   components: {
     GlBadge,
   },

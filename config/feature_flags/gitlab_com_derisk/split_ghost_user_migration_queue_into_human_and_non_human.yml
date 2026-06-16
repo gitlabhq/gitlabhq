@@ -1,0 +1,10 @@
+---
+name: split_ghost_user_migration_queue_into_human_and_non_human
+description: Splits ghost user migration queue into human and non-human.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/583853
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235048
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601101
+milestone: '19.1'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

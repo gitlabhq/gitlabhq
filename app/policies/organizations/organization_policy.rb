@@ -24,24 +24,19 @@ module Organizations
     end
 
     rule { admin }.policy do
-      enable :admin_organization
-      enable :access_organization_admin_area
-      enable :create_group
-      enable :read_organization
-      enable :read_organization_user
-      enable :read_work_item_type
-      enable :read_artifact_registry
-      enable :transfer_group
+      enable(*Authz::Role.get(:admin).permissions(:organization))
     end
 
     rule { organization_owner }.policy do
-      enable :admin_organization
       enable :access_organization_admin_area
       enable :read_organization_user
       enable :transfer_group
+      enable :update_organization
     end
 
     rule { (admin | organization_owner) & ~default_organization }.enable :delete_organization
+
+    rule { blocked | deactivated | inactive }.prevent :delete_organization
 
     rule { ~organization_admin_area_enabled }.policy do
       prevent :access_organization_admin_area

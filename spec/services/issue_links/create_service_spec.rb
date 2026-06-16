@@ -4,17 +4,17 @@ require 'spec_helper'
 
 RSpec.describe IssueLinks::CreateService, feature_category: :team_planning do
   describe '#execute' do
-    let_it_be(:user) { create :user }
-    let_it_be(:namespace) { create :namespace }
-    let_it_be(:project) { create :project, namespace: namespace }
-    let_it_be(:issuable) { create :issue, project: project }
-    let_it_be(:issuable2) { create :issue, project: project }
-    let_it_be(:restricted_issuable) { create :issue }
-    let_it_be(:another_project) { create :project, namespace: project.namespace }
-    let_it_be(:issuable3) { create :issue, project: another_project }
-    let_it_be(:issuable_a) { create :issue, project: project }
-    let_it_be(:issuable_b) { create :issue, project: project }
-    let_it_be(:issuable_link) { create :issue_link, source: issuable, target: issuable_b, link_type: IssueLink::TYPE_RELATES_TO }
+    let_it_be(:user, freeze: false) { create :user }
+    let_it_be(:namespace, freeze: false) { create :namespace }
+    let_it_be(:project, freeze: false) { create :project, namespace: namespace }
+    let_it_be(:issuable, freeze: false) { create :issue, project: project }
+    let_it_be(:issuable2, freeze: false) { create :issue, project: project }
+    let_it_be(:restricted_issuable, freeze: false) { create :issue }
+    let_it_be(:another_project, freeze: false) { create :project, namespace: project.namespace }
+    let_it_be(:issuable3, freeze: false) { create :issue, project: another_project }
+    let_it_be(:issuable_a, freeze: false) { create :issue, project: project }
+    let_it_be(:issuable_b, freeze: false) { create :issue, project: project }
+    let_it_be(:issuable_link, freeze: false) { create :issue_link, source: issuable, target: issuable_b, link_type: IssueLink::TYPE_RELATES_TO }
 
     let(:issuable_parent) { issuable.project }
     let(:issuable_type) { :issue }
@@ -29,7 +29,7 @@ RSpec.describe IssueLinks::CreateService, feature_category: :team_planning do
     it_behaves_like 'issuable link creation'
 
     context 'when target is an incident' do
-      let_it_be(:issue) { create(:incident, project: project) }
+      let_it_be(:issue, freeze: false) { create(:incident, project: project) }
 
       let(:params) do
         { issuable_references: [issuable2.to_reference, issuable3.to_reference(another_project)] }

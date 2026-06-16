@@ -11,37 +11,6 @@ module Gitlab
           BULK_INSERT_BATCH_SIZE = 500
 
           def perform!
-            if Feature.enabled?(:ci_bulk_insert_pipeline_records, project)
-              perform_with_bulk_insert!
-            else
-              logger.instrument_once_with_sql(:pipeline_save) do
-                # It is still fine to save `::Ci::JobDefinition` objects even if the pipeline is not created due to some
-                # reason because they can be used in the next pipeline creations.
-                ::Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(pipeline, statuses).run
-
-                with_build_hooks_via_chain do
-                  BulkInsertableAssociations.with_bulk_insert do
-                    pipeline.save!
-                  end
-                end
-              end
-            end
-          rescue ActiveRecord::RecordInvalid => e
-            error("Failed to persist the pipeline: #{e}")
-          rescue ActiveRecord::RecordNotUnique => e
-            raise unless e.message.include?('iid')
-
-            ::InternalId.flush_records!(project: project, usage: :ci_pipelines)
-            error("Failed to persist the pipeline, please retry")
-          rescue ActiveRecord::ValueTooLong => e
-            error("Failed to persist the pipeline: #{e.message}")
-          end
-
-          def break?
-            !pipeline.persisted?
-          end
-
-          def perform_with_bulk_insert!
             with_iid_retry(cleanup_on_failure: true) do
               logger.instrument_once_with_sql(:pipeline_save) do
                 ::Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(pipeline, statuses).run
@@ -71,6 +40,10 @@ module Gitlab
             cleanup_bulk_insert_on_failure!
           end
 
+          def break?
+            !pipeline.persisted?
+          end
+
           private
 
           def with_iid_retry(cleanup_on_failure: false)
@@ -96,13 +69,6 @@ module Gitlab
 
           def validate_records!(records)
             records.each(&:validate!)
-          end
-
-          def with_build_hooks_via_chain
-            Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain] = true
-            yield
-          ensure
-            Gitlab::SafeRequestStore.delete(:ci_triggering_build_hooks_via_chain)
           end
 
           def cleanup_bulk_insert_on_failure!

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user) }
 
   let(:issue_params) { { 'id' => global_id_of(issue) } }
@@ -115,7 +115,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
     context 'when issue got moved' do
       let_it_be(:issue_fields) { ['moved', 'movedTo { title }'] }
       let_it_be(:new_issue) { create(:issue) }
-      let_it_be(:issue) { create(:issue, project: project, moved_to: new_issue) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project, moved_to: new_issue) }
 
       let(:issue_params) { { 'id' => global_id_of(issue) } }
 

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/safe_params'
 
-RSpec.describe RuboCop::Cop::SafeParams do
+RSpec.describe RuboCop::Cop::SafeParams, feature_category: :tooling do
   it 'flags the params as an argument of url_for' do
     expect_offense(<<~RUBY)
       url_for(params)

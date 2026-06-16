@@ -32,6 +32,7 @@ const GROUP_FILTER_API_PARAMS = {
 };
 
 export default {
+  name: 'TimelogsApp',
   components: {
     GlButton,
     GlFormGroup,

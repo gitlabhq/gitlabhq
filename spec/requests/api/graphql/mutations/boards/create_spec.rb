@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Boards::Create, feature_category: :portfolio_management do
   let_it_be(:parent) { create(:project) }
-  let_it_be(:current_user, reload: true) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
 
   let(:name) { 'board name' }
   let(:mutation) { graphql_mutation(:create_board, params) }

@@ -15,7 +15,7 @@
         = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter, show_image_comment_badge: show_image_comment_badge }
 
-    %li.discussion-reply-holder.clearfix{ class: '!gl-border-t-0 !gl-pb-5' }
+    %li.discussion-reply-holder.gl-clearfix{ class: '!gl-border-t-0 !gl-pb-5' }
       - if can_create_note?
         .discussion-with-resolve-btn
           = link_to_reply_discussion(discussion)

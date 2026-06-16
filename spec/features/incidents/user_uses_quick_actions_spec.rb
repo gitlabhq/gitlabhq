@@ -8,7 +8,7 @@ RSpec.describe 'Incidents > User uses quick actions', :js, feature_category: :in
   describe 'incident-only commands' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
-    let_it_be(:issue, reload: true) { create(:incident, project: project) }
+    let_it_be_with_reload(:issue) { create(:incident, project: project) }
 
     before do
       project.add_developer(user)

@@ -306,6 +306,7 @@ class Snippet < ApplicationRecord
   end
 
   def as_json(options = {})
+    options = options.dup
     options[:except] = Array.wrap(options[:except])
     options[:except] << :secret_token
 

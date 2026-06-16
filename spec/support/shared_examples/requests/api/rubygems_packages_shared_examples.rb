@@ -1,5 +1,36 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'setting the X-Error-Message header on error responses' do |expected_message:|
+  it 'includes the X-Error-Message header on the error response', :aggregate_failures do
+    subject
+
+    expect(response).to have_gitlab_http_status(expected_status)
+    expect(response.headers['X-Error-Message']).to eq(expected_message)
+  end
+
+  context 'when the rubygems_error_message_header feature flag is disabled' do
+    before do
+      stub_feature_flags(rubygems_error_message_header: false)
+    end
+
+    it 'does not include the X-Error-Message header', :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(expected_status)
+      expect(response.headers['X-Error-Message']).to be_nil
+    end
+  end
+end
+
+RSpec.shared_examples 'not setting the X-Error-Message header on the response' do
+  it 'does not include the X-Error-Message header', :aggregate_failures do
+    subject
+
+    expect(response).to have_gitlab_http_status(expected_status)
+    expect(response.headers['X-Error-Message']).to be_nil
+  end
+end
+
 RSpec.shared_examples 'rejects rubygems packages access' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do

@@ -465,6 +465,7 @@ Example response:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentication through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
 - `config_file_ref` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426108) in GitLab 18.2.
+- Plain text format (`.txt`) [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237585) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -472,10 +473,17 @@ Generate changelog data based on commits in a repository, without committing
 them to a changelog file.
 
 Works exactly like `POST /projects/:id/repository/changelog`, except the changelog
-data isn't committed to any changelog file.
+data is not committed to any changelog file.
 
 ```plaintext
 GET /projects/:id/repository/changelog
+```
+
+Optional. You can add a `.txt` suffix that returns the changelog as plain text Markdown
+instead of JSON:
+
+```plaintext
+GET /projects/:id/repository/changelog.txt
 ```
 
 Supported attributes:
@@ -514,6 +522,26 @@ Example response, with line breaks added for readability:
     [Title 1](namespace13/project13@3c6b80ff7034fa0d585314e1571cc780596ce3c8)
     ([merge request](namespace13/project13!1))\n"
 }
+```
+
+Example request with `.txt` format:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog.txt?version=1.0.0"
+```
+
+Example response:
+
+```plaintext
+## 1.0.0 (2021-11-17)
+
+### feature (2 changes)
+
+- [Title 2](namespace13/project13@ad608eb642124f5b3944ac0ac772fecaf570a6bf)
+  ([merge request](namespace13/project13!2))
+- [Title 1](namespace13/project13@3c6b80ff7034fa0d585314e1571cc780596ce3c8)
+  ([merge request](namespace13/project13!1))
 ```
 
 ## Add changelog data to file

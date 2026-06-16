@@ -27,12 +27,15 @@ class GroupMemberPolicy < BasePolicy
     prevent :destroy_group_member
   end
 
-  rule { ~project_bot & can?(:admin_group_member) }.policy do
-    enable :update_group_member
-    enable :destroy_group_member
-  end
-
   rule { project_bot & can?(:admin_group_member) }.enable :destroy_project_bot_member
+
+  # Project bot members must be managed via :destroy_project_bot_member and
+  # the access-token revoke flow, not via the regular member update/destroy
+  # abilities, since their role is bound to the access-token scope.
+  rule { project_bot }.policy do
+    prevent :update_group_member
+    prevent :destroy_group_member
+  end
 
   rule { target_is_self }.policy do
     enable :destroy_group_member

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { debounce } from 'lodash-es';
-import { renderHtmlStreams } from '~/streaming/render_html_streams';
+import { renderHtmlStreams } from '~/rapid_diffs/streaming/render_html_streams';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { performanceMarkAndMeasure } from '~/performance/utils';
@@ -110,6 +110,23 @@ export const useDiffsList = defineStore('diffsList', {
         }).toString();
       }
       return this.reloadDiffs(fetchUrl, true);
+    },
+    loadSingleFile({ endpoint, oldPath, newPath, viewType, showWhitespace }) {
+      return this.withDebouncedAbortController(async ({ signal }) => {
+        const url = new URL(endpoint, window.location.origin);
+
+        if (oldPath) url.searchParams.set('old_path', oldPath);
+        if (newPath) url.searchParams.set('new_path', newPath);
+        if (viewType === 'parallel') url.searchParams.set('view', 'parallel');
+
+        url.searchParams.set('ignore_whitespace_changes', !showWhitespace);
+
+        const container = document.querySelector('[data-diffs-list]');
+
+        container.innerHTML = '';
+
+        await this.renderDiffsStream(fetch(url.toString(), { signal }), container, signal);
+      });
     },
     reloadDiffs(url, initial = false) {
       return this.withDebouncedAbortController(async ({ signal }) => {

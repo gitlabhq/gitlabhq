@@ -2,6 +2,7 @@
 import renderOpenApi from '~/blob/openapi';
 
 export default {
+  name: 'OpenapiViewer',
   props: {
     blob: {
       type: Object,

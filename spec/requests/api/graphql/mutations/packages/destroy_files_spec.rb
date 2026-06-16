@@ -201,5 +201,20 @@ RSpec.describe 'Destroying multiple package files', feature_category: :package_r
 
       it_behaves_like 'denying the mutation request', 'invalid value for id'
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_package do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:destroy_package_files,
+          { project_path: project.full_path, ids: ids }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before do
+        project.add_maintainer(user)
+        allow(Gitlab::QueryLimiting).to receive(:enabled?).and_return(false)
+      end
+    end
   end
 end

@@ -49,7 +49,7 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_shared_state, feat
 
     context 'when entity is passed' do
       it 'increments entity cache key' do
-        entity = create(:bulk_import_entity)
+        entity = build_stubbed(:bulk_import_entity)
         exception = described_class.new('Error!')
 
         allow(exception).to receive(:cause).and_return(SocketError.new('Error!'))

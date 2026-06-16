@@ -26,10 +26,10 @@ RSpec.describe Types::Ci::Catalog::Resources::VersionType, feature_category: :pi
   end
 
   describe '#readme' do
-    let_it_be(:project) { create(:project, :public, :custom_repo, files: { 'README.md' => '**Test**' }) }
-    let_it_be(:resource) { create(:ci_catalog_resource, :published, project: project) }
-    let_it_be(:version) { create(:ci_catalog_resource_version, catalog_resource: resource) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :public, :custom_repo, files: { 'README.md' => '**Test**' }) }
+    let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, :published, project: project) }
+    let_it_be(:version, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: resource) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before do
       allow(version).to receive(:readme).and_return('# Test README')

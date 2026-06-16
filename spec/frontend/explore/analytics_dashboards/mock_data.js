@@ -54,17 +54,37 @@ export const mockCustomDashboard = {
   createdAt: '2026-03-25T04:38:01Z',
   updatedAt: '2026-03-25T04:38:01Z',
   system: false,
+  slug: null,
   __typename: 'CustomDashboard',
+};
+
+export const mockSystemDashboard = {
+  id: 'gitlab:dashboard:merge_requests',
+  name: 'Merge request analytics',
+  description: 'Get insights into your merge request lifecycle and view trends over time.',
+  config: {
+    title: 'Merge request analytics',
+    panels: [],
+    version: '2',
+  },
+  createdAt: null,
+  system: true,
+  slug: 'merge_requests',
+  __typename: 'CustomSystemDashboard',
 };
 
 export const mockDashboardsListResponse = {
   customDashboards: {
-    nodes: [mockCustomDashboard],
+    nodes: [mockCustomDashboard, mockSystemDashboard],
   },
 };
 
 export const mockDashboardResponse = {
   customDashboard: mockCustomDashboard,
+};
+
+export const mockSystemDashboardResponse = {
+  customSystemDashboard: mockSystemDashboard,
 };
 
 export const mockDashboardCompactGridResponse = {

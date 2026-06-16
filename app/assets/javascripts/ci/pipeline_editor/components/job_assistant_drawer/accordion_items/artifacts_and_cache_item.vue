@@ -4,6 +4,7 @@ import { get, toPath } from 'lodash-es';
 import { i18n, HELP_PATHS } from '../constants';
 
 export default {
+  name: 'ArtifactsAndCacheItem',
   i18n,
   artifactsHelpPath: HELP_PATHS.artifactsHelpPath,
   cacheHelpPath: HELP_PATHS.cacheHelpPath,

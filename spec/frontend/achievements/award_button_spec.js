@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import awardAchievementResponse from 'test_fixtures/graphql/award_achievement_response.json';
 import getGroupAchievementsResponse from 'test_fixtures/graphql/get_group_achievements_response.json';
 import awardAchievementMutation from '~/achievements/components/graphql/award_achievement.mutation.graphql';
@@ -76,11 +76,21 @@ describe('Award button', () => {
     });
 
     it('renders a labelled form group for user selection', () => {
-      const formGroup = wrapper.findComponent(GlFormGroup);
+      const formGroups = wrapper.findAllComponents(GlFormGroup);
+      const userFormGroup = formGroups.at(0);
 
-      expect(formGroup.exists()).toBe(true);
-      expect(formGroup.attributes('label')).toBe('Users');
-      expect(formGroup.attributes('label-for')).toBe('global_users_input');
+      expect(userFormGroup.exists()).toBe(true);
+      expect(userFormGroup.attributes('label')).toBe('Users');
+      expect(userFormGroup.attributes('label-for')).toBe('global_users_input');
+    });
+
+    it('renders a labelled form group for award message', () => {
+      const formGroups = wrapper.findAllComponents(GlFormGroup);
+      const messageFormGroup = formGroups.at(1);
+
+      expect(messageFormGroup.exists()).toBe(true);
+      expect(messageFormGroup.attributes('label')).toBe('Award message');
+      expect(messageFormGroup.attributes('label-for')).toBe('award_message_input');
     });
 
     it('passes input-id to GlobalUserSelect', () => {
@@ -95,24 +105,18 @@ describe('Award button', () => {
 
       expect(awardAchievementHandler).toHaveBeenCalledTimes(2);
 
-      expect(awardAchievementHandler).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          input: {
-            achievementId: 'gid://gitlab/Achievements::Achievement/123',
-            userId: 'gid://gitlab/User/1',
-          },
-        }),
-      );
-      expect(awardAchievementHandler).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
-          input: {
-            achievementId: 'gid://gitlab/Achievements::Achievement/123',
-            userId: 'gid://gitlab/User/10',
-          },
-        }),
-      );
+      expect(awardAchievementHandler).toHaveBeenNthCalledWith(1, {
+        input: {
+          achievementId: 'gid://gitlab/Achievements::Achievement/123',
+          userId: 'gid://gitlab/User/1',
+        },
+      });
+      expect(awardAchievementHandler).toHaveBeenNthCalledWith(2, {
+        input: {
+          achievementId: 'gid://gitlab/Achievements::Achievement/123',
+          userId: 'gid://gitlab/User/10',
+        },
+      });
     });
 
     it('refetches achievements once after all awards complete', async () => {
@@ -123,6 +127,40 @@ describe('Award button', () => {
       await waitForPromises();
 
       expect(groupAchievementsHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('resets modal values after all awards complete', async () => {
+      wrapper.findComponent(GlobalUserSelect).vm.$emit('input', [{ id: 1 }]);
+      wrapper.findComponent(GlFormInput).vm.$emit('input', 'Great work!');
+      await nextTick();
+
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+      await waitForPromises();
+
+      expect(wrapper.vm.usersToAward).toEqual([]);
+      expect(wrapper.vm.awardMessage).toBe('');
+    });
+
+    it('includes award message in mutation when provided', async () => {
+      awardAchievementHandler.mockClear();
+
+      wrapper.findComponent(GlFormInput).vm.$emit('input', 'Great work!');
+      await nextTick();
+
+      wrapper.findComponent(GlobalUserSelect).vm.$emit('input', [{ id: 1 }]);
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+
+      await waitForPromises();
+
+      expect(awardAchievementHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            achievementId: 'gid://gitlab/Achievements::Achievement/123',
+            userId: 'gid://gitlab/User/1',
+            awardMessage: 'Great work!',
+          },
+        }),
+      );
     });
   });
 });

@@ -1,5 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import * as types from '~/jira_connect/subscriptions/store/mutation_types';
 import {
   fetchSubscriptions,
@@ -15,6 +16,8 @@ import {
   INTEGRATIONS_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
 import * as utils from '~/jira_connect/subscriptions/utils';
+
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('JiraConnect actions', () => {
   let mockedState;
@@ -47,7 +50,7 @@ describe('JiraConnect actions', () => {
     });
 
     describe('when API request fails', () => {
-      it('should commit SET_SUBSCRIPTIONS_LOADING, SET_SUBSCRIPTIONS_ERROR and SET_ALERT mutations', async () => {
+      it('shows the fallback message when the error has no response body', async () => {
         jest.spyOn(api, 'fetchSubscriptions').mockRejectedValue();
 
         await testAction(
@@ -67,6 +70,37 @@ describe('JiraConnect actions', () => {
         );
 
         expect(api.fetchSubscriptions).toHaveBeenCalledWith(mockUrl);
+      });
+
+      it('shows the server error message when present in the response body', async () => {
+        jest.spyOn(api, 'fetchSubscriptions').mockRejectedValue({
+          response: { data: { message: 'Server-side error detail' } },
+        });
+
+        await testAction(
+          fetchSubscriptions,
+          mockUrl,
+          mockedState,
+          [
+            { type: types.SET_SUBSCRIPTIONS_LOADING, payload: true },
+            { type: types.SET_SUBSCRIPTIONS_ERROR, payload: true },
+            {
+              type: types.SET_ALERT,
+              payload: { message: 'Server-side error detail', variant: 'danger' },
+            },
+            { type: types.SET_SUBSCRIPTIONS_LOADING, payload: false },
+          ],
+          [],
+        );
+      });
+
+      it('reports the error to Sentry', async () => {
+        const error = new Error('network');
+        jest.spyOn(api, 'fetchSubscriptions').mockRejectedValue(error);
+
+        await fetchSubscriptions({ commit: jest.fn() }, mockUrl);
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
       });
     });
   });
@@ -146,18 +180,21 @@ describe('JiraConnect actions', () => {
     });
 
     describe('when API request fails', () => {
-      it('does not commit the SET_ALERT mutation', () => {
-        jest.spyOn(api, 'addJiraConnectSubscription').mockRejectedValue();
+      it('rejects with the error and does not commit SET_ALERT', async () => {
+        const error = {
+          response: { data: { errors: 'You must be a Maintainer or Owner of the group.' } },
+        };
+        jest.spyOn(api, 'addJiraConnectSubscription').mockRejectedValue(error);
 
-        // We need the empty catch(), since we are testing rejecting the promise,
-        // which would otherwise cause the test to fail.
-        testAction(
-          addSubscription,
-          { namespacePath: mockNamespace, subscriptionsPath: mockSubscriptionsPath },
-          mockedState,
-          [],
-          [],
-        ).catch(() => {});
+        await expect(
+          testAction(
+            addSubscription,
+            { namespacePath: mockNamespace, subscriptionsPath: mockSubscriptionsPath },
+            mockedState,
+            [],
+            [],
+          ),
+        ).rejects.toBe(error);
       });
     });
   });

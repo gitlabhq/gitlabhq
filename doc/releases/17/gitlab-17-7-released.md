@@ -228,7 +228,7 @@ This data is available to composition analysis users through GraphQL. There is [
 The Advanced SAST [code flow view](../../user/application_security/sast/gitlab_advanced_sast.md#code-flow) is now available wherever vulnerabilities are shown, including the:
 
 - [Vulnerability Report](../../user/application_security/vulnerability_report/_index.md).
-- [Merge request security widget](../../user/application_security/sast/_index.md#merge-request-widget).
+- [Merge request security widget](../../user/application_security/sast/_index.md).
 - [Pipeline security report](../../user/application_security/detect/security_scanning_results.md).
 - [Merge request changes view](../../user/application_security/sast/_index.md#merge-request-changes-view).
 

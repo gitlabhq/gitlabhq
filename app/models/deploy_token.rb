@@ -114,6 +114,10 @@ class DeployToken < ApplicationRecord
     !active?
   end
 
+  def bot?
+    true
+  end
+
   def scopes
     AVAILABLE_SCOPES.select { |token_scope| read_attribute(token_scope) }
   end

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトWiki API
 ---
 
@@ -12,11 +12,13 @@ title: プロジェクトWiki API
 
 {{< /details >}}
 
-プロジェクト[Wiki](../user/project/wiki/_index.md)のAPIは、APIv4でのみ利用可能です。[グループWiki](group_wikis.md)のAPIも利用できます。
+このAPIを使用して、[プロジェクトWiki](../user/project/wiki/_index.md)を管理します。[グループWiki](group_wikis.md)用のAPIも利用できます。
 
-## Wikiページの一覧表示 {#list-wiki-pages}
+Wikiページへのコメントは`notes`と呼ばれます。それらを操作するには、[notes API](notes.md#project-wikis)を使用します。
 
-指定されたプロジェクトのすべてのWikiページを取得します。
+## すべてのWikiページを一覧表示する {#list-all-wiki-pages}
+
+指定されたプロジェクトのすべてのWikiページを一覧表示します。
 
 ```plaintext
 GET /projects/:id/wikis
@@ -24,15 +26,15 @@ GET /projects/:id/wikis
 
 | 属性      | 型           | 必須 | 説明 |
 | -------------- | -------------- | -------- | ----------- |
-| `id`           | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `with_content` | ブール値        | いいえ       | ページのコンテンツを含めます。 |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `with_content` | ブール値        | いいえ       | ページの内容を含めます。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis?with_content=1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -49,7 +51,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "slug" : "development",
     "title" : "development",
     "encoding": "UTF-8"
-  },{
+  },
+  {
     "content" : "*  [Deploy](deploy)\n*  [Development](development)",
     "format" : "markdown",
     "slug" : "home",
@@ -59,7 +62,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## Wikiページを取得 {#get-a-wiki-page}
+## Wikiページを取得する {#retrieve-a-wiki-page}
 
 指定されたプロジェクトのWikiページを取得します。
 
@@ -69,17 +72,17 @@ GET /projects/:id/wikis/:slug
 
 | 属性     | 型           | 必須 | 説明 |
 | ------------- | -------------- | -------- | ----------- |
-| `id`          | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `slug`        | 文字列         | はい      | `dir%2Fpage_name`などのWikiページのURLエンコードされたslug（一意の文字列）。 |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `slug`        | 文字列         | はい      | WikiページのURLエンコードされたslug（一意の文字列）。例: `dir%2Fpage_name`。 |
 | `render_html` | ブール値        | いいえ       | WikiページのレンダリングされたHTMLを返します。 |
-| `version`     | 文字列         | いいえ       | WikiページのバージョンSHA。 |
+| `version`     | 文字列         | いいえ       | WikiページバージョンSHA。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis/home"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -91,9 +94,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 新しいWikiページを作成する {#create-a-new-wiki-page}
+## Wikiページを作成する {#create-a-wiki-page}
 
-指定されたリポジトリに、指定されたタイトル、slug、およびコンテンツを持つ新しいWikiページを作成します。
+指定されたプロジェクトに、指定されたタイトル、slug、および内容でWikiページを作成します。
 
 ```plaintext
 POST /projects/:id/wikis
@@ -101,10 +104,10 @@ POST /projects/:id/wikis
 
 | 属性 | 型           | 必須 | 説明 |
 | ----------| -------------- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `content` | 文字列         | はい      | Wikiページのコンテンツ。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `content` | 文字列         | はい      | Wikiページの内容。 |
 | `title`   | 文字列         | はい      | Wikiページのタイトル。 |
-| `format`  | 文字列         | いいえ       | Wikiページの形式。利用可能な形式は、`markdown`（デフォルト）、`rdoc`、`asciidoc`、および`org`です。 |
+| `format`  | 文字列         | いいえ       | Wikiページのフォーマット。利用可能なフォーマットは、`markdown`（デフォルト）、`rdoc`、`asciidoc`、`org`です。 |
 
 ```shell
 curl --data "format=rdoc&title=Hello&content=Hello world" \
@@ -112,7 +115,7 @@ curl --data "format=rdoc&title=Hello&content=Hello world" \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -124,9 +127,35 @@ curl --data "format=rdoc&title=Hello&content=Hello world" \
 }
 ```
 
-## 既存のWikiページを編集 {#edit-an-existing-wiki-page}
+特殊文字や図を含むMarkdownコンテンツの場合、ファイルの参照とともに`--data-urlencode`を使用して、エンコードを自動的に処理します。
 
-既存のWikiページを更新します。Wikiページを更新するには、少なくとも1つのパラメータが必要です。
+例として、`content.md`という名前のファイルにWikiコンテンツを作成し、以下のコマンドを実行します:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "title=Page with Complex Content" \
+  --data-urlencode "content@content.md" \
+  --url "https://gitlab.example.com/api/v4/projects/1/wikis"
+```
+
+`--data-urlencode "content@content.md"`オプションは、Markdownファイルの内容をURLエンコードし、`content`属性に割り当てます。このエンコードにより、特殊文字、改行、および複雑なMarkdownの構文が処理され、それらが原因で発生する可能性のあるエラーを防ぎます。
+
+レスポンス例: 
+
+```json
+{
+"content": "<contents of content.md>",
+"format": "markdown",
+"slug": "Page-with-Complex-Content",
+"title": "Page with Complex Content",
+"encoding": "UTF-8"
+}
+```
+
+## Wikiページを更新する {#update-a-wiki-page}
+
+指定されたWikiページを更新します。Wikiページを更新するには、少なくとも1つのパラメータが必要です。
 
 ```plaintext
 PUT /projects/:id/wikis/:slug
@@ -134,11 +163,11 @@ PUT /projects/:id/wikis/:slug
 
 | 属性 | 型           | 必須                          | 説明 |
 | --------- | -------        | --------------------------------- | ----------- |
-| `id`      | 整数または文字列 | はい                               | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `content` | 文字列         | `title`が指定されていない場合は「はい」   | Wikiページのコンテンツ。 |
-| `title`   | 文字列         | `content`が指定されていない場合は「はい」 | Wikiページのタイトル。 |
-| `format`  | 文字列         | いいえ                                | Wikiページの形式。利用可能な形式は、`markdown`（デフォルト）、`rdoc`、`asciidoc`、および`org`です。 |
-| `slug`    | 文字列         | はい                               | `dir%2Fpage_name`などのWikiページのURLエンコードされたslug（一意の文字列）。 |
+| `id`      | 整数または文字列 | はい                               | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `content` | 文字列         | はい、`title`が指定されていない場合   | Wikiページの内容。 |
+| `title`   | 文字列         | はい、`content`が指定されていない場合 | Wikiページのタイトル。 |
+| `format`  | 文字列         | いいえ                                | Wikiページのフォーマット。利用可能なフォーマットは、`markdown`（デフォルト）、`rdoc`、`asciidoc`、`org`です。 |
+| `slug`    | 文字列         | はい                               | URL-エンコードされたslug（Wikiページの一意な文字列）。例: `dir%2Fpage_name`。 |
 
 ```shell
 curl --request PUT \
@@ -147,7 +176,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -161,7 +190,7 @@ curl --request PUT \
 
 ## Wikiページを削除する {#delete-a-wiki-page}
 
-指定されたslugを持つWikiページを削除します。
+指定されたWikiページを削除します。
 
 ```plaintext
 DELETE /projects/:id/wikis/:slug
@@ -169,8 +198,8 @@ DELETE /projects/:id/wikis/:slug
 
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `slug`    | 文字列         | はい      | `dir%2Fpage_name`などのWikiページのURLエンコードされたslug（一意の文字列）。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `slug`    | 文字列         | はい      | URL-エンコードされたslug（Wikiページの一意な文字列）。例: `dir%2Fpage_name`。 |
 
 ```shell
 curl --request DELETE \
@@ -178,11 +207,11 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
-成功した場合、空の本文を持つ`204 No Content` HTTPレスポンスが予期されます。
+成功した場合、空のボディを持つ`204 No Content` HTTPレスポンスが期待されます。
 
-## Wikiリポジトリに添付ファイルをアップロード {#upload-an-attachment-to-the-wiki-repository}
+## Wikiリポジトリに添付ファイルをアップロードする {#upload-an-attachment-to-the-wiki-repository}
 
-ファイルをWikiのリポジトリ内の添付ファイルフォルダーにアップロードします。添付ファイルフォルダーは`uploads`フォルダーです。
+Wikiのリポジトリ内の添付フォルダーにファイルをアップロードします。添付フォルダーは`uploads`フォルダーです。
 
 ```plaintext
 POST /projects/:id/wikis/attachments
@@ -190,9 +219,9 @@ POST /projects/:id/wikis/attachments
 
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `file`    | 文字列         | はい      | アップロードする添付ファイル。 |
-| `branch`  | 文字列         | いいえ       | ブランチの名前Wikiリポジトリのデフォルトのブランチにデフォルト設定されます。 |
+| `branch`  | 文字列         | いいえ       | ブランチの名前Wikiリポジトリのデフォルトブランチに設定されます。 |
 
 ファイルシステムからファイルをアップロードするには、`--form`引数を使用します。これにより、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`file=`パラメータは、ファイルシステムのファイルを指しており、先頭に`@`を付ける必要があります。例: 
 
@@ -203,7 +232,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/wikis/attachments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -216,7 +245,3 @@ curl --request POST \
   }
 }
 ```
-
-## Wikiページのコメント {#comments-on-wiki-pages}
-
-Wikiのコメントは`notes`と呼ばれます。[Notes API](notes.md#project-wikis)を使用してそれらを操作できます。

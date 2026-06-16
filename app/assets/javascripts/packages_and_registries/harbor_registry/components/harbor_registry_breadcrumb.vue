@@ -6,6 +6,7 @@ import { GlBreadcrumb } from '@gitlab/ui';
 import { isArray, last } from 'lodash-es';
 
 export default {
+  name: 'HarborRegistryBreadcrumb',
   components: {
     GlBreadcrumb,
   },

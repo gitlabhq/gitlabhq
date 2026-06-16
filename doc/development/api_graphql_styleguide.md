@@ -151,7 +151,7 @@ You shouldn't use the directive with:
     ]
   }
   ```
-  
+
   Query:
 
   ```graphql

@@ -8,6 +8,8 @@ const STATUS_LAST = 'last';
 const STATUS_CREATING = 'creating';
 const STATUS_OUT_OF_DATE = 'out_of_date';
 const STATUS_FAILED = 'failed';
+const STATUS_CANCELED = 'canceled';
+const ACTION_START = 'start';
 
 export default {
   name: 'EnvironmentsBlock',
@@ -32,12 +34,22 @@ export default {
     },
   },
   computed: {
+    environmentAction() {
+      return this.deploymentStatus.action || ACTION_START;
+    },
     environment() {
       const statusMessages = {
         [STATUS_LAST]: this.lastEnvironmentMessage,
-        [STATUS_OUT_OF_DATE]: this.outOfDateEnvironmentMessage,
-        [STATUS_FAILED]: this.failedEnvironmentMessage,
+        [STATUS_OUT_OF_DATE]:
+          this.environmentAction === ACTION_START
+            ? this.outOfDateEnvironmentMessage
+            : this.lastEnvironmentMessage,
+        [STATUS_FAILED]:
+          this.environmentAction === ACTION_START
+            ? this.failedEnvironmentMessage
+            : this.lastEnvironmentMessage,
         [STATUS_CREATING]: this.creatingEnvironmentMessage,
+        [STATUS_CANCELED]: this.canceledEnvironmentMessage,
       };
 
       return statusMessages[this.deploymentStatus.status] || '';
@@ -93,6 +105,21 @@ export default {
       };
     },
     lastEnvironmentMessage() {
+      // first handle non-deployment actions
+      if (this.environmentAction !== ACTION_START) {
+        if (this.hasCluster) {
+          if (this.kubernetesNamespace) {
+            return __(
+              'This job ran in %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}.',
+            );
+          }
+          // we know the cluster but not the namespace
+          return __('This job ran in %{environmentLink} using cluster %{clusterNameOrLink}.');
+        }
+        // not a cluster deployment
+        return __('This job ran in %{environmentLink}.');
+      }
+
       if (this.hasCluster) {
         if (this.kubernetesNamespace) {
           return __(
@@ -139,6 +166,21 @@ export default {
       return __('This job is an out-of-date deployment to %{environmentLink}.');
     },
     creatingEnvironmentMessage() {
+      // first handle non-deployment actions
+      if (this.environmentAction !== ACTION_START) {
+        if (this.hasCluster) {
+          if (this.kubernetesNamespace) {
+            return __(
+              'This job runs in %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}.',
+            );
+          }
+          // we know the cluster but not the namespace
+          return __('This job runs in %{environmentLink} using cluster %{clusterNameOrLink}.');
+        }
+        // not a cluster deployment
+        return __('This job runs in %{environmentLink}.');
+      }
+
       if (this.hasLastDeployment) {
         if (this.hasCluster) {
           if (this.kubernetesNamespace) {
@@ -170,6 +212,12 @@ export default {
       }
       // not a cluster deployment
       return __('This job is creating a deployment to %{environmentLink}.');
+    },
+    canceledEnvironmentMessage() {
+      if (this.environmentAction === ACTION_START) {
+        return __('This job was canceled before deploying to %{environmentLink}.');
+      }
+      return this.lastEnvironmentMessage;
     },
     failedEnvironmentMessage() {
       return __('The deployment of this job to %{environmentLink} did not succeed.');

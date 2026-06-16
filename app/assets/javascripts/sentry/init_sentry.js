@@ -38,6 +38,16 @@ export function isServerUnavailableError(hint) {
   return error.name === 'ServerError' && Number(error.statusCode) === 503;
 }
 
+const CSP_BLOCKED_MESSAGE_REGEX = /^Blocked .+ from '[^']+'$/;
+
+export function isCspViolationEvent(event) {
+  if (!event) return false;
+  if (event.csp) return true;
+
+  const message = event.message || event.exception?.values?.[0]?.value;
+  return typeof message === 'string' && CSP_BLOCKED_MESSAGE_REGEX.test(message);
+}
+
 // Patterns for errors that should never reach Sentry. These describe failures
 // outside our control (user connectivity, expired sessions, server-side HTTP
 // errors that need to be diagnosed where they originate and client created no ops).
@@ -56,6 +66,9 @@ const NON_ACTIONABLE_ERROR_PATTERNS = [
   /You must be logged in/,
   /Request failed with status code \d+/,
   /Response not successful: Received status code \d+/,
+  /Request aborted/,
+  /signal is aborted/i,
+  /Timeout on validation of query/,
 ];
 
 export function isNonActionableError(event, hint) {
@@ -88,6 +101,7 @@ const initSentry = () => {
     environment: gon.sentry_environment,
 
     beforeSend(event, hint) {
+      if (isCspViolationEvent(event)) return null;
       if (isExternalOriginError(event)) return null;
       if (isServerUnavailableError(hint)) return null;
       if (isNonActionableError(event, hint)) return null;

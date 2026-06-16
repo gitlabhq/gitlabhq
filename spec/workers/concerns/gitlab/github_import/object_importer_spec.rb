@@ -86,6 +86,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             external_identifiers: github_identifiers,
             message: 'starting importer',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'klass_name'
           }
         )
@@ -97,6 +98,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             external_identifiers: github_identifiers,
             message: 'importer finished',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'klass_name'
           }
         )
@@ -123,6 +125,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             external_identifiers: nil,
             message: 'Project import is no longer running. Stopping worker.',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'klass_name',
             import_status: 'failed'
           }
@@ -150,6 +153,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             message: 'starting importer',
             external_identifiers: github_identifiers,
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'klass_name'
           }
         )
@@ -241,6 +245,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
               external_identifiers: github_identifiers,
               message: 'starting importer',
               project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               importer: 'klass_name'
             }
           )
@@ -286,6 +291,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             external_identifiers: github_identifiers,
             message: 'Failed to obtaing lock for user finder. Retrying later.',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'klass_name'
           }
         )

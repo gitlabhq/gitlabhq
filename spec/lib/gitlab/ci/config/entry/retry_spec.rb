@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Retry do
+RSpec.describe Gitlab::Ci::Config::Entry::Retry, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   shared_context 'when retry value is a numeric' do
@@ -63,6 +63,64 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
         it 'returns an array of exit_codes' do
           expect(value).to eq(exit_codes: [255, 142])
         end
+      end
+    end
+  end
+
+  describe '#warnings' do
+    include_context 'when retry value is a hash'
+
+    let(:max) { 2 }
+
+    before do
+      entry.compose!
+    end
+
+    context 'with a deprecated legacy `when` value' do
+      let(:when) { %w[stuck_or_timeout_failure] }
+
+      it 'is valid and adds a non-blocking deprecation warning', :aggregate_failures do
+        expect(entry).to be_valid
+        expect(entry.warnings)
+          .to contain_exactly(a_string_including('deprecated `when` value(s): stuck_or_timeout_failure'))
+      end
+    end
+
+    context 'with a deprecated legacy `when` value passed as a string' do
+      let(:when) { 'stuck_or_timeout_failure' }
+
+      it 'is valid and adds a non-blocking deprecation warning', :aggregate_failures do
+        expect(entry).to be_valid
+        expect(entry.warnings)
+          .to contain_exactly(a_string_including('deprecated `when` value(s): stuck_or_timeout_failure'))
+      end
+    end
+
+    context 'with both deprecated legacy `when` values' do
+      let(:when) { %w[stuck_or_timeout_failure job_execution_timeout] }
+
+      it 'lists both values in a single warning' do
+        expect(entry.warnings)
+          .to contain_exactly(a_string_including('stuck_or_timeout_failure, job_execution_timeout'))
+      end
+    end
+
+    context 'with a mix of deprecated and non-deprecated `when` values' do
+      let(:when) { %w[stuck_or_timeout_failure no_updates_running] }
+
+      it 'warns only about the deprecated value', :aggregate_failures do
+        expect(entry).to be_valid
+        expect(entry.warnings)
+          .to contain_exactly(a_string_including('stuck_or_timeout_failure'))
+        expect(entry.warnings.first).not_to include('no_updates_running')
+      end
+    end
+
+    context 'with a non-deprecated `when` value' do
+      let(:when) { %w[no_updates_running] }
+
+      it 'does not warn' do
+        expect(entry.warnings).to be_empty
       end
     end
   end
@@ -142,6 +200,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
           api_failure
           stuck_or_timeout_failure
           runner_system_failure
+          runner_configuration_error
+          runner_external_dependency_failure
+          runner_interrupted
           runner_unsupported
           stale_schedule
           job_execution_timeout

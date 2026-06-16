@@ -4,6 +4,8 @@ module Ci
   module JobToken
     module Policies
       POLICIES = [
+        :read_badges,
+        :admin_badges,
         :read_deployments,
         :admin_deployments,
         :read_environments,

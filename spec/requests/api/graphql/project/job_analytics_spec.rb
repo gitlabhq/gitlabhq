@@ -157,7 +157,14 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
         let(:job_analytics_fields) { basic_fields }
         let(:failed_rates) { nodes.map { |n| n.dig('statistics', 'failedRate') } }
 
-        it { expect(failed_rates).to eq(failed_rates.compact.sort.reverse) }
+        it 'returns non-nil rates in descending order with nils last' do
+          # ClickHouse sorts NULLs last by default in DESC order
+          # NULLs come from jobs whose denominator is 0 (success + failed == 0).
+          non_nil_count = failed_rates.compact.size
+
+          expect(failed_rates.first(non_nil_count)).to eq(failed_rates.compact.sort.reverse)
+          expect(failed_rates.drop(non_nil_count)).to all(be_nil)
+        end
       end
 
       context 'when sorted by stage name ascending' do
@@ -359,6 +366,76 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
       it { expect_graphql_errors_to_include("Argument 'sort' on Field 'jobAnalytics' has an invalid value") }
     end
 
+    describe 'fromTime lookback limit' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:job_analytics_fields) { simple_name_fields }
+      let(:max_lookback) { Resolvers::Ci::JobAnalyticsResolver::MAX_LOOKBACK }
+      let(:error_message) { "`fromTime` cannot be earlier than #{max_lookback.inspect} ago." }
+
+      def from_time_for(scenario)
+        case scenario
+        when :within           then 30.days.ago
+        when :at_boundary      then max_lookback.ago
+        when :at_midnight      then max_lookback.ago.utc.beginning_of_day
+        when :one_second_over  then max_lookback.ago.utc.beginning_of_day - 1.second
+        when :over             then (max_lookback + 1.day).ago
+        end
+      end
+
+      where(:scenario, :valid) do
+        :within          | true
+        :at_boundary     | true
+        :at_midnight     | true
+        :one_second_over | false
+        :over            | false
+      end
+
+      with_them do
+        let(:job_analytics_args) do
+          { fromTime: from_time_for(scenario).iso8601, toTime: Time.current.iso8601 }
+        end
+
+        it 'validates fromTime against the maximum lookback' do
+          if valid
+            expect_graphql_errors_to_be_empty
+          else
+            expect_graphql_errors_to_include(error_message)
+          end
+        end
+      end
+
+      context 'when fromTime is earlier than the maximum lookback' do
+        let(:job_analytics_args) do
+          { fromTime: (max_lookback + 1.day).ago.iso8601, toTime: Time.current.iso8601 }
+        end
+
+        it 'does not query ClickHouse', :aggregate_failures do
+          expect(::ClickHouse::Client).not_to receive(:select)
+
+          post_graphql(query, current_user: current_user)
+
+          expect_graphql_errors_to_include(error_message)
+        end
+      end
+
+      context 'when neither fromTime nor toTime is provided' do
+        let(:job_analytics_args) { {} }
+
+        it 'uses the default 7-day lookback and succeeds' do
+          expect_graphql_errors_to_be_empty
+        end
+      end
+
+      context 'when fromTime is explicitly null' do
+        let(:job_analytics_args) { { fromTime: nil } }
+
+        it 'is treated as omitted and uses the default lookback' do
+          expect_graphql_errors_to_be_empty
+        end
+      end
+    end
+
     context 'with stage_name selection' do
       let(:job_analytics_fields) do
         query_graphql_field(:nodes, nil, [
@@ -413,8 +490,10 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
         ])
       end
 
+      # Denominator excludes canceled/skipped: only success + failed.
       let(:failed_rate) do
-        ((rspec_node_stats['failedCount'].to_f / Float(rspec_node_stats['totalCount'])) * 100).round(2)
+        denominator = rspec_node_stats['successCount'].to_f + rspec_node_stats['failedCount'].to_f
+        ((rspec_node_stats['failedCount'].to_f / denominator) * 100).round(2)
       end
 
       it 'returns both counts and rates' do

@@ -4,7 +4,8 @@ classes:
 - AuditEvents::ExternalAuditEventDestination
 feature_categories:
 - audit_events
-description: TODO
+description: Stores external HTTP destinations for streaming audit events to third-party
+  systems.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70706
 milestone: '14.4'
 gitlab_schema: gitlab_main_org

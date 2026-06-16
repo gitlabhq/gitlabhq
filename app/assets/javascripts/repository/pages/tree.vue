@@ -6,6 +6,7 @@ import repositoryPathMixin from '../mixins/repository_path';
 import { updateElementsVisibility } from '../utils/dom';
 
 export default {
+  name: 'RepositoryTree',
   components: {
     TreeContent,
   },

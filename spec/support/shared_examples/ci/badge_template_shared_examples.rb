@@ -28,7 +28,7 @@ RSpec.shared_examples 'a badge template' do |badge_type|
   end
 
   describe '#key_width' do
-    let_it_be(:default_key_width) { ::Gitlab::Ci::Badge::Template::DEFAULT_KEY_WIDTH }
+    let_it_be(:default_key_width, freeze: false) { ::Gitlab::Ci::Badge::Template::DEFAULT_KEY_WIDTH }
 
     it 'is fixed by default' do
       expect(template.key_width).to eq(default_key_width)

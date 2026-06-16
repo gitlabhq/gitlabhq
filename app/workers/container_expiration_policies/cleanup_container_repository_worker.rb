@@ -79,7 +79,7 @@ module ContainerExpirationPolicies
       # We need a lock to prevent two workers from picking up the same row
       next_one_requiring = ContainerRepository.requiring_cleanup
                                               .where(id: next_ten_requiring_ids_from_replica)
-                                              .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
+                                              .order(:expiration_policy_cleanup_status, policy_started_at_nulls_first)
                                               .limit(1)
                                               .lock('FOR UPDATE SKIP LOCKED')
                                               .first
@@ -95,11 +95,15 @@ module ContainerExpirationPolicies
     def next_ten_requiring_ids_from_replica
       ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
         ContainerRepository.requiring_cleanup
-                           .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
+                           .order(:expiration_policy_cleanup_status, policy_started_at_nulls_first)
                            .limit(10)
                            .ids
       end
       # rubocop: enable CodeReuse/ActiveRecord
+    end
+
+    def policy_started_at_nulls_first
+      ContainerRepository.arel_table[:expiration_policy_started_at].asc.nulls_first
     end
 
     def cleanup_scheduled_count

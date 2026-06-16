@@ -27,31 +27,37 @@ RSpec.shared_examples 'iam service error response with user' do |reason:, messag
   end
 end
 
-RSpec.shared_examples 'iam service transport failure' do |http_method:|
-  context 'when a network error occurs' do
-    before do
-      allow(Gitlab::HTTP).to receive(http_method).and_raise(Errno::ECONNREFUSED)
-    end
+RSpec.shared_examples 'does not emit IAM consent audit event' do
+  it 'does not emit an IAM consent audit event' do
+    expect(::Gitlab::Audit::Auditor).not_to receive(:audit).with(
+      hash_including(name: match(/iam_oauth_application/))
+    )
 
-    it 'returns a service_unavailable error and tracks the exception', :aggregate_failures do
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(Errno::ECONNREFUSED))
+    result
+  end
+end
 
-      expect(result).to be_error
-      expect(result.reason).to eq(:service_unavailable)
-      expect(result.message).to eq('Failed to connect to IAM service')
-    end
+RSpec.shared_examples 'does not create a consent record' do
+  it 'does not create a consent record' do
+    expect { result }.not_to change { Authn::OauthConsent.count }
+  end
+end
+
+RSpec.shared_examples 'iam consent persistence failure handling' do
+  it 'returns an error, logs the failure, and tracks the exception', :aggregate_failures do
+    expect(Gitlab::ErrorTracking).to receive(:track_exception).with(a_kind_of(ActiveRecord::ActiveRecordError))
+    expect(Gitlab::AuthLogger).to receive(:error).with(
+      hash_including(
+        message: log_message,
+        reason: 'persistence_error',
+        Labkit::Fields::GL_USER_ID => user.id
+      )
+    )
+
+    expect(result).to be_error
+    expect(result.reason).to eq(:consent_record_invalid)
   end
 
-  context 'when the IAM service is not configured' do
-    before do
-      allow(Authn::IamAuthService).to receive(:url)
-        .and_raise(Authn::IamAuthService::ConfigurationError, 'IAM service is not configured')
-    end
-
-    it 'returns a service_unavailable error' do
-      expect(result).to be_error
-      expect(result.reason).to eq(:service_unavailable)
-      expect(result.message).to eq('IAM service is not configured')
-    end
-  end
+  it_behaves_like 'does not create a consent record'
+  include_examples 'does not emit IAM consent audit event'
 end

@@ -36,7 +36,7 @@ RSpec.describe Security::CiConfiguration::SastCreateService, :snowplow,
   end
 
   context 'when the repository is empty' do
-    let_it_be(:project) { create(:project_empty_repo) }
+    let_it_be(:project, freeze: false) { create(:project_empty_repo) }
 
     context 'when initialize_with_sast is false' do
       before do

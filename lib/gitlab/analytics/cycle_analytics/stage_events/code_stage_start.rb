@@ -55,7 +55,7 @@ module Gitlab
           end
 
           def include_in(query, **)
-            query.left_joins(merge_requests_closing_issues: { issue: [:metrics] }, metrics: [])
+            query.left_joins(merge_request_closing_issues: { issue: [:metrics] }, metrics: [])
           end
         end
       end

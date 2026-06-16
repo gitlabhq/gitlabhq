@@ -1037,7 +1037,7 @@ For more information, see [external commit statuses](../ci/ci_cd_for_external_re
 > When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
 > Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
 
-If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
+If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/cicd/limits.md#maximum-number-of-jobs-in-a-pipeline):
 
 - If `pipeline_id` is specified, a `422` error is returned: `The number of jobs has exceeded the limit`.
 - Otherwise, a new pipeline is created.

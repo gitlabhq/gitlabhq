@@ -4,6 +4,7 @@ import { isUserEmail } from '~/lib/utils/forms';
 import { I18N_EMAIL, I18N_CANCEL, I18N_EMAIL_INVALID } from '../constants';
 
 export default {
+  name: 'EmailForm',
   components: {
     GlForm,
     GlFormGroup,

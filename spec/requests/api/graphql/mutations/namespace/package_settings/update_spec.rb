@@ -167,8 +167,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
     subject { post_graphql_mutation(mutation, current_user: user) }
 
     context 'with existing package settings' do
-      let_it_be(:package_settings, reload: true) { create(:namespace_package_setting, :group) }
-      let_it_be(:namespace, reload: true) { package_settings.namespace }
+      let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, :group) }
+      let_it_be_with_reload(:namespace) { package_settings.namespace }
 
       where(:user_role, :shared_examples_name) do
         :owner      | 'accepting the mutation request updating the package settings'
@@ -189,7 +189,7 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
     end
 
     context 'without existing package settings' do
-      let_it_be(:namespace, reload: true) { create(:group) }
+      let_it_be_with_reload(:namespace) { create(:group) }
 
       let(:package_settings) { namespace.package_settings }
 

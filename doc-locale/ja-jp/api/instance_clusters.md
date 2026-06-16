@@ -2,7 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: インスタンスクラスターAPI（証明書ベース）（非推奨）
+title: インスタンスクラスターAPI (証明書ベース) (非推奨)
 ---
 
 {{< details >}}
@@ -15,9 +15,9 @@ title: インスタンスクラスターAPI（証明書ベース）（非推奨�
 > [!warning]
 > この機能はGitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
 
-[インスタンスレベルのKubernetesクラスター](../user/instance/clusters/_index.md)を使用すると、KubernetesクラスターをGitLabインスタンスに接続し、そのインスタンス内のすべてのプロジェクトで同じクラスターを使用できます。
+[インスタンスレベルのKubernetesクラスター](../user/instance/clusters/_index.md)を使用すると、KubernetesクラスターをGitLabインスタンスに接続し、同じクラスターをインスタンス内のすべてのプロジェクトで使用できます。
 
-ユーザーには、これらのエンドポイントを使用するための管理者アクセスが必要です。
+これらのエンドポイントを使用するには、ユーザーは管理者アクセス権限が必要です。
 
 ## インスタンスクラスターを一覧表示 {#list-instance-clusters}
 
@@ -103,13 +103,13 @@ curl --request GET \
 
 ## 単一のインスタンスクラスターを取得する {#retrieve-a-single-instance-cluster}
 
-単一のインスタンスクラスターを取得する。
+単一のインスタンスクラスターを取得します。
 
 パラメータは以下のとおりです:
 
 | 属性    | 型    | 必須 | 説明           |
 | ------------ | ------- | -------- | --------------------- |
-| `cluster_id` | 整数 | はい      | クラスターのID |
+| `cluster_id` | 整数 | はい      | そのクラスターのID |
 
 ```plaintext
 GET /admin/clusters/:cluster_id
@@ -156,9 +156,9 @@ curl --request GET \
 }
 ```
 
-## インスタンスクラスターを作成 {#create-an-instance-cluster}
+## インスタンスクラスターを作成する {#create-an-instance-cluster}
 
-既存のKubernetesクラスターを追加してインスタンスクラスターを作成します。
+既存のKubernetesクラスターを追加して、インスタンスクラスターを作成します。
 
 ```plaintext
 POST /admin/clusters/add
@@ -168,17 +168,17 @@ POST /admin/clusters/add
 
 | 属性                                            | 型    | 必須 | 説明                                                                                           |
 | ---------------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| `name`                                               | 文字列  | はい      | クラスターの名前                                                                               |
-| `domain`                                             | 文字列  | いいえ       | クラスターの[ベースドメイン](../user/project/clusters/gitlab_managed_clusters.md#base-domain)                       |
-| `environment_scope`                                  | 文字列  | いいえ       | クラスターに関連付けられた環境。デフォルトは`*`です。                                            |
-| `management_project_id`                              | 整数 | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)のID            |
-| `enabled`                                            | ブール値 | いいえ       | クラスターがアクティブであるかどうかを決定し、`true`にデフォルト設定されます。                                            |
+| `name`                                               | 文字列  | はい      | そのクラスターの名前                                                                               |
+| `domain`                                             | 文字列  | いいえ       | そのクラスターの[ベースドメイン](../user/project/clusters/gitlab_managed_clusters.md#base-domain)                       |
+| `environment_scope`                                  | 文字列  | いいえ       | そのクラスターに関連付けられた環境。デフォルトは`*`です。                                            |
+| `management_project_id`                              | 整数 | いいえ       | そのクラスターの[管理プロジェクト](../user/clusters/management_project.md)のID            |
+| `enabled`                                            | ブール値 | いいえ       | クラスターがアクティブかどうかを決定し、デフォルトは`true`です。                                            |
 | `managed`                                            | ブール値 | いいえ       | GitLabがこのクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します。デフォルトは`true`です。 |
 | `platform_kubernetes_attributes[api_url]`            | 文字列  | はい      | KubernetesAPIにアクセスするためのURL                                                                  |
 | `platform_kubernetes_attributes[token]`              | 文字列  | はい      | Kubernetesに対して認証するためのトークン                                                          |
 | `platform_kubernetes_attributes[ca_cert]`            | 文字列  | いいえ       | TLS証明書。APIが自己署名TLS証明書を使用している場合は必須です。                              |
 | `platform_kubernetes_attributes[namespace]`          | 文字列  | いいえ       | プロジェクトに関連する一意のネームスペース                                                           |
-| `platform_kubernetes_attributes[authorization_type]` | 文字列  | いいえ       | クラスターの認可タイプ: `rbac`、`abac`、または`unknown_authorization`。`rbac`がデフォルトです。        |
+| `platform_kubernetes_attributes[authorization_type]` | 文字列  | いいえ       | そのクラスターの認可タイプ: `rbac`、`abac`、または`unknown_authorization`。`rbac`がデフォルトです。        |
 
 リクエスト例: 
 
@@ -224,7 +224,7 @@ curl --request POST \
 }
 ```
 
-## インスタンスクラスターを更新 {#update-an-instance-cluster}
+## インスタンスクラスターを更新する {#update-an-instance-cluster}
 
 既存のインスタンスクラスターを更新します。
 
@@ -236,12 +236,12 @@ PUT /admin/clusters/:cluster_id
 
 | 属性                                   | 型    | 必須 | 説明                                                                                |
 | ------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------ |
-| `cluster_id`                                | 整数 | はい      | クラスターのID                                                                      |
-| `name`                                      | 文字列  | いいえ       | クラスターの名前                                                                    |
-| `domain`                                    | 文字列  | いいえ       | クラスターの[ベースドメイン](../user/project/clusters/gitlab_managed_clusters.md#base-domain)            |
-| `environment_scope`                         | 文字列  | いいえ       | クラスターに関連付けられた環境                                                  |
-| `management_project_id`                     | 整数 | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)のID |
-| `enabled`                                   | ブール値 | いいえ       | クラスターがアクティブであるかどうかを決定します                                                     |
+| `cluster_id`                                | 整数 | はい      | そのクラスターのID                                                                      |
+| `name`                                      | 文字列  | いいえ       | そのクラスターの名前                                                                    |
+| `domain`                                    | 文字列  | いいえ       | そのクラスターの[ベースドメイン](../user/project/clusters/gitlab_managed_clusters.md#base-domain)            |
+| `environment_scope`                         | 文字列  | いいえ       | そのクラスターに関連付けられた環境                                                  |
+| `management_project_id`                     | 整数 | いいえ       | そのクラスターの[管理プロジェクト](../user/clusters/management_project.md)のID |
+| `enabled`                                   | ブール値 | いいえ       | クラスターがアクティブかどうかを決定します                                                     |
 | `managed`                                   | ブール値 | いいえ       | GitLabがこのクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します          |
 | `platform_kubernetes_attributes[api_url]`   | 文字列  | いいえ       | KubernetesAPIにアクセスするためのURL                                                       |
 | `platform_kubernetes_attributes[token]`     | 文字列  | いいえ       | Kubernetesに対して認証するためのトークン                                               |
@@ -249,7 +249,7 @@ PUT /admin/clusters/:cluster_id
 | `platform_kubernetes_attributes[namespace]` | 文字列  | いいえ       | プロジェクトに関連する一意のネームスペース                                                |
 
 > [!note]
-> `name`、`api_url`、`ca_cert`、および`token`は、クラスターが[既存のKubernetesクラスターを追加](../user/project/clusters/add_existing_cluster.md)オプションまたは[インスタンスクラスターを作成](#create-an-instance-cluster)エンドポイントを介して追加された場合にのみ更新できます。
+> `name`、`api_url`、`ca_cert`、`token`は、[既存のKubernetesクラスターを追加](../user/project/clusters/add_existing_cluster.md)オプション、または[インスタンスクラスターを作成](#create-an-instance-cluster)エンドポイントを介してクラスターが追加された場合にのみ更新できます。
 
 リクエスト例: 
 
@@ -295,9 +295,9 @@ curl --request PUT \
 }
 ```
 
-## インスタンスクラスターを削除 {#delete-instance-cluster}
+## インスタンスクラスターを削除する {#delete-instance-cluster}
 
-既存のインスタンスクラスターを削除します。接続されているKubernetesクラスター内の既存のリソースは削除しません。
+既存のインスタンスクラスターを削除します。接続されたKubernetesクラスター内の既存のリソースは削除されません。
 
 ```plaintext
 DELETE /admin/clusters/:cluster_id
@@ -307,7 +307,7 @@ DELETE /admin/clusters/:cluster_id
 
 | 属性    | 型    | 必須 | 説明           |
 | ------------ | ------- | -------- | --------------------- |
-| `cluster_id` | 整数 | はい      | クラスターのID |
+| `cluster_id` | 整数 | はい      | そのクラスターのID |
 
 リクエスト例: 
 

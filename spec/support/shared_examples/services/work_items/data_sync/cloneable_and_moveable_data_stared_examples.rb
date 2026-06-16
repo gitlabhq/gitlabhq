@@ -143,18 +143,24 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     [work_item.reload.start_date, work_item.reload.due_date]
   end
 
-  let_it_be(:users) { create_list(:user, 3) }
-  let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
-  let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
-  let_it_be(:award_emojis) { original_work_item.reload.award_emoji.pluck(:user_id, :name) }
+  let_it_be(:users, freeze: false) { create_list(:user, 3) }
+  let_it_be(:thumbs_ups, freeze: false) do
+    create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item)
+  end
 
-  let_it_be(:subscriptions) do
+  let_it_be(:thumbs_downs, freeze: false) do
+    create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item)
+  end
+
+  let_it_be(:award_emojis, freeze: false) { original_work_item.reload.award_emoji.pluck(:user_id, :name) }
+
+  let_it_be(:subscriptions, freeze: false) do
     create_list(:subscription, 2, subscribable: original_work_item)
     # create subscriptions for original work item and return subscribers as `expected` value for later comparison.
     original_work_item.reload.subscriptions.pluck(:user_id)
   end
 
-  let_it_be(:notifications) do
+  let_it_be(:notifications, freeze: false) do
     create_list(:sent_notification, 2, noteable: original_work_item,
       project: original_work_item.project, recipient: create(:user)
     )
@@ -162,7 +168,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     original_work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
-  let_it_be(:crm_contacts) do
+  let_it_be(:crm_contacts, freeze: false) do
     # create a crm group and assign it to both original and new work item namespaces in order to be able to move the
     # crm contacts from the original one to the new one
     crm_group = create(:group)
@@ -184,19 +190,19 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     contacts
   end
 
-  let_it_be(:emails) do
+  let_it_be(:emails, freeze: false) do
     create_list(:issue_email_participant, 2, issue: original_work_item)
     # create email participants on original work item and return emails as `expected` value for later comparison.
     original_work_item.reload.email_participants.map(&:email)
   end
 
-  let_it_be(:assignees) do
+  let_it_be(:assignees, freeze: false) do
     original_work_item.assignee_ids = users.map(&:id)
     # set assignees and return assigned users as `expected` value for later comparison.
     users
   end
 
-  let_it_be(:milestone) do
+  let_it_be(:milestone, freeze: false) do
     milestone = if original_work_item.namespace.is_a?(Group)
                   create(:milestone, group: original_work_item.namespace)
                 else
@@ -217,19 +223,19 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     milestone.title
   end
 
-  let_it_be(:timelogs) do
+  let_it_be(:timelogs, freeze: false) do
     timelogs = create_list(:timelog, 2, issue: original_work_item)
     timelogs.pluck(:user_id, :time_spent)
   end
 
-  let_it_be(:designs) do
+  let_it_be(:designs, freeze: false) do
     designs = create_list(:design, 2, :with_lfs_file, issue: original_work_item)
     # we need to create an owner for the group, as it is needed when we try to copy the desigins to the new namespace
     group.add_owner(create(:user))
     designs.pluck(:filename)
   end
 
-  let_it_be(:labels) do
+  let_it_be(:labels, freeze: false) do
     labels = []
     if original_work_item.namespace.is_a?(Group)
       labels = create_list(:group_label, 2, group: original_work_item.namespace)
@@ -243,7 +249,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     [labels.first.title]
   end
 
-  let_it_be(:child_items) do
+  let_it_be(:child_items, freeze: false) do
     namespace_params = if original_work_item.project
                          [project: original_work_item.project]
                        else
@@ -270,7 +276,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     [child_item1, child_item2].pluck(:title)
   end
 
-  let_it_be(:parent) do
+  let_it_be(:parent, freeze: false) do
     # The original work item is type of issue and it has parent only in EE.
     next nil unless Gitlab.ee?
 
@@ -279,7 +285,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     parent
   end
 
-  let_it_be(:related_items) do
+  let_it_be(:related_items, freeze: false) do
     namespace_params = [project: original_work_item.project] if original_work_item.project
     namespace_params = [:group_level, { namespace: original_work_item.namespace }] unless original_work_item.project
 
@@ -302,7 +308,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   let_it_be(:start_date) { 1.week.ago.to_date }
   let_it_be(:due_date) { 1.week.from_now.to_date }
 
-  let_it_be(:dates_data) do
+  let_it_be(:dates_data, freeze: false) do
     # order of creating dates source first and start date second is important because we have a trigger
     # on work_item_dates_sources that copies start and due dates to issues table.
     create(
@@ -321,7 +327,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   let_it_be(:always_cleaned_up_widgets) { [:work_item_parent] }
 
   # rubocop: disable Layout/LineLength -- improved readability with one line per widget
-  let_it_be(:widgets) do
+  let_it_be(:widgets, freeze: false) do
     [
       { widget: :assignees,          assoc_name: :assignees,                   eval_value: :wi_assignees,          expected: assignees,     operations: [move, clone] },
       { widget: :award_emoji,        assoc_name: :award_emoji,                 eval_value: :wi_award_emoji,        expected: award_emojis,  operations: [move] },
@@ -345,7 +351,11 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   context "with widget" do
     before do
       enable_design_management
-      allow(original_work_item).to receive(:from_service_desk?).and_return(true)
+      # Exercises the notifications widget's sent_notifications migration without
+      # changing the fixture type (which would alter widget composition). Class-level
+      # stub survives the reload/becomes churn in the data-sync; an instance stub does not.
+      allow_any_instance_of(original_work_item.work_item_type.class) # rubocop:disable RSpec/AnyInstanceOf -- see comment above
+        .to receive(:service_desk?).and_return(true)
     end
 
     it_behaves_like 'for clone and move services'

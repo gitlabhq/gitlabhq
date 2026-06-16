@@ -2,7 +2,7 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Go proxy for GitLab
+title: Go proxy for GitLab (deprecated)
 ---
 
 {{< details >}}
@@ -16,9 +16,14 @@ title: Go proxy for GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags/_index.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/592132) in GitLab 19.1.
 
 {{< /history >}}
 
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/592132) in GitLab 19.1
+> and is planned for removal in 20.0. Use the [Go virtual registry](https://gitlab.com/gitlab-org/gitlab/-/issues/592136) instead, once available.
+<!-- -->
 > [!flag]
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { watch } from 'vue';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
@@ -18,6 +19,7 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
   actions: {
     setFileTreeBrowserIsExpanded(value) {
       this.fileTreeBrowserIsExpanded = value;
+      if (!AccessorUtilities.canUseLocalStorage()) return;
       try {
         localStorage.setItem(FILE_TREE_BROWSER_VISIBILITY, JSON.stringify(value));
       } catch (error) {
@@ -42,6 +44,11 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       this.fileTreeBrowserIsPeekOn = false;
     },
     loadFileTreeBrowserExpandedFromLocalStorage() {
+      if (!AccessorUtilities.canUseLocalStorage()) {
+        // Treat as first-time user when localStorage is unavailable
+        this.setFileTreeBrowserIsExpanded(true);
+        return;
+      }
       try {
         const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);
         if (storedValue !== null) {

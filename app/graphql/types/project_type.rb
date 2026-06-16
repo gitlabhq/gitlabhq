@@ -1214,6 +1214,14 @@ module Types
       nil
     end
 
+    def only_allow_merge_if_pipeline_succeeds
+      project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
+    end
+
+    def allow_merge_on_skipped_pipeline
+      project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true)
+    end
+
     private
 
     def project

@@ -283,7 +283,7 @@ end
 
 RSpec.shared_examples 'x509 signature tag verification' do
   |user_helper:, verified_status: :verified, verified_signature: true|
-  let_it_be(:user) { create(:user, :unconfirmed, email: user_helper.certificate_email) }
+  let_it_be(:user, freeze: false) { create(:user, :unconfirmed, email: user_helper.certificate_email) }
 
   context 'with trusted certificate store' do
     before do

@@ -22,11 +22,11 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   include BoardHelpers
   include GlFilteredSearchHelpers
 
-  let_it_be(:group, reload: true)   { create(:group, :nested) }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: group) }
-  let_it_be(:board, reload: true)   { create(:board, project: project) }
-  let_it_be(:user, reload: true)    { create(:user) }
-  let_it_be(:user2, reload: true)   { create(:user) }
+  let_it_be_with_reload(:group)   { create(:group, :nested) }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: group) }
+  let_it_be_with_reload(:board)   { create(:board, project: project) }
+  let_it_be_with_reload(:user)    { create(:user) }
+  let_it_be_with_reload(:user2)   { create(:user) }
 
   context 'signed in user' do
     before do
@@ -55,30 +55,30 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
     end
 
     context 'with lists' do
-      let_it_be(:milestone, reload: true) { create(:milestone, project: project) }
+      let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
 
-      let_it_be(:planning, reload: true)    { create(:label, project: project, name: 'Planning', description: 'Test') }
-      let_it_be(:development, reload: true) { create(:label, project: project, name: 'Development') }
-      let_it_be(:testing, reload: true)     { create(:label, project: project, name: 'Testing') }
-      let_it_be(:bug, reload: true)         { create(:label, project: project, name: 'Bug') }
-      let_it_be(:backlog, reload: true)     { create(:label, project: project, name: 'Backlog') }
-      let_it_be(:closed, reload: true)      { create(:label, project: project, name: 'Closed') }
-      let_it_be(:accepting, reload: true)   { create(:label, project: project, name: 'Accepting Merge Requests') }
-      let_it_be(:a_plus, reload: true)      { create(:label, project: project, name: 'A+') }
-      let_it_be(:list1, reload: true)       { create(:list, board: board, label: planning, position: 0) }
-      let_it_be(:list2, reload: true)       { create(:list, board: board, label: development, position: 1) }
+      let_it_be_with_reload(:planning)    { create(:label, project: project, name: 'Planning', description: 'Test') }
+      let_it_be_with_reload(:development) { create(:label, project: project, name: 'Development') }
+      let_it_be_with_reload(:testing)     { create(:label, project: project, name: 'Testing') }
+      let_it_be_with_reload(:bug)         { create(:label, project: project, name: 'Bug') }
+      let_it_be_with_reload(:backlog)     { create(:label, project: project, name: 'Backlog') }
+      let_it_be_with_reload(:closed)      { create(:label, project: project, name: 'Closed') }
+      let_it_be_with_reload(:accepting)   { create(:label, project: project, name: 'Accepting Merge Requests') }
+      let_it_be_with_reload(:a_plus)      { create(:label, project: project, name: 'A+') }
+      let_it_be_with_reload(:list1)       { create(:list, board: board, label: planning, position: 0) }
+      let_it_be_with_reload(:list2)       { create(:list, board: board, label: development, position: 1) }
 
-      let_it_be(:confidential_issue, reload: true) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
-      let_it_be(:issue1, reload: true) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }
-      let_it_be(:issue2, reload: true) { create(:labeled_issue, project: project, title: 'bbb', description: '222', author: user2, labels: [planning], relative_position: 7) }
-      let_it_be(:issue3, reload: true) { create(:labeled_issue, project: project, title: 'ccc', description: '333', labels: [planning], relative_position: 6) }
-      let_it_be(:issue4, reload: true) { create(:labeled_issue, project: project, title: 'ddd', description: '444', labels: [planning], relative_position: 5) }
-      let_it_be(:issue5, reload: true) { create(:labeled_issue, project: project, title: 'eee', description: '555', labels: [planning], milestone: milestone, relative_position: 4) }
-      let_it_be(:issue6, reload: true) { create(:labeled_issue, project: project, title: 'fff', description: '666', labels: [planning, development], relative_position: 3) }
-      let_it_be(:issue7, reload: true) { create(:labeled_issue, project: project, title: 'ggg', description: '777', labels: [development], relative_position: 2) }
-      let_it_be(:issue8, reload: true) { create(:closed_issue, project: project, title: 'hhh', description: '888') }
-      let_it_be(:issue9, reload: true) { create(:labeled_issue, project: project, title: 'iii', description: '999', labels: [planning, testing, bug, accepting], relative_position: 1) }
-      let_it_be(:issue10, reload: true) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
+      let_it_be_with_reload(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
+      let_it_be_with_reload(:issue1) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }
+      let_it_be_with_reload(:issue2) { create(:labeled_issue, project: project, title: 'bbb', description: '222', author: user2, labels: [planning], relative_position: 7) }
+      let_it_be_with_reload(:issue3) { create(:labeled_issue, project: project, title: 'ccc', description: '333', labels: [planning], relative_position: 6) }
+      let_it_be_with_reload(:issue4) { create(:labeled_issue, project: project, title: 'ddd', description: '444', labels: [planning], relative_position: 5) }
+      let_it_be_with_reload(:issue5) { create(:labeled_issue, project: project, title: 'eee', description: '555', labels: [planning], milestone: milestone, relative_position: 4) }
+      let_it_be_with_reload(:issue6) { create(:labeled_issue, project: project, title: 'fff', description: '666', labels: [planning, development], relative_position: 3) }
+      let_it_be_with_reload(:issue7) { create(:labeled_issue, project: project, title: 'ggg', description: '777', labels: [development], relative_position: 2) }
+      let_it_be_with_reload(:issue8) { create(:closed_issue, project: project, title: 'hhh', description: '888') }
+      let_it_be_with_reload(:issue9) { create(:labeled_issue, project: project, title: 'iii', description: '999', labels: [planning, testing, bug, accepting], relative_position: 1) }
+      let_it_be_with_reload(:issue10) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
 
       before do
         visit_project_board_path_without_query_limit(project, board)
@@ -215,9 +215,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         context 'without backlog and closed lists' do
-          let_it_be(:board, reload: true) { create(:board, project: project, hide_backlog_list: true, hide_closed_list: true) }
-          let_it_be(:list1, reload: true) { create(:list, board: board, label: planning, position: 0) }
-          let_it_be(:list2, reload: true) { create(:list, board: board, label: development, position: 1) }
+          let_it_be_with_reload(:board) { create(:board, project: project, hide_backlog_list: true, hide_closed_list: true) }
+          let_it_be_with_reload(:list1) { create(:list, board: board, label: planning, position: 0) }
+          let_it_be_with_reload(:list2) { create(:list, board: board, label: development, position: 1) }
 
           it 'changes position of list' do
             visit_project_board_path_without_query_limit(project, board)
@@ -502,7 +502,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   end
 
   context 'as guest user' do
-    let_it_be(:user_guest, reload: true) { create(:user) }
+    let_it_be_with_reload(:user_guest) { create(:user) }
 
     before do
       project.add_guest(user_guest)

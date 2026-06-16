@@ -13,12 +13,6 @@ title: Compute minutes
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
-
-{{< /history >}}
-
 The usage of instance runners by projects running CI/CD jobs is measured in compute minutes.
 
 For some installation types, your [namespace](../../user/namespace/_index.md) has a [compute quota](instance_runner_compute_minutes.md#compute-quota-enforcement),
@@ -46,7 +40,10 @@ For instance runners on GitLab.com, GitLab Self-Managed, and self-hosted instanc
 For GitLab.com:
 
 - The base monthly compute quota is determined by your subscription tier.
-- You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md) if you need more.
+  Free tier namespaces receive 400 compute minutes per month.
+  Paid tiers receive a higher monthly quota.
+- You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md)
+  if you need more.
 
 ## Compute minute usage
 
@@ -62,8 +59,7 @@ Job duration / 60 * Cost factor
 - **Cost factor**: A number based on the [runner type](#cost-factors) and
   [project type](#cost-factors).
 
-The value is converted into compute minutes and added to the count of used units
-in the job's top-level namespace.
+The resulting compute minutes are added to the usage count for the job's top-level namespace.
 
 For example, if a user `alice` runs a pipeline:
 

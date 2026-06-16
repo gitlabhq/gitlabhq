@@ -1,6 +1,7 @@
 // This is the only file allowed to import directly from the package.
 // eslint-disable-next-line no-restricted-imports
 import Mousetrap from 'mousetrap';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 
 const additionalStopCallbacks = [];
 const originalStopCallback = Mousetrap.prototype.stopCallback;
@@ -57,5 +58,84 @@ export const clearStopCallbacksForTests = () => {
 };
 
 export const MOUSETRAP_COPY_KEYBOARD_SHORTCUT = 'mod+c';
+
+// ---------------------------------------------------------------------------
+// Input focus lock
+//
+// Suppresses all Mousetrap shortcuts for a short window after a user action
+// that asynchronously mounts and focuses an input. This prevents keystrokes
+// typed during the mount-to-focus gap from accidentally triggering global
+// shortcuts (e.g. clicking "Reply" and starting to type before the editor
+// has been mounted and focused).
+// ---------------------------------------------------------------------------
+
+const INPUT_FOCUS_LOCK_DEFAULT_TIMEOUT_MS = 500;
+
+let inputFocusLockSuppressed = false;
+let inputFocusLockTimeoutId = null;
+
+const onFocusIn = (event) => {
+  const { target } = event;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  ) {
+    // eslint-disable-next-line no-use-before-define
+    releaseInputFocusLock();
+  }
+};
+
+function releaseInputFocusLock() {
+  inputFocusLockSuppressed = false;
+  if (inputFocusLockTimeoutId !== null) {
+    clearTimeout(inputFocusLockTimeoutId);
+    inputFocusLockTimeoutId = null;
+  }
+  document.removeEventListener('focusin', onFocusIn);
+}
+
+let inputFocusLockInitialized = false;
+
+const ensureInputFocusLockInitialized = () => {
+  if (inputFocusLockInitialized) return;
+  inputFocusLockInitialized = true;
+  addStopCallback(() => (inputFocusLockSuppressed ? true : undefined));
+};
+
+/**
+ * Suppress all Mousetrap shortcuts for a short window after a user action
+ * that asynchronously mounts and focuses an input.
+ *
+ * Call this from any handler that opens a comment editor, command palette,
+ * sidebar dropdown, or similar surface where the input is not focused
+ * synchronously. Keystrokes typed during the mount-to-focus gap will not
+ * invoke global shortcuts.
+ *
+ * The lock holds until an input element receives focus, or until the safety
+ * timeout elapses, whichever comes first. If the UI takes longer than the
+ * timeout, keystrokes are dropped rather than rescued; the underlying
+ * problem is the slow mount.
+ *
+ * Repeated calls reset the release timer. The first call also registers the
+ * lock's stop callback with Mousetrap.
+ */
+export const suppressShortcutsUntilInputFocus = ({
+  timeoutMs = INPUT_FOCUS_LOCK_DEFAULT_TIMEOUT_MS,
+} = {}) => {
+  if (shouldDisableShortcuts()) return;
+
+  ensureInputFocusLockInitialized();
+  inputFocusLockSuppressed = true;
+  if (inputFocusLockTimeoutId !== null) clearTimeout(inputFocusLockTimeoutId);
+  inputFocusLockTimeoutId = setTimeout(releaseInputFocusLock, timeoutMs);
+  document.addEventListener('focusin', onFocusIn);
+};
+
+export const resetInputFocusLockForTests = () => {
+  releaseInputFocusLock();
+  inputFocusLockInitialized = false;
+};
 
 export { Mousetrap };

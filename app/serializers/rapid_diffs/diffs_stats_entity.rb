@@ -6,7 +6,8 @@ module RapidDiffs
       {
         added_lines: diffs_resource.raw_diff_files.sum(&:added_lines),
         removed_lines: diffs_resource.raw_diff_files.sum(&:removed_lines),
-        diffs_count: diffs_resource.raw_diff_files.size
+        diffs_count: diffs_resource.raw_diff_files.size,
+        real_size: diffs_resource.real_size
       }
     end
 

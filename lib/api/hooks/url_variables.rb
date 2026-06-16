@@ -11,8 +11,8 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
       end
       namespace ':hook_id/url_variables' do
-        desc 'Set a url variable' do
-          detail 'Sets a URL variable for a webhook'
+        desc 'Update a URL variable' do
+          detail 'Updates a URL variable for a specified webhook.'
           tags ['hooks']
         end
         params do
@@ -31,8 +31,8 @@ module API
           status :no_content
         end
 
-        desc 'Un-Set a url variable' do
-          detail 'Removes a URL variable from a webhook'
+        desc 'Delete a URL variable' do
+          detail 'Deletes a URL variable from a specified webhook.'
           tags ['hooks']
         end
         route_setting :authorization, permissions: :delete_webhook_url_variable,

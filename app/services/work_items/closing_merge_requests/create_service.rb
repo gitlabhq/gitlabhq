@@ -25,7 +25,8 @@ module WorkItems
         mr_closing_issue = MergeRequestsClosingIssues.new(
           merge_request: merge_request,
           issue_id: @work_item.id,
-          from_mr_description: false
+          from_mr_description: false,
+          link_type: :closes
         )
 
         if mr_closing_issue.save

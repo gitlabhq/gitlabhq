@@ -37,6 +37,7 @@ export default {
       default: null,
     },
   },
+  emits: ['change', 'select-change'],
   computed: {
     isHiddenBySaml() {
       return !this.todo.targetEntity;

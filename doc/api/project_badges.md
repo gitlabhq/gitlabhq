@@ -12,6 +12,12 @@ title: Project badges API
 
 {{< /details >}}
 
+{{< history >}}
+
+- CI/CD job token authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/326910) in GitLab 19.1.
+
+{{< /history >}}
+
 Use this API to manage project [badges](../user/project/badges.md).
 
 Badges support placeholders that are replaced in real time in both the link and image URL.

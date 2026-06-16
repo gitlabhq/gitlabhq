@@ -3,16 +3,16 @@
 RSpec.shared_context 'four designs in three versions' do
   include DesignManagementTestHelpers
 
-  let_it_be(:issue) { create(:issue) }
-  let_it_be(:project) { issue.project }
-  let_it_be(:authorized_user) { create(:user) }
+  let_it_be(:issue, freeze: false) { create(:issue) }
+  let_it_be(:project, freeze: false) { issue.project }
+  let_it_be(:authorized_user, freeze: false) { create(:user) }
 
-  let_it_be(:design_a) { create(:design, issue: issue) }
-  let_it_be(:design_b) { create(:design, issue: issue) }
-  let_it_be(:design_c) { create(:design, issue: issue) }
-  let_it_be(:design_d) { create(:design, issue: issue) }
+  let_it_be(:design_a, freeze: false) { create(:design, issue: issue) }
+  let_it_be(:design_b, freeze: false) { create(:design, issue: issue) }
+  let_it_be(:design_c, freeze: false) { create(:design, issue: issue) }
+  let_it_be(:design_d, freeze: false) { create(:design, issue: issue) }
 
-  let_it_be(:first_version) do
+  let_it_be(:first_version, freeze: false) do
     create(
       :design_version,
       issue: issue,
@@ -22,7 +22,7 @@ RSpec.shared_context 'four designs in three versions' do
     )
   end
 
-  let_it_be(:second_version) do
+  let_it_be(:second_version, freeze: false) do
     create(
       :design_version,
       issue: issue,
@@ -32,7 +32,7 @@ RSpec.shared_context 'four designs in three versions' do
     )
   end
 
-  let_it_be(:third_version) do
+  let_it_be(:third_version, freeze: false) do
     create(
       :design_version,
       issue: issue,

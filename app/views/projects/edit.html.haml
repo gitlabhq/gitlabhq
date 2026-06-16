@@ -40,17 +40,7 @@
     - c.with_body do
       = render 'shared/badges/badge_settings'
 
-  - if @project.licensed_ai_features_available?
-    = render ::Layouts::SettingsBlockComponent.new(s_('ProjectSettings|GitLab Duo'),
-      id: 'js-gitlab-duo-settings',
-      testid: 'gitlab-duo-settings-content',
-      expanded: expanded_by_default?) do |c|
-      - c.with_description do
-        = s_('ProjectSettings|Configure GitLab Duo features for this project.')
-      - c.with_body do
-        = form_for @project, html: { multipart: true, class: "duo-settings-form", id: duo_settings_form_id }, authenticity_token: true do |f|
-          %template.js-gitlab-duo-settings-form-data{ type: "application/json" }= gitlab_duo_settings_data(@project).to_json.html_safe
-          .js-gitlab-duo-settings-form{ data: { targetFormId: duo_settings_form_id } }
+  = render 'projects/settings/gitlab_duo', duo_settings_form_id: duo_settings_form_id
 
   = render_if_exists 'projects/settings/default_issue_template'
 
@@ -108,7 +98,7 @@
                       .input-group-text
                         #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
                     = f.text_field :path, class: 'form-control gl-form-input-xl', data: { testid: 'project-path-field' }
-              = f.submit _('Change path'), class: "btn-danger", data: { testid: 'change-path-button' }, pajamas_button: true
+              = f.submit _('Change path'), class: "btn-danger-secondary", data: { testid: 'change-path-button' }, pajamas_button: true
 
         = render 'transfer', project: @project
 
@@ -116,6 +106,8 @@
 
         = render 'shared/groups_projects/settings/restore', context: @project, tracking_event: 'trigger_restore_on_project'
         = render 'delete'
+- elsif can?(current_user, :update_sec_ai_workflow_settings, @project)
+  = render 'projects/settings/gitlab_duo', duo_settings_form_id: duo_settings_form_id
 - else
   = render 'projects/settings/archive', project: @project
   = render 'delete'

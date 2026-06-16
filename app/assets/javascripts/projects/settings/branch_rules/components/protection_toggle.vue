@@ -72,6 +72,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggle'],
   computed: {
     isProtectedByAnyPolicyType() {
       return this.isProtectedByPolicy || this.isProtectedByWarnPolicy;

@@ -325,4 +325,46 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       expect(cloud_event.event_data).to eq({})
     end
   end
+
+  describe '#to_proto' do
+    subject(:proto) { cloud_event.to_proto }
+
+    it 'returns a Gitlab::Agent::Event::CloudEvent' do
+      expect(proto).to be_a(Gitlab::Agent::Event::CloudEvent)
+    end
+
+    it 'maps required spec fields to top-level proto fields', :aggregate_failures do
+      expect(proto.id).to eq(event_data[:id])
+      expect(proto.source).to eq(event_data[:source])
+      expect(proto.spec_version).to eq(event_data[:specversion])
+      expect(proto.type).to eq(event_data[:type])
+    end
+
+    it 'JSON-encodes the event payload into text_data' do
+      expect(proto.text_data).to eq(event_data[:data].to_json)
+    end
+
+    it 'maps string attributes into the attributes map as ce_string values', :aggregate_failures do
+      %i[datacontenttype dataschema gitlab_user_username subject time].each do |key|
+        expect(proto.attributes[key.to_s].ce_string).to eq(event_data[key].to_s)
+      end
+    end
+
+    it 'maps integer attributes into the attributes map as ce_integer values', :aggregate_failures do
+      expect(proto.attributes['gitlab_user_id'].ce_integer).to eq(event_data[:gitlab_user_id])
+      expect(proto.attributes['gitlab_organization_id'].ce_integer).to eq(event_data[:gitlab_organization_id])
+    end
+
+    it 'round-trips through protobuf serialization', :aggregate_failures do
+      serialized = Gitlab::Agent::Event::CloudEvent.encode(proto)
+      decoded = Gitlab::Agent::Event::CloudEvent.decode(serialized)
+
+      expect(decoded.id).to eq(proto.id)
+      expect(decoded.source).to eq(proto.source)
+      expect(decoded.spec_version).to eq(proto.spec_version)
+      expect(decoded.type).to eq(proto.type)
+      expect(decoded.text_data).to eq(proto.text_data)
+      expect(decoded.attributes.keys).to match_array(proto.attributes.keys)
+    end
+  end
 end

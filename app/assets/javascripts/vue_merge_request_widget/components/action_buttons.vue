@@ -28,6 +28,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['clickedAction'],
   data: () => {
     return {
       timeout: null,

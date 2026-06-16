@@ -82,6 +82,11 @@ export default {
     },
   },
   watch: {
+    showBlameInfo(newVal) {
+      if (!newVal && this.viewer === BLAME_VIEWER) {
+        this.viewer = this.activeViewerType;
+      }
+    },
     viewer(newVal, oldVal) {
       if (newVal !== BLAME_VIEWER && newVal !== oldVal) {
         this.$emit('viewer-changed', newVal);
@@ -98,7 +103,7 @@ export default {
 </script>
 <template>
   <div
-    class="js-file-title file-title-flex-parent gl-flex-wrap gl-justify-between gl-gap-3 gl-px-4 gl-py-3 @xl/panel:gl-flex-nowrap"
+    class="js-file-title file-title-flex-parent gl-sticky -gl-top-1 gl-z-4 gl-flex-wrap gl-justify-between gl-gap-3 gl-px-4 gl-py-3 @xl/panel:gl-flex-nowrap"
   >
     <div class="gl-flex gl-gap-3 @xl/panel:gl-mb-0">
       <blob-filepath
@@ -137,7 +142,11 @@ export default {
         :is-empty="isEmpty"
         :override-copy="overrideCopy"
         @copy="proxyCopyRequest"
-      />
+      >
+        <template #prepend>
+          <slot name="orbit-action"></slot>
+        </template>
+      </default-actions>
     </div>
   </div>
 </template>

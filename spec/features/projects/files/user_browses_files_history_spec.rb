@@ -15,6 +15,7 @@ RSpec.describe "User browses files history", :js, feature_category: :source_code
 
   describe "history navigation to commits page" do
     before do
+      stub_feature_flags(project_commits_refactor: false)
       visit(tree_path_root_ref)
     end
 

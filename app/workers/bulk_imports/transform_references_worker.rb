@@ -131,7 +131,7 @@ module BulkImports
         bulk_import_entity_id: tracker.bulk_import_entity_id,
         source_full_path: context.entity.source_full_path,
         source_version: context.bulk_import.source_version,
-        importer: 'gitlab_migration'
+        importer: context.import_source
       }
     end
 

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :package_registry do
-  let_it_be(:package) { build(:npm_package, :processing, id: 1) }
-  let_it_be(:package_file) do
+  let_it_be(:package, freeze: false) { build(:npm_package, :processing, id: 1) }
+  let_it_be(:package_file, freeze: false) do
     build(:package_file, :npm, file_fixture: expand_fixture_path('packages/npm/package-1.3.7.tgz'), package: package)
   end
 

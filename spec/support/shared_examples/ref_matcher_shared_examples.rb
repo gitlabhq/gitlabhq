@@ -93,6 +93,212 @@ RSpec.shared_examples 'RefMatcher#matches?' do
   end
 end
 
+RSpec.shared_examples 'RefMatcher#overlaps?' do
+  subject(:overlaps) { ref_matcher.overlaps?(other_pattern) }
+
+  context 'when both are exact matches and equal' do
+    let(:ref_pattern) { 'main' }
+    let(:other_pattern) { 'main' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when both are exact matches and different' do
+    let(:ref_pattern) { 'main' }
+    let(:other_pattern) { 'develop' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when self is wildcard and other is literal that matches' do
+    let(:ref_pattern) { 'prod*' }
+    let(:other_pattern) { 'production' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when self is wildcard and other is literal that does not match' do
+    let(:ref_pattern) { 'prod*' }
+    let(:other_pattern) { 'staging' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when self is literal and other is wildcard that matches' do
+    let(:ref_pattern) { 'production' }
+    let(:other_pattern) { 'prod*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when self is literal and other is wildcard that does not match' do
+    let(:ref_pattern) { 'staging' }
+    let(:other_pattern) { 'prod*' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when both are wildcards with overlapping sets (superset/subset)' do
+    let(:ref_pattern) { 'prod*' }
+    let(:other_pattern) { 'production*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when both are wildcards with overlapping sets (narrower policy pattern)' do
+    let(:ref_pattern) { 'production-v1*' }
+    let(:other_pattern) { 'production-*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when both are wildcards with non-overlapping sets' do
+    let(:ref_pattern) { 'release/*' }
+    let(:other_pattern) { 'release-*' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when one is universal wildcard' do
+    let(:ref_pattern) { '*' }
+    let(:other_pattern) { 'anything*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when both are universal wildcards' do
+    let(:ref_pattern) { '*' }
+    let(:other_pattern) { '*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when patterns end with different literal chars' do
+    let(:ref_pattern) { 'a*b' }
+    let(:other_pattern) { 'a*c' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when suffix wildcards overlap' do
+    let(:ref_pattern) { '*-release' }
+    let(:other_pattern) { 'v*-release' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when prefix and suffix wildcards overlap (string "a" matches both)' do
+    let(:ref_pattern) { 'a*' }
+    let(:other_pattern) { '*a' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when self pattern is blank' do
+    let(:ref_pattern) { '' }
+    let(:other_pattern) { 'prod*' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when other pattern is blank' do
+    let(:ref_pattern) { 'prod*' }
+    let(:other_pattern) { '' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when self pattern is nil' do
+    let(:ref_pattern) { nil }
+    let(:other_pattern) { 'prod*' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when both patterns are identical wildcards' do
+    let(:ref_pattern) { 'release-*' }
+    let(:other_pattern) { 'release-*' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when patterns have multiple wildcards' do
+    let(:ref_pattern) { 'a*b*c' }
+    let(:other_pattern) { 'a*c' }
+
+    it { is_expected.to be true }
+  end
+
+  context 'when patterns have multiple wildcards and do not overlap' do
+    let(:ref_pattern) { 'a*b*c' }
+    let(:other_pattern) { 'x*y*z' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when checking symmetry (a.overlaps?(b) == b.overlaps?(a))' do
+    where(:pattern_a, :pattern_b, :expected) do
+      [
+        ['prod*',          'production*',   true],
+        ['production-v1*', 'production-*',  true],
+        ['release/*',      'release-*',     false],
+        ['*',              'anything*',     true],
+        ['a*b',            'a*c',           false],
+        ['a*',             '*a',            true],
+        ['main',           'main',          true],
+        ['main',           'develop',       false]
+      ]
+    end
+
+    with_them do
+      let(:ref_pattern) { pattern_a }
+      let(:other_pattern) { pattern_b }
+
+      it 'is symmetric' do
+        forward = described_class.new(pattern_a).overlaps?(pattern_b)
+        reverse = described_class.new(pattern_b).overlaps?(pattern_a)
+        expect(forward).to eq(reverse),
+          "asymmetry: #{pattern_a}.overlaps?(#{pattern_b})=#{forward} but reverse=#{reverse}"
+        expect(forward).to eq(expected)
+      end
+    end
+  end
+
+  context 'with ReDoS-style patterns containing many wildcards' do
+    let(:ref_pattern) { '**************a' }
+    let(:other_pattern) { '**************b' }
+
+    it 'does not cause catastrophic backtracking' do
+      expect do
+        Timeout.timeout(10.seconds) do
+          is_expected.to be false
+        end
+      end.not_to raise_error
+    end
+  end
+
+  context 'when self pattern exceeds MAX_OVERLAP_PATTERN_LENGTH' do
+    let(:ref_pattern) { 'a' * (RefMatcher::MAX_OVERLAP_PATTERN_LENGTH + 1) }
+    let(:other_pattern) { 'a*' }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when other pattern exceeds MAX_OVERLAP_PATTERN_LENGTH' do
+    let(:ref_pattern) { 'a*' }
+    let(:other_pattern) { 'a' * (RefMatcher::MAX_OVERLAP_PATTERN_LENGTH + 1) }
+
+    it { is_expected.to be false }
+  end
+
+  context 'when patterns are exactly at MAX_OVERLAP_PATTERN_LENGTH' do
+    let(:ref_pattern) { "#{'a' * (RefMatcher::MAX_OVERLAP_PATTERN_LENGTH - 1)}*" }
+    let(:other_pattern) { "#{'a' * (RefMatcher::MAX_OVERLAP_PATTERN_LENGTH - 1)}*" }
+
+    it { is_expected.to be true }
+  end
+end
+
 RSpec.shared_examples 'RefMatcher#wildcard?' do
   subject(:wildcard) { ref_matcher.wildcard? }
 

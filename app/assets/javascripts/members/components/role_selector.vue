@@ -1,10 +1,13 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
+import { ACCESS_LEVEL_SECURITY_MANAGER_STRING } from '~/access_level/constants';
+import SecurityManagerNewBadge from '~/access_level/components/security_manager_new_badge.vue';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 export default {
-  components: { GlCollapsibleListbox },
+  ACCESS_LEVEL_SECURITY_MANAGER_STRING,
+  components: { GlCollapsibleListbox, SecurityManagerNewBadge },
   inject: {
     manageMemberRolesPath: { default: null },
   },
@@ -59,8 +62,11 @@ export default {
     @select="emitRole"
   >
     <template #list-item="{ item }">
-      <div class="gl-line-clamp-2" data-testid="role-data">
+      <div class="gl-flex gl-items-start gl-justify-between gl-gap-2" data-testid="role-data">
         <span data-testid="role-name">{{ item.text }}</span>
+        <security-manager-new-badge
+          v-if="item.value === $options.ACCESS_LEVEL_SECURITY_MANAGER_STRING"
+        />
       </div>
       <div
         v-if="item.dropdownDescription || item.description"

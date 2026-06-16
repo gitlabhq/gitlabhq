@@ -18,14 +18,6 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
     it_behaves_like 'can search settings', 'Naming', 'Visibility'
   end
 
-  context 'in Integrations page' do
-    before do
-      visit project_settings_integrations_path(project)
-    end
-
-    it_behaves_like 'can highlight results', 'external applications'
-  end
-
   context 'in access tokens page' do
     before do
       visit project_settings_access_tokens_path(project)

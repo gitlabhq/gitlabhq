@@ -1,11 +1,11 @@
 <script>
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSortContainerRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
   name: 'SearchAndSortBar',
   components: {
-    FilteredSortContainerRoot,
+    FilteredSearchBar,
   },
   props: {
     // Search
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <template>
-  <filtered-sort-container-root
+  <filtered-search-bar
     :namespace="namespace"
     :tokens="[] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */"
     :search-input-placeholder="searchInputPlaceholder"

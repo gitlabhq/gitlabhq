@@ -4,6 +4,7 @@ import { formatNumber } from '~/locale';
 import RunnerCount from './runner_count.vue';
 
 export default {
+  name: 'RunnerSingleStat',
   components: {
     GlSingleStat,
     RunnerCount,

@@ -203,21 +203,21 @@ end
 RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   include_context 'package filter context'
 
-  let_it_be(:package1) { create(:conan_package, project: project) }
-  let_it_be(:package2) { create(:maven_package, project: project) }
-  let_it_be(:package3) { create(:npm_package, project: project) }
-  let_it_be(:package4) { create(:nuget_package, project: project) }
-  let_it_be(:package5) { create(:pypi_package, project: project) }
-  let_it_be(:package6) { create(:composer_package_sti, project: project) }
-  let_it_be(:package7) { create(:generic_package, project: project) }
-  let_it_be(:package8) { create(:golang_package, project: project) }
-  let_it_be(:package9) { create(:debian_package, project: project) }
-  let_it_be(:package10) { create(:rubygems_package, project: project) }
-  let_it_be(:package11) { create(:helm_package, project: project) }
-  let_it_be(:package12) { create(:terraform_module_package, project: project) }
-  let_it_be(:package13) { create(:rpm_package, project: project) }
-  let_it_be(:package14) { create(:ml_model_package, project: project) }
-  let_it_be(:package15) { create(:cargo_package, project: project) }
+  let_it_be(:package1, freeze: false) { create(:conan_package, project: project) }
+  let_it_be(:package2, freeze: false) { create(:maven_package, project: project) }
+  let_it_be(:package3, freeze: false) { create(:npm_package, project: project) }
+  let_it_be(:package4, freeze: false) { create(:nuget_package, project: project) }
+  let_it_be(:package5, freeze: false) { create(:pypi_package, project: project) }
+  let_it_be(:package6, freeze: false) { create(:composer_package_sti, project: project) }
+  let_it_be(:package7, freeze: false) { create(:generic_package, project: project) }
+  let_it_be(:package8, freeze: false) { create(:golang_package, project: project) }
+  let_it_be(:package9, freeze: false) { create(:debian_package, project: project) }
+  let_it_be(:package10, freeze: false) { create(:rubygems_package, project: project) }
+  let_it_be(:package11, freeze: false) { create(:helm_package, project: project) }
+  let_it_be(:package12, freeze: false) { create(:terraform_module_package, project: project) }
+  let_it_be(:package13, freeze: false) { create(:rpm_package, project: project) }
+  let_it_be(:package14, freeze: false) { create(:ml_model_package, project: project) }
+  let_it_be(:package15, freeze: false) { create(:cargo_package, project: project) }
 
   Packages::Package.package_types.keys.each do |package_type|
     context "for package type #{package_type}" do

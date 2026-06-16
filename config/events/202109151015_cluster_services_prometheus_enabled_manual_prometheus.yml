@@ -4,6 +4,8 @@ action: enabled_manual_prometheus
 extra_properties:
 identifiers:
 product_group: import
+product_categories:
+- integrations
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62645
 tiers:

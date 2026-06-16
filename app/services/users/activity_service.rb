@@ -30,6 +30,9 @@ module Users
 
     def record_activity
       return if Gitlab::Database.read_only?
+      # No-op on frozen records: production records are never frozen,
+      # so this only guards frozen shared test fixtures from a lazy write.
+      return if user.frozen?
 
       lease = Gitlab::ExclusiveLease.new("activity_service:#{user.id}", timeout: LEASE_TIMEOUT)
       # Skip transaction checks for exclusive lease as it is breaking system specs.

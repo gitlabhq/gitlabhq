@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::Package, type: :model, feature_category: :package_registry do
-  let_it_be(:package) { create(:conan_package, without_package_files: true) }
+  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
 
   describe 'relationships' do
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
@@ -75,7 +75,7 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
       end
 
       context 'with pending destruction package' do
-        let_it_be(:package) { create(:conan_package, :pending_destruction) }
+        let_it_be(:package, freeze: false) { create(:conan_package, :pending_destruction) }
 
         it 'allows a conan package with same recipe' do
           expect(new_package).to be_valid
@@ -118,31 +118,8 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
     end
   end
 
-  describe '#latest_recipe_revision_or_default' do
-    subject(:revision) { package.latest_recipe_revision_or_default }
-
-    context 'when package has recipe revisions' do
-      it 'returns the last recipe revision' do
-        expect(revision).to eq(package.conan_recipe_revisions.last)
-      end
-    end
-
-    context 'when package does not have recipe revisions' do
-      let_it_be(:package) { create(:conan_package, without_revisions: true) }
-
-      it 'returns default recipe revision' do
-        expect(revision).to be_a(::Packages::Conan::RecipeRevision)
-          .and have_attributes(
-            revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
-            package_id: package.id,
-            created_at: package.created_at
-          )
-      end
-    end
-  end
-
   describe '#default_recipe_revision' do
-    let_it_be(:package) { create(:conan_package, without_revisions: true) }
+    let_it_be(:package, freeze: false) { create(:conan_package, without_revisions: true) }
 
     subject(:revision) { package.default_recipe_revision }
 

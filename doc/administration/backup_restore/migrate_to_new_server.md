@@ -14,7 +14,8 @@ title: Migrate to a new server
 
 <!-- some details borrowed from GitLab.com move from Azure to GCP detailed at <https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md> -->
 
-You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server using the Linux package.
+Use GitLab backup and restore to migrate a Linux package instance to a new server. You also have the option of
+[migrating a Linux package GitLab instance to Docker](../../install/docker/migrate.md).
 
 If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/_index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
@@ -138,7 +139,6 @@ To prepare the new server:
    gitlab_exporter['enable'] = false
    gitlab_pages['enable'] = false
    gitlab_workhorse['enable'] = false
-   grafana['enable'] = false
    logrotate['enable'] = false
    gitlab_rails['incoming_email_enabled'] = false
    nginx['enable'] = false

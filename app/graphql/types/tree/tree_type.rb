@@ -9,7 +9,7 @@ module Types
 
       present_using ::Projects::TreePresenter
       authorize_granular_token permissions: :read_repository_tree,
-        boundary: ->(obj) { obj.repository&.project },
+        boundary: :project,
         boundary_type: :project
 
       # Complexity 10 as it triggers a Gitaly call on each render

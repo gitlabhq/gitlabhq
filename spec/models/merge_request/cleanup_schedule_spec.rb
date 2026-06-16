@@ -102,13 +102,13 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
   end
 
   describe '.scheduled_and_unstarted' do
-    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
-    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.ago) }
-    let!(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
-    let!(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 4.days.ago) }
-    let!(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
-    let!(:cleanup_schedule_6) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.from_now) }
-    let!(:cleanup_schedule_7) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 5.days.ago) }
+    let_it_be(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
+    let_it_be(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 4.days.ago) }
+    let_it_be(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
+    let_it_be(:cleanup_schedule_6) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.from_now) }
+    let_it_be(:cleanup_schedule_7) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 5.days.ago) }
 
     it 'returns records that are scheduled before or on current time and unstarted (ordered by scheduled first)' do
       expect(described_class.scheduled_and_unstarted).to eq(
@@ -122,11 +122,11 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
   end
 
   describe '.stuck' do
-    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, updated_at: 1.day.ago) }
-    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, :running, updated_at: 5.hours.ago) }
-    let!(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :running, updated_at: 7.hours.ago) }
-    let!(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, :completed, updated_at: 1.day.ago) }
-    let!(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, :failed, updated_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, updated_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, :running, updated_at: 5.hours.ago) }
+    let_it_be(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :running, updated_at: 7.hours.ago) }
+    let_it_be(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, :completed, updated_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, :failed, updated_at: 1.day.ago) }
 
     it 'returns records that has been in running state for more than 6 hours' do
       expect(described_class.stuck).to match_array([cleanup_schedule_3])
@@ -134,8 +134,13 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
   end
 
   describe '.stuck_retry!' do
-    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, :running, updated_at: 5.hours.ago) }
-    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, :running, updated_at: 7.hours.ago) }
+    let_it_be_with_reload(:cleanup_schedule_1) do
+      create(:merge_request_cleanup_schedule, :running, updated_at: 5.hours.ago)
+    end
+
+    let_it_be_with_reload(:cleanup_schedule_2) do
+      create(:merge_request_cleanup_schedule, :running, updated_at: 7.hours.ago)
+    end
 
     it 'sets stuck records to unstarted' do
       expect { described_class.stuck_retry! }.to change { cleanup_schedule_2.reload.unstarted? }.from(false).to(true)
@@ -157,11 +162,11 @@ RSpec.describe MergeRequest::CleanupSchedule, feature_category: :code_review_wor
   end
 
   describe '.start_next' do
-    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
-    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
-    let!(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :running, scheduled_at: 1.day.ago) }
-    let!(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
-    let!(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 3.days.ago) }
+    let_it_be(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
+    let_it_be_with_reload(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
+    let_it_be(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :running, scheduled_at: 1.day.ago) }
+    let_it_be(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
+    let_it_be(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 3.days.ago) }
 
     it 'finds the next scheduled and unstarted then marked it as running' do
       expect(described_class.start_next).to eq(cleanup_schedule_2)

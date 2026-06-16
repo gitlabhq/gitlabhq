@@ -857,9 +857,8 @@ that's best described by a matrix, tables are the best choice.
 
 ### Creation guidelines
 
-To keep tables accessible and scannable, tables should not have any
-empty cells. If no otherwise meaningful value for a cell exists, consider entering
-**N/A** for 'not applicable' or **None**.
+To keep tables accessible and scannable, avoid empty cells. For [feature tables](#feature-tables), use shortcodes to indicate feature availability.
+Otherwise, if no meaningful value for a cell exists, use **None**.
 
 To make tables easier to maintain:
 

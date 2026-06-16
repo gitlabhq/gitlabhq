@@ -7,6 +7,8 @@ module Gitlab
     module ObjectImporter
       extend ActiveSupport::Concern
 
+      REENQUEUE_DELAY = 30.seconds
+
       included do
         include ApplicationWorker
 
@@ -29,20 +31,31 @@ module Gitlab
 
       def perform(project_id, hash, notify_key)
         project = Project.find_by_id(project_id)
-
         return unless project
+        return if import_canceled?(project)
 
-        if project.import_state&.canceled?
-          info(project.id, message: 'project import canceled')
-          return
-        end
-
-        import(project, hash)
+        reenqueued = import_or_reenqueue(project, hash, notify_key)
       ensure
-        notify_waiter(notify_key)
+        notify_waiter(notify_key) unless reenqueued
       end
 
       private
+
+      def import_canceled?(project)
+        return false unless project.import_state&.canceled?
+
+        info(project.id, message: 'project import canceled')
+        true
+      end
+
+      def import_or_reenqueue(project, hash, notify_key)
+        import(project, hash)
+        false
+      rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+        info(project.id, message: 'token refresh lock contended, re-enqueueing')
+        self.class.perform_in(REENQUEUE_DELAY, project.id, hash, notify_key)
+        true
+      end
 
       # project - An instance of `Project` to import the data into.
       # hash - A Hash containing the details of the object to import.
@@ -52,6 +65,8 @@ module Gitlab
         importer_class.new(project, hash).execute
 
         info(project.id, message: 'importer finished')
+      rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+        raise
       rescue ActiveRecord::RecordInvalid => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)

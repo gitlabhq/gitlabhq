@@ -41,10 +41,10 @@ RSpec.describe NewIssueWorker, feature_category: :team_planning do
     end
 
     context 'with a user' do
-      let_it_be(:project) { create(:project, :public) }
-      let_it_be(:mentioned) { create(:user) }
-      let_it_be(:user) { nil }
-      let_it_be(:issue) { create(:issue, project: project, description: "issue for #{mentioned.to_reference}") }
+      let_it_be(:project, freeze: false) { create(:project, :public) }
+      let_it_be(:mentioned, freeze: false) { create(:user) }
+      let_it_be(:user, freeze: false) { nil }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project, description: "issue for #{mentioned.to_reference}") }
 
       shared_examples 'a new issue where the current_user cannot trigger notifications' do
         it 'does not create a notification for the mentioned user' do
@@ -58,19 +58,19 @@ RSpec.describe NewIssueWorker, feature_category: :team_planning do
       end
 
       context 'when the new issue author is blocked' do
-        let_it_be(:user) { create_default(:user, :blocked) }
+        let_it_be(:user, freeze: false) { create_default(:user, :blocked) }
 
         it_behaves_like 'a new issue where the current_user cannot trigger notifications'
       end
 
       context 'when the new issue author is a ghost' do
-        let_it_be(:user) { create_default(:user, :ghost) }
+        let_it_be(:user, freeze: false) { create_default(:user, :ghost) }
 
         it_behaves_like 'a new issue where the current_user cannot trigger notifications'
       end
 
       context 'when everything is ok' do
-        let_it_be(:user) { create_default(:user) }
+        let_it_be(:user, freeze: false) { create_default(:user) }
 
         it 'creates a new event record' do
           expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)
@@ -109,7 +109,7 @@ RSpec.describe NewIssueWorker, feature_category: :team_planning do
         end
 
         context 'when issue has multiple assignees' do
-          let_it_be(:users) do
+          let_it_be(:users, freeze: false) do
             users = build_list(:user, 15)
             user_attributes = users.map { |user| user.attributes.except('id', 'otp_secret') }
             user_ids = User.insert_all(user_attributes, returning: :id).rows.flatten

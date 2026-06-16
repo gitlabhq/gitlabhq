@@ -54,6 +54,13 @@ export default {
       required: true,
     },
   },
+  emits: [
+    'deleteNoteError',
+    'onDesignDiscussionError',
+    'resolveDiscussionError',
+    'toggleResolvedComments',
+    'updateNoteError',
+  ],
   data() {
     return {
       discussionWithOpenForm: '',

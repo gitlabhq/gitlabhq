@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker, batch_number: 1) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker, batch_number: 1) }
 
-  let_it_be(:source_user_1) do
+  let_it_be(:source_user_1, freeze: false) do
     create(:import_source_user,
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
@@ -21,7 +21,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     )
   end
 
-  let_it_be(:source_user_2) do
+  let_it_be(:source_user_2, freeze: false) do
     create(:import_source_user,
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
@@ -31,7 +31,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     )
   end
 
-  let_it_be(:source_user_reassigned) do
+  let_it_be(:source_user_reassigned, freeze: false) do
     create(:import_source_user, :completed,
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
@@ -40,7 +40,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     )
   end
 
-  let_it_be(:source_user_placeholder_user) do
+  let_it_be(:source_user_placeholder_user, freeze: false) do
     create(:import_source_user,
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
@@ -325,6 +325,24 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       end
     end
 
+    context 'when bulk import is an offline transfer' do
+      before do
+        allow(bulk_import).to receive(:import_source).and_return(Import::SOURCE_OFFLINE_TRANSFER)
+      end
+
+      it 'calls relation factory with offline transfer import source' do
+        relation_object = double
+
+        expect(Gitlab::ImportExport::Group::RelationFactory)
+          .to receive(:create)
+          .with(hash_including(import_source: Import::SOURCE_OFFLINE_TRANSFER))
+          .and_return(relation_object)
+        expect(relation_object).to receive(:assign_attributes).with(group: group)
+
+        subject.transform(context, data)
+      end
+    end
+
     context 'when data is nil' do
       before do
         expect(Gitlab::ImportExport::Group::RelationFactory).not_to receive(:create)
@@ -567,6 +585,35 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
             record: note,
             user_reference_column: :updated_by_id,
             source_user: source_user_placeholder_user
+          ).and_call_original
+
+          subject.load(nil, [merge_request, original_users_map])
+        end
+      end
+
+      context 'when bulk import is an offline transfer' do
+        before do
+          allow(bulk_import).to receive(:import_source).and_return(Import::SOURCE_OFFLINE_TRANSFER)
+        end
+
+        it 'pushes placeholder references with offline transfer import source' do
+          merge_request = build(:merge_request,
+            source_project: project,
+            target_project: project,
+            author: source_user_1.mapped_user
+          )
+
+          original_users_map = {}.compare_by_identity
+          original_users_map[merge_request] = {
+            'author_id' => source_user_1.source_user_identifier
+          }
+
+          expect(Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+            import_source: ::Import::SOURCE_OFFLINE_TRANSFER,
+            import_uid: context.bulk_import_id,
+            record: merge_request,
+            user_reference_column: :author_id,
+            source_user: source_user_1
           ).and_call_original
 
           subject.load(nil, [merge_request, original_users_map])

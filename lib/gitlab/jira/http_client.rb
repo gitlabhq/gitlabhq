@@ -48,7 +48,8 @@ module Gitlab
 
         result = Integrations::Clients::HTTP.public_send(http_method, path, **request_params) # rubocop:disable GitlabSecurity/PublicSend
         @authenticated = result.response.is_a?(Net::HTTPOK)
-        store_cookies(result) if options[:use_cookies]
+
+        store_cookies(result) if options[:use_cookies] && result.response.is_a?(Net::HTTPSuccess)
 
         # This is needed to make response.to_s work. HTTParty::Response internal uses a Net::HTTPResponse as @response.
         # When a block is used, Net::HTTPResponse#body will be a Net::ReadAdapter instead of a String.

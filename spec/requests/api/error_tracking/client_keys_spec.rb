@@ -87,4 +87,23 @@ RSpec.describe API::ErrorTracking::ClientKeys, feature_category: :observability 
       end
     end
   end
+
+  describe 'granular token authorization' do
+    let(:boundary_object) { project }
+    let(:user) { maintainer }
+
+    it_behaves_like 'authorizing granular token permissions', :read_error_tracking_client_key do
+      let(:request) { get api("/projects/#{project.id}/error_tracking/client_keys", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_error_tracking_client_key do
+      let(:request) { post api("/projects/#{project.id}/error_tracking/client_keys", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_error_tracking_client_key do
+      let(:request) do
+        delete api("/projects/#{project.id}/error_tracking/client_keys/#{client_key.id}", personal_access_token: pat)
+      end
+    end
+  end
 end

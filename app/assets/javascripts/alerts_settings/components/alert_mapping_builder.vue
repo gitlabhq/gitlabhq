@@ -26,6 +26,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'AlertMappingBuilder',
   i18n,
   mappingFields,
   components: {

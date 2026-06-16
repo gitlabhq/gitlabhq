@@ -145,7 +145,8 @@ module Import
       Gitlab::GithubImport::Logger.error(
         message: 'Import failed because of a GitHub error',
         status: exception.response_status,
-        error: exception.response_body
+        error: exception.response_body,
+        Labkit::Fields::GL_ORGANIZATION_ID => target_namespace.organization_id
       )
 
       error(
@@ -163,7 +164,8 @@ module Import
     def log_and_return_error(message, translated_message, http_status)
       Gitlab::GithubImport::Logger.error(
         message: 'Error while attempting to import from GitHub',
-        error: message
+        error: message,
+        Labkit::Fields::GL_ORGANIZATION_ID => target_namespace&.organization_id
       )
 
       error(translated_message, http_status)

@@ -125,16 +125,17 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
     let_it_be_with_reload(:group) { create(:group, owners: user) }
 
     before do
-      assign(:group, group)
       allow(view).to receive(:current_user) { user }
     end
 
     context 'when group is pending deletion' do
       before do
-        create(:group_deletion_schedule, group: group, deleting_user: user)
+        group.schedule_deletion!(transition_user: user)
       end
 
       it 'renders restore group card and action' do
+        assign(:group, group)
+
         render
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
@@ -145,6 +146,8 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
 
     context 'when group is not pending deletion' do
       it 'does not render restore group card and action' do
+        assign(:group, group)
+
         render
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')

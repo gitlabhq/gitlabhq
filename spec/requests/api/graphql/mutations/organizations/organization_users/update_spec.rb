@@ -21,7 +21,7 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Update, feature_cate
 
   subject(:update_organization_user) { post_graphql_mutation(mutation, current_user: current_user) }
 
-  it { expect(described_class).to require_graphql_authorizations(:admin_organization) }
+  it { expect(described_class).to require_graphql_authorizations(:update_organization) }
 
   it_behaves_like 'authorizing granular token permissions for GraphQL', :update_organization_user do
     let(:user) { current_user }

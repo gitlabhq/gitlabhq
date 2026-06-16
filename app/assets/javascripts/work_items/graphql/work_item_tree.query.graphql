@@ -1,7 +1,12 @@
 #import "ee_else_ce/work_items/graphql/work_item_hierarchy.fragment.graphql"
 
 # @feature_category: team_planning
-query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: String) {
+query workItemTreeQuery(
+  $id: WorkItemID!
+  $pageSize: Int = 100
+  $endCursor: String
+  $useWorkItemFeatures: Boolean = false
+) {
   workItem(id: $id) {
     namespace {
       id

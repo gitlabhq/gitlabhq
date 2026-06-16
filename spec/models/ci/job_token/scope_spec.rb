@@ -10,7 +10,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
   let_it_be(:user) { create_default(:user) }
   let_it_be(:namespace) { create_default(:namespace) }
 
-  let_it_be(:source_project) do
+  let_it_be(:source_project, freeze: false) do
     create(:project,
       ci_outbound_job_token_scope_enabled: true,
       ci_inbound_job_token_scope_enabled: true

@@ -24,13 +24,13 @@ RSpec.shared_examples Integrations::BaseDataFields do
       context 'with value set to false' do
         let(:activated) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'with value set to true' do
         let(:activated) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.shared_examples Integrations::BaseDataFields do
         allow(model).to receive(:integration).and_return(nil)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.shared_examples Integrations::BaseDataFields do
     end
 
     it 'validates presence correctly' do
-      expect(model.valid?).to eq(false)
+      expect(model.valid?).to be(false)
       expect(model.errors.full_messages).to contain_exactly(
         "Exactly one of project_id, group_id, organization_id must be present",
         "Integration can't be blank"
@@ -82,7 +82,7 @@ RSpec.shared_examples Integrations::BaseDataFields do
       it 'validates presence correctly' do
         model.integration = build(:integration)
 
-        expect(model.valid?).to eq(false)
+        expect(model.valid?).to be(false)
         expect(model.errors.full_messages).to contain_exactly(
           'Exactly one of project_id, group_id, organization_id must be present'
         )

@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   data() {
     return {
       commentLineStart: {},

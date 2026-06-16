@@ -15,8 +15,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List project deployments' do
-        detail 'Get a list of deployments in a project. This feature was introduced in GitLab 8.11.'
+      desc 'List all project deployments' do
+        detail 'Lists all deployments in a project.'
         success Entities::Deployment
         failure [
           { code: 400, message: 'Bad request' },
@@ -83,8 +83,8 @@ module API
         bad_request!(e.message)
       end
 
-      desc 'Get a specific deployment' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'Retrieve a deployment' do
+        detail 'Retrieves a specified deployment.'
         success Entities::DeploymentExtended
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -108,7 +108,7 @@ module API
       end
 
       desc 'Create a deployment' do
-        detail 'This feature was introduced in GitLab 12.4.'
+        detail 'Creates a deployment.'
         success Entities::DeploymentExtended
         failure [
           { code: 400, message: 'Bad request' },
@@ -175,7 +175,7 @@ module API
       end
 
       desc 'Update a deployment' do
-        detail 'This feature was introduced in GitLab 12.4.'
+        detail 'Updates a specified deployment.'
         success Entities::DeploymentExtended
         failure [
           { code: 400, message: 'Bad request' },
@@ -212,10 +212,11 @@ module API
         end
       end
 
-      desc 'Delete a specific deployment' do
-        detail 'Delete a specific deployment that is not currently the last deployment for an environment or in a running state. This feature was introduced in GitLab 15.3.'
-        http_codes [
-          [204, 'Deployment destroyed'],
+      desc 'Delete a deployment' do
+        detail 'Deletes a specified deployment that is not currently the last deployment for an environment or in a ' \
+          '`running` state.'
+        success code: 204, message: 'Deployment destroyed'
+        failure [
           [403, 'Forbidden'],
           [400, '"Cannot destroy running deployment" or "Deployment currently deployed to environment"']
         ]
@@ -243,8 +244,8 @@ module API
 
       helpers Helpers::MergeRequestsHelpers
 
-      desc 'List of merge requests associated with a deployment' do
-        detail 'Retrieves the list of merge requests shipped with a given deployment. This feature was introduced in GitLab 12.7.'
+      desc 'List all merge requests associated with a deployment' do
+        detail 'Lists all merge requests shipped with a specified deployment.'
         success Entities::MergeRequestBasic
         failure [
           { code: 401, message: 'Unauthorized' },

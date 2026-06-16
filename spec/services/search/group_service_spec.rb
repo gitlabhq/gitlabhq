@@ -48,13 +48,15 @@ RSpec.describe Search::GroupService, feature_category: :global_search do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project, :public, group: group) }
 
-      let!(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
-      let!(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
-      let!(:very_old_result) { create(:issue, project: project, title: 'sorted very old', created_at: 1.year.ago) }
+      let_it_be(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
+      let_it_be(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
+      let_it_be(:very_old_result) { create(:issue, project: project, title: 'sorted very old', created_at: 1.year.ago) }
 
-      let!(:old_updated) { create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago) }
-      let!(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
-      let!(:very_old_updated) { create(:issue, project: project, title: 'updated very old', updated_at: 1.year.ago) }
+      let_it_be(:old_updated) { create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago) }
+      let_it_be(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
+      let_it_be(:very_old_updated) do
+        create(:issue, project: project, title: 'updated very old', updated_at: 1.year.ago)
+      end
 
       include_examples 'search results sorted' do
         let(:results_created) { described_class.new(nil, group, search: 'sorted', sort: sort).execute }
@@ -67,35 +69,35 @@ RSpec.describe Search::GroupService, feature_category: :global_search do
     let(:scope) { 'merge_requests' }
 
     context 'sorting' do
-      let!(:group) { create(:group) }
-      let!(:project) { create(:project, :public, group: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :public, group: group) }
 
-      let!(:old_result) do
+      let_it_be(:old_result) do
         create(:merge_request, :opened, source_project: project, source_branch: 'old-1', title: 'sorted old',
           created_at: 1.month.ago)
       end
 
-      let!(:new_result) do
+      let_it_be(:new_result) do
         create(:merge_request, :opened, source_project: project, source_branch: 'new-1', title: 'sorted recent',
           created_at: 1.day.ago)
       end
 
-      let!(:very_old_result) do
+      let_it_be(:very_old_result) do
         create(:merge_request, :opened, source_project: project, source_branch: 'very-old-1', title: 'sorted very old',
           created_at: 1.year.ago)
       end
 
-      let!(:old_updated) do
+      let_it_be(:old_updated) do
         create(:merge_request, :opened, source_project: project, source_branch: 'updated-old-1', title: 'updated old',
           updated_at: 1.month.ago)
       end
 
-      let!(:new_updated) do
+      let_it_be(:new_updated) do
         create(:merge_request, :opened, source_project: project, source_branch: 'updated-new-1', title: 'updated recent',
           updated_at: 1.day.ago)
       end
 
-      let!(:very_old_updated) do
+      let_it_be(:very_old_updated) do
         create(:merge_request, :opened, source_project: project, source_branch: 'updated-very-old-1',
           title: 'updated very old', updated_at: 1.year.ago)
       end

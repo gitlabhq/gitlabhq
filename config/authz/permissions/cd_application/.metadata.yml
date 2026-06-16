@@ -1,0 +1,5 @@
+---
+name: Continuous Deployment Application
+description: A continuous deployment application that groups related deployment services
+  within a group
+feature_category: continuous_delivery

@@ -41,6 +41,18 @@ RSpec.describe 'Creation of a machine learning model version', feature_category:
   end
 
   context 'when user is allowed write changes' do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_model_version do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:ml_model_version_create,
+          { project_path: project.full_path, modelId: model.to_gid, version: version, description: description },
+          'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates a model' do
       post_graphql_mutation(mutation, current_user: current_user)
 

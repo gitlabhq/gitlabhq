@@ -159,6 +159,13 @@ describe('Branch rules app', () => {
       });
     });
 
+    describe(`when user's custom role does not allow to create a branch rule`, () => {
+      it('does not render the dropdown', async () => {
+        await createComponent({ provided: { canCreateBranchRule: false } });
+        expect(findAddBranchRuleDropdown().exists()).toBe(false);
+      });
+    });
+
     it('when the primary modal action is clicked it calls create rule mutation', async () => {
       findCreateBranchRuleListbox().vm.$emit('select', 'main');
       await nextTick();

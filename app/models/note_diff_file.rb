@@ -17,6 +17,8 @@ class NoteDiffFile < ApplicationRecord
   validates :diff_note, presence: true
 
   def raw_diff_file
+    return unless original_position
+
     raw_diff = Gitlab::Git::Diff.new(to_hash)
 
     Gitlab::Diff::File.new(

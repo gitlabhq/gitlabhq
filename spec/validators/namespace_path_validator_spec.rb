@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespacePathValidator do
+RSpec.describe NamespacePathValidator, feature_category: :source_code_management do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   describe '.valid_path?' do
@@ -29,7 +29,7 @@ RSpec.describe NamespacePathValidator do
     end
 
     it 'adds a message when the path is reserved when updating' do
-      group = create(:group)
+      group = build_stubbed(:group)
       group.path = 'help'
 
       validator.validate_each(group, :path, 'help')

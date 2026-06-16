@@ -1,6 +1,43 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_hierarchy_child_item.fragment.graphql"
 
+fragment WorkItemTreeHierarchy on WorkItemWidgetHierarchy {
+  type
+  hasChildren
+  hasParent
+  depthLimitReachedByType {
+    workItemType {
+      id
+      name
+    }
+    depthLimitReached
+  }
+  rolledUpCountsByType {
+    countsByState {
+      opened
+      all
+      closed
+    }
+    workItemType {
+      id
+      name
+      iconName
+    }
+  }
+  parent {
+    id
+  }
+  children(first: $pageSize, after: $endCursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    count
+    nodes {
+      ...WorkItemHierarchyChildItem
+    }
+  }
+}
+
 fragment WorkItemHierarchy on WorkItem {
   id
   workItemType {
@@ -15,42 +52,14 @@ fragment WorkItemHierarchy on WorkItem {
     adminParentLink
     setWorkItemMetadata
   }
-  widgets(onlyTypes: [HIERARCHY]) {
+  widgets(onlyTypes: [HIERARCHY]) @skip(if: $useWorkItemFeatures) {
     ... on WorkItemWidgetHierarchy {
-      type
-      hasChildren
-      hasParent
-      depthLimitReachedByType {
-        workItemType {
-          id
-          name
-        }
-        depthLimitReached
-      }
-      rolledUpCountsByType {
-        countsByState {
-          opened
-          all
-          closed
-        }
-        workItemType {
-          id
-          name
-          iconName
-        }
-      }
-      parent {
-        id
-      }
-      children(first: $pageSize, after: $endCursor) {
-        pageInfo {
-          ...PageInfo
-        }
-        count
-        nodes {
-          ...WorkItemHierarchyChildItem
-        }
-      }
+      ...WorkItemTreeHierarchy
+    }
+  }
+  features @include(if: $useWorkItemFeatures) {
+    hierarchy {
+      ...WorkItemTreeHierarchy
     }
   }
 }

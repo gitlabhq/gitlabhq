@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import SketchLoader from '~/blob/sketch';
 
 export default {
+  name: 'SketchViewer',
   components: {
     GlLoadingIcon,
   },

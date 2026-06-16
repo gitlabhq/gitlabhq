@@ -17,7 +17,7 @@ class Groups::BoardsController < Groups::ApplicationController
   private
 
   def board_finder
-    Boards::BoardsFinder.new(parent, current_user, board_id: params[:id])
+    Boards::BoardsFinder.new(parent, current_user, board_id: params.permit(:id)[:id])
   end
   strong_memoize_attr :board_finder
 

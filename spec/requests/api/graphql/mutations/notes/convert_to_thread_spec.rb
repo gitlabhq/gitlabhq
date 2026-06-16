@@ -62,7 +62,7 @@ RSpec.describe Mutations::Notes::ConvertToThread, feature_category: :team_planni
 
   context 'when saving fails with validation error' do
     before do
-      note.update_column(:project_id, nil)
+      note.update_columns(namespace_id: project.project_namespace_id, project_id: nil)
     end
 
     it 'returns the validation error' do

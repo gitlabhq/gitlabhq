@@ -20,6 +20,8 @@ class PostDeploymentMigrationsValidator < MigrationSchemaValidator
   private
 
   def rollback_commited_migrations
+    clear_schema_cache!
+
     committed_migrations.reverse_each do |filename|
       version = find_migration_version(filename)
 

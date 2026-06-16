@@ -20,6 +20,7 @@ import NewProjectDestinationSelect from './project_destination_select.vue';
 import ProjectNameValidator from './project_name_validator.vue';
 
 export default {
+  name: 'SharedProjectCreationFields',
   components: {
     GlFormGroup,
     GlFormInput,
@@ -32,6 +33,7 @@ export default {
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
   },
+
   directives: {
     validation: validation(),
   },
@@ -46,10 +48,10 @@ export default {
   props: {
     namespace: {
       type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
   },
+  emits: ['on-validate-project-fields'],
   data() {
     const form = initForm({
       fields: {
@@ -77,7 +79,7 @@ export default {
       this.form.fields['project[path]'].value = kebabCase(this.form.fields['project[name]'].value);
     },
     onSelectNamespace(newNamespace) {
-      this.$emit('onSelectNamespace', newNamespace);
+      this.selectedNamespace = newNamespace;
       this.setVisibilityLevelsOptions();
     },
     setVisibilityLevelsOptions() {
@@ -115,7 +117,7 @@ export default {
       };
     },
     updateProjectNameValidationStatus(status) {
-      this.$emit('onValidateForm', status && this.form.state);
+      this.$emit('on-validate-project-fields', status && this.form.state);
     },
   },
   helpPageK8s: helpPagePath('user/clusters/agent/_index'),
@@ -169,7 +171,7 @@ export default {
           toggle-id="namespace"
           :namespace-id="selectedNamespace.id"
           :namespace-full-path="selectedNamespace.fullPath"
-          @onSelectNamespace="onSelectNamespace"
+          @on-select-namespace="onSelectNamespace"
         />
       </gl-form-group>
 
@@ -200,7 +202,7 @@ export default {
       :namespace-full-path="selectedNamespace.fullPath"
       :project-path="form.fields['project[path]'].value"
       :project-name="form.fields['project[name]'].value"
-      @onValidation="updateProjectNameValidationStatus"
+      @on-validation="updateProjectNameValidationStatus"
     />
 
     <gl-form-group

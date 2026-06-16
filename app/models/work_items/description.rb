@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
 module WorkItems
+  # TODO: This model and its table (work_item_descriptions) will be removed in a future MR
+  # once all reads have been confirmed safe to remove.
   class Description < ApplicationRecord
-    include CacheMarkdownField
-    include Redactable
-
     self.table_name = 'work_item_descriptions'
-
-    cache_markdown_field :description, issuable_reference_expansion_enabled: true
-
-    redact_field :description
 
     belongs_to :work_item
     belongs_to :namespace

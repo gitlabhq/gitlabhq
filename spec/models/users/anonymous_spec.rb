@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::Anonymous, feature_category: :system_access do
-  let_it_be(:public_project, reload: true) { create(:project, :public) }
+  let_it_be_with_reload(:public_project) { create(:project, :public) }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:internal_project) { create(:project, :internal) }
 

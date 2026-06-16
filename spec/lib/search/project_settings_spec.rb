@@ -7,7 +7,7 @@ RSpec.describe "Search results for project settings", :js, feature_category: :gl
 end
 
 RSpec.describe Search::ProjectSettings, feature_category: :global_search do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   subject(:project_settings) { described_class.new(project) }
 

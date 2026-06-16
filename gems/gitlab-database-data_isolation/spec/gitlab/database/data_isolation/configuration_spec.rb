@@ -26,32 +26,6 @@ RSpec.describe Gitlab::Database::DataIsolation::Configuration do
       expect(config.sharding_key_map).to eq({ 'projects' => { 'organization_id' => :organizations } })
     end
   end
-
-  describe "#on_stats" do
-    it "defaults to nil" do
-      expect(config.on_stats).to be_nil
-    end
-
-    it "can be configured" do
-      callback = ->(stats) { stats }
-      config.on_stats = callback
-
-      expect(config.on_stats).to eq(callback)
-    end
-  end
-
-  describe "#on_error" do
-    it "defaults to nil" do
-      expect(config.on_error).to be_nil
-    end
-
-    it "can be configured" do
-      callback = ->(sql, _error) { sql }
-      config.on_error = callback
-
-      expect(config.on_error).to eq(callback)
-    end
-  end
 end
 
 RSpec.describe Gitlab::Database::DataIsolation do

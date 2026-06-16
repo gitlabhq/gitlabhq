@@ -3,6 +3,7 @@ import { GlBadge, GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'CiCatalogBadge',
   components: {
     GlBadge,
     GlPopover,

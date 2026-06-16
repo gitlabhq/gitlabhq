@@ -4,26 +4,26 @@
   %table.table
     %thead
       %tr
-        %th.border-right.pt-4{ colspan: 3 }
+        %th.pt-4{ colspan: 3, class: '!gl-border-r' }
           = s_("Cohorts|New users")
         %th.font-weight-bold.pt-4{ colspan: number_of_data_columns }
           = s_("Cohorts|Returning users")
       %tr
-        %th.border-top-0
+        %th{ class: "!gl-border-t-0" }
           = s_("Cohorts|Registration month")
-        %th.border-top-0
+        %th{ class: "!gl-border-t-0" }
           = s_("Cohorts|Inactive users")
-        %th.border-top-0.border-right
+        %th{ class: "!gl-border-t-0 !gl-border-r" }
           = s_("Cohorts|Active users")
         - number_of_data_columns.times do |i|
-          %th.border-top-0
+          %th{ class: "!gl-border-t-0" }
             = s_("Cohorts|Month %{month_index}") % { month_index: i + 1 }
     %tbody
       - @cohorts[:cohorts].each do |cohort|
         %tr
           %td= cohort[:registration_month]
           %td= cohort[:inactive]
-          %td.border-right= cohort[:total]
+          %td{ class: "!gl-border-r" }= cohort[:total]
           - cohort[:activity_months].each do |activity_month|
             %td
               - next if cohort[:total] == '0'

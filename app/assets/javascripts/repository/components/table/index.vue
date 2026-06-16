@@ -12,6 +12,7 @@ import TableRow from './row.vue';
 import SkeletonLoader from './skeleton_loader.vue';
 
 export default {
+  name: 'TableIndex',
   components: {
     SkeletonLoader,
     TableHeader,

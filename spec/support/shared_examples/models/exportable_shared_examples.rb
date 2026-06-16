@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'an exportable' do |restricted_association: :project|
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#exportable_association?' do
     let(:association) { restricted_association }
@@ -55,8 +55,13 @@ RSpec.shared_examples 'an exportable' do |restricted_association: :project|
     end
 
     context 'when association is `:notes`' do
-      let_it_be(:readable_note) { create(:system_note, noteable: resource, project: project, note: 'readable') }
-      let_it_be(:restricted_note) { create(:system_note, noteable: resource, project: project, note: 'restricted') }
+      let_it_be(:readable_note, freeze: false) do
+        create(:system_note, noteable: resource, project: project, note: 'readable')
+      end
+
+      let_it_be(:restricted_note, freeze: false) do
+        create(:system_note, noteable: resource, project: project, note: 'restricted')
+      end
 
       let(:restricted_note_access) { false }
       let(:keys) { [:notes] }

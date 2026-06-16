@@ -5,9 +5,9 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
   let(:ref) { 'master' }
   let(:source) { 'api' }
 
-  let_it_be(:group) { create(:group, :nested) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:path) { project.reload.project_namespace.traversal_path }
+  let_it_be(:group, freeze: false) { create(:group, :nested) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:path, freeze: false) { project.reload.project_namespace.traversal_path }
 
   let!(:started_at_field) do
     table_name == :ci_finished_pipelines ? 'started_at' : 'started_at_bucket'

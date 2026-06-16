@@ -590,37 +590,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         )
       end
 
-      context 'when ci_config_http_timeout feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_config_http_timeout: true)
-        end
-
-        it 'logs the timeout' do
-          allow(Gitlab::AppJsonLogger).to receive(:warn).and_call_original
-
-          expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
-
-          expect(Gitlab::AppJsonLogger).to have_received(:warn).with(
-            hash_including(
-              class: 'Gitlab::Ci::Config::External::File::Remote',
-              message: 'CI config HTTP request timed out',
-              project_id: project.id,
-              extra: hash_including(
-                open_timeout_s: 1,
-                read_timeout_s: 1
-              )
-            )
-          ).once
-        end
-      end
-    end
-
-    context 'when ci_config_http_timeout feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_config_http_timeout: false)
-      end
-
-      it 'still logs the timeout' do
+      it 'logs the timeout' do
         allow(Gitlab::AppJsonLogger).to receive(:warn).and_call_original
 
         expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError)
@@ -631,19 +601,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
             message: 'CI config HTTP request timed out',
             project_id: project.id,
             extra: hash_including(
-              open_timeout_s: nil,
-              read_timeout_s: nil
+              open_timeout_s: 1,
+              read_timeout_s: 1
             )
           )
         ).once
-      end
-
-      it 'raises HTTPTimeoutError' do
-        expect { content }.to raise_error(
-          Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
-          "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
-            "could not be fetched after 3 attempts because of a timeout error!"
-        )
       end
     end
   end
@@ -654,42 +616,27 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       remote_file.content
     end
 
-    context 'when ci_config_http_timeout feature flag is enabled' do
+    before do
+      stub_full_request(location).to_return(body: remote_file_content)
+    end
+
+    context 'when execution time has expired' do
       before do
-        stub_full_request(location).to_return(body: remote_file_content)
+        allow(context).to receive(:check_execution_time!)
+          .and_raise(Gitlab::Ci::Config::External::Context::TimeoutError, 'execution expired')
       end
 
-      context 'when execution time has expired' do
-        before do
-          allow(context).to receive(:check_execution_time!)
-            .and_raise(Gitlab::Ci::Config::External::Context::TimeoutError, 'execution expired')
-        end
-
-        it 'raises TimeoutError' do
-          expect { content }.to raise_error(
-            Gitlab::Ci::Config::External::Context::TimeoutError,
-            'execution expired'
-          )
-        end
-      end
-
-      context 'when execution time has not expired' do
-        it 'calls check_execution_time! and returns content' do
-          expect(context).to receive(:check_execution_time!).and_call_original
-
-          expect(content).to eq(remote_file_content)
-        end
+      it 'raises TimeoutError' do
+        expect { content }.to raise_error(
+          Gitlab::Ci::Config::External::Context::TimeoutError,
+          'execution expired'
+        )
       end
     end
 
-    context 'when ci_config_http_timeout feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_config_http_timeout: false)
-        stub_full_request(location).to_return(body: remote_file_content)
-      end
-
-      it 'does not call check_execution_time!' do
-        expect(context).not_to receive(:check_execution_time!)
+    context 'when execution time has not expired' do
+      it 'calls check_execution_time! and returns content' do
+        expect(context).to receive(:check_execution_time!).and_call_original
 
         expect(content).to eq(remote_file_content)
       end

@@ -20,6 +20,7 @@ import updatePipelineTriggerMutation from '../graphql/update_pipeline_trigger.mu
 import EditTriggerModal from './edit_trigger_modal.vue';
 
 export default {
+  name: 'TriggersList',
   i18n: {
     copyTrigger: s__('Pipelines|Copy trigger token'),
     editButton: s__('Pipelines|Edit'),

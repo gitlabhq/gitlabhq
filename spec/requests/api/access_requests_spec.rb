@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::AccessRequests, feature_category: :system_access do
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:access_requester) { create(:user) }
-  let_it_be(:stranger) { create(:user) }
+  let_it_be(:maintainer, freeze: false) { create(:user) }
+  let_it_be(:developer, freeze: false) { create(:user) }
+  let_it_be(:access_requester, freeze: false) { create(:user) }
+  let_it_be(:stranger, freeze: false) { create(:user) }
 
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
@@ -16,7 +16,7 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
     end
   end
 
-  let_it_be(:group) do
+  let_it_be(:group, freeze: false) do
     create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)

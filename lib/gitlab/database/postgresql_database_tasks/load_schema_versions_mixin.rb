@@ -9,7 +9,9 @@ module Gitlab
         def structure_load(...)
           super(...)
 
-          Gitlab::Database::SchemaMigrations.load_all(connection)
+          Gitlab::Database::SchemaMigrations.load_all(
+            ActiveRecord::Tasks::DatabaseTasks.migration_connection
+          )
         end
       end
     end

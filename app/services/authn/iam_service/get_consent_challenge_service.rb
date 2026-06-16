@@ -3,58 +3,54 @@
 module Authn
   module IamService
     class GetConsentChallengeService
-      CONSENT_REQUEST_PATH = '/oauth2/internal/auth/requests/consent'
+      MANDATORY_FIELDS = %i[
+        subject requested_scopes client_id client_name client_owner client_created_at client_scopes
+      ].freeze
 
-      def initialize(challenge:, client: HttpClient.new)
+      def initialize(challenge:, client: GrpcClient.new)
         @challenge = challenge
         @client = client
       end
 
       def execute
-        response = @client.get(
-          path: CONSENT_REQUEST_PATH,
-          query_params: { consent_challenge: @challenge }
-        )
+        response = @client.get_consent_challenge(challenge: @challenge)
 
-        return http_error(response) unless response.success?
+        oauth_client = response.client
 
-        parsed = Gitlab::Json.safe_parse(response.body)
+        payload = {
+          skip_consent: response.skip,
+          subject: response.subject.to_s,
+          requested_scopes: response.requested_scopes.to_a,
+          client_id: oauth_client&.client_id,
+          client_name: oauth_client&.client_name,
+          client_owner: oauth_client&.client_owner,
+          client_created_at: oauth_client&.created_at && Time.zone.at(oauth_client.created_at.seconds),
+          client_scopes: Array(oauth_client&.scopes&.to_a)
+        }
 
-        return invalid_body_error unless parsed.is_a?(Hash)
+        missing = MANDATORY_FIELDS.select { |f| payload[f].blank? }
+        return missing_mandatory_fields_error(missing) if missing.any?
 
-        ServiceResponse.success(payload: {
-          skip: parsed['skip'] == true,
-          subject: parsed['subject'].to_s,
-          requested_scope: Array(parsed['requested_scope']),
-          client: parsed['client']
-        })
-      rescue HttpClient::RequestError => e
+        ServiceResponse.success(payload: payload)
+      rescue GrpcClient::RequestError => e
+        log_failure(reason: 'grpc_error')
         ServiceResponse.error(message: e.message, reason: :service_unavailable)
       end
 
       private
 
-      def http_error(response)
-        log_failure(reason: 'http_error', http_status: response.code)
+      def missing_mandatory_fields_error(fields)
+        log_failure(reason: 'missing_mandatory_fields')
         ServiceResponse.error(
-          message: "IAM consent request failed: HTTP #{response.code}",
-          reason: :iam_request_failed
-        )
-      end
-
-      def invalid_body_error
-        log_failure(reason: 'invalid_response_body')
-        ServiceResponse.error(
-          message: 'IAM consent request response has invalid body',
+          message: "IAM consent response missing mandatory fields: #{fields.join(', ')}",
           reason: :invalid_response
         )
       end
 
-      def log_failure(reason:, http_status: nil)
+      def log_failure(reason:)
         Gitlab::AuthLogger.error(
           message: 'IAM consent request failed',
-          reason: reason,
-          Labkit::Fields::HTTP_STATUS_CODE => http_status
+          reason: reason
         )
       end
     end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'wiki controller actions' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:other_user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:other_user, freeze: false) { create(:user) }
 
   let(:container) { raise NotImplementedError }
   let(:routing_params) { raise NotImplementedError }

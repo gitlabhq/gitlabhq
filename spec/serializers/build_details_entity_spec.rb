@@ -307,11 +307,11 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     end
 
     context 'when triggered' do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:user) { project.first_owner }
-      let_it_be(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
-      let_it_be(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:user, freeze: false) { project.first_owner }
+      let_it_be(:trigger, freeze: false) { create(:ci_trigger, project: project) }
+      let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
+      let_it_be(:build, freeze: false) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
 
       before do
         create_or_replace_pipeline_variables(pipeline, { key: 'TEST_VAR', value: 'test_value' })

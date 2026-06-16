@@ -1,5 +1,6 @@
 import { property, isEqual } from 'lodash-es';
 import { diffModes, diffViewerModes } from '~/ide/constants';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -654,4 +655,17 @@ export function markTreeEntriesLoaded({ priorEntries, loadedFiles }) {
   });
 
   return newEntries;
+}
+
+/**
+ * Extracts the Gitaly error message from a 503 Service Unavailable response.
+ *
+ * @param {Error} error - The axios error object
+ * @returns {string|null} The error message if present in a 503 response, null otherwise
+ */
+export function extractGitalyErrorMessage(error) {
+  if (error.response?.status === HTTP_STATUS_SERVICE_UNAVAILABLE) {
+    return error.response?.data?.error || null;
+  }
+  return null;
 }

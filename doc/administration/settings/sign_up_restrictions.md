@@ -48,7 +48,7 @@ You can also prevent new user accounts with the [Rails console](../operations/ra
 
 This setting is enabled by default for new GitLab instances.
 When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
-must be explicitly [approved](../moderate_users.md#approve-or-reject-a-new-user-account) by an
+must be explicitly approved by an
 administrator before they can start using their account. It is only applicable if user accounts are allowed.
 
 To require administrator approval for new user accounts:
@@ -66,7 +66,7 @@ automatically approved in a background job.
 > signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
 > [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
 > [LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
-> A [user cap](#user-cap) can also be used to enforce approvals for new users.
+> A [user cap](../../subscriptions/manage_seats.md#user-cap) can also be used to enforce approvals for new users.
 
 ## Confirm user email
 
@@ -92,34 +92,7 @@ The following settings are available:
 - **Soft** - Send a confirmation email during account creation. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign in without confirming their email address.
 
-## Restricted access
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523464) in GitLab 18.0.
-- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
-
-{{< /history >}}
-
-Use restricted access to prevent overage fees.
-Overage fees occur when you exceed the number of licensed users in your subscription,
-and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
-
-When you turn on restricted access, instances cannot add new billable users when no licensed seats
-are left in the subscription.
-
-> [!note]
-> If user cap is enabled for an instance or a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
-
-### Turn on restricted access
+## Turn on restricted access
 
 Prerequisites:
 
@@ -132,87 +105,7 @@ To turn on restricted access:
 1. Expand **New user account restrictions**.
 1. Under **Seat control**, select **Restricted access**.
 
-When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on. This setting prevents unexpectedly adding new billable users, which might result in overage fees.
-
-You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
-
-### Provisioning behavior with SAML, SCIM, and LDAP
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
-
-{{< /history >}}
-
-When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
-This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and GitLab Self-Managed Ultimate.
-
-Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
-When seats become available, the users can be promoted to their intended access level.
-Existing users with billable roles are not affected by this behavior.
-
-You can [view seat usage](../../subscriptions/manage_seats.md#view-seat-usage) and manage users with Minimal Access.
-
-### Known issues
-
-When you turn on restricted access, the following known issues might occur and result in overages:
-
-- The number of billable users can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
-  - Multiple users with administrator access add members simultaneously.
-  - New billable users delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
-- If you renew your subscription through the GitLab Sales Team for fewer users than your current
-  subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
-  renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
-  you will be charged overages for the five additional users.
-
-Additionally, restricted access might block the standard non-overage flows:
-
-- Service bots that are updated or added to a billable role are incorrectly blocked.
-- Inviting or updating existing billable users through email is blocked unexpectedly.
-
-### Dormant user reactivation
-
-When restricted access is active and no licensed seats are available,
-[dormant users](../moderate_users.md#automatically-deactivate-dormant-users) who
-attempt to sign back in are set to
-[pending approval](../moderate_users.md#users-pending-approval) instead of
-being reactivated. Their existing group and project memberships are preserved.
-An administrator can approve the users when seats become available.
-
-Users with only the [Minimal Access](../../user/permissions.md#users-with-minimal-access)
-role are reactivated directly, because they do not consume a billable seat.
-
-## User cap
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-The user cap is the maximum number of billable users who can create accounts or be added to a subscription
-without administrator approval. After the user cap is reached, users who create accounts or are
-added must be [approved](../moderate_users.md#approve-or-reject-a-new-user-account)
-by an administrator. Users can use their account only after they have been approved by an administrator.
-
-If an administrator increases or removes the user cap, users pending approval are automatically approved.
-
-The number of [billable users](../../subscriptions/manage_seats.md#billable-users) is updated once a day.
-The user cap might apply only retrospectively after the cap has already been exceeded.
-If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
-
-You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
-
-> [!note]
-> For instances that use LDAP or OmniAuth, when
-> [administrator approval for new user accounts](#require-administrator-approval-for-new-user-accounts)
-> is enabled or disabled, downtime might occur due to changes in the Rails configuration.
-> You can set a user cap to enforce approvals for new users.
-
-### Set a user cap
+## Set a user cap
 
 Prerequisites:
 
@@ -226,7 +119,7 @@ To set a user cap:
 1. In the **User cap** field, enter a number or leave blank for unlimited.
 1. Select **Save changes**.
 
-### Remove the user cap
+## Remove the user cap
 
 Remove the user cap so that the number of new users who can create accounts without
 administrator approval is not restricted.
@@ -244,11 +137,6 @@ To remove the user cap:
 1. Expand **New user account restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
-
-## Changing from user cap to restricted access
-
-When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
-To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
 
 ## Modify password complexity requirements
 

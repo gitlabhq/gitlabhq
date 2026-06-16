@@ -20,7 +20,7 @@ class Groups::ApplicationController < ApplicationController
   private
 
   def group
-    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.fullpath)
+    @group ||= find_routable!(Group, group_finder_params[:group_id] || group_finder_params[:id], request.fullpath)
   end
 
   def group_projects
@@ -60,9 +60,7 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def build_canonical_path(group)
-    params[:group_id] = group.to_param
-
-    url_for(safe_params)
+    url_for(safe_params.merge(group_id: group.to_param))
   end
 
   def set_sorting
@@ -109,6 +107,10 @@ class Groups::ApplicationController < ApplicationController
     push_namespace_setting(:math_rendering_limits_enabled, @group)
     push_force_frontend_feature_flag(:allow_iframes_in_markdown,
       @group&.allow_iframes_in_markdown_feature_flag_enabled? == true)
+  end
+
+  def group_finder_params
+    params.permit(:group_id, :id)
   end
 end
 

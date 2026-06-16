@@ -1,8 +1,9 @@
 ---
 stage: Security Risk Management
 group: Security Platform Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: グループのセキュリティ設定API
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabでグループの設定を更新します。グループ内のすべてのプロジェクトに対し、シークレットプッシュ保護やその他のセキュリティポリシーを設定します。
+title: グループセキュリティ設定API
 ---
 
 {{< details >}}
@@ -22,29 +23,31 @@ title: グループのセキュリティ設定API
 
 ユーザーがプライベートグループのメンバーでない場合、プライベートグループに対するリクエストは、`404 Not Found`ステータスコードを返します。
 
-## `secret_push_protection_enabled`設定を更新 {#update-secret_push_protection_enabled-setting}
+## グループセキュリティ設定を更新 {#update-group-security-settings}
 
-グループ内のすべてのプロジェクトについて、`secret_push_protection_enabled`設定を、指定された値に更新します。
+指定されたグループのグループ設定を更新します。
 
-`true`に設定して、グループ内のすべてのプロジェクトに対して[シークレットプッシュ保護](../user/application_security/secret_detection/secret_push_protection/_index.md)を有効にします。
+前提条件: 
 
-前提要件: 
+- グループのセキュリティマネージャー、メンテナー、またはオーナーのロールが必要です。
 
-- グループのメンテナーロール以上を持っている必要があります。
+```plaintext
+PUT /groups/:id/security_settings
+```
 
-| 属性           | 型              | 必須   | 説明                                                                                                                  |
-| ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | 整数または文字列 | はい        | 認証済みユーザーがメンバーであるグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
-| `secret_push_protection_enabled`        | ブール値 | はい        | シークレットプッシュ保護がグループに対して有効になっているかどうか。 |
-| `projects_to_exclude`        | 整数の配列 | いいえ        | この機能から除外するプロジェクトのID。  |
+| 属性                        | 型              | 必須 | 説明 |
+| -------------------------------- | ----------------- | -------- | ----------- |
+| `id`                             | 整数または文字列 | はい      | グループのID、またはURLエンコードされた[パス](rest/_index.md#namespaced-paths)。 |
+| `secret_push_protection_enabled` | ブール値           | はい      | グループ内のプロジェクトでシークレットプッシュ保護を有効にします。 |
+| `projects_to_exclude`            | 整数の配列 | いいえ       | シークレットプッシュ保護から除外するプロジェクトのID。 |
 
 ```shell
 curl --request PUT \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

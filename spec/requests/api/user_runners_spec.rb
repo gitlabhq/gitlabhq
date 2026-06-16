@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::UserRunners, :aggregate_failures, feature_category: :fleet_visibility do
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
+  let_it_be_with_reload(:user) { create(:user, username: 'user.withdot') }
 
   describe 'POST /user/runners' do
     subject(:request) { post api(path, current_user, **post_args), params: runner_attrs }

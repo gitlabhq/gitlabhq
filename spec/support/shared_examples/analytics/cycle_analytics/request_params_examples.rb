@@ -92,7 +92,7 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
         params[:value_stream] = nil
       end
 
-      it { expect(subject.value_stream).to eq(nil) }
+      it { expect(subject.value_stream).to be_nil }
     end
   end
 
@@ -120,7 +120,7 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
     context 'when not licensed' do
       it 'returns nil' do
         data_collector_params = subject.to_data_attributes
-        expect(data_collector_params[:aggregation]).to eq(nil)
+        expect(data_collector_params[:aggregation]).to be_nil
       end
     end
   end
@@ -128,7 +128,7 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
   describe 'use_aggregated_data_collector param' do
     subject(:value) { request_params.to_data_collector_params[:use_aggregated_data_collector] }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 
   describe 'feature availablity data attributes' do

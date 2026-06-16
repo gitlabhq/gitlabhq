@@ -28,6 +28,6 @@ RSpec.describe Mutations::MergeRequests::SetAssignees, feature_category: :api do
   end
 
   it_behaves_like 'an assignable resource' do
-    let_it_be(:resource, reload: true) { create(:merge_request) }
+    let_it_be_with_reload(:resource) { create(:merge_request) }
   end
 end

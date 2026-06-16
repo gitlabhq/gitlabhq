@@ -97,23 +97,27 @@ module Gitlab
           end
 
           def create_test_case(data, test_suite, job)
-            system_out = data.key?('system_out') ? "System Out:\n\n#{data['system_out']}" : nil
-            system_err = data.key?('system_err') ? "System Err:\n\n#{data['system_err']}" : nil
+            system_out_content = Array.wrap(data['system_out']).join("\n\n")
+            system_out = system_out_content.present? ? "System Out:\n\n#{system_out_content}" : nil
+
+            system_err_content = Array.wrap(data['system_err']).join("\n\n")
+            system_err = system_err_content.present? ? "System Err:\n\n#{system_err_content}" : nil
 
             if data.key?('failure')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = [data['failure'], system_out, system_err].compact.join("\n\n")
-              attachment = attachment_path(data['system_out'])
+              attachment = attachment_path(system_out_content)
             elsif data.key?('error')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
               system_output = [data['error'], system_out, system_err].compact.join("\n\n")
-              attachment = attachment_path(data['system_out'])
+              attachment = attachment_path(system_out_content)
             elsif data.key?('skipped')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED
               system_output = data['skipped']
             else
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS
-              system_output = nil
+              system_output = system_out
+              attachment = attachment_path(system_out_content)
             end
 
             ::Gitlab::Ci::Reports::TestCase.new(

@@ -1,6 +1,8 @@
-import { waitFor } from '@testing-library/dom';
+import { waitFor, screen, within } from '@testing-library/vue';
 import { mount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
+
+export { screen, within };
 
 export const assignRouter = (routerFn, args) => {
   setWindowLocation(args?.routerPath || '/');
@@ -36,25 +38,16 @@ export function getText(el) {
 }
 
 /**
- * Finds an element by data-testid attribute within a container.
- * @param {string} testId - The data-testid value to search for
- * @param {HTMLElement} [container=document] - The container to search within
- * @returns {HTMLElement|null}
- */
-export function findByTestId(testId, container = document) {
-  return container.querySelector(`[data-testid="${testId}"]`);
-}
-
-/**
  * Finds a button element by its text content or aria-label.
+ * Uses @testing-library/vue's queryAllByRole under the hood,
+ * returning the first match or null.
  * @param {string} text - The text content or aria-label to search for
- * @param {HTMLElement} [container=document] - The container to search within
+ * @param {HTMLElement} [container=document.body] - The container to search within
  * @returns {HTMLElement|null}
  */
-export function findButtonByText(text, container = document) {
-  return [...container.querySelectorAll('button')].find(
-    (btn) => btn.textContent.trim() === text || btn.getAttribute('aria-label') === text,
-  );
+export function findButtonByText(text, container = document.body) {
+  const matches = within(container).queryAllByRole('button', { name: text });
+  return matches[0] || null;
 }
 
 /**
@@ -125,6 +118,28 @@ export function waitForAssertion(assertion) {
   return waitFor(() => {
     assertion();
   });
+}
+
+/**
+ * Intercept GraphQL operation names to build a single
+ * list of all missing operations for better visibily
+ * while writing new test suites that require new handlers.
+ */
+export const missingOperations = new Set([]);
+
+/**
+ * Capture a graphql operation that failed
+ * @param {string} name - name of the graphql operation
+ */
+export function captureMissingOperation(name) {
+  missingOperations.add(name);
+}
+
+/**
+ * Clear the missing operations set.
+ */
+export function clearMissingOperations() {
+  missingOperations.clear();
 }
 
 /**

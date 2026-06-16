@@ -6,7 +6,9 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _contribute_security_policy_project
   - _create_dast_pipeline
+  - _read_security_report_job_artifact
   - _run_dast_pipeline
   - access_security_and_compliance
   - admin_security_attributes
@@ -36,14 +38,17 @@ project:
   - read_secret_push_protection_info
   - read_security_configuration
   - read_security_inventory
+  - read_security_orchestration_policies
   - read_security_project_tracked_ref
   - read_security_resource
   - read_security_scan_profiles
   - read_security_settings
   - read_vulnerability
+  - toggle_license_scanning_for_cyclonedx
   - update_cvs_for_container_scanning
   - update_cvs_for_dependency_scanning
   - update_on_demand_dast_scan
+  - update_sec_ai_workflow_settings
   - update_security_setting
 group:
   permissions: []
@@ -56,7 +61,6 @@ group:
   - apply_security_scan_profiles
   - create_vulnerability_export
   - enable_secret_push_protection
-  - modify_security_policy
   - read_any_audit_event
   - read_audit_event
   - read_compliance_adherence_report
@@ -74,4 +78,3 @@ group:
   - read_security_scan_profiles
   - read_vulnerability
   - read_vulnerability_statistics
-  - update_security_orchestration_policy_project

@@ -2,6 +2,7 @@
 import { GlButton, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 
 export default {
+  name: 'RevokeButton',
   components: {
     GlModal,
     GlSprintf,

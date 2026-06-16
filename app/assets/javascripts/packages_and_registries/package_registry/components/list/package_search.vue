@@ -20,6 +20,7 @@ import {
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
+  name: 'PackageSearch',
   tokens: [
     {
       type: TOKEN_TYPE_STATUS,

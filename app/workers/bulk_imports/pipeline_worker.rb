@@ -87,6 +87,7 @@ module BulkImports
     def run
       return if pipeline_tracker.canceled?
       return if invalid_entity_status?
+      return if missing_offline_export_file?
 
       raise(Pipeline::FailedError, export_failed_error_message) if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if export_timeout?
@@ -203,6 +204,17 @@ module BulkImports
       end
     end
 
+    # Offline transfer cannot yet distinguish a relation that was exported with
+    # zero records from a relation export file that is genuinely missing, so skip
+    # the pipeline and log the missing file instead of failing it.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/597294.
+    def missing_offline_export_file?
+      return false unless entity.bulk_import.offline_export?
+      return false unless export_failed?
+
+      handle_invalid_status('skip', "Skipping pipeline due to missing export file. #{export_status.error}")
+    end
+
     def handle_invalid_status(status_event, message)
       logger.info(log_attributes(message: message))
       pipeline_tracker.update!(status_event: status_event, jid: jid)
@@ -282,9 +294,7 @@ module BulkImports
     end
 
     def export_failed_error_message
-      return "Export from source instance failed: #{export_status.error}" unless entity.bulk_import.offline_export?
-
-      "Export file error: #{export_status.error}"
+      "Export from source instance failed: #{export_status.error}"
     end
 
     def fail_batch_tracker(batch)

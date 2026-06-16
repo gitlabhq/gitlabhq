@@ -28,12 +28,6 @@ There are two places defined variables can be used. On the:
 
 ### `.gitlab-ci.yml` file
 
-{{< history >}}
-
-- Support for `CI_ENVIRONMENT_*` variables except `CI_ENVIRONMENT_SLUG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694) in GitLab 16.4.
-
-{{< /history >}}
-
 | Definition                                                              | Can be expanded? | Expansion place        | Description |
 |:------------------------------------------------------------------------|:-----------------|:-----------------------|:------------|
 | [`after_script`](../yaml/_index.md#after_script)                        | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment). |
@@ -50,7 +44,7 @@ There are two places defined variables can be used. On the:
 | [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in) | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab.<br/><br/> The value of the variable being substituted should be a period of time in a human readable natural language form. See [supported values](../yaml/_index.md#environmentauto_stop_in) for more information. |
 | [`environment:kubernetes:agent`](../yaml/_index.md#environmentkubernetes) | yes            | GitLab                 | Similar to `environment:url`, but the variables expansion does not support the following:<br/><br/>- `CI_ENVIRONMENT_*` variables.<br/>- [Persisted variables](#persisted-variables). |
 | [`environment:kubernetes:namespace`](../yaml/_index.md#environmentkubernetes) | yes        | GitLab                 | Similar to `environment:url`, but the variables expansion does not support the following:<br/><br/>- `CI_ENVIRONMENT_*` variables.<br/>- [Persisted variables](#persisted-variables). |
-| [`id_tokens:aud`](../yaml/_index.md#id_tokens)                          | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. Variable expansion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414293) in GitLab 16.1. |
+| [`id_tokens:aud`](../yaml/_index.md#id_tokens)                          | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. |
 | [`image`](../yaml/_index.md#image)                                      | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`include`](../yaml/_index.md#include)                                  | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. <br/><br/>See [Use variables with include](../yaml/includes.md#use-variables-with-include) for more information on supported variables. |
 | [`resource_group`](../yaml/_index.md#resource_group)                    | yes              | GitLab                 | Similar to `environment:url`, but the variables expansion doesn't support the following:<br/>- `CI_ENVIRONMENT_URL`<br/>- [Persisted variables](#persisted-variables). |
@@ -61,7 +55,7 @@ There are two places defined variables can be used. On the:
 | [`script`](../yaml/_index.md#script)                                    | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment). |
 | [`services:name`](../yaml/_index.md#services)                           | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`tags`](../yaml/_index.md#tags)                                        | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. |
-| [`trigger` and `trigger:project`](../yaml/_index.md#trigger)            | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. Variable expansion for `trigger:project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367660) in GitLab 15.3. |
+| [`trigger` and `trigger:project`](../yaml/_index.md#trigger)            | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. |
 | [`variables`](../yaml/_index.md#variables)                              | yes              | GitLab/Runner          | The variable expansion is first made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab, and then any unrecognized or unavailable variables are expanded by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`workflow:name`](../yaml/_index.md#workflowname)                       | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab.<br/><br/>Supported are all variables available in `workflow`:<br/>- Project/Group variables.<br/>- Global `variables` and `workflow:rules:variables` (when matching the rule).<br/>- Variables inherited from parent pipelines.<br/>- Variables from triggers.<br/>- Variables from pipeline schedules.<br/><br/>Not supported are variables defined in the GitLab Runner `config.toml`, variables defined in jobs, or [Persisted variables](#persisted-variables). |
 

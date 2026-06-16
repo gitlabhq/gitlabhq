@@ -8,6 +8,7 @@ import { __, n__, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'DeleteMilestoneModal',
   components: {
     GlModal,
     GlSprintf,

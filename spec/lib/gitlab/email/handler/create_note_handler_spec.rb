@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
   include_context 'email shared context'
 
   let_it_be_with_reload(:user) { create(:user, email: 'jake@adventuretime.ooo') }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:support_bot) { create(:support_bot) }
 
   let(:noteable)  { note.noteable }
@@ -128,6 +128,11 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
     it_behaves_like 'a reply to existing comment'
 
+    it_behaves_like 'an incoming email handler that logs its execution' do
+      let(:expected_log_namespace) { sent_notification.namespace }
+      let(:expected_additional_log_data) { { Labkit::Fields::GL_SENT_NOTIFICATION_ID => sent_notification.id } }
+    end
+
     context 'when sub-addressing is not supported' do
       before do
         stub_incoming_email_setting(enabled: true, address: nil)
@@ -238,7 +243,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
         new_note = noteable.notes.last
 
         expect(new_note.note_metadata.external_author).to eq('jake@adventuretime.ooo')
-        expect(new_note.note_metadata.namespace_id).to eq(new_note.namespace_id)
+        expect(new_note.note_metadata.namespace_id).to eq(new_note.project.project_namespace_id)
       end
     end
   end

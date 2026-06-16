@@ -6,8 +6,8 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, developers: developer, reporters: reporter) }
-  let_it_be(:pipeline) do
+  let_it_be(:project, freeze: false) { create(:project, :repository, developers: developer, reporters: reporter) }
+  let_it_be(:pipeline, freeze: false) do
     create(:ci_pipeline, project: project, sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end
 
@@ -18,7 +18,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
   let_it_be(:deploy_stage) { create(:ci_stage, pipeline: pipeline, name: 'deploy', position: stage.position + 1) }
 
   let(:job_variables_attributes) { [{ key: 'MANUAL_VAR', value: 'manual test var' }] }
-  let(:user) { developer }
+  let_it_be(:user) { developer }
 
   let(:service) { described_class.new(project, user) }
 
@@ -80,8 +80,13 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
       end
 
       context 'when there is a failed job ToDo for the MR' do
-        let!(:merge_request) { create(:merge_request, source_project: project, author: user, head_pipeline: pipeline) }
-        let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: user, target: merge_request) }
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project, author: user, head_pipeline: pipeline)
+        end
+
+        let_it_be(:todo) do
+          create(:todo, :build_failed, user: user, project: project, author: user, target: merge_request)
+        end
 
         it 'resolves the ToDo for the failed job' do
           expect do
@@ -161,11 +166,11 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     end
 
     context 'when there are subsequent processables that are skipped' do
-      let!(:subsequent_build) do
+      let_it_be_with_reload(:subsequent_build) do
         create(:ci_build, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
       end
 
-      let!(:subsequent_bridge) do
+      let_it_be_with_reload(:subsequent_bridge) do
         create(:ci_bridge, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
       end
 
@@ -186,9 +191,9 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     end
 
     context 'when the pipeline has other jobs' do
-      let!(:other_test_build) { create(:ci_build, pipeline: pipeline, ci_stage: stage) }
-      let!(:deploy) { create(:ci_build, pipeline: pipeline, ci_stage: deploy_stage) }
-      let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: other_test_build.name) }
+      let_it_be_with_reload(:other_test_build) { create(:ci_build, pipeline: pipeline, ci_stage: stage) }
+      let_it_be_with_reload(:deploy) { create(:ci_build, pipeline: pipeline, ci_stage: deploy_stage) }
+      let_it_be(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: other_test_build.name) }
 
       context 'when job has a nil scheduling_type' do
         before do
@@ -214,7 +219,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     end
 
     context 'when the pipeline is a child pipeline and the bridge uses a strategy' do
-      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
 
       context 'when the strategy is strategy:depend' do
         it 'marks the source bridge as pending' do
@@ -251,7 +256,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
   shared_examples_for 'creates associations for a deployable job' do |factory_type|
     context 'when a job with a deployment is retried' do
-      let!(:job) do
+      let_it_be_with_refind(:job) do
         create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline, ci_stage: stage)
       end
 
@@ -297,7 +302,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     let(:new_job) { service.clone!(job, start_pipeline: start_pipeline_on_clone) }
 
     it 'raises an error when an unexpected class is passed' do
-      expect { service.clone!(create(:ci_build).present) }.to raise_error(TypeError)
+      expect { service.clone!(create(:ci_build, pipeline: pipeline).present) }.to raise_error(TypeError)
     end
 
     context 'when the job to be cloned is a bridge' do
@@ -394,7 +399,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     context 'when the job to be retried is a bridge' do
       context 'and it is not retryable' do
-        let_it_be(:job) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth) }
+        let_it_be(:job, freeze: false) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth) }
 
         it_behaves_like 'does not retry the job'
       end
@@ -457,7 +462,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     context 'when the job to be retried is a build' do
       context 'and it is not retryable' do
-        let_it_be(:job) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
+        let_it_be(:job, freeze: false) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
 
         it_behaves_like 'does not retry the job'
       end
@@ -467,7 +472,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
       it_behaves_like 'retries the job'
 
       context 'automatic retryable build' do
-        let!(:auto_retryable_build) do
+        let_it_be_with_refind(:auto_retryable_build) do
           create(:ci_build, pipeline: pipeline, ci_stage: stage, user: user, options: { retry: 1 })
         end
 
@@ -482,11 +487,11 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
       end
 
       context 'when there are subsequent jobs that are skipped' do
-        let!(:subsequent_build) do
+        let_it_be(:subsequent_build) do
           create(:ci_build, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
         end
 
-        let!(:subsequent_bridge) do
+        let_it_be(:subsequent_bridge) do
           create(:ci_bridge, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
         end
 
@@ -524,7 +529,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     end
 
     context 'when job being retried has jobs in previous stages' do
-      let!(:job) do
+      let_it_be_with_refind(:job) do
         create(
           :ci_build,
           :failed,
@@ -649,14 +654,14 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     end
 
     context 'when given job inputs' do
-      let(:inputs_spec) do
+      let_it_be(:inputs_spec) do
         {
           'environment' => { 'type' => 'string', 'default' => 'staging', 'options' => %w[staging production] },
           'debug' => { 'type' => 'boolean', 'default' => false }
         }
       end
 
-      let!(:job) do
+      let_it_be_with_refind(:job) do
         create(:ci_build, :success, pipeline: pipeline, ci_stage: stage, options: { inputs: inputs_spec })
       end
 

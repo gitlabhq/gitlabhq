@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'value stream analytics stage' do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:other_organization) { create(:organization) }
-  let_it_be(:other_group) { create(:group, organization: other_organization) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:other_organization, freeze: false) { create(:organization) }
+  let_it_be(:other_group, freeze: false) { create(:group, organization: other_organization) }
 
   let(:valid_params) do
     {
@@ -295,7 +295,7 @@ RSpec.shared_examples 'value stream analytics label based stage' do
     end
 
     context 'when `ProjectLabel is given' do
-      let_it_be(:label) { create(:label) }
+      let_it_be(:label, freeze: false) { create(:label) }
       let(:expected_error) { s_('CycleAnalyticsStage|is not available for the selected group') }
 
       it 'raises error when `ProjectLabel` is given for `start_event_label`' do

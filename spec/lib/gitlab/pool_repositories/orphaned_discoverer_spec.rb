@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::PoolRepositories::OrphanedDiscoverer, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:pool) { create(:pool_repository, source_project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:pool, freeze: false) { create(:pool_repository, source_project: project) }
 
   let(:logger) { instance_double(Logger, info: nil, error: nil, debug: nil) }
   let(:verbose) { false }
@@ -206,7 +206,7 @@ RSpec.describe Gitlab::PoolRepositories::OrphanedDiscoverer, feature_category: :
     end
 
     context 'when multiple pools have different reasons' do
-      let_it_be(:pool2) { create(:pool_repository) }
+      let_it_be(:pool2, freeze: false) { create(:pool_repository) }
 
       before do
         pool.update_column(:source_project_id, nil)
@@ -306,7 +306,7 @@ RSpec.describe Gitlab::PoolRepositories::OrphanedDiscoverer, feature_category: :
     end
 
     context 'with multiple member projects' do
-      let_it_be(:project2) { create(:project) }
+      let_it_be(:project2, freeze: false) { create(:project) }
 
       before_all do
         project2.update!(pool_repository: pool)
@@ -416,7 +416,7 @@ RSpec.describe Gitlab::PoolRepositories::OrphanedDiscoverer, feature_category: :
     end
 
     context 'when orphaned pools exist' do
-      let_it_be(:pool2) { create(:pool_repository) }
+      let_it_be(:pool2, freeze: false) { create(:pool_repository) }
 
       before do
         pool.update_column(:source_project_id, nil)

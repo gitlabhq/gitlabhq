@@ -100,6 +100,7 @@ module QA
           actions: [child_ci_file, parent_ci_file]
         )
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
     end
   end

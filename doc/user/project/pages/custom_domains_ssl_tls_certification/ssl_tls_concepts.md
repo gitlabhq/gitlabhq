@@ -19,17 +19,14 @@ it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
 > [!note]
-> Certificates are **not** required to add to your custom
+> Certificates are not required to add to your custom
 > (sub)domain on your GitLab Pages project, though they are
 > highly recommendable.
 
-Let's start with an introduction to the importance of HTTPS.
+## Importance of HTTPS
 
-## Why should you care about HTTPS?
-
-This might be your first question. If our sites are hosted by GitLab Pages,
-they are static, hence we are not dealing with server-side scripts
-nor credit card transactions, then why do we need secure connections?
+GitLab Pages sites are static. They don't use server-side scripts or process
+credit card transactions. So why do they need secure connections?
 
 When HTTPS came out in 1990, [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0.2C_2.0_and_3.0) was considered a "special"
 security measure, necessary just for big companies like banks and shopping sites
@@ -47,10 +44,9 @@ Now we have a different picture. [According to Josh Aas](https://letsencrypt.org
 > and for any site that offers content people might not want others to know they are consuming.
 > We've also learned that any site not secured by HTTPS [can be used to attack other sites](https://krebsonsecurity.com/2015/04/dont-be-fodder-for-chinas-great-cannon/).
 
-Therefore, the reason why certificates are so important is that they encrypt
-the connection between the **client** (you, your visitors)
-and the **server** (where you site lives), through a keychain of
-authentications and validations.
+Certificates are important because they encrypt the connection between the
+**client** (you and your visitors) and the **server** (where your site lives),
+through a keychain of authentications and validations.
 
 ## Organizations supporting HTTPS
 

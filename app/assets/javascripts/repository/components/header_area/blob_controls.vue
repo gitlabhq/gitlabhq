@@ -33,6 +33,7 @@ import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
 import { NO_MODIFY_PERMISSION_MESSAGE } from './constants';
 
 export default {
+  name: 'BlobControls',
   i18n: {
     findFile: __('Find file'),
     blame: __('Blame'),

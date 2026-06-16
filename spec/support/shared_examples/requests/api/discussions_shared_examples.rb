@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'with cross-reference system notes' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:pat) { create(:personal_access_token, user: user) }
-  let_it_be(:project) { create(:project, :small_repo, developers: user) }
-  let_it_be(:project2) { create(:project, :small_repo, developers: user) }
-  let_it_be(:project3) { create(:project, :small_repo) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:pat, freeze: false) { create(:personal_access_token, user: user) }
+  let_it_be(:project, freeze: false) { create(:project, :small_repo, developers: user) }
+  let_it_be(:project2, freeze: false) { create(:project, :small_repo, developers: user) }
+  let_it_be(:project3, freeze: false) { create(:project, :small_repo) }
 
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:new_merge_request) { create(:merge_request, source_project: project2) }
-  let_it_be(:hidden_merge_request) { create(:merge_request, source_project: project3) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+  let_it_be(:new_merge_request, freeze: false) { create(:merge_request, source_project: project2) }
+  let_it_be(:hidden_merge_request, freeze: false) { create(:merge_request, source_project: project3) }
 
   let!(:note) { create(:system_note, noteable: merge_request, project: project, note: cross_reference) }
   let!(:note_metadata) { create(:system_note_metadata, note: note, action: 'cross_reference') }
@@ -387,6 +387,11 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
               "discussions/#{note.discussion_id}/notes/#{note.id}", user)
 
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it_behaves_like 'ai_workflows scope' do
+      let(:note_action) { put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes/#{note.id}", oauth_access_token: oauth_token), params: { body: 'Hello!' } }
+      let(:expected_status) { :ok }
     end
 
     it_behaves_like 'authorizing granular token permissions', :"update_#{noteable_type_singular}_discussion_note" do

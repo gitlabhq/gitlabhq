@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Oauth::ApplicationsController, feature_category: :system_access do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:application) { create(:oauth_application, owner: user) }
   let_it_be(:show_path) { oauth_application_path(application) }
   let_it_be(:create_path) { oauth_applications_path }

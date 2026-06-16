@@ -1,0 +1,10 @@
+---
+name: oauth_application_deleted
+description: User deletes an OAuth application
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/23054
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227392
+feature_category: authorization
+milestone: '19.0'
+saved_to_database: true
+streamed: true
+scope: [User]

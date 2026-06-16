@@ -574,6 +574,24 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           end
         end
 
+        context 'when the container registry is unreachable' do
+          before do
+            allow(project).to receive(:has_container_registry_tags?).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
+          end
+
+          it 'returns an error and tracks the exception', :aggregate_failures do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(Faraday::ConnectionFailed),
+              project_id: project.id
+            )
+
+            result = update_project(project, admin, path: new_name)
+
+            expect(result).to include(status: :error)
+            expect(result[:message]).to match(/failed to connect to the container registry/)
+          end
+        end
+
         def stub_rename_base_repository_in_registry(dry_run:, result: nil)
           options = { name: new_name, project: project }
           options[:dry_run] = true if dry_run

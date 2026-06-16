@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe WebIdeTerminal do
-  let(:build) { create(:ci_build) }
+RSpec.describe WebIdeTerminal, feature_category: :web_ide do
+  let(:build) { build_stubbed(:ci_build) }
 
   subject { described_class.new(build) }
 

@@ -6,6 +6,7 @@ import FileTreePopover from '../popovers/file_tree_popover.vue';
 import BranchSwitcher from './branch_switcher.vue';
 
 export default {
+  name: 'PipelineEditorFileNav',
   components: {
     BranchSwitcher,
     FileTreePopover,

@@ -3,22 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Packages::MlModel::PackageForCandidateService, feature_category: :mlops do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { project.creator }
-  let_it_be(:model) { create(:ml_models, user: project.owner, project: project) }
-  let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
-  let_it_be(:model_version_candidate) { model_version.candidate }
-  let_it_be(:model_candidate) do
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:user, freeze: false) { project.creator }
+  let_it_be(:model, freeze: false) { create(:ml_models, user: project.owner, project: project) }
+  let_it_be(:model_version, freeze: false) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
+  let_it_be(:model_version_candidate, freeze: false) { model_version.candidate }
+  let_it_be(:model_candidate, freeze: false) do
     create(:ml_candidates, user: project.owner, project: project, experiment: model.default_experiment)
   end
 
-  let_it_be(:model_candidate_with_package) do
+  let_it_be(:model_candidate_with_package, freeze: false) do
     create(:ml_candidates, experiment: model.default_experiment, user: project.owner, project: project).tap do |c|
       c.package = create(:ml_model_package, project: project, name: c.package_name, version: c.package_version)
     end
   end
 
-  let_it_be(:not_model_candidate) { create(:ml_candidates, user: project.owner, project: project) }
+  let_it_be(:not_model_candidate, freeze: false) { create(:ml_candidates, user: project.owner, project: project) }
 
   let(:base_params) do
     {

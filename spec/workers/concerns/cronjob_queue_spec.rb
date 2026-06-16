@@ -41,7 +41,7 @@ RSpec.describe CronjobQueue, feature_category: :sidekiq do
   end
 
   it 'disables retrying of failed jobs' do
-    expect(worker.sidekiq_options['retry']).to eq(false)
+    expect(worker.sidekiq_options['retry']).to be(false)
   end
 
   it 'automatically clears project, user and namespace from the context', :aggregate_failures do

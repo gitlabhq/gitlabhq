@@ -21,7 +21,8 @@ workhorse:verify:
     - .workhorse-job-cache-pull
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-exiftool-${EXIFTOOL_VERSION}
   services:
-    - name: redis:${REDIS_VERSION}-alpine
+    - name: redis:7.2-alpine
+      alias: redis
   variables:
     GITALY_ADDRESS: "tcp://127.0.0.1:8075"
   stage: test
@@ -42,16 +43,15 @@ workhorse:verify:
     paths:
       - log/gitaly-test.log
 
-workhorse:test go:
-  extends: .workhorse:test
-  parallel:
-    matrix:
-      - GO_VERSION: ["1.25"]
-        REDIS_VERSION: ["7.0", "6.2"]
+.workhorse:test:go-script:
   script:
     - make -C workhorse test-coverage 2>&1 | tee workhorse/test-output.txt
-    - make -C workhorse TEST_OPTIONS="-json" test > workhorse/test-output.json 2>&1 || true
+    - |
+      make -C workhorse TEST_OPTIONS="-json" test 2>workhorse/test-output.err \
+      | go -C workhorse tool gitlab-test-metrics-exporter > workhorse/test-output.json || true
     - cd workhorse && go run ../scripts/workhorse/go_coverage_to_lcov.go cover.out coverage.lcov
+
+.workhorse:test:go-artifacts:
   coverage: '/\d+.\d+%/'
   artifacts:
     expire_in: 30 days
@@ -61,14 +61,25 @@ workhorse:test go:
       - workhorse/cover.out
       - workhorse/coverage.lcov
       - workhorse/test-output.json
+      - workhorse/test-output.err
       - log/gitaly-test.log
+
+workhorse:test go:
+  extends:
+    - .workhorse:test
+    - .workhorse:test:go-artifacts
+  parallel:
+    matrix:
+      - GO_VERSION: ["1.25", "1.26"]
+  variables:
+    GLCI_TEST_METRICS_RUN_TYPE: workhorse-go-${GO_VERSION}-redis-7.2
+  script:
+    - !reference [.workhorse:test:go-script, script]
 
 workhorse:test no_gitaly_transactions:
   extends:
     - .workhorse:test
     - .gitaly-without-transactions
-  variables:
-    REDIS_VERSION: "7.0"
 
 workhorse:test fips:
   extends: .workhorse:test
@@ -76,8 +87,7 @@ workhorse:test fips:
     - setup-test-env-fips
   parallel:
     matrix:
-      - GO_VERSION: ["1.25"]
-        REDIS_VERSION: ["7.0", "6.2"]
+      - GO_VERSION: ["1.25", "1.26"]
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-exiftool-${EXIFTOOL_VERSION}
   variables:
     FIPS_MODE: 1
@@ -87,11 +97,27 @@ workhorse:test fips:
 
 workhorse:test race:
   extends: .workhorse:test
-  parallel:
-    matrix:
-      - REDIS_VERSION: ["7.0", "6.2"]
   script:
     - make -C workhorse test-race
+
+# Weekly scheduled job: run the workhorse Go tests against Valkey instead of Redis
+# to validate compatibility before GitLab.com switches from Redis to Valkey.
+workhorse:test go valkey:
+  extends:
+    - .workhorse:test
+    - .workhorse:test:go-artifacts
+  services:
+    - name: valkey/valkey:7.2
+      alias: redis
+  parallel:
+    matrix:
+      - GO_VERSION: ["1.25", "1.26"]
+  variables:
+    GLCI_TEST_METRICS_RUN_TYPE: workhorse-go-${GO_VERSION}-valkey-7.2
+  script:
+    - !reference [.workhorse:test:go-script, script]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
 
 workhorse-coverage:
   extends:
@@ -106,7 +132,6 @@ workhorse-coverage:
       parallel:
         matrix:
           - GO_VERSION: "1.25"
-            REDIS_VERSION: "7.0"
   variables:
     GO_VERSION: "1.25"
   script:

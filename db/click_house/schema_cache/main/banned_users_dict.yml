@@ -1,0 +1,8 @@
+---
+name: banned_users_dict
+engine: Dictionary
+columns:
+- name: user_id
+  type: UInt64
+- name: banned
+  type: Bool

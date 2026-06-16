@@ -16,7 +16,7 @@ RSpec.shared_examples 'create cluster service success' do
     expect(subject.provider.access_token).to eq(access_token)
     expect(subject.provider).to be_legacy_abac
     expect(subject.platform).to be_nil
-    expect(subject.namespace_per_environment).to eq true
+    expect(subject.namespace_per_environment).to be true
   end
 end
 

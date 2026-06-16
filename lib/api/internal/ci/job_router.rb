@@ -56,6 +56,44 @@ module API
                 end
               end
             end
+
+            namespace 'job_router' do
+              namespace 'jobs' do
+                helpers ::API::Ci::Helpers::Runner
+                helpers ::API::Helpers::RateLimiter
+                helpers ::API::Ci::Helpers::JobRequest
+
+                desc 'Request a job for the Job Router' do
+                  detail 'Internal endpoint used by GitLab Relay (KAS) to request a job on behalf of a runner.'
+                  success code: 201, model: ::API::Entities::Ci::JobRouter::JobResponse, message: 'Job was scheduled'
+                  failure [
+                    { code: 204, message: 'No job for Runner' },
+                    { code: 401, message: '401 Unauthorized' },
+                    { code: 403, message: '403 Forbidden' },
+                    { code: 409, message: '409 Conflict' },
+                    { code: 501, message: '501 Not Implemented' }
+                  ]
+                  tags %w[jobs job_router]
+                end
+                params do
+                  use :request_job_params
+                end
+                route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
+                post 'request' do
+                  check_rate_limit!(:runner_jobs_request_api,
+                    scope: [::Gitlab::CryptoHelper.sha256(params[:token])], user: nil)
+
+                  authenticate_runner!(creation_state: :finished)
+
+                  ensure_job_router_enabled_for_runner!(current_runner)
+
+                  result = acquire_ci_job!(declared_params(include_missing: false))
+
+                  status :created
+                  present result.build_presented, with: ::API::Entities::Ci::JobRouter::JobResponse
+                end
+              end
+            end
           end
         end
       end

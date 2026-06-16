@@ -47,6 +47,29 @@ module Gitlab
 
         Sidekiq.logger.info payload
       end
+
+      def dropped_poison_job_log(worker_name, serialized_job, error)
+        job = parse_serialized_job(serialized_job)
+        context = job.delete('context') || {}
+        payload = parse_job(job.merge('class' => worker_name))
+        payload['job_status'] = 'dropped'
+        payload['queue'] = worker_name.safe_constantize&.queue
+        payload['message'] = "#{base_message(payload)}: concurrency_limit: dropped poison job from buffered queue"
+        payload['exception.class'] = error.class.name
+        payload['exception.message'] = error.message
+        payload['job_size_bytes'] = serialized_job.bytesize
+        payload['concurrency_limit_buffered_at'] = job['buffered_at']
+
+        Sidekiq.logger.warn payload.merge(context)
+      end
+
+      private
+
+      def parse_serialized_job(serialized_job)
+        Gitlab::Json.safe_parse(serialized_job) || {}
+      rescue StandardError
+        {}
+      end
     end
   end
 end

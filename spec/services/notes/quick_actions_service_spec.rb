@@ -621,12 +621,12 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     let(:service) { described_class.new(project, maintainer) }
 
     it_behaves_like 'note on noteable that supports quick actions' do
-      let_it_be(:issue, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project) }
       let(:note) { build(:note_on_issue, project: project, noteable: issue) }
     end
 
     it_behaves_like 'note on noteable that supports quick actions' do
-      let_it_be(:incident, reload: true) { create(:incident, project: project) }
+      let_it_be_with_reload(:incident) { create(:incident, project: project) }
       let(:note) { build(:note_on_issue, project: project, noteable: incident) }
     end
 
@@ -639,7 +639,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
       context 'when noteable is a work item' do
-        let_it_be(:noteable) { create(:work_item, project: project) }
+        let_it_be(:noteable, freeze: false) { create(:work_item, project: project) }
 
         context 'when no branch name is provided' do
           let(:note_text) { '/create_merge_request' }
@@ -681,7 +681,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
     end
 
     context 'note on work item that supports quick actions' do
-      let_it_be(:work_item, reload: true) { create(:work_item, project: project) }
+      let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
       let(:note) { build(:note_on_work_item, project: project, noteable: work_item) }
 

@@ -6,7 +6,7 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
   let_it_be(:diff_options_hash) do
     {
       ignore_whitespace_change: false,

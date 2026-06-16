@@ -5,21 +5,29 @@ require "spec_helper"
 RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
 
+  def open_help_dropdown
+    within_testid('super-sidebar') { find_by_testid('sidebar-help-button').click }
+  end
+
   context 'when not logged in' do
-    it 'and on SaaS it renders', :saas do
+    it 'renders inside the help dropdown on SaaS', :saas do
       visit user_path(user)
 
-      expect(page).to have_button(text: "What's new")
+      open_help_dropdown
+
+      within_testid('disclosure-content') do
+        expect(page).to have_button(text: "What's new")
+      end
     end
 
-    it "doesn't render what's new" do
+    it "doesn't render what's new on self-managed" do
       visit user_path(user)
 
-      expect(page).not_to have_button(text: "What's new")
+      open_help_dropdown
 
-      within_testid('super-sidebar') { click_on 'Help' }
-
-      expect(page).not_to have_button(text: "What's new")
+      within_testid('disclosure-content') do
+        expect(page).not_to have_button(text: "What's new")
+      end
     end
   end
 
@@ -33,7 +41,11 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       visit root_dashboard_path
 
-      expect(page).to have_button(text: "What's new")
+      open_help_dropdown
+
+      within_testid('disclosure-content') do
+        expect(page).to have_button(text: "What's new")
+      end
     end
 
     it 'does not render dropdown item when feature disabled' do
@@ -41,10 +53,14 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       visit root_dashboard_path
 
-      expect(page).not_to have_button(text: "What's new")
+      open_help_dropdown
+
+      within_testid('disclosure-content') do
+        expect(page).not_to have_button(text: "What's new")
+      end
     end
 
-    describe 'with notification count in the sidebar' do
+    describe 'with unread articles' do
       before do
         redis_set_key = "whats_new:#{ReleaseHighlight.most_recent_version_digest}:user:#{user.id}:read_articles"
 
@@ -53,18 +69,13 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
         end
       end
 
-      it 'shows the count and removes it once all articles are read' do
+      it 'keeps the menu item full-time after all articles are read' do
         visit root_dashboard_path
 
-        within_testid('super-sidebar') do
-          find_by_testid('sidebar-help-button').click
+        open_help_dropdown
 
-          within_testid('disclosure-content') { expect(page).not_to have_button(text: "What's new") }
-
-          find_by_testid('sidebar-help-button').click
-
-          has_testid?('notification-count', visible: true)
-
+        within_testid('disclosure-content') do
+          expect(page).to have_button(text: "What's new")
           click_on "What's new"
         end
 
@@ -78,15 +89,10 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
           find('.gl-drawer-close-button').click
         end
 
-        expect(find('.gl-toast')).to have_content("What's new moved to Help.")
+        open_help_dropdown
 
-        within_testid('super-sidebar') do
-          expect(page).not_to have_button(text: "What's new")
-          has_testid?('notification-count', visible: false)
-
-          find_by_testid('sidebar-help-button').click
-
-          within_testid('disclosure-content') { expect(page).to have_button(text: "What's new") }
+        within_testid('disclosure-content') do
+          expect(page).to have_button(text: "What's new")
         end
       end
     end
@@ -98,7 +104,9 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       page.current_window.resize_to(1200, 2400)
 
-      within_testid('super-sidebar') { click_on "What's new" }
+      open_help_dropdown
+
+      within_testid('disclosure-content') { click_on "What's new" }
 
       expect(page).to have_selector('[data-testid="whats-new-release-heading"]', minimum: 2)
     end

@@ -181,7 +181,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     let(:with_aggregated_needs) { pipeline.processables.select_with_aggregated_needs(project) }
 
     context 'with created status' do
-      let!(:processable) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let_it_be(:processable) { create(:ci_build, :created, project: project, pipeline: pipeline) }
 
       context 'with needs' do
         before do
@@ -209,8 +209,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       end
 
       context 'when ActiveRecord returns a string instead of an array' do
-        let!(:processable) { create(:ci_build, :created, project: project, pipeline: pipeline) }
-
         before do
           create(:ci_build_need, build: processable, name: 'test1')
           create(:ci_build_need, build: processable, name: 'test2')
@@ -262,10 +260,10 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   end
 
   describe '.populate_scheduling_type!' do
-    let!(:build_without_needs) { create(:ci_build, project: project, pipeline: pipeline) }
-    let!(:build_with_needs) { create(:ci_build, project: project, pipeline: pipeline) }
-    let!(:needs_relation) { create(:ci_build_need, build: build_with_needs) }
-    let!(:another_build) { create(:ci_build, project: project) }
+    let_it_be_with_reload(:build_without_needs) { create(:ci_build, project: project, pipeline: pipeline) }
+    let_it_be_with_reload(:build_with_needs) { create(:ci_build, project: project, pipeline: pipeline) }
+    let_it_be(:needs_relation) { create(:ci_build_need, build: build_with_needs) }
+    let_it_be(:another_build) { create(:ci_build, project: project) }
 
     before do
       described_class.update_all(scheduling_type: nil)
@@ -299,8 +297,10 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       it 'returns all needs attributes' do
         is_expected.to contain_exactly(
-          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id, 'project_id' => build.project_id },
-          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id, 'project_id' => build.project_id }
+          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id,
+            'project_id' => build.project_id },
+          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id,
+            'project_id' => build.project_id }
         )
       end
     end
@@ -330,7 +330,9 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         end
 
         it 'is enqueued when build requests resource' do
-          expect { build.enqueue_waiting_for_resource! }.to change { build.status }.from('waiting_for_resource').to('pending')
+          expect { build.enqueue_waiting_for_resource! }.to change {
+            build.status
+          }.from('waiting_for_resource').to('pending')
         end
 
         it 'releases a resource when build finished' do
@@ -350,11 +352,13 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
         context 'when build has prerequisites' do
           before do
-            allow(build).to receive(:any_unmet_prerequisites?) { true }
+            allow(build).to receive(:any_unmet_prerequisites?).and_return(true)
           end
 
           it 'is preparing when build is enqueued' do
-            expect { build.enqueue_waiting_for_resource! }.to change { build.status }.from('waiting_for_resource').to('preparing')
+            expect { build.enqueue_waiting_for_resource! }.to change {
+              build.status
+            }.from('waiting_for_resource').to('preparing')
           end
         end
 
@@ -498,12 +502,12 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
   describe 'job_dependencies_with_accessible_artifacts' do
     context 'in the same project' do
-      let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
-      let(:build2) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let_it_be(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let_it_be(:build2) { create(:ci_build, :created, project: project, pipeline: pipeline) }
       let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
 
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
-      let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, job: build2) }
 
       subject { build.job_dependencies_with_accessible_artifacts([build2]) }
 
@@ -522,12 +526,12 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
     context 'in a different project' do
       let_it_be(:public_project) { create(:project, :public) }
-      let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
-      let(:build2) { create(:ci_build, :created, project: public_project) }
+      let_it_be(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let_it_be(:build2) { create(:ci_build, :created, project: public_project) }
       let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
 
-      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
-      let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
+      let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
+      let_it_be(:job_variable_2) { create(:ci_job_variable, job: build2) }
 
       subject { build.job_dependencies_with_accessible_artifacts([build2]) }
 

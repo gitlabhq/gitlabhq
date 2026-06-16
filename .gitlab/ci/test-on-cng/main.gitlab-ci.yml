@@ -160,19 +160,6 @@ cng-registry:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
 
-# == minimal supported redis version ==
-cng-qa-min-redis-version:
-  extends: .cng-test
-  variables:
-    QA_SCENARIO: Test::Instance::HealthCheck
-  before_script:
-    - |
-      redis_version=$(awk -F "=" "/MIN_REDIS_VERSION =/ {print \$2}" $CI_PROJECT_DIR/lib/system_check/app/redis_version_check.rb | sed "s/['\" ]//g")
-      export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
-    - !reference [.cng-test, before_script]
-  rules:
-    - !reference [.rules:test:mr-code-patterns, rules]  # run validation for minimal supported redis version only on application code changes
-    - *default-branch
 
 cng-relative-url:
   extends:

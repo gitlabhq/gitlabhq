@@ -37,6 +37,7 @@ export default {
       default: null,
     },
   },
+  emits: ['change'],
   data() {
     return {
       isLoading: false,

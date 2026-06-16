@@ -23,6 +23,7 @@ import TextEditor from './editor/text_editor.vue';
 import EditorTab from './ui/editor_tab.vue';
 
 export default {
+  name: 'PipelineEditorTabs',
   i18n: {
     tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),

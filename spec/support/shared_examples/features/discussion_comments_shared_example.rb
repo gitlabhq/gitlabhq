@@ -240,7 +240,7 @@ RSpec.shared_examples 'thread comments for merge request' do
           new_comment = all(comments_selector).last
 
           expect(new_comment).to have_selector('.discussion')
-          expect(new_comment).to have_css('.discussion-with-resolve-btn')
+          expect(new_comment).to have_testid('discussion-with-resolve-btn')
         end
 
         it 'can be replied to' do

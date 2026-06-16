@@ -12,11 +12,11 @@ title: Reintroduce demoted site back into Geo
 
 {{< /details >}}
 
-After a failover, it is possible to bring back the demoted **primary** site as a new **secondary** site or
-restore your original **primary** site. This process consists of two steps:
+After a failover, it is possible to bring back the demoted primary site as a new secondary site or
+restore your original primary site. This process consists of two steps:
 
-1. Making the old **primary** site a **secondary** site.
-1. Promoting a **secondary** site to a **primary** site.
+1. Making the old primary site a secondary site.
+1. Promoting a secondary site to a primary site.
 
 > [!warning]
 >
@@ -25,19 +25,19 @@ restore your original **primary** site. This process consists of two steps:
 >
 >   Make sure that any remnant configuration of it as a former primary is removed prior to adding it back as a new secondary site.
 
-## Configure the former **primary** site to be a **secondary** site
+## Configure the former primary site to be a secondary site
 
-Because the former **primary** site is out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
-repositories and uploads is not replayed when bringing the former **primary** site back
+Because the former primary site is out of sync with the current primary site, the first step is to bring the former primary site up to date. Note, deletion of data stored on disk like
+repositories and uploads is not replayed when bringing the former primary site back
 into sync, which may result in increased disk usage.
-Alternatively, you can [set up a new **secondary** GitLab instance](../setup/_index.md) to avoid this.
+Alternatively, you can [set up a new secondary GitLab instance](../setup/_index.md) to avoid this.
 
-To bring the former **primary** site up to date:
+To bring the former primary site up to date:
 
-1. SSH into the former **primary** site that has fallen behind.
+1. SSH into the former primary site that has fallen behind.
 1. Remove `/etc/gitlab/gitlab-cluster.json` if it exists. ([What is the `gitlab-cluster.json` file?](https://docs.gitlab.com/omnibus/development/reconfigure_in_detail/#gitlab-clusterjson-file))
 
-   If the site to be re-added as a **secondary** site was promoted with the `gitlab-ctl geo promote` command, then it may contain `/etc/gitlab/gitlab-cluster.json`. For example during `gitlab-ctl reconfigure`, you may notice output like:
+   If the site to be re-added as a secondary site was promoted with the `gitlab-ctl geo promote` command, then it may contain `/etc/gitlab/gitlab-cluster.json`. For example during `gitlab-ctl reconfigure`, you may notice output like:
 
    ```plaintext
    The 'geo_primary_role' is defined in /etc/gitlab/gitlab-cluster.json as 'true' and overrides the setting in the /etc/gitlab/gitlab.rb
@@ -52,22 +52,55 @@ To bring the former **primary** site up to date:
    ```
 
    > [!note]
-   > - If you [disabled the **primary** site permanently](_index.md#step-1-permanently-disable-the-primary-site),
+   > - If you [disabled the primary site permanently](_index.md#step-1-permanently-disable-the-primary-site),
    >   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
    >   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
-   >   the GitLab instance from scratch and set it up as a **secondary** site by
+   >   the GitLab instance from scratch and set it up as a secondary site by
    >   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
    > - If you [changed the DNS records](_index.md#optional-updating-the-primary-domain-dns-record)
    >   for this site during disaster recovery procedure you may need to
    >   [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    >   during this procedure.
 
-1. [Set up Geo](../setup/_index.md). In this case, the **secondary** site
-   refers to the former **primary** site.
-   1. If [PgBouncer](../../postgresql/pgbouncer.md) was enabled on the **current secondary** site
+1. [Set up Geo](../setup/_index.md). In this case, the secondary site
+   refers to the former primary site.
+   1. If [PgBouncer](../../postgresql/pgbouncer.md) was enabled on the current secondary site
       (when it was a primary site) disable it by editing `/etc/gitlab/gitlab.rb`
       and running `sudo gitlab-ctl reconfigure`.
-   1. You can then set up database replication on the **secondary** site.
+   1. You can then set up database replication on the secondary site.
+   1. Initialize the Geo tracking database schema on the reintroduced secondary site.
+
+      `gitlab-ctl replicate-geo-database` only replicates the main `gitlabhq_production`
+      database. The Geo tracking database (`gitlabhq_geo_production`) is local to the
+      secondary site and is normally migrated by `sudo gitlab-ctl reconfigure` through
+      `geo_secondary['auto_migrate']`. If `auto_migrate` is disabled, the tracking
+      database is external, or it was empty when reconfigure last ran, the Geo Log
+      Cursor stalls and all sync types remain at 0%.
+
+      In those cases, on a Rails or Sidekiq node of the secondary site:
+      
+      1. [Run the tracking database migrations manually](../setup/external_database.md#set-up-the-database-schema).
+      1. Restart the Geo Log Cursor so it picks up the new schema:
+
+         ```shell
+         sudo gitlab-ctl restart geo-logcursor
+         ```
+
+      1. Verify the tracking database is correctly set up before continuing:
+
+         ```shell
+         # Confirm the tracking database has tables
+         sudo gitlab-geo-psql -d gitlabhq_geo_production -c "\dt"
+
+         # Confirm all tracking database migrations are applied
+         sudo gitlab-rake db:migrate:status:geo | grep -w down
+
+         # Run the full Geo check
+         sudo gitlab-rake gitlab:geo:check
+         ```
+
+      The `db:migrate:status:geo` command should return no `down` migrations, and
+      `gitlab:geo:check` should report `GitLab Geo tracking database is correctly configured ... yes` in its output.
 
    1. Configure JWT audience for OpenBao. If you have enabled GitLab Secrets Manager
       and the primary and secondary sites don't share the same JWT audience,
@@ -81,26 +114,26 @@ To bring the former **primary** site up to date:
           jwt_audience: https://openbao.promoted.example.com:8200
       ```
 
-If you have lost your original **primary** site, follow the
-[setup instructions](../setup/_index.md) to set up a new **secondary** site.
+If you have lost your original primary site, follow the
+[setup instructions](../setup/_index.md) to set up a new secondary site.
 
-## Promote the **secondary** site to **primary** site
+## Promote the secondary site to primary site
 
-When the initial replication is complete and the **primary** site and **secondary** site are
+When the initial replication is complete and the primary site and secondary site are
 closely in sync, you can do a [planned failover](planned_failover.md).
 
-## Restore the **secondary** site
+## Restore the secondary site
 
-If your objective is to have two sites again, you need to bring your **secondary**
+If your objective is to have two sites again, you need to bring your secondary
 site back online as well by repeating the first step
-([configure the former **primary** site to be a **secondary** site](#configure-the-former-primary-site-to-be-a-secondary-site))
-for the **secondary** site.
+([configure the former primary site to be a secondary site](#configure-the-former-primary-site-to-be-a-secondary-site))
+for the secondary site.
 
-### Restoring additional **secondary** sites
+### Restoring additional secondary sites
 
-If there is more than one **secondary** site, the remaining sites can be brought online now. For each of the remaining sites, [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) with the **primary** site.
+If there is more than one secondary site, the remaining sites can be brought online now. For each of the remaining sites, [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) with the primary site.
 
-## Skipping re-transfer of data on a **secondary** site
+## Skipping re-transfer of data on a secondary site
 
 When a secondary site is added, if it contains data that would otherwise be synced from the primary, then Geo avoids re-transferring the data.
 

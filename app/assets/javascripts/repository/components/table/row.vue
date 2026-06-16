@@ -21,6 +21,7 @@ import { getRefType } from '../../utils/ref_type';
 import SkeletonLoader from './skeleton_loader.vue';
 
 export default {
+  name: 'TableRow',
   components: {
     GlBadge,
     GlLink,

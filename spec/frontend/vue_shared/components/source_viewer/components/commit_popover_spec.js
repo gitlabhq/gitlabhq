@@ -47,6 +47,10 @@ describe('CommitPopover component', () => {
       expect(findPopover().exists()).toBe(true);
     });
 
+    it('renders the popover outside of any ancestor stacking context so it is not clipped by the blob header', () => {
+      expect(findPopover().props('container')).toBe('viewport');
+    });
+
     it('renders short SHA linking to commit', () => {
       expect(findShaLink().text()).toBe('abc123de');
       expect(findShaLink().attributes('href')).toBe(defaultCommit.webPath);

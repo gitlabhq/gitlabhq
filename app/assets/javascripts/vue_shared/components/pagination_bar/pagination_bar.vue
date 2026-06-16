@@ -13,6 +13,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 const DEFAULT_PAGE_SIZES = [20, 50, 100];
 
 export default {
+  name: 'PaginationBar',
   components: {
     PaginationLinks,
     GlButton,

@@ -10,6 +10,8 @@ module Mutations
         description: 'Global ID of the alert to unlink from the incident.'
 
       authorize :admin_issue
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:, iid:, alert_id:)
         issue = authorized_find!(project_path: project_path, iid: iid)

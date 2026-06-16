@@ -10,8 +10,8 @@ RSpec.describe 'Subscriptions::Notes::Deleted', feature_category: :team_planning
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:task) { create(:work_item, :task, project: project) }
-  let_it_be(:note, refind: true) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
-  let_it_be(:reply_note, refind: true) do
+  let_it_be_with_refind(:note) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
+  let_it_be_with_refind(:reply_note) do
     create(:note, noteable: task, project: project, in_reply_to: note, discussion_id: note.discussion_id)
   end
 
@@ -48,7 +48,7 @@ RSpec.describe 'Subscriptions::Notes::Deleted', feature_category: :team_planning
     end
 
     context 'when last discussion note is deleted' do
-      let_it_be(:note, refind: true) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
+      let_it_be_with_refind(:note) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
 
       it 'receives note id that is removed' do
         expect(deleted_note['id']).to eq(note.to_gid.to_s)
@@ -58,7 +58,7 @@ RSpec.describe 'Subscriptions::Notes::Deleted', feature_category: :team_planning
     end
 
     context 'when note is confidential' do
-      let_it_be(:note, refind: true) do
+      let_it_be_with_refind(:note) do
         create(:note, :confidential, noteable: task, project: project, type: 'DiscussionNote')
       end
 

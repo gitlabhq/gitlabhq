@@ -264,6 +264,15 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
         expect(token).to eq('foo')
       end
     end
+
+    context 'when the record is frozen' do
+      let(:token_owner_record) { test_class.new(token: 'foo').freeze }
+
+      it 'returns the existing token without raising' do
+        expect { token }.not_to raise_error
+        expect(token).to eq('foo')
+      end
+    end
   end
 
   describe '#reset_token!' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::SourceUrlBuilder, feature_category: :importers do
-  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
   let_it_be(:configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
 
   let(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }

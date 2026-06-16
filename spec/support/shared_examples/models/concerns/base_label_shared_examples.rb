@@ -90,8 +90,8 @@ RSpec.shared_examples 'BaseLabel' do |factory_name: :label|
   end
 
   describe '.search' do
-    let_it_be(:label) { create(factory_name, title: 'bug', description: 'incorrect behavior') }
-    let_it_be(:other_label) { create(factory_name, title: 'test', description: 'bug') }
+    let_it_be(:label, freeze: false) { create(factory_name, title: 'bug', description: 'incorrect behavior') }
+    let_it_be(:other_label, freeze: false) { create(factory_name, title: 'test', description: 'bug') }
 
     it 'returns labels with a partially matching title' do
       expect(described_class.search(label.title[0..2])).to match_array([label, other_label])

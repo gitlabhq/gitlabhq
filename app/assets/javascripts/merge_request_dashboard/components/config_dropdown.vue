@@ -18,6 +18,7 @@ import currentUserPreferencesQuery from '../queries/current_user_preferences.que
 import updatePreferencesMutation from '../queries/update_preferences.mutation.graphql';
 
 export default {
+  name: 'ConfigDropdown',
   apollo: {
     isShowingLabels: {
       query: isShowingLabelsQuery,

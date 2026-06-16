@@ -38,12 +38,12 @@ to do that.
 
 ## Remove the primary site from the UI
 
-To remove the **primary** site:
+To remove the primary site:
 
 1. [Remove all secondary Geo sites](remove_geo_site.md)
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Nodes**.
-1. Select **Remove** for the **primary** node.
+1. Select **Remove** for the primary node.
 1. Confirm by selecting **Remove** when the prompt appears.
 
 ## Remove secondary replication slots

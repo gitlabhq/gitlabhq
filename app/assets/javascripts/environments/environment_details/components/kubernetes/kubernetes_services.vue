@@ -11,6 +11,7 @@ import k8sServicesQuery from '~/environments/graphql/queries/k8s_services.query.
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 
 export default {
+  name: 'KubernetesServices',
   components: {
     GlTab,
     GlBadge,

@@ -8,9 +8,9 @@ RSpec.describe 'Job Artifacts (GraphQL fixtures)', feature_category: :job_artifa
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:project) { create(:project, :repository, :public) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     job_artifacts_query_path = 'ci/artifacts/graphql/queries/get_job_artifacts.query.graphql'
 

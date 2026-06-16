@@ -69,9 +69,9 @@ describe('WorkItemTypeToken', () => {
 
   describe('template', () => {
     it.each`
-      data       | expectedText
-      ${'ISSUE'} | ${'Issue'}
-      ${'TASK'}  | ${'Task'}
+      data   | expectedText
+      ${'1'} | ${'Issue'}
+      ${'5'} | ${'Task'}
     `('when "$value" is selected, shows "$expectedText"', async ({ data, expectedText }) => {
       createComponent({ props: { value: { data } } });
       await waitForPromises();

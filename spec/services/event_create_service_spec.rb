@@ -8,7 +8,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
   let(:service) { described_class.new }
   let(:dates) { { start_date: Date.today.beginning_of_week, end_date: Date.today.next_week } }
 
-  let_it_be(:user, reload: true) { create :user }
+  let_it_be_with_reload(:user) { create :user }
   let_it_be(:project) { create(:project) }
 
   shared_examples 'it records the event in the event counter' do
@@ -509,6 +509,28 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it 'creates new event', :aggregate_failures do
       expect(event).to be_persisted
       expect(event.target_type).to eq('Project')
+    end
+  end
+
+  describe '#transfer_project' do
+    subject(:event) { service.transfer_project(project, user) }
+
+    it 'creates a transferred project event', :aggregate_failures do
+      expect(event).to be_persisted
+      expect(event.action).to eq('transferred')
+      expect(event.target_type).to eq('Project')
+      expect(event.target).to eq(project)
+    end
+  end
+
+  describe '#transfer_group' do
+    let_it_be(:group) { create(:group) }
+
+    subject(:event) { service.transfer_group(group, user) }
+
+    it 'creates a transferred group event', :aggregate_failures do
+      expect(event).to be_persisted
+      expect(event.target_type).to eq('Group')
     end
   end
 

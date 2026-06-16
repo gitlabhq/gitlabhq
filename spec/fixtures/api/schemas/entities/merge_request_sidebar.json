@@ -13,7 +13,6 @@
         { "$ref": "../public_api/v4/user/basic.json" },
         { "type": "object",
           "properties" : {
-            "todo": { "$ref": "issuable_sidebar_todo.json" },
             "can_edit": { "type": "boolean" },
             "can_move": { "type": "boolean" },
             "can_admin_label": { "type": "boolean" }
@@ -42,12 +41,8 @@
       ]
     },
     "issuable_json_path": { "type": "string" },
-    "namespace_path": { "type": "string" },
-    "project_path": { "type": "string" },
     "project_full_path": { "type": "string" },
     "project_issuables_path": { "type": "string" },
-    "create_todo_path": { "type": "string" },
-    "project_milestones_path": { "type": "string" },
     "project_labels_path": { "type": "string" },
     "toggle_subscription_path": { "type": "string" },
     "move_issue_path": { "type": "string" },

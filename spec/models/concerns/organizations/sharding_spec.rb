@@ -11,6 +11,77 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
     Organizations::ShardingTestModel.cleanup_table
   end
 
+  describe '#after_commit' do
+    describe 'check_organization_isolation_status' do
+      let_it_be_with_reload(:issue) { create(:issue) }
+      let_it_be(:other_issue) { create(:issue) }
+
+      context "when the feature flag 'isolation_status_check' is disabled" do
+        before do
+          stub_feature_flags(isolation_status_check: false)
+        end
+
+        it 'does not schedule a organization isolation status check' do
+          expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+          issue.update!(duplicated_to: other_issue)
+        end
+      end
+
+      context "when the feature flag 'isolation_status_check' is enabled" do
+        before do
+          stub_feature_flags(isolation_status_check: true)
+        end
+
+        it 'schedules a organization isolation status check when belongs_to relation is updated' do
+          expect(Organizations::CheckOrganizationIsolationStatusWorker)
+            .to receive(:perform_async)
+            .with(issue.class.name, issue.id, { 'duplicated_to_id' => [nil, other_issue.id] })
+
+          issue.update!(duplicated_to: other_issue)
+        end
+      end
+
+      context 'when belongs_to relation is updated' do
+        context 'and the model does not have sharding keys' do
+          before do
+            allow(issue.class).to receive(:sharding_keys).and_return({})
+          end
+
+          it 'does not schedule a organization isolation status check' do
+            expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+            issue.update!(
+              title: "new title",
+              duplicated_to: other_issue
+            )
+          end
+        end
+
+        context 'and the model has sharding keys' do
+          it 'schedules a organization isolation status check' do
+            expect(Organizations::CheckOrganizationIsolationStatusWorker)
+              .to receive(:perform_async)
+              .with(issue.class.name, issue.id, { 'duplicated_to_id' => [nil, other_issue.id] })
+
+            issue.update!(
+              title: "new title",
+              duplicated_to: other_issue
+            )
+          end
+        end
+      end
+
+      context 'when no belongs_to relation is updated' do
+        it 'does not schedule a organization isolation status check' do
+          expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+          issue.update!(title: "new title")
+        end
+      end
+    end
+  end
+
   describe '.sharding_keys' do
     it 'returns sharding keys for the model' do
       expect(Group.sharding_keys).to eq({ 'organization_id' => 'organizations' })
@@ -47,7 +118,7 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
     end
   end
 
-  describe '#sharding_organization' do
+  describe '#organization' do
     let_it_be(:namespace) { create(:namespace, organization: create(:organization)) }
     let_it_be(:project) { create(:project, organization: create(:organization)) }
     let_it_be(:user) { create(:user, organization: create(:organization)) }
@@ -59,7 +130,7 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
       )
     end
 
-    subject(:sharded_organization) { test_object.sharding_organization }
+    subject(:sharded_organization) { test_object.organization }
 
     context 'when the model is using organizations as sharding key' do
       let(:sharding_keys) do
@@ -113,10 +184,10 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
 
     context 'when the sharding key table is not supported' do
       let(:sharding_keys) do
-        { 'organization_id' => 'unsupported_table' }
+        { 'project_id' => 'unsupported_table' }
       end
 
-      let(:test_object) { test_model_class.create!(organization: organization) }
+      let(:test_object) { test_model_class.create!(project: project) }
 
       it { is_expected.to be_nil }
     end
@@ -126,36 +197,38 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
         {}
       end
 
-      let(:test_object) { test_model_class.create!(organization: organization) }
+      let(:test_object) { test_model_class.create!(project: project) }
 
       it { is_expected.to be_nil }
     end
 
-    context 'when the model is having multiple sharding keys' do
+    context 'when the model is having two sharding keys' do
       let(:sharding_keys) do
         {
-          'organization_id' => 'organizations',
+          'namespace_id' => 'namespaces',
           'project_id' => 'projects'
         }
       end
 
-      context 'and they refer to the same organization' do
-        let(:test_object) { test_model_class.create!(project: project, organization: project.organization) }
+      context 'and the first is set' do
+        let(:test_object) { test_model_class.create!(namespace: namespace) }
+
+        it { is_expected.to eq(namespace.organization) }
+      end
+
+      context 'and the second is set' do
+        let(:test_object) { test_model_class.create!(project: project) }
 
         it { is_expected.to eq(project.organization) }
       end
 
-      context 'and they refer to different organizations' do
-        let(:test_object) { test_model_class.create!(project: project, organization: create(:organization)) }
-
-        it { is_expected.to be_nil }
-      end
-
       context 'and no organization is found' do
-        let(:test_object) { test_model_class.create!(organization: create(:organization)) }
+        let(:test_object) { test_model_class.create!(project: project) }
 
         before do
-          allow(::Organizations::Organization).to receive(:find_by).and_return(nil)
+          allow(::Organizations::Organization)
+            .to receive_message_chain(:joins, :find_by)
+            .and_return(nil)
         end
 
         it { is_expected.to be_nil }

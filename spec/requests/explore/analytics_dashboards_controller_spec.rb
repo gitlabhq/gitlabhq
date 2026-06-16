@@ -3,38 +3,48 @@
 require 'spec_helper'
 
 RSpec.describe Explore::AnalyticsDashboardsController, feature_category: :custom_dashboards_foundation do
-  let_it_be(:user) { create(:user) }
-
-  before do
-    sign_in(user)
-  end
+  let_it_be(:user, freeze: false) { create(:user) }
 
   shared_examples 'basic get requests' do
     let(:path) do
       explore_analytics_dashboards_path
     end
 
-    context 'with FF `explore_analytics_dashboards`' do
+    context 'when user is signed in' do
       before do
-        stub_feature_flags(explore_analytics_dashboards: true)
+        sign_in(user)
       end
 
-      it 'responds with 200' do
-        get path
+      context 'with FF `explore_analytics_dashboards`' do
+        before do
+          stub_feature_flags(explore_analytics_dashboards: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'responds with 200' do
+          get path
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'without FF `explore_analytics_dashboards`' do
+        before do
+          stub_feature_flags(explore_analytics_dashboards: false)
+        end
+
+        it 'responds with 404' do
+          get path
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
-    context 'without FF `explore_analytics_dashboards`' do
-      before do
-        stub_feature_flags(explore_analytics_dashboards: false)
-      end
-
-      it 'responds with 404' do
+    context 'when user is not signed in' do
+      it 'redirects to login page' do
         get path
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

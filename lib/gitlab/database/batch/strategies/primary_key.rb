@@ -42,7 +42,9 @@ module Gitlab
             )
 
             Gitlab::Pagination::Keyset::Iterator.new(
-              scope: scope.where(cursor_expression.gteq(cursor_values)).order(cursor_columns)
+              scope: scope.select(cursor_columns)
+                .where(cursor_expression.gteq(cursor_values))
+                .order(cursor_columns)
             )
           end
 

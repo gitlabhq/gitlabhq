@@ -15,6 +15,7 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
+  emits: ['hide', 'submit'],
   data() {
     return {
       passwordCheck: '',

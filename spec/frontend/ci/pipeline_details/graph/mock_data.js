@@ -214,6 +214,7 @@ export const wrappedPipelineReturn = {
                           id: '83',
                           kind: BUILD_KIND,
                           name: 'build_n',
+                          source: null,
                           needs: {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
@@ -332,6 +333,7 @@ export const mockJob = {
   id: 4256,
   name: 'test',
   kind: BUILD_KIND,
+  source: null,
   status: {
     icon: 'status_success',
     text: 'passed',
@@ -352,6 +354,7 @@ export const mockJob = {
 export const mockJobWithoutDetails = {
   id: 4257,
   name: 'job_without_details',
+  source: null,
   status: {
     icon: 'status_success',
     text: 'passed',

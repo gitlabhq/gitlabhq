@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { groupPath } from '~/lib/utils/path_helpers/group';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM, OVERLAY_GOTO } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
@@ -53,6 +53,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['action'],
   computed: {
     formattedItems() {
       // Each item needs two different representations. One is for the
@@ -65,7 +66,7 @@ export default {
           // The text field satsifies GlDisclosureDropdownItem's prop
           // validator, and the href field ensures it renders a link.
           text: item.name,
-          href: joinPaths(gon.relative_url_root || '/', item.fullPath),
+          href: groupPath(item.fullPath),
           extraAttrs: {
             'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
             'data-track-label': item.id,

@@ -55,7 +55,7 @@ export default {
         folder: this.isTree,
         'is-open': this.file.opened,
         '!gl-bg-feedback-info': this.file.linked,
-        'pl-3': addFilePadding,
+        '!gl-pl-5': addFilePadding,
       };
     },
     textForTitle() {

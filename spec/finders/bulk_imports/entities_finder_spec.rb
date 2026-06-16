@@ -2,23 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::EntitiesFinder do
-  let_it_be(:user) { create(:user) }
+RSpec.describe BulkImports::EntitiesFinder, feature_category: :importers do
+  let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:user_import_1) { create(:bulk_import, user: user) }
+  let_it_be(:user_import_1, freeze: false) { create(:bulk_import, user: user) }
   let_it_be(:started_entity_1, freeze: false) { create(:bulk_import_entity, :started, bulk_import: user_import_1) }
-  let_it_be(:finished_entity_1) { create(:bulk_import_entity, :finished, bulk_import: user_import_1) }
-  let_it_be(:failed_entity_1) { create(:bulk_import_entity, :failed, bulk_import: user_import_1) }
+  let_it_be(:finished_entity_1, freeze: false) { create(:bulk_import_entity, :finished, bulk_import: user_import_1) }
+  let_it_be(:failed_entity_1, freeze: false) { create(:bulk_import_entity, :failed, bulk_import: user_import_1) }
 
-  let_it_be(:user_import_2) { create(:bulk_import, user: user) }
-  let_it_be(:started_entity_2) { create(:bulk_import_entity, :started, bulk_import: user_import_2) }
-  let_it_be(:finished_entity_2) { create(:bulk_import_entity, :finished, bulk_import: user_import_2) }
-  let_it_be(:failed_entity_2) { create(:bulk_import_entity, :failed, bulk_import: user_import_2) }
+  let_it_be(:user_import_2, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:started_entity_2, freeze: false) { create(:bulk_import_entity, :started, bulk_import: user_import_2) }
+  let_it_be(:finished_entity_2, freeze: false) { create(:bulk_import_entity, :finished, bulk_import: user_import_2) }
+  let_it_be(:failed_entity_2, freeze: false) { create(:bulk_import_entity, :failed, bulk_import: user_import_2) }
 
-  let_it_be(:not_user_import) { create(:bulk_import) }
-  let_it_be(:started_entity_3) { create(:bulk_import_entity, :started, bulk_import: not_user_import) }
-  let_it_be(:finished_entity_3) { create(:bulk_import_entity, :finished, bulk_import: not_user_import) }
-  let_it_be(:failed_entity_3) { create(:bulk_import_entity, :failed, bulk_import: not_user_import) }
+  let_it_be(:not_user_import, freeze: false) { create(:bulk_import) }
+  let_it_be(:started_entity_3, freeze: false) { create(:bulk_import_entity, :started, bulk_import: not_user_import) }
+  let_it_be(:finished_entity_3, freeze: false) { create(:bulk_import_entity, :finished, bulk_import: not_user_import) }
+  let_it_be(:failed_entity_3, freeze: false) { create(:bulk_import_entity, :failed, bulk_import: not_user_import) }
 
   subject { described_class.new(user: user) }
 

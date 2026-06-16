@@ -343,7 +343,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
 
   describe '#header_logo' do
     context 'there is a brand item with a logo' do
-      let_it_be(:appearance) { create(:appearance) }
+      let_it_be(:appearance, freeze: false) { create(:appearance) }
 
       let(:logo_path) { 'spec/fixtures/dk.png' }
 

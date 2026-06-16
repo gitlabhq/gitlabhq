@@ -6,6 +6,7 @@ import { calculateRemainingMilliseconds, formatTime } from '~/lib/utils/datetime
  * Counts down to a given end date.
  */
 export default {
+  name: 'GlCountdown',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

@@ -17,7 +17,9 @@ module API
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get project variables' do
+        desc 'List all project variables' do
+          detail 'Lists all variables for a project. Use the `page` and `per_page` pagination parameters to control ' \
+            'the pagination of results.'
           success Entities::Ci::Variable
           tags %w[ci_variables]
         end
@@ -33,7 +35,9 @@ module API
           present paginate(variables), with: Entities::Ci::Variable
         end
 
-        desc 'Get the details of a single variable from a project' do
+        desc 'Retrieve a single variable' do
+          detail 'Retrieves details of a specified variable. If there are multiple variables with the same key, use ' \
+            '`filter` to select the correct `environment_scope`.'
           success Entities::Ci::Variable
           failure [{ code: 404, message: 'Variable Not Found' }]
           tags %w[ci_variables]
@@ -54,7 +58,10 @@ module API
           present variable, with: Entities::Ci::Variable
         end
 
-        desc 'Create a new variable in a project' do
+        desc 'Create a variable' do
+          detail 'Creates a variable. If a variable with the same `key` already exists, the variable must have a ' \
+            'different `environment_scope`. Otherwise, GitLab returns a message similar to: `VARIABLE_NAME has ' \
+            'already been taken`.'
           success Entities::Ci::Variable
           failure [{ code: 400, message: '400 Bad Request' }]
           tags %w[ci_variables]
@@ -86,7 +93,9 @@ module API
           end
         end
 
-        desc 'Update an existing variable from a project' do
+        desc 'Update a variable' do
+          detail 'Updates a project variable. If there are multiple variables with the same key, use `filter` to ' \
+            'select the correct `environment_scope`.'
           success Entities::Ci::Variable
           failure [{ code: 404, message: 'Variable Not Found' }]
           tags %w[ci_variables]
@@ -123,7 +132,9 @@ module API
           end
         end
 
-        desc 'Delete an existing variable from a project' do
+        desc 'Delete a variable' do
+          detail 'Deletes a project variable. If there are multiple variables with the same key, use `filter` to ' \
+            'select the correct `environment_scope`.'
           success Entities::Ci::Variable
           failure [{ code: 404, message: 'Variable Not Found' }]
           tags %w[ci_variables]

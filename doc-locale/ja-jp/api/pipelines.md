@@ -1,7 +1,8 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST APIを使用してCI/CDパイプラインを作成、管理、監視します。
 title: パイプラインAPI
 ---
 
@@ -26,7 +27,7 @@ title: パイプラインAPI
 
 {{< /history >}}
 
-プロジェクト内のパイプラインのリストを取得します。
+プロジェクト内のパイプラインをリスト表示します。
 
 デフォルトでは、[子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)は結果に含まれません。子パイプラインを返すには、`source`を`parent_pipeline`に設定します。
 
@@ -34,28 +35,30 @@ title: パイプラインAPI
 GET /projects/:id/pipelines
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
-| 属性        | 型           | 必須 | 説明 |
-|------------------|----------------|----------|-------------|
-| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `name`           | 文字列         | いいえ       | 指定された名前のパイプラインを返します。 |
-| `order_by`       | 文字列         | いいえ       | パイプラインを、`id`、`status`、`ref`、`updated_at`、または`user_id`で並べ替えます（デフォルト: `id`）。 |
-| `ref`            | 文字列         | いいえ       | パイプラインのref |
-| `scope`          | 文字列         | いいえ       | パイプラインのスコープ。`running`、`pending`、`finished`、`branches`、`tags`のいずれか。 |
-| `sha`            | 文字列         | いいえ       | パイプラインのSHA |
-| `sort`           | 文字列         | いいえ       | パイプラインを`asc`または`desc`の順にソートします（デフォルト: `desc`）。 |
-| `source`         | 文字列         | いいえ       | [パイプラインソース](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable)。 |
-| `status`         | 文字列         | いいえ       | パイプラインのステータス。`created`、`waiting_for_resource`、`preparing`、`pending`、`running`、`success`、`failed`、`canceled`、`skipped`、`manual`、`scheduled`のいずれか。 |
-| `updated_after`  | 日時       | いいえ       | 指定された日付より後に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
-| `updated_before` | 日時       | いいえ       | 指定された日付より前に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
-| `created_after`  | 日時       | いいえ       | 指定された日付より後に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
-| `created_before` | 日時       | いいえ       | 指定された日付より前に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
-| `username`       | 文字列         | いいえ       | パイプラインをトリガーしたユーザーのユーザー名 |
-| `yaml_errors`    | ブール値        | いいえ       | 無効な設定のパイプラインを返します。 |
+| 属性        | 型              | 必須 | 説明 |
+|------------------|-------------------|----------|-------------|
+| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `name`           | 文字列            | いいえ       | 指定された名前のパイプラインを返します。 |
+| `order_by`       | 文字列            | いいえ       | パイプラインを並べ替えるフィールド: `id`、`status`、`ref`、`updated_at`、または`user_id` （デフォルト: `id`）。 |
+| `ref`            | 文字列            | いいえ       | 指定されたブランチまたはタグのパイプラインを返します。 |
+| `scope`          | 文字列            | いいえ       | 指定されたスコープ内のパイプラインを返します: `running`、`pending`、`finished`、`branches`、または`tags`。 |
+| `sha`            | 文字列            | いいえ       | 指定されたコミットSHAのパイプラインを返します。 |
+| `sort`           | 文字列            | いいえ       | ソート順序: `asc`または`desc` （デフォルト: `desc`）。 |
+| `source`         | 文字列            | いいえ       | 指定された[ソース](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable)を持つパイプラインを返します。 |
+| `status`         | 文字列            | いいえ       | 指定されたステータスを持つパイプラインを返します: `created`、`waiting_for_resource`、`preparing`、`pending`、`running`、`success`、`failed`、`canceled`、`skipped`、`manual`、または`scheduled`。 |
+| `updated_after`  | 日時          | いいえ       | 指定された日付より後に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_before` | 日時          | いいえ       | 指定された日付より前に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_after`  | 日時          | いいえ       | 指定された日付より後に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_before` | 日時          | いいえ       | 指定された日付より前に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `username`       | 文字列            | いいえ       | 指定されたユーザー名によってトリガーされたパイプラインを返します。 |
+| `yaml_errors`    | ブール値           | いいえ       | 無効な設定のパイプラインを返します。 |
+
+`scope`が`branches`または`tags`に設定されている場合、APIは各ブランチまたはタグリファレンスの最新のパイプラインのみを返します。
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
@@ -93,7 +96,7 @@ curl \
 ]
 ```
 
-## 単一のパイプラインを取得する {#get-a-single-pipeline}
+## 単一のパイプラインを取得する {#retrieve-a-single-pipeline}
 
 {{< history >}}
 
@@ -102,7 +105,7 @@ curl \
 
 {{< /history >}}
 
-プロジェクトから1つのパイプラインを取得します。
+プロジェクトから単一のパイプラインを取得する。
 
 単一の[子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)を取得することもできます。
 
@@ -110,7 +113,7 @@ curl \
 GET /projects/:id/pipelines/:pipeline_id
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
@@ -118,7 +121,7 @@ GET /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
@@ -170,7 +173,7 @@ curl \
 }
 ```
 
-## 最新のパイプラインを取得する {#get-the-latest-pipeline}
+## 最新のパイプラインを取得する {#retrieve-the-latest-pipeline}
 
 {{< history >}}
 
@@ -179,20 +182,20 @@ curl \
 
 {{< /history >}}
 
-プロジェクト内の特定のrefにおける最新のコミット用の最新パイプラインを取得します。コミット用のパイプラインが存在しない場合、`403`ステータスコードが返されます。
+プロジェクト内の特定のrefに対する最新のコミットの最新パイプラインを取得する。コミット用のパイプラインが存在しない場合、`403`ステータスコードが返されます。
 
 ```plaintext
 GET /projects/:id/pipelines/latest
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 | 属性 | 型   | 必須 | 説明 |
 |-----------|--------|----------|-------------|
 | `ref`     | 文字列 | いいえ       | 最新のパイプラインを確認するブランチまたはタグ。指定しない場合、デフォルトのブランチがデフォルトになります。 |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
@@ -244,15 +247,15 @@ curl \
 }
 ```
 
-## パイプライン用の変数を取得する {#get-variables-for-a-pipeline}
+## パイプライン変数を取得する {#retrieve-pipeline-variables}
 
-パイプラインの[パイプライン変数](../ci/variables/_index.md#use-pipeline-variables)を取得します。
+パイプラインの[パイプライン変数](../ci/variables/_index.md#use-pipeline-variables)を取得する。
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/variables
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
@@ -260,7 +263,7 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 | `pipeline_id` | 整数        | はい      | パイプラインのID |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
 ```
@@ -281,19 +284,16 @@ curl \
 ]
 ```
 
-## パイプライン用のテストレポートを取得する {#get-a-test-report-for-a-pipeline}
+## パイプラインのテストレポートを取得する {#retrieve-a-test-report-for-a-pipeline}
 
-{{< alert type="note" >}}
-
-このAPIルートは、[単体テストレポート](../ci/testing/unit_test_reports.md)機能の一部です。
-
-{{< /alert >}}
+> [!note]
+> このAPIルートは、[単体テストレポート](../ci/testing/unit_test_reports.md)機能の一部です。
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
@@ -303,12 +303,12 @@ GET /projects/:id/pipelines/:pipeline_id/test_report
 リクエストのサンプル:
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
 ```
 
-応答のサンプル:
+レスポンス例:
 
 ```json
 {
@@ -342,19 +342,16 @@ curl \
 }
 ```
 
-## パイプライン用のテストレポート概要を取得する {#get-a-test-report-summary-for-a-pipeline}
+## パイプラインのテストレポート概要を取得する {#retrieve-a-test-report-summary-for-a-pipeline}
 
-{{< alert type="note" >}}
-
-このAPIルートは、[単体テストレポート](../ci/testing/unit_test_reports.md)機能の一部です。
-
-{{< /alert >}}
+> [!note]
+> このAPIルートは、[単体テストレポート](../ci/testing/unit_test_reports.md)機能の一部です。
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 ```
 
-結果のページネーションを制御するには、`page`および`per_page`[ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
@@ -364,12 +361,12 @@ GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 リクエストのサンプル:
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
 ```
 
-応答のサンプル:
+レスポンス例:
 
 ```json
 {
@@ -429,14 +426,14 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
-[インプット](../ci/inputs/_index.md)を使用したリクエストの例:
+[入力](../ci/inputs/_index.md)を使用したリクエストの例:
 
 ```shell
 curl --request POST \
-  --header "Content-Type: application/json" \
-  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main" \
+  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}'
 ```
 
 レスポンス例
@@ -481,7 +478,7 @@ curl --request POST \
 
 {{< /history >}}
 
-失敗した、またはキャンセルされたジョブをパイプラインで再試行します。失敗した、またはキャンセルされたジョブがパイプラインにない場合、このエンドポイントを呼び出しても効果はありません。
+パイプライン内の失敗またはキャンセルされたジョブを再試行します。失敗した、またはキャンセルされたジョブがパイプラインにない場合、このエンドポイントを呼び出しても効果はありません。
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
@@ -538,11 +535,8 @@ curl --request POST \
 POST /projects/:id/pipelines/:pipeline_id/cancel
 ```
 
-{{< alert type="note" >}}
-
-このエンドポイントは、パイプラインの状態に関係なく、成功応答`200`を返します。詳細については、[イシュー414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> このエンドポイントは、パイプラインの状態に関わらず成功レスポンス`200`を返します。詳細については、[イシュー414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963)を参照してください。
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
@@ -591,7 +585,7 @@ curl --request POST \
 
 ## パイプラインを削除する {#delete-a-pipeline}
 
-パイプラインを削除すると、すべてのパイプラインキャッシュが期限切れになり、ビルド、ログ、アーティファクト、トリガーなど、直接関連するすべてのオブジェクトが削除されます。**This action cannot be undone**（この操作は元に戻すことができません。）
+パイプラインを削除すると、すべてのパイプラインキャッシュが期限切れになり、ビルド、ログ、アーティファクト、トリガーなど、直接関連するすべてのオブジェクトが削除されます。**この操作は元に戻せません**。
 
 パイプラインを削除しても、[子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)は自動的に削除されません。詳細については、[関連イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)を参照してください。
 
@@ -612,7 +606,7 @@ curl --request DELETE \
 
 ## パイプラインのメタデータを更新する {#update-pipeline-metadata}
 
-パイプラインのメタデータを更新できます。メタデータには、パイプラインの名前が含まれています。
+パイプラインのメタデータを更新します。メタデータには、パイプラインの名前が含まれています。
 
 ```plaintext
 PUT /projects/:id/pipelines/:pipeline_id/metadata
@@ -627,10 +621,14 @@ PUT /projects/:id/pipelines/:pipeline_id/metadata
 リクエストのサンプル:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "name=Some new pipeline name" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/metadata"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/metadata" \
+  --data '{"name": "Some new pipeline name"}'
 ```
 
-応答のサンプル:
+レスポンス例:
 
 ```json
 {

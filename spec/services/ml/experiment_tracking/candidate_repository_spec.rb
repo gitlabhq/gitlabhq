@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: :activation do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:experiment) { create(:ml_experiments, user: user, project: project) }
-  let_it_be(:candidate) { create(:ml_candidates, user: user, experiment: experiment, project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:experiment, freeze: false) { create(:ml_experiments, user: user, project: project) }
+  let_it_be(:candidate, freeze: false) { create(:ml_candidates, user: user, experiment: experiment, project: project) }
 
   let(:repository) { described_class.new(project, user) }
 

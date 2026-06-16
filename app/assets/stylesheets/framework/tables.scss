@@ -74,6 +74,7 @@ table {
 
 // If a user makes a table that only uses the thead, then
 // let's make sure it has a bottom border.
+// stylelint-disable-next-line gitlab/no-has -- scoped to markdown tables
 .md table:not(:has(tbody)) thead tr {
   @apply gl-border-b;
 }

@@ -46,6 +46,7 @@ export default {
       default: true,
     },
   },
+  emits: ['change', 'error'],
   data() {
     return {
       uploads: [],

@@ -22,7 +22,7 @@ fragment PipelineDetails on Pipeline {
     sha
     shortId
     title
-    webUrl
+    webPath
     author {
       id
       avatarUrl

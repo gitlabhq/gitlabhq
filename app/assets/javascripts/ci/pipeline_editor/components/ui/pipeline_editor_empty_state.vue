@@ -39,36 +39,32 @@ export default {
         {{ __('Streamline your development process effortlessly with robust CI/CD pipelines.') }}
       </template>
     </gl-empty-state>
-    <div class="gl-w-max-full gl-flex gl-flex-wrap gl-items-stretch gl-justify-center gl-gap-5">
+    <div class="gl-w-max-full container-limited gl-mx-auto gl-grid gl-gap-5 lg:gl-grid-cols-3">
       <duo-analyze-card v-if="glAbilities.accessDuoAgenticChat" />
-      <gl-card class="gl-min-h-[128px] gl-w-[310px] gl-max-w-[500px]">
+      <gl-card body-class="gl-flex gl-flex-col">
         <template #header>
           <h2 class="gl-heading-scale-300 gl-mb-0">{{ s__('Pipelines|Use a CI/CD component') }}</h2>
         </template>
         <template #default>
-          <p>
+          <p class="gl-grow">
             {{ s__('Pipelines|Start with a pre-built and customizable CI/CD component.') }}
           </p>
-          <gl-button class="gl-mt-3" :href="ciCatalogPath" data-testid="browse-catalog-button">
+          <gl-button :href="ciCatalogPath" data-testid="browse-catalog-button">
             {{ s__('Pipelines|Browse catalog') }}
           </gl-button>
         </template>
       </gl-card>
-      <gl-card class="gl-min-h-[128px] gl-w-[310px] gl-max-w-[500px]">
+      <gl-card body-class="gl-flex gl-flex-col">
         <template #header>
           <h2 class="gl-heading-scale-300 gl-mb-0">{{ s__('Pipelines|Write your own') }}</h2>
         </template>
         <template #default>
-          <p>
+          <p class="gl-grow">
             {{
               s__('Pipelines|Write your own CI/CD configuration by hand, starting from scratch.')
             }}
           </p>
-          <gl-button
-            class="gl-mt-3"
-            data-testid="create-new-ci-button"
-            @click="createEmptyConfigFile"
-          >
+          <gl-button data-testid="create-new-ci-button" @click="createEmptyConfigFile">
             {{ s__('Pipelines|Start building') }}
           </gl-button>
         </template>

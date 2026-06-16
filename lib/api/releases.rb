@@ -21,8 +21,8 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_read_group_releases! }
 
-      desc 'List group releases' do
-        detail 'Returns a list of group releases.'
+      desc 'List all releases in a group' do
+        detail 'Lists all releases for projects in a specified group.'
         success Entities::Release
         failure [
           { code: 400, message: 'Bad request' },
@@ -71,8 +71,8 @@ module API
 
       after { track_release_event }
 
-      desc 'List Releases' do
-        detail 'Returns a paginated list of releases. This feature was introduced in GitLab 11.7.'
+      desc 'List all releases in a project' do
+        detail 'Lists all releases for a specified project. Sorted by `released_at`.'
         named 'get_releases'
         is_array true
         success Entities::Release
@@ -121,8 +121,8 @@ module API
           include_html_description: declared_params[:include_html_description]
       end
 
-      desc 'Get a release by a tag name' do
-        detail 'Gets a release for the given tag. This feature was introduced in GitLab 11.7.'
+      desc 'Retrieve a release by tag name' do
+        detail 'Retrieves a release with a specified tag name.'
         named 'get_release'
         success Entities::Release
         failure [
@@ -228,7 +228,7 @@ module API
       end
 
       desc 'Create a release' do
-        detail 'Creates a release. Developer level access to the project is required to create a release. This feature was introduced in GitLab 11.7.'
+        detail 'Creates a release. Developer level access to the project is required to create a release.'
         named 'create_release'
         success Entities::Release
         failure [
@@ -304,7 +304,7 @@ module API
       end
 
       desc 'Update a release' do
-        detail 'Updates a release. Developer level access to the project is required to update a release. This feature was introduced in GitLab 11.7.'
+        detail 'Updates a release. Developer level access to the project is required to update a release.'
         named 'update_release'
         success Entities::Release
         failure [
@@ -351,6 +351,8 @@ module API
       end
 
       desc 'Delete a release' do
+        detail 'Deletes a release. Deleting a release does not delete the associated tag. Maintainer level access to ' \
+          'the project is required to delete a release.'
         detail "Delete a release. Deleting a release doesn't delete the associated tag. Requires at least the Developer role for the project. This feature was introduced in GitLab 11.7."
         named 'delete_release'
         success Entities::Release

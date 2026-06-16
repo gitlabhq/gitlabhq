@@ -22,33 +22,35 @@ This table lists the default model for each feature in the Agent Platform.
 | Feature | Model |
 |-------|--------------|
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Vertex |
-| Code Review Flow | Claude Sonnet 4 Vertex |
-| All other agents | Claude Sonnet 4.5 Vertex |
+| Code Review Flow | Claude Sonnet 4.6 Vertex |
+| All other agents | Claude Sonnet 4.6 Vertex |
 
 ## Supported models
 
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model                | GitLab Duo Agentic Chat | All other agents |
-|----------------------|-------------------------|------------------|
-| Claude Sonnet 4      | {{< yes >}}             | {{< yes >}}      |
-| Claude Sonnet 4.5    | {{< yes >}}             | {{< yes >}}      |
-| Claude Sonnet 4.6    | {{< yes >}}             | {{< yes >}}      |
-| Claude Haiku 4.5     | {{< yes >}}             | {{< yes >}}      |
-| Claude Opus 4.5      | {{< yes >}}             | {{< yes >}}      |
-| Claude Opus 4.6      | {{< yes >}}             | {{< yes >}}      |
-| Claude Opus 4.7      | {{< yes >}}             | {{< yes >}}      |
-| GPT-5                | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.1              | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.2              | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.5 <sup>1</sup> | {{< yes >}}             | {{< yes >}}      |
-| GPT-5 Codex          | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.2 Codex        | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.3 Codex        | {{< yes >}}             | {{< yes >}}      |
-| GPT-5 Mini           | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.4 Mini         | {{< yes >}}             | {{< yes >}}      |
-| GPT-5.4 Nano         | {{< yes >}}             | {{< yes >}}      |
+| Model                | GitLab Duo Agentic Chat | Code Review Flow | All other agents |
+|----------------------|-------------------------|------------------|------------------|
+| Claude Fable 5 <sup>1</sup>      | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Claude Sonnet 4.5    | {{< yes >}}             | {{< yes >}}      | {{< yes >}}      |
+| Claude Sonnet 4.6    | {{< yes >}}             | {{< yes >}}      | {{< yes >}}      |
+| Claude Haiku 4.5     | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Claude Opus 4.5      | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Claude Opus 4.6      | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Claude Opus 4.7      | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Claude Opus 4.8      | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| Gemini 3.5 Flash     | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5                | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.1              | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.2              | {{< yes >}}             | {{< yes >}}      | {{< yes >}}      |
+| GPT-5.5 <sup>1</sup> | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5 Codex          | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.2 Codex        | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.3 Codex        | {{< yes >}}             | {{< yes >}}      | {{< yes >}}      |
+| GPT-5 Mini           | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.4 Mini         | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
+| GPT-5.4 Nano         | {{< yes >}}             | {{< no >}}       | {{< yes >}}      |
 
 **Footnotes**:
 
@@ -72,11 +74,15 @@ in the Agent Platform.
 - Feature flag `duo_agent_platform_model_selection` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212051) in GitLab 18.6.
 - Feature flag `ai_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.7.
 - Feature flag `duo_agent_platform_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/218591) in GitLab 18.9.
+- LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Vertex for Code Review Flow in GitLab 19.1.
+- [Separate model selection](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) from GitLab Duo Code Review introduced for Code Review Flow in GitLab 19.1, using the **Agentic Code Review** setting.
+- GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as selectable models for Code Review Flow in GitLab 19.1.
+- Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
 
 {{< /history >}}
 
-You can select a model for a feature in a top-level group. The model that you select
-applies to that feature for all child groups and projects.
+You can select a model to be the default model for a feature in a top-level group.
+The model that you select applies to that feature for all child groups and projects.
 
 Prerequisites:
 
@@ -84,18 +90,56 @@ Prerequisites:
 - The group that you select models for is a top-level group.
 - In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
-To select a model for a feature:
+### Select a model for Agentic Chat
+
+To select a model for Agentic Chat:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Configure features**.
+1. Go to the **GitLab Duo Agentic Chat** section.
+1. Select a model from the dropdown list to set as the default model.
+1. Optional. To restrict what other models users can select for Agentic Chat:
+
+   1. Under **Available models**, select **Configure**.
+   1. In the **Available models: Agentic Chat** dialog, select the
+      **Restrict to specific models** checkbox.
+   1. Select the models that you want Agentic Chat to be able to use.
+   1. Select **Save**.
+
+   > [!note]
+   > If you do not restrict Agentic Chat to specific models, users can choose from
+   > all GitLab-managed models.
+
+### Select a model for a non-Agentic Chat feature
+
+To select a model for a non-Agentic Chat feature:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. Go to the **GitLab Duo Agent Platform** section.
-1. Select a model from the dropdown list.
+1. Select a model from the dropdown list to set as the default model.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
-In the IDE, model selection for GitLab Duo Agentic Chat is applied only when the connection type is set to WebSocket.
-
 To specify a model for the GitLab Duo CLI, see [select a model](../gitlab_duo_cli/_index.md#select-a-model).
+
+### Selecting the right model
+
+For many use cases, starting with a faster, more cost-effective model like
+Claude Haiku 4.5 or GPT-5.4 Mini can be the optimal approach.
+For this approach:
+
+1. Select Claude Haiku 4.5 or GPT-5.4 Mini.
+1. Test your use case thoroughly.
+1. Evaluate if performance meets your requirements.
+1. Upgrade only if necessary for specific capability gaps.
+
+You can use this approach for the following:
+
+- Exploratory or high-volume tasks
+- Applications with strict latency requirements
+- Cost-sensitive implementations
 
 ## Troubleshooting
 
@@ -115,3 +159,14 @@ This issue occurs when you belong to multiple GitLab Duo namespaces or work on a
 that does not have a GitLab remote configured.
 
 To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+### Model selection for Agentic Chat in IDEs does not work
+
+When selecting a model for Agentic Chat in your IDE, you might find that model
+selection does not work.
+
+To resolve this:
+
+1. Check that the connection type for your IDE is set to WebSocket.
+1. Ask your network administrator to make sure
+   [WebSocket traffic to your GitLab instance is allowed](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance).

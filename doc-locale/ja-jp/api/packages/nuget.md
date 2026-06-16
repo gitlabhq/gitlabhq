@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: NuGet API
 ---
 
@@ -12,25 +12,16 @@ title: NuGet API
 
 {{< /details >}}
 
-これは、[NuGetパッケージ](../../user/packages/nuget_repository/_index.md)のAPIドキュメントです。
+このAPIを使用して、[NuGetパッケージマネージャークライアント](../../user/packages/nuget_repository/_index.md)とやり取りします。
 
-{{< alert type="warning" >}}
+> [!warning]
+> このAPIは[NuGet package manager client](https://www.nuget.org/)によって使用され、一般的に手動での利用を意図していません。
 
-このAPIは、[NuGetパッケージマネージャー](https://www.nuget.org/)クライアントで使用され、通常は手動での使用を目的としていません。
+これらのエンドポイントは、標準のAPI認証方法に準拠していません。サポートされているヘッダーとトークンのタイプについては、[NuGetパッケージレジストリドキュメント](../../user/packages/nuget_repository/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
 
-{{< /alert >}}
+## パッケージインデックスを取得する {#retrieve-a-package-index}
 
-GitLabパッケージレジストリからNuGetパッケージをアップロードおよびインストールする方法については、[NuGetパッケージレジストリのドキュメント](../../user/packages/nuget_repository/_index.md)を参照してください。
-
-{{< alert type="note" >}}
-
-これらのエンドポイントは、標準のAPI認証方式に準拠していません。どのヘッダーとトークンタイプがサポートされているかの詳細については、[NuGetパッケージレジストリドキュメント](../../user/packages/nuget_repository/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
-
-{{< /alert >}}
-
-## パッケージインデックス {#package-index}
-
-指定されたパッケージのインデックスを返します。これには、利用可能なバージョンのリストが含まれます:
+指定されたパッケージのインデックスを取得します。これには、利用可能なバージョンのリストが含まれます。
 
 ```plaintext
 GET projects/:id/packages/nuget/download/:package_name/index
@@ -38,15 +29,15 @@ GET projects/:id/packages/nuget/download/:package_name/index
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `id`           | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `id`           | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/index"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -56,9 +47,9 @@ curl --user <username>:<personal_access_token> \
 }
 ```
 
-## パッケージファイルをダウンロードする {#download-a-package-file}
+## パッケージファイルをダウンロード {#download-a-package-file}
 
-NuGetパッケージファイルをダウンロードします。[メタデータサービス](#metadata-service)は、このURLを提供します。
+プロジェクトの指定されたNuGetパッケージファイルをダウンロードします。[メタデータサービス](#retrieve-package-metadata)がこのURLを提供します。
 
 ```plaintext
 GET projects/:id/packages/nuget/download/:package_name/:package_version/:package_filename
@@ -66,10 +57,10 @@ GET projects/:id/packages/nuget/download/:package_name/:package_version/:package
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name`    | 文字列 | はい      | パッケージの名前。 |
-| `package_version` | 文字列 | はい      | パッケージのバージョン。 |
-| `package_filename`| 文字列 | はい      | ファイルの名前。 |
+| `id`              | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。 |
+| `package_version` | 文字列 | はい      | このパッケージのバージョン。 |
+| `package_filename`| 文字列 | はい      | ファイル名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
@@ -85,21 +76,18 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`MyNuGetPkg.1.3.0.17.nupkg`に書き込まれます。
 
-{{< alert type="note" >}}
+> [!note]
+> このAPIは、[グループエンドポイント](#group-level)を使用すると`404`ステータスを返します。このエラーを避けるには、NuGetパッケージマネージャーCLIを使用して、グループエンドポイントで[パッケージをインストール](../../user/packages/nuget_repository/_index.md#install-a-package)します。
 
-[グループエンドポイント](#group-level)を使用すると、このAPIは`404`ステータスを返します。このエラーを回避するには、NuGetパッケージマネージャーCLIを使用して、グループエンドポイントで[パッケージをインストール](../../user/packages/nuget_repository/_index.md#install-a-package)します。
-
-{{< /alert >}}
-
-## パッケージファイルをアップロード {#upload-a-package-file}
+## パッケージファイルをアップロードする {#upload-a-package-file}
 
 {{< history >}}
 
-- NuGet v2フィードの場合、GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/416404)されました。
+- [GitLab 16.2で導入](https://gitlab.com/gitlab-org/gitlab/-/issues/416404)されたNuGet v2フィード向け。
 
 {{< /history >}}
 
-NuGetパッケージファイルをアップロードします:
+指定されたプロジェクトのNuGetパッケージファイルをアップロードします。
 
 - NuGet v3フィードの場合:
 
@@ -115,10 +103,10 @@ NuGetパッケージファイルをアップロードします:
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name`    | 文字列 | はい      | パッケージの名前。 |
-| `package_version` | 文字列 | はい      | パッケージのバージョン。 |
-| `package_filename`| 文字列 | はい      | ファイルの名前。 |
+| `id`              | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。 |
+| `package_version` | 文字列 | はい      | このパッケージのバージョン。 |
+| `package_filename`| 文字列 | はい      | ファイル名。 |
 
 - NuGet v3フィードの場合:
 
@@ -140,7 +128,7 @@ NuGetパッケージファイルをアップロードします:
 
 ## シンボルパッケージファイルをアップロード {#upload-a-symbol-package-file}
 
-NuGetシンボルパッケージファイルをアップロードします(`.snupkg`):
+指定されたプロジェクトのNuGetシンボルパッケージファイル（`.snupkg`）をアップロードします。
 
 ```plaintext
 PUT projects/:id/packages/nuget/symbolpackage
@@ -148,10 +136,10 @@ PUT projects/:id/packages/nuget/symbolpackage
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name`    | 文字列 | はい      | パッケージの名前。 |
-| `package_version` | 文字列 | はい      | パッケージのバージョン。 |
-| `package_filename`| 文字列 | はい      | ファイルの名前。 |
+| `id`              | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。 |
+| `package_version` | 文字列 | はい      | このパッケージのバージョン。 |
+| `package_filename`| 文字列 | はい      | ファイル名。 |
 
 ```shell
 curl --request PUT \
@@ -162,12 +150,12 @@ curl --request PUT \
 
 ## ルートプレフィックス {#route-prefix}
 
-残りのルートでは、それぞれ異なるスコープでリクエストを行う、同一のルートの2つのセットがあります:
+残りのルートには、それぞれ異なるスコープでリクエストを行う同一のルートが2セットあります:
 
-- グループレベルのプレフィックスを使用して、グループのスコープでリクエストを行います。
-- プロジェクトレベルのプレフィックスを使用して、単一のプロジェクトのスコープでリクエストを行います。
+- グループのスコープでリクエストを行うには、グループレベルのプレフィックスを使用します。
+- 単一プロジェクトのスコープでリクエストを行うには、プロジェクトレベルのプレフィックスを使用します。
 
-このドキュメントの例ではすべて、プロジェクトレベルのプレフィックスを使用しています。
+このドキュメントの例はすべて、プロジェクトレベルのプレフィックスを使用しています。
 
 ### グループレベル {#group-level}
 
@@ -177,7 +165,7 @@ curl --request PUT \
 
 | 属性 | 型   | 必須 | 説明 |
 | --------- | ------ | -------- | ----------- |
-| `id`      | 文字列 | はい      | グループIDまたは完全なグループパス。 |
+| `id`      | 文字列 | はい      | グループIDまたはグループのフルパス。 |
 
 ### プロジェクトレベル {#project-level}
 
@@ -193,19 +181,19 @@ curl --request PUT \
 
 ### V2ソースフィード/プロトコル {#v2-source-feedprotocol}
 
-v2 NuGetソースフィードのサービスインデックスを表すXMLドキュメントを返します。認証は必須ではありません:
+v2 NuGetソースフィードのサービスインデックスを表すXMLドキュメントを取得します。認証は不要です。
 
 ```plaintext
 GET <route-prefix>/v2
 ```
 
-リクエスト例:
+リクエストの例:
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -223,23 +211,23 @@ curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
 
 {{< history >}}
 
-- GitLab 16.1でパブリックになるように[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/214674)されました。
+- GitLab 16.1で[公開に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/214674)されました。
 
 {{< /history >}}
 
-利用可能なAPIリソースのリストを返します。認証は必須ではありません:
+利用可能なAPIリソースのリストを取得します。認証は不要です。
 
 ```plaintext
 GET <route-prefix>/index
 ```
 
-リクエスト例:
+リクエストの例:
 
 ```shell
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -294,11 +282,11 @@ curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
 }
 ```
 
-レスポンス内のURLには、リクエストに使用されるものと同じルートプレフィックスがあります。グループレベルのルートでそれらをリクエストすると、返されるURLには`/groups/:id/-`が含まれます。
+レスポンス内のURLは、それらをリクエストするために使用されたのと同じルートプレフィックスを持っています。グループレベルのルートでそれらをリクエストすると、返されるURLには`/groups/:id/-`が含まれます。
 
-## メタデータサービス {#metadata-service}
+## パッケージメタデータを取得する {#retrieve-package-metadata}
 
-パッケージのメタデータを返します:
+指定されたパッケージのメタデータを取得します。
 
 ```plaintext
 GET <route-prefix>/metadata/:package_name/index
@@ -306,14 +294,14 @@ GET <route-prefix>/metadata/:package_name/index
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/index"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -347,9 +335,9 @@ curl --user <username>:<personal_access_token> \
 }
 ```
 
-## バージョンメタデータサービス {#version-metadata-service}
+## バージョンメタデータを取得する {#retrieve-version-metadata}
 
-特定のパッケージバージョンのメタデータを返します:
+指定されたパッケージバージョンのメタデータを取得します。
 
 ```plaintext
 GET <route-prefix>/metadata/:package_name/:package_version
@@ -357,15 +345,15 @@ GET <route-prefix>/metadata/:package_name/:package_version
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `package_name`    | 文字列 | はい      | パッケージの名前。    |
-| `package_version` | 文字列 | はい      | パッケージのバージョン。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。    |
+| `package_version` | 文字列 | はい      | このパッケージのバージョン。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -386,9 +374,9 @@ curl --user <username>:<personal_access_token> \
 }
 ```
 
-## 検索サービス {#search-service}
+## パッケージを検索する {#search-for-packages}
 
-クエリを指定すると、リポジトリ内のNuGetパッケージを検索します:
+指定されたクエリに基づいて、リポジトリ内のNuGetパッケージを検索します。
 
 ```plaintext
 GET <route-prefix>/query
@@ -399,14 +387,14 @@ GET <route-prefix>/query
 | `q`          | 文字列  | はい      | 検索クエリ。 |
 | `skip`       | 整数 | いいえ       | スキップする結果の数。 |
 | `take`       | 整数 | いいえ       | 返す結果の数。 |
-| `prerelease` | ブール値 | いいえ       | プレリリースバージョンを含めます。値が指定されていない場合は、`true`にデフォルト設定されます。 |
+| `prerelease` | ブール値 | いいえ       | プレリリースバージョンを含めます。値が指定されていない場合は、`true`がデフォルトになります。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/query?q=MyNuGet"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -435,7 +423,7 @@ curl --user <username>:<personal_access_token> \
 }
 ```
 
-## サービスの削除 {#delete-service}
+## パッケージを削除する {#delete-a-package}
 
 {{< history >}}
 
@@ -443,7 +431,7 @@ curl --user <username>:<personal_access_token> \
 
 {{< /history >}}
 
-NuGetパッケージを削除します:
+指定されたNuGetパッケージを削除します。
 
 ```plaintext
 DELETE projects/:id/packages/nuget/:package_name/:package_version
@@ -451,9 +439,9 @@ DELETE projects/:id/packages/nuget/:package_name/:package_version
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name`    | 文字列 | はい      | パッケージの名前。 |
-| `package_version` | 文字列 | はい      | パッケージのバージョン。 |
+| `id`              | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。 |
+| `package_version` | 文字列 | はい      | このパッケージのバージョン。 |
 
 ```shell
 curl --request DELETE \
@@ -461,16 +449,16 @@ curl --request DELETE \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/MyNuGetPkg/1.3.0.17"
 ```
 
-リクエストに対する考えられるレスポンス:
+考えられるリクエストレスポンス:
 
 | ステータス | 説明 |
 | ------ | ----------- |
 | `204`  | パッケージが削除されました |
-| `401`  | 認証されていません |
+| `401`  | 不正な認証 |
 | `403`  | 禁止されています |
 | `404`  | 見つかりません |
 
-## デバッグシンボルファイル`.pdb`をダウンロードします {#download-a-debugging-symbol-file-pdb}
+## デバッグシンボルファイルをダウンロード`.pdb` {#download-a-debugging-symbol-file-pdb}
 
 {{< history >}}
 
@@ -478,7 +466,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-デバッグシンボルファイル(`.pdb`)をダウンロード:
+指定されたデバッグシンボルファイル（`.pdb`）をダウンロードします。
 
 ```plaintext
 GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
@@ -486,9 +474,9 @@ GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `file_name`       | 文字列 | はい      | ファイルの名前。 |
+| `file_name`       | 文字列 | はい      | ファイル名。 |
 | `signature`       | 文字列 | はい      | ファイルの署名。 |
-| `Symbolchecksum` | 文字列 | はい      | 必須ヘッダー。ファイルのチェックサム。 |
+| `Symbolchecksum` | 文字列 | はい      | 必須のヘッダー。ファイルのチェックサム。 |
 
 ```shell
 curl --header "Symbolchecksum: SHA256:<file_checksum>" \
@@ -502,12 +490,12 @@ curl --header "Symbolchecksum: SHA256:<file_checksum>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/mynugetpkg.pdb/k813f89485474661234z7109cve5709eFFFFFFFF/mynugetpkg.pdb" > mynugetpkg.pdb
 ```
 
-リクエストに対する考えられるレスポンス:
+考えられるリクエストレスポンス:
 
 | ステータス | 説明 |
 | ------ | ----------- |
 | `200`  | ファイルがダウンロードされました |
-| `400`  | 無効なリクエスト |
+| `400`  | 不正なリクエスト |
 | `403`  | 禁止されています |
 | `404`  | 見つかりません |
 
@@ -521,7 +509,7 @@ curl --header "Symbolchecksum: SHA256:<file_checksum>" \
 
 ### $metadataエンドポイント {#metadata-endpoint}
 
-認証は必須ではありません。V2フィードで使用可能なエンドポイントのメタデータを返します:
+認証は不要です。V2フィードで利用可能なエンドポイントのメタデータを返します:
 
 ```plaintext
 GET <route-prefix>/v2/$metadata
@@ -531,7 +519,7 @@ GET <route-prefix>/v2/$metadata
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```xml
 <edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
@@ -586,7 +574,7 @@ curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$meta
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='1.0.0')"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```xml
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">
@@ -600,17 +588,14 @@ curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packa
  </entry>
 ```
 
-{{< alert type="note" >}}
-
-GitLabは、`Packages()`および`FindPackagesByID()`エンドポイントの認証トークンを受信しないため、パッケージの最新バージョンを返すことができません。NuGet v2フィードを使用してパッケージをインストールまたはバージョンアップグレードする場合は、バージョンを指定する必要があります。
-
-{{< /alert >}}
+> [!note]
+> GitLabは`Packages()`および`FindPackagesByID()`エンドポイントの認証トークンを受け取らないため、パッケージの最新バージョンを返すことはできません。NuGet v2フィードでパッケージをインストールまたはアップグレードする際には、必ずバージョンを指定する必要があります。
 
 ```shell
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```xml
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">

@@ -15,9 +15,7 @@ import {
   EXPLORE_PROJECTS_TABS,
   FILTERED_SEARCH_NAMESPACE,
   FILTERED_SEARCH_TERM_KEY,
-  TRENDING_TAB,
 } from '~/explore/projects/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   EXPLORE_PROJECTS_TABS,
@@ -52,7 +50,6 @@ export default {
   components: {
     TabsWithList,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     initialSort: {
       type: String,
@@ -63,23 +60,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    tabs() {
-      if (this.glFeatures.retireTrendingProjects) {
-        return this.$options.EXPLORE_PROJECTS_TABS.filter(
-          (tab) => tab.value !== TRENDING_TAB.value,
-        );
-      }
-
-      return this.$options.EXPLORE_PROJECTS_TABS;
-    },
-  },
 };
 </script>
 
 <template>
   <tabs-with-list
-    :tabs="tabs"
+    :tabs="$options.EXPLORE_PROJECTS_TABS"
     :filtered-search-supported-tokens="$options.filteredSearchSupportedTokens"
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"

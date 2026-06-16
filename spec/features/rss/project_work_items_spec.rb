@@ -11,14 +11,14 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       user
     end
 
-    let_it_be(:assignee) do
+    let_it_be(:assignee, freeze: false) do
       user = create(:user, email: 'private2@example.com')
       public_email = create(:email, :confirmed, user: user, email: 'public2@example.com')
       user.update!(public_email: public_email.email)
       user
     end
 
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let!(:work_item) { create(:work_item, author: user, project: project) }
 
     context 'when authenticated' do

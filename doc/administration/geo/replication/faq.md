@@ -19,37 +19,37 @@ The requirements are listed [on the index page](../_index.md#requirements-for-ru
 
 ## How does Geo know which projects to sync?
 
-On each **secondary** site, there is a read-only replicated copy of the GitLab database.
-A **secondary** site also has a tracking database where it stores which projects have been synced.
+On each secondary site, there is a read-only replicated copy of the GitLab database.
+A secondary site also has a tracking database where it stores which projects have been synced.
 Geo compares the two databases to find projects that are not yet tracked.
 
 At the start, this tracking database is empty, so Geo tries to update from every project that it can see in the GitLab database.
 
 For each project to sync:
 
-1. Geo issues a `git fetch geo --mirror` to get the latest information from the **primary** site.
+1. Geo issues a `git fetch geo --mirror` to get the latest information from the primary site.
    If there are no changes, the sync is fast. Otherwise, it has to pull the latest commits.
-1. The **secondary** site updates the tracking database to store the fact that it has synced projects by name.
+1. The secondary site updates the tracking database to store the fact that it has synced projects by name.
 1. Repeat until all projects are synced.
 
-When someone pushes a commit to the **primary** site, it generates an event in the GitLab database that the repository has changed.
-The **secondary** site sees this event, marks the project in question as dirty, and schedules the project to be resynced.
+When someone pushes a commit to the primary site, it generates an event in the GitLab database that the repository has changed.
+The secondary site sees this event, marks the project in question as dirty, and schedules the project to be resynced.
 
 To ensure that problems with pipelines (for example, syncs failing too many times or jobs being lost) don't permanently stop projects syncing, Geo also periodically checks the tracking database for projects that are marked as dirty. This check happens when
 the number of concurrent syncs falls below `repos_max_capacity` and there are no new projects waiting to be synced.
 
 Geo also has a checksum feature which runs a SHA256 sum across all the Git references to the SHA values.
-If the refs don't match between the **primary** site and the **secondary** site, then the **secondary** site marks that project as dirty and try to resync it.
+If the refs don't match between the primary site and the secondary site, then the secondary site marks that project as dirty and try to resync it.
 So even if we have an outdated tracking database, the validation should activate and find discrepancies in the repository state and resync.
 
 ## Can you use Geo in a disaster recovery situation?
 
 Yes, but there are limitations to what we replicate (see
-[What data is replicated to a **secondary** site?](#what-data-is-replicated-to-a-secondary-site)).
+[What data is replicated to a secondary site?](#what-data-is-replicated-to-a-secondary-site)).
 
 Read the documentation for [Disaster Recovery](../disaster_recovery/_index.md).
 
-## What data is replicated to a **secondary** site?
+## What data is replicated to a secondary site?
 
 We replicate the whole rails database, project repositories, LFS objects, generated
 attachments, avatars and more. This means information such as user accounts,
@@ -58,11 +58,11 @@ query.
 
 For a comprehensive list of data replicated by Geo, see the [supported Geo data types page](datatypes.md).
 
-## Can I `git push` to a **secondary** site?
+## Can I `git push` to a secondary site?
 
-Pushing directly to a **secondary** site (for both HTTP and SSH, including Git LFS) is supported.
+Pushing directly to a secondary site (for both HTTP and SSH, including Git LFS) is supported.
 
-## How long does it take to have a commit replicated to a **secondary** site?
+## How long does it take to have a commit replicated to a secondary site?
 
 All replication operations are asynchronous and are queued to be dispatched. Therefore, it depends on a lot of
 factors such as the amount of traffic, how big your commit is, the
@@ -70,11 +70,11 @@ connectivity between your sites, and your hardware.
 
 ## What if the SSH server runs at a different port?
 
-That's totally fine. We use HTTP(s) to fetch repository changes from the **primary** site to all **secondary** sites.
+That's totally fine. We use HTTP(s) to fetch repository changes from the primary site to all secondary sites.
 
 ## Can I make a container registry for a secondary site to mirror the primary?
 
-Yes, however, we only support this for Disaster Recovery scenarios. See [container registry for a **secondary** site](container_registry.md).
+Yes, however, we only support this for Disaster Recovery scenarios. See [container registry for a secondary site](container_registry.md).
 
 ## Can you sign in to a secondary site?
 

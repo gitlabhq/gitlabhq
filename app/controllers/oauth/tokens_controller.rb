@@ -10,8 +10,6 @@ class Oauth::TokensController < Doorkeeper::TokensController
   # before enforcing the minimum.
   PKCE_MIN_CODE_VERIFIER_LENGTH = 43
 
-  alias_method :auth_user, :current_user
-
   before_action :validate_pkce_for_dynamic_applications, only: [:create]
   before_action :track_short_pkce_verifier, only: [:create]
 
@@ -31,6 +29,12 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   private
+
+  # In Rails 8 alias_method at class-body level fails when the aliased method
+  # is not yet in the ancestor chain at load time. Define explicitly instead.
+  def auth_user
+    current_user
+  end
 
   def append_info_to_payload(payload)
     super

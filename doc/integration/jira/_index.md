@@ -24,7 +24,7 @@ With Jira integrations:
 - Team members discover connections between code changes and requirements tracked in Jira issues.
 - Vulnerability findings from GitLab create issues in Jira for proper tracking and resolution.
 
-You can [import your Jira issues to GitLab](../../user/project/import/jira.md) or
+You can [import your Jira issues to GitLab](../../user/import/third_party_systems/jira.md) or
 integrate Jira with GitLab and continue to use both platforms together.
 
 ## Jira integrations

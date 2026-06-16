@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::JobsController do
+RSpec.describe Admin::JobsController, feature_category: :continuous_integration do
   describe 'GET #index' do
     context 'with an authenticated admin user' do
       it 'paginates builds without a total count', :aggregate_failures do

@@ -85,9 +85,10 @@ func TestContextReaderRead(t *testing.T) {
 	}
 }
 
+const testDataString = "test data"
+
 func TestBusyReader(t *testing.T) {
-	testData := "test data"
-	r := testReader(testData)
+	r := testReader(testDataString)
 	br, _ := newWriteAfterReader(r, &bytes.Buffer{})
 
 	result, err := io.ReadAll(br)
@@ -95,8 +96,8 @@ func TestBusyReader(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(result) != testData {
-		t.Fatalf("expected %q, got %q", testData, result)
+	if string(result) != testDataString {
+		t.Fatalf("expected %q, got %q", testDataString, result)
 	}
 }
 
@@ -106,15 +107,14 @@ func TestFirstWriteAfterReadDone(t *testing.T) {
 	if _, err := io.Copy(io.Discard, br); err != nil {
 		t.Fatalf("copy from busyreader: %v", err)
 	}
-	testData := "test data"
-	if _, err := io.Copy(cw, testReader(testData)); err != nil {
+	if _, err := io.Copy(cw, testReader(testDataString)); err != nil {
 		t.Fatalf("copy test data: %v", err)
 	}
 	if err := cw.Flush(); err != nil {
 		t.Fatalf("flush error: %v", err)
 	}
-	if result := writeRecorder.String(); result != testData {
-		t.Fatalf("expected %q, got %q", testData, result)
+	if result := writeRecorder.String(); result != testDataString {
+		t.Fatalf("expected %q, got %q", testDataString, result)
 	}
 }
 

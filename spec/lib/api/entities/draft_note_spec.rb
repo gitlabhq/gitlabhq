@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::DraftNote, feature_category: :code_review_workflow do
-  let_it_be(:entity) { create(:draft_note, :on_discussion) }
+  let_it_be(:entity, freeze: false) { create(:draft_note, :on_discussion) }
   let_it_be(:json) { entity.as_json }
 
   it 'exposes correct attributes' do

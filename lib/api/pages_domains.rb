@@ -42,7 +42,9 @@ module API
         authenticated_with_can_read_all_resources!
       end
 
-      desc "Get all pages domains" do
+      desc 'List all Pages domains' do
+        detail 'Lists all Pages domains on the instance. You must have administrator access to the ' \
+          'instance.'
         success Entities::PagesDomainBasic
         tags %w[gitlab_pages]
       end
@@ -69,7 +71,8 @@ module API
         require_pages_enabled!
       end
 
-      desc 'Get all pages domains' do
+      desc 'List all Pages domains in a project' do
+        detail 'Lists all Pages domains in a specified project. You must have permissions to view Pages domains.'
         success Entities::PagesDomain
         tags %w[gitlab_pages]
         is_array true
@@ -86,7 +89,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a single pages domain' do
+      desc 'Retrieve a Pages domain' do
+        detail 'Retrieves a Pages domain from a specified project. You must have permissions to view Pages ' \
+          'domains.'
         success Entities::PagesDomain
         tags %w[gitlab_pages]
       end
@@ -100,7 +105,8 @@ module API
         present pages_domain, with: Entities::PagesDomain
       end
 
-      desc 'Create a new pages domain' do
+      desc 'Create Pages domain' do
+        detail 'Creates a Pages domain in a specified project. You must have permissions to create Pages domains.'
         success Entities::PagesDomain
         tags %w[gitlab_pages]
       end
@@ -130,7 +136,9 @@ module API
         end
       end
 
-      desc 'Updates a pages domain' do
+      desc 'Update Pages domain' do
+        detail 'Updates a specified Pages domain in a project. You must have permissions to change an existing ' \
+          'Pages domain.'
         tags %w[gitlab_pages]
       end
       params do
@@ -163,7 +171,8 @@ module API
         end
       end
 
-      desc 'Verify a pages domain' do
+      desc 'Verify Pages domain' do
+        detail 'Verifies a specified Pages domain in a project. You must have permissions to update Pages domains.'
         success Entities::PagesDomain
         tags %w[gitlab_pages]
       end
@@ -184,7 +193,9 @@ module API
         end
       end
 
-      desc 'Delete a pages domain' do
+      desc 'Delete Pages domain' do
+        detail 'Deletes a specified Pages domain in a project.'
+        success code: 204, message: 'Resource deleted'
         tags %w[gitlab_pages]
       end
       params do

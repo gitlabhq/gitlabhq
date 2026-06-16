@@ -355,6 +355,60 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         end
       end
 
+      context 'when type is participating and custom_action is an opt-in-only event' do
+        let(:notification_setting) { user.notification_settings_for(project) }
+        let(:recipient) do
+          described_class.new(
+            user,
+            :participating,
+            custom_action: :push_to_merge_request,
+            target: target,
+            project: project
+          )
+        end
+
+        context 'with custom event enabled' do
+          before do
+            notification_setting.update!(push_to_merge_request: true)
+          end
+
+          it 'returns true' do
+            expect(recipient.suitable_notification_level?).to eq true
+          end
+        end
+
+        context 'without custom event enabled' do
+          before do
+            notification_setting.update!(push_to_merge_request: false)
+          end
+
+          it 'returns false' do
+            expect(recipient.suitable_notification_level?).to eq false
+          end
+        end
+      end
+
+      context 'when type is mention and custom_action is an opt-in-only event' do
+        let(:notification_setting) { user.notification_settings_for(project) }
+        let(:recipient) do
+          described_class.new(
+            user,
+            :mention,
+            custom_action: :push_to_merge_request,
+            target: target,
+            project: project
+          )
+        end
+
+        before do
+          notification_setting.update!(push_to_merge_request: false)
+        end
+
+        it 'returns true because mentions always notify' do
+          expect(recipient.suitable_notification_level?).to eq true
+        end
+      end
+
       context 'when type is mention' do
         let(:notification_setting) { user.notification_settings_for(project) }
         let(:recipient) do
@@ -496,6 +550,26 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
             expect(recipient.suitable_notification_level?).to eq false
           end
         end
+
+        context 'with push_to_merge_request' do
+          let(:recipient) do
+            described_class.new(user, :watch, custom_action: :push_to_merge_request, target: target, project: project)
+          end
+
+          it 'returns false since plain watchers remain excluded' do
+            expect(recipient.suitable_notification_level?).to eq false
+          end
+        end
+
+        context 'with push_to_merge_request and mention type' do
+          let(:recipient) do
+            described_class.new(user, :mention, custom_action: :push_to_merge_request, target: target, project: project)
+          end
+
+          it 'returns true since mentions override the watcher exclusion' do
+            expect(recipient.suitable_notification_level?).to eq true
+          end
+        end
       end
 
       context 'when type is not watch' do
@@ -512,8 +586,20 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
             described_class.new(user, :participating, custom_action: :issue_due, target: target, project: project)
           end
 
-          it 'returns false' do
-            expect(recipient.suitable_notification_level?).to eq false
+          it 'returns true because participants trump the watcher exclusion' do
+            expect(recipient.suitable_notification_level?).to eq true
+          end
+        end
+
+        context 'with push_to_merge_request' do
+          let(:recipient) do
+            described_class.new(
+              user, :participating, custom_action: :push_to_merge_request, target: target, project: project
+            )
+          end
+
+          it 'returns true so MR participants are notified of pushes' do
+            expect(recipient.suitable_notification_level?).to eq true
           end
         end
       end

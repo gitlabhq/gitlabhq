@@ -7,6 +7,7 @@ import {
 } from '~/visibility_level/constants';
 
 export default {
+  name: 'VisibilityIconButton',
   components: {
     GlIcon,
     GlButton,

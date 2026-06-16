@@ -1,8 +1,9 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: エピックイシューAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: エピックイシューAPIを使用して、イシューを一覧表示し、エピックにリンクし、リンクを解除します。
+title: エピックイシューAPI（非推奨）
 ---
 
 {{< details >}}
@@ -12,25 +13,20 @@ title: エピックイシューAPI
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
-
-{{< /alert >}}
+> [!warning]
+> エピックREST APIはGitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)になり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
 
 エピックイシューAPIエンドポイントへのすべてのAPIコールは、認証される必要があります。
 
 ユーザーがグループのメンバーではなく、グループがプライベートである場合、そのグループに対する`GET`リクエストの結果として、`404`ステータスコードが返されます。
 
-エピックは、GitLab [Premium](https://about.gitlab.com/pricing/)とUltimateでのみ利用可能です。エピック機能が利用できない場合、`403`ステータスコードが返されます。
+エピックは、GitLab [PremiumとUltimate](https://about.gitlab.com/pricing/)でのみ利用できます。エピック機能が利用できない場合、`403`ステータスコードが返されます。
 
-## エピックのページネーション {#epic-issues-pagination}
+## エピックのすべてのイシューを一覧表示 {#list-all-issues-for-an-epic}
 
-APIの結果は[ページ分割されています](rest/_index.md#pagination)。複数のイシューを返すリクエストは、デフォルトで一度に20件の結果を返します。
+指定されたエピックに割り当てられたすべてのイシューを一覧表示します。
 
-## エピックのイシューを一覧表示 {#list-issues-for-an-epic}
-
-エピックに割り当てられていて、認証済みユーザーがアクセスできるすべてのイシューを取得します。
+レスポンスは[ページ付けされています](rest/_index.md#pagination)。デフォルトでは20件の結果が返されます。
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/issues
@@ -46,7 +42,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/issues"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -122,15 +118,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`カラムは非推奨です。現在はシングルサイズの`assignees`配列です。
 
-`assignee`列は非推奨になりました。これはシングルサイズの`assignees`配列になりました。
+## イシューをエピックに割り当てる {#assign-an-issue-to-an-epic}
 
-{{< /alert >}}
-
-## イシューをエピックに割り当てる {#assign-an-issue-to-the-epic}
-
-エピックとイシューの関連付けを作成します。問題のイシューが別のエピックに属している場合、そのエピックから割り当て解除されます。
+指定されたエピックにイシューを割り当てます。イシューがすでに別のエピックに属している場合、最初にそのエピックから割り当てが解除されます。
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/issues/:issue_id
@@ -148,7 +141,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/55"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -234,15 +227,12 @@ curl --request POST \
 }
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`カラムは非推奨です。現在はシングルサイズの`assignees`配列です。
 
-`assignee`列は非推奨になりました。これはシングルサイズの`assignees`配列になりました。
+## エピックからイシューを削除する {#remove-an-issue-from-an-epic}
 
-{{< /alert >}}
-
-## エピックからイシューを削除 {#remove-an-issue-from-the-epic}
-
-エピックとイシューの関連付けを削除します。
+指定されたエピックからイシューを削除します。
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
@@ -252,16 +242,15 @@ DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | 整数または文字列   | はい        | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | 整数または文字列   | はい        | エピックの内部ID。                |
-| `epic_issue_id`     | 整数または文字列   | はい        | イシューとエピックの関連付けのID。     |
+| `epic_issue_id`     | 整数または文字列   | はい        | エピック-イシュー関連付けのID。     |
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11"
-
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -347,15 +336,12 @@ curl --request DELETE \
 }
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> `assignee`カラムは非推奨です。現在はシングルサイズの`assignees`配列です。
 
-`assignee`列は非推奨になりました。これはシングルサイズの`assignees`配列になりました。
+## エピック-イシュー関連付けを更新 {#update-an-epic-issue-association}
 
-{{< /alert >}}
-
-## エピックとイシューの関連付けを更新 {#update-epic---issue-association}
-
-エピックとイシューの関連付けを更新します。
+エピック-イシュー関連付けを更新します。
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
@@ -365,9 +351,9 @@ PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | 整数または文字列   | はい        | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | 整数または文字列   | はい        | エピックの内部ID。                |
-| `epic_issue_id`     | 整数または文字列   | はい        | イシューとエピックの関連付けのID。     |
-| `move_before_id`    | 整数または文字列   | いいえ         | 質問のリンクの前に配置する必要があるイシューとエピックの関連付けのID。     |
-| `move_after_id`     | 整数または文字列   | いいえ         | 質問のリンクの後に配置する必要があるイシューとエピックの関連付けのID。     |
+| `epic_issue_id`     | 整数または文字列   | はい        | エピック-イシュー関連付けのID。     |
+| `move_before_id`    | 整数または文字列   | いいえ         | 質問内のリンクの前に配置する必要があるエピック-イシュー関連付けのID。     |
+| `move_after_id`     | 整数または文字列   | いいえ         | 質問内のリンクの後に配置する必要があるエピック-イシュー関連付けのID。     |
 
 ```shell
 curl --request PUT \
@@ -375,7 +361,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11?move_before_id=20"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

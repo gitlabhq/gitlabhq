@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'GET resource access tokens available' do
-  let_it_be(:active_resource_access_token) { create(:personal_access_token, user: access_token_user) }
+  let_it_be(:active_resource_access_token, freeze: false) { create(:personal_access_token, user: access_token_user) }
 
-  let_it_be(:active_resource_access_token_from_another_resource) do
+  let_it_be(:active_resource_access_token_from_another_resource, freeze: false) do
     create(:personal_access_token, user: access_token_user_from_another_resource)
   end
 
@@ -111,9 +111,17 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
 end
 
 RSpec.shared_examples 'GET inactive access tokens' do
-  let_it_be(:inactive_resource_access_token1) { create(:personal_access_token, :expired, user: access_token_user) }
-  let_it_be(:inactive_resource_access_token2) { create(:personal_access_token, :revoked, user: access_token_user) }
-  let_it_be(:inactive_resource_access_token3) { create(:personal_access_token, :revoked, user: access_token_user) }
+  let_it_be(:inactive_resource_access_token1, freeze: false) do
+    create(:personal_access_token, :expired, user: access_token_user)
+  end
+
+  let_it_be(:inactive_resource_access_token2, freeze: false) do
+    create(:personal_access_token, :revoked, user: access_token_user)
+  end
+
+  let_it_be(:inactive_resource_access_token3, freeze: false) do
+    create(:personal_access_token, :revoked, user: access_token_user)
+  end
 
   before_all do
     create(:personal_access_token, user: access_token_user)

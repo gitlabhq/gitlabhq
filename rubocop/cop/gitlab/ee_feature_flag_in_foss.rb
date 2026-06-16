@@ -53,6 +53,10 @@ module RuboCop
         end
         alias_method :on_csend, :on_send
 
+        def external_dependency_checksum
+          FeatureFlags.all_config_checksum
+        end
+
         private
 
         def check_ee_feature_flag(node, flag_name)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'members notifications' do |entity_type|
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#accept_request' do
     let(:member) { create(:"#{entity_type}_member", :access_request) }

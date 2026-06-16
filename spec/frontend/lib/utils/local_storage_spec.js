@@ -1,4 +1,11 @@
-import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/utils/local_storage';
+import {
+  getStorageValue,
+  saveStorageValue,
+  removeStorageValue,
+  getSessionStorageValue,
+  saveSessionStorageValue,
+  removeSessionStorageValue,
+} from '~/lib/utils/local_storage';
 
 describe('Local Storage Utils', () => {
   const TEST_KEY = 'test_storage_key';
@@ -117,6 +124,129 @@ describe('Local Storage Utils', () => {
       // Verify
       expect(localStorage.getItem(TEST_KEY)).toBeNull();
       expect(localStorage.getItem(OTHER_KEY)).toBe('other value');
+    });
+  });
+
+  describe('saveSessionStorageValue', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('saves string values correctly', () => {
+      saveSessionStorageValue(TEST_KEY, STRING_VALUE);
+      expect(sessionStorage.getItem(TEST_KEY)).toBe(JSON.stringify(STRING_VALUE));
+    });
+
+    it('saves object values correctly', () => {
+      saveSessionStorageValue(TEST_KEY, OBJECT_VALUE);
+      expect(sessionStorage.getItem(TEST_KEY)).toBe(JSON.stringify(OBJECT_VALUE));
+    });
+
+    it('saves array values correctly', () => {
+      saveSessionStorageValue(TEST_KEY, ARRAY_VALUE);
+      expect(sessionStorage.getItem(TEST_KEY)).toBe(JSON.stringify(ARRAY_VALUE));
+    });
+
+    it('saves number values correctly', () => {
+      saveSessionStorageValue(TEST_KEY, NUMBER_VALUE);
+      expect(sessionStorage.getItem(TEST_KEY)).toBe(JSON.stringify(NUMBER_VALUE));
+    });
+  });
+
+  describe('getSessionStorageValue', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('returns { exists: false } when key does not exist', () => {
+      const result = getSessionStorageValue('nonexistent_key');
+      expect(result).toEqual({ exists: false });
+    });
+
+    it('retrieves string values correctly', () => {
+      sessionStorage.setItem(TEST_KEY, JSON.stringify(STRING_VALUE));
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result).toEqual({ exists: true, value: STRING_VALUE });
+    });
+
+    it('retrieves object values correctly', () => {
+      sessionStorage.setItem(TEST_KEY, JSON.stringify(OBJECT_VALUE));
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result).toEqual({ exists: true, value: OBJECT_VALUE });
+    });
+
+    it('retrieves array values correctly', () => {
+      sessionStorage.setItem(TEST_KEY, JSON.stringify(ARRAY_VALUE));
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result).toEqual({ exists: true, value: ARRAY_VALUE });
+    });
+
+    it('retrieves number values correctly', () => {
+      sessionStorage.setItem(TEST_KEY, JSON.stringify(NUMBER_VALUE));
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result).toEqual({ exists: true, value: NUMBER_VALUE });
+    });
+
+    it('handles JSON parse errors gracefully', () => {
+      sessionStorage.setItem(TEST_KEY, '{invalid json}');
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result).toEqual({ exists: false });
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('removeSessionStorageValue', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('removes the specified key from sessionStorage', () => {
+      sessionStorage.setItem(TEST_KEY, 'some value');
+      expect(sessionStorage.getItem(TEST_KEY)).not.toBeNull();
+
+      removeSessionStorageValue(TEST_KEY);
+
+      expect(sessionStorage.getItem(TEST_KEY)).toBeNull();
+    });
+
+    it('does not affect other keys when removing a specific key', () => {
+      const OTHER_KEY = 'other_key';
+      sessionStorage.setItem(TEST_KEY, 'test value');
+      sessionStorage.setItem(OTHER_KEY, 'other value');
+
+      removeSessionStorageValue(TEST_KEY);
+
+      expect(sessionStorage.getItem(TEST_KEY)).toBeNull();
+      expect(sessionStorage.getItem(OTHER_KEY)).toBe('other value');
+    });
+  });
+
+  describe('sessionStorage integration tests', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('can save and retrieve values in a round trip', () => {
+      saveSessionStorageValue(TEST_KEY, OBJECT_VALUE);
+      const result = getSessionStorageValue(TEST_KEY);
+      expect(result.exists).toBe(true);
+      expect(result.value).toEqual(OBJECT_VALUE);
+    });
+
+    it('can save, remove, and verify non-existence of values', () => {
+      saveSessionStorageValue(TEST_KEY, OBJECT_VALUE);
+      expect(getSessionStorageValue(TEST_KEY).exists).toBe(true);
+
+      removeSessionStorageValue(TEST_KEY);
+      expect(getSessionStorageValue(TEST_KEY).exists).toBe(false);
+    });
+
+    it('is isolated from localStorage', () => {
+      saveSessionStorageValue(TEST_KEY, OBJECT_VALUE);
+      expect(getStorageValue(TEST_KEY).exists).toBe(false);
+
+      saveStorageValue(TEST_KEY, STRING_VALUE);
+      expect(getSessionStorageValue(TEST_KEY).value).toEqual(OBJECT_VALUE);
     });
   });
 

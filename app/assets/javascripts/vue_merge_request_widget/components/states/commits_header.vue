@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import AddedCommitMessage from '../added_commit_message.vue';
 
 export default {
+  name: 'CommitsHeader',
   components: {
     GlButton,
     AddedCommitMessage,

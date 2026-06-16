@@ -2,6 +2,7 @@
 
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
+    include Gitlab::InternalEventsTracking
     extend ::Gitlab::Utils::Override
 
     def initialize(project:, current_user: nil, params: {})
@@ -84,7 +85,7 @@ module MergeRequests
     attr_reader :target_branch_was_deleted
 
     def trigger_updated_work_item_on_closing_issues(merge_request, old_closing_issues_ids)
-      new_issue_ids = merge_request.merge_requests_closing_issues.limit(1000).pluck(:issue_id) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be the same in the model
+      new_issue_ids = merge_request.merge_request_closing_issues.limit(1000).pluck(:issue_id) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be the same in the model
       all_issue_ids = new_issue_ids | old_closing_issues_ids
       return if all_issue_ids.blank?
 
@@ -96,7 +97,7 @@ module MergeRequests
     override :associations_before_update
     def associations_before_update(merge_request)
       super.merge(
-        closing_issues_ids: merge_request.merge_requests_closing_issues.limit(1000).pluck(:issue_id) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be the same in the model
+        closing_issues_ids: merge_request.merge_request_closing_issues.limit(1000).pluck(:issue_id) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be the same in the model
       )
     end
 
@@ -234,6 +235,12 @@ module MergeRequests
       if target_branch_was_deleted
         merge_request.head_pipeline_id = nil
         merge_request.retargeted = true
+
+        track_internal_event(
+          'retarget_merge_request_on_target_branch_merge',
+          user: current_user,
+          project: merge_request.target_project
+        )
       else
         refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
       end
@@ -396,7 +403,7 @@ module MergeRequests
     end
 
     def filter_sentinel_values(param)
-      param.reject { _1 == 0 }
+      param.reject { |sentinel| sentinel == 0 }
     end
 
     def trigger_merge_request_status_updated(merge_request)

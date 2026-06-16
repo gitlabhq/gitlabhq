@@ -95,6 +95,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
             message: 'starting importer',
             parallel: false,
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'Class'
           }
         )
@@ -106,6 +107,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
             message: 'importer finished',
             parallel: false,
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'Class'
           }
         )
@@ -130,6 +132,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
               message: 'starting importer',
               parallel: false,
               project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               importer: 'Class'
             }
           )
@@ -200,6 +203,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
               message: 'starting importer',
               parallel: false,
               project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               importer: 'Class'
             }
           )

@@ -24,6 +24,11 @@ class Upload < ApplicationRecord
   scope :for_uploader, ->(uploader_class) { where(uploader: uploader_class.to_s) }
   scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
   scope :preload_uploaded_by_user, -> { preload(:uploaded_by_user) }
+  # Filters by the project_uploads partition key so the
+  # index_project_uploads_on_project_id_and_id index can serve queries that
+  # order by id. The model_type filter is required so Postgres can prune to
+  # the project_uploads partition.
+  scope :for_project, ->(project_id) { where(project_id: project_id, model_type: 'Project') }
 
   before_save :calculate_checksum!, if: :foreground_checksummable?
   before_save :ensure_sharding_key

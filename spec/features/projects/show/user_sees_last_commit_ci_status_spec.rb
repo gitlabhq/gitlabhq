@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Show > User sees last commit CI status', feature_category: :groups_and_projects do
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
 
   it 'shows the project README', :js do
     project.enable_ci

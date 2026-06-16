@@ -74,7 +74,7 @@ For example, if the unique ID is `f85695`, the last example is
 > For limitations regarding namespaces served under the general domain name and HTTPS,
 > see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
 
-To understand Pages domains clearly, read the examples below.
+The following examples show how Pages domains work.
 
 > [!note]
 > The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` by `gitlab.io`.

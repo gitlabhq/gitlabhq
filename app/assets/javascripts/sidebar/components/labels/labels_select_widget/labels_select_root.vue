@@ -23,6 +23,7 @@ import {
 } from './utils';
 
 export default {
+  name: 'LabelsSelectRootWidget',
   components: {
     DropdownValue,
     DropdownContents,

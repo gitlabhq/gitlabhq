@@ -16,7 +16,7 @@ RSpec.shared_examples 'issuable entity current_user properties' do
     end
 
     context 'when user cannot create confidential notes' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

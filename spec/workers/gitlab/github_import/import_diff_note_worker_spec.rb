@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::ImportDiffNoteWorker, feature_category: :im
   describe '#import' do
     it 'imports a diff note' do
       import_state = create(:import_state, :started)
-      project = double(:project, full_path: 'foo/bar', id: 1, import_state: import_state)
+      project = double(:project, full_path: 'foo/bar', id: 1, organization_id: 1, import_state: import_state)
       client = double(:client)
       importer = double(:importer)
       hash = {

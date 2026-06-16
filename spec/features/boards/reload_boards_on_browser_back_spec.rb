@@ -19,14 +19,19 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js, feat
     end
 
     it 'created issue is listed on board' do
-      visit new_project_issue_path(project)
+      visit new_project_work_item_path(project)
 
       fill_in 'Title', with: 'issue should be shown'
       click_button 'Create Issue'
+
+      expect(page).to have_content('issue should be shown')
+      expect(page).to have_current_path(project_work_item_path(project, Issue.last.iid))
+
       page.go_back
-      wait_for_requests
+      expect(page).to have_current_path(new_project_work_item_path(project))
+
       page.go_back
-      wait_for_requests
+      expect(page).to have_current_path(project_board_path(project, board))
 
       page.within(first('.board [data-testid="issue-count-badge"]')) do
         expect(page).to have_content('1')

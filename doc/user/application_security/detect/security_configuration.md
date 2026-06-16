@@ -147,7 +147,7 @@ When customizing the security scanning configuration:
 
 ### Template editions
 
-GitLab application security tools have up to two template editions:
+GitLab application security tools have up to three template editions:
 
 - **Stable**: The stable template is the default. It offers a reliable and consistent application
   security experience. You should use the stable template for most users and projects that require
@@ -156,9 +156,17 @@ GitLab application security tools have up to two template editions:
   is identified by the word `latest` in the template's name. It is not considered stable and may
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
+- **Versioned**: A versioned template introduces breaking changes that are not backward compatible
+  with the stable template. Version templates have a version suffix (like `v2`, `v3`) in the
+  template name. Each version is stable in its major version, but you must opt in to adopt it
+  because of breaking changes. Only dependency scanning provides a versioned template
+  (`Dependency-Scanning.v2.gitlab-ci.yml`), which runs
+  [dependency scanning using SBOM](../dependency_scanning/dependency_scanning_sbom/_index.md). For
+  more information, see the
+  [migration guide](../dependency_scanning/migration_guide_to_sbom_based_scans.md).
 
 > [!note]
-> Don't mix security templates in the same project. Mixing different security template editions can
+> Don't mix **Stable** and **Latest** security templates in the same project. Mixing different security template editions can
 > cause both merge request and branch pipelines to run.
 
 ### Override the default registry base address

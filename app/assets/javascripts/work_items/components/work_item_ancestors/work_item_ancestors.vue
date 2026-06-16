@@ -4,6 +4,7 @@ import { GlIcon, GlPopover, GlBadge, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { findHierarchyWidget, formatAncestors } from '../../utils';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
@@ -31,6 +32,7 @@ export default {
     WorkItemStateBadge,
     DisclosureHierarchy,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     workItem: {
       type: Object,
@@ -48,6 +50,7 @@ export default {
       variables() {
         return {
           id: this.workItem.id,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {
@@ -83,6 +86,7 @@ export default {
         variables() {
           return {
             id: this.workItem.id,
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           };
         },
         skip() {

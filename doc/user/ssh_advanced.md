@@ -246,6 +246,49 @@ Public SSH keys must be unique to GitLab because they bind to your account.
 Your SSH key is the only identifier you have when you push code with SSH.
 It must uniquely map to a single user.
 
+## Move an SSH key to another device
+
+You can use the same SSH key on multiple devices by copying the private key file.
+You don't need to change anything in GitLab.
+
+> [!note]
+> For better security, consider [generating a new SSH key](ssh.md#generate-an-ssh-key-pair) for each
+> device instead. This limits the impact of a lost or compromised device.
+
+To move an SSH key to another device:
+
+1. On your original device, [locate your existing SSH key pairs](ssh.md#check-for-existing-ssh-key-pairs).
+1. Copy the files to the `~/.ssh/` directory on the new device.
+
+   > [!warning]
+   > Never send a private key over email, chat, or an unencrypted cloud sync service.
+   > Use an encrypted transfer method, such as a password manager or an encrypted USB drive.
+
+1. On the new device, open a terminal.
+1. Set the permissions so that only you can read the private key.
+   For example, for ED25519:
+
+   ```shell
+   chmod 600 ~/.ssh/id_ed25519
+   ```
+
+1. Add the key to the SSH agent:
+
+   ```shell
+   eval $(ssh-agent -s)
+   ssh-add ~/.ssh/id_ed25519
+   ```
+
+1. Verify that the key authenticates with GitLab. For more information, see
+   [verify your SSH connection](ssh.md#verify-your-ssh-connection).
+
+For SSH keys stored on a FIDO2 hardware security key, do not copy the private key file.
+Instead, import the key from the security key with `ssh-add -K`. For more information, see
+[generate an SSH key pair for a FIDO2 hardware security key](#generate-an-ssh-key-pair-for-a-fido2-hardware-security-key).
+
+On Microsoft Windows, the WSL and Git for Windows environments use different home directories.
+For more information, see [use SSH on Microsoft Windows](#use-ssh-on-microsoft-windows).
+
 ## Use SSH with EGit on Eclipse
 
 If you use [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).

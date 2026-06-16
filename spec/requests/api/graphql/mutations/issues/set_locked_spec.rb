@@ -49,5 +49,19 @@ RSpec.describe 'Setting an issue as locked', feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['issue']['discussionLocked']).to be_truthy
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :issue_set_locked,
+          { project_path: project.full_path, iid: issue.iid.to_s, locked: true },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

@@ -431,7 +431,7 @@ For example, if you have upgraded to GitLab 16.6 and want to revert back to
 
 When reverting:
 
-- You should **not** follow the database migration guides, because the backup has already been migrated to the previous
+- You should not follow the database migration guides, because the backup has already been migrated to the previous
   version.
 - If you ran database migrations, you must restore a backup after the downgrade. The version of the code must be
   compatible with the version of the schema that's used. The older schema is in the backup.

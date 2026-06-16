@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :model do
+RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
@@ -16,6 +16,60 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   it { is_expected.to belong_to(:runner_version).with_foreign_key(:version) }
   it { is_expected.to have_many(:runner_manager_builds) }
   it { is_expected.to have_many(:builds).through(:runner_manager_builds) }
+
+  describe 'query_constraints' do
+    # `ci_runner_machines` is LIST-partitioned by `runner_type` with composite
+    # primary key `(id, runner_type)`. Including `runner_type` in every
+    # single-record WHERE clause enables PostgreSQL partition pruning.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/594861.
+
+    it 'scopes single-record operations by id and runner_type' do
+      expect(described_class.query_constraints_list).to eq(%w[id runner_type])
+    end
+
+    context 'with a persisted runner_manager' do
+      let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be_with_refind(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+
+      it 'includes id and runner_type in the WHERE clause when reloading' do
+        recorder = ActiveRecord::QueryRecorder.new { runner_manager.reload }
+
+        expect(recorder.log).to include(
+          match(/SELECT.+FROM "ci_runner_machines".+WHERE.+"id" = .+AND.+"runner_type" = /)
+        )
+      end
+
+      it 'includes id and runner_type in the WHERE clause when updating' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          runner_manager.update_columns(architecture: 'amd64')
+        end
+
+        expect(recorder.log).to include(
+          match(/UPDATE "ci_runner_machines".+WHERE.+"id" = .+AND.+"runner_type" = /)
+        )
+      end
+
+      it 'includes id and runner_type in the WHERE clause when destroying' do
+        recorder = ActiveRecord::QueryRecorder.new { runner_manager.destroy! }
+
+        expect(recorder.log).to include(
+          match(/DELETE FROM "ci_runner_machines".+WHERE.+"id" = .+AND.+"runner_type" = /)
+        )
+      end
+
+      context 'with another runner_manager for the same runner' do
+        let_it_be(:other_runner_manager) do
+          create(:ci_runner_machine, runner: runner, system_xid: 'other-system')
+        end
+
+        it 'destroys only the target record, not all managers for the runner' do
+          expect { runner_manager.destroy! }
+            .to change { described_class.where(id: runner_manager.id).count }.from(1).to(0)
+            .and not_change { described_class.where(id: other_runner_manager.id).count }
+        end
+      end
+    end
+  end
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:runner) }
@@ -177,27 +231,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     include_examples 'runner with status scope'
   end
 
-  describe '.ip_address_exists?' do
-    let(:existing_ip_address) { '127.0.0.1' }
-    let(:ip_address_to_find) { existing_ip_address }
-
-    subject { described_class.ip_address_exists?(ip_address_to_find) }
-
-    before do
-      create(:ci_runner_machine, ip_address: existing_ip_address)
-    end
-
-    context 'when the ip address exists' do
-      it { is_expected.to be(true) }
-    end
-
-    context 'when the ip address does not exist' do
-      let(:ip_address_to_find) { '10.0.0.1' }
-
-      it { is_expected.to be(false) }
-    end
-  end
-
   describe '.available_statuses' do
     subject { described_class.available_statuses }
 
@@ -283,14 +316,14 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   end
 
   describe '.aggregate_upgrade_status_by_runner_id' do
-    let!(:runner_version1) { create(:ci_runner_version, version: '16.0.0', status: :recommended) }
-    let!(:runner_version2) { create(:ci_runner_version, version: '16.0.1', status: :available) }
+    let_it_be(:runner_version1) { create(:ci_runner_version, version: '16.0.0', status: :recommended) }
+    let_it_be(:runner_version2) { create(:ci_runner_version, version: '16.0.1', status: :available) }
 
-    let!(:runner_a) { create(:ci_runner) }
-    let!(:runner_b) { create(:ci_runner) }
-    let!(:runner_manager_a1) { create(:ci_runner_machine, runner: runner_a, version: runner_version1.version) }
-    let!(:runner_manager_a2) { create(:ci_runner_machine, runner: runner_a, version: runner_version2.version) }
-    let!(:runner_manager_b1) { create(:ci_runner_machine, runner: runner_b, version: runner_version2.version) }
+    let_it_be(:runner_a) { create(:ci_runner) }
+    let_it_be(:runner_b) { create(:ci_runner) }
+    let_it_be(:runner_manager_a1) { create(:ci_runner_machine, runner: runner_a, version: runner_version1.version) }
+    let_it_be(:runner_manager_a2) { create(:ci_runner_machine, runner: runner_a, version: runner_version2.version) }
+    let_it_be(:runner_manager_b1) { create(:ci_runner_machine, runner: runner_b, version: runner_version2.version) }
 
     subject { described_class.aggregate_upgrade_status_by_runner_id }
 

@@ -1,10 +1,7 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { pinia } from '~/pinia/instance';
 import UserLists from './components/user_lists.vue';
-import createStore from './store/index';
-
-Vue.use(Vuex);
+import { useUserLists } from './store/index';
 
 export const initUserLists = () => {
   const el = document.querySelector('#js-user-lists');
@@ -15,10 +12,12 @@ export const initUserLists = () => {
 
   const { featureFlagsHelpPagePath, errorStateSvgPath, projectId, newUserListPath } = el.dataset;
 
+  useUserLists(pinia).$patch({ projectId });
+
   return new Vue({
     el,
     name: 'UserListsRoot',
-    store: createStore({ projectId }),
+    pinia,
     provide: {
       featureFlagsHelpPagePath,
       errorStateSvgPath,

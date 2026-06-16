@@ -3,7 +3,7 @@
 RSpec.shared_context 'instance integration activation', :with_current_organization do
   include_context 'instance and group integration activation'
 
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user, freeze: false) { create(:user, :admin) }
 
   before do
     sign_in(user)

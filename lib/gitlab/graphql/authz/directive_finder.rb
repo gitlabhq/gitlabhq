@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def find_all_on_implementing_type(object)
-          return unless @field.owner&.kind&.interface? && object
+          return unless @field.owner.respond_to?(:kind) && @field.owner.kind&.interface? && object
 
           implementing_type = resolve_implementing_type(object)
           find_all_directives(implementing_type)

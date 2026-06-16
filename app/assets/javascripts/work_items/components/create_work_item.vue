@@ -30,6 +30,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   findAssigneesWidget,
   findCrmContactsWidget,
+  findHierarchyWidget,
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
@@ -237,6 +238,14 @@ export default {
       default: null,
     },
   },
+  emits: [
+    'changeType',
+    'confirmCancel',
+    'discardDraft',
+    'error',
+    'updateType',
+    'work-item-created',
+  ],
   data() {
     return {
       isTitleValid: true,
@@ -431,7 +440,7 @@ export default {
       return findWidget(WIDGET_TYPE_COLOR, this.workItem);
     },
     workItemHierarchy() {
-      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+      return findHierarchyWidget(this.workItem);
     },
     showParentAttribute() {
       // We use the work item create work flow for incidents although
@@ -1113,8 +1122,9 @@ export default {
         });
       } catch (error) {
         this.error = error.message || this.createErrorText;
-        this.loading = false;
         Sentry.captureException(error);
+      } finally {
+        this.loading = false;
       }
     },
     async handleUpdateWidgetDraft(input) {
@@ -1513,6 +1523,7 @@ export default {
               variant="confirm"
               :disabled="!isTitleValid"
               :loading="loading"
+              class="js-no-auto-disable"
               data-testid="create-button"
             >
               {{ createWorkItemText }}

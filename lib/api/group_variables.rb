@@ -16,7 +16,9 @@ module API
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of group-level variables' do
+      desc 'List all group variables' do
+        detail 'Lists all variables for a specified group. Use the `page` and `per_page` pagination parameters to ' \
+          'control the pagination of results.'
         success Entities::Ci::Variable
         tags %w[ci_variables]
       end
@@ -32,7 +34,9 @@ module API
         present paginate(variables), with: Entities::Ci::Variable
       end
 
-      desc 'Get the details of a group’s specific variable' do
+      desc 'Retrieve details of a group variable' do
+        detail 'Retrieves details of a specified group variable. If there are multiple variables with the same key, ' \
+          'use `filter` to select the correct `environment_scope`.'
         success Entities::Ci::Variable
         failure [{ code: 404, message: 'Group Variable Not Found' }]
         tags %w[ci_variables]
@@ -51,7 +55,8 @@ module API
         present variable, with: Entities::Ci::Variable
       end
 
-      desc 'Create a new variable in a group' do
+      desc 'Create a group variable' do
+        detail 'Creates a group variable.'
         success Entities::Ci::Variable
         failure [{ code: 400, message: '400 Bad Request' }]
         tags %w[ci_variables]
@@ -91,7 +96,9 @@ module API
         end
       end
 
-      desc 'Update an existing variable from a group' do
+      desc 'Update a group variable' do
+        detail 'Updates a specified group variable. If there are multiple variables with the same key, use `filter` ' \
+          'to select the correct `environment_scope`.'
         success Entities::Ci::Variable
         failure [{ code: 400, message: '400 Bad Request' }, { code: 404, message: 'Group Variable Not Found' }]
         tags %w[ci_variables]
@@ -151,7 +158,9 @@ module API
         not_found!('GroupVariable')
       end
 
-      desc 'Delete an existing variable from a group' do
+      desc 'Delete a group variable' do
+        detail 'Deletes a specified group variable. If there are multiple variables with the same key, use `filter` ' \
+          'to select the correct `environment_scope`.'
         success Entities::Ci::Variable
         failure [{ code: 404, message: 'Group Variable Not Found' }]
         tags %w[ci_variables]

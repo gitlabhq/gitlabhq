@@ -8,6 +8,7 @@ module Types
     present_using ::EnvironmentPresenter
 
     authorize :read_environment
+    authorize_granular_token permissions: :read_environment, boundary: :project, boundary_type: :project
 
     expose_permissions Types::PermissionTypes::Environment,
       description: 'Permissions for the current user on the resource. ' \

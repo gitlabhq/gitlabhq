@@ -13,12 +13,12 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
   before do
     allow(HTTParty)
       .to receive(:get)
-        .with(SaasFeatureOptionParser::WWW_GITLAB_COM_GROUPS_JSON, format: :plain)
+        .with(FeatureGenerator::Shared::WWW_GITLAB_COM_GROUPS_JSON, format: :plain)
         .and_return(groups.to_json)
   end
 
   describe SaasFeatureCreator do
-    let(:argv) { %w[saas-feature-name -g group::geo -m http://url -M 16.6] }
+    let(:argv) { %w[saas-feature-name -g group::geo -m https://url -M 16.6] }
     let(:options) { SaasFeatureOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
     let(:existing_saas_features) do
@@ -27,19 +27,15 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
 
     before do
       allow(creator).to receive(:all_saas_feature_names) { existing_saas_features }
-      allow(creator).to receive(:branch_name).and_return('feature-branch')
-      allow(creator).to receive(:editor).and_return(nil)
+      allow(creator).to receive_messages(branch_name: 'feature-branch', editor: nil)
 
-      # ignore writes
       allow(File).to receive(:write).and_return(true)
-
-      # ignore stdin
       allow(Readline).to receive(:readline).and_raise('EOF')
     end
 
     subject(:execute) { creator.execute }
 
-    it 'properly creates a SaaS feature' do
+    it 'properly creates a SaaS feature', :aggregate_failures do
       expect(File).to receive(:write).with(
         File.join('ee', 'config', 'saas_features', 'saas_feature_name.yml'),
         anything)
@@ -51,7 +47,7 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
       it 'requires feature branch' do
         expect(creator).to receive(:branch_name).and_return('master')
 
-        expect { execute }.to raise_error(SaasFeatureHelpers::Abort, /Create a branch first/)
+        expect { execute }.to raise_error(FeatureGenerator::Shared::Abort, /Create a branch first/)
       end
     end
 
@@ -62,7 +58,7 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
       end
 
       with_them do
-        it do
+        specify do
           expect { execute }.to raise_error(ex)
         end
       end
@@ -87,7 +83,7 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
       end
 
       with_them do
-        it do
+        specify do
           options = described_class.parse(Array(argv))
 
           expect(options.public_send(param)).to eq(result)
@@ -97,121 +93,32 @@ RSpec.describe 'bin/saas-feature', feature_category: :feature_flags do
       it 'missing SaaS feature name' do
         expect do
           expect { described_class.parse(%w[--amend]) }.to output(/SaaS feature name is required/).to_stdout
-        end.to raise_error(SaasFeatureHelpers::Abort)
+        end.to raise_error(FeatureGenerator::Shared::Abort)
       end
 
       it 'parses -h' do
         expect do
           expect { described_class.parse(%w[foo -h]) }.to output(/Usage:/).to_stdout
-        end.to raise_error(SaasFeatureHelpers::Done)
+        end.to raise_error(FeatureGenerator::Shared::Done)
       end
     end
 
     describe '.read_group' do
-      before do
+      it 'uses the SaaS feature noun in the prompt' do
         allow(described_class).to receive(:fzf_available?).and_return(false)
-      end
+        expect(Readline).to receive(:readline).and_return('group::geo')
 
-      context 'when valid group is given' do
-        let(:group) { 'group::geo' }
-
-        it 'reads group from stdin' do
-          expect(Readline).to receive(:readline).and_return(group)
-          expect do
-            expect(described_class.read_group).to eq('group::geo')
-          end.to output(/Specify the group label to which the SaaS feature belongs, from the following list/).to_stdout
-        end
-      end
-
-      context 'when valid index is given' do
-        it 'picks the group successfully' do
-          expect(Readline).to receive(:readline).and_return('1')
-          expect do
-            expect(described_class.read_group).to eq('group::geo')
-          end.to output(/Specify the group label to which the SaaS feature belongs, from the following list/).to_stdout
-        end
-      end
-
-      context 'with invalid group given' do
-        let(:type) { 'invalid' }
-
-        it 'shows error message and retries' do
-          expect(Readline).to receive(:readline).and_return(type)
-          expect(Readline).to receive(:readline).and_raise('EOF')
-
-          expect do
-            expect { described_class.read_group }.to raise_error(/EOF/)
-          end.to output(/Specify the group label to which the SaaS feature belongs, from the following list/).to_stdout
-            .and output(/The group label isn't in the above labels list/).to_stderr
-        end
-      end
-
-      context 'when invalid index is given' do
-        it 'shows error message and retries' do
-          expect(Readline).to receive(:readline).and_return('12')
-          expect(Readline).to receive(:readline).and_raise('EOF')
-
-          expect do
-            expect { described_class.read_group }.to raise_error(/EOF/)
-          end.to output(/Specify the group label to which the SaaS feature belongs, from the following list/).to_stdout
-            .and output(/The group label isn't in the above labels list/).to_stderr
-        end
+        expect { described_class.read_group }
+          .to output(/SaaS feature/).to_stdout
       end
     end
 
     describe '.read_introduced_by_url' do
-      context 'with valid URL given' do
-        let(:url) { 'https://merge-request' }
+      it 'uses the SaaS feature noun in the prompt' do
+        expect(Readline).to receive(:readline).and_return('')
 
-        it 'reads URL from stdin' do
-          expect(Readline).to receive(:readline).and_return(url)
-          expect(HTTParty).to receive(:head).with(url).and_return(instance_double(HTTParty::Response, success?: true))
-
-          expect do
-            expect(described_class.read_introduced_by_url).to eq('https://merge-request')
-          end.to output(/URL of the MR introducing the SaaS feature/).to_stdout
-        end
-      end
-
-      context 'with invalid URL given' do
-        let(:url) { 'https://invalid' }
-
-        it 'shows error message and retries' do
-          expect(Readline).to receive(:readline).and_return(url)
-          expect(HTTParty).to receive(:head).with(url).and_return(instance_double(HTTParty::Response, success?: false))
-          expect(Readline).to receive(:readline).and_raise('EOF')
-
-          expect do
-            expect { described_class.read_introduced_by_url }.to raise_error(/EOF/)
-          end.to output(/URL of the MR introducing the SaaS feature/).to_stdout
-                                                                     .and output(/URL '#{url}' isn't valid/).to_stderr
-        end
-      end
-
-      context 'with empty URL given' do
-        let(:url) { '' }
-
-        it 'skips entry' do
-          expect(Readline).to receive(:readline).and_return(url)
-
-          expect do
-            expect(described_class.read_introduced_by_url).to be_nil
-          end.to output(/URL of the MR introducing the SaaS feature/).to_stdout
-        end
-      end
-
-      context 'with a non-URL given' do
-        let(:url) { 'malformed' }
-
-        it 'shows error message and retries' do
-          expect(Readline).to receive(:readline).and_return(url)
-          expect(Readline).to receive(:readline).and_raise('EOF')
-
-          expect do
-            expect { described_class.read_introduced_by_url }.to raise_error(/EOF/)
-          end.to output(/URL of the MR introducing the SaaS feature/).to_stdout
-                                                                     .and output(/URL needs to start with/).to_stderr
-        end
+        expect { described_class.read_introduced_by_url }
+          .to output(/SaaS feature/).to_stdout
       end
     end
   end

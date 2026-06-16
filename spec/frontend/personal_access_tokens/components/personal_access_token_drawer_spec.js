@@ -2,6 +2,8 @@ import { GlAttributeList } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -34,6 +36,8 @@ describe('PersonalAccessTokenDrawer', () => {
       },
       stubs: {
         DynamicPanel,
+        DetailLayout,
+        PageHeading,
         MountingPortal: stubComponent(MountingPortal, { name: 'MountingPortal' }),
       },
     });
@@ -46,6 +50,7 @@ describe('PersonalAccessTokenDrawer', () => {
   const findRevokeButton = () => wrapper.findByTestId('revoke-token');
   const findDuplicateButton = () => wrapper.findByTestId('duplicate-token');
   const findStatusBadge = () => wrapper.findComponent(PersonalAccessTokenStatusBadge);
+  const findPageTitle = () => wrapper.findByTestId('page-heading');
 
   const findTokenExpiry = () => wrapper.findByTestId('token-expiry');
   const findTokenLastUsed = () => wrapper.findByTestId('token-last-used');
@@ -84,7 +89,8 @@ describe('PersonalAccessTokenDrawer', () => {
   describe('title and basic info', () => {
     it('renders title with token name', () => {
       expect(wrapper.text()).toContain('Personal access token detail');
-      expect(wrapper.text()).toContain('Token 1');
+      expect(findPageTitle().text()).toContain('Token 1');
+      expect(findPageTitle().element.tagName).toBe('H2');
     });
 
     it('renders attribute list with token details', () => {

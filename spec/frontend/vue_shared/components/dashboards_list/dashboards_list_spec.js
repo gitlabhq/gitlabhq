@@ -1,9 +1,11 @@
 import { GlTable, GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import DashboardsList from '~/vue_shared/components/dashboards_list/dashboards_list.vue';
+import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
 
 const mockDashboards = [
   {
+    id: 'gid://gitlab/Analytics::CustomDashboard/1',
     name: 'First custom dashboard',
     description: 'Default dashboard description',
     slug: 'first-custom-dashboard',
@@ -23,6 +25,7 @@ const mockDashboards = [
     dashboardUrl: '/fake/url/1',
   },
   {
+    id: 'gid://gitlab/Analytics::CustomDashboard/2',
     name: 'Cool dashboard',
     description:
       'Cool custom dashboard that has a description that is very long and will most definitely overflow',
@@ -53,7 +56,7 @@ describe('DashboardsList', () => {
   const findStarIcons = () => wrapper.findAllByTestId('dashboard-star-icon');
   const findDashboardLinks = () => wrapper.findAllByTestId('dashboard-redirect-link');
   const findUserAvatars = () => wrapper.findAllComponents(GlAvatarLabeled);
-  const findActionDropdowns = () => wrapper.findAllByTestId('dashboard-actions');
+  const findActionDropdowns = () => wrapper.findAllComponents(DashboardsListItemActions);
 
   const createWrapper = (props = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(DashboardsList, {
@@ -121,18 +124,7 @@ describe('DashboardsList', () => {
       });
 
       it('renders action dropdowns for each dashboard', () => {
-        const actionDropdowns = findActionDropdowns();
-
-        expect(actionDropdowns).toHaveLength(mockDashboards.length);
-
-        actionDropdowns.wrappers.forEach((dropdown) => {
-          expect(dropdown.props()).toMatchObject({
-            icon: 'ellipsis_v',
-            category: 'tertiary',
-            textSrOnly: true,
-            noCaret: true,
-          });
-        });
+        expect(findActionDropdowns()).toHaveLength(mockDashboards.length);
       });
 
       it('renders the valid fields', () => {

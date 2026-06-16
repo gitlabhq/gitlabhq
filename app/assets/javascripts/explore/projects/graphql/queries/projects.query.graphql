@@ -11,7 +11,6 @@ query exploreProjects(
   $search: String
   $minAccessLevel: AccessLevelEnum
   $programmingLanguageName: String
-  $trending: Boolean
   $active: Boolean
 ) {
   projects(
@@ -23,7 +22,6 @@ query exploreProjects(
     search: $search
     minAccessLevel: $minAccessLevel
     programmingLanguageName: $programmingLanguageName
-    trending: $trending
     active: $active
   ) {
     nodes {

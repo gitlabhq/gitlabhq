@@ -58,49 +58,25 @@ RSpec.describe EnforcesStepUpAuthenticationForNamespace, feature_category: :syst
 
     let(:example_doc_link) { 'https://example.com/company-internal-docs-for-step-up-auth' }
 
-    let(:provider_oidc_no_step_up) { GitlabSettings::Options.new(name: 'oidc_no_step_up') }
+    let(:provider_oidc_no_step_up) do
+      build(:omniauth_provider_config, :no_step_up_auth, provider_name: 'oidc_no_step_up')
+    end
+
     let(:provider_oidc) do
-      GitlabSettings::Options.new(
-        name: 'oidc',
-        step_up_auth: {
-          namespace: {
-            id_token: {
-              required: {
-                acr: 'silver'
-              }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, :with_namespace_scope, provider_name: 'oidc',
+        id_token_required: { acr: 'silver' })
     end
 
     let(:provider_oidc_and_doc_link) do
-      GitlabSettings::Options.new(
-        name: 'oidc_and_doc_link',
-        step_up_auth: {
-          namespace: {
-            documentation_link: example_doc_link,
-            id_token: {
-              required: {
-                acr: 'silver'
-              }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, :with_namespace_scope,
+        provider_name: 'oidc_and_doc_link',
+        id_token_required: { acr: 'silver' },
+        documentation_link: example_doc_link)
     end
 
-    let(:session_oidc_succeeded) do
-      { 'oidc' => { 'namespace' => { 'state' => 'succeeded' } } }
-    end
-
-    let(:session_oidc_failed) do
-      { 'oidc' => { 'namespace' => { 'state' => 'failed' } } }
-    end
-
-    let(:session_oidc_and_doc_link_failed) do
-      { 'oidc_and_doc_link' => { 'namespace' => { 'state' => 'failed' } } }
-    end
+    let(:session_oidc_succeeded) { { 'oidc' => { 'namespace' => { 'state' => 'succeeded' } } } }
+    let(:session_oidc_failed) { { 'oidc' => { 'namespace' => { 'state' => 'failed' } } } }
+    let(:session_oidc_and_doc_link_failed) { { 'oidc_and_doc_link' => { 'namespace' => { 'state' => 'failed' } } } }
 
     before do
       stub_omniauth_setting(enabled: true, providers: oauth_providers)

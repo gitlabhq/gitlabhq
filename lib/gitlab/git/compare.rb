@@ -27,7 +27,11 @@ module Gitlab
         @base && @head && @base.id == @head.id
       end
 
-      def commits
+      def commits(limit: nil)
+        if limit
+          return Gitlab::Git::Commit.between(@repository, @base.id, @head.id, limit: limit)
+        end
+
         return @commits if defined?(@commits)
 
         @commits = Gitlab::Git::Commit.between(@repository, @base.id, @head.id)

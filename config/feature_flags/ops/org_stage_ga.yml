@@ -1,0 +1,11 @@
+---
+# Organizations release stage flag. See the release process: https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/organizations/release-stages/
+name: org_stage_ga
+description: Gates all organization flags at the GA stage. Default-enabled across all deployments, with the flag retained as a handbrake.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/9265
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239926
+rollout_issue_url:
+milestone: '19.1'
+group: group::organizations
+type: ops
+default_enabled: true

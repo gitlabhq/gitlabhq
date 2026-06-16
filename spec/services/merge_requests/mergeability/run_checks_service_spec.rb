@@ -39,7 +39,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       end
 
       it 'is still a success' do
-        expect(execute.success?).to eq(true)
+        expect(execute.success?).to be(true)
       end
 
       it_behaves_like 'checks are all executed' do
@@ -68,7 +68,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
           expect(service).not_to receive(:execute)
         end
 
-        expect(execute.success?).to eq(true)
+        expect(execute.success?).to be(true)
       end
 
       it_behaves_like 'checks are all executed' do
@@ -89,7 +89,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
         it 'returns the failed check' do
           result = execute
 
-          expect(result.success?).to eq(false)
+          expect(result.success?).to be(false)
           expect(execute.payload[:unsuccessful_check]).to eq(:failed)
         end
 
@@ -112,7 +112,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
         it 'returns the checking check' do
           result = execute
 
-          expect(result.success?).to eq(false)
+          expect(result.success?).to be(false)
           expect(execute.payload[:unsuccessful_check]).to eq(:checking)
         end
 
@@ -133,7 +133,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
         end
 
         it 'is still a success' do
-          expect(execute.success?).to eq(true)
+          expect(execute.success?).to be(true)
         end
 
         it_behaves_like 'checks are all executed' do
@@ -176,7 +176,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
                 expect(logger).to receive(:commit)
               end
 
-              expect(execute.success?).to eq(true)
+              expect(execute.success?).to be(true)
             end
 
             it_behaves_like 'checks are all executed' do
@@ -191,7 +191,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
             it 'does not call the results store' do
               expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
 
-              expect(execute.success?).to eq(true)
+              expect(execute.success?).to be(true)
             end
           end
         end
@@ -211,7 +211,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
                 expect(logger).to receive(:commit)
               end
 
-              expect(execute.success?).to eq(true)
+              expect(execute.success?).to be(true)
             end
 
             it_behaves_like 'checks are all executed' do
@@ -226,7 +226,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
             it 'does not call the results store' do
               expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
 
-              expect(execute.success?).to eq(true)
+              expect(execute.success?).to be(true)
             end
           end
         end
@@ -238,7 +238,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
         it 'does not call the results store' do
           expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
 
-          expect(execute.success?).to eq(true)
+          expect(execute.success?).to be(true)
         end
       end
     end

@@ -1,0 +1,88 @@
+# Weekly job that runs the gitlab-ai-principles-distiller gem's `sync` bin
+# to keep distilled agent principles in sync with docs.gitlab.com SSOT
+# changes.
+#
+# When the script detects drift, it triggers a Duo Workflow per affected
+# principle through the AI Catalog "Agent Principles Distiller" flow
+# (provisioned by `bin/gitlab-ai-principles-distiller-provision-flow`),
+# waits for each to finish, then creates a branch and opens an MR via
+# the GitLab REST API.
+# See gitlab-org/gitlab#597600 for the design.
+#
+# Trigger: pipeline schedule on master with SCHEDULE_TYPE=weekly.
+#
+# Tokens: GITLAB_TOKEN (Workflow API + GraphQL) and GITLAB_API_TOKEN
+# (auto-MR REST). Both are sourced from a single project CI/CD variable
+# AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN, which must be a classic PAT
+# with `api` scope (fine-grained PATs do not cover GraphQL, AI Catalog
+# mutations, or the Duo Workflow create endpoint).
+#
+# The token belongs to the dedicated service account
+# service-modelops-agent-principles-distiller (Developer on
+# gitlab-org/gitlab, with a Duo Agent Platform seat). The Duo Agent
+# Platform Workflow API requires a user with a seat as the calling
+# identity, which project access tokens (e.g.
+# PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE) lack. Provisioning is tracked
+# in access request
+# https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/43931
+# (confidential).
+ai-principles-sync:
+  stage: ai-gateway
+  needs: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  timeout: 60m
+  variables:
+    # GITLAB_TOKEN authenticates Workflow API and GraphQL polling calls.
+    GITLAB_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN
+    # Used by the sync bin to create the auto-MR via the REST API.
+    GITLAB_API_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN
+    # AGENT_PRINCIPLES_CATALOG_PROJECT pins the catalog project that
+    # `provision_flow` and `sync` operate against. Set here rather than
+    # as a project CI variable so it's reviewable in this YAML.
+    AGENT_PRINCIPLES_CATALOG_PROJECT: gitlab-org/gitlab
+    # Install gem dependencies under the gem's vendor/ dir (matches the
+    # convention used by other gems in this repo, isolates the install
+    # from system gems).
+    BUNDLE_PATH: vendor
+    # AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID is the numeric ID of the
+    # AI Catalog ItemConsumer that binds the "Agent Principles Distiller"
+    # flow to gitlab-org/gitlab. It is set as a project CI/CD variable
+    # (provisioned once via the provision-flow bin) and exposed
+    # automatically to this job's runner — DO NOT redefine it here as
+    # `$AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID`, which would force
+    # literal-string substitution (variable expansion is disabled by
+    # default since GitLab 18.6) and break the API call.
+  before_script:
+    - apk add --no-cache build-base git
+    # Audit-trail visibility: log the identity making the calls (the
+    # service account; see access request #43931).
+    - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"
+    - git config --global user.email "service-modelops-agent-principles-distiller@gitlab.com"
+    - git config --global user.name "Agent Principles Distiller"
+    # Ensure the default branch ref is available so distillation_base_sha
+    # (Gitlab::PrinciplesDistiller::Sync's `git merge-base HEAD master`)
+    # can resolve. The runner does a shallow clone (depth 20) by default
+    # and only fetches the pipeline ref; we just need master's tip.
+    - git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH" || true
+    # Install gem dependencies from the gem directory. Pre-install the
+    # exact Bundler the lockfile pins so the alpine image's older
+    # bundler doesn't self-upgrade mid-install; that self-upgrade
+    # triggers a confusing "Cannot write a changed lockfile while
+    # frozen" stderr line even though the install succeeds.
+    - cd gems/gitlab-ai-principles-distiller
+    - gem install bundler --no-document --version "$(tail -n 1 Gemfile.lock | tr -d '[:space:]')"
+    - bundle install --jobs=$(nproc) --retry=3
+  script:
+    # Mirror any prompt/tool changes from .ai/principles/distillation_prompt.md
+    # into the AI Catalog flow before triggering distillations.
+    - bundle exec bin/gitlab-ai-principles-distiller-provision-flow --workspace "$CI_PROJECT_DIR"
+    # Detect drift, trigger Duo Workflows, write back, and open an MR.
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" --push
+  rules:
+    - !reference ['.ai-principles-sync:rules:weekly', rules]
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 7d
+    paths:
+      - .ai/principles/distilled/

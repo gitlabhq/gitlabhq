@@ -7,8 +7,7 @@ require Rails.root.join(
 )
 
 RSpec.describe RebuildCiFinishedPipelinesAggregationTables, :click_house, :freeze_time, feature_category: :fleet_visibility do
-  let_it_be(:connection) { ::ClickHouse::Connection.new(:main) }
-
+  let(:connection) { ::ClickHouse::Connection.new(:main) }
   let(:migration) { described_class.new(connection) }
   let(:test_date) { Time.zone.today - 1.month }
 

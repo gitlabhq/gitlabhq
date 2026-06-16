@@ -171,8 +171,30 @@ export const PACKAGE_DELETE_HELP_PAGE_PATH = helpPagePath(
   'user/packages/container_registry/delete_container_registry_images',
 );
 
-export const DOCKER_MEDIA_TYPE = 'application/vnd.docker.distribution.manifest.list.v2+json';
-export const OCI_MEDIA_TYPE = 'application/vnd.oci.image.index.v1+json';
+export const DOCKER_LIST_MEDIA_TYPE = 'application/vnd.docker.distribution.manifest.list.v2+json';
+export const OCI_INDEX_MEDIA_TYPE = 'application/vnd.oci.image.index.v1+json';
+
+export const OS_VERSION_LABEL = s__(
+  'ContainerRegistry|%{strongStart}OS Version:%{strongEnd} %{osVersion}',
+);
+export const SUPPORTED_PLATFORMS_ROW_TEXT = s__(
+  'ContainerRegistry|Supported platforms: %{supportedPlatforms}',
+);
+
+export const NO_PLATFORMS_AVAILABLE_TEXT = s__('ContainerRegistry|None');
+
+// The third component in os.version (e.g. 10.0.26100.32860) for a Windows image
+// is the Windows build number. We map build number to labels using information from
+// https://learn.microsoft.com/en-us/windows/release-health/release-information to
+// make a more user-friendly representation for an image platform, e.g.
+// 'windows/amd64 (ltsc2025)'.
+export const WINDOWS_BUILD_LABELS = {
+  14393: 'ltsc2016', // Windows Server 2016
+  17763: 'ltsc2019', // Windows Server 2019
+  19044: 'ltsc2021', // Windows 10 LTSC 2021
+  20348: 'ltsc2022', // Windows Server 2022
+  26100: 'ltsc2025', // Windows Server 2025
+};
 
 export const MinimumAccessLevelText = {
   ADMIN: s__('AdminUsers|Administrator'),

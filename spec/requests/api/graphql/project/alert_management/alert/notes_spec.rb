@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe 'getting Alert Management Alert Notes', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, developer_of: project) }
-  let_it_be(:first_alert) { create(:alert_management_alert, project: project, assignees: [current_user]) }
-  let_it_be(:second_alert) { create(:alert_management_alert, project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:current_user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:first_alert, freeze: false) { create(:alert_management_alert, project: project, assignees: [current_user]) }
+  let_it_be(:second_alert, freeze: false) { create(:alert_management_alert, project: project) }
   let_it_be(:first_system_note) { create(:note_on_alert, :with_system_note_metadata, noteable: first_alert, project: project) }
   let_it_be(:second_system_note) { create(:note_on_alert, :with_system_note_metadata, noteable: first_alert, project: project) }
 
@@ -91,7 +91,7 @@ RSpec.describe 'getting Alert Management Alert Notes', feature_category: :incide
     end
 
     context 'for non-system notes' do
-      let_it_be(:user_note) { create(:note_on_alert, noteable: second_alert, project: project) }
+      let_it_be(:user_note, freeze: false) { create(:note_on_alert, noteable: second_alert, project: project) }
 
       it 'includes expected data' do
         post_graphql(query, current_user: current_user)

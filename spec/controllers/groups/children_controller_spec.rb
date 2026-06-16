@@ -6,7 +6,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
   include ExternalAuthorizationServiceHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group_member) { create(:group_member, group: group, user: user) }
 
@@ -275,7 +275,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
       end
 
       context 'with active parameter' do
-        let_it_be(:group) { create(:group) }
+        let_it_be(:group, freeze: false) { create(:group) }
 
         let_it_be(:active_subgroup) { create(:group, parent: group) }
         let_it_be(:active_project) { create(:project, :public, group: group) }

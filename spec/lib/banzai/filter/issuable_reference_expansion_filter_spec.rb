@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:other_project) { create(:project, :public) }
-  let_it_be(:closed_issue) { create_issue(:closed) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:other_project, freeze: false) { create(:project, :public) }
+  let_it_be(:closed_issue, freeze: false) { create_issue(:closed) }
 
   let(:context) { { current_user: user, issuable_reference_expansion_enabled: true } }
 
@@ -217,14 +217,14 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
     end
 
     context 'when extended summary props are present' do
-      let_it_be(:milestone) { create(:milestone, project: project) }
-      let_it_be(:assignees) { create_list(:user, 3) }
-      let_it_be(:issuable) do
+      let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+      let_it_be(:assignees, freeze: false) { create_list(:user, 3) }
+      let_it_be(:issuable, freeze: false) do
         create_item(issuable_type, :opened, title: 'Some issue', milestone: milestone,
           assignees: assignees)
       end
 
-      let_it_be(:link) do
+      let_it_be(:link, freeze: false) do
         create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,
           reference_format: '+s')
       end
@@ -239,8 +239,8 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       end
 
       describe 'checking N+1' do
-        let_it_be(:milestone2) { create(:milestone, project: project) }
-        let_it_be(:assignees2) { create_list(:user, 3) }
+        let_it_be(:milestone2, freeze: false) { create(:milestone, project: project) }
+        let_it_be(:assignees2, freeze: false) { create_list(:user, 3) }
 
         it 'does not have N+1 for extended summary', :use_sql_query_cache do
           issuable2 = create_item(issuable_type, :opened, title: 'Another issue',
@@ -265,13 +265,13 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
   end
 
   context 'for work item references' do
-    let_it_be(:issuable_type) { :work_item }
+    let_it_be(:issuable_type, freeze: false) { :work_item }
 
     it_behaves_like 'issue / work item references'
   end
 
   context 'for issue references' do
-    let_it_be(:issuable_type) { :issue }
+    let_it_be(:issuable_type, freeze: false) { :issue }
 
     it_behaves_like 'issue / work item references'
   end
@@ -364,13 +364,13 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
     end
 
     context 'when extended summary props are present' do
-      let_it_be(:milestone) { create(:milestone, project: project) }
-      let_it_be(:assignees) { create_list(:user, 2) }
-      let_it_be(:merge_request) do
+      let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+      let_it_be(:assignees, freeze: false) { create_list(:user, 2) }
+      let_it_be(:merge_request, freeze: false) do
         create_merge_request(:opened, title: 'Some merge request', milestone: milestone, assignees: assignees)
       end
 
-      let_it_be(:link) do
+      let_it_be(:link, freeze: false) do
         create_link(
           merge_request.to_reference,
           merge_request: merge_request.id,
@@ -389,8 +389,8 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       end
 
       describe 'checking N+1' do
-        let_it_be(:milestone2) { create(:milestone, project: project) }
-        let_it_be(:assignees2) { create_list(:user, 3) }
+        let_it_be(:milestone2, freeze: false) { create(:milestone, project: project) }
+        let_it_be(:assignees2, freeze: false) { create_list(:user, 3) }
 
         it 'does not have N+1 for extended summary', :use_sql_query_cache do
           merge_request2 = create_merge_request(

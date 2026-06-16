@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Types::BaseArgument, feature_category: :api do
   include_examples 'Gitlab-style deprecations' do
-    let_it_be(:field) do
+    let_it_be(:field, freeze: false) do
       Types::BaseField.new(name: 'field', type: String, null: true)
     end
 
@@ -15,8 +15,8 @@ RSpec.describe Types::BaseArgument, feature_category: :api do
   end
 
   describe 'array size validation' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:field) { Types::BaseField.new(name: 'field', type: String, null: true) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:field, freeze: false) { Types::BaseField.new(name: 'field', type: String, null: true) }
 
     before do
       # for testing purposes reduce MAX_ARRAY_SIZE to 100

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/predicate_memoization'
 
-RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
+RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization, feature_category: :tooling do
   shared_examples('not registering offense') do
     it 'does not register offenses' do
       expect_no_offenses(source)

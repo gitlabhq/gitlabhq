@@ -6,6 +6,7 @@ import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { REVIEW_APP_MODAL_I18N as i18n } from '../constants';
 
 export default {
+  name: 'EnableReviewAppModal',
   components: {
     GlLink,
     GlModal,

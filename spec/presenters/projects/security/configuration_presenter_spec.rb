@@ -6,7 +6,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
   include Gitlab::Routing.url_helpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:current_user) { build_stubbed(:user) }
+  let_it_be(:current_user, freeze: false) { build_stubbed(:user) }
 
   let(:presenter) { described_class.new(project, current_user: current_user) }
 
@@ -19,9 +19,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     subject(:html_data) { presenter.to_html_data_attribute }
 
     context 'when latest default branch pipeline`s source is not auto devops' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
-      let_it_be(:pipeline) do
+      let_it_be(:pipeline, freeze: false) do
         create(
           :ci_pipeline,
           project: project,
@@ -63,8 +63,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with group_full_path value' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:group) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           it 'includes a link to group_full_path' do
             expect(html_data[:group_full_path]).to eq(parent.full_path)
@@ -72,8 +72,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:user_namespace) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           it 'returns nil' do
             expect(html_data[:group_full_path]).to be_nil
@@ -83,8 +83,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with scan profiles permissions' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:group) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           where(:has_permission, :result) do
             true  | true
@@ -106,8 +106,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:user_namespace) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           before do
             allow_next_instance_of(described_class) do |presenter|
@@ -123,8 +123,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with attributes permissions' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:group) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           where(:permission, :field, :has_permission, :result) do
             :read_security_attribute   | :can_read_attributes   | true  | true
@@ -148,8 +148,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let_it_be(:parent, freeze: false) { create(:user_namespace) }
+          let_it_be(:project, freeze: false) { create(:project, namespace: parent) }
 
           where(:field) { [:can_read_attributes, :can_manage_attributes] }
 
@@ -338,9 +338,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     context "when the latest default branch pipeline's source is auto devops" do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
-      let_it_be(:pipeline) do
+      let_it_be(:pipeline, freeze: false) do
         create(
           :ci_pipeline,
           :auto_devops_source,
@@ -387,7 +387,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     context 'when the project has no default branch pipeline' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
       it 'reports that auto devops is disabled' do
         expect(html_data[:auto_devops_enabled]).to be_falsy
@@ -426,7 +426,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     describe 'secret_push_protection' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
       let(:features) { Gitlab::Json.parse(html_data[:features]) }
 
       it 'feature includes secret_push_protection' do

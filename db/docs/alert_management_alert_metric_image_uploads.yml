@@ -2,6 +2,7 @@
 table_name: alert_management_alert_metric_image_uploads
 classes:
 - AlertManagement::MetricImage
+- Geo::AlertManagementMetricImageUpload
 - Upload
 feature_categories:
 - incident_management

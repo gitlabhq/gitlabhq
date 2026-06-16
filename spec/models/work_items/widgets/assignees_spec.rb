@@ -34,7 +34,7 @@ RSpec.describe WorkItems::Widgets::Assignees do
       context 'when user is nil' do
         let(:user) { nil }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe WorkItems::Widgets::Assignees do
       context 'when user is nil' do
         let(:user) { nil }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

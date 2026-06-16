@@ -6,7 +6,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
   let(:service) { described_class.new }
 
   describe '#execute' do
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     let_it_be(:artifact_1) { create(:ci_job_artifact, project: project, size: 1, created_at: 14.days.ago) }
     let_it_be(:artifact_2) { create(:ci_job_artifact, project: project, size: 2, created_at: 13.days.ago) }

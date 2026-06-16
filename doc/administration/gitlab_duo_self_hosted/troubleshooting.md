@@ -9,7 +9,7 @@ title: Troubleshooting self-hosted models
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -21,6 +21,7 @@ title: Troubleshooting self-hosted models
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -470,7 +471,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
 1. To resolve this issue:
    - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).
-   - If you're a customer, report the issue through [GitLab Support](https://about.gitlab.com/support/).
+   - If you're a customer, report the issue through [GitLab Support](https://support.gitlab.com/).
 
 ## Error: An error occurred while fetching an authentication token for this workflow
 

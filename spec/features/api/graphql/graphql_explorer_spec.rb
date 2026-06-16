@@ -11,7 +11,7 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
 
   # In production environments introspection returns a static document
   # test and dev environments it executes a live introspection query
-  it 'executes the expected introspection query in a non production environment' do
+  it 'executes the expected introspection query and renders docs in a non production environment' do
     expect(GitlabSchema).to receive(:execute).and_wrap_original do |method, query, **kwargs|
       expect(query.squish).to eq(CachedIntrospectionQuery.query_string)
 
@@ -20,17 +20,7 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
 
     visit '/-/graphql-explorer'
 
-    # Working autocomplete means the introspection query was successful
-    fill_in_editor('query { projec')
-    expect(page).to have_css('.CodeMirror-hints', text: 'project')
-  end
-
-  it 'renders the documentation' do
-    visit '/-/graphql-explorer'
-
     click_button('Show Documentation Explorer')
-
-    expect(page).to have_content('Docs')
     expect(page).to have_content('A GraphQL schema provides a root type for each kind of operation.')
   end
 

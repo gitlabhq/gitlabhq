@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'when releases and group releases shared context' do
-  let_it_be(:stranger) { create(:user) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:stranger, freeze: false) { create(:user) }
+  let_it_be(:guest, freeze: false) { create(:user) }
+  let_it_be(:reporter, freeze: false) { create(:user) }
+  let_it_be(:developer, freeze: false) { create(:user) }
 
   let(:base_url_params) { { scope: 'all', release_tag: release.tag } }
   let(:opened_url_params) { { state: 'opened', **base_url_params } }

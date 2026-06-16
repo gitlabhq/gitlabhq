@@ -13,6 +13,7 @@ import {
 } from '~/ci/runner/constants';
 
 export default {
+  name: 'RunnerListEmptyState',
   components: {
     GlEmptyState,
     GlLink,

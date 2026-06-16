@@ -106,13 +106,14 @@ export default {
       </div>
     </template>
     <template v-if="showAgeIndicatorToggle">
-      <gl-disclosure-dropdown-item data-testid="age-indicator-toggle" @action="toggleAgeIndicator">
+      <gl-disclosure-dropdown-item data-testid="age-indicator-toggle">
         <template #list-item>
           <gl-toggle
             :value="showAgeIndicator"
             :label="$options.i18n.showAgeIndicator"
             class="gl-justify-between [&_.gl-toggle-label]:gl-font-normal"
             label-position="left"
+            @change="toggleAgeIndicator"
           />
         </template>
       </gl-disclosure-dropdown-item>

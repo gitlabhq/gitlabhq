@@ -429,6 +429,12 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#supports_replying_to_system_notes?' do
+    it 'returns false by default' do
+      expect(subject.supports_replying_to_system_notes?).to be(false)
+    end
+  end
+
   describe '#capped_notes_count' do
     context 'notes number < 10' do
       it 'the number of notes is returned' do

@@ -1,10 +1,5 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import NewUserList from './components/new_user_list.vue';
-import createStore from './store/new';
-
-Vue.use(Vuex);
 
 export const initNewUserList = () => {
   const el = document.getElementById('js-new-user-list');
@@ -13,15 +8,15 @@ export const initNewUserList = () => {
     return null;
   }
 
-  const { userListsDocsPath, featureFlagsPath } = el.dataset;
+  const { userListsDocsPath, featureFlagsPath, projectId } = el.dataset;
 
   return new Vue({
     el,
     name: 'FeatureFlagsNewUserListRoot',
-    store: createStore(el.dataset),
     provide: {
       userListsDocsPath,
       featureFlagsPath,
+      projectId,
     },
     render(h) {
       return h(NewUserList);

@@ -1,0 +1,10 @@
+---
+name: replace_group_deletion_schedule
+description: Replace usages of the group deletion schedule table with state metadata
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22031
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237029
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600367
+milestone: '19.1'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

@@ -2,62 +2,164 @@
 name: auditor
 description: Read-only access to all groups and projects. This is an instance-level
   user type, not a project or group membership role.
-inherits_from:
-- public_authenticated
+inherits_from: []
 project:
   permissions: []
   raw_permissions:
+  - _read_assigned_work_item
+  - _read_authored_work_item
   - _read_private_snippet
+  - _read_public_build
+  - _read_public_ci_cd_analytics
+  - _read_public_pipeline
+  - _read_public_pipeline_schedule
   - access_security_and_compliance
   - add_project_to_instance_security_dashboard
+  - award_emoji
+  - build_download_code
+  - build_read_container_image
+  - create_vulnerability_archive_export
+  - create_vulnerability_export
+  - download_code
+  - download_debian_package
+  - download_generic_package
+  - download_go_module
+  - download_helm_chart
+  - download_maven_package_file
+  - download_npm_package
+  - download_nuget_package
+  - download_pypi_package
+  - download_wiki_code
+  - export_work_items
+  - read_ai_catalog_item_consumer
+  - read_ai_tool_rule
   - read_alert_management_alert
+  - read_analytics
   - read_any_audit_event
+  - read_approval_rule
   - read_approvers
   - read_ascp_component
   - read_ascp_scan
   - read_ascp_security_context
   - read_audit_event
+  - read_avatar
+  - read_badge
+  - read_branch
   - read_branch_rule
   - read_build
   - read_cluster
+  - read_code
   - read_code_review_analytics
+  - read_commit
+  - read_commit_comment
+  - read_commit_diff
+  - read_commit_merge_request
+  - read_commit_ref
+  - read_commit_sequence
+  - read_commit_signature
+  - read_commit_status
   - read_compliance_adherence_report
   - read_compliance_dashboard
   - read_compliance_framework
   - read_compliance_violations_report
+  - read_composer_package
   - read_confidential_issues
+  - read_container_image
   - read_contribution_analytics
+  - read_cycle_analytics
   - read_dependency
   - read_deployment
   - read_environment
   - read_external_status_check_response
   - read_feature_flag
+  - read_fork
+  - read_go_module
   - read_incident_management_escalation_policy
   - read_incident_management_oncall_schedule
+  - read_insights
   - read_issuable_resource_link
+  - read_issue
+  - read_issue_board
+  - read_issue_board_list
+  - read_issue_closing_merge_request
+  - read_issue_merge_request
+  - read_issue_participant
+  - read_issue_statistic
+  - read_issue_time_statistic
+  - read_iteration
+  - read_label
   - read_licenses
+  - read_merge_request
+  - read_merge_request_approval_rule
+  - read_merge_request_approval_state
+  - read_merge_request_closes_issue
+  - read_merge_request_commit
+  - read_merge_request_context_commit
+  - read_merge_request_diff
+  - read_merge_request_draft_note
+  - read_merge_request_iid
+  - read_merge_request_merge_ref
+  - read_merge_request_participant
+  - read_merge_request_pipeline
+  - read_merge_request_raw_diff
+  - read_merge_request_related_issue
+  - read_merge_request_reviewer
   - read_merge_request_status_check_url
+  - read_merge_request_time_statistic
+  - read_milestone
+  - read_namespace
   - read_namespace_cluster_agent_mapping
+  - read_namespace_via_membership
+  - read_note
+  - read_npm_package
+  - read_npm_package_tag
+  - read_nuget_package
   - read_observability
   - read_on_demand_dast_scan
+  - read_package
+  - read_package_pipeline
   - read_pages
+  - read_pipeline
+  - read_project
   - read_project_component_usages
+  - read_project_for_iids
   - read_project_import
+  - read_project_member
   - read_project_merge_request_analytics
+  - read_project_security_dashboard
   - read_project_security_exclusions
+  - read_pypi_package
+  - read_release
+  - read_repository_archive
+  - read_repository_blob
+  - read_repository_changelog
+  - read_repository_comparison
+  - read_repository_contributor
+  - read_repository_file
+  - read_repository_file_blame
+  - read_repository_health
+  - read_repository_merge_base
+  - read_repository_tag
+  - read_repository_tag_signature
+  - read_repository_tree
   - read_resource_access_tokens
   - read_runners
   - read_saved_replies
   - read_saved_view
   - read_security_inventory
   - read_security_orchestration_policies
+  - read_security_project_tracked_ref
   - read_security_resource
   - read_security_settings
   - read_snippet
   - read_software_license_policy
+  - read_starring_user
   - read_terraform_state
   - read_timelog_category
+  - read_upload
   - read_vulnerability
+  - read_wiki
+  - read_work_item
 group:
   permissions: []
   raw_permissions:
@@ -65,6 +167,7 @@ group:
   - read_add_on_purchase
   - read_ai_domain_settings
   - read_any_audit_event
+  - read_approval_rule
   - read_audit_event
   - read_billable_member
   - read_billing

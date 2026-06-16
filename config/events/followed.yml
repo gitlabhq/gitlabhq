@@ -1,7 +1,9 @@
 ---
 description: Tracks when a user follows a project, group, or user.
 action: followed
-product_group: import
+product_group: authentication
+product_categories:
+- user_profile
 milestone: '17.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165885
 tiers:

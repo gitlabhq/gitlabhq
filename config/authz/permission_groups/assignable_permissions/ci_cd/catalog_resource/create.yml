@@ -1,0 +1,9 @@
+---
+name: create_catalog_resource
+description: Grants the ability to create a CI catalog resource
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_catalog_resource

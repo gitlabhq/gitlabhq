@@ -81,33 +81,3 @@ When a fork is created on GitLab, a central pool repository is created and the f
 are linked to it. This pool repository prevents duplication of data by storing
 data common to other forks. However, the pool repository is not cleaned up in the
 same manner as the standard repositories, and is more prone to the refs issue.
-
-## Feature flags
-
-### Parallel push checks
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45668) in GitLab 13.6 [with a flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`. Disabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> On GitLab Self-Managed, by default this feature is not available. To make it available,
-> an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`.
-> On GitLab.com, by default this feature is not available. To make it available
-> per project, ask GitLab.com administrator to
-> [enable the feature flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`.
-> You should not use this feature for production environments. On GitLab Dedicated, this feature is
-> not available.
-
-This experimental feature flag enables the endpoint to run multiple RPCs simultaneously,
-reducing the overall time taken by roughly half. This time savings is achieved through
-threading, and has potential side effects at large scale. On GitLab.com, this feature flag
-is enabled only for `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` projects.
-Without it, those projects routinely time out requests to the endpoint. When this
-feature was deployed to all of GitLab.com, some pushes failed, presumably due to
-exhausting resources like database connection pools.
-
-You should enable this feature flag only if you are experiencing timeouts, and
-only enable it for that specific project.

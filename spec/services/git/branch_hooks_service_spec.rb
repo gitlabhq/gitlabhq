@@ -213,6 +213,28 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
             .not_to trigger_internal_events('commit_change_to_ciconfigfile')
           end
         end
+
+        context 'when the commit has a known AI agent trailer' do
+          before do
+            allow_next_instance_of(Commit) do |commit|
+              allow(commit).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
+            end
+          end
+
+          it 'persists ci_config_generated_by on the project metric' do
+            expect { subject }
+              .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+              .to eq('ci_expert_agent/v1')
+          end
+        end
+
+        context 'when the commit has no AI agent trailer' do
+          it 'does not persist ci_config_generated_by' do
+            expect { subject }.not_to change { Ci::ProjectMetric.count }
+          end
+        end
       end
 
       context 'with creating CI config' do
@@ -370,6 +392,40 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
               .not_to trigger_internal_events('create_ci_config_file')
           end
         end
+
+        context 'when the commit has a known AI agent trailer and is on the default branch' do
+          before do
+            allow_next_instance_of(Commit) do |commit|
+              allow(commit).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
+            end
+          end
+
+          it 'persists ci_config_generated_by on the project metric' do
+            expect { subject }
+              .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+              .to eq('ci_expert_agent/v1')
+          end
+        end
+
+        context 'when the commit has a known AI agent trailer but is not on the default branch' do
+          let(:branch) { 'feature' }
+
+          before do
+            allow_next_instance_of(Commit) do |commit|
+              allow(commit).to receive(:trailers).and_return({ 'Duo-Workflow-Definition' => 'ci_expert_agent/v1' })
+            end
+          end
+
+          it 'persists ci_config_generated_by on the project metric' do
+            expect { subject }
+              .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+            expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+              .to eq('ci_expert_agent/v1')
+          end
+        end
       end
 
       context 'with a real commit containing a Duo-Workflow-Definition trailer', :aggregate_failures do
@@ -392,6 +448,14 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
             .to trigger_internal_events('commit_change_to_ciconfigfile')
             .with(user: commit_author, project: project,
               additional_properties: { author_source: 'ci_expert_agent/v1' })
+        end
+
+        it 'writes ci_config_generated_by to ci_project_metrics', :aggregate_failures do
+          expect { subject }
+            .to change { Ci::ProjectMetric.where(project_id: project.id).count }.by(1)
+
+          expect(Ci::ProjectMetric.find_by(project_id: project.id).ci_config_generated_by)
+            .to eq('ci_expert_agent/v1')
         end
       end
     end

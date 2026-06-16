@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Projects::MergeRequestsController, feature_category: :code_review_workflow do
   include ProjectForksHelper
@@ -675,6 +676,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         merge_with_sha
       end
 
+      it 'starts the immediate_web_merge UX SLI' do
+        expect { merge_with_sha }.to start_user_experience(:immediate_web_merge)
+      end
+
       context 'for logging' do
         let(:expected_params) { { merge_action_status: 'success' } }
         let(:subject_proc) { proc { subject } }
@@ -735,6 +740,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           let(:service_class) { AutoMerge::MergeWhenChecksPassService }
           let(:status) { 'merge_when_checks_pass' }
           let(:not_current_pipeline_status) { 'merge_when_checks_pass' }
+        end
+
+        it 'does not start the immediate_web_merge UX SLI' do
+          expect { set_auto_merge }.not_to start_user_experience(:immediate_web_merge)
         end
       end
 
@@ -2402,6 +2411,23 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           let(:requested_iid) { merge_request.iid }
           let(:expected_discussion_count) { 2 }
           let(:expected_discussion_ids) { [mr_note1.discussion_id, mr_note2.discussion_id] }
+        end
+      end
+
+      context 'when a commit discussion references a commit no longer in the repository' do
+        let!(:orphan_commit_note) do
+          create(:diff_note_on_commit, project: merge_request.project)
+        end
+
+        before do
+          allow_any_instance_of(Project).to receive(:commit).and_call_original
+          allow_any_instance_of(Project).to receive(:commit).with(orphan_commit_note.commit_id).and_return(nil)
+        end
+
+        it 'returns 200 instead of raising ActionController::UrlGenerationError' do
+          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

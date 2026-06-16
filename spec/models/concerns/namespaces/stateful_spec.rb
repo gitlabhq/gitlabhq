@@ -224,7 +224,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       context 'when namespace is a project namespace' do
         let_it_be_with_reload(:project) { create(:project) }
-        let_it_be(:project_namespace) { project.project_namespace }
+        let_it_be(:project_namespace, freeze: false) { project.project_namespace }
 
         it 'expires namespace descendants cache for the parent when archiving' do
           expect(Namespaces::Descendants).to receive(:expire_for).with([project_namespace.parent_id])

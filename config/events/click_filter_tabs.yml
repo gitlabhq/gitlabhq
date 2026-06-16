@@ -2,6 +2,8 @@
 description: Tracks clicks on the filter tabs in the pipelines section.
 action: click_filter_tabs
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '15.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98352
 tiers:

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ProjectTopic do
-  let_it_be(:project_topic, reload: true) { create(:project_topic) }
+  let_it_be_with_reload(:project_topic) { create(:project_topic) }
 
   subject { project_topic }
 

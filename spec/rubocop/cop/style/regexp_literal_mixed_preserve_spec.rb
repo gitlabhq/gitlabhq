@@ -7,7 +7,7 @@ require_relative '../../../../rubocop/cop/style/regexp_literal_mixed_preserve'
 # This spec contains only relevant examples.
 #
 # See also https://github.com/rubocop/rubocop/pull/9688
-RSpec.describe RuboCop::Cop::Style::RegexpLiteralMixedPreserve, :config do
+RSpec.describe RuboCop::Cop::Style::RegexpLiteralMixedPreserve, :config, feature_category: :tooling do
   let(:config) do
     supported_styles = { 'SupportedStyles' => %w[slashes percent_r mixed mixed_preserve] }
     RuboCop::Config.new(

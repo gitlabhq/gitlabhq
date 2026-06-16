@@ -15,19 +15,5 @@ subscription mrPipelineStatusUpdated($pipelineId: CiPipelineID!) {
         }
       }
     }
-    downstream {
-      nodes {
-        id
-        detailedStatus {
-          id
-          icon
-          name
-        }
-        sourceJob {
-          id
-          retried
-        }
-      }
-    }
   }
 }

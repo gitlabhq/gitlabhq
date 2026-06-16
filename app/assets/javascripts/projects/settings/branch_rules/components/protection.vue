@@ -111,6 +111,7 @@ export default {
       default: () => '',
     },
   },
+  emits: ['edit'],
   computed: {
     hasRoles() {
       return Boolean(this.roles.length);

@@ -130,6 +130,17 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
     context 'when authorized' do
       let_it_be(:current_user) { create(:user, maintainer_of: project, guest_of: target_project) }
 
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :create_job_token_scope_allowlist do
+        let(:user) { current_user }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:ci_job_token_scope_add_group_or_project,
+            { project_path: project.full_path, target_path: target_project.full_path }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       it 'adds the target project to the job token scope', :aggregate_failures do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)

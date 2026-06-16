@@ -1,8 +1,8 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 環境をリスト、作成、更新、停止、削除するなど、GitLab環境を管理するためのAPIエンドポイントです。
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLab環境のリスト表示、作成、更新、停止、削除を含む、GitLab環境を管理するためのAPIエンドポイント。
 title: 環境API
 ---
 
@@ -15,16 +15,16 @@ title: 環境API
 
 {{< history >}}
 
-- GitLab 17.8でパラメータ`auto_stop_setting`が[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/428625)されました。
-- [GitLab CI/CDジョブトークン](../ci/jobs/ci_job_token.md)認証のサポートがGitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/414549)されました。
+- パラメータ`auto_stop_setting`はGitLab 17.8で[追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/428625)。
+- [GitLab CI/CDジョブトークン](../ci/jobs/ci_job_token.md)認証のサポートはGitLab 16.2で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/414549)。
 
 {{< /history >}}
 
-このAPIを使用して[GitLab環境](../ci/environments/_index.md)を操作します。
+このAPIを使用して、[GitLab環境](../ci/environments/_index.md)を操作します。
 
-## 環境の一覧表示 {#list-environments}
+## すべての環境をリスト表示 {#list-all-environments}
 
-特定のプロジェクトのすべての環境を取得します。
+指定されたプロジェクトのすべての環境をリスト表示します。
 
 ```plaintext
 GET /projects/:id/environments
@@ -34,15 +34,15 @@ GET /projects/:id/environments
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
 | `name`    | 文字列         | いいえ       | この名前の環境を返します。`search`と相互に排他的です。 |
-| `search`  | 文字列         | いいえ       | 検索条件に一致する環境のリストを返します。`name`と相互に排他的です。3文字以上にする必要があります。 |
-| `states`  | 文字列         | いいえ       | 特定のステータスに一致するすべての環境をリストします。指定できる値は、`available`、`stopping`、`stopped`です。ステータス値が指定されていない場合、すべての環境を返します。 |
+| `search`  | 文字列         | いいえ       | 検索条件に一致する環境のリストを返します。`name`と相互に排他的です。3文字以上である必要があります。 |
+| `states`  | 文字列         | いいえ       | 特定のステータスに一致するすべての環境をリスト表示します。使用可能な値: `available`、`stopping`、または`stopped`。ステータス値が指定されていない場合、すべての環境を返します。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -66,7 +66,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 特定の環境を取得 {#get-a-specific-environment}
+## 環境を取得する {#retrieve-an-environment}
+
+プロジェクトの指定された環境を取得する。
 
 ```plaintext
 GET /projects/:id/environments/:environment_id
@@ -201,11 +203,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 新しい環境を作成 {#create-a-new-environment}
+## 環境の作成 {#create-an-environment}
 
-指定された名前と`external_url`で新しい環境を作成します。
-
-環境が正常に作成された場合は`201`、パラメータが間違っている場合は`400`を返します。
+指定されたプロジェクトの環境を作成します。
 
 ```plaintext
 POST /projects/:id/environments
@@ -217,11 +217,13 @@ POST /projects/:id/environments
 | `name`                 | 文字列         | はい      | 環境の名前。 |
 | `description`          | 文字列         | いいえ       | 環境の説明。 |
 | `external_url`         | 文字列         | いいえ       | この環境にリンクする場所。 |
-| `tier`                 | 文字列         | いいえ       | 新しい環境の階層。使用できる値は、`production`、`staging`、`testing`、`development`、`other`です。 |
-| `cluster_agent_id`     | 整数        | いいえ       | この環境に関連付けるクラスタリングエージェント。 |
+| `tier`                 | 文字列         | いいえ       | 新しい環境のティア。使用可能な値は、`production`、`staging`、`testing`、`development`、および`other`です。 |
+| `cluster_agent_id`     | 整数        | いいえ       | この環境に関連付けるクラスターエージェント。 |
 | `kubernetes_namespace` | 文字列         | いいえ       | この環境に関連付けるKubernetesネームスペース。 |
-| `flux_resource_path`   | 文字列         | いいえ       | この環境に関連付けるFluxリソースパス。これはリソースのフルパスでなければなりません。たとえば`helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`などです。 |
-| `auto_stop_setting`    | 文字列         | いいえ       | 環境の自動停止設定。使用できる値は、`always`または`with_action`です。 |
+| `flux_resource_path`   | 文字列         | いいえ       | この環境に関連付けるFluxリソースパス。これはリソースのフルパスでなければなりません。例: `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`。 |
+| `auto_stop_setting`    | 文字列         | いいえ       | 環境の自動停止設定。使用可能な値は`always`または`with_action`です。 |
+
+成功した場合、`201`を返します。パラメータが間違っている場合、`400`を返します。
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -229,7 +231,7 @@ curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -252,13 +254,11 @@ curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
 
 {{< history >}}
 
-- パラメータ`name`は、GitLab 16.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/338897)されました。
+- パラメータ`name`はGitLab 16.0で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/issues/338897)。
 
 {{< /history >}}
 
-既存の環境の名前または`external_url`を更新します。
-
-環境が正常に更新された場合は`200`を返します。エラーが発生した場合、ステータスコード`400`が返されます。
+プロジェクトの既存の環境を更新します。
 
 ```plaintext
 PUT /projects/:id/environments/:environments_id
@@ -270,11 +270,13 @@ PUT /projects/:id/environments/:environments_id
 | `environment_id`       | 整数         | はい      | 環境のID。 |
 | `description`          | 文字列          | いいえ       | 環境の説明。 |
 | `external_url`         | 文字列          | いいえ       | 新しい`external_url`。 |
-| `tier`                 | 文字列          | いいえ       | 新しい環境の階層。使用できる値は、`production`、`staging`、`testing`、`development`、`other`です。 |
-| `cluster_agent_id`     | 整数またはnull | いいえ       | この環境に関連付けるクラスタリングエージェント、または削除する場合は`null`。 |
-| `kubernetes_namespace` | 文字列またはnull  | いいえ       | この環境に関連付けるKubernetesネームスペース、または削除する場合は`null`。 |
-| `flux_resource_path`   | 文字列またはnull  | いいえ       | この環境に関連付けるFluxリソースパス、または削除する場合は`null`。 |
-| `auto_stop_setting`    | 文字列またはnull  | いいえ       | 環境の自動停止設定。使用できる値は、`always`または`with_action`です。 |
+| `tier`                 | 文字列          | いいえ       | 新しい環境のティア。使用可能な値は、`production`、`staging`、`testing`、`development`、および`other`です。 |
+| `cluster_agent_id`     | 整数またはnull | いいえ       | この環境に関連付けるクラスターエージェント、またはそれを削除するための`null`。 |
+| `kubernetes_namespace` | stringまたはnull  | いいえ       | この環境に関連付けるKubernetesネームスペース、またはそれを削除するための`null`。 |
+| `flux_resource_path`   | stringまたはnull  | いいえ       | この環境に関連付けるFluxリソースパス、またはそれを削除するための`null`。 |
+| `auto_stop_setting`    | stringまたはnull  | いいえ       | 環境の自動停止設定。使用可能な値は`always`または`with_action`です。 |
+
+成功した場合、`200`を返します。エラーが発生した場合、`400`を返します。
 
 ```shell
 curl --request PUT \
@@ -283,7 +285,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -304,7 +306,7 @@ curl --request PUT \
 
 ## 環境を削除する {#delete-an-environment}
 
-環境が正常に削除された場合は`204`、環境が存在しない場合は`404`を返します。環境は最初に停止する必要があります。そうしない場合、リクエストは`403`を返します。
+プロジェクトから環境を削除します。環境は最初に停止する必要があります。
 
 ```plaintext
 DELETE /projects/:id/environments/:environment_id
@@ -315,15 +317,17 @@ DELETE /projects/:id/environments/:environment_id
 | `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `environment_id` | 整数        | はい      | 環境のID。 |
 
+成功した場合、`204`を返します。環境が存在しない場合、`404`を返します。環境が停止していない場合、`403`を返します。
+
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
-## 複数の停止済みレビューアプリを削除 {#delete-multiple-stopped-review-apps}
+## 停止した複数のレビューアプリを削除 {#delete-multiple-stopped-review-apps}
 
-すでに[停止](../ci/environments/_index.md#stopping-an-environment)されている複数の環境と、[レビューアプリ](../ci/review_apps/_index.md)フォルダー内にある複数の環境の削除をスケジュールします。実際の削除は、実行時から1週間後に行われます。デフォルトでは、30日以上前の環境のみが削除されます。このデフォルトを変更するには、`before`パラメータを使用します。
+既に[停止](../ci/environments/_index.md#stopping-an-environment)され、[レビューアプリフォルダー](../ci/review_apps/_index.md)にある複数の環境の削除をスケジュールします。実際の削除は、実行時刻から1週間後に実行されます。デフォルトでは、30日以上前の環境のみが削除されます。
 
 ```plaintext
 DELETE /projects/:id/environments/review_apps
@@ -332,9 +336,9 @@ DELETE /projects/:id/environments/review_apps
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `before`  | 日時       | いいえ       | 環境を削除できる日付（この日付より前の環境）。デフォルトでは、30日前になります。ISO 8601形式（`YYYY-MM-DDTHH:MM:SSZ`）で指定します。 |
+| `before`  | 日時       | いいえ       | 環境を削除できる日付。デフォルトは30日前です。ISO 8601形式（`YYYY-MM-DDTHH:MM:SSZ`）で指定します。 |
 | `limit`   | 整数        | いいえ       | 削除する環境の最大数。デフォルトは100です。 |
-| `dry_run` | ブール値        | いいえ       | 安全上の理由から、デフォルトは`true`です。実際には削除が実行されないドライランを実行します。環境を実際に削除するには、`false`に設定します。 |
+| `dry_run` | ブール値        | いいえ       | 安全のため、デフォルトは`true`です。実際の削除は行われないドライランを実行します。環境を実際に削除するには`false`に設定します。 |
 
 ```shell
 curl --request DELETE \
@@ -342,7 +346,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -366,7 +370,7 @@ curl --request DELETE \
 
 ## 環境を停止 {#stop-an-environment}
 
-環境が正常に停止された場合は`200`、環境が存在しない場合は`404`を返します。
+実行中の環境を停止します。
 
 ```plaintext
 POST /projects/:id/environments/:environment_id/stop
@@ -376,7 +380,7 @@ POST /projects/:id/environments/:environment_id/stop
 |------------------|----------------|----------|-------------|
 | `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `environment_id` | 整数        | はい      | 環境のID。 |
-| `force`          | ブール値        | いいえ       | `on_stop`アクションを実行せずに環境を強制的に停止させます。 |
+| `force`          | ブール値        | いいえ       | `on_stop`アクションを実行せずに環境を強制的に停止します。 |
 
 ```shell
 curl --request POST \
@@ -384,7 +388,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -401,9 +405,9 @@ curl --request POST \
 }
 ```
 
-## 失効した環境を停止 {#stop-stale-environments}
+## 古い環境を停止 {#stop-stale-environments}
 
-指定された日付より前に最後に変更またはデプロイされたすべての環境に停止リクエストを発行します。保護環境は除外されます。停止リクエストが成功した場合は`200`、指定日より前の日付が無効な場合は`400`を返します。環境が正確にいつ停止されるかの詳細については、[環境を停止](../ci/environments/_index.md#stopping-an-environment)を参照してください。
+指定された日付より前に最終更新またはデプロイされたすべての環境を停止します。保護環境を除外します。
 
 ```plaintext
 POST /projects/:id/environments/stop_stale
@@ -412,7 +416,7 @@ POST /projects/:id/environments/stop_stale
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `before`  | 日付           | はい      | 指定された日付より前に変更またはデプロイされた環境を停止します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。有効な入力は、10年前から1週間前までです |
+| `before`  | 日付           | はい      | 指定された日付より前に変更またはデプロイされた環境を停止します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。有効な入力は10年前から1週間前までです。 |
 
 ```shell
 curl --request POST \
@@ -420,7 +424,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

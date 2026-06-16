@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['note-deleted'],
   data() {
     return {
       isReplying: false,

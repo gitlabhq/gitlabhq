@@ -15,7 +15,7 @@ module Ci
 
     def execute(pipeline, failure_reason, retries: 3)
       pipeline.cancelable_statuses.find_in_batches do |batch|
-        preload_associations_for_drop(batch)
+        preload_associations_for_drop(batch, pipeline)
 
         batch.each do |job|
           Gitlab::OptimisticLocking.retry_lock(job, retries, name: 'ci_pipeline_drop_running') do |subject|
@@ -27,13 +27,15 @@ module Ci
 
     private
 
-    def preload_associations_for_drop(commit_status_batch)
-      ::Ci::Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(preloaded_relations)
+    def preload_associations_for_drop(commit_status_batch, pipeline)
+      ::Ci::Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(preloaded_relations(pipeline))
     end
 
     # overridden in EE
-    def preloaded_relations
-      [:project, :pipeline, :metadata, :job_definition, :deployment, :taggings]
+    def preloaded_relations(pipeline)
+      relations = [:project, :pipeline, :metadata, :job_definition, :deployment, :taggings]
+      relations << :pending_state if Feature.enabled?(:ci_anchor_finished_at_to_pending_state, pipeline.project)
+      relations
     end
   end
 end

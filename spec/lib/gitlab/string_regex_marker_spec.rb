@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::StringRegexMarker do
+RSpec.describe Gitlab::StringRegexMarker, feature_category: :source_code_management do
   describe '#mark' do
     context 'with a single occurrence' do
       let(:raw)  { %("name": "AFNetworking") }

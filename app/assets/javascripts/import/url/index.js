@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import ImportByUrl from '~/projects/new_v2/components/import_by_url_form.vue';
+import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -19,12 +19,16 @@ export function initImportByUrl() {
     newProjectPath,
     newProjectFormPath,
     userNamespaceId,
-    userNamespaceFullPath,
     namespaceId,
     namespaceFullPath,
+    namespaceVisibility,
   } = el.dataset;
 
-  const namespace = { id: namespaceId, fullPath: namespaceFullPath };
+  const namespace = {
+    id: namespaceId,
+    fullPath: namespaceFullPath,
+    visibility: namespaceVisibility,
+  };
 
   const provide = {
     importByUrlValidatePath,
@@ -34,7 +38,6 @@ export function initImportByUrl() {
     newProjectPath,
     newProjectFormPath,
     userNamespaceId,
-    userNamespaceFullPath,
   };
 
   return new Vue({
@@ -45,7 +48,7 @@ export function initImportByUrl() {
     }),
     provide,
     render(createElement) {
-      return createElement(ImportByUrl, {
+      return createElement(ImportByUrlForm, {
         props: { namespace },
       });
     },

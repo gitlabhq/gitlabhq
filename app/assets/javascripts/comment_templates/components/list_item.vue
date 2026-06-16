@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export default {
+  name: 'ListItem',
   components: {
     GlDisclosureDropdown,
     GlTooltip,

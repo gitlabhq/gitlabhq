@@ -9,7 +9,6 @@ module Gitlab
     # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#use-job-arguments.
     # rubocop:disable Metrics/ClassLength
     # rubocop:disable Metrics/ParameterLists
-    # rubocop:disable Metrics/AbcSize -- will be refactored once cursor is default
     class BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
       include Gitlab::ClassAttributes
@@ -161,6 +160,8 @@ module Gitlab
         end
       end
 
+      # For cursor-based migrations, the lower bound (>= start_cursor) is applied per sub-batch
+      # by Gitlab::Database::Batch::InclusiveCursorIterator, not in this scope. See #599681.
       def base_relation
         if cursor?
           base_class = Gitlab::Database.application_record_for_connection(connection)
@@ -171,12 +172,9 @@ module Gitlab
             cursor_columns.map { |column| model_class.arel_table[column] }
           )
 
-          cursor_gteq_start = cursor_expression.gteq(arel_for_cursor(start_cursor, model_class.arel_table))
           cursor_lteq_end = cursor_expression.lteq(arel_for_cursor(end_cursor, model_class.arel_table))
 
-          where_condition = Arel::Nodes::And.new([cursor_gteq_start, cursor_lteq_end])
-
-          model_class.where(where_condition)
+          model_class.where(cursor_lteq_end)
         else
           define_batchable_model(batch_table, connection: connection, primary_key: batch_column)
             .where(batch_column => start_id..end_id)
@@ -203,7 +201,11 @@ module Gitlab
           model_class = define_batchable_model(batch_table, connection: connection, base_class: base_class)
           order = model_class.order(cursor_columns)
           keyset_order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(order)
-          sub_batch_relation = Gitlab::Pagination::Keyset::Iterator.new(scope: base_relation.order(keyset_order))
+          sub_batch_relation = Gitlab::Database::Batch::InclusiveCursorIterator.new(
+            scope: base_relation.order(keyset_order),
+            cursor_columns: cursor_columns,
+            start_cursor: start_cursor
+          )
         else
           relation = filter_batch(base_relation)
           sub_batch_relation = filter_sub_batch(relation, batching_scope)
@@ -224,4 +226,3 @@ module Gitlab
 end
 # rubocop:enable Metrics/ClassLength
 # rubocop:enable Metrics/ParameterLists
-# rubocop:enable Metrics/AbcSize

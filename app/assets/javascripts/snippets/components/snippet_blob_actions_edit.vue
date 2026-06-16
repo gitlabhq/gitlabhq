@@ -23,6 +23,7 @@ export default {
       default: true,
     },
   },
+  emits: ['actions'],
   data() {
     return {
       // This is a dictionary (by .id) of the original blobs and

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     using RSpec::Parameterized::TableSyntax
 
     where(:scenario, :key, :threshold_override, :interval_override, :flag_on, :expected) do
-      'key not handled by the adapter'             | :notification_emails | nil | nil | true  | false
+      'key not handled by the adapter'             | :not_a_supported_key | nil | nil | true | false
       'threshold override forces the legacy path'  | :pipelines_create    | 10  | nil | true  | false
       'interval override forces the legacy path'   | :pipelines_create    | nil | 60  | true  | false
       'use_labkit flag is off'                     | :pipelines_create    | nil | nil | false | false
@@ -26,38 +26,101 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'returns the expected dispatch decision' do
         expect(
           described_class.shadow_or_enforce?(key,
-            threshold_override: threshold_override,
-            interval_override: interval_override)
+            context: { threshold: threshold_override, interval: interval_override })
         ).to be(expected)
       end
     end
 
     context 'with flag basis resolution' do
       it 'reads the per-key flag for cohort 1 entries' do
-        expect(described_class.shadow_or_enforce?(:pipelines_create,
-          threshold_override: nil, interval_override: nil)).to be(true)
+        expect(described_class.shadow_or_enforce?(:pipelines_create, context: {})).to be(true)
 
         stub_feature_flags(rate_limiter_use_labkit_pipelines_create: false)
-        expect(described_class.shadow_or_enforce?(:pipelines_create,
-          threshold_override: nil, interval_override: nil)).to be(false)
+        expect(described_class.shadow_or_enforce?(:pipelines_create, context: {})).to be(false)
       end
 
       it 'reads the cohort-wide flag for cohort 2 entries' do
-        expect(described_class.shadow_or_enforce?(:ai_action,
-          threshold_override: nil, interval_override: nil)).to be(true)
+        expect(described_class.shadow_or_enforce?(:ai_action, context: {})).to be(true)
 
         stub_feature_flags(rate_limiter_use_labkit_cohort_2: false)
-        expect(described_class.shadow_or_enforce?(:ai_action,
-          threshold_override: nil, interval_override: nil)).to be(false)
+        expect(described_class.shadow_or_enforce?(:ai_action, context: {})).to be(false)
       end
 
       it 'reads the cohort-wide flag for cohort 3 entries' do
-        expect(described_class.shadow_or_enforce?(:glql,
-          threshold_override: nil, interval_override: nil)).to be(true)
+        expect(described_class.shadow_or_enforce?(:glql, context: {})).to be(true)
 
         stub_feature_flags(rate_limiter_use_labkit_cohort_3: false)
-        expect(described_class.shadow_or_enforce?(:glql,
-          threshold_override: nil, interval_override: nil)).to be(false)
+        expect(described_class.shadow_or_enforce?(:glql, context: {})).to be(false)
+      end
+
+      # Cohort 4 keys are EE-only, so the cohort-4 flag-basis assertion lives
+      # in the EE spec where the registry merges them in. Asserting it here
+      # would fail under FOSS, where SupportedRateLimits.all has no cohort-4
+      # entry and shadow_or_enforce? short-circuits to false.
+    end
+
+    context 'with a count_distinct (set-mode) entry' do
+      let(:override_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+      before do
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all).and_return(
+          opt_in_key: {
+            limiter_name: 'applimiter_opt_in',
+            rule_name: 'limit_opt_in',
+            characteristics: %i[user],
+            count_distinct: :project_id,
+            action: :block,
+            flag_scope: :cohort_4
+          }
+        )
+        allow(Gitlab::Metrics).to receive(:counter).and_call_original
+        allow(Gitlab::Metrics).to receive(:counter)
+          .with(:gitlab_rate_limiter_labkit_override_total, anything, anything)
+          .and_return(override_counter)
+      end
+
+      it 'allows dispatch when threshold and interval overrides are passed' do
+        expect(override_counter).not_to receive(:increment)
+
+        expect(described_class.shadow_or_enforce?(:opt_in_key,
+          context: { threshold: 10, interval: 60 })).to be(true)
+      end
+    end
+
+    context 'with a threshold_from_caller (web_hook_calls) entry' do
+      let(:override_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter).and_call_original
+        allow(Gitlab::Metrics).to receive(:counter)
+          .with(:gitlab_rate_limiter_labkit_override_total, anything, anything)
+          .and_return(override_counter)
+      end
+
+      it 'routes through labkit and records no override for a caller-supplied threshold', :aggregate_failures do
+        expect(override_counter).not_to receive(:increment)
+
+        expect(described_class.shadow_or_enforce?(:web_hook_calls,
+          context: { threshold: 500, interval: nil })).to be(true)
+      end
+
+      # The threshold opt-out is threshold-scoped: the interval is registry-owned
+      # (1.minute) for these keys, so an interval override still bails to legacy.
+      it 'still bails to legacy when an interval override is passed' do
+        expect(described_class.shadow_or_enforce?(:web_hook_calls,
+          context: { threshold: nil, interval: 120 })).to be(false)
+      end
+    end
+
+    context 'with a cost-mode entry' do
+      # cost-mode entries resolve both threshold and interval per call, so an
+      # interval override is forwarded through rule_context rather than routing
+      # the call to legacy. Contrast with the threshold_from_caller-only
+      # web_hook_calls regression guard above, which still bails to legacy on an
+      # interval override.
+      it 'does not route to legacy when an interval override is passed' do
+        expect(described_class.shadow_or_enforce?(:main_db_duration_limit_per_worker,
+          context: { threshold: 10, interval: 60 })).to be(true)
       end
     end
 
@@ -84,22 +147,53 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
             .with(key: :pipelines_create, override: expected_kind)
 
           described_class.shadow_or_enforce?(:pipelines_create,
-            threshold_override: threshold_override,
-            interval_override: interval_override)
+            context: { threshold: threshold_override, interval: interval_override })
         end
       end
 
       it 'does not record overrides for keys the adapter does not handle' do
         expect(override_counter).not_to receive(:increment)
 
-        described_class.shadow_or_enforce?(:notification_emails, threshold_override: 10, interval_override: nil)
+        described_class.shadow_or_enforce?(:not_a_supported_key, context: { threshold: 10, interval: nil })
       end
 
       it 'does not record when no override is passed' do
         expect(override_counter).not_to receive(:increment)
 
-        described_class.shadow_or_enforce?(:pipelines_create, threshold_override: nil, interval_override: nil)
+        described_class.shadow_or_enforce?(:pipelines_create, context: {})
       end
+    end
+  end
+
+  describe '.set_mode?' do
+    it 'returns true for entries with count_distinct (cohort 4-style set-mode rules)' do
+      allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all).and_return(
+        fake_key: { count_distinct: :project_id, characteristics: %i[user], action: :block }
+      )
+
+      expect(described_class.set_mode?(:fake_key)).to be(true)
+    end
+
+    it 'returns false for INCR-mode entries' do
+      expect(described_class.set_mode?(:pipelines_create)).to be(false)
+    end
+
+    it 'returns false for keys not in the registry' do
+      expect(described_class.set_mode?(:web_hook_calls)).to be(false)
+    end
+  end
+
+  describe '.cost_mode?' do
+    it 'returns true for a resource-usage (cost-mode) entry' do
+      expect(described_class.cost_mode?(:main_db_duration_limit_per_worker)).to be(true)
+    end
+
+    it 'returns false for an INCR-mode entry' do
+      expect(described_class.cost_mode?(:pipelines_create)).to be(false)
+    end
+
+    it 'returns false for keys not in the registry' do
+      expect(described_class.cost_mode?(:not_a_registered_key)).to be(false)
     end
   end
 
@@ -123,6 +217,13 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
 
       stub_feature_flags(rate_limiter_use_labkit_cohort_3_enforce: false)
       expect(described_class.enforce?(:glql)).to be(false)
+    end
+
+    it 'reflects the cohort-wide enforce flag for cohort 6 entries', :aggregate_failures do
+      expect(described_class.enforce?(:web_hook_calls)).to be(true)
+
+      stub_feature_flags(rate_limiter_use_labkit_cohort_6_enforce: false)
+      expect(described_class.enforce?(:web_hook_calls)).to be(false)
     end
   end
 
@@ -285,6 +386,80 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       end
     end
 
+    context 'with a count_distinct (set-mode) registry entry' do
+      let_it_be(:project_a) { create(:project) }
+      let_it_be(:project_b) { create(:project) }
+
+      let(:spec) do
+        {
+          limiter_name: 'applimiter_distinct_downloads',
+          rule_name: 'limit_distinct_downloads_by_user',
+          characteristics: %i[user],
+          count_distinct: :project_id,
+          action: :block
+        }
+      end
+
+      let(:set_key) do
+        "labkit:rl:applimiter_distinct_downloads:limit_distinct_downloads_by_user:user:#{user.id}"
+      end
+
+      before do
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all)
+          .and_return(distinct_downloads: spec)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:distinct_downloads).and_return(5)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:interval).with(:distinct_downloads).and_return(60)
+      end
+
+      it 'SADDs the resource_id onto a SET keyed by the characteristic bucket' do
+        described_class.run!(:distinct_downloads, scope: user, context: { resource_id: project_a.id })
+        described_class.run!(:distinct_downloads, scope: user, context: { resource_id: project_b.id })
+        described_class.run!(:distinct_downloads, scope: user, context: { resource_id: project_a.id })
+
+        members = Gitlab::Redis::RateLimiting.with { |r| r.smembers(set_key) }
+        expect(members).to contain_exactly(project_a.id.to_s, project_b.id.to_s)
+      end
+
+      it 'peek reads SCARD without writing a SET member or requiring resource_id', :aggregate_failures do
+        described_class.run!(:distinct_downloads, scope: user, context: { resource_id: project_a.id })
+        described_class.run!(:distinct_downloads, scope: user, context: { resource_id: project_b.id })
+
+        expect(described_class.run_peek!(:distinct_downloads, scope: user)).to be(false)
+
+        members = Gitlab::Redis::RateLimiting.with { |r| r.smembers(set_key) }
+        expect(members).to contain_exactly(project_a.id.to_s, project_b.id.to_s)
+      end
+
+      it 'forwards threshold_override through rule_context to labkit Rule limit', :aggregate_failures do
+        # Add 3 distinct projects, override threshold to 2 - should report exceeded.
+        described_class.run!(:distinct_downloads, scope: user,
+          context: { resource_id: project_a.id, threshold: 2, interval: 600 })
+        result_b = described_class.run!(:distinct_downloads, scope: user,
+          context: { resource_id: project_b.id, threshold: 2, interval: 600 })
+
+        expect(result_b).to be(false) # exactly at limit, not exceeded
+        project_c = create(:project)
+        result_c = described_class.run!(:distinct_downloads, scope: user,
+          context: { resource_id: project_c.id, threshold: 2, interval: 600 })
+
+        expect(result_c).to be(true)
+      end
+
+      it 'falls back to the registered threshold/interval when rule_context overrides are nil', :aggregate_failures do
+        4.times do
+          described_class.run!(:distinct_downloads, scope: user,
+            context: { resource_id: create(:project).id })
+        end
+        result_at_threshold = described_class.run!(:distinct_downloads, scope: user,
+          context: { resource_id: create(:project).id })
+        expect(result_at_threshold).to be(false) # 5 distinct == registered threshold
+
+        result_over = described_class.run!(:distinct_downloads, scope: user,
+          context: { resource_id: create(:project).id })
+        expect(result_over).to be(true)
+      end
+    end
+
     context 'with duplicate AR scope values of the same registered class' do
       let_it_be(:user_a) { create(:user) }
       let_it_be(:user_b) { create(:user) }
@@ -299,6 +474,98 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
           expect(r.get(first_key).to_i).to eq(1)
           expect(r.get(second_key)).to be_nil
         end
+      end
+    end
+
+    context 'with a threshold_from_caller key (web_hook_calls)' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      let(:expected_key) do
+        "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}"
+      end
+
+      it 'increments the namespace-keyed labkit counter' do
+        described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 10 })
+
+        count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
+        expect(count.to_i).to eq(1)
+      end
+
+      it 'resolves the limit from the caller threshold in rule_context' do
+        described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 1 })
+        result = described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 1 })
+
+        expect(result).to be(true)
+      end
+
+      it 'does not exceed when the count is within the caller threshold' do
+        result = described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 100 })
+
+        expect(result).to be(false)
+      end
+
+      it 'routes a Group scope through the namespace characteristic' do
+        group = create(:group)
+        described_class.run!(:web_hook_calls, scope: group, context: { threshold: 10 })
+
+        group_key = "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{group.id}"
+        count = Gitlab::Redis::RateLimiting.with { |r| r.get(group_key) }
+        expect(count.to_i).to eq(1)
+      end
+    end
+
+    context 'with a cost-mode key (main_db_duration_limit_per_worker)' do
+      let(:expected_key) do
+        "labkit:rl:applimiter_main_db_duration_limit_per_worker:limit_main_db_duration_per_worker" \
+          ":worker_name:SomeWorker"
+      end
+
+      def labkit_cost
+        Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
+      end
+
+      it 'accumulates the per-call cost (INCRBYFLOAT) on the worker-keyed counter' do
+        described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 10, interval: 60 }, cost: 1.5)
+        described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 10, interval: 60 }, cost: 2.5)
+
+        expect(labkit_cost.to_f).to eq(4.0)
+      end
+
+      it 'returns true when the cost exceeds the caller threshold' do
+        result = described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 10, interval: 60 }, cost: 11.0)
+
+        expect(result).to be(true)
+      end
+
+      it 'returns false and writes no Redis key when the cost is zero', :aggregate_failures do
+        result = described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 10, interval: 60 }, cost: 0)
+
+        expect(result).to be(false)
+        expect(labkit_cost).to be_nil
+      end
+    end
+  end
+
+  describe '.build_rule' do
+    context 'with a cost-mode key (threshold and interval supplied per call)' do
+      let(:spec) { Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits.all[key] }
+      let(:key) { :main_db_duration_limit_per_worker }
+
+      # The key is not registered in ApplicationRateLimiter.rate_limits, so the
+      # registry fallback (threshold(key)/interval(key)) must not be consulted -
+      # interval(key) would raise InvalidKeyError. Both values arrive per call.
+      it 'resolves limit/period from rule_context without touching the registry', :aggregate_failures do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:threshold)
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:interval)
+
+        rule = described_class.send(:build_rule, key, spec)
+
+        expect(rule.limit.call({ threshold: 42, interval: 600 })).to eq(42)
+        expect(rule.period.call({ threshold: 42, interval: 600 })).to eq(600)
       end
     end
   end
@@ -329,6 +596,28 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       described_class.run!(:glql, scope: 'sha-abc123')
 
       expect(described_class.run_peek!(:glql, scope: 'sha-abc123')).to be(true)
+    end
+
+    context 'with a threshold_from_caller key (web_hook_calls)' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      let(:expected_key) do
+        "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace:namespace:#{namespace.id}"
+      end
+
+      it 'does not increment the counter' do
+        described_class.run_peek!(:web_hook_calls, scope: namespace, context: { threshold: 10 })
+
+        expect(Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }).to be_nil
+      end
+
+      it 'reads the counter written by a paired non-peek call' do
+        described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 1 })
+        described_class.run!(:web_hook_calls, scope: namespace, context: { threshold: 1 })
+
+        expect(described_class.run_peek!(:web_hook_calls, scope: namespace,
+          context: { threshold: 1 })).to be(true)
+      end
     end
 
     context 'when the labkit peek errors' do
@@ -375,7 +664,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       expect(counter).to receive(:increment)
         .with(key: :pipelines_create, agreement: :match, boundary: false)
 
-      described_class.record_divergence(:pipelines_create, true, true)
+      described_class.record_divergence(:pipelines_create, true, true, interval_seconds: 60)
     end
 
     it 'increments the diverge label when decisions disagree' do
@@ -383,7 +672,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       expect(counter).to receive(:increment)
         .with(key: :pipelines_create, agreement: :diverge, boundary: false)
 
-      described_class.record_divergence(:pipelines_create, true, false)
+      described_class.record_divergence(:pipelines_create, true, false, interval_seconds: 60)
     end
 
     it 'tags increments inside the boundary noise window with boundary: true' do
@@ -391,7 +680,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       expect(counter).to receive(:increment)
         .with(key: :pipelines_create, agreement: :diverge, boundary: true)
 
-      described_class.record_divergence(:pipelines_create, true, false)
+      described_class.record_divergence(:pipelines_create, true, false, interval_seconds: 60)
+    end
+
+    # Regression: cohort 4's unique_project_downloads_for_namespace
+    # registers interval: 0 (real values arrive per-call), and the older
+    # `interval(key)`-driven boundary check raised ZeroDivisionError. The
+    # caller now plumbs the actually-used interval through; a 0 (or nil)
+    # value untags the call rather than raising.
+    it 'does not raise when interval_seconds is zero' do
+      expect(counter).to receive(:increment)
+        .with(key: :unique_project_downloads_for_namespace, agreement: :match, boundary: false)
+
+      expect do
+        described_class.record_divergence(:unique_project_downloads_for_namespace, true, true,
+          interval_seconds: 0)
+      end.not_to raise_error
     end
   end
 end

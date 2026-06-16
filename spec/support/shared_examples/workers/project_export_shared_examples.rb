@@ -86,11 +86,11 @@ RSpec.shared_examples 'export worker' do
 
   describe 'sidekiq options' do
     it 'disables retry' do
-      expect(described_class.sidekiq_options['retry']).to eq(false)
+      expect(described_class.sidekiq_options['retry']).to be(false)
     end
 
     it 'disables dead' do
-      expect(described_class.sidekiq_options['dead']).to eq(false)
+      expect(described_class.sidekiq_options['dead']).to be(false)
     end
 
     it 'sets default status expiration' do

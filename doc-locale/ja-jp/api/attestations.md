@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: アテステーションAPI
 ---
 
@@ -22,27 +22,27 @@ title: アテステーションAPI
 > [!flag]
 > この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
-このAPIを使用して、[provenanceアテステーション](../ci/pipeline_security/slsa/provenance_v1.md)を操作します。
+このAPIを使用して、[来歴アテステーション](../ci/pipeline_security/slsa/level_3/provenance_v1.md)を操作します。
 
-## Provenanceアテステーション {#provenance-attestations}
+## 来歴アテステーション {#provenance-attestations}
 
-一部のエンドポイントは、レスポンスの一部として[Sigstoreバンドル](https://docs.sigstore.dev/about/bundle/)を返します。これらは、[glab](https://docs.gitlab.com/cli/)または[cosign](https://github.com/sigstore/cosign)を使用して検証できます。Provenanceの詳細については、[SLSA provenance仕様](../ci/pipeline_security/slsa/provenance_v1.md)を参照してください
+一部のエンドポイントは、レスポンスの一部として[Sigstoreバンドル](https://docs.sigstore.dev/about/bundle/)を返します。これらは、[glab](https://docs.gitlab.com/cli/)または[cosign](https://github.com/sigstore/cosign)を使用して検証できます。Provenanceの詳細については、[SLSA来歴仕様](../ci/pipeline_security/slsa/level_3/provenance_v1.md)を参照してください。
 
-## すべてのアテステーションをリスト表示 {#list-all-attestations}
+## すべてのアテステーションをリストする {#list-all-attestations}
 
 {{< history >}}
 
-- 18.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205784)。
+- 18.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205784)されました。
 
 {{< /history >}}
 
-特定のプロジェクトとSHA-256ハッシュのすべてのアテステーションのリストを取得します。
+特定のプロジェクトとSHA-256ハッシュのすべてのアテステーションを一覧表示します。
 
 ```plaintext
 GET /:id/attestations/:subject_digest
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
@@ -56,7 +56,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/namespace%2fproject/attestations/5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -77,21 +77,21 @@ curl --request GET \
 ]
 ```
 
-## アテステーションをダウンロード {#download-attestation}
+## アテステーションをダウンロード {#download-an-attestation}
 
 {{< history >}}
 
-- 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212141)。
+- 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212141)されました。
 
 {{< /history >}}
 
-プロジェクトおよびアテステーションIIDで特定のprovenance Sigstoreバンドルをダウンロードします。バンドル自体は、レスポンス本文で返されます。このファイル形式の詳細については、関連する[Sigstoreドキュメント](https://docs.sigstore.dev/about/bundle/)を参照してください
+プロジェクトとアテステーションIIDごとに、特定の来歴Sigstoreバンドルをダウンロードします。バンドル自体は応答ボディで返されます。このファイル形式の詳細については、関連する[Sigstoreドキュメント](https://docs.sigstore.dev/about/bundle/)を参照してください。
 
 ```plaintext
 GET /:id/attestations/:attestation_iid/download
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
@@ -105,7 +105,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/72356192/attestations/1/download
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -5,7 +5,9 @@ module API
     # rubocop: disable API/Base -- re-usable module
     class ResendHook < ::Grape::API
       desc 'Resend a webhook event' do
-        detail 'Resend a webhook event'
+        detail 'Resends a webhook event. This endpoint has a rate limit of five requests per minute for each ' \
+          'webhook and authenticated user. To disable this limit on GitLab Self-Managed and GitLab Dedicated, an ' \
+          'administrator can disable the feature flag named web_hook_event_resend_api_endpoint_rate_limit.'
         success code: 201
         failure [
           { code: 422, message: 'Unprocessable entity' },

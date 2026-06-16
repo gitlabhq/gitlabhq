@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer, feature_category: :importers do
   describe '#transform' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
     let(:entity) do
       create(
@@ -128,6 +128,45 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
       it 'makes the path unique by appending a counter' do
         transformed_data = described_class.new.transform(context, data)
         expect(transformed_data['path']).to eq('destination-slug-path_2')
+      end
+    end
+
+    # Subgroup full paths under distinct parents can coexist across organizations
+    # (top-level routes are globally unique), so this is the realistic shape of a
+    # cross-organization destination collision.
+    context 'when a same-path namespace exists in both the import and another organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user, organization: organization) }
+
+      let(:in_org_parent) { create(:group, organization: organization) }
+      let(:destination_group) { create(:group, parent: in_org_parent, path: 'colliding-subgroup') }
+
+      before do
+        foreign_organization = create(:organization)
+        foreign_parent = create(:group, organization: foreign_organization)
+        create(:group, parent: foreign_parent, path: 'colliding-subgroup')
+      end
+
+      it 'resolves the namespace from the import organization, not the foreign one' do
+        expect(transformed_data[:namespace_id]).to eq(destination_group.id)
+      end
+    end
+
+    context 'when destination_namespace cannot be resolved in the import organization' do
+      let(:destination_group) { nil }
+      let(:destination_namespace) { 'namespace-in-another-org' }
+
+      before do
+        # The namespace exists, but in a different organization. The old global
+        # lookup would have found it; the org-scoped lookup must ignore it.
+        create(:group, organization: create(:organization), path: 'namespace-in-another-org')
+      end
+
+      it 'raises a descriptive error instead of crashing' do
+        expect { transformed_data }.to raise_error(
+          described_class::NamespaceNotFoundError,
+          /not found in the import organization/
+        )
       end
     end
 

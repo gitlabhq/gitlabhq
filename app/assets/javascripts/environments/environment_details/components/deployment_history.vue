@@ -19,6 +19,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'DeploymentHistory',
   components: {
     ConfirmRollbackModal,
     Pagination,

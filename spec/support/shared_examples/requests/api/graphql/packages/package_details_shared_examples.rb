@@ -6,9 +6,9 @@ RSpec.shared_examples 'a package detail' do
   end
 
   context 'with pipelines' do
-    let_it_be(:build_info1) { create(:package_build_info, :with_pipeline, package: package) }
-    let_it_be(:build_info2) { create(:package_build_info, :with_pipeline, package: package) }
-    let_it_be(:build_info3) { create(:package_build_info, :with_pipeline, package: package) }
+    let_it_be(:build_info1, freeze: false) { create(:package_build_info, :with_pipeline, package: package) }
+    let_it_be(:build_info2, freeze: false) { create(:package_build_info, :with_pipeline, package: package) }
+    let_it_be(:build_info3, freeze: false) { create(:package_build_info, :with_pipeline, package: package) }
 
     it_behaves_like 'a working graphql query' do
       it_behaves_like 'matching the package details schema'
@@ -36,7 +36,9 @@ RSpec.shared_examples 'a package with files' do
   end
 
   context 'with package files pending destruction' do
-    let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
+    let_it_be(:package_file_pending_destruction, freeze: false) do
+      create(:package_file, :pending_destruction, package: package)
+    end
 
     let(:response_package_file_ids) { package_files_response.pluck('id') }
 

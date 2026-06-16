@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Service Ping API
 ---
 
@@ -12,7 +12,7 @@ title: Service Ping API
 
 {{< /details >}}
 
-このAPIを使用して、GitLab Service Pingプロセスとやり取りします。
+このAPIを使用して、GitLabのService Pingプロセスと対話します。
 
 ## Service Pingデータをエクスポートする {#export-service-ping-data}
 
@@ -22,11 +22,17 @@ title: Service Ping API
 
 {{< /history >}}
 
-`read_service_ping`スコープを持つパーソナルアクセストークンが必要です。
+Service Pingで収集されたJSONペイロードをエクスポートします。アプリケーションのキャッシュにペイロードデータがない場合、空のレスポンスが返されます。ペイロードデータが空の場合、[Service Ping機能が有効になっている](../administration/settings/usage_statistics.md#enable-or-disable-service-ping)ことを確認し、cronジョブが実行されるのを待つか、手動でペイロードデータを生成してください。
 
-Service Pingで収集されたJSONペイロードを返します。アプリケーションキャッシュでペイロードデータが利用できない場合は、空のレスポンスを返します。ペイロードデータが空の場合、[Service Ping機能が有効になっている](../administration/settings/usage_statistics.md#enable-or-disable-service-ping)ことを確認し、cronジョブが実行されるのを待つか、ペイロードデータを手動で生成します。
+前提条件: 
 
-リクエスト例:
+- `read_service_ping`スコープを持つパーソナルアクセストークンで認証する必要があります。
+
+```plaintext
+GET /usage_data/service_ping
+```
+
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -34,7 +40,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/usage_data/service_ping"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   "recorded_at": "2024-01-15T23:33:50.387Z",
@@ -52,28 +58,28 @@ curl --request GET \
 
 ### `schema_inconsistencies_metric`の解釈 {#interpreting-schema_inconsistencies_metric}
 
-Service Ping JSONペイロードには、`schema_inconsistencies_metric`が含まれています。データベーススキーマの不整合は予期されるものであり、お使いのインスタンスで問題が発生していることを示す可能性は低いです。
+Service PingのJSONペイロードには`schema_inconsistencies_metric`が含まれています。データベーススキーマの不整合は予期されるものであり、インスタンスに問題があることを示す可能性は低いです。
 
-このメトリクスは、継続的なトラブルシューティングの問題に対してのみ設計されており、通常のヘルスチェックとして使用すべきではありません。このメトリクスは、GitLabサポートのガイダンスのみで解釈する必要があります。このメトリクスは、[データベーススキーマチェッカーRakeタスク](../administration/raketasks/maintenance.md#check-the-database-for-schema-inconsistencies)と同じデータベーススキーマの不整合をレポートします。
+このメトリクスは、進行中のトラブルシューティングのためにのみ設計されており、通常のヘルスチェックとして使用すべきではありません。このメトリクスは、GitLabサポートのガイダンスがある場合にのみ解釈されるべきです。このメトリクスは、[データベーススキーマチェッカーRakeタスク](../administration/raketasks/maintenance.md#check-the-database-for-schema-inconsistencies)と同じデータベーススキーマの不整合をレポートします。
 
-詳細については、[issue 467544](https://gitlab.com/gitlab-org/gitlab/-/issues/467544)を参照してください。
+詳細については、[イシュー467544](https://gitlab.com/gitlab-org/gitlab/-/issues/467544)を参照してください。
 
-## 単一のYAMLファイルとしてメトリクス定義をエクスポートする {#export-metric-definitions-as-a-single-yaml-file}
+## メトリクス定義をエクスポートする {#export-metric-definitions}
 
-インポートを容易にするために、すべてのメトリクス定義を単一のYAMLファイルとしてエクスポートします。[Metrics Dictionary](https://metrics.gitlab.com/)と同様です。
+すべてのメトリクス定義を、[メトリクスディクショナリ](https://metrics.gitlab.com/)と同様に単一のYAMLファイルとしてエクスポートし、より簡単にインポートできるようにします。
 
 ```plaintext
 GET /usage_data/metric_definitions
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
   --url "https://gitlab.example.com/api/v4/usage_data/metric_definitions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```yaml
 ---
@@ -91,22 +97,22 @@ curl --request GET \
 ...
 ```
 
-## Service Ping SQLクエリをエクスポートする {#export-service-ping-sql-queries}
+## すべてのService Ping SQLクエリをリストする {#list-all-service-ping-sql-queries}
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) GitLab 13.11。
-- [機能フラグの背後にデプロイされている](../administration/feature_flags/_index.md)、`usage_data_queries_api`という名前で、デフォルトでは無効になっています。
+- GitLab 13.11で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016)。
+- `usage_data_queries_api`という名前の機能フラグの背後に[デプロイ](../administration/feature_flags/_index.md)され、デフォルトで無効になっています。
 
 {{< /history >}}
 
-Service Pingの計算に使用されるすべてのraw SQLクエリを返します。このアクションは、`usage_data_queries_api`機能フラグの背後にあり、GitLabインスタンスの[管理者](../user/permissions.md)ユーザーのみが使用できます。
+Service Pingを計算するために使用されるすべてのraw SQLクエリをリストします。このアクションは`usage_data_queries_api`機能フラグの背後にあり、GitLabインスタンスの[管理者](../user/permissions.md)ユーザーのみが利用できます。
 
 ```plaintext
 GET /usage_data/queries
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -114,7 +120,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/usage_data/queries"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -159,18 +165,22 @@ curl --request GET \
 ...
 ```
 
-## UsageDataNonSqlMetrics API {#usagedatanonsqlmetrics-api}
+## すべての非SQLメトリクスをリストする {#list-all-non-sql-metrics}
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) GitLab 13.11。
-- [機能フラグの背後にデプロイされている](../administration/feature_flags/_index.md)、`usage_data_non_sql_metrics`という名前で、デフォルトでは無効になっています。
+- GitLab 13.11で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050)。
+- `usage_data_non_sql_metrics`という名前の機能フラグの背後に[デプロイ](../administration/feature_flags/_index.md)され、デフォルトで無効になっています。
 
 {{< /history >}}
 
-Service Pingで使用されるすべての非SQLメトリクスデータを返します。このアクションは、`usage_data_non_sql_metrics`機能フラグの背後にあり、GitLabインスタンスの[管理者](../user/permissions.md)ユーザーのみが使用できます。
+Service Pingで使用されるすべての非SQLメトリクスデータをリストします。このアクションは`usage_data_non_sql_metrics`機能フラグの背後にあり、GitLabインスタンスの[管理者](../user/permissions.md)ユーザーのみが利用できます。
 
-リクエスト例:
+```plaintext
+GET /usage_data/non_sql_metrics
+```
+
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -214,13 +224,21 @@ curl --request GET \
 ...
 ```
 
-## イベント追跡API {#events-tracking-api}
+## 内部イベントを追跡する {#track-internal-events}
 
-GitLab内の内部イベントを追跡するします。`api`または`ai_workflows`スコープを持つパーソナルアクセストークンが必要です。
+GitLabインスタンス内の内部イベントを追跡します。
 
-イベントをSnowplowに追跡するには、`send_to_snowplow`パラメータを`true`に設定します。
+前提条件: 
 
-リクエスト例:
+- `api`または`ai_workflows`スコープを持つパーソナルアクセストークンで認証する必要があります。
+
+```plaintext
+POST /usage_data/track_event
+```
+
+Snowplowにイベントを追跡するには、`send_to_snowplow`パラメータを`true`に設定します。
+
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

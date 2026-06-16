@@ -11,6 +11,12 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
   describe 'DELETE /personal_access_tokens/self' do
     subject(:delete_token) { delete api(path, personal_access_token: token) }
 
+    it_behaves_like 'authorizing granular token permissions', :revoke_personal_access_token do
+      let(:boundary_object) { :user }
+      let(:user) { current_user }
+      let(:request) { delete api(path, personal_access_token: pat) }
+    end
+
     shared_examples 'revoking token succeeds' do
       it 'revokes token', :aggregate_failures do
         delete_token
@@ -68,6 +74,12 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
   end
 
   describe 'GET /personal_access_tokens/self' do
+    it_behaves_like 'authorizing granular token permissions', :read_personal_access_token do
+      let(:boundary_object) { :user }
+      let(:user) { current_user }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     Gitlab::Auth.all_available_scopes.each do |scope|
       context "with a '#{scope}' scoped token" do
         let(:token) { create(:personal_access_token, scopes: [scope], user: current_user) }
@@ -153,6 +165,12 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
   end
 
   describe 'GET /personal_access_tokens/self/associations' do
+    it_behaves_like 'authorizing granular token permissions', :read_personal_access_token do
+      let(:boundary_object) { :user }
+      let(:user) { current_user }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     let(:path) { '/personal_access_tokens/self/associations' }
 
     context 'when token is invalid' do

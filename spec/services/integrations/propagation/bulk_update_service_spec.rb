@@ -23,11 +23,11 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       .where(id: group_integration.id..integration.id)
   end
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:group_integration) { create(:jira_integration, :group, group: group, url: 'http://group.jira.com') }
-  let_it_be(:excluded_integration) { create(:jira_integration, :group, group: create(:group), url: 'http://another.jira.com', push_events: false) }
-  let_it_be(:subgroup_integration) do
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+  let_it_be(:group_integration, freeze: false) { create(:jira_integration, :group, group: group, url: 'http://group.jira.com') }
+  let_it_be(:excluded_integration, freeze: false) { create(:jira_integration, :group, group: create(:group), url: 'http://another.jira.com', push_events: false) }
+  let_it_be(:subgroup_integration, freeze: false) do
     create(:jira_integration, :group,
       group: subgroup,
       inherit_from_id: group_integration.id,
@@ -36,7 +36,7 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
     )
   end
 
-  let_it_be(:integration) do
+  let_it_be(:integration, freeze: false) do
     create(:jira_integration,
       project: create(:project, group: subgroup),
       inherit_from_id: subgroup_integration.id,
@@ -157,10 +157,10 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
   end
 
   context 'with a GitLab for Slack app integration' do
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:project) { create(:project, group: subgroup) }
+    let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+    let_it_be(:project, freeze: false) { create(:project, group: subgroup) }
 
-    let_it_be(:group_integration) do
+    let_it_be(:group_integration, freeze: false) do
       create(:gitlab_slack_application_integration, :group,
         group: group,
         slack_integration: build(:slack_integration,
@@ -175,7 +175,7 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       )
     end
 
-    let_it_be(:subgroup_integration) do
+    let_it_be(:subgroup_integration, freeze: false) do
       create(:gitlab_slack_application_integration, :group,
         group: subgroup,
         inherit_from_id: group_integration.id,
@@ -191,7 +191,7 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       )
     end
 
-    let_it_be(:integration) do
+    let_it_be(:integration, freeze: false) do
       create(:gitlab_slack_application_integration,
         project: project,
         inherit_from_id: subgroup_integration.id,
@@ -204,7 +204,7 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       )
     end
 
-    let_it_be(:excluded_integration) do
+    let_it_be(:excluded_integration, freeze: false) do
       create(:gitlab_slack_application_integration,
         slack_integration: build(:slack_integration,
           :instance,
@@ -377,9 +377,9 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
     end
 
     describe 'propagation from instance integration' do
-      let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+      let_it_be(:instance_integration, freeze: false) { create(:jira_integration, :instance) }
 
-      let_it_be(:integration) do
+      let_it_be(:integration, freeze: false) do
         create(:jira_integration, project: create(:project), inherit_from_id: instance_integration.id)
       end
 

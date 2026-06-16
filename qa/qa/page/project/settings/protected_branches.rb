@@ -16,6 +16,10 @@ module QA
             element 'protected-branch-dropdown-content'
           end
 
+          view 'app/helpers/dropdowns_helper.rb' do
+            element 'dropdown-input-field'
+          end
+
           view 'app/assets/javascripts/protected_branches/protected_branch_create.js' do
             element 'allowed-to-push-dropdown'
             element 'allowed-to-merge-dropdown'
@@ -30,6 +34,7 @@ module QA
             click_element('protected-branch-dropdown')
 
             within_element('protected-branch-dropdown-content') do
+              fill_element('dropdown-input-field', branch_name)
               click_on(branch_name)
             end
           end

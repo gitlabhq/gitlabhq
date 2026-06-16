@@ -1,3 +1,4 @@
+//nolint:dupl // Similar structure to changedpaths.go but different protobuf types
 package git
 
 import (

@@ -231,4 +231,62 @@ RSpec.describe RuboCop::Cop::RSpec::BeforeAllRoleAssignment, :rubocop_rspec, fea
       include_examples '`let_it_be` definitions', params[:let_it_be]
     end
   end
+
+  context 'with inline-kwargs `let_it_be`' do
+    where(:kwargs) { ['reload: true', 'refind: true'] }
+
+    with_them do
+      context 'and `before`' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, kwargs: kwargs)
+            context 'with something' do
+              let_it_be(:project, %{kwargs}) { create(:project) }
+              let_it_be(:guest, %{kwargs})   { create(:user) }
+
+              before do
+                project.add_guest(guest)
+                ^^^^^^^^^^^^^^^^^^^^^^^^ Use `before_all` when used with `let_it_be`.
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'and `before_all`' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            context 'with something' do
+              let_it_be(:project, #{kwargs}) { create(:project) }
+              let_it_be(:guest, #{kwargs})   { create(:user) }
+
+              before_all do
+                project.add_guest(guest)
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'with nested contexts' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, kwargs: kwargs)
+            context 'when first context' do
+              let_it_be(:guest, %{kwargs}) { create(:user) }
+
+              context 'when second context' do
+                let_it_be(:project, %{kwargs}) { create(:project) }
+
+                context 'when third context' do
+                  before do
+                    project.add_guest(guest)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^ Use `before_all` when used with `let_it_be`.
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+      end
+    end
+  end
 end

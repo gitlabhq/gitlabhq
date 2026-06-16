@@ -81,10 +81,19 @@ RSpec.describe 'Destroying a Snippet', feature_category: :source_code_management
     it_behaves_like 'graphql delete actions'
 
     it_behaves_like 'when the snippet is not found'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_snippet do
+      let_it_be(:user) { create(:user) }
+      let(:snippet) { create(:personal_snippet, author: user) }
+      let(:boundary_object) { :user }
+      let(:mutation) { graphql_mutation(:destroy_snippet, { id: snippet.to_global_id.to_s }, 'errors') }
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   describe 'ProjectSnippet' do
-    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:project, freeze: false) { create(:project, :private) }
     let_it_be(:snippet) { create(:project_snippet, :private, project: project, author: create(:user)) }
 
     context 'when the author is not a member of the project' do
@@ -102,6 +111,15 @@ RSpec.describe 'Destroying a Snippet', feature_category: :source_code_management
       end
 
       it_behaves_like 'graphql delete actions'
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_snippet do
+        let_it_be(:user) { create(:user, developer_of: project) }
+        let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+        let(:boundary_object) { project }
+        let(:mutation) { graphql_mutation(:destroy_snippet, { id: snippet.to_global_id.to_s }, 'errors') }
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
 
       context 'when the snippet project feature is disabled' do
         it 'returns an an error' do

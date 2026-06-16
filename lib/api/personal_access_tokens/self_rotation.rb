@@ -32,6 +32,7 @@ module API
             desc: "The expiration date of the token",
             documentation: { example: '2021-01-31' }
         end
+        route_setting :authorization, permissions: :rotate_personal_access_token, boundary_type: :user
         post 'self/rotate' do
           not_allowed! unless access_token.is_a? PersonalAccessToken
 

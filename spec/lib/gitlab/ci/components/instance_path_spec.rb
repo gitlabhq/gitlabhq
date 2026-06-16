@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline_composition do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:path) { described_class.new(address: address) }
   let(:server_fqdn) { 'acme.com' }
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   shared_context 'with catalog resource project with components' do
-    let_it_be(:project) do
+    let_it_be(:project, freeze: false) do
       create(
         :project, :custom_repo,
         files: {
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
     context 'when the project repository contains a templates directory' do
-      let_it_be(:project) do
+      let_it_be(:project, freeze: false) do
         create(
           :project, :custom_repo,
           files: {
@@ -144,13 +144,13 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
 
         context 'when the project is not a catalog resource' do
-          let_it_be(:project) { create(:project, :repository) }
+          let_it_be(:project, freeze: false) { create(:project, :repository) }
 
           it_behaves_like 'does not find the component'
         end
 
         context 'when the project is a catalog resource' do
-          let_it_be(:project) do
+          let_it_be(:project, freeze: false) do
             create(
               :project, :custom_repo,
               files: {
@@ -159,9 +159,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             )
           end
 
-          let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+          let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
-          let_it_be(:v2_6_0) do
+          let_it_be(:v2_6_0, freeze: false) do
             sha = project.repository.commit('master').id
             release = create(:release, project: project, tag: '2.6.0', sha: sha, released_at: Date.yesterday)
 
@@ -344,7 +344,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         context 'when there is a release' do
           context 'when the version matches' do
-            let_it_be(:release) do
+            let_it_be(:release, freeze: false) do
               create(
                 :release, :with_catalog_resource_version,
                 project: project, tag: version, author: user, sha: commit.id
@@ -363,7 +363,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           end
 
           context 'when version does not match' do
-            let_it_be(:release) do
+            let_it_be(:release, freeze: false) do
               create(
                 :release, :with_catalog_resource_version,
                 project: project, tag: '0.2.0', author: user, sha: commit.id
@@ -492,7 +492,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   describe '#invalid_usage_for_latest?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let(:project_path) { project.full_path }
     let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
@@ -523,7 +523,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   describe '#invalid_usage_for_partial_semver?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let(:project_path) { project.full_path }
     let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
@@ -632,7 +632,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   describe 'content fetching optimizations', :request_store, :clean_gitlab_redis_repository_cache do
-    let_it_be(:project) do
+    let_it_be(:project, freeze: false) do
       create(
         :project, :custom_repo,
         files: {

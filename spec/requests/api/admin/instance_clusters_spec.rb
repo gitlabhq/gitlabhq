@@ -51,11 +51,11 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
   end
 
   describe "GET /admin/clusters/:cluster_id" do
-    let_it_be(:platform_kubernetes) do
+    let_it_be(:platform_kubernetes, freeze: false) do
       create(:cluster_platform_kubernetes, :configured)
     end
 
-    let_it_be(:cluster) do
+    let_it_be(:cluster, freeze: false) do
       create(:cluster, :instance, :provided_by_gcp, :with_domain,
         { platform_kubernetes: platform_kubernetes,
           user: admin_user })
@@ -324,7 +324,7 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
     let(:domain) { 'new-domain.com' }
     let(:platform_kubernetes_attributes) { {} }
 
-    let_it_be(:cluster) do
+    let_it_be(:cluster, freeze: false) do
       create(:cluster, :instance, :provided_by_gcp, domain: 'old-domain.com')
     end
 
@@ -461,7 +461,7 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
   describe 'DELETE /admin/clusters/:cluster_id' do
     let(:cluster_params) { { cluster_id: cluster.id } }
 
-    let_it_be(:cluster) do
+    let_it_be(:cluster, freeze: false) do
       create(:cluster, :instance, :provided_by_gcp)
     end
 

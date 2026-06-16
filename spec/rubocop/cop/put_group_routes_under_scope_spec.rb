@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/put_group_routes_under_scope'
 
-RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope do
+RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope, feature_category: :tooling do
   %w[resource resources get post put patch delete].each do |route_method|
     it "registers an offense when route is outside scope for `#{route_method}`" do
       offense = "#{route_method} :notes"

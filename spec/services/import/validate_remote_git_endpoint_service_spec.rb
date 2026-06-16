@@ -312,6 +312,116 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
         end
       end
 
+      context 'when credentials contain SSRF-like patterns' do
+        it 'percent-encodes credentials so the original host is preserved', :aggregate_failures do
+          encoded_url = 'https://127.0.0.1:6666%2Fmypath%23@legitimate.host/repo.git'
+
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            encoded_url,
+            hash_including(schemes: Project::VALID_IMPORT_PROTOCOLS)
+          ).and_return([encoded_url, nil])
+
+          expect(Gitlab::GitalyClient::RemoteService)
+            .to receive(:exists?)
+            .with(encoded_url)
+            .and_return(true)
+
+          result = described_class.new(
+            url: 'https://legitimate.host/repo.git',
+            user: '127.0.0.1',
+            password: '6666/mypath#'
+          ).execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.success?).to be(true)
+        end
+
+        it 'validates URL security after injecting credentials', :aggregate_failures do
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            'https://10.0.0.1:8080%2F%23@legitimate.host/repo.git',
+            hash_including(schemes: Project::VALID_IMPORT_PROTOCOLS)
+          ).and_return(['https://10.0.0.1:8080%2F%23@legitimate.host/repo.git', nil])
+
+          expect(Gitlab::GitalyClient::RemoteService)
+            .to receive(:exists?)
+            .with('https://10.0.0.1:8080%2F%23@legitimate.host/repo.git')
+            .and_return(true)
+
+          result = described_class.new(
+            url: 'https://legitimate.host/repo.git',
+            user: '10.0.0.1',
+            password: '8080/#'
+          ).execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.success?).to be(true)
+        end
+
+        it 'allows legitimate credentials that do not alter the host', :aggregate_failures do
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            'https://validuser:validpass@demo.host/repo',
+            hash_including(schemes: Project::VALID_IMPORT_PROTOCOLS)
+          ).and_return(['https://validuser:validpass@demo.host/repo', nil])
+
+          allow(Gitlab::GitalyClient::RemoteService)
+            .to receive(:exists?)
+            .with('https://validuser:validpass@demo.host/repo')
+            .and_return(true)
+
+          result = described_class.new(
+            url: url,
+            user: 'validuser',
+            password: 'validpass'
+          ).execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.success?).to be(true)
+        end
+
+        it 'blocks when credentials alter the hostname (defense-in-depth)', :aggregate_failures do
+          service = described_class.new(
+            url: 'https://legitimate.host/repo.git',
+            user: 'someuser',
+            password: 'somepass'
+          )
+
+          call_count = 0
+          allow(service.uri).to receive(:hostname).and_wrap_original do |original|
+            call_count += 1
+            call_count <= 2 ? original.call : '127.0.0.1'
+          end
+
+          expect(Gitlab::GitalyClient::RemoteService).not_to receive(:exists?)
+
+          result = service.execute
+
+          expect(result.success?).to be(false)
+          expect(result.reason).to eq(400)
+          expect(result.message).not_to include('somepass')
+        end
+
+        it 'blocks when validate_url_security! detects an internal URL after credential injection',
+          :aggregate_failures do
+          encoded_url = 'https://10.0.0.1:8080%2F%23@legitimate.host/repo.git'
+
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            encoded_url,
+            hash_including(schemes: Project::VALID_IMPORT_PROTOCOLS)
+          ).and_raise(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, encoded_url)
+
+          expect(Gitlab::GitalyClient::RemoteService).not_to receive(:exists?)
+
+          result = described_class.new(
+            url: 'https://legitimate.host/repo.git',
+            user: '10.0.0.1',
+            password: '8080/#'
+          ).execute
+
+          expect(result.success?).to be(false)
+          expect(result.reason).to eq(400)
+        end
+      end
+
       context 'when http_proxy_env? is true' do
         it 'disables dns_rebind_protection' do
           allow(Gitlab).to receive(:http_proxy_env?).and_return(true)

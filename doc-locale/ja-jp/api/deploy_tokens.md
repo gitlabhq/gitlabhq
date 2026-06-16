@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: デプロイトークンAPI
 ---
 
@@ -14,7 +14,7 @@ title: デプロイトークンAPI
 
 このAPIを使用して、[デプロイトークン](../user/project/deploy_tokens/_index.md)を操作します。
 
-## すべてのデプロイトークンをリスト表示 {#list-all-deploy-tokens}
+## すべてのデプロイトークンをリスト表示する {#list-all-deploy-tokens}
 
 {{< details >}}
 
@@ -23,7 +23,7 @@ title: デプロイトークンAPI
 
 {{< /details >}}
 
-GitLabインスタンス全体のすべてのデプロイトークンのリストを取得します。このエンドポイントには、管理者アクセスが必要です。
+GitLabインスタンス全体のすべてのデプロイトークンをリスト表示します。このエンドポイントには管理者アクセスが必要です。
 
 ```plaintext
 GET /deploy_tokens
@@ -33,16 +33,16 @@ GET /deploy_tokens
 
 | 属性 | 型     | 必須               | 説明 |
 |-----------|----------|------------------------|-------------|
-| `active`  | ブール値  | いいえ | アクティブなステータスで制限します。 |
+| `active`  | ブール値  | いいえ | アクティブステータスで制限します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/deploy_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -63,11 +63,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## プロジェクトデプロイトークン {#project-deploy-tokens}
 
-プロジェクトデプロイトークンAPIエンドポイントには、プロジェクトのメンテナーロール以上が必要です。
+プロジェクトデプロイトークンAPIエンドポイントには、プロジェクトのメンテナーまたはオーナーロールが必要です。
 
-### プロジェクトデプロイトークンの一覧 {#list-project-deploy-tokens}
+### プロジェクトデプロイトークンをリスト表示する {#list-project-deploy-tokens}
 
-プロジェクトのデプロイトークンのリストを取得します。
+プロジェクトのデプロイトークンをリスト表示します。
 
 ```plaintext
 GET /projects/:id/deploy_tokens
@@ -78,16 +78,16 @@ GET /projects/:id/deploy_tokens
 | 属性      | 型           | 必須               | 説明 |
 |:---------------|:---------------|:-----------------------|:------------|
 | `id`           | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `active`       | ブール値        | いいえ | アクティブなステータスで制限します。 |
+| `active`       | ブール値        | いいえ | アクティブステータスで制限します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/deploy_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -106,9 +106,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### プロジェクトデプロイトークンの取得 {#get-a-project-deploy-token}
+### プロジェクトデプロイトークンを取得する {#retrieve-a-project-deploy-token}
 
-IDで単一のプロジェクトのデプロイトークンを取得します。
+単一プロジェクトのデプロイトークンをIDで取得する。
 
 ```plaintext
 GET /projects/:id/deploy_tokens/:token_id
@@ -121,14 +121,14 @@ GET /projects/:id/deploy_tokens/:token_id
 | `id`       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `token_id` | 整数        | はい | デプロイトークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/deploy_tokens/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -145,9 +145,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### プロジェクトデプロイトークンの作成 {#create-a-project-deploy-token}
+### プロジェクトデプロイトークンを作成する {#create-a-project-deploy-token}
 
-プロジェクトの新しいデプロイトークンを作成します。
+プロジェクトデプロイトークンを作成します。
 
 ```plaintext
 POST /projects/:id/deploy_tokens
@@ -158,12 +158,12 @@ POST /projects/:id/deploy_tokens
 | 属性    | 型             | 必須               | 説明 |
 | ------------ | ---------------- | ---------------------- | ----------- |
 | `id`         | 整数または文字列   | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `name`       | 文字列           | はい | 新しいデプロイトークンの名前 |
-| `scopes`     | 文字列の配列 | はい | デプロイトークンスコープを示します。`read_repository`、`read_registry`、`write_registry`、`read_package_registry`、`write_package_registry`、`read_virtual_registry`、または`write_virtual_registry`のいずれか1つ以上である必要があります。 |
-| `expires_at` | 日時         | いいえ | デプロイトークンの有効期限。値が指定されていない場合、有効期限は有効期限切れになりません。ISO 8601形式 (`2019-03-15T08:00:00Z`) で指定します。 |
+| `name`       | 文字列           | はい | 新規デプロイトークンの名前 |
+| `scopes`     | 文字列の配列 | はい | デプロイトークンのスコープを示します。`read_repository`、`read_registry`、`write_registry`、`read_package_registry`、`write_package_registry`、`read_virtual_registry`、または`write_virtual_registry`のいずれか1つ以上である必要があります。 |
+| `expires_at` | 日時         | いいえ | デプロイトークンの有効期限。値が指定されていない場合、有効期限は設定されません。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 | `username`   | 文字列           | いいえ | デプロイトークンのユーザー名。デフォルトは`gitlab+deploy-token-{n}`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -173,7 +173,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -190,7 +190,7 @@ curl --request POST \
 }
 ```
 
-### プロジェクトデプロイトークンを削除 {#delete-a-project-deploy-token}
+### プロジェクトデプロイトークンを削除する {#delete-a-project-deploy-token}
 
 プロジェクトからデプロイトークンを削除します。
 
@@ -205,7 +205,7 @@ DELETE /projects/:id/deploy_tokens/:token_id
 | `id`       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `token_id` | 整数        | はい | デプロイトークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -215,11 +215,11 @@ curl --request DELETE \
 
 ## グループデプロイトークン {#group-deploy-tokens}
 
-グループのメンテナーロール以上のユーザー名を持つユーザー名は、グループデプロイトークンをリストできます。グループのオーナーのみが、グループデプロイトークンを作成および削除できます。
+グループのメンテナーまたはオーナーロールを持つユーザーは、グループデプロイトークンをリスト表示できます。グループのオーナーのみが、グループデプロイトークンを作成および削除できます。
 
-### グループデプロイトークンの一覧 {#list-group-deploy-tokens}
+### グループデプロイトークンをリスト表示する {#list-group-deploy-tokens}
 
-グループのデプロイトークンのリストを取得
+グループのデプロイトークンをリスト表示します。
 
 ```plaintext
 GET /groups/:id/deploy_tokens
@@ -230,16 +230,16 @@ GET /groups/:id/deploy_tokens
 | 属性      | 型           | 必須               | 説明 |
 |:---------------|:---------------|:-----------------------|:------------|
 | `id`           | 整数または文字列 | はい | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `active`       | ブール値        | いいえ | アクティブなステータスで制限します。 |
+| `active`       | ブール値        | いいえ | アクティブステータスで制限します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url"https://gitlab.example.com/api/v4/groups/1/deploy_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -258,9 +258,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### グループデプロイトークンの取得 {#get-a-group-deploy-token}
+### グループデプロイトークンを取得する {#retrieve-a-group-deploy-token}
 
-IDで単一のグループのデプロイトークンを取得します。
+単一グループのグループデプロイトークンをIDで取得する。
 
 ```plaintext
 GET /groups/:id/deploy_tokens/:token_id
@@ -270,17 +270,17 @@ GET /groups/:id/deploy_tokens/:token_id
 
 | 属性   | 型           | 必須               | 説明 |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | 整数または文字列 | はい | グループのIDまたは[URLエンコード](rest/_index.md#namespaced-paths)されたパス |
+| `id`        | 整数または文字列 | はい | IDまたはグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `token_id`  | 整数        | はい | デプロイトークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/deploy_tokens/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -297,9 +297,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### グループデプロイトークンを作成 {#create-a-group-deploy-token}
+### グループデプロイトークンを作成する {#create-a-group-deploy-token}
 
-グループの新しいデプロイトークンを作成します。
+グループデプロイトークンを作成します。
 
 ```plaintext
 POST /groups/:id/deploy_tokens
@@ -309,13 +309,13 @@ POST /groups/:id/deploy_tokens
 
 | 属性    | 型 | 必須  | 説明 |
 | ------------ | ---- | --------- | ----------- |
-| `id`         | 整数または文字列   | はい | グループのIDまたは[URLエンコード](rest/_index.md#namespaced-paths)されたパス |
-| `name`       | 文字列           | はい | 新しいデプロイトークンの名前 |
-| `scopes`     | 文字列の配列 | はい | デプロイトークンスコープを示します。`read_repository`、`read_registry`、`write_registry`、`read_package_registry`、または`write_package_registry`のいずれか1つ以上である必要があります。 |
-| `expires_at` | 日時         | いいえ | デプロイトークンの有効期限。値が指定されていない場合、有効期限は有効期限切れになりません。ISO 8601形式 (`2019-03-15T08:00:00Z`) で指定します。 |
+| `id`         | 整数または文字列   | はい | IDまたはグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `name`       | 文字列           | はい | 新規デプロイトークンの名前 |
+| `scopes`     | 文字列の配列 | はい | デプロイトークンのスコープを示します。`read_repository`、`read_registry`、`write_registry`、`read_package_registry`、または`write_package_registry`のいずれか1つ以上である必要があります。 |
+| `expires_at` | 日時         | いいえ | デプロイトークンの有効期限。値が指定されていない場合、有効期限は設定されません。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 | `username`   | 文字列           | いいえ | デプロイトークンのユーザー名。デフォルトは`gitlab+deploy-token-{n}`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -325,7 +325,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/5/deploy_tokens/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -342,7 +342,7 @@ curl --request POST \
 }
 ```
 
-### グループデプロイトークンを削除 {#delete-a-group-deploy-token}
+### グループデプロイトークンを削除する {#delete-a-group-deploy-token}
 
 グループからデプロイトークンを削除します。
 
@@ -354,10 +354,10 @@ DELETE /groups/:id/deploy_tokens/:token_id
 
 | 属性   | 型           | 必須               | 説明 |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | 整数または文字列 | はい | グループのIDまたは[URLエンコード](rest/_index.md#namespaced-paths)されたパス |
+| `id`        | 整数または文字列 | はい | IDまたはグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `token_id`  | 整数        | はい | デプロイトークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

@@ -1,0 +1,9 @@
+---
+name: delete_error_tracking_client_key
+description: Grants the ability to delete error tracking client keys
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_error_tracking_client_key

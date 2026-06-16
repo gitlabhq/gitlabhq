@@ -103,5 +103,48 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
 
       expect { subject }.to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
     end
+
+    context 'when a GRPC::BadStatus error is raised' do
+      context 'when the error message starts with the pre-receive hooks prefix' do
+        let(:error_message) { 'running pre-receive hooks: hook rejected the push' }
+        let(:grpc_error) { GRPC::BadStatus.new(GRPC::Core::StatusCodes::INTERNAL, error_message) }
+
+        context 'when the error prefix does not match a safe message prefix' do
+          it 'raises the fallback message' do
+            expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
+              .with(kind_of(Enumerator), kind_of(Hash)).and_raise(grpc_error)
+
+            expect { subject }.to raise_error(Gitlab::Git::PreReceiveError) do |error|
+              expect(error.message).to eq('Prevented by server hooks')
+            end
+          end
+        end
+
+        context 'when the error prefix matches a safe message prefix' do
+          let(:error_message) { 'running pre-receive hooks: GitLab: hook rejected the push' }
+
+          it 'raises a PreReceiveError with the error details stripped of the prefix' do
+            expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
+                                                                        .with(kind_of(Enumerator), kind_of(Hash)).and_raise(grpc_error)
+
+            expect { subject }.to raise_error(Gitlab::Git::PreReceiveError) do |error|
+              expect(error.message).to eq('hook rejected the push')
+            end
+          end
+        end
+      end
+
+      context 'when the error message does not start with the pre-receive hooks prefix' do
+        let(:error_message) { 'some other error' }
+        let(:grpc_error) { GRPC::BadStatus.new(GRPC::Core::StatusCodes::INTERNAL, error_message) }
+
+        it 're-raises the original GRPC::BadStatus error' do
+          expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
+            .with(kind_of(Enumerator), kind_of(Hash)).and_raise(grpc_error)
+
+          expect { subject }.to raise_error(GRPC::BadStatus)
+        end
+      end
+    end
   end
 end

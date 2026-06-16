@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:author) { create(:user, guest_of: group) }
-  let_it_be(:guest) { create(:user, guest_of: group) }
-  let_it_be(:planner) { create(:user, planner_of: group) }
-  let_it_be(:owner) { create(:user, owner_of: group) }
-  let_it_be(:incident) { create(:work_item, :incident, project: project, author: author) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:author, freeze: false) { create(:user, guest_of: group) }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: group) }
+  let_it_be(:planner, freeze: false) { create(:user, planner_of: group) }
+  let_it_be(:owner, freeze: false) { create(:user, owner_of: group) }
+  let_it_be(:incident, freeze: false) { create(:work_item, :incident, project: project, author: author) }
   let_it_be_with_refind(:work_item) { create(:work_item, project: project, author: author) }
   let(:user) { nil }
 
@@ -94,6 +94,21 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
         let(:work_item) { incident }
 
         it_behaves_like 'deletes work item'
+      end
+    end
+
+    context 'when work item has assignees' do
+      let_it_be(:assignee, freeze: false) { create(:user, guest_of: group) }
+      let_it_be(:work_item_with_assignee, freeze: false) do
+        create(:work_item, project: project, author: owner, assignees: [assignee])
+      end
+
+      let(:user) { owner }
+
+      it 'invalidates the issues count cache for each assignee' do
+        expect(assignee).to receive(:invalidate_cache_counts).once
+
+        service.execute(work_item_with_assignee)
       end
     end
 

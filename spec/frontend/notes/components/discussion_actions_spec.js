@@ -1,4 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import DiscussionActions from '~/notes/components/discussion_actions.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
@@ -33,6 +34,7 @@ describe('DiscussionActions', () => {
           shouldShowJumpToNextDiscussion: true,
           ...props,
         },
+        stubs: { ResolveWithDuoDropdownItem: true },
         ...options,
       });
     };
@@ -99,6 +101,75 @@ describe('DiscussionActions', () => {
 
       wrapper.findComponent(ResolveDiscussionButton).find('button').trigger('click');
       expect(wrapper.emitted().resolve).toHaveLength(1);
+    });
+  });
+
+  describe('secondary actions dropdown', () => {
+    const createComponent = createComponentFactory();
+    const resolvableUnresolvedDiscussion = createDiscussionMock({
+      resolvable: true,
+      resolved: false,
+    });
+
+    describe('when canResolveDiscussionsWithAi is true', () => {
+      beforeEach(() => {
+        createComponent({
+          discussion: resolvableUnresolvedDiscussion,
+          canResolveDiscussionsWithAi: true,
+        });
+      });
+
+      it('renders the secondary actions dropdown', () => {
+        expect(wrapper.findComponent(GlDisclosureDropdown).exists()).toBe(true);
+      });
+
+      it('does not render ResolveWithIssueButton', () => {
+        expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
+      });
+
+      it('renders the dropdown in a non-loading state', () => {
+        expect(wrapper.findComponent(GlDisclosureDropdown).props('loading')).toBe(false);
+      });
+    });
+
+    describe('when canResolveDiscussionsWithAi is false and resolveWithIssuePath is present', () => {
+      beforeEach(() => {
+        createComponent({
+          discussion: resolvableUnresolvedDiscussion,
+          canResolveDiscussionsWithAi: false,
+          resolveWithIssuePath: '/issues/new',
+        });
+      });
+
+      it('does not render the secondary actions dropdown', () => {
+        expect(wrapper.findComponent(GlDisclosureDropdown).exists()).toBe(false);
+      });
+
+      it('renders ResolveWithIssueButton as a fallback', () => {
+        expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(true);
+      });
+    });
+
+    describe('when the discussion is already resolved', () => {
+      it('does not render the dropdown', () => {
+        createComponent({
+          discussion: createDiscussionMock({ resolvable: true, resolved: true }),
+          canResolveDiscussionsWithAi: true,
+        });
+
+        expect(wrapper.findComponent(GlDisclosureDropdown).exists()).toBe(false);
+      });
+    });
+
+    describe('when the discussion is not resolvable', () => {
+      it('does not render the dropdown', () => {
+        createComponent({
+          discussion: createDiscussionMock({ resolvable: false }),
+          canResolveDiscussionsWithAi: true,
+        });
+
+        expect(wrapper.findComponent(GlDisclosureDropdown).exists()).toBe(false);
+      });
     });
   });
 });

@@ -109,7 +109,7 @@ RSpec.shared_examples 'work items rolled up dates' do
       end
 
       context 'when adding existing work item with fixed dates as children' do
-        let_it_be(:child_work_item) do
+        let_it_be(:child_work_item, freeze: false) do
           create(
             :work_item,
             :epic_with_legacy_epic,
@@ -207,7 +207,7 @@ RSpec.shared_examples 'work items rolled up dates' do
           )
         end
 
-        let_it_be(:child_work_item) do
+        let_it_be(:child_work_item, freeze: false) do
           create(
             :work_item,
             :issue,

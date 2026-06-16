@@ -79,7 +79,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/runners"
 ```
 
-> [!warning]非推奨:
+> [!warning]
+> 非推奨:
 >
 > - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
 > - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
@@ -261,7 +262,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-> [!warning]非推奨:
+> [!warning]
+> 非推奨:
 >
 > - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
 > - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
@@ -344,7 +346,8 @@ curl --request PUT \
      --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
-> [!warning]非推奨:
+> [!warning]
+> 非推奨:
 >
 > - `active`クエリパラメータは非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
 > - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
@@ -430,7 +433,8 @@ curl --request PUT \
      --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-> [!warning] `active`フォーム属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> [!warning]
+> `active`フォーム属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
 
 ## Runnerが処理したすべてのジョブを一覧表示 {#list-all-jobs-processed-by-a-runner}
 
@@ -604,7 +608,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
-> [!warning]非推奨:
+> [!warning]
+> 非推奨:
 >
 > - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
 > - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
@@ -670,7 +675,8 @@ curl --request POST \
      --form "runner_id=9"
 ```
 
-> [!warning]レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
+> [!warning]
+> レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
 レスポンス例: 
 
@@ -745,7 +751,8 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | `tag_list`       | 文字列配列 | いいえ       | Runnerタグのリスト |
 | `version_prefix` | 文字列       | いいえ       | 返されるRunnerのバージョンのプレフィックス。例: `15.0`、`14`、`16.1.241` |
 
-> [!warning]非推奨:
+> [!warning]
+> 非推奨:
 >
 > - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
 > - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
@@ -755,7 +762,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
-> [!warning]レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLabでは、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
+> [!warning]
+> レスポンス内の`ip_address`属性は、[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLabでは、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
 レスポンス例: 
 
@@ -805,7 +813,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Runnerを作成する {#create-a-runner}
 
-> [!warning]このエンドポイントは登録トークン（[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)）を使用します。これはGitLab 17.0以降ではデフォルトで無効になっています。推奨されるワークフローでRunnerを作成するには、代わりに[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)を使用します。
+> [!warning]
+> このエンドポイントは登録トークン（[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)）を使用します。これはGitLab 17.0以降ではデフォルトで無効になっています。推奨されるワークフローでRunnerを作成するには、代わりに[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)を使用します。
 
 Runner登録トークンを使用してRunnerを作成します。
 
@@ -951,7 +960,8 @@ curl --request POST \
 
 ## インスタンスのRunner登録トークンをリセット {#reset-instances-runner-registration-token}
 
-> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。
+> [!warning]
+> Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。
 >
 > 詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
@@ -969,7 +979,8 @@ curl --request POST \
 
 ## プロジェクトのRunner登録トークンをリセット {#reset-projects-runner-registration-token}
 
-> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
+> [!warning]
+> Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
 プロジェクトのRunner登録トークンをリセットします。
 
@@ -985,7 +996,8 @@ curl --request POST \
 
 ## グループのRunner登録トークンをリセット {#reset-groups-runner-registration-token}
 
-> [!warning] Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
+> [!warning]
+> Runner登録トークンを渡すオプションおよび特定の設定引数のサポートはレガシーと見なされ、推奨されません。[Runner作成ワークフロー](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)を使用して、Runnerを登録するための認証トークンを生成します。このプロセスは、Runnerの所有権の完全なトレーサビリティを提供し、Runnerフリートのセキュリティを強化します。詳細については、[新しいRunner登録ワークフローに移行する](../ci/runners/new_creation_workflow.md)を参照してください。
 
 グループのRunner登録トークンをリセットします。
 

@@ -10,6 +10,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue` instead.
 export default {
+  name: 'DropdownValue',
   components: {
     GlLabel,
   },

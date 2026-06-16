@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ExceptionLogFormatter do
+RSpec.describe Gitlab::ExceptionLogFormatter, feature_category: :observability do
   describe '.format!' do
     let(:exception) { RuntimeError.new('bad request') }
     let(:backtrace) { caller }

@@ -258,6 +258,7 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
 
       context 'with user mention creation' do
         it 'syncs value with notes column namespace_id' do
+          note.update_column(:namespace_id, project.project_namespace_id)
           note.update!(note: note_desc)
           # delete user mentions created when saving the note
           mentionable.user_mentions.delete_all
@@ -268,8 +269,9 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
 
         it 'syncs value with notes project namespace' do
           note.update!(note: note_desc)
-          note.update_column(:namespace_id, nil)
           mentionable.user_mentions.delete_all
+
+          expect(note.namespace_id).to be_nil
 
           expect { note.store_mentions! }.to change { mentionable.user_mentions.count }.by(1)
           expect(mentionable.user_mentions.last.namespace_id).to eq(note.project.project_namespace_id)
@@ -280,6 +282,7 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
         let(:note) { create(:note_on_commit, commit_id: commit.id, project: project) }
 
         it 'syncs value with notes column namespace_id' do
+          note.update_column(:namespace_id, project.project_namespace_id)
           note.update!(note: note_desc)
           mentionable.user_mentions.last.update_column(:namespace_id, nil)
 
@@ -293,7 +296,8 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
         it 'syncs value with notes column project_id' do
           note.update!(note: note_desc)
           mentionable.user_mentions.last.update_column(:namespace_id, nil)
-          note.update_column(:namespace_id, nil)
+
+          expect(note.namespace_id).to be_nil
 
           expect { note.store_mentions! }.not_to change { mentionable.user_mentions.count }
 

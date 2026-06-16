@@ -1,8 +1,8 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: プロジェクトイテレーション 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: プロジェクトイテレーションAPI
 ---
 
 {{< details >}}
@@ -12,15 +12,17 @@ title: プロジェクトイテレーション
 
 {{< /details >}}
 
-このページでは、プロジェクトイテレーションについて説明します。別の[グループイテレーション](group_iterations.md)ページがあります。
+このAPIを使用して、[プロジェクトイテレーション](../user/group/iterations/_index.md)にアクセスします。
 
-プロジェクトレベルのイテレーションはなくなりましたが、このエンドポイントを使用して、プロジェクトの祖先グループのイテレーションをフェッチできます。
+グループイテレーションの場合は、[グループイテレーションAPI](group_iterations.md)を使用してください。
 
-## プロジェクトイテレーションをリスト表示 {#list-project-iterations}
+プロジェクトレベルのイテレーションはなくなりましたが、このエンドポイントを使用して、プロジェクトの祖先グループのイテレーションをフェッチすることができます。
 
-プロジェクトイテレーションのリストを返します。
+## すべてのプロジェクトイテレーション {#list-all-project-iterations}
 
-[イテレーションケイデンス](../user/group/iterations/_index.md#iteration-cadences)の**自動スケジュールを有効にする**によって作成されたイテレーションは、`title`フィールドと`description`フィールドに対して`null`を返します。
+指定したプロジェクトのすべてのイテレーションをリスト表示します。
+
+**自動スケジュールを有効にする**によって[イテレーションケイデンス](../user/group/iterations/_index.md#iteration-cadences)で作成されたイテレーションは、`title`フィールドと`description`フィールドに`null`を返します。
 
 ```plaintext
 GET /projects/:id/iterations
@@ -35,15 +37,15 @@ GET /projects/:id/iterations?updated_after=2013-10-02T09%3A24%3A18Z
 
 | 属性             | 型     | 必須 | 説明 |
 | --------------------- | -------- | -------- | ----------- |
-| `state`               | 文字列   | いいえ       | 「`opened`」、「`upcoming`」、「`current`」、「`closed`」、または「`all`」イテレーションを返します。                       |
+| `state`               | 文字列   | いいえ       | `opened`、`upcoming`、`current`、`closed`、または`all`のイテレーションを返します。                      |
 | `search`              | 文字列   | いいえ       | 指定された文字列と一致するタイトルを持つイテレーションのみを返します。                              |
-| `in`                  | 文字列の配列 | いいえ | 引数`search`で指定されたクエリを使用してあいまい検索を実行するフィールド。使用可能なオプションは、`title`と`cadence_title`です。デフォルトは`[title]`です。GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/350991)されました。 |
+| `in`                  | 文字列の配列 | いいえ | `search`引数で指定されたクエリを使用して、ファジー検索を実行するフィールド。利用可能なオプションは`title`と`cadence_title`です。デフォルトは`[title]`です。GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/350991)されました。 |
 | `include_ancestors`   | ブール値  | いいえ       | 親グループとその祖先のイテレーションを含めます。`true`がデフォルトです。                    |
 | `include_descendants` | ブール値  | いいえ       | 親グループとその子孫のイテレーションを含めます。`false`がデフォルトです。GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135764)されました。 |
 | `updated_before`      | 日時 | いいえ       | 指定された日時より前に更新されたイテレーションのみを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/378662)されました。 |
 | `updated_after`       | 日時 | いいえ       | 指定された日時より後に更新されたイテレーションのみを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/378662)されました。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -51,7 +53,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/iterations"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

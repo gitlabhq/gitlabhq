@@ -8,10 +8,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobHeader from '~/ci/job_details/components/job_header.vue';
+import JobSourceBadge from '~/ci/job_details/components/job_source_badge.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
 import jobCiStatusUpdatedSubscription from '~/ci/job_details/graphql/subscriptions/job_ci_status_updated.subscription.graphql';
-import { mockJobResponse } from '../mock_data';
+import { mockJobResponse, mockPolicyJobResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -45,6 +46,7 @@ describe('Header CI Component', () => {
   const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findJobName = () => wrapper.findByTestId('job-name');
+  const findJobSourceBadge = () => wrapper.findComponent(JobSourceBadge);
 
   const defaultHandlers = [[getJobQuery, successHandler]];
 
@@ -259,6 +261,26 @@ describe('Header CI Component', () => {
 
     it('does not call the graphql subscription when there is no job data', () => {
       expect(subscriptionHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('job source badge', () => {
+    it('does not render JobSourceBadge for regular jobs without a source', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findJobSourceBadge().exists()).toBe(false);
+    });
+
+    it('renders JobSourceBadge with source for policy jobs', async () => {
+      const policyHandler = jest.fn().mockResolvedValue(mockPolicyJobResponse);
+      createComponent({}, [[getJobQuery, policyHandler]]);
+
+      await waitForPromises();
+
+      expect(findJobSourceBadge().exists()).toBe(true);
+      expect(findJobSourceBadge().props('source')).toBe('scan_execution_policy');
     });
   });
 });

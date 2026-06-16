@@ -13,14 +13,14 @@ RSpec.describe Ci::BuildTag, feature_category: :continuous_integration do
   describe 'partitioning' do
     context 'with build' do
       let_it_be(:build) { FactoryBot.build(:ci_build, partition_id: ci_testing_partition_id) }
-      let_it_be(:build_tag) { FactoryBot.build(:ci_build_tag, build: build) }
+      let_it_be(:build_tag, freeze: false) { FactoryBot.build(:ci_build_tag, build: build) }
 
       it 'sets partition_id to the current partition value' do
         expect { build_tag.valid? }.to change { build_tag.partition_id }.to(ci_testing_partition_id)
       end
 
       context 'when it is already set' do
-        let_it_be(:build_tag) { FactoryBot.build(:ci_build_tag, partition_id: 125) }
+        let_it_be(:build_tag, freeze: false) { FactoryBot.build(:ci_build_tag, partition_id: 125) }
 
         it 'does not change the partition_id value' do
           expect { build_tag.valid? }.not_to change { build_tag.partition_id }

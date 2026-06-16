@@ -6,6 +6,7 @@ import { s__, sprintf } from '~/locale';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget` instead.
 export default {
+  name: 'DropdownValueCollapsed',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

@@ -6,18 +6,19 @@ module RapidDiffs
 
     attr_reader :diff_file
 
-    def initialize(diff_file:, merge_request:, parallel_view: false, plain_view: false)
+    def initialize(diff_file:, merge_request:, parallel_view: false, plain_view: false, extra_file_data: {})
       @diff_file = diff_file
       @merge_request = merge_request
       @parallel_view = parallel_view
       @plain_view = plain_view
+      @extra_file_data = extra_file_data
     end
 
     def extra_file_data
       {
         code_review_id: @diff_file.code_review_id,
         blob_raw_path: blob_raw_path
-      }
+      }.merge(@extra_file_data)
     end
 
     def blob_raw_path

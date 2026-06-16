@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::SquashTm, feature_category: :integrations do
+RSpec.describe Integrations::SquashTm, feature_category: :quality_management do
   let_it_be(:project) { create(:project) }
 
   it_behaves_like Integrations::HasWebHook do

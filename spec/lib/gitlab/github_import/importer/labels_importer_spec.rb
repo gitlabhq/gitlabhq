@@ -52,6 +52,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
       expect(Gitlab::GithubImport::Logger).to receive(:error)
         .with(
           project_id: project.id,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           importer: described_class.name,
           message: ['Title is invalid'],
           external_identifiers: { title: 'bug,bug', object_type: :label }

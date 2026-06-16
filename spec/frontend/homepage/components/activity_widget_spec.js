@@ -1,6 +1,7 @@
 import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ActivityWidget from '~/homepage/components/activity_widget.vue';
@@ -515,52 +516,54 @@ describe('ActivityWidget', () => {
       mockAxios.onGet('*').reply(200, { html: '' });
     });
 
-    it('prepends gon.relative_url_root to URLs when set', async () => {
-      gon.relative_url_root = '/gitlab';
+    describe('when relative URL root is set', () => {
+      useConfigurePathHelpers('/gitlab');
 
-      createWrapper();
-      await waitForPromises();
+      it('prepends gon.relative_url_root to URLs', async () => {
+        createWrapper();
+        await waitForPromises();
 
-      expect(mockAxios.history.get[0].url).toBe(
-        '/gitlab/users/administrator/activity?limit=5&is_personal_homepage=1',
-      );
+        expect(mockAxios.history.get[0].url).toBe(
+          '/gitlab/users/administrator/activity?limit=5&is_personal_homepage=1',
+        );
 
-      findActivityFeedSelector().vm.$emit('select', 'starred');
-      await waitForPromises();
+        findActivityFeedSelector().vm.$emit('select', 'starred');
+        await waitForPromises();
 
-      expect(mockAxios.history.get[1].url).toBe(
-        '/gitlab/dashboard/activity?limit=5&offset=0&filter=starred',
-      );
+        expect(mockAxios.history.get[1].url).toBe(
+          '/gitlab/dashboard/activity?limit=5&offset=0&filter=starred',
+        );
 
-      findActivityFeedSelector().vm.$emit('select', 'followed');
-      await waitForPromises();
+        findActivityFeedSelector().vm.$emit('select', 'followed');
+        await waitForPromises();
 
-      expect(mockAxios.history.get[2].url).toBe(
-        '/gitlab/dashboard/activity?limit=5&offset=0&filter=followed',
-      );
+        expect(mockAxios.history.get[2].url).toBe(
+          '/gitlab/dashboard/activity?limit=5&offset=0&filter=followed',
+        );
+      });
     });
 
-    it('works correctly when gon.relative_url_root is empty', async () => {
-      gon.relative_url_root = '';
+    describe('when relative URL root is empty', () => {
+      useConfigurePathHelpers('');
 
-      createWrapper();
-      await waitForPromises();
+      it('does not append relative URL root', async () => {
+        createWrapper();
+        await waitForPromises();
 
-      expect(mockAxios.history.get[0].url).toBe(
-        '/users/administrator/activity?limit=5&is_personal_homepage=1',
-      );
+        expect(mockAxios.history.get[0].url).toBe(
+          '/users/administrator/activity?limit=5&is_personal_homepage=1',
+        );
 
-      findActivityFeedSelector().vm.$emit('select', 'starred');
-      await waitForPromises();
+        findActivityFeedSelector().vm.$emit('select', 'starred');
+        await waitForPromises();
 
-      expect(mockAxios.history.get[1].url).toBe(
-        '/dashboard/activity?limit=5&offset=0&filter=starred',
-      );
+        expect(mockAxios.history.get[1].url).toBe(
+          '/dashboard/activity?limit=5&offset=0&filter=starred',
+        );
+      });
     });
 
     it('works correctly when gon.relative_url_root is undefined', async () => {
-      delete gon.relative_url_root;
-
       createWrapper();
       await waitForPromises();
 

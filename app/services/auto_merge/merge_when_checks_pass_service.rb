@@ -16,8 +16,7 @@ module AutoMerge
     def process(merge_request)
       logger.info("Processing Automerge - MWCP")
 
-      use_cache = Feature.disabled?(:automerge_skip_mergeability_cache, merge_request.project)
-      return unless merge_request.mergeable?(use_cache: use_cache)
+      return unless merge_request.mergeable?(use_cache: false)
 
       logger.info("Merge request mergeable - MWCP")
 

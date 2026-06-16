@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlButtonGroup } from '@gitlab/ui';
 
 export default {
+  name: 'CommitMessageDropdown',
   components: {
     GlButtonGroup,
     GlDisclosureDropdown,
@@ -25,6 +26,7 @@ export default {
       default: null,
     },
   },
+  emits: ['append', 'input'],
   computed: {
     dropdownItems() {
       return this.commits.map((commit) => ({

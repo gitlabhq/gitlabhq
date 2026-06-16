@@ -8,19 +8,6 @@ module Ci
       "##{runner.id} (#{runner.short_sha})"
     end
 
-    def runner_link(runner)
-      display_name = truncate(runner.display_name, length: 15)
-      id = "\##{runner.id}"
-
-      if current_user && current_user.admin
-        link_to admin_runner_path(runner) do
-          display_name + id
-        end
-      else
-        display_name + id
-      end
-    end
-
     def admin_runners_app_data
       data = {
         # Runner install help page is external, located at

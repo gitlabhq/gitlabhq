@@ -1,7 +1,8 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: DockerコンテナにGitLabをインストール、設定、バックアップ、アップグレードします。
 title: DockerコンテナにGitLabをインストールする
 ---
 
@@ -24,4 +25,5 @@ GitLabの公式Dockerイメージは、以下で入手できます。
 - [Dockerコンテナで実行されているGitLabを設定する](configuration.md)
 - [Dockerコンテナで実行されているGitLabをバックアップする](backup.md)
 - [Dockerコンテナで実行されているGitLabをアップグレードする](../../update/docker/_index.md)
+- [LinuxパッケージのGitLabインスタンスをDockerに移行する](migrate.md)
 - [Dockerコンテナで実行されているGitLabのトラブルシューティング](troubleshooting.md)

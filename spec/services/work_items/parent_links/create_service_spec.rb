@@ -4,16 +4,18 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfolio_management do
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:work_item) { create(:work_item, project: project) }
-    let_it_be(:task) { create(:work_item, :task, project: project) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
+    let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:task1) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:task2) { create(:work_item, :task, project: project) }
-    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
-    let_it_be(:another_project) { (create :project) }
-    let_it_be(:other_project_task) { create(:work_item, :task, iid: 100, project: another_project) }
-    let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
+    let_it_be(:invalid_task, freeze: false) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
+    let_it_be(:another_project, freeze: false) { (create :project) }
+    let_it_be(:other_project_task, freeze: false) { create(:work_item, :task, iid: 100, project: another_project) }
+    let_it_be(:existing_parent_link, freeze: false) do
+      create(:parent_link, work_item: task, work_item_parent: work_item)
+    end
 
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:issuable_type) { :task }
@@ -124,7 +126,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       context 'when tasks had different parent before' do
-        let_it_be(:previous_parent) { create(:work_item, :issue, project: project) }
+        let_it_be(:previous_parent, freeze: false) { create(:work_item, :issue, project: project) }
 
         before do
           create(:parent_link, work_item: task1, work_item_parent: previous_parent)
@@ -145,8 +147,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       context 'when tasks had different parents before' do
-        let_it_be(:previous_parent1) { create(:work_item, :issue, project: project) }
-        let_it_be(:previous_parent2) { create(:work_item, :issue, project: project) }
+        let_it_be(:previous_parent1, freeze: false) { create(:work_item, :issue, project: project) }
+        let_it_be(:previous_parent2, freeze: false) { create(:work_item, :issue, project: project) }
 
         before do
           create(:parent_link, work_item: task1, work_item_parent: previous_parent1)
@@ -266,7 +268,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       context 'when there are invalid children' do
-        let_it_be(:issue) { create(:work_item, project: project) }
+        let_it_be(:issue, freeze: false) { create(:work_item, project: project) }
 
         let(:params) { { issuable_references: [task1, issue, other_project_task] } }
 

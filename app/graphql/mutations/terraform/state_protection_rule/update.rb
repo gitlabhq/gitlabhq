@@ -8,6 +8,8 @@ module Mutations
         description 'Updates a protection rule for a Terraform state backend.'
 
         authorize :admin_terraform_state
+        authorize_granular_token permissions: :update_terraform_state, boundary_argument: :id,
+          boundary_type: :project
 
         argument :id,
           ::Types::GlobalIDType[::Terraform::StateProtectionRule],

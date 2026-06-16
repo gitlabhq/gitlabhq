@@ -189,7 +189,7 @@ class GroupChildEntity < Grape::Entity
   end
 
   def marked_for_deletion_on
-    object.marked_for_deletion_on
+    object.self_deletion_scheduled_deletion_created_on&.to_date
   end
 
   def permanent_deletion_date

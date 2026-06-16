@@ -35,6 +35,7 @@ export default {
       required: true,
     },
   },
+  emits: ['models-update'],
   computed: {
     tableFields() {
       return [

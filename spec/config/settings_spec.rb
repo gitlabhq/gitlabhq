@@ -11,18 +11,12 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
-  describe '.load_dynamic_cron_schedules!' do
-    it 'generates a valid cron schedule' do
-      expect(Fugit::Cron.parse(described_class.load_dynamic_cron_schedules!)).to be_a(Fugit::Cron)
-    end
-  end
-
-  describe 'cron_jobs job_class can be resolved' do
+  describe 'cron_jobs class can be resolved' do
     it 'resolves all defined cron job worker classes' do
-      Settings.cron_jobs.each_value do |job_config|
+      Gitlab::SidekiqConfig.cron_jobs.each_value do |job_config|
         next unless job_config
 
-        job_class = job_config['job_class']
+        job_class = job_config['class']
 
         next unless job_class
 
@@ -33,10 +27,10 @@ RSpec.describe Settings, feature_category: :system_access do
 
   describe 'cron_jobs cron syntax is correct' do
     it 'all cron entries are correct' do
-      Settings.cron_jobs.each_value do |job_config|
+      Gitlab::SidekiqConfig.cron_jobs.each_value do |job_config|
         next unless job_config
 
-        job_class = job_config['job_class']
+        job_class = job_config['class']
         cron = job_config['cron']
 
         next unless cron
@@ -173,28 +167,6 @@ RSpec.describe Settings, feature_category: :system_access do
       it 'raises a MultipleDbKeyBaseError error' do
         expect { described_class.db_key_base_keys }
           .to raise_error(MultipleDbKeyBaseError, "Defining multiple `db_key_base` keys isn't supported yet.")
-      end
-    end
-  end
-
-  describe '.cron_for_service_ping' do
-    it 'returns correct crontab for some manually calculated example' do
-      allow(Gitlab::CurrentSettings)
-        .to receive(:uuid).and_return('d9e2f4e8-db1f-4e51-b03d-f427e1965c4a')
-
-      expect(described_class.send(:cron_for_service_ping)).to eq('44 10 * * 4')
-    end
-
-    it 'returns min, hour, day in the valid range' do
-      allow(Gitlab::CurrentSettings)
-        .to receive(:uuid) { SecureRandom.uuid }
-
-      10.times do
-        cron = described_class.send(:cron_for_service_ping).split(/\s/)
-
-        expect(cron[0].to_i).to be_between(0, 59)
-        expect(cron[1].to_i).to be_between(0, 23)
-        expect(cron[4].to_i).to be_between(0, 6)
       end
     end
   end

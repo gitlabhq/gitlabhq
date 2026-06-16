@@ -31,7 +31,7 @@ const initSettingsApp = (el, pinia) => {
       ]),
     },
     methods: {
-      ...mapActions(useDiffsView, ['updateViewType', 'updateShowWhitespace']),
+      ...mapActions(useDiffsView, ['updateViewType', 'updateShowWhitespace', 'toggleFileByFile']),
     },
     render(h) {
       return h(DiffAppControls, {
@@ -40,7 +40,7 @@ const initSettingsApp = (el, pinia) => {
           showWhitespace: this.showWhitespace,
           diffViewType: this.viewType,
           viewDiffsFileByFile: this.singleFileMode,
-          fileByFileSupported: false,
+          fileByFileSupported: true,
           isLoading: this.isLoading,
           addedLines: this.diffsStats?.addedLines,
           removedLines: this.diffsStats?.removedLines,
@@ -50,6 +50,7 @@ const initSettingsApp = (el, pinia) => {
         on: {
           updateDiffViewType: this.updateViewType,
           toggleWhitespace: this.updateShowWhitespace,
+          toggleFileByFile: this.toggleFileByFile,
           expandAllFiles,
           collapseAllFiles,
         },
@@ -59,11 +60,14 @@ const initSettingsApp = (el, pinia) => {
 };
 
 export const initViewSettings = ({ pinia, target, appData }) => {
-  const { showWhitespace, diffViewType, updateUserEndpoint } = appData;
+  const { showWhitespace, diffViewType, updateUserEndpoint, fileByFileMode } = appData;
+  const fileByFile = parseBoolean(fileByFileMode);
   useDiffsView(pinia).$patch({
     showWhitespace: parseBoolean(showWhitespace),
     viewType: diffViewType,
     updateUserEndpoint,
+    fileByFileMode: fileByFile,
+    singleFileMode: fileByFile,
   });
   useDiffsList(pinia).fillInLoadedFiles();
   return initSettingsApp(target, pinia);

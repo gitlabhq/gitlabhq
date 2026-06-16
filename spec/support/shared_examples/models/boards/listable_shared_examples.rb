@@ -16,10 +16,10 @@ RSpec.shared_examples 'boards listable model' do |list_factory|
   end
 
   describe 'scopes' do
-    let_it_be(:list1) { create(list_factory, list_type: :backlog) }
-    let_it_be(:list2) { create(list_factory, list_type: :closed) }
-    let_it_be(:list3) { create(list_factory, position: 1) }
-    let_it_be(:list4) { create(list_factory, position: 2) }
+    let_it_be(:list1, freeze: false) { create(list_factory, list_type: :backlog) }
+    let_it_be(:list2, freeze: false) { create(list_factory, list_type: :closed) }
+    let_it_be(:list3, freeze: false) { create(list_factory, position: 1) }
+    let_it_be(:list4, freeze: false) { create(list_factory, position: 2) }
 
     describe '.ordered' do
       it 'returns lists ordered by type and position' do

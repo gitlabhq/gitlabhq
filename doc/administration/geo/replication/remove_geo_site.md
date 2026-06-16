@@ -12,14 +12,14 @@ title: Removing secondary Geo sites
 
 {{< /details >}}
 
-**Secondary** sites can be removed from the Geo cluster using the Geo administration page of the **primary** site. To remove a **secondary** site:
+Secondary sites can be removed from the Geo cluster using the Geo administration page of the primary site. To remove a secondary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Nodes**.
-1. For the **secondary** site you want to remove, select **Remove**.
+1. For the secondary site you want to remove, select **Remove**.
 1. Confirm by selecting **Remove** when the prompt appears.
 
-After the **secondary** site is removed from the Geo administration page, you must
+After the secondary site is removed from the Geo administration page, you must
 stop and uninstall this site. For each node on your secondary Geo site:
 
 1. Stop GitLab:
@@ -44,9 +44,9 @@ stop and uninstall this site. For each node on your secondary Geo site:
    sudo rpm --erase gitlab-ee
    ```
 
-When GitLab has been uninstalled from each node on the **secondary** site, the replication slot must be dropped from the **primary** site's database as follows:
+When GitLab has been uninstalled from each node on the secondary site, the replication slot must be dropped from the primary site's database as follows:
 
-1. On the **primary** site's database node, start a PostgreSQL console session:
+1. On the primary site's database node, start a PostgreSQL console session:
 
    ```shell
    sudo gitlab-psql
@@ -61,7 +61,7 @@ When GitLab has been uninstalled from each node on the **secondary** site, the r
    SELECT * FROM pg_replication_slots;
    ```
 
-1. Remove the replication slot for the **secondary** site:
+1. Remove the replication slot for the secondary site:
 
    ```sql
    SELECT pg_drop_replication_slot('<name_of_slot>');

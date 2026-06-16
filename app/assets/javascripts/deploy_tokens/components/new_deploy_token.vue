@@ -18,6 +18,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import translations from '../deploy_token_translations';
 
 export default {
+  name: 'NewDeployToken',
   components: {
     GlFormGroup,
     GlFormInput,

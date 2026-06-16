@@ -43,7 +43,6 @@ export default function initRepositoryApp(router, options = {}) {
     render(createElement) {
       return createElement(RepositoryApp, {
         props: {
-          path: blobPath,
           projectPath,
           refType,
         },

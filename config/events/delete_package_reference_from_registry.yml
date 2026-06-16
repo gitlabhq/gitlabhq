@@ -14,6 +14,8 @@ additional_properties:
   deploy_token_id:
     description: The hashed deploy token id
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191910
 tiers:

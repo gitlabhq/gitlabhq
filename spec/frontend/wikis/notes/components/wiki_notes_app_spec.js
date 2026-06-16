@@ -3,11 +3,13 @@ import { uniqueId } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import WikiNotesApp from '~/wikis/wiki_notes/components/wiki_notes_app.vue';
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import PlaceholderNote from '~/wikis/wiki_notes/components/placeholder_note.vue';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
 import WikiDiscussion from '~/wikis/wiki_notes/components/wiki_discussion.vue';
+import WikiPageAwardEmoji from '~/wikis/components/wiki_page_award_emoji.vue';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { noteableId, queryVariables } from '../mock_data';
@@ -73,8 +75,10 @@ describe('WikiNotesApp', () => {
             wikiPage: {
               id: 'gid://gitlab/WikiPage/1',
               title: 'home',
+              awardEmoji: { nodes: [] },
               userPermissions: {
                 markNoteAsInternal: true,
+                awardEmoji: false,
               },
               subscribed: false,
               discussions: {
@@ -102,8 +106,10 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            awardEmoji: { nodes: [] },
             userPermissions: {
               markNoteAsInternal: true,
+              awardEmoji: false,
             },
             subscribed: false,
             discussions: {
@@ -124,9 +130,8 @@ describe('WikiNotesApp', () => {
   };
 
   let wikiPage = {};
-  beforeEach(async () => {
-    await createWrapper();
 
+  const setupCacheMock = () => {
     wikiPage = {
       id: noteableId,
       discussions: {
@@ -134,23 +139,22 @@ describe('WikiNotesApp', () => {
       },
     };
 
-    // stub apollo's cache read, and add some default data with the wikiPage result method
     apolloCache.readQuery.mockReturnValue({
       noteableId,
       wikiPage,
     });
+  };
 
-    wrapper.vm.$options.apollo.wikiPage.result.call(wrapper.vm, { data: {} });
-  });
-
-  it('should render skeleton notes before content loads', () => {
-    createWrapper();
+  it('should render skeleton notes before content loads', async () => {
+    await createWrapper();
     const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
 
     expect(skeletonNotes).toHaveLength(5);
   });
 
-  it('should render Comment Form correctly', () => {
+  it('should render Comment Form correctly', async () => {
+    await createWrapper();
+    await waitForPromises();
     const commentForm = wrapper.findComponent(WikiCommentForm);
 
     expect(commentForm.props()).toMatchObject({
@@ -159,12 +163,16 @@ describe('WikiNotesApp', () => {
     });
   });
 
-  it('should not render placeholder note by default', () => {
+  it('should not render placeholder note by default', async () => {
+    await createWrapper();
+    await waitForPromises();
     const placeholderNote = wrapper.findComponent(PlaceholderNote);
     expect(placeholderNote.exists()).toBe(false);
   });
 
   it('should render placeholder note correctly when set', async () => {
+    await createWrapper();
+    await waitForPromises();
     wrapper.vm.setPlaceHolderNote({ body: 'a placeholder' });
     await nextTick();
 
@@ -174,7 +182,9 @@ describe('WikiNotesApp', () => {
   });
 
   describe('when there is an error while fetching discussions', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      await createWrapper();
+      await waitForPromises();
       wrapper.vm.$options.apollo.wikiPage.error.call(wrapper.vm);
     });
 
@@ -225,8 +235,10 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            awardEmoji: { nodes: [] },
             userPermissions: {
               markNoteAsInternal: true,
+              awardEmoji: false,
             },
             subscribed: false,
             discussions,
@@ -282,14 +294,18 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            awardEmoji: { nodes: [] },
             userPermissions: {
               markNoteAsInternal: true,
+              awardEmoji: false,
             },
             subscribed: false,
             discussions,
           },
         },
       });
+
+      setupCacheMock();
     });
 
     it('should call write query with the correct data', async () => {
@@ -368,6 +384,11 @@ describe('WikiNotesApp', () => {
   });
 
   describe('wiki comment form', () => {
+    beforeEach(async () => {
+      await createWrapper();
+      setupCacheMock();
+    });
+
     it('should setPlaceHolder correctly when "creating-note:start" is called', async () => {
       const commentForm = wrapper.findComponent(WikiCommentForm);
 
@@ -411,6 +432,80 @@ describe('WikiNotesApp', () => {
           noteableId: '7',
           wikiPage,
         },
+      });
+    });
+  });
+
+  describe('WikiPageAwardEmoji', () => {
+    const findWikiPageAwardEmoji = () => wrapper.findComponent(WikiPageAwardEmoji);
+
+    describe('when noteableId is empty', () => {
+      beforeEach(async () => {
+        await createWrapper({
+          mockQueryResponse: {
+            wikiPage: null,
+          },
+        });
+      });
+
+      it('is not rendered', () => {
+        expect(findWikiPageAwardEmoji().exists()).toBe(false);
+      });
+    });
+
+    describe('when the query result populates page data', () => {
+      const awards = [{ name: 'thumbsup', user: { id: 'gid://gitlab/User/70', name: 'Tester1' } }];
+
+      beforeEach(async () => {
+        await createWrapper({
+          mockQueryResponse: {
+            wikiPage: {
+              id: 'gid://gitlab/WikiPage/1',
+              title: 'home',
+              awardEmoji: { nodes: awards },
+              userPermissions: { markNoteAsInternal: true, awardEmoji: true },
+              subscribed: true,
+              discussions: { nodes: [] },
+            },
+          },
+        });
+      });
+
+      it('receives the noteable id as noteableId', () => {
+        expect(findWikiPageAwardEmoji().props('noteableId')).toBe('gid://gitlab/WikiPage/1');
+      });
+
+      it('receives awards from pageAwardEmoji', () => {
+        expect(findWikiPageAwardEmoji().props('awards')).toEqual(awards);
+      });
+
+      it('derives canAwardEmoji from userPermissions.awardEmoji', () => {
+        expect(findWikiPageAwardEmoji().props('canAwardEmoji')).toBe(true);
+      });
+
+      it('receives isSubscribed from isPageSubscribed', () => {
+        expect(findWikiPageAwardEmoji().props('isSubscribed')).toBe(true);
+      });
+    });
+
+    describe('when userPermissions.awardEmoji is false', () => {
+      beforeEach(async () => {
+        await createWrapper({
+          mockQueryResponse: {
+            wikiPage: {
+              id: 'gid://gitlab/WikiPage/1',
+              title: 'home',
+              awardEmoji: { nodes: [] },
+              userPermissions: { markNoteAsInternal: false, awardEmoji: false },
+              subscribed: false,
+              discussions: { nodes: [] },
+            },
+          },
+        });
+      });
+
+      it('passes canAwardEmoji as false', () => {
+        expect(findWikiPageAwardEmoji().props('canAwardEmoji')).toBe(false);
       });
     });
   });

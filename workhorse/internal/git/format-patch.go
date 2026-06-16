@@ -1,3 +1,4 @@
+//nolint:dupl // Similar structure to diff.go but different protobuf types
 package git
 
 import (
@@ -36,7 +37,6 @@ func (p *patch) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 
 	ctx, diffClient, err := gitaly.NewDiffClient(r.Context(), params.GitalyServer)
-
 	if err != nil {
 		fail.Request(w, r, fmt.Errorf("diff.RawPatch: %v", err))
 		return

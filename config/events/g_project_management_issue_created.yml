@@ -8,6 +8,8 @@ identifiers:
   - project
   - user
 product_group: project_management
+product_categories:
+- team_planning
 milestone: "16.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123184
 tiers:

@@ -6,8 +6,9 @@ const renderGlqlNode = (el) => {
   const container = document.createElement('div');
   const pre = el.closest('pre');
 
-  // When wrapped in a js-markdown-code block we want to hide the copy-code button
-  const wrapper = pre.closest('.js-markdown-code') || pre;
+  // When wrapped in a markdown-code block we want to hide the copy-code button.
+  // Duo Chat uses `.js-duo-markdown-code`; other markdown contexts use `.js-markdown-code`.
+  const wrapper = pre.closest('.js-markdown-code, .js-duo-markdown-code') || pre;
 
   if (!wrapper.parentNode) return null;
 

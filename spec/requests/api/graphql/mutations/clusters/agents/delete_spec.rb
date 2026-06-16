@@ -20,6 +20,12 @@ RSpec.describe 'Delete a cluster agent', feature_category: :deployment_managemen
     graphql_mutation_response(:cluster_agent_delete)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_cluster_agent do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'without project permissions' do
     it_behaves_like 'a mutation that returns top-level errors',
       errors: ['The resource that you are attempting to access does not exist ' \

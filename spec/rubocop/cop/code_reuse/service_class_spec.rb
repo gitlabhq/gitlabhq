@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/service_class'
 
-RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
+RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass, feature_category: :tooling do
   it 'flags the use of a Service class in a Finder' do
     allow(cop)
       .to receive(:in_finder?)

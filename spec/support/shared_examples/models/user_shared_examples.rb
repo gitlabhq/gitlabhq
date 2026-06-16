@@ -143,13 +143,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       resource_milestone_events
       resource_weight_events
       user_namespace_callouts
-      uploads_archived
       custom_dashboards
       custom_dashboard_search_data
       custom_dashboard_versions
       early_access_program_tracking_events
       duo_workflow_session_artifacts
-      oauth_consents
     ]
   end
 

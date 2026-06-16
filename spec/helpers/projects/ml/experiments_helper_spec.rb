@@ -6,11 +6,14 @@ require 'spec_helper'
 require 'mime/types'
 
 RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:experiment) { create(:ml_experiments, :with_model, user: project.creator, project: project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, user: project.creator, pipeline: pipeline) }
-  let_it_be(:candidate0) do
+  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be(:experiment, freeze: false) do
+    create(:ml_experiments, :with_model, user: project.creator, project: project)
+  end
+
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+  let_it_be(:build, freeze: false) { create(:ci_build, user: project.creator, pipeline: pipeline) }
+  let_it_be(:candidate0, freeze: false) do
     create(:ml_candidates,
       :with_artifact,
       experiment: experiment,
@@ -25,7 +28,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  let_it_be(:candidate1) do
+  let_it_be(:candidate1, freeze: false) do
     create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1',
       project: project).tap do |c|
       c.params.build([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
@@ -33,7 +36,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  let_it_be(:candidates) { [candidate0, candidate1] }
+  let_it_be(:candidates, freeze: false) { [candidate0, candidate1] }
 
   describe '#candidates_table_items' do
     subject { Gitlab::Json.parse(helper.candidates_table_items(candidates, project.creator)) }
@@ -149,8 +152,8 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)
     end
 
-    let_it_be(:first_page) { paginator }
-    let_it_be(:second_page) { paginator(first_page.cursor_for_next_page) }
+    let_it_be(:first_page, freeze: false) { paginator }
+    let_it_be(:second_page, freeze: false) { paginator(first_page.cursor_for_next_page) }
 
     let(:page) { nil }
 

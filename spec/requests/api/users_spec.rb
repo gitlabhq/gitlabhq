@@ -8,10 +8,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   include CryptoHelpers
 
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
-  let_it_be(:key) { create(:key, user: user) }
-  let_it_be(:gpg_key) { create(:gpg_key, user: user) }
-  let_it_be(:email) { create(:email, user: user) }
+  let_it_be_with_reload(:user) { create(:user, username: 'user.withdot') }
+  let_it_be(:key, freeze: false) { create(:key, user: user) }
+  let_it_be(:gpg_key, freeze: false) { create(:gpg_key, user: user) }
+  let_it_be(:email, freeze: false) { create(:email, user: user) }
   let_it_be(:organization) { create(:organization) }
 
   let(:blocked_user) { create(:user, :blocked) }
@@ -28,7 +28,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
   context 'admin notes' do
     let_it_be(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
-    let_it_be(:user, reload: true) { create(:user, note: '2018-11-05 | 2FA removed | user requested | www.gitlab.com') }
+    let_it_be_with_reload(:user) { create(:user, note: '2018-11-05 | 2FA removed | user requested | www.gitlab.com') }
 
     describe 'POST /users' do
       let(:path) { '/users' }
@@ -102,6 +102,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     describe "PATCH /users/:id/disable_two_factor" do
+      it_behaves_like 'authorizing granular token permissions', :disable_two_factor_user do
+        let_it_be(:gt_target) { create(:user, :two_factor) }
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) { patch api("/users/#{gt_target.id}/disable_two_factor", personal_access_token: pat) }
+      end
+
       context "when current user is an admin" do
         it "returns a 204 when 2FA is disabled for the target user" do
           expect do
@@ -214,7 +221,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
               expect(response).to have_gitlab_http_status(:success)
               expect(json_response.first).to have_key('created_by')
-              expect(json_response.first['created_by']).to eq(nil)
+              expect(json_response.first['created_by']).to be_nil
             end
 
             it 'is created_by a user and has those details' do
@@ -381,6 +388,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users' do
+    it_behaves_like 'authorizing granular token permissions', :read_user do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     let(:path) { '/users' }
 
     context "when unauthenticated" do
@@ -834,7 +847,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "GET /users/:id" do
-    let_it_be(:user2, reload: true) { create(:user, username: 'another_user') }
+    let_it_be_with_reload(:user2) { create(:user, username: 'another_user') }
 
     let(:path) { "/users/#{user.id}" }
 
@@ -1439,6 +1452,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "POST /users", :with_current_organization do
+    it_behaves_like 'authorizing granular token permissions', :create_user do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api(path, personal_access_token: pat), params: { email: 'gpat-user@example.com', name: 'GPAT User', username: 'gpat_user', force_random_password: true } }
+    end
+
     let(:path) { '/users' }
 
     it_behaves_like 'POST request permissions for admin mode' do
@@ -1456,8 +1475,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
-      expect(new_user.admin).to eq(true)
-      expect(new_user.can_create_group).to eq(true)
+      expect(new_user.admin).to be(true)
+      expect(new_user.can_create_group).to be(true)
       expect(new_user.namespace.organization).to eq(current_organization)
     end
 
@@ -1475,8 +1494,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
-      expect(new_user.admin).to eq(false)
-      expect(new_user.can_create_group).to eq(false)
+      expect(new_user.admin).to be(false)
+      expect(new_user.can_create_group).to be(false)
     end
 
     it "creates non-admin users by default" do
@@ -1484,7 +1503,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:created)
       user_id = json_response['id']
       new_user = User.find(user_id)
-      expect(new_user.admin).to eq(false)
+      expect(new_user.admin).to be(false)
     end
 
     it "returns 201 Created on success" do
@@ -1519,7 +1538,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       user_id = json_response['id']
       new_user = User.find(user_id)
 
-      expect(new_user.recently_sent_password_reset?).to eq(true)
+      expect(new_user.recently_sent_password_reset?).to be(true)
     end
 
     it "creates user with random password" do
@@ -1543,8 +1562,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       user_id = json_response['id']
       new_user = User.find(user_id)
 
-      expect(new_user).not_to eq(nil)
-      expect(new_user.private_profile?).to eq(true)
+      expect(new_user).not_to be_nil
+      expect(new_user.private_profile?).to be(true)
     end
 
     it "creates user with view_diffs_file_by_file" do
@@ -1555,8 +1574,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       user_id = json_response['id']
       new_user = User.find(user_id)
 
-      expect(new_user).not_to eq(nil)
-      expect(new_user.user_preference.view_diffs_file_by_file?).to eq(true)
+      expect(new_user).not_to be_nil
+      expect(new_user.user_preference.view_diffs_file_by_file?).to be(true)
     end
 
     it "creates user with avatar" do
@@ -1571,7 +1590,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       new_user = User.find_by(id: json_response['id'])
 
-      expect(new_user).not_to eq(nil)
+      expect(new_user).not_to be_nil
       expect(json_response['avatar_url']).to include(new_user.avatar_path)
     end
 
@@ -1869,6 +1888,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "PUT /users/:id" do
+    it_behaves_like 'authorizing granular token permissions', :update_user do
+      let_it_be(:gt_target) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { put api("/users/#{gt_target.id}", personal_access_token: pat), params: { name: "Updated" } }
+    end
+
     let(:path) { "/users/#{user.id}" }
 
     it_behaves_like 'PUT request permissions for admin mode' do
@@ -1902,7 +1928,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           update_password(admin, admin)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(admin.reload.password_expired?).to eq(false)
+          expect(admin.reload.password_expired?).to be(false)
         end
 
         it 'does not enqueue the `admin changed your password` email' do
@@ -1921,7 +1947,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           update_password(user, admin)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(user.reload.password_expired?).to eq(true)
+          expect(user.reload.password_expired?).to be(true)
         end
 
         it 'enqueues the `admin changed your password` email' do
@@ -2185,14 +2211,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       put api(path, admin, admin_mode: true), params: { admin: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.admin).to eq(true)
+      expect(user.reload.admin).to be(true)
     end
 
     it "updates external status" do
       put api(path, admin, admin_mode: true), params: { external: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['external']).to eq(true)
+      expect(json_response['external']).to be(true)
       expect(user.reload.external?).to be_truthy
     end
 
@@ -2207,7 +2233,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       put api(path, admin, admin_mode: true), params: { view_diffs_file_by_file: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.user_preference.view_diffs_file_by_file?).to eq(true)
+      expect(user.reload.user_preference.view_diffs_file_by_file?).to be(true)
     end
 
     context 'updating `private_profile`' do
@@ -2232,7 +2258,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           put api(path, admin, admin_mode: true), params: { private_profile: nil }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(user.reload.private_profile).to eq(true)
+          expect(user.reload.private_profile).to be(true)
         end
       end
 
@@ -2242,7 +2268,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         put api(path, admin, admin_mode: true), params: {}
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(user.reload.private_profile).to eq(true)
+        expect(user.reload.private_profile).to be(true)
       end
     end
 
@@ -2265,8 +2291,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       put api("/users/#{admin_user.id}", admin, admin_mode: true), params: { can_create_group: false }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(admin_user.reload.admin).to eq(true)
-      expect(admin_user.can_create_group).to eq(false)
+      expect(admin_user.reload.admin).to be(true)
+      expect(admin_user.can_create_group).to be(false)
     end
 
     it "does not allow invalid update" do
@@ -2471,6 +2497,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     it_behaves_like 'PUT request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :update_credit_card_validation do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { put api(path, personal_access_token: pat), params: params }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         put api(path), params: {}
@@ -2552,6 +2584,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "DELETE /users/:id/identities/:provider" do
+    it_behaves_like 'authorizing granular token permissions', :delete_identity do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
+    end
+
     let(:test_user) { create(:omniauth_user, provider: 'ldapmain') }
     let(:path) { "/users/#{test_user.id}/identities/ldapmain" }
 
@@ -2594,6 +2634,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "POST /users/:id/keys" do
+    it_behaves_like 'authorizing granular token permissions', :create_user_ssh_key do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api("/users/#{admin.id}/keys", personal_access_token: pat),
+          params: attributes_for(:key, usage_type: :signing)
+      end
+    end
+
     let(:path) { "/users/#{user.id}/keys" }
     let(:key_params) { attributes_for(:key, usage_type: :signing) }
 
@@ -2959,6 +3008,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'DELETE /users/:id/keys/:key_id' do
+    it_behaves_like 'authorizing granular token permissions', :delete_user_ssh_key do
+      let_it_be(:admin_ssh_key) { create(:key, user: admin) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        delete api("/users/#{admin.id}/keys/#{admin_ssh_key.id}", personal_access_token: pat)
+      end
+    end
+
     let(:path) { "/users/#{user.id}/keys/#{key.id}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'
@@ -3002,6 +3060,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/gpg_keys' do
+    it_behaves_like 'authorizing granular token permissions', :create_user_gpg_key do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api("/users/#{admin.id}/gpg_keys", personal_access_token: pat),
+          params: attributes_for(:gpg_key, key: GpgHelpers::User2.public_key)
+      end
+    end
+
     let(:path) { "/users/#{user.id}/gpg_keys" }
     let(:key_params) { attributes_for :gpg_key, key: GpgHelpers::User2.public_key }
 
@@ -3159,6 +3226,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'DELETE /user/:id/gpg_keys/:key_id' do
+    it_behaves_like 'authorizing granular token permissions', :delete_user_gpg_key do
+      let_it_be(:admin_gpg_key) { create(:gpg_key, user: admin, key: GpgHelpers::User3.public_key) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        delete api("/users/#{admin.id}/gpg_keys/#{admin_gpg_key.id}", personal_access_token: pat)
+      end
+    end
+
     let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'
@@ -3201,6 +3277,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /user/:id/gpg_keys/:key_id/revoke' do
+    it_behaves_like 'authorizing granular token permissions', :revoke_user_gpg_key do
+      let_it_be(:admin_gpg_key_revoke) { create(:gpg_key, user: admin, key: GpgHelpers::User1.public_key2) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api("/users/#{admin.id}/gpg_keys/#{admin_gpg_key_revoke.id}/revoke", personal_access_token: pat)
+      end
+    end
+
     let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke" }
 
     it_behaves_like 'POST request permissions for admin mode' do
@@ -3248,6 +3333,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe "POST /users/:id/emails", :mailer do
     let(:path) { "/users/#{user.id}/emails" }
     let(:email_attrs) { attributes_for :email }
+
+    it_behaves_like 'authorizing granular token permissions', :create_user_email do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api(path, personal_access_token: pat), params: attributes_for(:email) }
+    end
 
     it_behaves_like 'POST request permissions for admin mode' do
       before do
@@ -3341,6 +3432,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe 'GET /user/:id/emails' do
     let(:path) { "/users/#{user.id}/emails" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_user_email do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/users/#{admin.id}/emails", personal_access_token: pat) }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api(path)
@@ -3379,6 +3476,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     let(:path) { "/users/#{user.id}/emails/#{email.id}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_user_email do
+      let_it_be(:admin_email) { create(:email, user: admin) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api("/users/#{admin.id}/emails/#{admin_email.id}", personal_access_token: pat) }
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -3425,6 +3529,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "DELETE /users/:id" do
+    it_behaves_like 'authorizing granular token permissions', :delete_user do
+      let_it_be(:gt_target) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api("/users/#{gt_target.id}", personal_access_token: pat) }
+    end
+
     let_it_be(:issue) { create(:issue, author: user) }
     let(:path) { "/users/#{user.id}" }
 
@@ -3654,8 +3765,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response["view_diffs_file_by_file"]).to eq(true)
-        expect(json_response["show_whitespace_in_diffs"]).to eq(false)
+        expect(json_response["view_diffs_file_by_file"]).to be(true)
+        expect(json_response["show_whitespace_in_diffs"]).to be(false)
 
         user.reload
 
@@ -4272,6 +4383,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     describe 'POST /users/:id/activate' do
+      it_behaves_like 'authorizing granular token permissions', :activate_user do
+        let_it_be(:gt_target) { create(:user, :deactivated) }
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) { post api("/users/#{gt_target.id}/activate", personal_access_token: pat) }
+      end
+
       subject(:activate) { post api(path, api_user, **params) }
 
       let(:user_id) { user.id }
@@ -4359,6 +4477,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     describe 'POST /users/:id/deactivate' do
+      it_behaves_like 'authorizing granular token permissions', :deactivate_user do
+        let_it_be(:gt_target) { create(:user) }
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) { post api("/users/#{gt_target.id}/deactivate", personal_access_token: pat) }
+      end
+
       subject(:deactivate) { post api(path, api_user, **params) }
 
       let(:user_id) { user.id }
@@ -4483,6 +4608,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     describe 'POST /users/:id/approve' do
+      it_behaves_like 'authorizing granular token permissions', :approve_user do
+        let_it_be(:gt_target) { create(:user, :blocked_pending_approval) }
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) { post api("/users/#{gt_target.id}/approve", personal_access_token: pat) }
+      end
+
       subject(:approve) { post api(path, api_user, **params) }
 
       let(:path) { "/users/#{user_id}/approve" }
@@ -4571,6 +4703,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     describe 'POST /users/:id/reject' do
+      it_behaves_like 'authorizing granular token permissions', :reject_user do
+        let_it_be(:gt_target) { create(:user, :blocked_pending_approval) }
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) { post api("/users/#{gt_target.id}/reject", personal_access_token: pat) }
+      end
+
       subject(:reject) { post api(path, api_user, **params) }
 
       let(:path) { "/users/#{user_id}/reject" }
@@ -4671,6 +4810,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/block' do
+    it_behaves_like 'authorizing granular token permissions', :block_user do
+      let_it_be(:gt_target) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/users/#{gt_target.id}/block", personal_access_token: pat) }
+    end
+
     subject(:block_user) { post api(path, api_user, **params) }
 
     let(:user_id) { user.id }
@@ -4774,6 +4920,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/unblock' do
+    it_behaves_like 'authorizing granular token permissions', :unblock_user do
+      let_it_be(:gt_target) { create(:user, :blocked) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/users/#{gt_target.id}/unblock", personal_access_token: pat) }
+    end
+
     subject(:unblock_user) { post api(path, api_user, **params) }
 
     let(:path) { "/users/#{user_id}/unblock" }
@@ -4874,6 +5027,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/ban' do
+    it_behaves_like 'authorizing granular token permissions', :ban_user do
+      let_it_be(:gt_target) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/users/#{gt_target.id}/ban", personal_access_token: pat) }
+    end
+
     subject(:ban_user) { post api(path, api_user, **params) }
 
     let(:path) { "/users/#{user_id}/ban" }
@@ -4969,6 +5129,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:id/unban' do
+    it_behaves_like 'authorizing granular token permissions', :unban_user do
+      let_it_be(:gt_target) { create(:user, :banned) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/users/#{gt_target.id}/unban", personal_access_token: pat) }
+    end
+
     subject(:unban_user) { post api(path, api_user, **params) }
 
     let(:path) { "/users/#{user_id}/unban" }
@@ -5066,6 +5233,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe "GET /users/:id/memberships" do
+    it_behaves_like 'authorizing granular token permissions', :read_user do
+      let_it_be(:gt_target) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/users/#{gt_target.id}/memberships", personal_access_token: pat) }
+    end
+
     subject(:request) { get api(path, requesting_user, admin_mode: true) }
 
     let_it_be(:user) { create(:user) }
@@ -5436,6 +5610,15 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
+    it_behaves_like 'authorizing granular token permissions', :create_personal_access_token do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api("/users/#{admin.id}/personal_access_tokens", personal_access_token: pat),
+          params: { name: 'gpat-pat', scopes: %w[api], expires_at: 3.days.from_now.to_date.to_s }
+      end
+    end
+
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
     let(:expires_at) { 3.days.from_now }
@@ -5664,6 +5847,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users/:user_id/impersonation_tokens' do
+    it_behaves_like 'authorizing granular token permissions', :read_impersonation_token do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/users/#{admin.id}/impersonation_tokens", personal_access_token: pat) }
+    end
+
     let_it_be(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
     let_it_be(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
@@ -5717,6 +5906,12 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'POST /users/:user_id/impersonation_tokens', :with_current_organization do
+    it_behaves_like 'authorizing granular token permissions', :create_impersonation_token do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/users/#{admin.id}/impersonation_tokens", personal_access_token: pat), params: { name: "gpat-imp", expires_at: 1.month.from_now.to_date.to_s, scopes: %w[api], impersonation: true } }
+    end
+
     let(:name) { 'my new pat' }
     let(:description) { 'my new pat description' }
     let(:expires_at) { '2016-12-28' }
@@ -5774,6 +5969,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users/:user_id/impersonation_tokens/:impersonation_token_id' do
+    it_behaves_like 'authorizing granular token permissions', :read_impersonation_token do
+      let_it_be(:imp_token) { create(:personal_access_token, :impersonation, user: admin) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/users/#{admin.id}/impersonation_tokens/#{imp_token.id}", personal_access_token: pat) }
+    end
+
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let(:path) { "/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}" }
@@ -5818,6 +6020,13 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id' do
+    it_behaves_like 'authorizing granular token permissions', :revoke_impersonation_token do
+      let_it_be(:imp_token) { create(:personal_access_token, :impersonation, user: admin) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api("/users/#{admin.id}/impersonation_tokens/#{imp_token.id}", personal_access_token: pat) }
+    end
+
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let(:path) { "/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}" }
@@ -6009,6 +6218,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /api/v4/users/:id/support_pin' do
+    it_behaves_like 'authorizing granular token permissions', :read_user_support_pin do
+      let_it_be(:pin_user) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+
+      before do
+        ::Users::SupportPin::UpdateService.new(pin_user).execute
+      end
+
+      let(:request) { get api("/users/#{pin_user.id}/support_pin", personal_access_token: pat) }
+    end
+
     context 'when authenticated as admin' do
       it 'retrieves the support PIN for a user' do
         get api("/users/#{user.id}/support_pin", admin, admin_mode: true)
@@ -6044,6 +6265,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
   describe 'POST /users/:id/support_pin/revoke' do
     let(:path) { "/users/#{user.id}/support_pin/revoke" }
+
+    it_behaves_like 'authorizing granular token permissions', :revoke_user_support_pin do
+      let_it_be(:pin_user) { create(:user) }
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+
+      before do
+        ::Users::SupportPin::UpdateService.new(pin_user).execute
+      end
+
+      let(:request) { post api("/users/#{pin_user.id}/support_pin/revoke", personal_access_token: pat) }
+    end
 
     context 'when current user is an admin' do
       context 'when a PIN exists' do

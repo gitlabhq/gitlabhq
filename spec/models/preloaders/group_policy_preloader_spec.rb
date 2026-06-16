@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::GroupPolicyPreloader do
+RSpec.describe Preloaders::GroupPolicyPreloader, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:root_parent) { create(:group, :private, name: 'root-1', path: 'root-1') }
   let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest', guests: user) }

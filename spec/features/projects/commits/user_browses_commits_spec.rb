@@ -7,10 +7,11 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
   include FilteredSearchHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository, namespace: user.namespace) }
 
   before do
     stub_feature_flags(rapid_diffs_on_commit_show: false)
+    stub_feature_flags(project_commits_refactor: false)
     sign_in(user)
   end
 

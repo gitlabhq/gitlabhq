@@ -4,13 +4,12 @@
   %body{ class: "#{user_tab_width} #{@body_class} fullscreen-layout", data: body_data }
     = render 'peek/bar'
     = header_message
-    .gl--flex-full.gl-h-full
-      .gl--flex-full.gl-flex-col.gl-w-full
-        .alert-wrapper
-          = render 'shared/outdated_browser'
-          = render "layouts/broadcast"
-          = yield :flash_message
-          = render "layouts/flash", flash_container_no_margin: true
-        %main#content-body.content{ class: "gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-items-stretch gl-p-0 gl-@container/panel" }
-          = yield
+    .gl-flex.gl-items-stretch.gl-flex-col.gl-w-full.gl-h-full.gl-overflow-hidden
+      .alert-wrapper
+        = render 'shared/outdated_browser'
+        = render "layouts/broadcast"
+        = yield :flash_message
+        = render "layouts/flash", flash_container_no_margin: true
+      %main#content-body.content{ class: "gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-items-stretch gl-p-0 gl-@container/panel" }
+        = yield
     = footer_message

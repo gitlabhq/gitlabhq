@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { createTestingPinia } from '@pinia/testing';
 import FileTreeSearch from '~/repository/file_tree_browser/components/file_tree_search.vue';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +10,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { Mousetrap } from '~/lib/mousetrap';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
@@ -176,8 +178,12 @@ describe('FileTreeSearch', () => {
   });
 
   describe('search functionality', () => {
+    let ftbVisibilityStore;
+
     beforeEach(async () => {
       await triggerFilesLoad();
+      createTestingPinia();
+      ftbVisibilityStore = useFileTreeBrowserVisibility();
     });
 
     it('filters files by name', async () => {
@@ -255,6 +261,28 @@ describe('FileTreeSearch', () => {
       );
       expect(findSearchInput().element.value).toBe('');
       expect(findSearchPanel().exists()).toBe(false);
+    });
+
+    it('calls resetFileTreeBrowserAllStates when search result file is clicked and peek is on', async () => {
+      ftbVisibilityStore.fileTreeBrowserIsPeekOn = true;
+
+      await triggerSearch('user');
+
+      const firstResultItem = findResultItems().at(0);
+      firstResultItem.find('button').trigger('click');
+      await nextTick();
+
+      expect(ftbVisibilityStore.resetFileTreeBrowserAllStates).toHaveBeenCalled();
+    });
+
+    it('does not call resetFileTreeBrowserAllStates when search result file is clicked but peek is off', async () => {
+      await triggerSearch('user');
+
+      const firstResultItem = findResultItems().at(0);
+      firstResultItem.find('button').trigger('click');
+      await nextTick();
+
+      expect(ftbVisibilityStore.resetFileTreeBrowserAllStates).not.toHaveBeenCalled();
     });
   });
 

@@ -13,27 +13,27 @@ exports[`Links Inner component with a large number of needs matches snapshot and
     width="1019px"
   >
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M212,128C62,128,62,148,112,148"
       stroke-width="2"
     />
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M212,128C72,128,72,158,122,158"
       stroke-width="2"
     />
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M232,148C82,148,82,168,132,168"
       stroke-width="2"
     />
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M222,138C92,138,92,178,142,178"
       stroke-width="2"
     />
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M242,158C102,158,102,188,152,188"
       stroke-width="2"
     />
@@ -54,7 +54,7 @@ exports[`Links Inner component with a parallel need matches snapshot and has exp
     width="1019px"
   >
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M222,138C72,138,72,158,122,158"
       stroke-width="2"
     />
@@ -75,7 +75,7 @@ exports[`Links Inner component with one need matches snapshot and has expected p
     width="1019px"
   >
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M212,128C62,128,62,148,112,148"
       stroke-width="2"
     />
@@ -96,12 +96,12 @@ exports[`Links Inner component with same stage needs matches snapshot and has ex
     width="1019px"
   >
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M192,108C42,108,42,128,92,128"
       stroke-width="2"
     />
     <path
-      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-700"
       d="M212,128C52,128,52,138,102,138"
       stroke-width="2"
     />

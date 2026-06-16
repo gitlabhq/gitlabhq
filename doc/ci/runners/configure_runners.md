@@ -98,12 +98,6 @@ To set the maximum job timeout:
 
 ## Set `script` and `after_script` timeouts
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
-
-{{< /history >}}
-
 To control the amount of time `script` and `after_script` runs before it terminates, specify a timeout value in the `.gitlab-ci.yml` file.
 
 For example, you can specify a timeout to terminate a long-running `script` early. This ensures artifacts and caches can still be uploaded
@@ -221,13 +215,6 @@ you use to provision and register new values.
 
 ## Authentication token security
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags/_index.md) named `enforce_runner_token_expires_at`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
-
-{{< /history >}}
-
 Each runner uses a [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
 to connect to and authenticate with a GitLab instance.
 
@@ -267,7 +254,6 @@ Regularly rotating runner authentication tokens helps minimize the risk of unaut
 
 Prerequisites:
 
-- Runners must use [GitLab Runner 15.3 or later](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 - You must be an administrator.
 
 To automatically rotate runner authentication tokens:
@@ -816,12 +802,6 @@ workarounds:
 
 ### Rewrite submodule URLs to HTTPS
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
-
-{{< /history >}}
-
 Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
 You can clone submodules that use absolute URLs on the same GitLab instance, even if they were
 configured with a Git or SSH protocol.
@@ -868,12 +848,6 @@ variables:
 You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 ### Git submodule depth
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
-
-{{< /history >}}
 
 Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
@@ -1076,12 +1050,6 @@ To make these changes persistent across reboots, add them to `/etc/sysctl.conf`.
 
 ## Artifact provenance metadata
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
-
-{{< /history >}}
-
 Runners can generate an [SLSA Provenance](https://slsa.dev/spec/v1.0/provenance)
 and produce an [SLSA Statement](https://slsa.dev/spec/v1.0/attestation-model#model-and-terminology)
 that binds the provenance to all build artifacts.
@@ -1120,7 +1088,7 @@ These fields are populated by default:
 | `subject[].name`                                                  | The filename of the artifact. |
 | `subject[].sha256`                                                | The artifact's `sha256` checksum. |
 | `predicateType`                                                   | `https://slsa.dev/provenance/v1` |
-| `predicate.buildDefinition.buildType`                             | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v15.0.0 |
+| `predicate.buildDefinition.buildType`                             | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v19.0.0 |
 | `predicate.runDetails.builder.id`                                 | A URI pointing to the runner details page, for example, `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
 | `predicate.buildDefinition.externalParameters`                    | The names of any CI/CD or environment variables available during the build command execution. The value is always represented as an empty string to protect secrets. |
 | `predicate.buildDefinition.externalParameters.source`             | The URL of the project. |
@@ -1205,12 +1173,6 @@ A provenance statement should look similar to this example:
 
 ## Staging directory
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
-
-{{< /history >}}
-
 If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
 
 You might need to change the directory if your system's default temporary path has constraints.
@@ -1222,12 +1184,6 @@ The directory you specify is used as the location for downloading artifacts prio
 used, this location is also used as scratch space when archiving.
 
 ## Configure `fastzip` to improve performance
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
-
-{{< /history >}}
 
 To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.

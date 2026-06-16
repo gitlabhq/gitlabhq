@@ -17,7 +17,7 @@ RSpec.describe 'OmniAuth Rack middlewares', :prometheus, feature_category: :syst
   end
 
   describe 'OmniAuth before_request_phase callback for step-up authentication' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:oauth_provider_config_with_step_up_auth) do
       GitlabSettings::Options.new(

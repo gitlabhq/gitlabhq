@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::SlacksController, :enable_admin_mode, :with_current_organization, feature_category: :integrations do
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user, freeze: false) { create(:admin) }
 
   before do
     stub_application_setting(slack_app_enabled: true)

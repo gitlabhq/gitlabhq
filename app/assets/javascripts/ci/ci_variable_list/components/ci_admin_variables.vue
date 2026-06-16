@@ -29,6 +29,7 @@ export default {
   <ci-variable-shared
     :are-scoped-variables-available="false"
     component-name="InstanceVariables"
+    entity="instance"
     :hide-environment-scope="true"
     :mutation-data="$options.mutationData"
     :refetch-after-mutation="true"

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting list of branch rules for a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
 
   let(:variables) { { path: project.full_path } }
@@ -103,11 +103,11 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
       let(:branch_rule_b_data) { branch_rules_data.dig(1, 'node') }
       let(:all_branches_rule_data) { branch_rules_data.dig(0, 'node') }
       let_it_be(:branch_name_b) { 'diff-*' }
-      let_it_be(:protected_branch_a) do
+      let_it_be(:protected_branch_a, freeze: false) do
         create(:protected_branch, project: project, name: branch_name_a)
       end
 
-      let_it_be(:protected_branch_b) do
+      let_it_be(:protected_branch_b, freeze: false) do
         create(:protected_branch, project: project, name: branch_name_b)
       end
 

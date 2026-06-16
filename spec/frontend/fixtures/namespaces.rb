@@ -9,9 +9,9 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
 
   runners_token = 'runnerstoken:intabulasreferre'
 
-  let_it_be(:namespace) { create(:namespace, :with_root_storage_statistics, name: 'frontend-fixtures') }
+  let_it_be(:namespace, freeze: false) { create(:namespace, :with_root_storage_statistics, name: 'frontend-fixtures') }
 
-  let_it_be(:project_boilerplate) do
+  let_it_be(:project_boilerplate, freeze: false) do
     create(
       :project,
       name: 'Html5 Boilerplate',
@@ -21,7 +21,7 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
     )
   end
 
-  let_it_be(:project_twitter) do
+  let_it_be(:project_twitter, freeze: false) do
     create(
       :project,
       name: 'Twitter',
@@ -31,7 +31,7 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
     )
   end
 
-  let_it_be(:user) { project_boilerplate.owner }
+  let_it_be(:user, freeze: false) { project_boilerplate.owner }
 
   describe 'Storage', feature_category: :consumables_cost_management do
     describe GraphQL::Query, type: :request do
@@ -129,11 +129,11 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
   end
 
   describe API::Projects, type: :request do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     describe 'transfer_locations' do
-      let_it_be(:groups) { create_list(:group, 4) }
-      let_it_be(:project) { create(:project, namespace: user.namespace) }
+      let_it_be(:groups, freeze: false) { create_list(:group, 4) }
+      let_it_be(:project, freeze: false) { create(:project, namespace: user.namespace) }
 
       before_all do
         groups.each { |group| group.add_owner(user) }
@@ -154,11 +154,11 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
   end
 
   describe API::Groups, type: :request do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     describe 'transfer_locations' do
-      let_it_be(:groups) { create_list(:group, 4) }
-      let_it_be(:transfer_from_group) { create(:group) }
+      let_it_be(:groups, freeze: false) { create_list(:group, 4) }
+      let_it_be(:transfer_from_group, freeze: false) { create(:group) }
 
       before_all do
         groups.each { |group| group.add_owner(user) }
@@ -174,7 +174,7 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
   end
 
   describe GraphQL::Query, type: :request do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     query_name = 'current_user_namespace.query.graphql'
 

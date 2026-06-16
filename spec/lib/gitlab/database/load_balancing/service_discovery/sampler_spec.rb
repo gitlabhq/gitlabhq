@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Sampler do
+RSpec.describe ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Sampler, feature_category: :database do
   let(:sampler) { described_class.new(max_replica_pools: max_replica_pools, seed: 100) }
   let(:max_replica_pools) { 3 }
   let(:address_class) { ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Address }

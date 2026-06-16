@@ -145,6 +145,32 @@ export const singleDatabaseResults = {
   },
 };
 
+export const databaseInformationResults = {
+  databases: {
+    main: {
+      current_user: 'gitlab',
+      search_path: '"$user", public',
+      schemas: [
+        { name: 'public', current: true, owner: 'postgres' },
+        { name: 'gitlab_partitions_dynamic', current: false, owner: 'postgres' },
+        { name: 'gitlab_partitions_static', current: false, owner: 'postgres' },
+      ],
+    },
+  },
+};
+
+export const databaseInformationWithErrorSlice = {
+  databases: {
+    main: { error: 'boom' },
+  },
+};
+
+export const databaseInformationWithDatabaseError = {
+  databases: {
+    main: { error: 'connection refused' },
+  },
+};
+
 export const multiDatabaseResults = {
   metadata: {
     last_run_at: '2025-07-23T10:00:00Z',

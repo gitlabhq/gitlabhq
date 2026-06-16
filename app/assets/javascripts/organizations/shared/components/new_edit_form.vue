@@ -11,6 +11,7 @@ import VisibilityLevelRadioButtons from '~/visibility_level/components/visibilit
 import {
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
 import {
   FORM_FIELD_NAME,
@@ -46,9 +47,7 @@ export default {
     anchor: 'supported-markdown-for-organization-description',
   }),
   restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
-  // Organizations in Cells 1.0 can only be private
-  // https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/#organizations-on-cells-10-fy24q2-fy25q4
-  availableVisibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER],
+  availableVisibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER, VISIBILITY_LEVEL_PUBLIC_INTEGER],
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
   inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {

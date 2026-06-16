@@ -6,6 +6,7 @@ module API
       module Nuget
         module WarningHeader
           extend ::Gitlab::Utils::Override
+          include ::API::Helpers::Packages::ErrorMessage
 
           HEADER_NAME = 'X-NuGet-Warning'
 
@@ -14,7 +15,7 @@ module API
             return super unless Feature.enabled?(:nuget_warning_header, Feature.current_request)
 
             message = hash['message']
-            header[HEADER_NAME] = message.tr("\r\n", ' ') if message.is_a?(String) && message.present?
+            header[HEADER_NAME] = error_message_single_line(message) if message.is_a?(String) && message.present?
 
             super
           end

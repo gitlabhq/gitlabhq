@@ -38,6 +38,7 @@ export default {
       default: true,
     },
   },
+  emits: ['change', 'valid'],
   data() {
     return {
       numberData: this.value,

@@ -1,0 +1,10 @@
+---
+name: update_ci_cd_setting
+description: Grants the ability to update CI/CD settings
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_ci_cd_setting

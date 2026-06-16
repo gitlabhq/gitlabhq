@@ -85,9 +85,9 @@ class RegistrationsController < Devise::RegistrationsController
 
   def destroy_confirmation_valid?
     if current_user.confirm_deletion_with_password?
-      current_user.valid_password?(params[:password])
+      current_user.valid_password?(params.permit(:password)[:password])
     else
-      current_user.username == params[:username]
+      current_user.username == params.permit(:username)[:username]
     end
   end
 
@@ -236,9 +236,11 @@ class RegistrationsController < Devise::RegistrationsController
     # To avoid duplicate form fields on the login page, the registration form
     # names fields using `new_user`, but Devise still wants the params in
     # `user`.
+    # rubocop:disable Rails/StrongParams -- dynamic resource_name requires raw params read/write for Devise compatibility
     if params["new_#{resource_name}"].present? && params[resource_name].blank?
       params[resource_name] = params.delete(:"new_#{resource_name}")
     end
+    # rubocop:enable Rails/StrongParams
   end
 
   def check_captcha
@@ -257,8 +259,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def ensure_first_name_and_last_name_not_empty
-    first_name = params.dig(resource_name, :first_name) || params.dig("new_#{resource_name}", :first_name)
-    last_name = params.dig(resource_name, :last_name) || params.dig("new_#{resource_name}", :last_name)
+    name_params = params.permit(
+      resource_name => [:first_name, :last_name],
+      :"new_#{resource_name}" => [:first_name, :last_name]
+    )
+    first_name = name_params.dig(resource_name, :first_name) || name_params.dig("new_#{resource_name}", :first_name)
+    last_name = name_params.dig(resource_name, :last_name) || name_params.dig("new_#{resource_name}", :last_name)
 
     return if first_name.present? && last_name.present?
 
@@ -326,11 +332,11 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_invite_params
-    resource.email = invite_email if resource.email.blank? && params[:invite_email].present?
+    resource.email = invite_email if resource.email.blank? && params.permit(:invite_email)[:invite_email].present?
   end
 
   def invite_email
-    ActionController::Base.helpers.sanitize(params[:invite_email])
+    ActionController::Base.helpers.sanitize(params.permit(:invite_email)[:invite_email])
   end
   strong_memoize_attr :invite_email
 

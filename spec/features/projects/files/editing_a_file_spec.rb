@@ -31,10 +31,12 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
   context 'when the user has write access' do
     before do
       sign_in user
-      visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
     end
 
     it 'file has been updated since the user opened the edit page' do
+      visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
+      expect(page).to have_field('file_path', with: '.gitignore')
+
       Files::UpdateService.new(project, user, commit_params).execute
 
       click_button 'Commit changes'
@@ -49,11 +51,12 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
     context 'and blob_edit_refactor feature flag is false' do
       before do
         stub_feature_flags(blob_edit_refactor: false)
-        sign_in user
-        visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
       end
 
       it 'file has been updated since the user opened the edit page' do
+        visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
+        expect(page).to have_field('file_path', with: '.gitignore')
+
         Files::UpdateService.new(project, user, second_commit_params).execute
         click_button 'Commit changes'
 

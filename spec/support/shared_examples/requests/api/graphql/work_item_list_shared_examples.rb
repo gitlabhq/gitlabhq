@@ -26,8 +26,8 @@ RSpec.shared_examples 'graphql work item list request spec' do
     end
 
     context 'when filtering by state' do
-      let_it_be(:opened_work_item) { create(:work_item, :opened, **container_build_params) }
-      let_it_be(:closed_work_item) { create(:work_item, :closed, **container_build_params) }
+      let_it_be(:opened_work_item, freeze: false) { create(:work_item, :opened, **container_build_params) }
+      let_it_be(:closed_work_item, freeze: false) { create(:work_item, :closed, **container_build_params) }
 
       context 'when filtering by state opened' do
         let(:item_filter_params) { { state: :opened } }
@@ -57,8 +57,8 @@ RSpec.shared_examples 'graphql work item list request spec' do
     end
 
     context 'when filtering by type' do
-      let_it_be(:issue_work_item) { create(:work_item, :issue, **container_build_params) }
-      let_it_be(:task_work_item) { create(:work_item, :task, **container_build_params) }
+      let_it_be(:issue_work_item, freeze: false) { create(:work_item, :issue, **container_build_params) }
+      let_it_be(:task_work_item, freeze: false) { create(:work_item, :task, **container_build_params) }
 
       context 'when filtering by issue type' do
         let(:item_filter_params) { { types: [:ISSUE] } }
@@ -119,7 +119,7 @@ RSpec.shared_examples 'graphql work item list request spec' do
     end
 
     context 'when filtering by iid' do
-      let_it_be(:work_item_by_iid) { create(:work_item, **container_build_params) }
+      let_it_be(:work_item_by_iid, freeze: false) { create(:work_item, **container_build_params) }
 
       context 'when using the iid filter' do
         let(:item_filter_params) { { iid: work_item_by_iid.iid.to_s } }

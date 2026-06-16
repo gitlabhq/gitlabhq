@@ -17,11 +17,12 @@ description: コンテナレジストリの仮想レジストリを作成およ�
 {{< history >}}
 
 - GitLab 18.5で`container_virtual_registries`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/548794)されました。デフォルトでは無効になっています。
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)：GitLab 18.9で実験からベータに変わりました。
+- GitLab 18.9で実験的機能からベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)されました。
+- GitLab 18.10で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250)
 
 {{< /history >}}
 
-> [!flag] 
+> [!flag]
 > これらのエンドポイントの利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 このAPIを使用して、以下を行います:
@@ -33,7 +34,7 @@ description: コンテナレジストリの仮想レジストリを作成およ�
 仮想レジストリを介したコンテナイメージのプルに関する情報は、[コンテナ仮想レジストリ](../user/packages/virtual_registry/container/_index.md)を参照してください。
 
 > [!note]
-> クラウドプロバイダーレジストリはサポートされていませんが、[issue 20919](https://gitlab.com/groups/gitlab-org/-/work_items/20919)でこの動作を変更することが提案されています。
+> クラウドプロバイダーのレジストリはサポートされていませんが、[issue 20919](https://gitlab.com/groups/gitlab-org/-/work_items/20919)は、この動作を変更することを提案しています。
 
 ## 仮想レジストリを管理する {#manage-virtual-registries}
 
@@ -174,7 +175,7 @@ PATCH /virtual_registries/container/registries/:id
 | `name` | 文字列 | いいえ | 仮想レジストリの名前。 |
 
 > [!note]
-> リクエストには、オプションのパラメータ（`name`または`description`）の少なくとも1つを指定する必要があります。
+> 最低でもオプションパラメータのいずれか（`name`または`description`）をリクエストに含める必要があります。
 
 リクエスト例: 
 
@@ -191,7 +192,7 @@ curl --request PATCH \
 ### 仮想レジストリを削除する {#delete-a-virtual-registry}
 
 > [!warning]
-> 仮想レジストリを削除すると、他の仮想レジストリと共有されていない、関連付けられているすべてのアップストリームレジストリと、キャッシュされたコンテナイメージとマニフェストも削除されます。
+> 仮想レジストリを削除すると、他の仮想レジストリと共有されていない関連するすべてのアップストリームレジストリが、キャッシュされたコンテナイメージとマニフェストとともに削除されます。
 
 指定されたコンテナ仮想レジストリを削除します。
 
@@ -218,7 +219,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - GitLab 18.7で`container_virtual_registries`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは無効になっています。
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)：GitLab 18.9で実験からベータに変わりました。
+- GitLab 18.9で実験的機能からベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)されました。
+- GitLab 18.10で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250)
 
 {{< /history >}}
 
@@ -294,7 +296,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - GitLab 18.9で`container_virtual_registries`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/578679)されました。デフォルトでは無効になっています。
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)：GitLab 18.9で実験からベータに変わりました。
+- GitLab 18.9で実験的機能からベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)されました。
+- GitLab 18.10で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250)
 
 {{< /history >}}
 
@@ -313,7 +316,7 @@ POST /groups/:id/-/virtual_registries/container/upstreams/test
 | `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
 | `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
-> [!note] 
+> [!note]
 > `username`と`password`の両方をリクエストに含めるか、どちらも含めない必要があります。設定されていない場合、パブリック（匿名）リクエストを使用してアップストリームにアクセスします。
 
 #### テストワークフロー {#test-workflow}
@@ -348,7 +351,7 @@ curl --request POST \
 ```
 
 > [!note]
-> アップストリームレジストリからの`2XX`（検出）および`404 Not Found` HTTPステータスコードは、アップストリームに到達可能で、適切に構成されていることを示すため、成功した応答と見なされます。
+> アップストリームレジストリからの`2XX`（検出）と`404 Not Found`のHTTPステータスコードは、アップストリームが到達可能で適切に設定されていることを示すため、成功した応答と見なされます。
 
 ### 仮想レジストリのすべてのアップストリームレジストリを一覧表示 {#list-all-upstream-registries-for-a-virtual-registry}
 
@@ -413,7 +416,7 @@ POST /virtual_registries/container/registries/:id/upstreams
 | `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
 | `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
-> [!note] 
+> [!note]
 > `username`と`password`の両方をリクエストに含めるか、まったく含めないかのいずれかにする必要があります。設定されていない場合、パブリック（匿名）リクエストを使用してアップストリームにアクセスします。
 
 同じURLと認証情報（`username`と`password`）を持つ2つのアップストリームを同じトップレベルグループに追加することはできません。代わりに、次のいずれかを実行できます。
@@ -422,7 +425,7 @@ POST /virtual_registries/container/registries/:id/upstreams
 - 複数の仮想レジストリとアップストリームを関連付けます。
 
 > [!note]
-> 各仮想レジストリには最大5つのアップストリームレジストリを追加できます。
+> 各仮想レジストリに最大5つのアップストリームレジストリを追加できます。
 
 リクエスト例: 
 
@@ -517,7 +520,7 @@ PATCH /virtual_registries/container/upstreams/:id
 | `url` | 文字列 | いいえ | アップストリームレジストリのURL。 |
 | `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
-> [!note] 
+> [!note]
 > リクエストにオプションのパラメータを少なくとも1つ指定する必要があります。
 >
 > `username`と`password`は、一緒に指定するか、まったく指定しない必要があります。設定されていない場合、パブリック（匿名）リクエストを使用してアップストリームにアクセスします。
@@ -593,7 +596,7 @@ POST /virtual_registries/container/registry_upstreams
 | `upstream_id` | 整数 | はい | コンテナアップストリームレジストリのID。 |
 
 > [!note]
-> 各仮想レジストリには最大5つのアップストリームレジストリを関連付けることができます。
+> 各仮想レジストリに最大5つのアップストリームレジストリを関連付けることができます。
 
 リクエスト例: 
 
@@ -646,7 +649,8 @@ curl --request DELETE \
 {{< history >}}
 
 - GitLab 18.7で`container_virtual_registries`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/538327)されました。デフォルトでは無効になっています。
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)：GitLab 18.9で実験からベータに変わりました。
+- GitLab 18.9で実験的機能からベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)されました。
+- GitLab 18.10で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250)
 
 {{< /history >}}
 
@@ -675,7 +679,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - GitLab 18.9で`container_virtual_registries`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/578679)されました。デフォルトでは無効になっています。
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)：GitLab 18.9で実験からベータに変わりました。
+- GitLab 18.9で実験的機能からベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631)されました。
+- GitLab 18.10で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250)
 
 {{< /history >}}
 
@@ -717,7 +722,7 @@ HEADリクエストから受信したレスポンスは、次のように解釈�
 | 5XX | アップストリームサーバーエラー | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
 | ネットワークエラー | 接続またはタイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
 
-> [!note] 
+> [!note]
 > `2XX`（検出）および`404 Not Found`の応答は両方とも、アップストリームレジストリへの接続と認証が成功したことを示します。このテストでは、特定のアーティファクトが存在するかどうかは検証されません。
 
 リクエスト例（既存の設定のテスト）:

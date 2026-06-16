@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ImportExport::AfterImportMergeRequestsWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:merge_requests) { project.merge_requests }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:merge_requests, freeze: false) { project.merge_requests }
 
   let(:worker) { described_class.new }
 

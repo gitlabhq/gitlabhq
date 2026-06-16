@@ -158,6 +158,16 @@ export default {
       required: false,
       default: false,
     },
+    fillContainer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideModeSwitcher: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     let editingMode;
@@ -212,6 +222,7 @@ export default {
     // Second argument (`true`) is passed to identify
     // that the input event was emitted on component mount.
     this.$emit('input', this.markdown, true);
+    this.$emit(this.editingMode);
     this.saveDraft();
 
     this.setFacade?.({
@@ -389,7 +400,10 @@ export default {
 <template>
   <div
     class="js-editor md-area-wrapper gl-rounded-lg !gl-px-0"
-    :class="{ 'gl-relative': !immersive }"
+    :class="{
+      'gl-relative': !immersive,
+      'md-area-wrapper-fill': fillContainer,
+    }"
   >
     <local-storage-sync
       v-if="!isDefaultEditorEnabled"
@@ -428,7 +442,7 @@ export default {
       :markdown-docs-path="markdownDocsPath"
       :supports-quick-actions="supportsQuickActions"
       :supports-table-of-contents="supportsTableOfContents"
-      :show-content-editor-switcher="enableContentEditor"
+      :show-content-editor-switcher="enableContentEditor && !hideModeSwitcher"
       :drawio-enabled="drawioEnabled"
       :immersive="immersive"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
@@ -474,7 +488,7 @@ export default {
         </component>
       </template>
     </markdown-field>
-    <div v-else>
+    <div v-else class="md-content-editor-wrapper">
       <content-editor
         ref="contentEditor"
         :render-markdown="renderMarkdown"
@@ -493,6 +507,7 @@ export default {
         :disable-attachments="disableAttachments"
         :code-suggestions-config="codeSuggestionsConfig"
         :immersive="immersive"
+        :hide-mode-switcher="hideModeSwitcher"
         :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"

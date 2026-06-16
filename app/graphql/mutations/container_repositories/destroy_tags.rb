@@ -9,6 +9,8 @@ module Mutations
       TOO_MANY_TAGS_ERROR_MESSAGE = "Number of tags is greater than #{LIMIT}"
 
       authorize :destroy_container_image_tag
+      authorize_granular_token permissions: :delete_container_repository_tag,
+        boundary_argument: :id, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::ContainerRepository],

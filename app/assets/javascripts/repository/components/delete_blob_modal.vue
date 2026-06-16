@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 import CommitChangesModal from './commit_changes_modal.vue';
 
 export default {
+  name: 'DeleteBlobModal',
   components: {
     CommitChangesModal,
   },

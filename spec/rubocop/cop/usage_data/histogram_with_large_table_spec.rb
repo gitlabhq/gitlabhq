@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/histogram_with_large_table'
 
-RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable do
+RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable, feature_category: :service_ping do
   let(:high_traffic_models) { %w[Issue Ci::Build] }
   let(:msg) { 'Avoid histogram method on' }
 

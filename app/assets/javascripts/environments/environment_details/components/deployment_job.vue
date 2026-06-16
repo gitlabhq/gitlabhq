@@ -2,6 +2,7 @@
 import { GlTruncate, GlLink, GlBadge, GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'DeploymentJob',
   components: {
     GlBadge,
     GlTruncate,

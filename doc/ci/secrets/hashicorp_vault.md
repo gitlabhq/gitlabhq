@@ -169,20 +169,14 @@ instead of pointing to a file that holds it.
 
 ## Secrets engines
 
-{{< history >}}
-
-- `generic` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab Runner 16.11.
-
-{{< /history >}}
-
 GitLab Runner supports different secrets engines with the [`secrets:engine:name`](../yaml/_index.md#secretsvault) keyword:
 
-| Secrets engine                                                                                                                                     | `secrets:engine:name` value | Runner version | Details |
-|----------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|----------------|---------|
-| [KV secrets engine - version 2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)                                                       | `kv-v2`                     | 13.4           | `kv-v2` is the default engine GitLab Runner uses when no engine type is explicitly specified. |
-| [KV secrets engine - version 1](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v1)                                                       | `kv-v1` or `generic`        | 13.4           | Support for the `generic` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab 15.11. |
-| [AWS secrets engine](https://developer.hashicorp.com/vault/docs/secrets/aws)                                                                       | `generic`                   | 16.11          |         |
-| [HashiCorp Vault Artifactory Secrets Plugin](https://jfrog.com/help/r/jfrog-integrations-documentation/hashicorp-vault-artifactory-secrets-plugin) | `generic`                   | 16.11          | This secrets backend talks to JFrog Artifactory server (5.0.0 or later) and dynamically provisions access tokens with specified scopes. |
+| Secrets engine                                                                                                                                     | `secrets:engine:name` value | Details |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ------- |
+| [KV secrets engine - version 2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)                                                       | `kv-v2`                     | `kv-v2` is the default engine GitLab Runner uses when no engine type is explicitly specified. |
+| [KV secrets engine - version 1](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v1)                                                       | `kv-v1` or `generic`        |         |
+| [AWS secrets engine](https://developer.hashicorp.com/vault/docs/secrets/aws)                                                                       | `generic`                   |         |
+| [HashiCorp Vault Artifactory Secrets Plugin](https://jfrog.com/help/r/jfrog-integrations-documentation/hashicorp-vault-artifactory-secrets-plugin) | `generic`                   | Talks to JFrog Artifactory server 5.0.0 or later and dynamically provisions access tokens with specified scopes. |
 
 ### Use a different secrets engine
 

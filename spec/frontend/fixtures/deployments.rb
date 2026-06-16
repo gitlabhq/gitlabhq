@@ -6,17 +6,17 @@ RSpec.describe 'Deployments (JavaScript fixtures)', feature_category: :continuou
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
-  let_it_be(:group) { create(:group, path: 'deployment-group') }
-  let_it_be(:project) { create(:project, :repository, group: group, path: 'releases-project') }
-  let_it_be(:environment) do
+  let_it_be(:admin, freeze: false) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
+  let_it_be(:group, freeze: false) { create(:group, path: 'deployment-group') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group, path: 'releases-project') }
+  let_it_be(:environment, freeze: false) do
     create(:environment, project: project, external_url: 'http://example.com')
   end
 
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+  let_it_be(:build, freeze: false) { create(:ci_build, :manual, pipeline: pipeline) }
 
-  let_it_be(:deployment) do
+  let_it_be(:deployment, freeze: false) do
     create(:deployment,
       :success,
       environment: environment,

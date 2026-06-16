@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe Gitlab::ProtocolAccess, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:p1) { create(:project, :repository, namespace: group) }
 
   describe ".allowed?" do

@@ -324,7 +324,7 @@ You can use a GitLab-managed OpenTofu state backend as an
    }
    ```
 
-1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should **not** be versioned in your project repository.
+1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should not be versioned in your project repository.
 
    ```plaintext
    example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"

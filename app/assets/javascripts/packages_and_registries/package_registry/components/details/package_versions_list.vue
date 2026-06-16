@@ -20,6 +20,7 @@ import { packageTypeToTrackCategory } from '~/packages_and_registries/package_re
 import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_versions.query.graphql';
 
 export default {
+  name: 'PackageVersionsList',
   components: {
     DeleteModal,
     GlAlert,

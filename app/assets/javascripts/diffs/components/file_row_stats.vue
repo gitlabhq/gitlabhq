@@ -2,6 +2,7 @@
 import { n__ } from '~/locale';
 
 export default {
+  name: 'FileRowStats',
   props: {
     file: {
       type: Object,

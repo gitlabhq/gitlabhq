@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
-  let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
-  let_it_be(:downstream_project, reload: true) { create(:project, :repository) }
-  let_it_be(:pipeline, reload: true) { create(:ci_empty_pipeline, project: project) }
-  let_it_be(:bridge, refind: true) { create(:ci_bridge, pipeline: pipeline, downstream: downstream_project) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:downstream_project) { create(:project, :repository) }
+  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let_it_be_with_refind(:bridge) { create(:ci_bridge, pipeline: pipeline, downstream: downstream_project) }
 
   let(:policy) do
     described_class.new(user, bridge)

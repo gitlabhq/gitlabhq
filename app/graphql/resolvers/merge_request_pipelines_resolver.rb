@@ -22,7 +22,11 @@ module Resolvers
 
     def query_for(input)
       mr, args = input
-      resolve_pipelines(mr.source_project, args).merge(mr.all_pipelines)
+      # Mirror `Ci::PipelinesForMergeRequestFinder` ordering so the MR
+      # Pipelines tab in the UI surfaces `merge_request_event`-sourced
+      # pipelines first, matching the legacy REST-based path.
+      resolve_pipelines(mr.source_project, args.merge(merge_request_event_first: true))
+        .merge(mr.all_pipelines)
     end
 
     def model_class

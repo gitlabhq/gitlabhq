@@ -149,6 +149,48 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
     end
+
+    context 'with mcp_server_availability_setting feature flag enabled' do
+      context 'when mcp_server_enabled is true' do
+        before do
+          stub_application_setting(mcp_server_enabled: true)
+        end
+
+        it 'returns ok' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when mcp_server_enabled is false' do
+        before do
+          stub_application_setting(mcp_server_enabled: false)
+        end
+
+        it 'returns not_found' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with mcp_server_availability_setting feature flag disabled' do
+      before do
+        stub_feature_flags(mcp_server_availability_setting: false)
+        stub_application_setting(mcp_server_enabled: false)
+      end
+
+      it 'returns ok regardless of mcp_server_enabled' do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe 'GET /mcp' do

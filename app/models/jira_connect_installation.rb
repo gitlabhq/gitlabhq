@@ -19,6 +19,8 @@ class JiraConnectInstallation < ApplicationRecord
   validates :instance_url, public_url: true, allow_blank: true
   validate :instance_url_parseable_by_uri, if: :instance_url_changed?
 
+  before_validation :normalize_instance_url
+
   scope :for_project, ->(project) {
     distinct
       .joins(:subscriptions)
@@ -81,5 +83,21 @@ class JiraConnectInstallation < ApplicationRecord
     URI.parse(instance_url)
   rescue URI::InvalidURIError
     errors.add(:instance_url, _('must be a valid URL'))
+  end
+
+  def normalize_instance_url
+    return if instance_url.blank?
+
+    stripped = instance_url.strip
+    return if stripped.start_with?('http://', 'https://')
+    return if stripped.include?('://')
+
+    # Only prepend https:// when the value starts with a domain-like token (e.g.
+    # "gitlab.example.com" or "gitlab.example.com/path"). Values that don't
+    # match (e.g. "/path", "not-a-url") are left as-is so the public_url
+    # validator surfaces the original input.
+    return unless stripped.match?(/\A[a-zA-Z0-9][a-zA-Z0-9-]*\./)
+
+    self.instance_url = "https://#{stripped}"
   end
 end

@@ -1,7 +1,6 @@
 ---
 table_name: ai_agent_version_attachments
-classes:
-- Ai::AgentVersionAttachment
+classes: []
 feature_categories:
 - mlops
 description: Joins AI Vectorizable Files with AI Agent Versions.

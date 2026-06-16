@@ -9,6 +9,8 @@ module Mutations
       include Gitlab::Utils::StrongMemoize
 
       authorize :admin_project
+      authorize_granular_token permissions: :update_ci_cd_setting,
+        boundary_argument: :full_path, boundary_type: :project
 
       argument :full_path, GraphQL::Types::ID,
         required: true,

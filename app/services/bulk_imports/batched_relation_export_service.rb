@@ -124,7 +124,7 @@ module BulkImports
         message: 'Restarting batched export relation and deleting existing export batches',
         relation: relation,
         export_id: export.id,
-        importer: Import::SOURCE_DIRECT_TRANSFER
+        importer: export.import_source
       )
     end
   end

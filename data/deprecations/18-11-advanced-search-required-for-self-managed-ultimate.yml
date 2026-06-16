@@ -1,0 +1,52 @@
+- title: "Advanced Search is Required for Self Managed Ultimate Tier"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "19.2"
+  announcement_milestone: "18.11"
+  breaking_change: false
+  gitlab_com: false
+  reporter: ryaanwells
+  stage: security_risk_management
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582417
+  impact: low
+  impact_offering: self-managed
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |
+    We now **_require_** that Self Managed Ultimate Tier customers use
+    [Advanced Search](https://docs.gitlab.com/integration/advanced_search/elasticsearch/)
+    to get full access to the full suite of Ultimate Tier functionality. GitLab will not break without
+    Advanced Search, however not all Ultimate Tier functionality will be available unless
+    it is enabled.
+
+    We previously **_recommended_** enabling Advanced Search as a way to improve query
+    performance for certain features. We have now established that building full functionality
+    that requires Advanced Search is fundamental to meeting the pace and quality of delivery
+    that we require.
+
+    No existing functionality will break or degrade by not using Advanced Search. This is a
+    forward-looking change only: new functionality may not be supported without Advanced
+    Search. Ultimate Tier GA features may now have a hard requirement on Advanced Search
+    for full or partial functionality.
+
+    Guidance for enabling Advanced Search can be
+    [found in our documentation](https://docs.gitlab.com/user/search/advanced_search/).
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

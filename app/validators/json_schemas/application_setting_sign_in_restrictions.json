@@ -18,7 +18,11 @@
     },
     "require_minimum_email_based_otp_for_users_with_passwords": {
       "type": "boolean",
-      "description": "(Experiment) When enabled, users who sign in with a password must use Email-based OTP at a minimum. When other forms of 2FA are enabled, Email-based OTP is optional for them."
+      "description": "When enabled, users who sign in with a password must use Email-based OTP at a minimum. When other forms of 2FA are enabled, Email-based OTP is optional for them. Requires Email OTP to be enabled."
+    },
+    "email_otp_enabled": {
+      "type": "boolean",
+      "description": "When enabled, Email-based one-time password (OTP) is available to users as a multi-factor authentication method. Requires working outbound email delivery."
     }
   }
 }

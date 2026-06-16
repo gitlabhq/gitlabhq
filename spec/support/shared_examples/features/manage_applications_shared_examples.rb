@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'manage applications' do
-  let_it_be(:application_name) { 'application foo bar' }
-  let_it_be(:application_name_changed) { "#{application_name} changed" }
-  let_it_be(:application_redirect_uri) { 'https://foo.bar' }
+  let_it_be(:application_name, freeze: false) { 'application foo bar' }
+  let_it_be(:application_name_changed, freeze: false) { "#{application_name} changed" }
+  let_it_be(:application_redirect_uri, freeze: false) { 'https://foo.bar' }
 
   it 'allows user to manage applications', :js do
     visit new_application_path

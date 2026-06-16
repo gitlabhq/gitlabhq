@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'User settings menu' do |link:, title:, icon:, active_routes:|
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'User settings menu #render? method' do
     subject { described_class.new(context) }
 
     context 'when user is logged in' do
-      let_it_be(:user) { build(:user) }
+      let_it_be(:user, freeze: false) { build(:user) }
       let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 
       it 'renders' do

@@ -6,9 +6,9 @@ import { createAlert } from '~/alert';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { ISO_SHORT_FORMAT } from '~/vue_shared/constants';
+import CiResourceDetails from 'ee_else_ce/ci/catalog/components/details/ci_resource_details.vue';
 import getCatalogCiResourceSharedData from '../../graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import getCiCatalogResourceVersions from '../../graphql/queries/get_ci_catalog_resource_versions.query.graphql';
-import CiResourceDetails from '../details/ci_resource_details.vue';
 import CiResourceHeader from '../details/ci_resource_header.vue';
 
 const SEARCH_DEBOUNCE_MS = 300;

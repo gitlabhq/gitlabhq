@@ -71,6 +71,14 @@ module Gitlab
 
         if @relative_export_path == 'avatar'
           yield(@project.avatar)
+        elsif Feature.enabled?(:export_uploads_via_project_uploads_index, @project)
+          # Avatar exclusion is done in Ruby rather than SQL so the query plan
+          # can keep using the (project_id, id) index without an extra filter.
+          Upload.for_project(@project.id).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
+            next if upload.path == avatar_path
+
+            yield(upload.retrieve_uploader)
+          end
         else
           project_uploads_except_avatar(avatar_path).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
             yield(upload.retrieve_uploader)

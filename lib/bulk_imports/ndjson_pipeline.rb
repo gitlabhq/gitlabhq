@@ -40,7 +40,7 @@ module BulkImports
             object_builder: object_builder,
             user: context.current_user,
             excluded_keys: import_export_config.relation_excluded_keys(key),
-            import_source: Import::SOURCE_DIRECT_TRANSFER,
+            import_source: context.bulk_import.import_source,
             original_users_map: original_users_map,
             rewrite_mentions: context.importer_user_mapping_enabled?
           )
@@ -262,7 +262,7 @@ module BulkImports
             next if ::Import::DirectReassignService.supported?(object.class, attribute, source_user)
 
             ::Import::PlaceholderReferences::PushService.from_record(
-              import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+              import_source: context.bulk_import.import_source,
               import_uid: context.bulk_import_id,
               record: object,
               source_user: source_user,

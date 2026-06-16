@@ -7,6 +7,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ReviewerAvatar from './reviewer_avatar.vue';
 
 export default {
+  name: 'ReviewerAvatarLink',
   components: {
     ReviewerAvatar,
     GlLink,

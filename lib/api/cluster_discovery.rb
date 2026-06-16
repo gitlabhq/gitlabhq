@@ -9,8 +9,9 @@ module API
     feature_category :deployment_management
     urgency :low
 
-    desc 'Discover all descendant certificate-based clusters in a group' do
-      detail 'This feature was introduced in GitLab 17.9. It will be removed in 18.0.'
+    desc 'List all certificate-based clusters' do
+      detail 'Lists all certificate-based clusters associated with a project. This feature was introduced in ' \
+        'GitLab 17.9.'
       success Entities::DiscoveredClusters
       failure [
         { code: 403, message: 'Forbidden' }

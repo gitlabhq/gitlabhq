@@ -17,7 +17,8 @@ module API
         documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc "Get a project's protected branches" do
+      desc 'List all protected branches' do
+        detail 'Lists all protected branches for a specified project.'
         success code: 200, model: Entities::ProtectedBranch
         is_array true
         failure [
@@ -45,7 +46,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a single protected branch' do
+      desc 'Retrieve a protected branch or wildcard protected branch' do
+        detail 'Retrieves a specified protected branch or wildcard protected branch.'
         success code: 200, model: Entities::ProtectedBranch
         failure [
           { code: 404, message: '404 Project Not Found' },
@@ -67,7 +69,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Protect a single branch' do
+      desc 'Protect repository branches' do
+        detail 'Protects a specified repository branch or several project repository branches using a wildcard ' \
+          'protected branch.'
         success code: 201, model: Entities::ProtectedBranch
         failure [
           { code: 422, message: 'name is missing' },
@@ -117,6 +121,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update a protected branch' do
+        detail 'Updates a protected branch for a specified project.'
         success code: 200, model: Entities::ProtectedBranch
         failure [
           { code: 422, message: 'Push access levels access level has already been taken' },
@@ -153,17 +158,17 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Unprotect a single branch'
-      params do
-        requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
-      end
-      desc 'Unprotect a single branch' do
+      desc 'Unprotect repository branches' do
+        detail 'Unprotects a specified protected branch or wildcard protected branch.'
         success code: 204
         failure [
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' }
         ]
         tags ['protected_branches']
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_protected_branch, boundary_type: :project

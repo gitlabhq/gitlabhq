@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_planning do
-  let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:user2, reload: true) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:user2) { create(:user) }
   let_it_be_with_refind(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, :private, group: group) }
 
@@ -140,10 +140,10 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
 
       # an internal project in an internal/public group is valid
       context 'when project is not private' do
-        let(:group)   { create(:group, :internal) }
-        let(:project) { create(:project, :internal, group: group) }
-        let(:issue)   { create(:issue, project: project) }
-        let(:issue_c) { create(:issue, project: project, confidential: true) }
+        let_it_be(:group)   { create(:group, :internal) }
+        let_it_be_with_reload(:project) { create(:project, :internal, group: group) }
+        let_it_be(:issue) { create(:issue, project: project) }
+        let_it_be_with_reload(:issue_c) { create(:issue, project: project, confidential: true) }
 
         it 'enqueues the PrivateFeaturesWorker' do
           expect(TodosDestroyer::PrivateFeaturesWorker)
@@ -237,25 +237,24 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
 
         context 'with nested groups' do
           let_it_be_with_refind(:parent_group) { create(:group, :public) }
-          let_it_be_with_refind(:parent_subgroup) { create(:group) }
           let_it_be(:subgroup) { create(:group, :private, parent: group) }
           let_it_be(:subgroup2) { create(:group, :private, parent: group) }
           let_it_be(:subproject) { create(:project, group: subgroup) }
           let_it_be(:subproject2) { create(:project, group: subgroup2) }
 
-          let!(:todo_subproject_user) { create(:todo, user: user, project: subproject) }
-          let!(:todo_subproject2_user) { create(:todo, user: user, project: subproject2) }
-          let!(:todo_subgroup_user) { create(:todo, user: user, group: subgroup) }
-          let!(:todo_subgroup2_user) { create(:todo, user: user, group: subgroup2) }
-          let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
-          let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
-          let!(:todo_parent_group_user) { create(:todo, user: user, group: parent_group) }
+          let_it_be(:todo_subproject_user) { create(:todo, user: user, project: subproject) }
+          let_it_be(:todo_subproject2_user) { create(:todo, user: user, project: subproject2) }
+          let_it_be(:todo_subgroup_user) { create(:todo, user: user, group: subgroup) }
+          let_it_be(:todo_subgroup2_user) { create(:todo, user: user, group: subgroup2) }
+          let_it_be(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
+          let_it_be(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
+          let_it_be(:todo_parent_group_user) { create(:todo, user: user, group: parent_group) }
           let(:subproject_internal_note) { create(:note, noteable: issue, project: project, confidential: true) }
           let!(:todo_for_internal_subproject_note) do
             create(:todo, user: user, target: issue, project: project, note: subproject_internal_note)
           end
 
-          before do
+          before_all do
             group.update!(parent: parent_group)
           end
 
@@ -272,7 +271,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
           end
 
           context 'when the user is member of a parent group' do
-            before do
+            before_all do
               parent_group.add_developer(user)
             end
 
@@ -280,7 +279,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
           end
 
           context 'when the user is member of a subgroup' do
-            before do
+            before_all do
               subgroup.add_developer(user)
             end
 
@@ -299,7 +298,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
           end
 
           context 'when the user is member of a child project' do
-            before do
+            before_all do
               subproject.add_developer(user)
             end
 
@@ -320,10 +319,10 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
       end
 
       context 'when group is not private' do
-        let(:group)   { create(:group, :internal) }
-        let(:project) { create(:project, :internal, group: group) }
-        let(:issue)   { create(:issue, project: project) }
-        let(:issue_c) { create(:issue, project: project, confidential: true) }
+        let_it_be(:group)   { create(:group, :internal) }
+        let_it_be(:project) { create(:project, :internal, group: group) }
+        let_it_be(:issue)   { create(:issue, project: project) }
+        let_it_be_with_reload(:issue_c) { create(:issue, project: project, confidential: true) }
 
         it 'enqueues the PrivateFeaturesWorker' do
           expect(TodosDestroyer::PrivateFeaturesWorker)

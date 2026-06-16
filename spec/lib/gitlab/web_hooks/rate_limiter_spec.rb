@@ -13,6 +13,16 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
 
   before do
     stub_feature_flags(no_webhook_rate_limit: false)
+
+    # These examples assert legacy bucket semantics: travel_to(1.day.from_now)
+    # produces a fresh period_key cache key, so the legacy counter resets.
+    # Under :enforce, labkit (whose key expires on a Redis wallclock TTL that
+    # travel_to doesn't move) would decide instead and disagree. Only the
+    # enforce flag needs disabling: in shadow mode _throttled? still returns
+    # the legacy decision, so labkit running alongside is harmless. Labkit
+    # semantics are covered in
+    # spec/lib/gitlab/application_rate_limiter/labkit_adapter_spec.rb.
+    stub_feature_flags(rate_limiter_use_labkit_cohort_6_enforce: false)
   end
 
   describe '#rate_limit!' do
@@ -72,6 +82,32 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
             end
           end
         end
+      end
+    end
+
+    # The file-level before block disables the enforce flag so the legacy
+    # bucket-reset tests (which travel_to a fresh window) stay on the legacy
+    # path. This context re-enables it to assert the labkit path end-to-end:
+    # the caller's plan-derived threshold must flow through dispatch and the
+    # adapter gate into labkit, whose decision wins under enforce. The shadow
+    # flag is already on by default. It uses freeze_time (no travel_to), so
+    # labkit's wallclock TTL and the legacy bucket agree.
+    context 'when the cohort 6 labkit path is enforced', :freeze_time do
+      before do
+        create(:plan_limits, plan: plan, web_hook_calls: limit)
+        stub_feature_flags(rate_limiter_use_labkit_cohort_6_enforce: true)
+      end
+
+      it 'forwards the caller threshold to labkit and blocks once it is exceeded', :aggregate_failures do
+        limit.times { expect(rate_limit!(project_hook)).to eq(false) }
+        expect(rate_limit!(project_hook)).to eq(true)
+
+        namespace = project_hook.parent.root_namespace
+        labkit_key = "labkit:rl:applimiter_web_hook_calls:limit_web_hook_calls_by_namespace" \
+          ":namespace:#{namespace.id}"
+        count = Gitlab::Redis::RateLimiting.with { |r| r.get(labkit_key) }
+
+        expect(count.to_i).to eq(limit + 1)
       end
     end
 

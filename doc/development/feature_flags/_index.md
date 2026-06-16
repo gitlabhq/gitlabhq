@@ -136,7 +136,7 @@ GitLab are of the `gitlab_com_derisk` type.
 - `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
-  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're short-lived and deployment-related
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're short-lived and deployment-related.
 - Rollout issue: **Must** have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
@@ -184,7 +184,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 - `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
-  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're mostly hiding unfinished code
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're mostly hiding unfinished code.
 - Rollout issue: Likely no need for a rollout issues, as `wip` feature flags should be transitioned to
   another type before being enabled
 
@@ -214,7 +214,9 @@ Providing a flag in this case allows engineers and customers to disable the new 
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
 - Documentation: This type of feature flag **must** be documented in the
-  [All feature flags in GitLab](../../administration/feature_flags/list.md) page
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page.
+  That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
+  so no manual edits to that page are needed.
 - Rollout issue: **Must** have a rollout issue
   created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
@@ -253,6 +255,8 @@ confirm that the `ops` feature flag is still in use.
 - Documentation: This type of feature flag **must** be documented in the
   [All feature flags in GitLab](../../administration/feature_flags/list.md) page as well as be associated with an operational
   runbook describing the circumstances when it can be used.
+  That page is [auto-generated during the docs build](../documentation/site_architecture/automation.md) from the YAML definition files,
+  so no manual edits to that page are needed
 - Rollout issue: Likely no need for a rollout issues, as it is hard to predict when they are enabled or disabled
 
 #### Usage
@@ -1153,3 +1157,135 @@ Instead of [deferring jobs](#deferring-sidekiq-jobs), jobs can be entirely dropp
 
 > [!note]
 > Dropping feature flag (`drop_sidekiq_jobs_{WorkerName}`) takes precedence over deferring feature flag (`run_sidekiq_jobs_{WorkerName}`). When `drop_sidekiq_jobs` is enabled and `run_sidekiq_jobs` is disabled, jobs are entirely dropped.
+
+## Feature flag events
+
+When `Feature.enable` or `Feature.disable` is called, a `Gitlab::FeatureFlags::FeatureFlagModifiedEvent` is published.
+
+> [!NOTE]
+> Events are only published when `Feature.enable` or `Feature.disable` returns `true`, indicating a state change occurred.
+> Percentage-based rollout methods (`Feature.enable_percentage_of_actors` and
+> `Feature.enable_percentage_of_time`) do **not** publish events.
+
+The event includes:
+
+- `feature_key` (String): The name of the feature flag.
+- `operation` (String): The type of change. One of `Feature::OPERATION_ENABLED_GLOBALLY`, `Feature::OPERATION_DISABLED_GLOBALLY`, `Feature::OPERATION_ENABLED_ACTOR`, or `Feature::OPERATION_DISABLED_ACTOR`.
+- `actor` (String or nil): The specific actor affected by this operation (for example, `"User:123"`, `"Group:456"`), or `nil` for global operations.
+- `state` (String): The current state of the feature flag after the operation (`"on"`, `"off"`, or `"conditional"`).
+
+> [!NOTE]
+> The `actor` field contains only the single actor affected by the current operation, not all actors enabled for the flag.
+> To get the full list of actors, query the database using `Feature.get(:flag_name)`.
+
+### Subscribe to specific feature flags
+
+Workers should subscribe to specific feature flags using a conditional filter.
+This prevents workers from being enqueued for every feature flag change in GitLab.
+Workers must also be idempotent because multiple calls to enable or disable a
+feature flag with the same author may result in multiple events.
+
+To subscribe to feature flag events:
+
+1. Create a worker that includes `Gitlab::EventStore::Subscriber`:
+
+   ```ruby
+   module MyFeature
+     class MyFeatureFlagWorker
+       include ApplicationWorker
+       include Gitlab::EventStore::Subscriber
+
+       data_consistency :always
+       feature_category :your_category
+       urgency :low
+
+       idempotent!
+
+       def handle_event(event)
+         feature_key = event.data[:feature_key]
+         operation = event.data[:operation]
+         actor = event.data[:actor]
+
+         case operation
+         when Feature::OPERATION_ENABLED_ACTOR
+           # Handle actor-specific enable
+         when Feature::OPERATION_DISABLED_ACTOR
+           # Handle actor-specific disable
+         when Feature::OPERATION_ENABLED_GLOBALLY
+           # Handle global enable
+         when Feature::OPERATION_DISABLED_GLOBALLY
+           # Handle global disable
+         end
+       end
+     end
+   end
+   ```
+
+1. Register the subscription in `lib/gitlab/event_store/subscriptions/feature_subscriptions.rb`:
+
+   ```ruby
+   def register
+     # Subscribe to all changes for a specific feature flag
+     store.subscribe ::MyFeature::MyFeatureFlagWorker,
+       to: ::Gitlab::FeatureFlags::FeatureFlagModifiedEvent,
+       if: ->(event) { event.data[:feature_key] == 'my_specific_flag' }
+
+     # Subscribe to multiple feature flags
+     store.subscribe ::MyFeature::MyFeatureFlagWorker,
+       to: ::Gitlab::FeatureFlags::FeatureFlagModifiedEvent,
+       if: ->(event) { %w[flag_one flag_two].include?(event.data[:feature_key]) }
+
+     # Only trigger for actor-specific enables
+     store.subscribe ::MyFeature::MyFeatureFlagWorker,
+       to: ::Gitlab::FeatureFlags::FeatureFlagModifiedEvent,
+       if: ->(event) do
+         event.data[:feature_key] == 'my_specific_flag' &&
+           event.data[:operation] == Feature::OPERATION_ENABLED_ACTOR
+       end
+
+     # Only trigger for global enables
+     store.subscribe ::MyFeature::MyFeatureFlagWorker,
+       to: ::Gitlab::FeatureFlags::FeatureFlagModifiedEvent,
+       if: ->(event) do
+         event.data[:feature_key] == 'my_specific_flag' &&
+           event.data[:operation] == Feature::OPERATION_ENABLED_GLOBALLY
+       end
+   end
+   ```
+
+### Actor formats
+
+The `actor` field contains a Flipper ID string for the specific actor affected by the operation.
+For global operations (`OPERATION_ENABLED_GLOBALLY` or `OPERATION_DISABLED_GLOBALLY`), the `actor` field is `nil`.
+
+Common actor formats:
+
+- `User:123` - User with ID 123
+- `Project:456` - Project with ID 456
+- `Group:789` - Group with ID 789
+- `Namespace:101` - Namespace with ID 101
+- `Ci::Runner:202` - CI Runner with ID 202
+- `Organizations::Organization:303` - Organization with ID 303
+
+To parse an actor ID:
+
+```ruby
+actor = event.data[:actor]
+# => "Group:456"
+
+return if actor.nil? # Global operation
+
+actor_type, actor_id = actor.split(':', 2)
+
+case actor_type
+when 'User'
+  user = User.find(actor_id)
+  # Process user
+when 'Group'
+  group = Group.find(actor_id)
+  # Process group
+when 'Project'
+  project = Project.find(actor_id)
+  # Process project
+end
+```

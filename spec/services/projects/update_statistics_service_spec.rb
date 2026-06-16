@@ -20,7 +20,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
     end
 
     context 'with an existing project' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       where(:statistics, :method_caches) do
         []                                                   | %i[size recent_objects_size commit_count]

@@ -149,7 +149,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'ee/app/workers/compliance_management/update_default_framework_worker.rb'
     - 'ee/app/workers/compliance_management/violation_export_mailer_worker.rb'
     - 'ee/app/workers/elastic/migration_worker.rb'
-    - 'ee/app/workers/elastic_index_bulk_cron_worker.rb'
     - 'ee/app/workers/elastic_index_initial_bulk_cron_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/add_on_purchases/bulk_refresh_user_assignments_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/add_on_purchases/cleanup_user_add_on_assignment_worker.rb'

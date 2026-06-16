@@ -7,6 +7,7 @@ import BlobContentViewer from '../components/blob_content_viewer.vue';
 import repositoryPathMixin from '../mixins/repository_path';
 
 export default {
+  name: 'RepositoryBlob',
   components: {
     BlobContentViewer,
   },

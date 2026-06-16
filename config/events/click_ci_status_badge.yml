@@ -2,6 +2,8 @@
 description: Tracks when a user clicks the CI status badge in the pipeline table
 action: click_ci_status_badge
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '15.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96897
 tiers:

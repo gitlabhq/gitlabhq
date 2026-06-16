@@ -4,6 +4,7 @@ import { STATUS_CLOSED, STATUS_MERGED, STATUS_EMPTY } from '~/issues/constants';
 import StatusIcon from './widget/status_icon.vue';
 
 export default {
+  name: 'MrWidgetStatusIcon',
   components: {
     StatusIcon,
     GlIcon,

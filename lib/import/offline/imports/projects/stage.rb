@@ -9,9 +9,13 @@ module Import
 
           def config
             {
+              project: {
+                pipeline: Import::Offline::Projects::Pipelines::ProjectPipeline,
+                stage: 0
+              },
               finisher: {
                 pipeline: ::BulkImports::Common::Pipelines::EntityFinisher,
-                stage: 0
+                stage: 1
               }
             }
           end

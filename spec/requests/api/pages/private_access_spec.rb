@@ -7,7 +7,7 @@ RSpec.describe "Private Project Pages Access", feature_category: :pages do
   include AccessMatchers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, :private, pages_access_level: ProjectFeature::ENABLED, namespace: group) }
+  let_it_be_with_reload(:project) { create(:project, :private, pages_access_level: ProjectFeature::ENABLED, namespace: group) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:master) { create(:user) }

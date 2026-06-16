@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Observability::Events::Eve
   let(:record) do
     instance_double(
       Gitlab::Database::BackgroundOperation::Worker,
-      id: [1, 100],
+      id: 100,
+      partition: 1,
       min_cursor: [10],
       max_cursor: [50],
       created_at: '2026-01-21 16:00:00 UTC',

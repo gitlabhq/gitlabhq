@@ -647,13 +647,13 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
   end
 
   describe 'UNION optimization' do
-    let_it_be(:five_months_ago) { 5.months.ago }
+    let_it_be(:five_months_ago, freeze: false) { 5.months.ago }
 
-    let_it_be(:user_1) { create(:user, created_at: five_months_ago) }
-    let_it_be(:user_2) { create(:user, created_at: five_months_ago) }
-    let_it_be(:user_3) { create(:user, created_at: 1.month.ago) }
-    let_it_be(:user_4) { create(:user, created_at: 2.months.ago) }
-    let_it_be(:ignored_column_model) do
+    let_it_be(:user_1, freeze: false) { create(:user, created_at: five_months_ago) }
+    let_it_be(:user_2, freeze: false) { create(:user, created_at: five_months_ago) }
+    let_it_be(:user_3, freeze: false) { create(:user, created_at: 1.month.ago) }
+    let_it_be(:user_4, freeze: false) { create(:user, created_at: 2.months.ago) }
+    let_it_be(:ignored_column_model, freeze: false) do
       Class.new(ApplicationRecord) do
         self.table_name = 'users'
 

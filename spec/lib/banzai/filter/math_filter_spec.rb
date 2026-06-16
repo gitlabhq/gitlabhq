@@ -22,7 +22,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
 
     doc = pipeline_filter(markdown)
 
-    expect(doc.search('.js-render-math').count).to eq(5)
+    expect(doc.search('.js-render-math').count).to eq(6)
   end
 
   context 'when limiting how many elements can be marked as math' do
@@ -48,7 +48,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when project with group, no namespace settings' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group, freeze: false) { create(:group) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 
@@ -58,8 +58,8 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when project with group, default namespace settings' do
-      let_it_be(:namespace_settings) { create(:namespace_settings) }
-      let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be(:namespace_settings, freeze: false) { create(:namespace_settings) }
+      let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 
@@ -69,8 +69,11 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when limits math_rendering_limits_enabled is false' do
-      let_it_be(:namespace_settings) { create(:namespace_settings, math_rendering_limits_enabled: false) }
-      let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be(:namespace_settings, freeze: false) do
+        create(:namespace_settings, math_rendering_limits_enabled: false)
+      end
+
+      let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 
@@ -92,6 +95,29 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
 
       it 'does limit for blobs' do
         expect(subject.search('.js-render-math').count).to eq(2)
+      end
+    end
+  end
+
+  context 'on pre elements with data-math-style' do
+    let(:doc) { filter(html, {}) }
+    let(:pre) { doc.at_css('pre') }
+
+    context 'when a <pre data-canonical-lang="math"> has no data-math-style' do
+      let(:html) { '<pre data-canonical-lang="math"><code>\sqrt{2}</code></pre>' }
+
+      it 'sets the math style attribute' do
+        expect(pre['data-math-style']).to eq('display')
+        expect(pre[:class]).to eq('js-render-math')
+      end
+    end
+
+    context 'when a <pre data-canonical-lang="math"> already has data-math-style' do
+      let(:html) { '<pre data-canonical-lang="math" data-math-style="inline"><code>\sqrt{2}</code></pre>' }
+
+      it 'preserves the math style attribute' do
+        expect(pre['data-math-style']).to eq('inline')
+        expect(pre[:class]).to eq('js-render-math')
       end
     end
   end

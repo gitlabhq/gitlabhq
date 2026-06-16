@@ -24,6 +24,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hidden', 'selected'],
   data() {
     return {
       listboxOpen: false,

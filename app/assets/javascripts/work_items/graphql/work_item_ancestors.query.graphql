@@ -1,6 +1,6 @@
 #import "./work_item_ancestors.fragment.graphql"
 
-query workItemAncestorsQuery($id: WorkItemID!) {
+query workItemAncestorsQuery($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItem(id: $id) {
     ...WorkItemAncestors
   }

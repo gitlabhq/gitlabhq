@@ -38,7 +38,7 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
     context 'when current_user is an administrator' do
       context 'when admin mode is enabled', :enable_admin_mode do
         let_it_be(:current_user) { create(:admin) }
-        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token) }
 
         it_behaves_like 'a successfully revoked token' do
           let(:revoked_by) { current_user.username }
@@ -47,7 +47,7 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
 
       context 'when admin mode is disabled' do
         let_it_be(:current_user) { create(:admin) }
-        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token) }
 
         it_behaves_like 'an unsuccessfully revoked token'
       end
@@ -57,13 +57,13 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
       let_it_be(:current_user) { create(:user) }
 
       context 'token belongs to a different user' do
-        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token) }
 
         it_behaves_like 'an unsuccessfully revoked token'
       end
 
       context 'token belongs to current_user' do
-        let_it_be(:token) { create(:personal_access_token, user: current_user) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token, user: current_user) }
 
         it_behaves_like 'a successfully revoked token' do
           let(:revoked_by) { current_user.username }
@@ -93,7 +93,7 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
 
       context 'when source is invalid' do
         let_it_be(:source) { :external_request }
-        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token) }
 
         it 'raises ArgumentError' do
           expect { subject }.to raise_error ArgumentError
@@ -102,7 +102,7 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
 
       context 'when source is missing' do
         let_it_be(:source) { nil }
-        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token) }
 
         it 'raises ArgumentError' do
           expect { subject }.to raise_error ArgumentError
@@ -112,7 +112,7 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
 
     context 'when revoking the token fails' do
       let_it_be(:current_user) { create(:user) }
-      let_it_be(:token) { create(:personal_access_token, user: current_user) }
+      let_it_be(:token, freeze: false) { create(:personal_access_token, user: current_user) }
 
       before do
         allow(token).to receive(:revoke!).and_return(false)

@@ -8,8 +8,7 @@ title: SBOMを使用した依存関係スキャン
 {{< details >}}
 
 - プラン: Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed
-- ステータス: 利用制限付き (GitLab.comおよびGitLab Self-Managed)
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -21,6 +20,7 @@ title: SBOMを使用した依存関係スキャン
 - 機能フラグ`dependency_scanning_using_sbom_reports`はGitLab 17.10で削除されました。
 - GitLab 18.5で[変更](https://gitlab.com/groups/gitlab-org/-/work_items/15960)され、ベータからGitLab.comのみの利用制限付きになり、新しい[V2 CI/CD依存関係スキャンテンプレート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/)とともに、[機能フラグ](../../../../administration/feature_flags/_index.md) `dependency_scanning_sbom_scan_api`という名前で提供。デフォルトでは無効になっています。
 - GitLab 18.10で機能フラグ`dependency_scanning_using_sbom_reports`が[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/work_items/551861)になりました。
+- GitLab 19.0で[一般提供](https://gitlab.com/groups/gitlab-org/-/work_items/20456)されます。
 
 {{< /history >}}
 
@@ -36,26 +36,32 @@ GitLabは、これらのすべての依存関係タイプを確実に網羅す�
 
 ## 依存関係スキャンを有効にする {#turn-on-dependency-scanning}
 
-依存関係スキャンを初めて使用する場合は、次の手順に従ってプロジェクトで有効にしてください。
+プロジェクトの依存関係スキャンを有効にします。
 
-- すべてのGitLabインスタンスの前提条件:
-  - プロジェクトのデベロッパー、メンテナー、またはオーナーロール。
-  - [サポートされているロックファイルまたは依存関係グラフのエクスポート](#supported-languages-and-files)が、リポジトリにコミットされるか、CI/CDパイプラインで作成されてアーティファクトとして`dependency-scanning`ジョブに渡される必要があります。あるいは、[依存関係の解決](#dependency-resolution)によって、サポートされているエコシステムに必要なファイルを生成できるか、[マニフェストファイル](#manifest-fallback)をフォールバックオプションとして使用できます。
-  - セルフマネージドGitLab Runnerの場合は、[`docker`](https://docs.gitlab.com/runner/executors/docker/)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executorを使用するGitLab Runner。
-  - GitLab.comでホストされているRunnerの場合、この設定はデフォルトで有効になっています。
-- Self-ManagedインスタンスのGitLabのみの追加前提条件:
-  - スキャンされるすべてのPURLタイプの[パッケージメタデータ](../../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)は、GitLabインスタンスで同期されている必要があります。
+### 前提条件 {#prerequisites}
 
-    > [!note] 
-    > GitLabインスタンスでこのデータが利用できない場合、依存関係スキャンで脆弱性を特定できません。
+すべてのGitLabインスタンスの前提条件:
 
-依存関係スキャンを有効にするには:
+- プロジェクトのデベロッパー、メンテナー、またはオーナーロール。
+- [サポートされているロックファイルまたは依存関係グラフのエクスポート](#supported-languages-and-files)が、リポジトリにコミットされるか、CI/CDパイプラインで作成されてアーティファクトとして`dependency-scanning`ジョブに渡される必要があります。あるいは、[依存関係の解決](#dependency-resolution)によって、サポートされているエコシステムに必要なファイルを生成できるか、[マニフェストファイル](#manifest-fallback)をフォールバックオプションとして使用できます。
+- セルフマネージドGitLab Runnerの場合は、[`docker`](https://docs.gitlab.com/runner/executors/docker/)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executorを使用するGitLab Runner。
+- GitLab.comでホストされているRunnerの場合、この設定はデフォルトで有効になっています。
+
+GitLab Self-Managedの場合のみ、スキャンされるすべてのPURLタイプの[パッケージメタデータ](../../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)をGitLabインスタンスで同期する必要があります。このデータがGitLabインスタンスで使用できない場合、依存関係スキャンは脆弱性を特定できません。
+
+### プロジェクトのパイプライン構成を更新 {#update-project-pipeline-configuration}
+
+依存関係スキャンを有効にするには、依存関係スキャンテンプレートをプロジェクトのパイプライン構成に追加する必要があります。
+
+デフォルトでは、`Dependency-Scanning.v2.gitlab-ci.yml`テンプレートはマージリクエストパイプラインで依存関係スキャンジョブを実行します。プロジェクトが他のジョブにマージリクエストパイプラインを使用しない場合、マージリクエストパイプラインには依存関係スキャンジョブのみが表示され、他のすべてのジョブは個別のブランチパイプラインで実行されます。この動作を無効にするには、[マージリクエストパイプラインの依存関係スキャンを無効にする](#disable-merge-request-pipelines-for-dependency-scanning)を参照してください。
+
+GitLab UIを介して依存関係スキャンを有効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **コード** > **リポジトリ**を選択します。
+1. 左側のサイドバーで、**コード** > **リポジトリ**を選択します。
 1. `.gitlab-ci.yml`ファイルを選択します。
 1. **編集** > **単一のファイルを編集**を選択します。
-1. `v2`依存関係スキャンCI/CDテンプレートを追加します:
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します:
 
    ```yaml
    include:
@@ -64,12 +70,51 @@ GitLabは、これらのすべての依存関係タイプを確実に網羅す�
 
 1. **変更をコミットする**を選択します。
 
+## 利用可能なコンテナイメージ {#available-container-images}
+
+この機能は、CIジョブを実行するためにコンテナイメージに依存しています。デフォルトのCIジョブ定義は、これらのイメージをメジャーバージョンタグ (`dependency-scanning:2`など) で参照するため、CI/CD設定を変更することなく、パッチおよびマイナーアップデートが自動的に適用されます。
+
+### メンテナンスポリシー {#maintenance-policy}
+
+GitLabは、現在の安定リリースのバグ修正と、過去2か月のリリースのセキュリティ修正を提供するために、[リリースおよびメンテナンスポリシー](../../../../policy/maintenance.md)に従います。
+
+CI/CDジョブはメジャーバージョンタグ (`dependency-scanning:2`など) でイメージを参照するため、そのメジャーイメージバージョンと互換性のあるすべてのGitLabバージョンで修正が自動的に利用可能です。
+
+これは、以下にリストされているイメージに適用されます。以前のイメージはこのポリシーの対象ではありません。
+
+### 現在のイメージ {#current-images}
+
+| CI/CDジョブ                               | 本番環境イメージ                                                                                        | GitLabのバージョン |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------- |
+| `dependency-scanning`                   | `registry.gitlab.com/security-products/dependency-scanning:2`                                           | `19.x`         |
+| `dependency-scanning:maven-resolution`  | `registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-21:1`                         | `18.x`、`19.x` |
+| `dependency-scanning:gradle-resolution` | `registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-17-with-gradle-8:1`           | `19.x`         |
+| `dependency-scanning:python-resolution` | `registry.gitlab.com/security-products/dependency-resolution/ubi9/python-312-minimal-with-piptools-7:9` | `18.x`,`19.x`  |
+
+現在のイメージは、ベースイメージベンダーからのアップストリームパッチを組み込むために定期的に再構築されます。
+
+### 以前のイメージ {#previous-images}
+
+これらのイメージは非推奨であり、バグ修正や新機能は今後提供されません。これらはコンテナレジストリで引き続き利用可能であり、対応するGitLabバージョンで動作し続けます。非推奨のイメージを新しいGitLabバージョンで使用することはサポートされておらず、予期せぬ結果を生じる可能性があります。
+
+| CI/CDジョブ             | 本番環境イメージ                                              | GitLabのバージョン | 非推奨となったバージョン |
+| --------------------- | ------------------------------------------------------------- | -------------- | ------------- |
+| `dependency-scanning` | `registry.gitlab.com/security-products/dependency-scanning:1` | `18.x`         | `19.0`        |
+| `dependency-scanning` | `registry.gitlab.com/security-products/dependency-scanning:0` | `18.x`         | `19.0`        |
+
+### FIPSコンプライアンス {#fips-compliance}
+
+依存関係スキャンアナライザーイメージおよびすべての[依存関係解決イメージ](#dependency-resolution)は、FIPS 140で検証された暗号学的モジュールを使用する[Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)に基づいています。FIPS対応環境では追加の設定は必要ありません。
+
 ## 結果について理解する {#understanding-the-results}
 
 依存関係スキャンアナライザーの出力内容:
 
 - 検出されたサポート対象のロックファイルまたは依存関係グラフエクスポートごとに、CycloneDX SBOMが作成されます。
 - スキャンされたすべてのSBOMドキュメントに対する単一の依存関係スキャンレポート（GitLab.comおよびGitLab Self-Managedのみ）。
+
+> [!note]
+> アナライザーが[サポートされているファイル](#supported-languages-and-files)を見つけられなかった場合でも、依存関係スキャンジョブは正常に完了し、CI/CDジョブログに警告が出力されます。この場合、CycloneDX SBOMまたは依存関係スキャンレポートは生成されません。
 
 ### CycloneDXソフトウェア部品表 {#cyclonedx-software-bill-of-materials}
 
@@ -182,7 +227,7 @@ timer
 
 単一のプロジェクトでSBOMの結果を使用した依存関係スキャンに自信がある場合は、その実装を複数のプロジェクトとグループに拡張できます。詳細については、[複数のプロジェクトでスキャンを強制する](#enforce-scanning-on-multiple-projects)を参照してください。
 
-固有の要件がある場合、SBOMを使用した依存関係スキャンは[オフライン環境](#offline-support)で実行できます。
+固有の要件がある場合、SBOMを使用した依存関係スキャンは[オフライン環境](#offline-environment)で実行できます。
 
 ## サポートされているパッケージタイプ {#supported-package-types}
 
@@ -203,32 +248,37 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 
 ## サポートされている言語とファイル {#supported-languages-and-files}
 
-| 言語                  | パッケージマネージャー | ファイル                                         | 説明                                                                                                                                                            | 依存関係グラフエクスポートのサポート | 静的到達可能性のサポート |
-| ------------------------- | --------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------- |
-| C#                        | NuGet           | `packages.lock.json`                            | `nuget`によって生成されたロックファイル。                                                                                                                                        | {{< yes >}}                     | {{< no >}}                  |
-| C/C++                     | Conan           | `conan.lock`                                    | `conan`によって生成されたロックファイル。                                                                                                                                        | {{< yes >}}                     | {{< no >}}                  |
-| C/C++/Fortran/Go/Python/R | Conda           | `conda-lock.yml`                                | `conda-lock`によって生成された環境ファイル。                                                                                                                           | {{< no >}}                      | {{< no >}}                  |
-| Dart                      | pub             | `pubspec.lock`、`pub.graph.json`                | `pub`によって生成されたロックファイル。`dart pub deps --json > pub.graph.json`から派生した依存関係グラフエクスポート。                                                            | {{< yes >}}                     | {{< no >}}                  |
-| Go                        | Go              | `go.mod`、`go.graph`                            | 標準の`go`ツールチェーンによって生成されたモジュールファイル。`go mod graph > go.graph`から派生した依存関係グラフエクスポート。                                                 | {{< yes >}}                     | {{< no >}}                  |
-| Java                      | ivy             | `ivy-report.xml`                                | `report` Apache Antタスクによって生成された依存関係グラフエクスポート。                                                                                                    | {{< no >}}                      | {{< yes >}}                 |
-| Java                      | Maven           | `maven.graph.json`                              | `mvn dependency:tree -DoutputType=json`によって生成された依存関係グラフエクスポート。                                                                                         | {{< yes >}}                     | {{< yes >}}                 |
-| Java/Kotlin               | Gradle          | `dependencies.lock`、`dependencies.direct.lock` | [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin)によって生成されたロックファイル。                                               | {{< yes >}}                     | {{< yes >}}                 |
-| Java/Kotlin               | Gradle          | `gradle.lockfile`                               | `gradle dependencies --write-locks`によって生成されたロックファイル。                                                                                                            | {{< no >}}                      | {{< yes >}}                 |
-| Java/Kotlin               | Gradle          | `gradle-html-dependency-report.js`              | [htmlDependencyReport](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.diagnostics.DependencyReportTask.html)タスクによって生成された依存関係グラフのエクスポート。 | {{< yes >}}                     | {{< yes >}}                 |
-| JavaScript/TypeScript     | npm             | `package-lock.json`、`npm-shrinkwrap.json`      | `npm` v5以降によって生成されたロックファイル（属性`lockfileVersion`を生成しない以前のバージョンはサポートされていません）。                                   | {{< yes >}}                     | {{< yes >}}                 |
-| JavaScript/TypeScript     | pnpm            | `pnpm-lock.yaml`                                | `pnpm`によって生成されたロックファイル。                                                                                                                                         | {{< yes >}}                     | {{< yes >}}                 |
-| JavaScript/TypeScript     | yarn            | `yarn.lock`                                     | `yarn`によって生成されたロックファイル。                                                                                                                                         | {{< yes >}}                     | {{< yes >}}                 |
-| PHP                       | composer        | `composer.lock`                                 | `composer`によって生成されたロックファイル。                                                                                                                                     | {{< yes >}}                     | {{< no >}}                  |
-| Python                    | pip             | `pipdeptree.json`                               | `pipdeptree --json`によって生成された依存関係グラフエクスポート。                                                                                                             | {{< yes >}}                     | {{< yes >}}                 |
-| Python                    | pip             | `requirements.txt`                              | `pip-compile`によって生成された依存関係ロックファイル。                                                                                                                       | {{< yes >}}                     | {{< yes >}}                 |
-| Python                    | pipenv          | `Pipfile.lock`                                  | `pipenv`によって生成されたロックファイル。                                                                                                                                       | {{< no >}}                      | {{< no >}}                  |
-| Python                    | pipenv          | `pipenv.graph.json`                             | `pipenv graph --json-tree >pipenv.graph.json`によって生成された依存関係グラフエクスポート。                                                                                   | {{< yes >}}                     | {{< yes >}}                 |
-| Python                    | poetry          | `poetry.lock`                                   | `poetry`によって生成されたロックファイル。                                                                                                                                       | {{< yes >}}                     | {{< yes >}}                 |
-| Python                    | uv<sup>1</sup>  | `uv.lock`                                       | `uv`によって生成されたロックファイル。                                                                                                                                           | {{< yes >}}                     | {{< yes >}}                 |
-| Ruby                      | bundler         | `Gemfile.lock`、`gems.locked`                   | `bundler`によって生成されたロックファイル。                                                                                                                                      | {{< yes >}}                     | {{< no >}}                  |
-| Rust                      | cargo           | `Cargo.lock`                                    | `cargo`によって生成されたロックファイル。                                                                                                                                        | {{< yes >}}                     | {{< no >}}                  |
-| Scala                     | sbt             | `dependencies-compile.dot`                      | `sbt dependencyDot`によって生成された依存関係グラフエクスポート。                                                                                                             | {{< yes >}}                     | {{< no >}}                  |
-| Swift                     | swift           | `Package.resolved`                              | `swift`によって生成されたロックファイル。                                                                                                                                        | {{< no >}}                      | {{< no >}}                  |
+| 言語                  | パッケージマネージャー | ファイル                                         | 説明                                                                                                                                                                           | 依存関係グラフエクスポートのサポート | 静的到達可能性のサポート |
+| ------------------------- | --------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------- |
+| C#                        | NuGet           | `packages.lock.json`                            | `nuget`によって生成されたロックファイル。                                                                                                                                                       | {{< yes >}}                     | {{< no >}}                  |
+| C/C++                     | Conan           | `conan.lock`                                    | `conan`によって生成されたロックファイル。                                                                                                                                                       | {{< yes >}}                     | {{< no >}}                  |
+| C/C++/Fortran/Go/Python/R | Conda           | `conda-lock.yml`                                | `conda-lock`によって生成された環境ファイル。                                                                                                                                          | {{< no >}}                      | {{< no >}}                  |
+| Dart                      | pub             | `pubspec.lock`、`pub.graph.json`                | `pub`によって生成されたロックファイル。`dart pub deps --json > pub.graph.json`から派生した依存関係グラフエクスポート。                                                                           | {{< yes >}}                     | {{< no >}}                  |
+| Go                        | Go              | `go.mod`、`go.graph`                            | 標準の`go`ツールチェーンによって生成されたモジュールファイル。`go mod graph > go.graph`から派生した依存関係グラフエクスポート。                                                                | {{< yes >}}                     | {{< no >}}                  |
+| Java                      | ivy             | `ivy-report.xml`                                | `report` Apache Antタスクによって生成された依存関係グラフエクスポート。                                                                                                                   | {{< no >}}                      | {{< yes >}}                 |
+| Java                      | Maven           | `maven.graph.json`                              | `mvn dependency:tree -DoutputType=json`によって生成された依存関係グラフエクスポート。                                                                                                        | {{< yes >}}                     | {{< yes >}}                 |
+| Java                      | Maven           | `pom.xml`                                       | [依存関係解決](#dependency-resolution)によって使用されるMavenマニフェストファイル、または依存関係グラフエクスポートが利用できない場合の[マニフェストフォールバック](#manifest-fallback)として使用されます。           | {{< no >}}                      | {{< yes >}}                 |
+| Java/Kotlin               | Gradle          | `gradle.graph.txt`                              | `./gradlew dependencies`によって生成された依存関係グラフエクスポート。                                                                                                                       | {{< yes >}}                     | {{< yes >}}                 |
+| Java/Kotlin               | Gradle          | `dependencies.lock`、`dependencies.direct.lock` | [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin)によって生成されたロックファイル。                                                              | {{< yes >}}                     | {{< yes >}}                 |
+| Java/Kotlin               | Gradle          | `gradle.lockfile`                               | `gradle dependencies --write-locks`によって生成されたロックファイル。                                                                                                                           | {{< no >}}                      | {{< yes >}}                 |
+| Java/Kotlin               | Gradle          | `gradle-html-dependency-report.js`              | [htmlDependencyReport](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.diagnostics.DependencyReportTask.html)タスクによって生成された依存関係グラフのエクスポート。                | {{< yes >}}                     | {{< yes >}}                 |
+| Java/Kotlin               | Gradle          | `build.gradle`、`build.gradle.kts`              | [依存関係解決](#dependency-resolution)によって使用されるGradleビルドファイル、またはロックファイルや依存関係グラフエクスポートが利用できない場合の[マニフェストフォールバック](#manifest-fallback)として使用されます。 | {{< no >}}                      | {{< yes >}}                 |
+| JavaScript/TypeScript     | npm             | `package-lock.json`、`npm-shrinkwrap.json`      | `npm` v5以降によって生成されたロックファイル（属性`lockfileVersion`を生成しない以前のバージョンはサポートされていません）。                                                  | {{< yes >}}                     | {{< yes >}}                 |
+| JavaScript/TypeScript     | pnpm            | `pnpm-lock.yaml`                                | `pnpm`によって生成されたロックファイル。                                                                                                                                                        | {{< yes >}}                     | {{< yes >}}                 |
+| JavaScript/TypeScript     | yarn            | `yarn.lock`                                     | `yarn`によって生成されたロックファイル。                                                                                                                                                        | {{< yes >}}                     | {{< yes >}}                 |
+| Objective-C               | CocoaPods       | `Podfile.lock`                                  | `cocoapods`によって生成されたロックファイル。                                                                                                                                                   | {{< no >}}                      | {{< no >}}                  |
+| PHP                       | composer        | `composer.lock`                                 | `composer`によって生成されたロックファイル。                                                                                                                                                    | {{< yes >}}                     | {{< no >}}                  |
+| Python                    | pip             | `pipdeptree.json`                               | `pipdeptree --json`によって生成された依存関係グラフエクスポート。                                                                                                                            | {{< yes >}}                     | {{< yes >}}                 |
+| Python                    | pip             | `requirements.txt`（ロックファイル）                   | `pip-compile`によって生成されたロックファイル。                                                                                                                                                 | {{< yes >}}                     | {{< yes >}}                 |
+| Python                    | pip             | `requirements.txt`                              | [依存関係解決](#dependency-resolution)によって使用されるマニフェストファイル、またはロックファイルや依存関係グラフエクスポートが利用できない場合の[マニフェストフォールバック](#manifest-fallback)として使用されます。     | {{< no >}}                      | {{< no >}}                  |
+| Python                    | pipenv          | `Pipfile.lock`                                  | `pipenv`によって生成されたロックファイル。                                                                                                                                                      | {{< no >}}                      | {{< no >}}                  |
+| Python                    | pipenv          | `pipenv.graph.json`                             | `pipenv graph --json-tree >pipenv.graph.json`によって生成された依存関係グラフエクスポート。                                                                                                  | {{< yes >}}                     | {{< yes >}}                 |
+| Python                    | poetry          | `poetry.lock`                                   | `poetry` v1またはv2によって生成されたロックファイル。                                                                                                                                             | {{< yes >}}                     | {{< yes >}}                 |
+| Python                    | uv <sup>1</sup>  | `uv.lock`                                       | `uv`によって生成されたロックファイル。                                                                                                                                                          | {{< yes >}}                     | {{< yes >}}                 |
+| Ruby                      | bundler         | `Gemfile.lock`、`gems.locked`                   | `bundler`によって生成されたロックファイル。                                                                                                                                                     | {{< yes >}}                     | {{< no >}}                  |
+| Rust                      | cargo           | `Cargo.lock`                                    | `cargo`によって生成されたロックファイル。                                                                                                                                                       | {{< yes >}}                     | {{< no >}}                  |
+| Scala                     | sbt             | `dependencies-compile.dot`                      | `sbt dependencyDot`によって生成された依存関係グラフエクスポート。                                                                                                                            | {{< yes >}}                     | {{< no >}}                  |
+| Swift                     | swift           | `Package.resolved`                              | `swift`によって生成されたロックファイル。                                                                                                                                                       | {{< no >}}                      | {{< no >}}                  |
 
 **脚注**: 
 
@@ -264,7 +314,7 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 アナライザーの動作のカスタマイズ方法は、イネーブルメントソリューションによって異なります。
 
 > [!warning]
-> これらの変更をデフォルトブランチにマージする前に、マージリクエストでGitLabアナライザーのすべてのカスタマイズをテストしてください。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
+> GitLabアナライザーのすべてのカスタマイズは、変更をデフォルトブランチにマージする前にマージリクエストでテストしてください。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
 
 ### CI/CDテンプレートを使用した動作のカスタマイズ {#customizing-behavior-with-the-cicd-template}
 
@@ -272,33 +322,37 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 
 次のspec入力は、`Dependency-Scanning.v2.gitlab-ci.yml`テンプレートと組み合わせて使用できます。
 
-| Spec入力                                  | 種類    | デフォルト                                                                                                   | 説明                                                                                                                                                                                                                                              |
-| ------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `job_name`                                  | 文字列  | `"dependency-scanning"`                                                                                   | 依存関係スキャンジョブの名前。                                                                                                                                                                                                                 |
-| `stage`                                     | 文字列  | `test`                                                                                                    | 依存関係スキャンジョブのステージ。                                                                                                                                                                                                                |
-| `allow_failure`                             | ブール値 | `true`                                                                                                    | 依存関係スキャンジョブの失敗がパイプラインを失敗させるかどうか。                                                                                                                                                                                    |
-| `analyzer_image_prefix`                     | 文字列  | `"$CI_TEMPLATE_REGISTRY_HOST/security-products"`                                                          | アナライザーのリポジトリを指すレジストリURLプレフィックス。                                                                                                                                                                                      |
-| `analyzer_image_name`                       | 文字列  | `"dependency-scanning"`                                                                                   | 依存関係スキャンジョブで使用されるアナライザーイメージのリポジトリ。                                                                                                                                                                                |
-| `analyzer_image_version`                    | 文字列  | `"1"`                                                                                                     | 依存関係スキャンジョブで使用されるアナライザーイメージのバージョン。                                                                                                                                                                                   |
-| `additional_ca_cert_bundle`                 | 文字列  |                                                                                                           | 信頼するCA証明書バンドル。ここに示されているCAバンドルは、システムの証明書に追加され、スキャンプロセス中に他のツールでも使用されます。詳細については、[カスタムTLS認証局](#custom-tls-certificate-authority)を参照してください。 |
-| `pipcompile_requirements_file_name_pattern` | 文字列  |                                                                                                           | 分析時に使用するカスタム要件ファイル名のパターン。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細は、[doublestarライブラリ](https://www.github.com/bmatcuk/doublestar/tree/v1#patterns)を参照してください。                     |
-| `max_scan_depth`                            | 数値  | `2`                                                                                                       | サポートされているファイルを検索するためにアナライザーが検索するディレクトリレベル数を定義します。値 -1は、アナライザーが深さに関係なくすべてのディレクトリを検索することを意味します。                                                                                          |
-| `excluded_paths`                            | 文字列  | `"**/spec,**/test,**/tests,**/tmp"`                                                                       | スキャンから除外するパスのカンマ区切りリスト（globがサポートされています）。                                                                                                                                                                              |
-| `include_dev_dependencies`                  | ブール値 | `true`                                                                                                    | サポートされているファイルをスキャンするときに、開発/テスト依存関係を含めます。                                                                                                                                                                                    |
-| `enable_static_reachability`                | ブール値 | `false`                                                                                                   | [静的到達可能性](../static_reachability.md)を有効にします。                                                                                                                                                                                                 |
-| `analyzer_log_level`                        | 文字列  | `"info"`                                                                                                  | 依存関係スキャンのログレベル。オプションは、致命的、エラー、警告、情報、デバッグです。                                                                                                                                                                  |
-| `enable_vulnerability_scan`                 | ブール値 | `true`                                                                                                    | 生成されたSBOMの脆弱性分析を有効にします                                                                                                                                                                                                     |
-| `api_timeout`                               | 数値  | `10`                                                                                                      | 依存関係スキャンSBOM APIリクエストのタイムアウト（秒単位）。                                                                                                                                                                                                 |
-| `api_scan_download_delay`                   | 数値  | `3`                                                                                                       | スキャン結果のダウンロード前の依存関係スキャンSBOM APIの初期遅延（秒単位）。                                                                                                                                                                   |
-| `resolution_jobs_stage`                     | 文字列  | `.pre`                                                                                                    | 依存関係解決ジョブのパイプラインステージ。                                                                                                                                                                                                            |
-| `resolution_jobs_allow_failure`             | ブール値 | `true`                                                                                                    | `true`の場合、失敗した解決ジョブはパイプラインを失敗させません。`false`の場合、解決の失敗はパイプラインをブロックします。                                                                                                                                     |
-| `disabled_resolution_jobs`                  | 文字列  | `""`                                                                                                      | 無効にする解決ジョブのコンマ区切りリスト（例: `"maven, python"`）。デフォルトでは、利用可能なすべての解決ジョブが有効になります。指定可能な値は`maven`、`gradle`、`python`です。                                                                     |
-| `maven_resolution_job_name`                 | 文字列  | `"dependency-scanning:maven-resolution"`                                                                  | Maven依存関係解決のためのジョブ名。                                                                                                                                                                                                     |
-| `maven_resolution_image`                    | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-21:1"`                         | Maven依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                   |
-| `python_resolution_job_name`                | 文字列  | `"dependency-scanning:python-resolution"`                                                                 | Python依存関係解決のためのジョブ名。                                                                                                                                                                                                    |
-| `python_resolution_image`                   | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/python-312-minimal-with-piptools-7:9"` | Python依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                  |
-| `gradle_resolution_job_name`                | 文字列  | `"dependency-scanning:gradle-resolution"`                                                                 | Gradle依存関係解決のためのジョブ名。                                                                                                                                                                                                    |
-| `gradle_resolution_image`                   | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-17-with-gradle-8:1"`           | Gradle依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                  |
+| Spec入力                                  | 種類    | デフォルト                                                                                                   | 説明                                                                                                                                                                                                                                                           |
+| ------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `job_name`                                  | 文字列  | `"dependency-scanning"`                                                                                   | 依存関係スキャンジョブの名前。                                                                                                                                                                                                                              |
+| `stage`                                     | 文字列  | `test`                                                                                                    | 依存関係スキャンジョブのステージ。                                                                                                                                                                                                                             |
+| `allow_failure`                             | ブール値 | `true`                                                                                                    | 依存関係スキャンジョブの失敗がパイプラインを失敗させるかどうか。                                                                                                                                                                                                 |
+| `analyzer_image_prefix`                     | 文字列  | `"$CI_TEMPLATE_REGISTRY_HOST/security-products"`                                                          | アナライザーのリポジトリを指すレジストリURLプレフィックス。                                                                                                                                                                                                   |
+| `analyzer_image_name`                       | 文字列  | `"dependency-scanning"`                                                                                   | 依存関係スキャンジョブで使用されるアナライザーイメージのリポジトリ。                                                                                                                                                                                             |
+| `analyzer_image_version`                    | 文字列  | `"2"`                                                                                                     | 依存関係スキャンジョブで使用されるアナライザーイメージのバージョン。                                                                                                                                                                                                |
+| `additional_ca_cert_bundle`                 | 文字列  |                                                                                                           | 信頼するCA証明書バンドル。ここに示されているCAバンドルは、システムの証明書に追加され、スキャンプロセス中に他のツールでも使用されます。詳細については、[カスタムTLS認証局](#custom-tls-certificate-authority)を参照してください。              |
+| `pip_manifest_file_name_pattern`            | 文字列  |                                                                                                           | 依存関係解決およびマニフェストスキャンに使用するカスタムpipマニフェストファイル名パターン。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細は、[doublestarライブラリ](https://www.github.com/bmatcuk/doublestar/tree/v1#patterns)を参照してください。 |
+| `pipcompile_lockfile_file_name_pattern`     | 文字列  |                                                                                                           | pip-compileロックファイルのファイル名パターンをカスタマイズして、分析時に使用します。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細は、[doublestarライブラリ](https://www.github.com/bmatcuk/doublestar/tree/v1#patterns)を参照してください。                          |
+| `pipcompile_requirements_file_name_pattern` | 文字列  |                                                                                                           | GitLab 19.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/work_items/598796)になりました: 代わりに`pipcompile_lockfile_file_name_pattern`を使用してください。                                                                                                                           |
+| `max_scan_depth`                            | 数値  | `2`                                                                                                       | サポートされているファイルを検索するためにアナライザーが検索するディレクトリレベル数を定義します。値 -1は、アナライザーが深さに関係なくすべてのディレクトリを検索することを意味します。                                                                                                       |
+| `excluded_paths`                            | 文字列  | `"**/spec,**/test,**/tests,**/tmp"`                                                                       | スキャンから除外するパスのカンマ区切りリスト（globがサポートされています）。                                                                                                                                                                                           |
+| `include_dev_dependencies`                  | ブール値 | `true`                                                                                                    | サポートされているファイルをスキャンするときに、開発/テスト依存関係を含めます。                                                                                                                                                                                                 |
+| `enable_static_reachability`                | ブール値 | `false`                                                                                                   | [静的到達可能性](../static_reachability.md)を有効にします。                                                                                                                                                                                                              |
+| `enable_manifest_fallback`                  | ブール値 | `true`                                                                                                    | [マニフェストフォールバック](#manifest-fallback)を有効にします。                                                                                                                                                                                                                       |
+| `analyzer_log_level`                        | 文字列  | `"info"`                                                                                                  | 依存関係スキャンのログレベル。オプションは、致命的、エラー、警告、情報、デバッグです。                                                                                                                                                                               |
+| `enable_vulnerability_scan`                 | ブール値 | `true`                                                                                                    | 生成されたSBOMの脆弱性分析を有効にします                                                                                                                                                                                                                  |
+| `api_timeout`                               | 数値  | `10`                                                                                                      | 依存関係スキャンSBOM APIリクエストのタイムアウト（秒単位）。                                                                                                                                                                                                              |
+| `api_scan_download_delay`                   | 数値  | `3`                                                                                                       | スキャン結果のダウンロード前の依存関係スキャンSBOM APIの初期遅延（秒単位）。                                                                                                                                                                                |
+| `resolution_jobs_stage`                     | 文字列  | `.pre`                                                                                                    | 依存関係解決ジョブのパイプラインステージ。                                                                                                                                                                                                                         |
+| `resolution_jobs_allow_failure`             | ブール値 | `true`                                                                                                    | `true`の場合、失敗した解決ジョブはパイプラインを失敗させません。`false`の場合、解決の失敗はパイプラインをブロックします。                                                                                                                                              |
+| `disabled_resolution_jobs`                  | 文字列  | `""`                                                                                                      | 無効にする解決ジョブのコンマ区切りリスト（例: `"maven, python"`）。デフォルトでは、利用可能なすべての解決ジョブが有効になります。指定可能な値は`maven`、`gradle`、`python`です。[依存関係解決](#dependency-resolution)を参照                       |
+| `maven_resolution_job_name`                 | 文字列  | `"dependency-scanning:maven-resolution"`                                                                  | Maven依存関係解決のためのジョブ名。                                                                                                                                                                                                                  |
+| `maven_resolution_image`                    | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-21:1"`                         | Maven依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                                |
+| `maven_dependency_plugin_version`           | 文字列  | `"3.7.0"`                                                                                                 | Maven依存関係解決中に使用される`maven-dependency-plugin`のバージョン。`3.7.0`以降である必要があります。                                                                                                                                                           |
+| `python_resolution_job_name`                | 文字列  | `"dependency-scanning:python-resolution"`                                                                 | Python依存関係解決のためのジョブ名。                                                                                                                                                                                                                 |
+| `python_resolution_image`                   | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/python-312-minimal-with-piptools-7:9"` | Python依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                               |
+| `gradle_resolution_job_name`                | 文字列  | `"dependency-scanning:gradle-resolution"`                                                                 | Gradle依存関係解決のためのジョブ名。                                                                                                                                                                                                                 |
+| `gradle_resolution_image`                   | 文字列  | `"registry.gitlab.com/security-products/dependency-resolution/ubi9/openjdk-17-with-gradle-8:1"`           | Gradle依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                               |
 
 #### 利用可能なCI/CD変数 {#available-cicd-variables}
 
@@ -306,14 +360,18 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 
 | CI/CD変数                                | 説明                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AST_ENABLE_MR_PIPELINES`                      | 依存関係スキャンジョブをMRまたはブランチパイプラインで実行するかどうかを制御します。デフォルトは`"true"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `AST_ENABLE_MR_PIPELINES`                      | 依存関係スキャンジョブをMRまたはブランチパイプラインで実行するかどうかを制御します。デフォルトは`"true"`です。プロジェクトがマージリクエストパイプラインを使用しない場合は、重複するパイプラインを避けるためにこれを無効にしてください。                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `ADDITIONAL_CA_CERT_BUNDLE`                    | 信頼するCA証明書バンドル。ここに示されているCAバンドルは、システムの証明書に追加され、スキャンプロセス中に他のツールでも使用されます。詳細については、[カスタムTLS認証局](#custom-tls-certificate-authority)を参照してください。                                                                                                                                                                                                                                                                                                                                         |
 | `ANALYZER_ARTIFACT_DIR`                        | CycloneDXレポート（SBOM）が保存されるディレクトリ。デフォルトは`${CI_PROJECT_DIR}/sca-artifacts`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `DEPENDENCY_SCANNING_DISABLED`                 | `"true"`または`"1"`に設定すると、すべての依存関係スキャンジョブが無効になります。デフォルト: 未設定。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_EXCLUDED_ANALYZERS`                        | 依存関係スキャンから除外するアナライザーを（名前で）指定します。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_EXCLUDED_PATHS`                            | パスに基づいて、スキャンからファイルとディレクトリを除外します。カンマ区切りのパターンリストを指定します。パターンには、glob（サポートされているパターンについては[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match)を参照）、またはファイルパスやフォルダーパス（`doc,spec`など）を使用できます。一致ルールの詳細については、[除外パターン](#exclusion-patterns)を参照してください。これは、スキャンが実行される前に適用されるプリフィルターです。依存関係検出と静的到達可能性の両方に適用されます。デフォルトは`"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`です。 |
 | `DS_MAX_DEPTH`                                 | アナライザーがスキャン対象のサポートされているファイルを検索するディレクトリ階層の深さを定義します。値が`-1`の場合、深さに関係なくすべてのディレクトリをスキャンします。デフォルトは`2`です。                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `DS_INCLUDE_DEV_DEPENDENCIES`                  | `"false"`に設定すると、開発依存関係はレポートされません。Composer、Conda、Gradle、Maven、NPM、pnpm、Pipenv、Poetry、またはuvを使用するプロジェクトのみがサポートされています。デフォルトは`"true"`です。                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` | globパターンマッチングを使用して処理する要件ファイルを定義します（例: `requirements*.txt`または`*-requirements.txt`）。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細については、[globパターンドキュメント](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns)を参照してください。                                                                                                                                                                                                                                                                 |
+| `DS_PIP_MANIFEST_FILE_NAME_PATTERN`            | globパターンマッチング（たとえば、`custom-requirements.txt`または`*-requirements.txt`）を使用して、依存関係解決とマニフェストスキャンで処理するpipマニフェストファイルを定義します。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細については、[globパターンドキュメント](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns)を参照してください。                                                                                                                                                                                                         |
+| `PIP_REQUIREMENTS_FILE`                        | GitLab 19.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/work_items/588580)になりました: 代わりに`DS_PIP_MANIFEST_FILE_NAME_PATTERN`を使用してください。                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN`     | globパターンマッチング（たとえば、`requirements*.txt`または`*-requirements.txt`）を使用して、pip-compileロックファイルの処理対象を定義します。このパターンは、ディレクトリパスではなく、ファイル名のみと一致する必要があります。構文の詳細については、[globパターンドキュメント](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns)を参照してください。                                                                                                                                                                                                                                                             |
+| `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` | GitLab 19.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/work_items/598796)になりました: 代わりに`DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN`を使用してください。                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `SECURE_ANALYZERS_PREFIX`                      | 公式のデフォルトイメージを提供するDockerレジストリ（プロキシ）の名前をオーバーライドします。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_FF_LINK_COMPONENTS_TO_GIT_FILES`           | 依存関係リストのコンポーネントを、ロックファイルやCI/CDパイプラインで動的に生成されたグラフファイルではなく、リポジトリにコミットされたファイルにリンクします。これにより、すべてのコンポーネントがリポジトリ内のソースファイルにリンクされます。デフォルトは`"false"`です。                                                                                                                                                                                                                                                                                                                                      |
 | `SEARCH_IGNORE_HIDDEN_DIRS`                    | 非表示のディレクトリを無視します。依存関係スキャンと静的到達可能性の両方で機能します。デフォルトは`"true"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -321,12 +379,32 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 | `DS_ENABLE_VULNERABILITY_SCAN`                 | 生成されたSBOMファイルの脆弱性スキャンを有効にします。[依存関係スキャンレポート](#dependency-scanning-report)を生成します。デフォルトは`"true"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `DS_API_TIMEOUT`                               | 依存関係スキャンSBOM APIリクエストのタイムアウト（秒単位）（最小値: `5`、最大値: `300`）デフォルト: `10`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_API_SCAN_DOWNLOAD_DELAY`                   | スキャン結果のダウンロード前の初期遅延（秒単位）（最小値: 1、最大値: 120）デフォルト: `3`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `DS_ENABLE_MANIFEST_FALLBACK`                  | ロックファイルまたは依存関係グラフエクスポートが利用できない場合に、マニフェストフォールバックを有効にします。[マニフェストフォールバック](#manifest-fallback)を参照してください。デフォルトは`"false"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `DS_ENABLE_MANIFEST_FALLBACK`                  | ロックファイルまたは依存関係グラフエクスポートが利用できない場合に、マニフェストフォールバックを有効にします。[マニフェストフォールバック](#manifest-fallback)を参照してください。デフォルトは`"true"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `DS_SKIP_IF_NO_SUPPORTED_FILES`                | `"true"`に設定すると、プロジェクトで[サポートされているファイル](#supported-languages-and-files)が検出されない場合、依存関係スキャンジョブをスキップします。詳細については、[サポートされているファイルが存在しない場合にジョブをスキップ](#skip-the-job-when-no-supported-file-is-present)を参照してください。デフォルトは`"false"`です。                                                                                                                                                                                                                                                                                                                            |
 | `SECURE_LOG_LEVEL`                             | ログレベル。デフォルトは`"info"`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `DS_DISABLED_RESOLUTION_JOBS`                  | 無効にする解決ジョブのコンマ区切りリスト（例: `"maven, python"`）。デフォルトでは、利用可能なすべての解決ジョブが有効になります。指定可能な値は`maven`、`gradle`、`python`です。                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `DS_DISABLED_RESOLUTION_JOBS`                  | 無効にする解決ジョブのコンマ区切りリスト（例: `"maven, python"`）。デフォルトでは、利用可能なすべての解決ジョブが有効になります。指定可能な値は`maven`、`gradle`、`python`です。                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `DS_MAVEN_RESOLUTION_IMAGE`                    | Maven依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `DS_MAVEN_DEPENDENCY_PLUGIN_VERSION`           | Maven依存関係解決中に使用される`maven-dependency-plugin`のバージョン。`3.7.0`以降である必要があります。デフォルトは`3.7.0`です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `DS_PYTHON_RESOLUTION_IMAGE`                   | Python依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_GRADLE_RESOLUTION_IMAGE`                   | Gradle依存関係解決ジョブで使用されるイメージ。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+
+### マージリクエストパイプラインの依存関係スキャンを無効にする {#disable-merge-request-pipelines-for-dependency-scanning}
+
+デフォルトでは、`Dependency-Scanning.v2.gitlab-ci.yml`テンプレートはマージリクエストパイプラインで依存関係スキャンジョブを実行します。プロジェクトが他のジョブにマージリクエストパイプラインを使用しない場合、各マージリクエストに対して2つのパイプラインが実行され、他のジョブは個別のブランチパイプラインで実行される可能性があります。この動作を無効にするには、仕様入力`enable_mr_pipelines: false`またはCI/CD変数`AST_ENABLE_MR_PIPELINES: "false"`を設定します。
+
+### サポートされているファイルが存在しない場合にジョブをスキップする {#skip-the-job-when-no-supported-file-is-present}
+
+デフォルトでは、プロジェクトに[サポートされているファイル](#supported-languages-and-files)が含まれていない場合でも、テンプレートを含むすべてのパイプラインで依存関係スキャンジョブが実行されます。サポートされているファイルが検出されない場合にジョブをスキップするには、`DS_SKIP_IF_NO_SUPPORTED_FILES`を`"true"`に設定します:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+
+variables:
+  DS_SKIP_IF_NO_SUPPORTED_FILES: "true"
+```
+
+変数が設定されている場合、依存関係スキャンジョブは、プロジェクトに[サポートされているファイルリスト](#supported-languages-and-files)のファイルが少なくとも1つ含まれている場合、または`DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN`、`DS_PIP_MANIFEST_FILE_NAME_PATTERN`、あるいは`PIP_REQUIREMENTS_FILE`（非推奨）でカスタムパターンが設定されている場合にのみ実行されます。
 
 ### カスタムTLS認証局 {#custom-tls-certificate-authority}
 
@@ -353,6 +431,7 @@ variables:
 {{< history >}}
 
 - GitLab 18.11でMavenとPython向けに[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20461)されました。デフォルトでは無効です。
+- Gradleのサポートを[追加](https://gitlab.com/gitlab-org/gitlab/-/work_items/590734)しました。GitLab 19.0のすべてのサポート対象プロジェクトでデフォルトで有効になりました。
 
 {{< /history >}}
 
@@ -362,23 +441,11 @@ variables:
 
 以下のエコシステムが依存関係解決をサポートしています:
 
-| 言語 | パッケージマネージャー | 検出されたマニフェストファイル                                                                                                           | 解決コマンド    | 出力アーティファクト       |
-| -------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
-| Java     | Maven           | `pom.xml`                                                                                                                         | `mvn dependency:tree` | `maven.graph.json`    |
-| Python   | Pip, setuptools | `requirements.txt`, `requirements.in`, `requirements.pip`, `requires.txt`, `setup.py`, `setup.cfg`, `pyproject.toml` (非Poetry) | `pip-compile`         | `pipcompile.lock.txt` |
-
-> [!warning]
-> 制限付き可用性パイプラインステージでは、依存関係解決はデフォルトで無効になっています。
-
-依存関係解決を有効にするには、CI/CD変数`DS_DISABLED_RESOLUTION_JOBS`を`""`に設定します:
-
-```yaml
-variables:
-  DS_DISABLED_RESOLUTION_JOBS: ""
-
-include:
-  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-```
+| 言語    | パッケージマネージャー | 検出されたマニフェストファイル                                                                                                           | 解決コマンド    | 出力アーティファクト       |
+| ----------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
+| Java        | Maven           | `pom.xml`                                                                                                                         | `mvn dependency:tree` | `maven.graph.json`    |
+| Java/Kotlin | Gradle          | `build.gradle`、`build.gradle.kts`                                                                                                | `gradle dependencies` | `gradle.graph.txt`    |
+| Python      | Pip, setuptools | `requirements.txt`, `requirements.in`, `requirements.pip`, `requires.txt`, `setup.py`, `setup.cfg`, `pyproject.toml` (非Poetry) | `pip-compile`         | `pipcompile.lock.txt` |
 
 ### 依存関係解決のカスタマイズ {#customizing-dependency-resolution}
 
@@ -389,6 +456,7 @@ include:
 独自のイメージを使用するには、以下の入力を設定できます:
 
 - `maven_resolution_image`
+- `gradle_resolution_image`
 - `python_resolution_image`
 
 たとえば、Mavenの解決にカスタムイメージを使用する場合:
@@ -403,11 +471,12 @@ include:
 あるいは、以下のCI/CD変数を設定できます:
 
 - `DS_MAVEN_RESOLUTION_IMAGE`
+- `DS_GRADLE_RESOLUTION_IMAGE`
 - `DS_PYTHON_RESOLUTION_IMAGE`
 
 #### 依存関係解決を無効にする {#disable-dependency-resolution}
 
-特定のエコシステムにおける依存関係解決を無効にするには、CI/CD変数`DS_DISABLED_RESOLUTION_JOBS`または入力`disabled_resolution_jobs`を使用します。
+特定のエコシステムにおける依存関係解決を無効にするには、CI/CD変数`DS_DISABLED_RESOLUTION_JOBS`または入力`disabled_resolution_jobs`を使用します。指定可能な値は`maven`、`gradle`、`python`です。
 
 たとえば、Mavenの依存関係解決を無効にする場合:
 
@@ -418,6 +487,26 @@ variables:
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 ```
+
+### 依存関係解決のセキュリティに関する考慮事項 {#security-considerations-for-dependency-resolution}
+
+依存関係解決ジョブは、CI/CDコンテナ内でエコシステムネイティブのビルドツール (`mvn`, `gradle`, `pip-compile`) を実行します。これらのツールは、環境変数や設定ファイルをネイティブに尊重し、起動時に拡張機能を読み込むか任意のコードを実行できます。これには以下が含まれます:
+
+- Maven: `MAVEN_ARGS`, `MAVEN_CLI_OPTS` (レガシー), `MAVEN_OPTS`, `JAVA_TOOL_OPTIONS`, `-s`または`--settings`を介して参照される任意の`settings.xml`、および`pom.xml`または`settings.xml`で宣言された`<extensions>`。
+- Gradle: `GRADLE_OPTS`, `JAVA_TOOL_OPTIONS`, `--init-script`、および`build.gradle`または`build.gradle.kts`内のトップレベルのGroovyまたはKotlinコード。
+- Python: `PIP_INDEX_URL`, `PIP_EXTRA_INDEX_URL`, `setup.py`、およびロックファイルインストールフック。
+
+これらのCI/CD変数を設定したり、プロジェクトのビルドファイルを変更できるユーザーは、解決ジョブで任意のコードを実行させることができます。解決ジョブは`CI_JOB_TOKEN`で実行され、スコープ内のマスクされたCI/CD変数にアクセスし、ジョブの期間中、プロジェクトリポジトリへの読み取りまたは書き込みを行います。
+
+このプロパティはエコシステムネイティブのビルドツールに固有のものであり、依存関係スキャンに特有のものではありません。解決ジョブを機密性の高い実行コンテキストとして扱います。
+
+推奨される制御:
+
+- 以前にリストされた変数を定義またはオーバーライドできるユーザーを制限します。保護ブランチおよびタグにスコープ設定された[保護CI/CD変数](../../../../ci/variables/_index.md#for-a-project)を使用します。開発者が編集できる`.gitlab-ci.yml` `variables:`ブロックには設定しないでください。
+- `MAVEN_ARGS`, `MAVEN_CLI_OPTS`, `GRADLE_OPTS`, `--init-script`, カスタム`settings.xml`, および`<extensions>`の`pom.xml`における使用状況を、標準のコードレビュープロセスの一部として監査します。
+- [スキャン実行ポリシー](../../policies/scan_execution_policies.md)を使用して依存関係スキャンを適用する場合、ターゲットプロジェクトからの開発者が作成した`variables:`は、挿入された解決ジョブに流れます。ポリシーフレームワークが転送する変数を確認し、ポリシー内のビルドツール変数の設定を解除またはオーバーライドします。
+- プロジェクトのビルドが管理および信頼できるCI/CDジョブ（`build`ステージで`mvn package`を実行するようなジョブ）で実行される場合、その同じジョブでロックファイルまたは依存関係グラフエクスポートを生成し、GitLabが提供する解決ジョブを`DS_DISABLED_RESOLUTION_JOBS`で無効にします。このアプローチはビルドツールの実行リスクを軽減するものではありませんが、機密性の高いジョブのコンテキストを1つに限定します。
+- 既知のツールチェーンを保証する必要がある場合は、ダイジェストで固定された[カスタム解決イメージ](#use-a-custom-dependency-resolution-image)を使用します。
 
 ### 依存関係解決の制限 {#dependency-resolution-limitations}
 
@@ -431,7 +520,7 @@ include:
 
 最も正確な結果を得るには、独自のビルド環境で生成されたロックファイルまたは依存関係グラフエクスポートを提供してください。依存関係解決ワークフローで適切にカバーされていない高度にカスタマイズされたビルドを持つプロジェクトの場合、[手動でロックファイルまたは依存関係グラフエクスポートを作成する](#create-lockfile-or-dependency-graph-export-manually)で説明されているように、独自のビルド環境で生成されたロックファイルまたは依存関係グラフエクスポートを提供する必要があります。
 
-#### Maven {#maven}
+#### Maven解決の既知のイシュー {#maven-resolution-known-issues}
 
 デフォルト環境: Java 21, Maven 3.9
 
@@ -441,7 +530,18 @@ Mavenプロジェクトには以下の制限が適用されます:
 - プロファイルベースのアクティベーション: JDKバージョンによってアクティベートされる条件付きモジュールを使用するプロジェクト（例: ZXing、Dubbo）は、元々ターゲットとされたJavaバージョンでビルドされた場合とは異なる依存関係グラフを生成する可能性があります。
 - 初期ライフサイクルフェーズのプラグイン: 解決イメージのJavaバージョンと互換性のない検証または初期化フェーズにバインドされたプラグインは、失敗を引き起こす可能性があります。
 
-#### Python {#python}
+#### Gradle解決の既知のイシュー {#gradle-resolution-known-issues}
+
+デフォルト環境: Java 17, Gradle 8
+
+ジョブは、Gradleラッパーが存在する場合は`./gradlew dependencies`を、それ以外の場合は`gradle dependencies`を実行します。マルチモジュールプロジェクトの場合、各サブプロジェクトは`:<subproject>:dependencies`を使用して個別に解決されます。ジョブは、対応するプロジェクトディレクトリ内の`gradle.graph.txt`に出力を書き込みます。
+
+Gradleプロジェクトには以下の制限が適用されます:
+
+- ラッパーの要件: Gradleラッパー (`gradlew`) が存在する場合、有効な`gradle-wrapper.jar`を参照する必要があります。ラッパーが存在しない場合、ジョブはシステム`gradle`を使用します。
+- プラグインとバージョンの互換性: 特定のGradleプラグイン、カスタムツールチェーン、またはJava 17以外のJavaバージョンを必要とするプロジェクトは失敗する可能性があります。解決イメージ (`spec:inputs:gradle_resolution_image`) を、必要なビルド環境を含むイメージでオーバーライドします。
+
+#### Python解決の既知のイシュー {#python-resolution-known-issues}
 
 デフォルト環境: Python 3.12, pip-tools 7
 
@@ -454,19 +554,27 @@ Pythonプロジェクトには以下の制限が適用されます:
 - `[project]`テーブルのない`pyproject.toml`: ビルドシステム設定のみを含む`pyproject.toml`はスキップされ、警告が発行されます。
 - `DS_INCLUDE_DEV_DEPENDENCIES`スコープ: `[dependency-groups]`を持つ`pyproject.toml`に対してのみ、開発依存関係のインクルージョンが実装されています。
 
-### ロックファイルまたは依存関係グラフエクスポートを手動で作成する {#create-lockfile-or-dependency-graph-export-manually}
+## ロックファイルまたは依存関係グラフエクスポートを手動で作成する {#create-lockfile-or-dependency-graph-export-manually}
 
 お使いのプロジェクトが、リポジトリにコミットされたサポート対象の[ロックファイル](../../terminology/_index.md#lockfile)または[依存関係グラフエクスポート](../../terminology/_index.md#dependency-graph-export)を持たず、かつ依存関係解決がそれをサポートしていない場合、いずれかを提供する必要があります。
 
+複雑なビルド、カスタムビルドステップ、プライベートレジストリ、または特定の環境要件を持つプロジェクトでは、ロックファイルまたは依存関係グラフエクスポートを手動で作成することを検討してください。既存のビルドプロセスの一部としてファイルを生成することは、その環境を[依存関係解決](#dependency-resolution)にレプリケートするよう設定するよりも、多くの場合高速で簡単です。手動でのファイル作成は、より正確な結果も生成します。このファイルは、推移的な依存関係やプラットフォーム固有の解決策を含め、独自のビルドからの正確な依存関係バージョンを反映しています。
+
 以下の例は、一般的な言語およびパッケージマネージャーでGitLabアナライザーによってサポートされているファイルを作成する方法を示しています。[サポートされている言語とファイル](#supported-languages-and-files)の完全なリストも参照してください。
 
-#### Go {#go}
+### Go {#go}
 
-プロジェクトが`go.mod`ファイルのみを提供する場合でも、依存関係スキャンアナライザーはコンポーネントのリストを抽出できます。ただし、[依存関係パス](../../dependency_list/_index.md#dependency-paths)情報は利用できません。さらに、同じモジュールの複数のバージョンがある場合は、誤検出が発生する可能性があります。
+この方法は、Goツールチェーンの[`go mod graph`コマンド](https://go.dev/ref/mod#go-mod-graph)を使用して、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係を含む）を含む`go.graph`ファイルを生成します。このファイルがない場合、アナライザーは`go.mod`のみからコンポーネントを抽出しますが、[依存関係パス](../../dependency_list/_index.md#dependency-paths)情報は利用できず、同じモジュールの複数のバージョンが存在する場合に誤検出が発生する可能性があります。
 
-コンポーネントの検出と機能のカバレッジを向上させるには、Goツールチェーンから[`go mod graph`コマンド](https://go.dev/ref/mod#go-mod-graph)を使用して生成された`go.graph`ファイルを提供する必要があります。
+Goプロジェクトでアナライザーを有効にするには:
 
-以下の例`.gitlab-ci.yml`は、Goプロジェクトで[依存関係パス](../../dependency_list/_index.md#dependency-paths)のサポートを使用してアナライザーを有効にする方法を示しています。依存関係グラフエクスポートは、依存関係スキャンが実行される前に、`build`パイプラインステージでジョブアーティファクトとして出力されます。
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`go mod graph`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `go.graph`をジョブアーティファクトとして宣言します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのモジュールキャッシュを再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
 
 ```yaml
 stages:
@@ -475,37 +583,85 @@ stages:
 
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-go:build:
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the go.graph artifact.
   stage: build
   image: "golang:latest"
   script:
-    - "go mod tidy"
-    - "go build ./..."
-    - "go mod graph > go.graph"
+    # Your regular build script
+    - go mod tidy
+    - go build ./...
+    # New instruction to generate the dependency graph
+    - go mod graph > go.graph
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/go.graph"]
-
+    paths:
+      - "**/go.graph"
 ```
 
-#### Gradle {#gradle}
+### Gradle {#gradle}
 
 Gradleプロジェクトの場合、依存関係グラフエクスポートを作成するには以下のいずれかの方法を使用してください。
 
+- Gradle `dependencies`タスク
 - Nebula Gradle Dependency Lockプラグイン
-- GradleのHtmlDependencyReportTask
+- Gradle `HtmlDependencyReportTask`
 
-##### 依存関係ロックプラグイン {#dependency-lock-plugin}
+#### Gradle依存関係タスク {#gradle-dependencies-task}
 
-この方法では、直接的な依存関係に関する情報が提供されます。
+この方法は、自動[依存関係解決](#dependency-resolution)を駆動する同じ`gradle dependencies`タスクを使用します。これは、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係、[依存関係パス](../../dependency_list/_index.md#dependency-paths)を有効にするためのグラフ情報を含む）を含む単一の`gradle.graph.txt`ファイルを生成するため、推奨されるアプローチです。
 
 Gradleプロジェクトでアナライザーを有効にするには、以下の手順に従います:
 
-1. `build.gradle`または`build.gradle.kts`を編集して、[gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example)を使用するか、初期化スクリプトを使用します。
-1. `.gitlab-ci.yml`ファイルを構成して`dependencies.lock`および`dependencies.direct.lock`アーティファクトを生成し、それらを`dependency-scanning`ジョブに渡します。
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`gradle dependencies`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `gradle.graph.txt`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`gradle`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
 
-次の例は、Gradleプロジェクトのアナライザーを構成する方法を示しています。
+コマンドを既存のビルドジョブに追加することは、ビルドからのGradleデーモン、キャッシュ、および解決済み設定を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
+
+```yaml
+stages:
+  - build
+  - test
+
+image: gradle:8.0-jdk11
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the gradle.graph.txt artifact.
+  stage: build
+  script:
+    # Your regular build script
+    - ./gradlew build
+    # New instruction to generate the dependency graph
+    - ./gradlew dependencies > gradle.graph.txt
+  # Make the artifact available to the dependency-scanning job.
+  artifacts:
+    paths:
+      - "**/gradle.graph.txt"
+```
+
+#### 依存関係ロックプラグイン {#dependency-lock-plugin}
+
+この方法は、[gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin)を使用して2つのロックファイルを生成します: `dependencies.lock`（直接の依存関係と推移的な依存関係）と`dependencies.direct.lock`（直接の依存関係のみ）。アナライザーは両方のファイルを使用して、依存関係グラフ内で直接の依存関係と推移的な依存関係を区別します。
+
+Gradleプロジェクトでアナライザーを有効にするには、以下の手順に従います:
+
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example)をプロジェクトに適用します。これは、`build.gradle`または`build.gradle.kts`を編集するか、`init`スクリプトを使用することで行えます。
+1. プロジェクトの既存のビルドジョブに`generateLock saveLock`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `dependencies.lock`と`dependencies.direct.lock`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`gradle`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
+
+例: 
 
 ```yaml
 stages:
@@ -545,17 +701,24 @@ generate nebula lockfile:
       # lockfiles in the build/ directory only.
   after_script:
     - find . -path '*/build/dependencies*.lock' -print -delete
-  # Collect all generated artifacts and pass them onto jobs in sequential stages.
+  # Make the artifacts available to the dependency-scanning job.
   artifacts:
     paths:
       - '**/dependencies*.lock'
 ```
 
-##### HtmlDependencyReportTask {#htmldependencyreporttask}
+#### `HtmlDependencyReportTask` {#htmldependencyreporttask}
 
-この方法では、推移的および直接的な依存関係に関する情報が提供されます。
+この方法は、[`HtmlDependencyReportTask`](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)を使用して、直接の依存関係と推移的な依存関係を含む`gradle-html-dependency-report.js`ファイルを生成します。`gradle`バージョン4から8でテストされています。
 
-[HtmlDependencyReportTask](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)は、Gradleプロジェクトの依存関係のリストを取得する別の方法です（`gradle`バージョン4～8でテスト済み）。依存関係スキャンでこの方法を使用できるようにするには、`gradle htmlDependencyReport`タスクの実行からのアーティファクトを使用可能にする必要があります。
+Gradleプロジェクトでアナライザーを有効にするには、以下の手順に従います:
+
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`gradle htmlDependencyReport`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `gradle-html-dependency-report.js`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`gradle`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
+
+例: 
 
 ```yaml
 stages:
@@ -584,7 +747,7 @@ build:
         dest="${src%%/$reports_dir/*}/gradle-html-dependency-report.js"
         cp $src $dest
       done < <(find . -type f -path "*/${reports_dir}/*.js" -not -path "*/${reports_dir}/js/*" -print0)
-  # Pass html report artifact to subsequent dependency scanning stage.
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
     paths:
       - "**/gradle-html-dependency-report.js"
@@ -599,7 +762,7 @@ allprojects {
 ```
 
 > [!note]
-> 依存関係レポートは、一部の構成の依存関係が`FAILED`解決されない可能性があることを示している場合があります。この場合、依存関係スキャンは警告をログに記録しますが、ジョブは失敗しません。解決の失敗が報告された場合にパイプラインを失敗させたい場合は、上記の`build`の例に次の追加手順を追加します。
+> 依存関係レポートには、一部の構成の依存関係が`FAILED`に解決される可能性があることが示されます。この場合、依存関係スキャンは警告をログに記録しますが、ジョブは失敗しません。解決の失敗が報告された場合にパイプラインを失敗させたい場合は、上記の`build`の例に次の追加手順を追加します。
 
 ```shell
 while IFS= read -r -d '' file; do
@@ -607,11 +770,20 @@ while IFS= read -r -d '' file; do
 done < <(find . -type f -path "*/gradle-html-dependency-report.js -print0)
 ```
 
-#### Maven {#maven-1}
+### Maven {#maven}
 
-次の例`.gitlab-ci.yml`は、Mavenプロジェクトでアナライザーを有効にする方法を示しています。依存関係グラフエクスポートは、依存関係スキャンが実行される前に、`build`パイプラインステージでジョブアーティファクトとして出力されます。
+この方法は、自動[依存関係解決](#dependency-resolution)を駆動する同じ`mvn dependency:tree`コマンドを使用します。これは、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係、[依存関係パス](../../dependency_list/_index.md#dependency-paths)を有効にするためのグラフ情報を含む）を含む単一の`maven.graph.json`ファイルを生成します。
 
-要件: maven-dependency-pluginは、少なくともバージョン`3.7.0`以上を使用してください。
+Mavenプロジェクトでアナライザーを有効にするには:
+
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`mvn dependency:tree`コマンド（`maven-dependency-plugin`バージョン`3.7.0`以降を使用）を追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `maven.graph.json`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`maven`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのMavenセッションおよび解決済み設定を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
 
 ```yaml
 stages:
@@ -628,23 +800,38 @@ build:
   # receives the maven.graph.json artifacts.
   stage: build
   script:
+    # Your regular build script
     - mvn install
+    # New instruction to generate the dependency graph
     - mvn org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree -DoutputType=json -DoutputFile=maven.graph.json
-  # Collect all maven.graph.json artifacts and pass them onto jobs
-  # in sequential stages.
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
     paths:
       - "**/*.jar"
       - "**/maven.graph.json"
 ```
 
-#### pip {#pip}
+### pip {#pip}
 
-お使いのプロジェクトが[pip-compileコマンドラインツール](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/)によって生成された`requirements.txt`ロックファイルを提供する場合、依存関係スキャンアナライザーはコンポーネントのリストと依存関係グラフ情報を抽出でき、これにより[依存関係パスの可視化](../../dependency_list/_index.md#dependency-paths)機能がサポートされます。
+pipプロジェクトの場合、依存関係グラフエクスポートを作成するには、以下のいずれかの方法を使用します:
 
-または、プロジェクトは、[`pipdeptree --json`コマンドラインユーティリティ](https://pypi.org/project/pipdeptree/)によって生成された`pipdeptree.json`依存関係グラフエクスポートを提供できます。
+- `pip-compile`
+- `pipdeptree`
 
-以下の例`.gitlab-ci.yml`は、pipプロジェクトで[依存関係パス](../../dependency_list/_index.md#dependency-paths)のサポートを使用してアナライザーを有効にする方法を示しています。依存関係スキャンが実行される前に、`build`パイプラインステージで依存関係グラフエクスポートがジョブアーティファクトとして出力されます。
+#### `pip-compile` {#pip-compile}
+
+この方法は、自動[依存関係解決](#dependency-resolution)を駆動する[`pip-compile`コマンド](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/)を使用します。これは、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係、[依存関係パス](../../dependency_list/_index.md#dependency-paths)を有効にするためのグラフ情報を含む）を含む`requirements.txt`ロックファイルを生成します。
+
+pipプロジェクトでアナライザーを有効にするには:
+
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`pip-compile`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `requirements.txt`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`python`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのインストール済み依存関係を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
 
 ```yaml
 stages:
@@ -655,28 +842,77 @@ include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 
 build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the requirements.txt artifact.
   stage: build
   image: "python:latest"
   script:
-    - "pip install -r requirements.txt"
-    - "pip install pipdeptree"
-    # Run pipdeptree to get project's dependencies and exclude pipdeptree itself to avoid false positives
-    - "pipdeptree -e pipdeptree --json > pipdeptree.json"
+    # Your regular build script
+    - pip install pip-tools
+    # New instruction to generate the dependency lockfile
+    - pip-compile requirements.in
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/pipdeptree.json"]
+    paths:
+      - "**/requirements.txt"
+```
+
+#### `pipdeptree` {#pipdeptree}
+
+この方法は、[`pipdeptree --json`](https://pypi.org/project/pipdeptree/)を使用して、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係、[依存関係パス](../../dependency_list/_index.md#dependency-paths)を有効にするためのグラフ情報を含む）を含む`pipdeptree.json`ファイルを生成します。
+
+pipプロジェクトでアナライザーを有効にするには:
+
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`pipdeptree --json`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `pipdeptree.json`をジョブアーティファクトとして宣言します。
+1. 自動依存関係解決を無効にするには、`python`を`DS_DISABLED_RESOLUTION_JOBS` CI/CD変数または`disabled_resolution_jobs`入力値に追加します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのインストール済み依存関係を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the pipdeptree.json artifact.
+  stage: build
+  image: "python:latest"
+  script:
+    # Your regular build script
+    - pip install -r requirements.txt
+    # New instructions to generate the dependency graph.
+    # Exclude pipdeptree itself to avoid false positives.
+    - pip install pipdeptree
+    - pipdeptree -e pipdeptree --json > pipdeptree.json
+  # Make the artifact available to the dependency-scanning job.
+  artifacts:
+    paths:
+      - "**/pipdeptree.json"
 ```
 
 [既知の問題](https://github.com/tox-dev/pipdeptree/issues/107)により、`pipdeptree`は[オプションの依存関係](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)を親パッケージの依存関係としてマークしません。その結果、依存関係スキャンは、それらを推移的な依存関係としてではなく、プロジェクトの直接的な依存関係としてマークします。
 
-#### Pipenv {#pipenv}
+### Pipenv {#pipenv}
 
-プロジェクトが`Pipfile.lock`ファイルのみを提供する場合でも、依存関係スキャンアナライザーはコンポーネントのリストを抽出できます。ただし、[依存関係パス](../../dependency_list/_index.md#dependency-paths)情報は利用できません。
+この方法は、[`pipenv graph`コマンド](https://pipenv.pypa.io/en/latest/cli.html#graph)を使用して、アナライザーが必要とする情報（直接の依存関係や推移的な依存関係を含む）を含む`pipenv.graph.json`ファイルを生成します。このファイルがない場合、アナライザーは`Pipfile.lock`のみからコンポーネントを抽出しますが、[依存関係パス](../../dependency_list/_index.md#dependency-paths)情報は利用できません。
 
-機能カバレッジを向上させるには、[`pipenv graph`コマンド](https://pipenv.pypa.io/en/latest/cli.html#graph)によって生成された`pipenv.graph.json`ファイルを提供する必要があります。
+Pipenvプロジェクトでアナライザーを有効にするには:
 
-次の例`.gitlab-ci.yml`は、Pipenvプロジェクトで[依存関係パス](../../dependency_list/_index.md#dependency-paths)のサポートを使用してアナライザーを有効にする方法を示しています。依存関係スキャンが実行される前に、`build`パイプラインステージで依存関係グラフエクスポートがジョブアーティファクトとして出力されます。
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. プロジェクトの既存のビルドジョブに`pipenv graph --json-tree`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `pipenv.graph.json`をジョブアーティファクトとして宣言します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのインストール済み依存関係を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
 
 ```yaml
 stages:
@@ -687,25 +923,36 @@ include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 
 build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the pipenv.graph.json artifact.
   stage: build
   image: "python:3.12"
   script:
-    - "pip install pipenv"
-    - "pipenv install"
-    - "pipenv graph --json-tree > pipenv.graph.json"
+    # Your regular build script
+    - pip install pipenv
+    - pipenv install
+    # New instruction to generate the dependency graph
+    - pipenv graph --json-tree > pipenv.graph.json
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/pipenv.graph.json"]
+    paths:
+      - "**/pipenv.graph.json"
 ```
 
-#### sbt {#sbt}
+### `sbt` {#sbt}
 
-sbtプロジェクトでアナライザーを有効にするには以下の手順に従います:
+この方法は、[`sbt-dependency-graph`](https://github.com/sbt/sbt-dependency-graph/blob/master/README.md#usage-instructions)プラグインを使用して、アナライザーが必要とするすべての情報（直接の依存関係や推移的な依存関係を含む）を含む`dependencies-compile.dot`ファイルを生成します。
 
-- `plugins.sbt`を編集して、[sbt-dependency-graphプラグイン](https://github.com/sbt/sbt-dependency-graph/blob/master/README.md#usage-instructions)を使用します。
+`sbt`プロジェクトでアナライザーを有効にするには:
 
-次の例`.gitlab-ci.yml`は、sbtプロジェクトで[依存関係パス](../../dependency_list/_index.md#dependency-paths)のサポートを使用してアナライザーを有効にする方法を示しています。依存関係スキャンが実行される前に、`build`パイプラインステージで依存関係グラフエクスポートがジョブアーティファクトとして出力されます。
+1. `Dependency-Scanning.v2` CI/CDテンプレートを追加します。
+1. [`sbt-dependency-graph`](https://github.com/sbt/sbt-dependency-graph/blob/master/README.md#usage-instructions)プラグインを追加するために`plugins.sbt`を編集します。
+1. プロジェクトの既存のビルドジョブに`sbt dependencyDot`コマンドを追加するか、ビルドジョブが存在しない場合は専用のジョブを作成します。このジョブは、スキャン開始時にアーティファクトが利用可能になるように、`dependency-scanning`ジョブの前に実行する必要があります。
+1. `dependencies-compile.dot`をジョブアーティファクトとして宣言します。
+
+コマンドを既存のビルドジョブに追加することは、ビルドからのsbtセッションおよび解決済み設定を再利用するため、別のジョブで実行するよりも高速です。
+
+例: 
 
 ```yaml
 stages:
@@ -716,14 +963,19 @@ include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 
 build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the dependencies-compile.dot artifact.
   stage: build
   image: "sbtscala/scala-sbt:eclipse-temurin-17.0.13_11_1.10.7_3.6.3"
   script:
-    - "sbt dependencyDot"
+    # Your regular build script
+    - sbt compile
+    # New instruction to generate the dependency graph
+    - sbt dependencyDot
+  # Make the artifact available to the dependency-scanning job.
   artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/dependencies-compile.dot"]
+    paths:
+      - "**/dependencies-compile.dot"
 ```
 
 ## マニフェストフォールバック {#manifest-fallback}
@@ -733,13 +985,9 @@ build:
 - GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/585886)されました。Mavenマニフェストファイルのみサポートされており、デフォルトで無効になっています。
 - GitLab 18.9で[更新](https://gitlab.com/gitlab-org/gitlab/-/work_items/586921)されました。Pythonの要件ファイルが追加され、デフォルトで無効になりました。
 - GitLab 18.10で[更新](https://gitlab.com/gitlab-org/gitlab/-/work_items/588788)されました。Gradleマニフェストファイルのサポートが追加され、デフォルトで無効になりました。
+- GitLab 19.0でデフォルトで有効になりました
 
 {{< /history >}}
-
-> [!warning]
-> 制限付き可用性パイプラインステージの間、マニフェストフォールバックはデフォルトで無効になっています。
-
-マニフェストフォールバックを有効にするには、`DS_ENABLE_MANIFEST_FALLBACK`CI/CD変数を`"true"`に設定します。
 
 サポートされているロックファイルまたは依存関係グラフエクスポートが利用できない場合、依存関係スキャンアナライザーは、サポートされているマニフェストファイルから依存関係をフォールバックとして抽出できます。
 
@@ -757,6 +1005,18 @@ build:
 >
 > - 推移的な依存関係はありません: 直接的な依存関係のみが検出されます。
 > - 解決済みの正確なバージョンを常に特定できるとは限りません。
+
+### マニフェストフォールバックを無効にする {#disable-manifest-fallback}
+
+マニフェストフォールバックを無効にするには、`DS_ENABLE_MANIFEST_FALLBACK` CI/CD変数または`enable_manifest_fallback`入力を使用します。
+
+```yaml
+variables:
+  DS_ENABLE_MANIFEST_FALLBACK: "false"
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+```
 
 ## アプリケーションのスキャン方法 {#how-it-scans-an-application}
 
@@ -823,7 +1083,7 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 - 依存関係スキャンレポートがデフォルトブランチのCI/CDジョブによって宣言されている場合: 脆弱性が作成され、[脆弱性レポート](../../vulnerability_report/_index.md)に表示されます。
 - 依存関係スキャンレポートがデフォルト以外のブランチのCI/CDジョブによって宣言されている場合: セキュリティ所見が作成され、[パイプラインビューのセキュリティタブ](../../detect/security_scanning_results.md)とMRセキュリティウィジェットに表示されます。
 
-## オフラインサポート {#offline-support}
+## オフライン環境 {#offline-environment}
 
 {{< details >}}
 
@@ -846,13 +1106,7 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 
 依存関係スキャンアナライザーを使用するには、以下の手順に従います:
 
-1. `registry.gitlab.com`から、次のデフォルトの依存関係スキャンアナライザーイメージを[ローカルのDockerコンテナレジストリ](../../../packages/container_registry/_index.md)にインポートします:
-
-   ```plaintext
-   registry.gitlab.com/security-products/dependency-scanning:1
-   ```
-
-   DockerイメージをローカルのオフラインDockerレジストリにインポートするプロセスは、**ネットワークのセキュリティポリシー**によって異なります。IT部門に相談して、外部リソースをインポートまたは一時的にアクセスするための承認済みプロセスを確認してください。これらのスキャナーは新しい定義で[定期的に更新される](../../detect/vulnerability_scanner_maintenance.md)ため、定期的にダウンロードすることをおすすめします。オフラインインスタンスがGitLabレジストリにアクセスできる場合は、[Security-Binariesテンプレート](../../offline_deployments/_index.md#using-the-official-gitlab-template)を使用して、最新の依存関係スキャンアナライザーイメージをダウンロードできます。
+1. `registry.gitlab.com`から[現在のイメージ](#current-images)を[ローカルDockerコンテナレジストリ](../../../packages/container_registry/_index.md)にインポートします。DockerイメージをローカルのオフラインDockerレジストリにインポートするプロセスは、**ネットワークのセキュリティポリシー**によって異なります。IT部門に相談して、外部リソースをインポートまたは一時的にアクセスするための承認済みプロセスを確認してください。これらのイメージは新機能、バグ修正、パッチで定期的に更新されるため、定期的にダウンロードすることをお勧めします。オフラインインスタンスがGitLabレジストリにアクセスできる場合は、[Security-Binariesテンプレート](../../offline_deployments/_index.md#using-the-official-gitlab-template)を使用して、最新の依存関係スキャンアナライザーイメージをダウンロードできます。
 
 1. ローカルアナライザーを使用するようにGitLab CI/CDを設定します。
 
@@ -956,8 +1210,8 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 
 ### `latest`テンプレートの使用 {#using-the-latest-template}
 
-> [!warning] 
-> `latest`テンプレートは安定版とは見なされておらず、破壊的な変更が含まれる可能性があります。詳しくは[テンプレートエディション](../../detect/security_configuration.md#template-editions)を参照してください。
+> [!warning]
+> `latest`テンプレートは安定版とは見なされず、破壊的な変更が含まれる可能性があります。詳しくは[テンプレートエディション](../../detect/security_configuration.md#template-editions)を参照してください。
 
 `latest`依存関係スキャンCI/CDテンプレート`Dependency-Scanning.latest.gitlab-ci.yml`を使用して、GitLab提供のアナライザーを有効にします。
 
@@ -1012,7 +1266,7 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 ### 独自のSBOMの持ち込み {#bringing-your-own-sbom}
 
 > [!warning]
-> サードパーティ製のSBOMのサポートは技術的には可能ですが、この[エピック](https://www.gitlab.com/groups/gitlab-org/-/epics/14760)での公式サポートが完了すると、大きく変更される可能性があります。
+> サードパーティのSBOMサポートは技術的には可能ですが、この[エピック](https://www.gitlab.com/groups/gitlab-org/-/epics/14760)で正式なサポートが完了するにつれて大幅に変更される可能性があります。
 
 カスタムCIジョブで、サードパーティ製のCycloneDX SBOMジェネレーターまたはカスタムツールで生成された独自のCycloneDX SBOMドキュメントを[CI/CDアーティファクトレポート](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)として使用します。
 
@@ -1021,72 +1275,3 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 - [CycloneDX仕様](https://github.com/CycloneDX/specification)バージョン`1.4`、`1.5`、または`1.6`に準拠している。[CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate)でオンラインバリデーターを利用できます。
 - [GitLab CycloneDXプロパティ分類](../../../../development/sec/cyclonedx_property_taxonomy.md)に準拠している。
 - 成功したCIジョブから[CI/CDアーティファクトレポート](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)としてアップロードされる。
-
-## トラブルシューティング {#troubleshooting}
-
-依存関係スキャンを使用する際に、次のイシューが発生する可能性があります。
-
-### カスタム`CI_JOB_TOKEN`を使用するときの`403 Forbidden`エラー {#403-forbidden-error-when-you-use-a-custom-ci_job_token}
-
-依存関係スキャンSBOM APIは、スキャンのアップロードまたはダウンロードフェーズ中に`403 Forbidden`エラーを返す可能性があります。
-
-これは、依存関係スキャンSBOM APIが認証にデフォルトの`CI_JOB_TOKEN`を必要とするために発生します。`CI_JOB_TOKEN`変数を（プロジェクトアクセストークンやパーソナルアクセストークンなどの）カスタムトークンでオーバーライドすると、カスタムトークンに`api`スコープがある場合でも、APIはリクエストを適切に認証できません。
-
-このイシューを解決するには、次のいずれかの操作を行います:
-
-- 推奨。`CI_JOB_TOKEN`のオーバーライドを削除します。定義済み変数をオーバーライドすると、予期しない動作が発生する可能性があります。詳細については、[CI/CD変数](../../../../ci/variables/_index.md#use-pipeline-variables)を参照してください。
-- 別の変数名を使用します。パイプラインの他の目的でカスタムトークンを使用する必要がある場合は、`CI_JOB_TOKEN`をオーバーライドする代わりに、`CUSTOM_ACCESS_TOKEN`のような別のCI/CD変数に格納します。
-
-GitLabは、依存関係スキャンAPIエンドポイントに対して[きめ細かいジョブ権限](../../../../ci/jobs/fine_grained_permissions.md)をサポートしていませんが、[イシュー578850](https://gitlab.com/gitlab-org/gitlab/-/issues/578850)でこの機能の追加が提案されています。
-
-### 警告: `grep: command not found` {#warning-grep-command-not-found}
-
-アナライザーイメージには、イメージのアタックサーフェスを小さくするために、最小限の依存関係が含まれています。その結果、`grep`のような他のイメージで一般的に見られるユーティリティがイメージから欠落しています。これにより、ジョブログに`/usr/bin/bash: line 3: grep: command not found`のような警告が表示される場合があります。この警告は、アナライザーの結果には影響せず、無視できます。
-
-### コンプライアンスフレームワークの互換性 {#compliance-framework-compatibility}
-
-GitLab Self-ManagedインスタンスでSBOMベースの依存関係スキャンを使用する場合、コンプライアンスフレームワークとの互換性について考慮事項があります:
-
-- GitLab.com: 「依存関係スキャンの実行」コンプライアンスコントロールは、SBOMベースの依存関係スキャンで正しく機能します。
-- 18.4以降のGitLab Self-Managedインスタンス: 従来の`gl-dependency-scanning-report.json`アーティファクトが生成されないため、「依存関係スキャンの実行」コンプライアンスコントロールは、SBOMベースの依存関係スキャン（`DS_ENFORCE_NEW_ANALYZER: 'true'`）を使用すると失敗する可能性があります。
-
-Self-Managedインスタンスの回避策: 「依存関係スキャンの実行」コントロールを必要とするコンプライアンスフレームワークチェックに合格する必要がある場合は、`v2`テンプレート（`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`）を使用できます。これにより、SBOMと依存関係スキャンレポートの両方が生成されます。
-
-コンプライアンスコントロールの詳細については、[GitLabのコンプライアンスコントロール](../../../compliance/compliance_frameworks/_index.md#gitlab-compliance-controls)を参照してください。
-
-### 解決ジョブは失敗するが、依存関係スキャンは引き続き実行される {#resolution-job-fails-but-dependency-scanning-still-runs}
-
-解決ジョブは自動的に実行されるため、`allow_failure: true`を設定します。解決ジョブが失敗した場合でも、`dependency-scanning`ジョブは引き続き実行されます。ロックファイルがリポジトリにコミットされているかどうかに応じて、スキャンはコミットされたファイルを使用するか、有効な場合は[マニフェストフォールバック](#manifest-fallback)にフォールバックします。
-
-[既知の制限](#dependency-resolution-limitations)を確認して、お使いのユースケースがサポートされているかを検証してください。
-
-解決の失敗を調査するには、失敗した解決ジョブのCI/CDジョブログを確認してください。ログには、DSアナライザーサービスコンテナの実行出力とビルドツールコマンドの出力が含まれます。サービスログが表示されない場合は、[サービスコンテナログをキャプチャ](../../../../ci/services/_index.md#capturing-service-container-logs)するために、`CI_DEBUG_SERVICES`を`"true"`に設定できます。
-
-必要に応じて、[依存関係解決を無効にし](#disable-dependency-resolution)、手動で生成されたロックファイルを代わりに使用できます。
-
-### エラー: `failed to verify certificate: x509: certificate signed by unknown authority` {#error-failed-to-verify-certificate-x509-certificate-signed-by-unknown-authority}
-
-依存関係スキャンアナライザーがホストに接続すると、次のエラーが発生する可能性があります。このエラーの原因は、依存関係スキャンアナライザーで使用されている証明書がホストによって信頼されていないことです。
-
-```plaintext
-failed to verify certificate: x509: certificate signed by unknown authority
-```
-
-このイシューを解決するには、自己署名証明書を`ADDITIONAL_CA_CERT_BUNDLE` CI/CD変数に指定します。この証明書は、依存関係スキャンアナライザーがホストに接続するときに使用されます。
-
-`ADDITIONAL_CA_CERT_BUNDLE`環境変数の値は証明書自体である必要があります:
-
-```yaml
-include:
-  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-
-dependency-scanning:
-  variables:
-    ADDITIONAL_CA_CERT_BUNDLE: |
-      -----BEGIN CERTIFICATE-----
-      <...>
-      -----END CERTIFICATE-----
-  before_script:
-    - echo "$ADDITIONAL_CA_CERT_BUNDLE" > /tmp/cacert.pem
-    - export SSL_CERT_FILE="/tmp/cacert.pem"
-```

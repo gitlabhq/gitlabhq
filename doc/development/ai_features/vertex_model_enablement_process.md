@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Vertex AI Model Enablement Process
+title: Gemini Enterprise Agent Platform Model Enablement Process
 ---
 
 ## Production Environment Setup
@@ -22,8 +22,8 @@ title: Vertex AI Model Enablement Process
 
 ### 3. Model Enablement
 
-- For Vertex AI managed models:
-  - Team enables the model via the Vertex AI console ("click on enable")
+- For Gemini Enterprise Agent Platform models:
+  - Team enables the model via the Gemini Enterprise Agent Platform console ("click on enable")
 - For custom configurations:
   - AIF team opens a ticket with Google for customization needs
 
@@ -75,7 +75,7 @@ title: Vertex AI Model Enablement Process
 ### Model Details
 
 - **Model Name**: [e.g., Codestral, Claude 3 Opus, etc.]
-- **Provider**: [e.g., Google Vertex AI, Anthropic, etc.]
+- **Provider**: [e.g., Gemini Enterprise Agent Platform, Anthropic, etc.]
 - **Model Version/Edition**: [e.g., v1, Sonnet, Haiku, etc.]
 
 ### Business Justification

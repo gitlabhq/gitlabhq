@@ -36,6 +36,52 @@ This separate environment protects from unintended consequences of running shell
 
 To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
+### Security implications of `agent-config.yml`
+
+The `.gitlab/duo/agent-config.yml` file controls how flows execute in CI/CD, including the
+commands that run in `setup_script`. Because of how flows run, changes to this file affect more
+than the user who commits them.
+
+#### Cross-user execution
+
+Flows run under the identity of the user who triggers them through [composite identity](../composite_identity.md).
+Commands in `setup_script` execute with the triggering user's composite identity credentials,
+not the credentials of the user who committed the configuration.
+
+A user with write access to `.gitlab/duo/agent-config.yml` can influence what runs in another
+user's runner environment. Modifications to this file affect the execution context of every
+user who later triggers a flow in the project.
+
+#### Exposed environment variables
+
+During `setup_script` execution, which runs outside Anthropic Sandbox Runtime (SRT),
+the following sensitive variables are present in the environment:
+
+- `GITLAB_OAUTH_TOKEN` and `GITLAB_TOKEN`: The triggering user's OAuth token
+  through composite identity.
+- `DUO_WORKFLOW_GIT_HTTP_PASSWORD`: The Git HTTP password.
+- `DUO_WORKFLOW_SERVICE_TOKEN`: The service token.
+- `DUO_WORKFLOW_GIT_USER_EMAIL` and `DUO_WORKFLOW_GIT_USER_NAME`: The triggering user's
+  email and name.
+
+For the full list of exposed variables, see [flow execution variables](execution_variables.md).
+
+#### Recommended protections
+
+To reduce the risk of unauthorized changes to the `.gitlab/duo/agent-config.yml` file:
+
+- [Protect your default branch](../../../user/project/repository/branches/protected.md) to prevent direct pushes.
+- Use [Code Owners](../../../user/project/codeowners/_index.md) to require approval from specific
+  owners before changes to `.gitlab/duo/agent-config.yml` are merged.
+  For example, add the following to your `CODEOWNERS` file:
+
+  ```plaintext
+  .gitlab/duo/agent-config.yml @your-group/security-reviewers
+  ```
+
+- Configure [approval rules](../../../user/project/merge_requests/approvals/rules.md) that require
+  review from trusted maintainers for merge requests that modify this file.
+
 ## Executor architecture
 
 When a flow runs in CI/CD, the runner:
@@ -230,7 +276,7 @@ and [configure a network policy](../environment_sandbox.md#configure-a-network-p
 (for example, firewall rules or network policies).
 
 To reduce job startup time by approximately 15-20 seconds, include the
-`@gitlab-org/duo-cli` npm package and the `glab` CLI in your custom image. This skips the download steps for these during flow startup.
+`@gitlab/duo-cli` npm package and the `glab` CLI in your custom image.
 The hardened image pre-installs both tools.
 
 ### Configure setup scripts
@@ -252,12 +298,83 @@ These commands complete the following actions:
 - Execute in the order specified.
 - Can be a single command or an array of commands.
 
-> [!note]
-> The user context for `setup_script` depends on the Docker image. The default
-> GitLab image runs as `root`. Custom images run as the user defined in the
-> image's `USER` directive. If your `setup_script` requires root access (for
-> example, to install system packages), ensure your custom image is configured
-> accordingly.
+The user context for `setup_script` depends on the Docker image. The default
+GitLab image runs as `root`. Custom images run as the user defined in the
+image's `USER` directive. If your `setup_script` requires root access (for
+example, to install system packages), ensure your custom image is configured
+accordingly.
+
+> [!warning]
+> `setup_script` commands run before SRT is applied and execute outside it.
+> These commands have access to all environment variables in the flow, including
+> the triggering user's OAuth token, service token, and identity details.
+> For the security model and recommended protections, see
+> [security implications of `agent-config.yml`](#security-implications-of-agent-configyml).
+
+### Use a custom image in an offline environment
+
+In offline environments where runners cannot reach external
+registries, you can prebuild a custom executor image that includes
+`@gitlab/duo-cli`. When the GitLab Duo CLI is already in the image, the
+flow startup skips the npm download step.
+
+Prerequisites:
+
+- Administrator access.
+- GitLab 18.9 or later.
+- Access to an online machine to build the image and download artifacts.
+
+To configure flows for an offline environment:
+
+1. On an online machine, build a custom image with the GitLab Duo CLI:
+
+   ```dockerfile
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
+   RUN npm install -g @gitlab/duo-cli@8.86.0
+   ```
+
+   Alternatively, to avoid npm entirely, download the standalone binary
+   from the [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
+
+   ```dockerfile
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
+   COPY duo-linux-x64 /usr/bin/duo
+   RUN chmod +x /usr/bin/duo
+   ```
+
+   To download the standalone binary, run the following command:
+
+   ```shell
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/8.86.0/duo-linux-x64" \
+     --output duo-linux-x64
+   ```
+
+1. Transfer the image to your offline environment.
+   For example, with Docker, run the following commands:
+
+   ```shell
+   # On an online machine
+   docker save my-duo-executor:latest -o duo-executor.tar
+
+   # Transfer `duo-executor.tar` to the offline environment
+
+   # On an offline machine
+   docker load -i duo-executor.tar
+   ```
+
+1. Push the image to your internal container registry.
+1. Set the custom image registry:
+   1. In the upper-right corner, select **Admin**.
+   1. In the left sidebar, select **GitLab Duo**.
+   1. Select **Change configuration**.
+   1. In the **Image registry** text box, enter your internal registry URL
+      (for example, `registry.internal.example.com`).
+1. In the top bar, select **Search or go to** and find your project.
+1. To use the custom image, update the `agent-config.yml` file:
+
+   ```yaml
+   image: registry.internal.example.com/duo-executor:latest
+   ```
 
 ### Configure caching
 

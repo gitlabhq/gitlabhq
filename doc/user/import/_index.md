@@ -40,7 +40,7 @@ A migration tool is available for some third-party platforms. Some support
 | [Perforce P4](third_party_systems/perforce.md)                                 | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
 | [Subversion](#migrate-from-subversion)                                         | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
 | [Team Foundation Version Control (TFVC)](third_party_systems/tfvc.md)          | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
-| [Jira (issues only)](../project/import/jira.md)                                | {{< no >}}              | {{< no >}}  | {{< yes >}}    | {{< no >}}             |
+| [Jira (issues only)](third_party_systems/jira.md)                              | {{< no >}}              | {{< no >}}  | {{< yes >}}    | {{< no >}}             |
 
 **Footnotes**:
 

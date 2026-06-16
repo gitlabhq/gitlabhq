@@ -15,6 +15,7 @@ import {
 } from '../code_snippet_alert/constants';
 
 export default {
+  name: 'PipelineEditorMessages',
   components: {
     GlAlert,
     CodeSnippetAlert,

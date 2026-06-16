@@ -46,6 +46,10 @@ module RuboCop
           end
         end
 
+        def external_dependency_checksum
+          FeatureFlags.all_config_checksum
+        end
+
         private
 
         def save_used_feature_flag(feature_flag_name)

@@ -85,6 +85,8 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :source_code_ma
 
   def filter_by(filter_text)
     click_button 'master'
+    expect_listbox_item('master')
+
     send_keys filter_text
   end
 end

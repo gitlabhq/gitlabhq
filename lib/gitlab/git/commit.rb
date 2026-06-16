@@ -335,7 +335,7 @@ module Gitlab
       end
 
       def parents
-        parent_ids.map { |oid| self.class.find(@repository, oid) }.compact
+        parent_ids.filter_map { |oid| self.class.find(@repository, oid) }
       end
 
       def stats

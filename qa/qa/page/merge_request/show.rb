@@ -322,10 +322,6 @@ module QA
           end
         end
 
-        def has_reports_tab?
-          has_css?('.reports-tab')
-        end
-
         def click_pipeline_link
           click_element('pipeline-id')
         end

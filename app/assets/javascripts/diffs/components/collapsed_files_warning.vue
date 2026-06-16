@@ -6,6 +6,7 @@ import { EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'CollapsedFilesWarning',
   components: {
     GlAlert,
     GlButton,

@@ -1052,7 +1052,9 @@ Supported attributes:
 | `issue_type`                              | string         | No       | The type of issue. One of `issue`, `incident`, `test_case` or `task`. Default is `issue`. |
 | `labels`                                  | string         | No       | Comma-separated label names to assign to the new issue. If a label does not already exist, this creates a new project label and assigns it to the issue.  |
 | `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
-| `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#retrieve-a-project-issue) to retrieve the issue's details. |
+| `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#retrieve-a-project-issue) to retrieve the issue's details. Mutually exclusive with `milestone`. |
+| `milestone`                               | string         | No       | The title of a project or ancestor-group milestone to assign the issue to. Matched exactly (case-sensitive). Mutually exclusive with `milestone_id`. |
+| `start_date`                              | string         | No       | The start date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238041) in GitLab 19.1. |
 | `title`                                   | string         | Yes      | The title of an issue. |
 | `weight`                                  | integer        | No       | The weight of the issue. Valid values are greater than or equal to 0. Premium and Ultimate only. |
 
@@ -1207,6 +1209,7 @@ At least one of the following parameters is required for the request to be succe
 - `:issue_type`
 - `:labels`
 - `:milestone_id`
+- `:start_date`
 - `:state_event`
 - `:title`
 
@@ -1230,8 +1233,10 @@ Supported attributes:
 | `epic_iid`     | integer | No | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5). Premium and Ultimate only. |
 | `issue_type`   | string  | No       | Updates the type of issue. One of `issue`, `incident`, or `test_case`. |
 | `labels`       | string  | No       | Comma-separated label names for an issue. Set to an empty string to unassign all labels. If a label does not already exist, this creates a new project label and assigns it to the issue. |
-| `milestone_id` | integer | No       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id` | integer | No       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone. Mutually exclusive with `milestone`.|
+| `milestone`    | string  | No       | The title of a project or ancestor-group milestone to assign the issue to. Matched exactly (case-sensitive). Mutually exclusive with `milestone_id`. |
 | `remove_labels`| string  | No       | Comma-separated label names to remove from an issue.                                                       |
+| `start_date`   | string  | No       | The start date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238041) in GitLab 19.1. |
 | `state_event`  | string  | No       | The state event of an issue. To close the issue, use `close`, and to reopen it, use `reopen`.                      |
 | `title`        | string  | No       | The title of an issue.                                                                                      |
 | `updated_at`   | string  | No       | When the issue was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project owner rights). Empty string or null values are not accepted.|

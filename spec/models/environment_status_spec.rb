@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentStatus do
+RSpec.describe EnvironmentStatus, feature_category: :environment_management do
   include ProjectForksHelper
 
-  let(:deployment)    { create(:deployment, :succeed, :review_app) }
+  let_it_be(:deployment) { create(:deployment, :succeed, :review_app) }
   let(:environment)   { deployment.environment }
   let(:project)       { deployment.project }
-  let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
-  let(:sha)           { deployment.sha }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
+  let(:sha) { deployment.sha }
 
   subject(:environment_status) { described_class.new(project, environment, merge_request, sha) }
 
@@ -103,9 +103,9 @@ RSpec.describe EnvironmentStatus do
     end
 
     context 'when a merge request has explicitly linked deployments' do
-      let(:merge_request) { create(:merge_request, :merged) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, :merged) }
 
-      let(:environment) do
+      let_it_be(:environment) do
         create(:environment, project: merge_request.target_project)
       end
 
@@ -196,11 +196,11 @@ RSpec.describe EnvironmentStatus do
     end
 
     context 'when environment is created on a target project' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
       let(:sha) { project.commit.sha }
-      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, sha: project.commit.sha, project: project) }
 
-      let(:merge_request) do
+      let_it_be(:merge_request) do
         create(
           :merge_request,
           source_project: project,
@@ -219,7 +219,7 @@ RSpec.describe EnvironmentStatus do
       end
 
       context 'when the build stops an environment' do
-        let!(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+        let_it_be(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
 
         it 'does not return environment status' do
           expect(subject.count).to eq(0)
@@ -247,7 +247,7 @@ RSpec.describe EnvironmentStatus do
       end
 
       context 'when multiple deployments in the same pipeline for the same environments' do
-        let!(:build2) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
+        let_it_be(:build2) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
 
         it 'returns unique entries' do
           expect(subject.count).to eq(1)
@@ -258,8 +258,8 @@ RSpec.describe EnvironmentStatus do
       end
 
       context 'when there is a deployment in a child pipeline' do
-        let!(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-        let!(:child_build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: child_pipeline) }
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:child_build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: child_pipeline) }
         let(:child_environment) { child_build.deployment.environment }
 
         it 'returns both parent and child entries' do

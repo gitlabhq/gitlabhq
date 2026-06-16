@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import { PDF_MAX_FILE_SIZE, PDF_MAX_PAGE_LIMIT } from '../../constants';
 
 export default {
+  name: 'RepositoryPdfViewer',
   components: { GlButton, PdfViewer },
   i18n: {
     tooLargeDescription: __('This PDF is too large to display. Please download to view.'),

@@ -211,7 +211,7 @@ RSpec.describe Label, feature_category: :team_planning, factory_default: :keep d
       # rubocop:enable Rails/SaveBang
 
       context 'when updating a label' do
-        let_it_be(:template_label) { create(:label, template: true) }
+        let_it_be(:template_label, freeze: false) { create(:label, template: true) }
 
         where(:lock_on_merge, :valid, :errors) do
           true         | false   | [validation_error]
@@ -254,6 +254,26 @@ RSpec.describe Label, feature_category: :team_planning, factory_default: :keep d
 
         expect(resource_label_event.reload.label_id).to be_nil
         expect(described_class.find_by(id: label.id)).to be_nil
+      end
+    end
+
+    describe 'strip_whitespace_from_title' do
+      it 'strips leading and trailing whitespace from the title' do
+        label = create(:label, title: '   Untrimmed   ')
+
+        expect(label.title).to eq('Untrimmed')
+      end
+
+      it 'does not write the title attribute when no whitespace needs stripping' do
+        label = create(:label, title: 'Already Stripped')
+
+        # Re-validate the label without changing anything. The callback runs
+        # but must not call `_write_attribute` on a no-op, so that a
+        # let_it_be-cached (and frozen) label can be re-validated without
+        # raising FrozenError.
+        expect(label).not_to receive(:[]=)
+
+        label.valid?
       end
     end
   end
@@ -315,7 +335,7 @@ RSpec.describe Label, feature_category: :team_planning, factory_default: :keep d
   end
 
   describe '#hook_attrs' do
-    let_it_be(:label) { build_stubbed(:label) }
+    let_it_be(:label, freeze: false) { build_stubbed(:label) }
 
     subject(:attrs) { label.hook_attrs }
 

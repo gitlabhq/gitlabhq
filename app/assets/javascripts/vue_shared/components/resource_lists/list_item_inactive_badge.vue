@@ -3,6 +3,7 @@ import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ListItemInactiveBadge',
   i18n: {
     deletionInProgress: __('Deletion in progress'),
     pendingDeletion: __('Pending deletion'),

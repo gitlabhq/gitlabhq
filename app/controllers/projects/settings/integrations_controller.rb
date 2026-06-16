@@ -29,6 +29,7 @@ module Projects
       urgency :low, [:test]
 
       def index
+        @hide_search_settings = true
         @integrations = @project.find_or_initialize_integrations
       end
 

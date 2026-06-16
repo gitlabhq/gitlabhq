@@ -30,6 +30,7 @@ export default {
       default: null,
     },
   },
+  emits: ['selectRevision'],
   data() {
     return {
       branches: [],

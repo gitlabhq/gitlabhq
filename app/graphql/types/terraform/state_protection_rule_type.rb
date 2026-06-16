@@ -8,6 +8,7 @@ module Types
         'who can write to a state based on project role and request source.'
 
       authorize :read_terraform_state
+      authorize_granular_token permissions: :read_terraform_state, boundary: :project, boundary_type: :project
 
       field :id,
         ::Types::GlobalIDType[::Terraform::StateProtectionRule],

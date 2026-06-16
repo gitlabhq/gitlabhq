@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Achievements::AwardedAchievementsController, feature_category: :user_profile do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:achievement) { create(:achievement, namespace: group) }
 
@@ -68,7 +68,7 @@ RSpec.describe Achievements::AwardedAchievementsController, feature_category: :u
       end
 
       context 'when a different user is authenticated' do
-        let_it_be(:other_user) { create(:user) }
+        let_it_be(:other_user, freeze: false) { create(:user) }
 
         before do
           sign_in(other_user)

@@ -1,10 +1,11 @@
 - page_title s_('Onboarding|Set up your profile')
 - add_page_specific_style 'page_bundles/registrations'
 - content_for :body_class, '!gl-bg-default'
+- button_text = s_('Onboarding|Continue')
 
 .row.gl-grow
   .gl-flex.gl-flex-col.gl-items-center.gl-w-full.gl-px-5.gl-pb-5
-    .new-project.gl-flex.gl-flex-col.gl-items-center.gl-w-full{ class: "@sm/panel:gl-w-auto" }
+    .new-project.gl-flex.gl-flex-col.gl-items-center.gl-w-full{ class: "@md/panel:gl-w-2/5" }
       %h2.gl-text-center= s_('Onboarding|Set up your profile')
 
       .gl-border.gl-rounded-lg.gl-mt-5.gl-p-6.gl-w-full
@@ -34,6 +35,6 @@
             = render Pajamas::ButtonComponent.new(href: skip_admin_registrations_profile_path, variant: :default, button_options: { data: { testid: 'skip-button' } }) do
               = s_('Onboarding|Skip')
             = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'submit-button' } }) do
-              = s_('Onboarding|Continue')
+              = button_text
 
-      = render 'devise/shared/terms_of_service_notice', button_text: s_('Onboarding|Continue')
+        = render_if_exists 'shared/sm_welcome_onboarding_terms_of_service_notice', button_text: button_text

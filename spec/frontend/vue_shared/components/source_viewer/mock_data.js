@@ -58,6 +58,7 @@ const COMMIT_DATA_MOCK = {
 export const BLAME_DATA_MOCK = [
   {
     lineno: 1,
+    span: 1,
     commit: { author: 'Peter', sha: 'abc', parentSha: 'parent-abc' },
     previousPath: 'old/path.js',
     index: 0,
@@ -66,6 +67,7 @@ export const BLAME_DATA_MOCK = [
   },
   {
     lineno: 2,
+    span: 1,
     commit: { author: 'Sarah', sha: 'def', parentSha: 'parent-def' },
     previousPath: 'old/path2.js',
     index: 1,
@@ -73,6 +75,7 @@ export const BLAME_DATA_MOCK = [
   },
   {
     lineno: 3,
+    span: 1,
     commit: { author: 'Peter', sha: 'ghi', parentSha: 'parent-ghi' },
     previousPath: 'old/path3.js',
     index: 2,

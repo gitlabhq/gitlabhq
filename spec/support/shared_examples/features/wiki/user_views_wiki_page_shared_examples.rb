@@ -153,7 +153,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'does not show the "Edit" button' do
       visit(wiki_page_path(wiki, wiki_page, version_id: wiki_page.versions.last.id))
 
-      expect(page).not_to have_selector('[data-testid="wiki-edit-button"]')
+      expect(page).to have_no_selector('[data-testid="wiki-edit-button"]')
     end
 
     context 'show the diff' do
@@ -165,16 +165,6 @@ RSpec.shared_examples 'User views a wiki page' do
         expect(page).to have_link('Side-by-side', href: "#{diff_path}&view=parallel")
         expect(page).to have_link("View page @ #{commit.short_id}", href: wiki_page_path(wiki, wiki_page, version_id: commit))
         expect(page).to have_css(".diff-file[data-blob-diff-path=\"#{diff_path}\"]")
-      end
-
-      it 'links to the correct diffs' do
-        visit wiki_page_path(wiki, wiki_page, action: :history)
-
-        commit1 = wiki.commit('HEAD^')
-        commit2 = wiki.commit
-
-        expect(page).to have_link('created page: home', href: wiki_page_path(wiki, wiki_page, version_id: commit1, action: :diff))
-        expect(page).to have_link('updated home', href: wiki_page_path(wiki, wiki_page, version_id: commit2, action: :diff))
       end
 
       it 'between the current and the previous version of a page', :js do
@@ -198,8 +188,8 @@ RSpec.shared_examples 'User views a wiki page' do
         expect(page).to have_content('updated home')
         expect(page).to have_content('Showing 1 changed file with 1 addition and 3 deletions')
         expect(page).to have_content('some link')
-        expect(page).not_to have_content('latest home change')
-        expect(page).not_to have_content('another link')
+        expect(page).to have_no_content('latest home change')
+        expect(page).to have_no_content('another link')
 
         expect_diff_links(commit)
       end
@@ -249,18 +239,6 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has XSS in its message' do
-    before do
-      wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update') # rubocop:disable Rails/SaveBang
-    end
-
-    it 'safely displays the message' do
-      visit(wiki_page_path(wiki, wiki_page, action: :history))
-
-      expect(page).to have_content('<script>alert(true)<script>')
-    end
-  end
-
   context 'when a page has headings', :js do
     before do
       wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
@@ -294,13 +272,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     it 'does not show "Edit" button' do
-      expect(page).not_to have_selector('[data-testid="wiki-edit-button"]')
-    end
-
-    it 'shows error' do
-      page.within(:css, '.flash-notice') do
-        expect(page).to have_content('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
-      end
+      expect(page).to have_no_selector('[data-testid="wiki-edit-button"]')
     end
   end
 
@@ -315,5 +287,59 @@ RSpec.shared_examples 'User views a wiki page' do
     click_link "Create your first page"
 
     expect(page).to have_content('New page')
+  end
+end
+
+RSpec.shared_examples 'User views a wiki page non-Vue surfaces' do
+  let(:wiki_page) do
+    create(:wiki_page, wiki: wiki, title: 'home', content: 'home content')
+  end
+
+  before do
+    sign_in(user)
+  end
+
+  context 'when a page has history' do
+    before do
+      wiki_page.update(message: 'updated home', content: 'updated [some link](other-page)') # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+    end
+
+    it 'links to the correct diffs' do
+      visit wiki_page_path(wiki, wiki_page, action: :history)
+
+      commit1 = wiki.commit('HEAD^')
+      commit2 = wiki.commit
+
+      expect(page).to have_link('created page: home', href: wiki_page_path(wiki, wiki_page, version_id: commit1, action: :diff))
+      expect(page).to have_link('updated home', href: wiki_page_path(wiki, wiki_page, version_id: commit2, action: :diff))
+    end
+  end
+
+  context 'when a page has XSS in its message' do
+    before do
+      wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update') # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+    end
+
+    it 'safely displays the message' do
+      visit(wiki_page_path(wiki, wiki_page, action: :history))
+
+      expect(page).to have_content('<script>alert(true)<script>')
+    end
+  end
+
+  context 'when page has invalid content encoding' do
+    let(:content) { (+'whatever').force_encoding('ISO-8859-1') }
+
+    before do
+      allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)
+
+      visit(wiki_page_path(wiki, wiki_page))
+    end
+
+    it 'shows error' do
+      page.within(:css, '.flash-notice') do
+        expect(page).to have_content('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+      end
+    end
   end
 end

@@ -6,12 +6,12 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
   include GraphqlHelpers
   include Presentable
 
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:stranger) { create(:user) }
-  let_it_be(:link_filepath) { '/direct/asset/link/path' }
-  let_it_be(:released_at) { Time.now - 1.day }
+  let_it_be(:developer, freeze: false) { create(:user) }
+  let_it_be(:guest, freeze: false) { create(:user) }
+  let_it_be(:reporter, freeze: false) { create(:user) }
+  let_it_be(:stranger, freeze: false) { create(:user) }
+  let_it_be(:link_filepath, freeze: false) { '/direct/asset/link/path' }
+  let_it_be(:released_at, freeze: false) { Time.now - 1.day }
 
   let(:base_url_params) { { scope: 'all', release_tag: release.tag } }
   let(:opened_url_params) { { state: 'opened', **base_url_params } }
@@ -449,12 +449,12 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
 
   describe "ensures that the correct data is returned based on the project's visibility and the user's access level" do
     context 'when the project is private' do
-      let_it_be(:project) { create(:project, :repository, :private) }
-      let_it_be(:milestone_1) { create(:milestone, project: project) }
-      let_it_be(:milestone_2) { create(:milestone, project: project) }
-      let_it_be(:release, reload: true) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
-      let_it_be(:release_link_1) { create(:release_link, release: release) }
-      let_it_be(:release_link_2) { create(:release_link, release: release, filepath: link_filepath) }
+      let_it_be(:project, freeze: false) { create(:project, :repository, :private) }
+      let_it_be(:milestone_1, freeze: false) { create(:milestone, project: project) }
+      let_it_be(:milestone_2, freeze: false) { create(:milestone, project: project) }
+      let_it_be_with_reload(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
+      let_it_be(:release_link_1, freeze: false) { create(:release_link, release: release) }
+      let_it_be(:release_link_2, freeze: false) { create(:release_link, release: release, filepath: link_filepath) }
 
       before_all do
         project.add_developer(developer)
@@ -491,12 +491,12 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
     end
 
     context 'when the project is public' do
-      let_it_be(:project) { create(:project, :repository, :public) }
-      let_it_be(:milestone_1) { create(:milestone, project: project) }
-      let_it_be(:milestone_2) { create(:milestone, project: project) }
-      let_it_be(:release, reload: true) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
-      let_it_be(:release_link_1) { create(:release_link, release: release) }
-      let_it_be(:release_link_2) { create(:release_link, release: release, filepath: link_filepath) }
+      let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+      let_it_be(:milestone_1, freeze: false) { create(:milestone, project: project) }
+      let_it_be(:milestone_2, freeze: false) { create(:milestone, project: project) }
+      let_it_be_with_reload(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
+      let_it_be(:release_link_1, freeze: false) { create(:release_link, release: release) }
+      let_it_be(:release_link_2, freeze: false) { create(:release_link, release: release, filepath: link_filepath) }
 
       before_all do
         project.add_developer(developer)
@@ -584,7 +584,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
   describe 'milestone order' do
     let(:path) { path_prefix }
     let(:current_user) { stranger }
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be_with_reload(:release) { create(:release, project: project) }
 
     let(:release_fields) do

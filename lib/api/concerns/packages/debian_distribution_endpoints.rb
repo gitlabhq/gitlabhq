@@ -36,12 +36,12 @@ module API
                   coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                   regexp: Gitlab::Regex.debian_component_regex,
                   desc: 'The list of Components',
-                  documentation: { example: 'main' }
+                  documentation: { example: %w[main] }
                 optional :architectures, type: Array[String],
                   coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                   regexp: Gitlab::Regex.debian_architecture_regex,
                   desc: 'The list of Architectures',
-                  documentation: { example: 'amd64' }
+                  documentation: { example: %w[amd64] }
               end
             end
 

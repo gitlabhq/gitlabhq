@@ -27,8 +27,8 @@ module API
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests) of the template'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of templates available to this project' do
-        detail 'This endpoint was introduced in GitLab 11.4'
+      desc 'List all templates of a particular type' do
+        detail 'Lists all templates of a specified type for a project.'
         is_array true
         success Entities::TemplatesList
         tags ['project_templates']
@@ -49,8 +49,8 @@ module API
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
       end
 
-      desc 'Download a template available to this project' do
-        detail 'This endpoint was introduced in GitLab 11.4'
+      desc 'Retrieve a template of a particular type' do
+        detail 'Retrieves a template of a specified type for a project.'
         success Entities::License
         tags ['project_templates']
         failure [

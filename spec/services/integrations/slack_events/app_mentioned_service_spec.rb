@@ -180,18 +180,15 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
 
       context 'when post_ephemeral raises an HTTP error' do
         before do
-          allow(Gitlab::HTTP).to receive(:post).and_call_original
-          allow(Gitlab::HTTP).to receive(:post)
-            .with(a_string_ending_with('reactions.add'), anything)
-            .and_return({ 'ok' => true })
-          allow(Gitlab::HTTP).to receive(:post)
-            .with(a_string_ending_with('chat.postEphemeral'), anything)
-            .and_raise(Errno::ECONNREFUSED, 'error')
+          stub_request(:post, reactions_add_url).to_return(
+            status: 200, body: { ok: true }.to_json, headers: { 'Content-Type' => 'application/json' })
+          stub_request(:post, post_ephemeral_url).to_raise(Errno::ECONNREFUSED.new('error'))
         end
 
-        it 'tracks the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
-            .with(instance_of(Errno::ECONNREFUSED), slack_workspace_id: slack_workspace_id)
+        it 'logs the error via Slack::API and does not raise' do
+          expect(Gitlab::IntegrationsLogger).to receive(:error).with(
+            hash_including(message: 'Slack API error when posting ephemeral message')
+          )
 
           is_expected.to be_success
         end
@@ -219,7 +216,7 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             body: hash_including(
               'channel' => channel_id,
               'user' => slack_user_id,
-              'text' => 'You do not have access to this feature yet.'
+              'text' => a_string_including('You do not have access to this feature yet.')
             )
           )
         end
@@ -241,16 +238,6 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
       end
 
       context 'when feature flag is enabled' do
-        let(:thread_replies_response) do
-          {
-            ok: true,
-            messages: [
-              { user: slack_user_id, text: event_text, ts: message_ts },
-              { user: 'U_OTHER', text: 'a reply', ts: '1234567891.000001' }
-            ]
-          }
-        end
-
         before do
           stub_feature_flags(slack_duo_agent: user)
           allow_next_instance_of(ChatNames::FindUserService) do |service|
@@ -264,17 +251,13 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
             headers: { 'Content-Type' => 'application/json' })
           stub_request(:post, post_message_url).to_return(status: 200, body: { ok: true }.to_json,
             headers: { 'Content-Type' => 'application/json' })
-          stub_request(:get, conversations_replies_url).with(query: hash_including({}))
-            .to_return(status: 200, body: thread_replies_response.to_json,
-              headers: { 'Content-Type' => 'application/json' })
+          stub_request(:post, post_ephemeral_url).to_return(status: 200, body: { ok: true }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
         end
 
         context 'when user does not have Duo Agent Platform access' do
           before do
             allow(user).to receive(:allowed_to_use?).with(:duo_agent_platform).and_return(false)
-
-            stub_request(:post, post_ephemeral_url).to_return(status: 200, body: { ok: true }.to_json,
-              headers: { 'Content-Type' => 'application/json' })
           end
 
           it 'adds lock reaction and posts ephemeral Duo Agent Platform message' do
@@ -287,36 +270,10 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
               body: hash_including(
                 'channel' => channel_id,
                 'user' => slack_user_id,
-                'text' => 'This feature requires GitLab Duo Agent Platform.'
+                'text' => a_string_including('This feature requires GitLab Duo Agent Platform.')
               )
             )
           end
-        end
-
-        it 'adds eyes reaction, replies in thread, then replaces with checkmark' do
-          is_expected.to be_success
-
-          expect(WebMock).to have_requested(:post, reactions_add_url).with(
-            body: hash_including('name' => 'eyes', 'channel' => channel_id, 'timestamp' => message_ts)
-          )
-          expect(WebMock).to have_requested(:post, post_message_url).with(
-            body: hash_including('channel' => channel_id, 'thread_ts' => message_ts)
-          )
-          expect(WebMock).to have_requested(:post, reactions_remove_url).with(
-            body: hash_including('name' => 'eyes', 'channel' => channel_id, 'timestamp' => message_ts)
-          )
-          expect(WebMock).to have_requested(:post, reactions_add_url).with(
-            body: hash_including('name' => 'white_check_mark', 'channel' => channel_id, 'timestamp' => message_ts)
-          )
-        end
-
-        it 'posts WIP reply with correct authorization header' do
-          is_expected.to be_success
-
-          expect(WebMock).to have_requested(:post, post_message_url).with(
-            body: hash_including('text' => described_class::WIP_REPLY),
-            headers: { 'Authorization' => "Bearer #{slack_installation.bot_access_token}" }
-          )
         end
 
         it 'does not call the Slack users.info API' do
@@ -325,270 +282,12 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           expect(WebMock).not_to have_requested(:get, "#{Slack::API::BASE_URL}/users.info")
         end
 
-        context 'when message is a root mention (single message, no existing thread)' do
-          it 'fetches thread context and replies in thread' do
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:get, conversations_replies_url).with(
-              query: hash_including('channel' => channel_id, 'ts' => message_ts)
-            )
-            expect(WebMock).to have_requested(:post, post_message_url).with(
-              body: hash_including('thread_ts' => message_ts)
-            )
-          end
-        end
-
-        context 'when message is in an existing thread' do
-          let(:thread_ts) { '1111111111.000001' }
-          let(:params) do
-            {
-              team_id: slack_workspace_id,
-              event: {
-                user: slack_user_id,
-                channel: channel_id,
-                ts: message_ts,
-                thread_ts: thread_ts,
-                text: event_text
-              }
-            }
+        it 'calls trigger_duo_flow and returns success' do
+          expect_next_instance_of(described_class) do |service|
+            expect(service).to receive(:trigger_duo_flow).with(user).and_call_original
           end
 
-          it 'fetches replies using thread_ts and replies in the parent thread' do
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:get, conversations_replies_url).with(
-              query: hash_including('channel' => channel_id, 'ts' => thread_ts)
-            )
-            expect(WebMock).to have_requested(:post, post_message_url).with(
-              body: hash_including('thread_ts' => thread_ts)
-            )
-          end
-        end
-
-        context 'when thread has multiple messages with linked and unlinked users' do
-          let(:other_user) { create(:user, username: 'other_dev') }
-          let(:other_chat_name) do
-            create(:chat_name, user: other_user, team_id: slack_installation.team_id, chat_id: 'U999OTHER')
-          end
-
-          let(:unlinked_user_id) { 'U_UNKNOWN' }
-          let(:thread_replies_response) do
-            {
-              ok: true,
-              messages: [
-                { user: slack_user_id, text: 'Can someone help?', ts: '1234567890.000001' },
-                { user: other_chat_name.chat_id, text: 'Sure!', ts: '1234567891.000001' },
-                { user: unlinked_user_id, text: 'Me too', ts: '1234567892.000001' },
-                { user: slack_user_id, text: event_text, ts: message_ts }
-              ]
-            }
-          end
-
-          it 'builds thread context with participants and conversation sections',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/593435' do
-            service = described_class.new(params)
-            thread_context = nil
-
-            allow(service).to receive(:generate_response) do |ctx|
-              thread_context = ctx
-              described_class::WIP_REPLY
-            end
-
-            service.execute
-
-            expect(thread_context).to include('## Participants')
-            expect(thread_context).to include("Slack: #{slack_user_id} | GitLab: @#{user.username}")
-            expect(thread_context).to include("Slack: #{other_chat_name.chat_id} | GitLab: @other_dev")
-            expect(thread_context).to include("Slack: #{unlinked_user_id}")
-            expect(thread_context).to exclude("#{unlinked_user_id} | GitLab:")
-            expect(thread_context).to include('## Conversation')
-            expect(thread_context).to include("#{slack_user_id}: Can someone help?")
-          end
-        end
-
-        context 'when thread contains a bot message' do
-          let(:bot_id) { 'B0123BOT' }
-          let(:thread_replies_response) do
-            {
-              ok: true,
-              messages: [
-                { user: slack_user_id, text: 'hello', ts: '1234567890.000001' },
-                { bot_id: bot_id, text: 'automated response', ts: '1234567891.000001' },
-                { user: slack_user_id, text: event_text, ts: message_ts }
-              ]
-            }
-          end
-
-          it 'succeeds and posts a reply' do
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:post, post_message_url)
-          end
-        end
-
-        context 'when conversations.replies returns an error' do
-          before do
-            stub_request(:get, conversations_replies_url).with(query: hash_including({}))
-              .to_return(status: 200, body: { ok: false, error: 'channel_not_found' }.to_json,
-                headers: { 'Content-Type' => 'application/json' })
-          end
-
-          it 'logs the error, falls back gracefully, and still posts a reply' do
-            expect(Gitlab::IntegrationsLogger).to receive(:error).with(
-              hash_including(message: 'Slack API error when fetching thread')
-            )
-
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:post, post_message_url).with(
-              body: hash_including('text' => described_class::WIP_REPLY)
-            )
-          end
-        end
-
-        context 'when conversations.replies raises an HTTP error' do
-          before do
-            stub_request(:get, conversations_replies_url).with(query: hash_including({}))
-              .to_raise(Errno::ECONNREFUSED.new('error'))
-          end
-
-          it 'tracks the exception, falls back gracefully, and still posts a reply' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-              .with(instance_of(Errno::ECONNREFUSED), slack_workspace_id: slack_workspace_id)
-
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:post, post_message_url).with(
-              body: hash_including('text' => described_class::WIP_REPLY)
-            )
-          end
-        end
-
-        context 'when build_user_map raises an unexpected error' do
-          before do
-            allow(ChatName).to receive(:for_team_and_chat_ids).and_raise(ActiveRecord::StatementInvalid, 'db error')
-          end
-
-          it 'tracks the exception and still posts a reply' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-              .with(instance_of(ActiveRecord::StatementInvalid), slack_workspace_id: slack_workspace_id)
-
-            is_expected.to be_success
-
-            expect(WebMock).to have_requested(:post, post_message_url).with(
-              body: hash_including('text' => described_class::WIP_REPLY)
-            )
-          end
-        end
-
-        context 'when reactions.add raises an HTTP error' do
-          before do
-            allow(Gitlab::HTTP).to receive(:post).and_call_original
-            allow(Gitlab::HTTP).to receive(:post)
-              .with(a_string_ending_with('reactions.add'), anything)
-              .and_raise(Errno::ECONNREFUSED, 'error')
-          end
-
-          it 'tracks the exception and continues' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-              .with(instance_of(Errno::ECONNREFUSED), slack_workspace_id: slack_workspace_id)
-              .at_least(:once)
-
-            is_expected.to be_success
-          end
-        end
-
-        context 'when reactions.remove raises an HTTP error' do
-          before do
-            allow(Gitlab::HTTP).to receive(:post).and_call_original
-            allow(Gitlab::HTTP).to receive(:post)
-              .with(a_string_ending_with('reactions.remove'), anything)
-              .and_raise(Errno::ECONNREFUSED, 'error')
-            stub_request(:post, reactions_add_url).to_return(status: 200, body: { ok: true }.to_json,
-              headers: { 'Content-Type' => 'application/json' })
-            stub_request(:post, post_message_url).to_return(status: 200, body: { ok: true }.to_json,
-              headers: { 'Content-Type' => 'application/json' })
-          end
-
-          it 'tracks the exception and continues' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-              .with(instance_of(Errno::ECONNREFUSED), slack_workspace_id: slack_workspace_id)
-
-            is_expected.to be_success
-          end
-        end
-
-        context 'when reactions.remove returns an error' do
-          before do
-            stub_request(:post, reactions_remove_url).to_return(
-              status: 200,
-              body: { ok: false, error: 'no_reaction' }.to_json,
-              headers: { 'Content-Type' => 'application/json' }
-            )
-          end
-
-          it 'logs the error and returns success' do
-            expect(Gitlab::IntegrationsLogger).to receive(:error).with(
-              hash_including(message: 'Slack API error when removing reaction')
-            )
-
-            is_expected.to be_success
-          end
-        end
-
-        context 'when chat.postMessage returns an error' do
-          before do
-            stub_request(:post, post_message_url).to_return(
-              status: 200,
-              body: { ok: false, error: 'channel_not_found' }.to_json,
-              headers: { 'Content-Type' => 'application/json' }
-            )
-          end
-
-          it 'logs the error and returns success' do
-            expect(Gitlab::IntegrationsLogger).to receive(:error).with(
-              hash_including(message: 'Slack API error when posting response')
-            )
-
-            is_expected.to be_success
-          end
-        end
-
-        context 'when chat.postMessage raises an HTTP error' do
-          before do
-            allow(Gitlab::HTTP).to receive(:post).and_call_original
-            allow(Gitlab::HTTP).to receive(:post)
-              .with(a_string_ending_with('chat.postMessage'), anything)
-              .and_raise(Errno::ECONNREFUSED, 'error')
-          end
-
-          it 'tracks the exception and continues' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-              .with(instance_of(Errno::ECONNREFUSED), slack_workspace_id: slack_workspace_id)
-
-            is_expected.to be_success
-          end
-        end
-
-        context 'when Slack API returns a non-hash error response' do
-          before do
-            stub_request(:post, post_message_url).to_return(
-              status: 200,
-              body: 'unexpected string response',
-              headers: { 'Content-Type' => 'text/plain' }
-            )
-          end
-
-          it 'logs the error with to_s fallback' do
-            expect(Gitlab::IntegrationsLogger).to receive(:error).with(
-              hash_including(
-                message: 'Slack API error when posting response',
-                response: a_kind_of(String)
-              )
-            )
-
-            is_expected.to be_success
-          end
+          is_expected.to be_success
         end
       end
     end

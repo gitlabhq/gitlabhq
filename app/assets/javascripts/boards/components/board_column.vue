@@ -60,6 +60,11 @@ export default {
       required: false,
       default: null,
     },
+    focused: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -137,11 +142,13 @@ export default {
           :show-new-form="showNewForm"
           :column-index="columnIndex"
           :dragged-item-id="draggedItemId"
+          :focused="focused"
           @dragStop="$emit('dragStop')"
           @dragStart="$emit('dragStart', $event)"
           @toggleNewForm="toggleNewForm"
           @setFilters="$emit('setFilters', $event)"
           @cannot-find-active-item="$emit('cannot-find-active-item')"
+          @focus-adjacent="$emit('focus-adjacent', $event)"
         />
       </div>
     </div>

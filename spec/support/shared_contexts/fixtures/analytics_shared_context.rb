@@ -4,10 +4,10 @@ RSpec.shared_context 'Analytics fixtures shared context' do
   include CycleAnalyticsHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, namespace: group) }
-  let_it_be(:user) { create(:user, :admin) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: group) }
+  let_it_be(:user, freeze: false) { create(:user, :admin) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
 
   let(:issue) { create(:issue, project: project, created_at: 4.days.ago) }
   let(:issue_1) { create(:issue, project: project, created_at: 5.days.ago) }

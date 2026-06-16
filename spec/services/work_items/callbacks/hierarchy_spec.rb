@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_management do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
-  let_it_be(:work_item) { create(:work_item, project: project) }
-  let_it_be(:parent_work_item) { create(:work_item, project: project) }
-  let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
-  let_it_be(:existing_link) { create(:parent_link, work_item: child_work_item, work_item_parent: work_item) }
+  let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
+  let_it_be(:parent_work_item, freeze: false) { create(:work_item, project: project) }
+  let_it_be(:child_work_item, freeze: false) { create(:work_item, :task, project: project) }
+  let_it_be(:existing_link, freeze: false) do
+    create(:parent_link, work_item: child_work_item, work_item_parent: work_item)
+  end
 
   let(:callback) { described_class.new(issuable: work_item, current_user: user, params: params) }
   let(:not_found_error) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
@@ -77,9 +79,9 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
     end
 
     context 'when updating children' do
-      let_it_be(:child_work_item2) { create(:work_item, :task, project: project) }
-      let_it_be(:child_work_item3) { create(:work_item, :task, project: project) }
-      let_it_be(:child_work_item4) { create(:work_item, :task, project: project) }
+      let_it_be(:child_work_item2, freeze: false) { create(:work_item, :task, project: project) }
+      let_it_be(:child_work_item3, freeze: false) { create(:work_item, :task, project: project) }
+      let_it_be(:child_work_item4, freeze: false) { create(:work_item, :task, project: project) }
 
       context 'when user has insufficient permissions to link work items' do
         let(:params) { { children: [child_work_item4] } }
@@ -140,7 +142,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
         end
 
         context 'when child type is invalid' do
-          let_it_be(:child_issue) { create(:work_item, project: project) }
+          let_it_be(:child_issue, freeze: false) { create(:work_item, project: project) }
 
           let(:params) { { children: [child_issue] } }
 
@@ -154,7 +156,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
     end
 
     context 'when updating parent' do
-      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
 
       let(:params) { { parent: parent_work_item } }
 
@@ -197,7 +199,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
         end
 
         context 'when type is invalid' do
-          let_it_be(:parent_task) { create(:work_item, :task, project: project) }
+          let_it_be(:parent_task, freeze: false) { create(:work_item, :task, project: project) }
 
           let(:params) { { parent: parent_task } }
 
@@ -225,7 +227,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
           end
 
           context 'when other hierarchy adjacent is provided' do
-            let_it_be(:other_hierarchy_adjacent) { create(:parent_link).work_item }
+            let_it_be(:other_hierarchy_adjacent, freeze: false) { create(:parent_link).work_item }
 
             let(:params) do
               { parent: parent_work_item, adjacent_work_item: other_hierarchy_adjacent, relative_position: 'AFTER' }

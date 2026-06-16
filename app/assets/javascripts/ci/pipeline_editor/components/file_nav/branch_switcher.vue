@@ -6,6 +6,7 @@ import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/curren
 import BranchSelector from '../shared/branch_selector.vue';
 
 export default {
+  name: 'BranchSwitcher',
   i18n: {
     dropdownHeader: __('Switch branch'),
     fetchError: __('Unable to fetch branch list for this project.'),

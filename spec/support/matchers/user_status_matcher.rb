@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-RSpec::Matchers.define :show_user_status do |status|
-  match do |page|
-    expect(page).to have_selector(".user-status-emoji[title='#{status.message}']")
+require_relative '../helpers/capybara_node_helpers'
 
-    # The same user status might be displayed multiple times on the page
-    emoji_span = page.first(".user-status-emoji[title='#{status.message}']")
-    page.within(emoji_span) do
-      expect(page).to have_emoji(status.emoji)
-    end
+RSpec::Matchers.define :show_user_status do |status|
+  include CapybaraNodeHelpers
+
+  selector = ".user-status-emoji[title='#{status.message}'] " \
+    "gl-emoji[data-name='#{status.emoji}']"
+
+  match do |page|
+    capybara_node_from(page).has_selector?(selector)
+  end
+
+  match_when_negated do |page|
+    capybara_node_from(page).has_no_selector?(selector)
   end
 end

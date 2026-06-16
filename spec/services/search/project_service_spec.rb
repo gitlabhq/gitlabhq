@@ -37,4 +37,44 @@ RSpec.describe Search::ProjectService, :with_current_organization, feature_categ
       service_with_type.allowed_scopes
     end
   end
+
+  describe '#scope' do
+    let_it_be(:private_project) { create(:project, :private) }
+
+    subject(:resolved_scope) { described_class.new(member, private_project, params).scope }
+
+    context 'when the user can access the requested scope' do
+      let_it_be(:member) { create(:user, developer_of: private_project) }
+
+      let(:params) { { search: 'test', scope: 'blobs' } }
+
+      it 'returns the requested scope' do
+        expect(resolved_scope).to eq('blobs')
+      end
+    end
+
+    context 'when the user cannot access the requested scope' do
+      let_it_be(:member) { create(:user, guest_of: private_project) }
+
+      let(:params) { { search: 'test', scope: 'blobs' } }
+
+      it 'falls back to the first scope the user can access' do
+        expect(resolved_scope).to eq('work_items')
+      end
+    end
+
+    context 'when a custom default search scope is configured and accessible' do
+      let_it_be(:member) { create(:user, developer_of: private_project) }
+
+      let(:params) { { search: 'test', scope: 'projects' } }
+
+      before do
+        stub_application_setting(default_search_scope: 'merge_requests')
+      end
+
+      it 'returns the configured default scope' do
+        expect(resolved_scope).to eq('merge_requests')
+      end
+    end
+  end
 end

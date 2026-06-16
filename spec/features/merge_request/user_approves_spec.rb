@@ -11,35 +11,24 @@ RSpec.describe 'Merge request > User approves', :js, feature_category: :code_rev
     project.add_developer(user)
 
     sign_in(user)
-
-    visit project_merge_request_path(project, merge_request)
   end
 
   it 'approves merge request' do
+    visit project_merge_request_path(project, merge_request)
     click_approval_button('Approve')
     expect(page).to have_content('Approved by you')
 
-    verify_approvals_count_on_index!
+    visit(project_merge_requests_path(project, state: :all))
+    expect(page).to have_selector('[data-testid="mr-approvals"][aria-label="1 approval"]')
 
+    visit project_merge_request_path(project, merge_request)
     click_approval_button('Revoke approval')
     expect(page).to have_content('Approval is optional')
-  end
-
-  def verify_approvals_count_on_index!
-    visit(project_merge_requests_path(project, state: :all))
-    expect(
-      page.all('[data-testid="mr-approvals"]').any? do |item|
-        item["aria-label"] == "1 approval"
-      end
-    ).to be true
-    visit project_merge_request_path(project, merge_request)
   end
 
   def click_approval_button(action)
     page.within('.mr-state-widget') do
       click_button(action)
     end
-
-    wait_for_requests
   end
 end

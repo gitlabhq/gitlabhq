@@ -21,6 +21,7 @@ module API
             ]
           end
 
+          route_setting :authorization, skip_granular_token_authorization: :internal_testing
           get do
             # Fetch runtime coverage data which is tracked during E2E spec execution
             # Returns full line-level coverage data: { "file.rb" => { "1" => "5", "2" => "3" } }
@@ -28,6 +29,7 @@ module API
             ::Coverband.configuration.store.coverage(::Coverband::RUNTIME_TYPE, skip_hash_check: true)
           end
 
+          route_setting :authorization, skip_granular_token_authorization: :internal_testing
           delete do
             ::Coverband.configuration.store.clear!
 

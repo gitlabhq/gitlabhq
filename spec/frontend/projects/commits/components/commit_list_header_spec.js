@@ -22,24 +22,35 @@ describe('CommitListHeader', () => {
     push: jest.fn(),
   };
 
-  const createComponent = (path = 'README.md') => {
+  const createComponent = ({
+    filePath = 'README.md',
+    currentRef = '',
+    refType = 'heads',
+    routePath = '/dev/README.md',
+    routeParams = {},
+  } = {}) => {
     wrapper = shallowMountExtended(CommitListHeader, {
       provide: {
         projectRootPath: 'gitlab-org/gitlab',
         projectFullPath: 'gitlab-org/gitlab',
         projectId: '1',
         escapedRef: 'feature',
-        refType: 'heads',
+        refType,
         rootRef: 'main',
         browseFilesPath,
         commitsFeedPath,
       },
+      propsData: {
+        currentRef,
+        filePath,
+      },
       mocks: {
         $router: mockRouter,
         $route: {
-          path: '/dev/README.md',
+          path: routePath,
           params: {
-            path,
+            path: filePath,
+            ...routeParams,
           },
         },
       },
@@ -120,6 +131,28 @@ describe('CommitListHeader', () => {
       });
     });
 
+    describe('refSelectorValue', () => {
+      it('uses escapedRef when currentRef is not provided', () => {
+        createComponent();
+        expect(findRefSelector().props('value')).toBe('refs/heads/feature');
+      });
+
+      it('uses currentRef when provided', () => {
+        createComponent({ currentRef: 'develop' });
+        expect(findRefSelector().props('value')).toBe('refs/heads/develop');
+      });
+
+      it('uses currentRef without refType prefix when refType is absent', () => {
+        createComponent({ currentRef: 'develop', refType: '' });
+        expect(findRefSelector().props('value')).toBe('develop');
+      });
+
+      it('falls back to escapedRef when currentRef is empty string', () => {
+        createComponent({ currentRef: '' });
+        expect(findRefSelector().props('value')).toBe('refs/heads/feature');
+      });
+    });
+
     describe('open mr badge', () => {
       it('renders OpenMrBadge with correct props', () => {
         expect(findOpenMrBadge().exists()).toBe(true);
@@ -131,7 +164,7 @@ describe('CommitListHeader', () => {
       });
 
       it('does not render OpenMrBadge when there is no file path', () => {
-        createComponent('');
+        createComponent({ filePath: '' });
         expect(findOpenMrBadge().exists()).toBe(false);
       });
     });
@@ -156,6 +189,16 @@ describe('CommitListHeader', () => {
       });
     });
 
+    it('sets ref_type query param for symbolic refs', async () => {
+      findRefSelector().vm.$emit('input', 'refs/tags/v1.0');
+      await nextTick();
+
+      expect(mockRouter.push).toHaveBeenCalledWith({
+        path: '/v1.0/README.md',
+        query: { ref_type: 'tags' },
+      });
+    });
+
     it('emits ref-change event with the actual ref name', async () => {
       findRefSelector().vm.$emit('input', 'refs/heads/new-branch');
       await nextTick();
@@ -175,8 +218,18 @@ describe('CommitListHeader', () => {
       await nextTick();
 
       expect(mockRouter.push).toHaveBeenCalledWith({
-        path: '/feat/selected-%23-ref-%23/README.md',
+        path: '/feat%2Fselected-%23-ref-%23/README.md',
         query: {},
+      });
+    });
+
+    it('encodes slashes in ref so it becomes a single path segment', async () => {
+      findRefSelector().vm.$emit('input', 'refs/heads/feature/my-branch');
+      await nextTick();
+
+      expect(mockRouter.push).toHaveBeenCalledWith({
+        path: '/feature%2Fmy-branch/README.md',
+        query: { ref_type: 'heads' },
       });
     });
   });

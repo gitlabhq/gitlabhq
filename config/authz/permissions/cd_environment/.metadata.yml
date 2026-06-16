@@ -1,0 +1,5 @@
+---
+name: Continuous Deployment Environment
+description: A continuous deployment environment that targets a Kubernetes cluster
+  agent within a group or organization
+feature_category: continuous_delivery

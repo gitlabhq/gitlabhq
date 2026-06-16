@@ -1,0 +1,75 @@
+# Database Change Lock Configuration
+#
+# This configuration blocks migration MRs from being merged during specific windows.
+# Each lock entry declares its own block_level: only_ddl (default, for PG upgrades)
+# or only_pdm (for soft PCLs during which PDMs are not executed).
+#
+# Docs: doc/development/database/database_upgrade_ddl_lock.md
+#
+# Configuration options:
+#
+# start_date: "2025-12-09T09:00:00Z"
+#   The date when migration merges will be blocked.
+#   Format: ISO 8601 (YYYY-MM-DDThh:mm:ssZ in UTC)
+#
+# end_date: "2025-12-09T09:00:00Z"
+#   The date when the block will be lifted.
+#   Format: ISO 8601 (YYYY-MM-DDThh:mm:ssZ in UTC)
+#
+# details: "Contention due to Postgres 17 upgrade"
+#   An explanation shown to developers when their MR is blocked. Be specific about why the lock is in place.
+#
+# change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/12345"
+#   Link to the issue tracking the upgrade or PCL.
+#
+# warning_days: 7
+#   Number of days before start_date when warnings begin appearing on MRs.
+#   Gives developers advance notice to plan their work accordingly.
+#
+# merge_buffer: 2
+#   Number of days before start_date when the lock starts blocking merges
+#   (in addition to the active lock window). Defaults to 2.
+#   Use 2 for only_ddl locks (gives merged DDL time to deploy ahead of the upgrade).
+#   Use 0 for only_pdm locks (PDMs are not executed during the PCL anyway,
+#   so no pre-lock buffer is needed).
+#
+# block_level: only_ddl | only_pdm
+#   Which migrations are blocked during this lock.
+#   only_ddl (default): block DDL changes (modifications to db/structure.sql).
+#     Use for Postgres upgrades where the concern is breaking logical replication.
+#   only_pdm: block new post-deployment migrations (additions under db/post_migrate
+#     or ee/db/post_migrate). Use for soft PCLs during which PDMs are not executed
+#     and merging them would pile up the post-PCL migration backlog.
+#
+# Locks can be planned ahead. The list of locks is ordered by start_date.
+#
+# Example:
+#    locks:
+#      - start_date: "2025-12-09T09:00:00Z"
+#        end_date: "2025-12-09T09:00:00Z"
+#        details: "Contention due to Postgres 17 upgrade"
+#        change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/12345"
+#        warning_days: 7
+#        block_level: only_ddl
+#      - start_date: "2026-06-10T00:00:00Z"
+#        end_date: "2026-06-10T18:00:00Z"
+#        details: "Soft Production Change Lock for an important GitLab event"
+#        change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29078"
+#        warning_days: 7
+#        merge_buffer: 0
+#        block_level: only_pdm
+
+locks:
+  - start_date: "2026-02-04T16:00:00Z"
+    end_date: "2026-02-10T09:00:00Z"
+    details: "Upgrading Patroni clusters from PostgreSQL 16 to PostgreSQL 17. Window includes a 2 day window ahead of the upgrade to ensure all merged migrations are deployed ahead of the upgrade, as well as a 2 day rollback window. This lock is in lieu of a Hard PCL."
+    change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20991"
+    warning_days: 7
+    block_level: only_ddl
+  - start_date: "2026-06-10T00:00:00Z"
+    end_date: "2026-06-10T18:00:00Z"
+    details: "Soft Production Change Lock for an important GitLab event. PDMs are not executed during the soft PCL, so new PDMs are blocked from merging to avoid piling up the post-PCL migration backlog."
+    change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29078"
+    warning_days: 7
+    merge_buffer: 0
+    block_level: only_pdm

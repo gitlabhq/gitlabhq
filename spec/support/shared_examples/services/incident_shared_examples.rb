@@ -39,8 +39,8 @@ end
 # It doesn't require any defined variables
 
 RSpec.shared_examples 'incident management label service' do
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:user) { Users::Internal.in_organization(project.organization).alert_bot }
+  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be(:user, freeze: false) { Users::Internal.in_organization(project.organization).alert_bot }
   let(:service) { described_class.new(project, user) }
 
   subject(:execute) { service.execute }
@@ -94,7 +94,7 @@ RSpec.shared_examples 'incident management label service' do
       end
 
       context 'when user has no permissions to create labels' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         it_behaves_like 'new label'
       end

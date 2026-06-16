@@ -10,6 +10,7 @@ module Import
   SOURCE_BITBUCKET = :bitbucket
   SOURCE_BITBUCKET_SERVER = :bitbucket_server
   SOURCE_JIRA = :jira
+  SOURCE_OFFLINE_TRANSFER = :offline_transfer
 
   module HasImportSource
     extend ActiveSupport::Concern
@@ -27,7 +28,8 @@ module Import
       git: 9, # aka repository by url
       manifest: 10, # aka manifest file
       custom_template: 11, # aka gitlab custom project template export
-      SOURCE_JIRA => 12
+      SOURCE_JIRA => 12,
+      SOURCE_OFFLINE_TRANSFER => 13
     }.freeze
 
     included do

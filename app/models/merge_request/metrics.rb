@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 class MergeRequest::Metrics < ApplicationRecord
+  include Ci::Partitionable::AssociationFinder
+
   belongs_to :merge_request, inverse_of: :metrics
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :pipeline_id
   belongs_to :latest_closed_by, class_name: 'User'
   belongs_to :merged_by, class_name: 'User'
   belongs_to :target_project, class_name: 'Project', inverse_of: :merge_requests
+  partitionable_belongs_to_loader :pipeline
 
   before_save :ensure_target_project_id
 

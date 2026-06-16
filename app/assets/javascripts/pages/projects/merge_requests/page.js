@@ -109,6 +109,31 @@ const initReviewDrawer = () => {
   });
 };
 
+const initStackedDropdown = () => {
+  const el = document.querySelector('.js-stack-dropdown');
+
+  if (!el) return;
+
+  const { defaultBranch } = el.dataset;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    name: 'MergeRequestStackDropdown',
+    pinia,
+    apolloProvider,
+    components: {
+      StackDropdown: () => import('~/merge_requests/components/stack_dropdown.vue'),
+    },
+    provide: {
+      defaultBranch,
+    },
+    render(h) {
+      return h('stack-dropdown');
+    },
+  });
+};
+
 export function initMrPage(createRapidDiffsApp) {
   initMrNotes(createRapidDiffsApp);
   initShow();
@@ -151,5 +176,6 @@ export function initMrPage(createRapidDiffsApp) {
       : useMrNotes(pinia);
     initMrStickyHeader(stickyHeaderStore);
     initReviewDrawer();
+    initStackedDropdown();
   });
 }

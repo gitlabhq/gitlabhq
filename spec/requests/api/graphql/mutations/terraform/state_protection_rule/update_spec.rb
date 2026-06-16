@@ -40,6 +40,22 @@ RSpec.describe 'Updating a terraform state protection rule',
 
   let(:mutation_response) { graphql_mutation_response(:update_terraform_state_protection_rule) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_terraform_state do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:update_terraform_state_protection_rule,
+        { id: protection_rule.to_global_id.to_s },
+        'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+    before do
+      stub_feature_flags(protected_terraform_states: true)
+    end
+  end
+
   subject(:perform_request) { post_graphql_mutation(mutation, current_user: current_user) }
 
   shared_examples 'a successful response' do

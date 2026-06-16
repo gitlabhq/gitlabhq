@@ -16,7 +16,7 @@ title: アバターAPI
 
 ## ユーザーアカウントのアバターを取得する {#retrieve-user-account-avatar}
 
-指定された公開メールアドレスに関連付けられたユーザーアカウントの[アバター](../user/profile/_index.md#access-your-user-settings)のURLを取得するします。このエンドポイントでは認証は不要です。
+指定された公開メールアドレスに関連付けられたユーザーアカウントの[アバター](../user/profile/_index.md#access-your-user-settings)のURLを取得します。このエンドポイントは認証を必要としません。
 
 - 成功した場合、アバターのURLを返します。
 - 指定されたメールアドレスに関連付けられたアカウントがない場合、外部のアバターサービスからの結果を返します。
@@ -31,7 +31,7 @@ GET /avatar?email=admin@example.com
 | 属性 | 型    | 必須 | 説明 |
 | --------- | ------- | -------- | ----------- |
 | `email`   | 文字列  | はい      | アカウントの公開メールアドレス。 |
-| `size`    | 整数 | いいえ       | 単一のピクセル寸法。`Gravatar`または設定済みの`Libravatar`サーバーでのアバターのルックアップにのみ使用されます。 |
+| `size`    | 整数 | いいえ       | 単一ピクセル寸法。`Gravatar`または設定された`Libravatar`サーバーでのアバター検索にのみ使用されます。 |
 
 リクエスト例: 
 
@@ -50,5 +50,5 @@ curl --request GET \
 
 ## 関連トピック {#related-topics}
 
-- [自身用のアバターをアップロードする](users.md#upload-an-avatar-for-yourself)。
-- [プロジェクトアバターをアップロードする](projects.md#upload-a-project-avatar)。
+- [自分のアバターをアップロード](users.md#upload-an-avatar-for-yourself)。
+- [プロジェクトアバターをアップロード](projects.md#upload-a-project-avatar)。

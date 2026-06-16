@@ -32,6 +32,7 @@
 - RemoteDevelopment::WorkspacesAgentConfigVersion#object_changes
 - Sbom::Occurrence#ancestors
 - Security::ApprovalPolicyRule#content
+- Security::DependencyFirewallPolicyRule#content
 - Security::Policy#metadata
 - Security::ScanExecutionPolicyRule#content
 - Security::VulnerabilityManagementPolicyRule#content

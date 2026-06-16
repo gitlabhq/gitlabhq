@@ -66,6 +66,7 @@ export default {
       default: '',
     },
   },
+  emits: ['note-deleted', 'reply'],
   data() {
     return {
       isEditing: false,

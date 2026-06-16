@@ -52,6 +52,59 @@ Credentials are only post-processed when secret detection finds them:
 - In public projects, because publicly exposed credentials pose an increased threat. Expansion to private projects is considered in [issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379).
 - In projects with GitLab Ultimate, for technical reasons. Expansion to all tiers is tracked in [issue 391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763).
 
+## Turn on automatic token revocation
+
+On GitLab.com, automatic token revocation is turned on by default and no action is required.
+
+On GitLab Self-Managed and GitLab Dedicated, an administrator must turn it on by setting
+`secret_detection_token_revocation_enabled` to `true`. This setting has no UI and
+must be configured through the [application settings API](../../../api/settings.md) or the
+[Rails console](../../../administration/operations/rails_console.md).
+
+{{< tabs >}}
+
+{{< tab title="API" >}}
+
+Use the [application settings API](../../../api/settings.md) with an administrator access token.
+
+To check the current value, find the `secret_detection_token_revocation_enabled` field in the response:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_admin_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
+```
+
+To turn on this setting:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_admin_access_token>" \
+  --data "secret_detection_token_revocation_enabled=true" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
+```
+
+{{< /tab >}}
+
+{{< tab title="Rails console" >}}
+
+Open a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+To check the current value:
+
+```ruby
+::Gitlab::CurrentSettings.secret_detection_token_revocation_enabled?
+```
+
+To turn on the setting:
+
+```ruby
+::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_enabled: true)
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## High-level architecture
 
 This diagram describes how a post-processing hook revokes a secret in the GitLab application:

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_category: :importers do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:private_project) { create(:project, :private, group: group) }
   let_it_be(:private_mr) { create(:merge_request, source_project: private_project, project: private_project) }
@@ -17,11 +17,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     subject { get_json(full_path, exportable_path, relation_name) }
 
     describe 'saves project tree attributes' do
-      let_it_be(:shared) { project.import_export_shared }
+      let_it_be(:shared, freeze: false) { project.import_export_shared }
 
       let(:relation_name) { :projects }
 
-      let_it_be(:full_path) { File.join(shared.export_path, 'tree') }
+      let_it_be(:full_path, freeze: false) { File.join(shared.export_path, 'tree') }
 
       before_all do
         RSpec::Mocks.with_temporary_scope do
@@ -189,32 +189,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
           expect(issue['work_item_type']).to eq('name' => 'Task')
         end
 
-        context 'when work_item_configurable_types feature flag is disabled' do
-          let(:disabled_export_path) { "#{Dir.tmpdir}/project_tree_saver_spec_ff_disabled" }
-          let(:disabled_shared) { Gitlab::ImportExport::Shared.new(project) }
-          let(:disabled_full_path) { File.join(disabled_shared.export_path, 'tree') }
-
-          before do
-            stub_feature_flags(work_item_configurable_types: false)
-            allow(disabled_shared).to receive(:export_path).and_return(disabled_export_path)
-
-            described_class.new(
-              project: project, current_user: user, shared: disabled_shared
-            ).save # rubocop:disable Rails/SaveBang
-          end
-
-          after do
-            FileUtils.rm_rf(disabled_export_path)
-          end
-
-          it 'exports work_item_type using the legacy base_type format' do
-            issues = get_json(disabled_full_path, exportable_path, :issues)
-            issue = issues.find { |i| i['title'] == 'task issue' }
-
-            expect(issue['work_item_type']).to eq('base_type' => 'task')
-          end
-        end
-
         it 'has issue comments' do
           notes = subject.first['notes']
 
@@ -363,7 +337,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     end
 
     describe '#saves project tree' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
       let_it_be(:group) { create(:group) }
 
       let(:project) { setup_project }

@@ -38,6 +38,13 @@ type testCasePost struct {
 	body        io.Reader
 }
 
+// immediateSleep is a test stub for geoProxyPollSleep that returns immediately without waiting.
+func immediateSleep(time.Duration) <-chan time.Time {
+	ch := make(chan time.Time, 1)
+	ch <- time.Now()
+	return ch
+}
+
 func TestMain(m *testing.M) {
 	// Secret should be configured before any Geo API poll happens to prevent
 	// race conditions where the first API call happens without a secret path
@@ -70,7 +77,11 @@ func TestRouting(t *testing.T) {
 		}
 	})
 	ts := httptest.NewServer(u)
-	defer ts.Close()
+
+	t.Cleanup(func() {
+		close(shutdownChan)
+		ts.Close()
+	})
 
 	testCases := []testCase{
 		{"main route works", "/", main},
@@ -85,11 +96,17 @@ func TestRouting(t *testing.T) {
 }
 
 func TestPollGeoProxyApiStopsWhenExplicitlyDisabled(t *testing.T) {
+	shutdownChan := make(chan struct{})
 	up := upstream{
 		enableGeoProxyFeature: false,
-		geoProxyPollSleep:     func(time.Duration) {},
+		geoProxyPollSleep:     immediateSleep,
 		geoPollerDone:         make(chan struct{}),
+		shutdownChan:          shutdownChan,
 	}
+
+	t.Cleanup(func() {
+		close(shutdownChan)
+	})
 
 	go up.pollGeoProxyAPI()
 
@@ -111,14 +128,20 @@ func TestPollGeoProxyApiStopsWhenGeoNotEnabled(t *testing.T) {
 	roundTripper := roundtripper.NewBackendRoundTripper(cfg.Backend, "", 1*time.Minute, true)
 	remoteServerURL := helper.URLMustParse(remoteServer.URL)
 
+	shutdownChan := make(chan struct{})
 	up := upstream{
 		Config:                *cfg,
 		RoundTripper:          roundTripper,
 		APIClient:             apipkg.NewAPI(remoteServerURL, "", roundTripper),
 		enableGeoProxyFeature: true,
-		geoProxyPollSleep:     func(time.Duration) {},
+		geoProxyPollSleep:     immediateSleep,
 		geoPollerDone:         make(chan struct{}),
+		shutdownChan:          shutdownChan,
 	}
+
+	t.Cleanup(func() {
+		close(shutdownChan)
+	})
 
 	go up.pollGeoProxyAPI()
 
@@ -459,9 +482,13 @@ func startRailsServer(t *testing.T, geoProxyEndpointResponseBody *string) *httpt
 
 func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func()) {
 	geoProxySleepC := make(chan struct{})
-	geoProxySleep := func(time.Duration) {
+	geoProxySleep := func(d time.Duration) <-chan time.Time {
+		// Indicate to caller that we have been reached
 		geoProxySleepC <- struct{}{}
+		// Wait for caller to instruct us to complete
 		<-geoProxySleepC
+
+		return immediateSleep(d)
 	}
 
 	myConfigureRoutes := func(u *upstream) {
@@ -480,6 +507,7 @@ func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFea
 	ws := httptest.NewServer(upstreamHandler)
 
 	t.Cleanup(func() {
+		close(shutdownChan)
 		ws.Close()
 	})
 

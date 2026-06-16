@@ -93,6 +93,36 @@ curl --header "Authorization:<personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/quick/Marshal.4.8/my_gem-1.0.0.gemspec.rz"
 ```
 
+## Download a spec index file
+
+Downloads a RubyGems spec index file for a project. The index lists the gems available in the
+project registry.
+
+```plaintext
+GET projects/:id/packages/rubygems/:file_name
+```
+
+| Attribute   | Type   | Required | Description |
+| ----------- | ------ | -------- | ----------- |
+| `file_name` | string | Yes      | The spec index file name: `specs.4.8.gz`, `latest_specs.4.8.gz`, or `prerelease_specs.4.8.gz`. |
+| `id`        | string | Yes      | The ID or full path of the project. |
+
+The spec index file name determines which package release versions are listed:
+
+- `specs.4.8.gz` lists released versions.
+- `latest_specs.4.8.gz` lists the latest released version of each gem.
+- `prerelease_specs.4.8.gz` lists prerelease versions.
+
+If successful, returns [`200 OK`](../rest/troubleshooting.md#status-codes) and a Gzip-compressed,
+marshalled array of `[name, version, platform]` entries.
+
+Example request:
+
+```shell
+curl --header "Authorization: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/specs.4.8.gz"
+```
+
 ## Retrieve dependencies
 
 Retrieves a list of dependencies for specified gems.

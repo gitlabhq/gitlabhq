@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Build, feature_category: :continuous_integration do
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:pipeline) { Ci::Pipeline.new }

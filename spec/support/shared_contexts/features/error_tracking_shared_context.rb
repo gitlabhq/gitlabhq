@@ -3,12 +3,15 @@
 RSpec.shared_context 'sentry error tracking context feature' do
   include ReactiveCachingHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project_error_tracking_settings) { create(:project_error_tracking_setting, project: project) }
-  let_it_be(:issue_response_body) { fixture_file('sentry/issue_sample_response.json') }
-  let_it_be(:issue_response) { Gitlab::Json.parse(issue_response_body) }
-  let_it_be(:event_response_body) { fixture_file('sentry/issue_latest_event_sample_response.json') }
-  let_it_be(:event_response) { Gitlab::Json.parse(event_response_body) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project_error_tracking_settings, freeze: false) do
+    create(:project_error_tracking_setting, project: project)
+  end
+
+  let_it_be(:issue_response_body, freeze: false) { fixture_file('sentry/issue_sample_response.json') }
+  let_it_be(:issue_response, freeze: false) { Gitlab::Json.parse(issue_response_body) }
+  let_it_be(:event_response_body, freeze: false) { fixture_file('sentry/issue_latest_event_sample_response.json') }
+  let_it_be(:event_response, freeze: false) { Gitlab::Json.parse(event_response_body) }
   let(:sentry_api_urls) { ErrorTracking::SentryClient::ApiUrls.new(project_error_tracking_settings.api_url) }
   let(:issue_id) { issue_response['id'] }
   let(:issue_seen) { 1.year.ago.utc }

@@ -10,7 +10,8 @@ module API
     urgency :low
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Fetch CI_JOB_TOKEN access settings.' do
+      desc 'Retrieve the CI/CD job token access settings for a project' do
+        detail 'Retrieves the CI/CD job token access settings (job token scope) of a specified project.'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
@@ -26,7 +27,8 @@ module API
         present user_project, with: Entities::ProjectJobTokenScope
       end
 
-      desc 'Patch CI_JOB_TOKEN access settings.' do
+      desc 'Update the CI/CD job token access settings for a project' do
+        detail 'Updates the **Authorized groups and projects** setting (job token scope) of a specified project.'
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
@@ -56,7 +58,8 @@ module API
         no_content!
       end
 
-      desc 'Fetch project inbound allowlist for CI_JOB_TOKEN access settings.' do
+      desc 'List all projects in a CI/CD job token allowlist' do
+        detail 'Lists all projects in the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
@@ -77,7 +80,8 @@ module API
         present paginate(inbound_projects), with: Entities::BasicProjectDetails
       end
 
-      desc 'Fetch project groups allowlist for CI_JOB_TOKEN access settings.' do
+      desc 'List all groups in a CI/CD job token allowlist' do
+        detail 'Lists all groups in the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Forbidden' },
@@ -98,7 +102,8 @@ module API
         present paginate(groups_allowlist), with: Entities::BasicGroupDetails
       end
 
-      desc 'Add target project to allowlist.' do
+      desc 'Add a project to a CI/CD job token allowlist' do
+        detail 'Adds a project to the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
@@ -139,7 +144,8 @@ module API
         present result.payload[:project_link], with: Entities::ProjectScopeLink
       end
 
-      desc 'Add target group to allowlist.' do
+      desc 'Add a group to a CI/CD job token allowlist' do
+        detail 'Adds a group to the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
@@ -180,7 +186,8 @@ module API
         present result.payload[:group_link], with: Entities::GroupScopeLink
       end
 
-      desc 'Delete target group from allowlist.' do
+      desc 'Delete a group from a CI/CD job token allowlist' do
+        detail 'Deletes a group from the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
@@ -222,7 +229,8 @@ module API
         end
       end
 
-      desc 'Delete project from allowlist.' do
+      desc 'Delete a project from a CI/CD job token allowlist' do
+        detail 'Deletes a project from the CI/CD job token allowlist of a specified project.'
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },

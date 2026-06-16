@@ -42,6 +42,7 @@ export function buildLineDiscussionData({
   noteableData,
   viewConfig,
   diffRefs,
+  showWhitespace,
 }) {
   const { position, lineChange, lineCode, commitId } = discussion;
   return {
@@ -62,7 +63,7 @@ export function buildLineDiscussionData({
           head_sha: diffRefs.head_sha,
           ...position,
           position_type: position.position_type || TEXT_DIFF_POSITION_TYPE,
-          ignore_whitespace_change: !viewConfig.showWhitespace,
+          ignore_whitespace_change: !(showWhitespace ?? viewConfig.showWhitespace),
         }),
         noteable_type: noteableData.noteableType,
         noteable_id: noteableData.id,
@@ -74,7 +75,14 @@ export function buildLineDiscussionData({
   };
 }
 
-export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig, diffRefs }) {
+export function buildDraftLineDiscussionData({
+  discussion,
+  noteBody,
+  viewConfig,
+  diffRefs,
+  showWhitespace,
+  sourceHeadSha,
+}) {
   const { position, lineCode } = discussion;
   return {
     note: {
@@ -82,10 +90,10 @@ export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig,
       position: JSON.stringify({
         base_sha: diffRefs.base_sha,
         start_sha: diffRefs.start_sha,
-        head_sha: diffRefs.head_sha,
+        head_sha: sourceHeadSha || diffRefs.head_sha,
         ...position,
         position_type: position.position_type || TEXT_DIFF_POSITION_TYPE,
-        ignore_whitespace_change: !viewConfig.showWhitespace,
+        ignore_whitespace_change: !(showWhitespace ?? viewConfig.showWhitespace),
       }),
       type: DIFF_NOTE_TYPE,
       line_code: lineCode || null,

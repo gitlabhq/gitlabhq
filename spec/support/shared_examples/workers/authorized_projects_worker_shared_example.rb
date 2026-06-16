@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.shared_examples "refreshes user's project authorizations" do
   describe '#perform' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:service) { instance_double(Users::RefreshAuthorizedProjectsService) }
 

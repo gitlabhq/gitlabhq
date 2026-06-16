@@ -1,0 +1,24 @@
+- return unless Feature.enabled?(:granular_personal_access_tokens_enforcement_saas, group.root_ancestor)
+- return unless group.root?
+
+.form-group
+  = f.label :enforce_granular_tokens, s_('AccessTokens|Fine-grained personal access tokens'), class: 'label-bold'
+
+  .gl-flex.gl-gap-5
+    = f.gitlab_ui_checkbox_component :enforce_granular_tokens,
+      s_('AccessTokens|Require fine-grained personal access tokens after a specific date'),
+      content_wrapper_options: { class: 'gl-mt-3' },
+      checkbox_options: { checked: group.namespace_settings&.enforce_granular_tokens }
+
+    .gl-w-auto
+      = f.gitlab_ui_datepicker :granular_tokens_enforced_after,
+        placeholder: 'YYYY-MM-DD',
+        autocomplete: 'off',
+        value: group.namespace_settings&.granular_tokens_enforced_after || Date.current,
+        required: true
+
+    #group_granular_tokens_enforced_after_error.form-text.gl-text-danger.gl-hidden.gl-mt-0.gl-self-center
+      = _('Please enter a date value.')
+
+  .form-text.gl-text-subtle
+    = s_('AccessTokens|If enabled, users can only access group resources with a fine-grained personal access token after the specified enforcement date. Legacy personal access tokens are blocked after this date. The enforcement date is in UTC.')

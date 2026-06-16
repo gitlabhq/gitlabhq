@@ -1,6 +1,7 @@
 <script>
 import { DISPLAY_TYPES } from '../../constants';
 import ColumnChartPresenter from './column_chart.vue';
+import LineChartPresenter from './line_chart.vue';
 import ListPresenter from './list.vue';
 import TablePresenter from './table.vue';
 
@@ -10,6 +11,7 @@ export default {
     TablePresenter,
     ListPresenter,
     ColumnChartPresenter,
+    LineChartPresenter,
   },
   props: {
     displayType: {
@@ -71,6 +73,13 @@ export default {
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <line-chart-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.LINE_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
     @error="$emit('error', $event)"
   />
 </template>

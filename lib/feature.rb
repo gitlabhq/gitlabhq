@@ -10,7 +10,13 @@ module Feature
     Namespace
     Ci::Runner
     Organizations::Organization
+    Authn::OauthApplication
   ].freeze
+
+  OPERATION_ENABLED_GLOBALLY = 'enabled_globally'
+  OPERATION_DISABLED_GLOBALLY = 'disabled_globally'
+  OPERATION_ENABLED_ACTOR = 'enabled_actor'
+  OPERATION_DISABLED_ACTOR = 'disabled_actor'
 
   class FlipperRecord < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord -- This class perfectly replaces
     extend SkipLoadBalancer
@@ -163,12 +169,23 @@ module Feature
 
       log(key: key, action: __method__, thing: thing)
 
+      previous_state = fetch_current_state(key)
       return_value = with_feature(key) { _1.enable(thing) }
 
       # rubocop:disable Gitlab/RailsLogger
       Rails.logger.warn('WARNING: Understand the stability and security risks of enabling in-development features with feature flags.')
       Rails.logger.warn('See https://docs.gitlab.com/ee/administration/feature_flags.html#risks-when-enabling-features-still-in-development for more information.')
       # rubocop:enable Gitlab/RailsLogger
+
+      if return_value
+        current_state = fetch_current_state(key)
+        operation = operation_type(:enable, thing)
+
+        # Only publish if state changed or if adding a new actor
+        if should_publish_event?(previous_state, current_state, operation)
+          publish_feature_flag_event(key, operation: operation, actor: actor_for_event(thing))
+        end
+      end
 
       return_value
     end
@@ -180,7 +197,20 @@ module Feature
 
       log(key: key, action: __method__, thing: thing)
 
-      with_feature(key) { _1.disable(thing) }
+      previous_state = fetch_current_state(key)
+      return_value = with_feature(key) { _1.disable(thing) }
+
+      if return_value
+        current_state = fetch_current_state(key)
+        operation = operation_type(:disable, thing)
+
+        # Only publish if state changed or if removing an actor
+        if should_publish_event?(previous_state, current_state, operation)
+          publish_feature_flag_event(key, operation: operation, actor: actor_for_event(thing))
+        end
+      end
+
+      return_value
     end
 
     def opted_out?(key, thing)
@@ -511,6 +541,64 @@ module Feature
       extra = extra.transform_values(&:to_s)
       logger.info(key: key, action: action, **extra)
     end
+
+    def publish_feature_flag_event(key, operation:, actor:)
+      return unless database_exists?
+
+      current_state = fetch_current_state(key)
+
+      event_data = {
+        feature_key: key.to_s,
+        operation: operation,
+        actor: actor,
+        state: current_state
+      }
+
+      ::Gitlab::EventStore.publish(
+        ::Gitlab::FeatureFlags::FeatureFlagModifiedEvent.new(data: event_data)
+      )
+    rescue StandardError => e
+      ::Gitlab::ErrorTracking.track_exception(e, feature_key: key, operation: operation)
+    end
+
+    def operation_type(action, thing)
+      if global_operation?(thing)
+        action == :enable ? OPERATION_ENABLED_GLOBALLY : OPERATION_DISABLED_GLOBALLY
+      else
+        action == :enable ? OPERATION_ENABLED_ACTOR : OPERATION_DISABLED_ACTOR
+      end
+    end
+
+    def actor_for_event(thing)
+      return if global_operation?(thing)
+      return unless thing.respond_to?(:flipper_id)
+
+      thing.flipper_id
+    end
+
+    def global_operation?(thing)
+      thing == true || thing == false
+    end
+
+    def fetch_current_state(key)
+      state = 'off'
+
+      with_feature(key) do |feature|
+        state = feature.state.to_s
+      end
+
+      state
+    end
+
+    def should_publish_event?(previous_state, current_state, operation)
+      # Don't publish if state didn't change for global operations
+      if operation == OPERATION_ENABLED_GLOBALLY || operation == OPERATION_DISABLED_GLOBALLY
+        return previous_state != current_state
+      end
+
+      # For actor operations, always publish (adding/removing actors)
+      true
+    end
   end
 
   class Target
@@ -545,7 +633,13 @@ module Feature
     end
 
     def projects
-      find_targets(:project) { |arg| Project.find_by_full_path(arg) }
+      find_targets(:project) do |arg|
+        if arg.match?(/\A\d+\z/)
+          Project.find_by_id(arg)
+        else
+          Project.find_by_full_path(arg)
+        end
+      end
     end
 
     def groups

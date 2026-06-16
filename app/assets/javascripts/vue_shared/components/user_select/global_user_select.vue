@@ -7,6 +7,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 const SEARCH_DELAY = 200;
 
 export default {
+  name: 'GlobalUserSelect',
   components: {
     GlTokenSelector,
     GlAvatar,

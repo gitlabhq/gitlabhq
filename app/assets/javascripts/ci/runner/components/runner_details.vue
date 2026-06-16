@@ -20,6 +20,7 @@ import RunnerManagers from './runner_managers.vue';
 import RunnerJobs from './runner_jobs.vue';
 
 export default {
+  name: 'RunnerDetails',
   components: {
     GlIntersperse,
     GlLink,

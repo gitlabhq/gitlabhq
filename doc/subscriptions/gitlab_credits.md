@@ -29,11 +29,12 @@ where each usage action consumes a number of credits.
 
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
 You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
+Some pre-release features also incur usage charges. If charges apply, the feature's documentation page notes this.
 
 Billing occurs at the root namespace or top-level group level, not at the project level.
 Credit usage is attributed to the subject who performs the action, regardless of which project they are using the features in.
 A subject is either a human user or a non-human subject (for example, a service account or a bot running an automated flow).
-For more information, see [Non-human subject usage](#non-human-subject-usage).
+
 All usage in a root namespace or top-level group is consolidated for billing purposes.
 
 GitLab provides three ways to obtain credits:
@@ -56,9 +57,9 @@ Unused credits do not roll over to the next month.
 
 [Community program subscriptions](community_programs.md) do not receive included credits.
 
-Non-human subjects, such as service accounts and bots, do not receive included credits.
-Their consumption is billed at the namespace level from the Monthly Commitment Pool and On-Demand credits.
-For more information, see [Non-human subject usage](#non-human-subject-usage).
+Non-human subjects do not receive included credits.
+Their consumption is billed at the namespace level from the Monthly Commitment Pool and On-Demand credits,
+in the same usage order as for human users.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
 
@@ -273,19 +274,29 @@ For premium models with optimized integration:
 |-------|------------------------|
 | `claude-4.5-haiku` | 6.7 |
 | `gpt-5-4-mini` | 6.7 |
-| `gpt-5-codex` | 3.3|
+| `gemini-3.5-flash` | 3.3 |
 | `gpt-5` | 3.3 |
+| `gpt-5-codex` | 3.3 |
 | `gpt-5.2` | 2.5 |
 | `gpt-5.2-codex` | 2.5 |
 | `gpt-5.3-codex` | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4` | 2.0 |
 | `claude-sonnet-4.5` | 2.0 |
 | `claude-sonnet-4.6` | 2.0 |
+| `gpt-5.4` <sup>1</sup> | 2.0 |
 | `claude-opus-4.5` | 1.2 |
-| `claude-opus-4.6`  | 1.1 |
+| `gpt-5.4` <sup>2</sup> | 1.11 |
+| `claude-opus-4.6` | 1.1 |
 | `claude-opus-4.7` | 1.1 |
+| `claude-opus-4.8` | 1.1 |
+| `gpt-5.5` <sup>1</sup> | 1.0 |
+| `gpt-5.5` <sup>2</sup> | 0.57 |
+
+**Footnotes**:
+
+1. Short context window of up to 272,000 tokens.
+1. Long context window of more than 272,000 tokens.
 
 ### Features
 
@@ -357,19 +368,32 @@ The dashboard displays summary cards of key metrics:
 
 ### In GitLab
 
+{{< history >}}
+
+- Secrets Manager usage introduced in GitLab 19.1.
+
+{{< /history >}}
+
 > [!note]
 > This dashboard displays usage of all GitLab Duo Agent Platform features, including non-billable
-> beta and experiment features. For billable usage only, view the dashboard in Customers Portal.
+> beta and experiment features. To view billable usage only, go to the Customers Portal.
+>
+> Some pre-release features, such as the Security Review Agent, are billable and subject to
+> GitLab Credits charges.
 
 The GitLab Credits dashboard in GitLab provides operational visibility into the usage of credits in your organization.
 Use the dashboard to understand which users, groups, or projects are driving usage, and make informed decisions about resource allocation.
 
 The dashboard displays the following information:
 
-- **Organization usage**: Total credit usage across your GitLab instance or group
+- **Organization usage**: Total credit usage, active users, daily credit average, and peak day usage across your GitLab instance or group
 - **Total credit consumption**: Daily credit consumption over all products, displayed as a bar chart
 - **Usage by user**: Number of credits used by each user
 - **User drill-down view**: Individual usage events for each user, with links to GitLab Duo Agent Platform session details
+- **Usage by product**: Number of credits used and percentage of total credits for GitLab Duo Agent Platform and Secrets Manager
+
+> [!note]
+> While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta, GitLab does not collect usage events. Secrets Manager appears in the Credits dashboard but displays no usage data until the beta period ends.
 
 ### View the GitLab Credits dashboard
 
@@ -432,24 +456,17 @@ To display it, you must enable this setting for your [group](../user/group/manag
 
 {{< /history >}}
 
-Credit consumption can be triggered by either a human user or a non-human subject,
-such as a service account or a bot running an automated flow
-(for example, the SAST False Positive Detection Flow or the
-SAST Vulnerability Resolution Flow).
+Credit consumption can be triggered by either a human user or a non-human subject
+(for example, an AI feature like the SAST False Positive Detection Flow).
 
 To help you identify where credits are consumed, the **Usage by user** tab
-of the GitLab Credits dashboard displays an **Automated flow** badge next to
-any row that represents a non-human subject. Rows without the badge represent
-human users.
+on the GitLab Credits dashboard displays an **Automated flow** badge next to
+the rows that represent non-human subjects.
+Rows without the badge represent human users.
 
-Non-human subjects do not receive [included credits](#included-credits).
-All of their consumption is drawn from the namespace's Monthly Commitment Pool
-first, and then from On-Demand credits, in the same [usage order](#usage-order)
-as human users.
-
-Display of **Automated flow** rows is controlled by the same setting as human-user
-rows. To show them, enable [**Display GitLab Credits user data**](../user/group/manage.md#display-gitlab-credits-user-data)
-for your group or [instance](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).
+The display of the **Automated flow** badge is controlled by the setting **Display GitLab Credits user data**,
+which is available for [groups](../user/group/manage.md#display-gitlab-credits-user-data)
+and [instances](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).
 
 ### Usage caps
 

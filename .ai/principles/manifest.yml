@@ -1,0 +1,655 @@
+# Auto-MR target configuration: how the scheduled sync job creates the
+# merge request. Read by gitlab-ai-principles-distiller-sync when
+# invoked with --push.
+auto_mr:
+  branch_prefix: docs-sync/principles
+  title_template: "Update AI development principles from SSOT (%{date})"
+  labels:
+    - ai-agent
+    - documentation
+    - type::maintenance
+  remove_source_branch: true
+
+# Non-distilled .ai/ files included in AGENTS.md Context Loading.
+# These are manually maintained and have no SSOT sources.
+static_entries:
+  - description: Code style or linting
+    path: .ai/code-style.md
+  - description: Git, commits, or branches
+    path: .ai/git.md
+  - description: CI/CD pipelines or `.gitlab-ci.yml`
+    path: .ai/ci-cd.md
+
+principles:
+  # ── Database (4 sub-domains) ──────────────────────────────────────────────
+
+  database-fundamentals:
+    description: Database fundamentals (model queries, batching, sharding, partitioning, N+1)
+    group: Database
+    owner_team: '@gitlab-org/maintainers/database'
+    prerequisite: true
+    file_filters:
+      - 'db/**/*'
+      - 'lib/gitlab/database/**/*.rb'
+      - 'lib/gitlab/background_migration/**/*.rb'
+      - 'ee/db/**/*'
+    baseline: .ai/principles/baselines/database-fundamentals.md
+    sources:
+      - path: doc/development/database_review.md
+        url: https://docs.gitlab.com/development/database_review/
+      - path: doc/development/database/multiple_databases.md
+        url: https://docs.gitlab.com/development/database/multiple_databases/
+
+  database-migrations:
+    description: Database migration patterns and zero-downtime safety
+    group: Database
+    owner_team: '@gitlab-org/maintainers/database'
+    file_filters:
+      - 'db/migrate/**/*.rb'
+      - 'db/post_migrate/**/*.rb'
+      - 'ee/db/geo/migrate/**/*.rb'
+    baseline: .ai/principles/baselines/database-migrations.md
+    sources:
+      - path: doc/development/migration_style_guide.md
+        url: https://docs.gitlab.com/development/migration_style_guide/
+      - path: doc/development/database/avoiding_downtime_in_migrations.md
+        url: https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/
+      - path: doc/development/database/post_deployment_migrations.md
+        url: https://docs.gitlab.com/development/database/post_deployment_migrations/
+      - path: doc/development/database/batched_background_migrations.md
+        url: https://docs.gitlab.com/development/database/batched_background_migrations/
+      - path: doc/development/database/rename_database_tables.md
+        url: https://docs.gitlab.com/development/database/rename_database_tables/
+
+  database-schema:
+    description: Column types, constraints, indexes, naming conventions
+    group: Database
+    owner_team: '@gitlab-org/maintainers/database'
+    file_filters:
+      - 'db/structure.sql'
+      - 'db/schema_migrations/**/*'
+    baseline: .ai/principles/baselines/database-schema.md
+    sources:
+      - path: doc/development/database/adding_database_indexes.md
+        url: https://docs.gitlab.com/development/database/adding_database_indexes/
+      - path: doc/development/database/foreign_keys.md
+        url: https://docs.gitlab.com/development/database/foreign_keys/
+      - path: doc/development/database/not_null_constraints.md
+        url: https://docs.gitlab.com/development/database/not_null_constraints/
+      - path: doc/development/database/ordering_table_columns.md
+        url: https://docs.gitlab.com/development/database/ordering_table_columns/
+      - path: doc/development/database/strings_and_the_text_data_type.md
+        url: https://docs.gitlab.com/development/database/strings_and_the_text_data_type/
+      - path: doc/development/database/creating_enums.md
+        url: https://docs.gitlab.com/development/database/creating_enums/
+      - path: doc/development/database/constraint_naming_convention.md
+        url: https://docs.gitlab.com/development/database/constraint_naming_convention/
+      - path: doc/development/database/check_constraints.md
+        url: https://docs.gitlab.com/development/database/check_constraints/
+      - path: doc/development/database/polymorphic_associations.md
+        url: https://docs.gitlab.com/development/database/polymorphic_associations/
+      - path: doc/development/database/serializing_data.md
+        url: https://docs.gitlab.com/development/database/serializing_data/
+      - path: doc/development/database/single_table_inheritance.md
+        url: https://docs.gitlab.com/development/database/single_table_inheritance/
+      - path: doc/development/database/hash_indexes.md
+        url: https://docs.gitlab.com/development/database/hash_indexes/
+
+  database-queries:
+    description: SQL performance, transactions, batching
+    group: Database
+    owner_team: '@gitlab-org/maintainers/database'
+    file_filters:
+      - 'app/models/**/*.rb'
+      - 'app/finders/**/*.rb'
+      - 'app/services/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+      - 'ee/app/finders/**/*.rb'
+      - 'ee/app/services/**/*.rb'
+      - 'lib/gitlab/database/**/*.rb'
+    baseline: .ai/principles/baselines/database-queries.md
+    sources:
+      - path: doc/development/database/query_performance.md
+        url: https://docs.gitlab.com/development/database/query_performance/
+      - path: doc/development/database/transaction_guidelines.md
+        url: https://docs.gitlab.com/development/database/transaction_guidelines/
+      - path: doc/development/database/large_tables_limitations.md
+        url: https://docs.gitlab.com/development/database/large_tables_limitations/
+      - path: doc/development/sql.md
+        url: https://docs.gitlab.com/development/sql/
+      - path: doc/development/database/batching_best_practices.md
+        url: https://docs.gitlab.com/development/database/batching_best_practices/
+      - path: doc/development/database/iterating_tables_in_batches.md
+        url: https://docs.gitlab.com/development/database/iterating_tables_in_batches/
+      - path: doc/development/database/insert_into_tables_in_batches.md
+        url: https://docs.gitlab.com/development/database/insert_into_tables_in_batches/
+      - path: doc/development/database/pagination_performance_guidelines.md
+        url: https://docs.gitlab.com/development/database/pagination_performance_guidelines/
+
+  # ── ClickHouse ────────────────────────────────────────────────────────────
+
+  clickhouse:
+    description: ClickHouse database concerns
+    group: Database
+    owner_team: '@gitlab-org/maintainers/clickhouse'
+    file_filters:
+      - 'db/siphon/**/*'
+      - 'ee/app/models/click_house/**/*.rb'
+      - 'db/click_house/**/*'
+      - 'ee/db/click_house/**/*'
+      - 'lib/click_house/**/*.rb'
+    baseline: .ai/principles/baselines/clickhouse.md
+    sources:
+      - path: doc/development/database/clickhouse/reviewer_guidelines.md
+        url: https://docs.gitlab.com/development/database/clickhouse/reviewer_guidelines/
+
+  # ── Cells ─────────────────────────────────────────────────────────────────
+
+  cells-fundamentals:
+    description: Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources
+    group: Cells
+    # Owns /doc/development/cells/ (the SSOT). @gitlab-org/tenant-scale-group
+    # is archived (not an eligible CODEOWNERS approver), so use the verified
+    # individual owner of those docs instead.
+    owner_team: '@bmarjanovic'
+    team_slug: cells
+    prerequisite: true
+    file_filters:
+      - 'db/docs/**/*.yml'
+      - 'db/migrate/**/*.rb'
+      - 'db/post_migrate/**/*.rb'
+      - 'ee/db/geo/migrate/**/*.rb'
+      - 'app/models/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+    sources:
+      - path: doc/development/cells/_index.md
+        url: https://docs.gitlab.com/development/cells/
+
+  cells-claims:
+    description: Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness
+    group: Cells
+    # See cells-fundamentals: tenant-scale-group is archived; use the verified
+    # SSOT-doc owner instead.
+    owner_team: '@bmarjanovic'
+    team_slug: cells
+    file_filters:
+      - 'app/models/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+    sources:
+      - path: doc/development/cells/claims.md
+        url: https://docs.gitlab.com/development/cells/claims/
+
+  # ── Security ──────────────────────────────────────────────────────────────
+
+  security:
+    description: Security vulnerabilities and secure coding
+    group: Security
+    owner_team: '@gitlab-com/gl-security/appsec'
+    file_filters:
+      - '**/*'
+    sources:
+      - path: doc/development/secure_coding_guidelines/_index.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/
+      - path: doc/development/secure_coding_guidelines/ruby.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/ruby/
+      - path: doc/development/secure_coding_guidelines/go.md
+        url: https://docs.gitlab.com/development/secure_coding_guidelines/go/
+      - path: doc/development/shell_commands.md
+        url: https://docs.gitlab.com/development/shell_commands/
+      - path: doc/development/permissions/review_guidelines.md
+        url: https://docs.gitlab.com/development/permissions/review_guidelines/
+      - path: doc/development/fe_guide/security.md
+        url: https://docs.gitlab.com/development/fe_guide/security/
+
+  authentication:
+    description: Authentication, authorization, token handling, OAuth, SAML, identity linking, composite identity, session management, 2FA, MFA, password management
+    group: Security
+    owner_team: '@gitlab-org/software-supply-chain-security/authentication/approvers'
+    team_slug: authentication
+    secondary_teams:
+      - '@gitlab-com/gl-security/appsec'
+    file_filters:
+      - 'app/controllers/**/*.rb'
+      - 'app/services/**/*.rb'
+      - 'lib/gitlab/auth/**/*.rb'
+      - 'lib/api/helpers/**/*.rb'
+      - 'ee/app/controllers/**/*.rb'
+      - 'ee/app/services/**/*.rb'
+      - 'ee/lib/gitlab/auth/**/*.rb'
+    sources:
+      - path: doc/development/authentication.md
+        url: https://docs.gitlab.com/development/authentication/
+      - path: doc/development/ai_features/composite_identity.md
+        url: https://docs.gitlab.com/development/ai_features/composite_identity/
+
+  # ── Permissions ───────────────────────────────────────────────────────────
+
+  permissions-fundamentals:
+    description: Where to check permissions, naming conventions, role definitions
+    group: Permissions
+    owner_team: '@gitlab-org/software-supply-chain-security/authorization/approvers'
+    team_slug: authorization
+    prerequisite: true
+    file_filters:
+      - 'app/policies/**/*.rb'
+      - 'ee/app/policies/**/*.rb'
+      - 'app/models/concerns/**/*.rb'
+      - 'ee/app/models/concerns/**/*.rb'
+      - 'config/authz/**/*.yml'
+    sources:
+      - path: doc/development/permissions/authorizations.md
+        url: https://docs.gitlab.com/development/permissions/authorizations/
+      - path: doc/development/permissions/conventions.md
+        url: https://docs.gitlab.com/development/permissions/conventions/
+      - path: doc/development/permissions/role_definitions.md
+        url: https://docs.gitlab.com/development/permissions/role_definitions/
+      - path: doc/development/permissions/predefined_roles.md
+        url: https://docs.gitlab.com/development/permissions/predefined_roles/
+      - path: doc/development/permissions/custom_roles.md
+        url: https://docs.gitlab.com/development/permissions/custom_roles/
+      - path: doc/development/permissions/internal_permission_groups.md
+        url: https://docs.gitlab.com/development/permissions/internal_permission_groups/
+      - path: doc/development/permissions/testing_guidelines.md
+        url: https://docs.gitlab.com/development/permissions/testing_guidelines/
+
+  permissions-graphql-gpat:
+    description: Granular PAT (GPAT) compliance for GraphQL types and mutations
+    group: Permissions
+    owner_team: '@gitlab-org/software-supply-chain-security/authorization/approvers'
+    team_slug: authorization
+    file_filters:
+      - 'app/graphql/**/*.rb'
+      - 'ee/app/graphql/**/*.rb'
+      - 'config/authz/permissions/**/*.yml'
+      - 'config/authz/permission_groups/**/*.yml'
+    sources:
+      - path: doc/development/permissions/granular_access/_index.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/
+      - path: doc/development/permissions/granular_access/graphql_implementation_guide.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/graphql_implementation_guide/
+      - path: doc/development/permissions/granular_access/graphql_architecture.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/graphql_architecture/
+      - path: doc/development/permissions/granular_access/permission_definitions.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/
+      - path: doc/development/permissions/granular_access/assignable_permissions.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/
+
+  permissions-rest-gpat:
+    description: Granular PAT (GPAT) compliance for REST endpoints and job tokens
+    group: Permissions
+    owner_team: '@gitlab-org/software-supply-chain-security/authorization/approvers'
+    team_slug: authorization
+    file_filters:
+      - 'lib/api/**/*.rb'
+      - 'ee/lib/api/**/*.rb'
+      - 'config/authz/permissions/**/*.yml'
+      - 'config/authz/permission_groups/**/*.yml'
+    sources:
+      - path: doc/development/permissions/granular_access/rest_api_implementation_guide.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/
+      - path: doc/development/permissions/granular_access/job_tokens.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/job_tokens/
+      - path: doc/development/permissions/job_tokens.md
+        url: https://docs.gitlab.com/development/permissions/job_tokens/
+      - path: doc/development/permissions/granular_access/permission_definitions.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/
+      - path: doc/development/permissions/granular_access/assignable_permissions.md
+        url: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/
+
+  # ── Code Review ───────────────────────────────────────────────────────────
+
+  code-review:
+    description: General code review practices and acceptance checklist
+    group: Code Review
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - '**/*'
+    sources:
+      - path: doc/development/code_review.md
+        url: https://docs.gitlab.com/development/code_review/
+
+  # ── Backend (3 sub-domains) ───────────────────────────────────────────────
+
+  backend-ruby:
+    description: Ruby/Rails style, logging, common pitfalls
+    group: Backend
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    prerequisite: true
+    file_filters:
+      - 'app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'ee/lib/**/*.rb'
+      - 'scripts/**/*.rb'
+      - 'tooling/**/*.rb'
+    baseline: .ai/principles/baselines/backend-ruby.md
+    sources:
+      - path: doc/development/backend/ruby_style_guide.md
+        url: https://docs.gitlab.com/development/backend/ruby_style_guide/
+      - path: doc/development/gotchas.md
+        url: https://docs.gitlab.com/development/gotchas/
+      - path: doc/development/ruby3_gotchas.md
+        url: https://docs.gitlab.com/development/ruby3_gotchas/
+      - path: doc/development/utilities.md
+        url: https://docs.gitlab.com/development/utilities/
+      - path: doc/development/changelog.md
+        url: https://docs.gitlab.com/development/changelog/
+      - path: doc/development/i18n/pluralization.md
+        url: https://docs.gitlab.com/development/i18n/pluralization/
+      - path: doc/development/logging.md
+        url: https://docs.gitlab.com/development/logging/
+      - path: doc/development/json.md
+        url: https://docs.gitlab.com/development/json/
+      - path: doc/development/i18n/externalization.md
+        url: https://docs.gitlab.com/development/i18n/externalization/
+      - path: doc/development/redis.md
+        url: https://docs.gitlab.com/development/redis/
+      - path: doc/development/polling.md
+        url: https://docs.gitlab.com/development/polling/
+      - path: doc/development/routing.md
+        url: https://docs.gitlab.com/development/routing/
+      - path: doc/development/rails_initializers.md
+        url: https://docs.gitlab.com/development/rails_initializers/
+      - path: doc/development/code_comments.md
+        url: https://docs.gitlab.com/development/code_comments/
+      - path: doc/development/rubocop_development_guide.md
+        url: https://docs.gitlab.com/development/rubocop_development_guide/
+
+  backend-architecture:
+    description: Service patterns, abstractions, design conventions
+    group: Backend
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - 'app/services/**/*.rb'
+      - 'app/finders/**/*.rb'
+      - 'app/models/**/*.rb'
+      - 'ee/app/services/**/*.rb'
+      - 'ee/app/finders/**/*.rb'
+      - 'ee/app/models/**/*.rb'
+    baseline: .ai/principles/baselines/backend-architecture.md
+    sources:
+      - path: doc/development/reusing_abstractions.md
+        url: https://docs.gitlab.com/development/reusing_abstractions/
+      - path: doc/development/software_design.md
+        url: https://docs.gitlab.com/development/software_design/
+      - path: doc/development/eventstore/_index.md
+        url: https://docs.gitlab.com/development/eventstore/
+      - path: doc/development/module_with_instance_variables.md
+        url: https://docs.gitlab.com/development/module_with_instance_variables/
+      - path: doc/development/application_limits.md
+        url: https://docs.gitlab.com/development/application_limits/
+      - path: doc/development/multi_version_compatibility.md
+        url: https://docs.gitlab.com/development/multi_version_compatibility/
+
+  backend-ee:
+    description: EE/CE separation, licensing, code placement
+    group: Backend
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - 'ee/**/*.rb'
+    sources:
+      - path: doc/development/ee_features.md
+        url: https://docs.gitlab.com/development/ee_features/
+
+  # ── REST API ──────────────────────────────────────────────────────────────
+
+  rest-api:
+    description: REST API design and conventions
+    group: API
+    # The DevEx: API Platform team. Individuals rather than the
+    # @gitlab-org/quality/api-platform group handle, because that subgroup
+    # inherits ~1200 members from the gitlab-org/quality ancestry, which
+    # would make approval far broader than the team itself.
+    owner_team: '@mwoolf @cfeick @vwolanyk @abignotti'
+    team_slug: api-platform
+    file_filters:
+      - 'lib/api/**/*.rb'
+      - 'ee/lib/api/**/*.rb'
+      - 'doc/api/**/*.md'
+    baseline: .ai/principles/baselines/rest-api.md
+    sources:
+      - path: doc/development/api_styleguide.md
+        url: https://docs.gitlab.com/development/api_styleguide/
+
+  # ── GraphQL ───────────────────────────────────────────────────────────────
+
+  graphql:
+    description: GraphQL API design and conventions
+    group: API
+    # DevEx: API Platform team (see rest-api note on why individuals).
+    owner_team: '@mwoolf @cfeick @vwolanyk @abignotti'
+    team_slug: api-platform
+    secondary_teams:
+      - '@gitlab-org/graphql-experts'
+    file_filters:
+      - 'app/graphql/**/*.rb'
+      - 'ee/app/graphql/**/*.rb'
+    sources:
+      - path: doc/development/api_graphql_styleguide.md
+        url: https://docs.gitlab.com/development/api_graphql_styleguide/
+      - path: doc/development/graphql_guide/reviewing.md
+        url: https://docs.gitlab.com/development/graphql_guide/reviewing/
+      - path: doc/development/graphql_guide/authorization.md
+        url: https://docs.gitlab.com/development/graphql_guide/authorization/
+      - path: doc/development/graphql_guide/batchloader.md
+        url: https://docs.gitlab.com/development/graphql_guide/batchloader/
+      - path: doc/development/graphql_guide/pagination.md
+        url: https://docs.gitlab.com/development/graphql_guide/pagination/
+      - path: doc/development/graphql_guide/array_argument_validation.md
+        url: https://docs.gitlab.com/development/graphql_guide/array_argument_validation/
+
+  # ── Workers ───────────────────────────────────────────────────────────────
+
+  workers:
+    description: Sidekiq worker design and reliability
+    group: Workers
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - 'app/workers/**/*.rb'
+      - 'ee/app/workers/**/*.rb'
+    sources:
+      - path: doc/development/sidekiq/_index.md
+        url: https://docs.gitlab.com/development/sidekiq/
+      - path: doc/development/sidekiq/worker_attributes.md
+        url: https://docs.gitlab.com/development/sidekiq/worker_attributes/
+      - path: doc/development/sidekiq/idempotent_jobs.md
+        url: https://docs.gitlab.com/development/sidekiq/idempotent_jobs/
+      - path: doc/development/sidekiq/compatibility_across_updates.md
+        url: https://docs.gitlab.com/development/sidekiq/compatibility_across_updates/
+      - path: doc/development/sidekiq/limited_capacity_worker.md
+        url: https://docs.gitlab.com/development/sidekiq/limited_capacity_worker/
+      - path: doc/development/sidekiq/logging.md
+        url: https://docs.gitlab.com/development/sidekiq/logging/
+
+  # ── CI/CD internals ───────────────────────────────────────────────────────
+
+  cicd-internals:
+    description: GitLab CI/CD internals — adding pipeline configuration keywords (Ci::Config::Entry classes, feature-flag gating, JSON schema) and creating CI routing/partitioned tables. NOTE this is about GitLab's own CI implementation, not authoring a project's .gitlab-ci.yml
+    group: CI/CD
+    owner_team: '@gitlab-org/maintainers/cicd-verify'
+    file_filters:
+      - 'lib/gitlab/ci/**/*.rb'
+      - 'ee/lib/gitlab/ci/**/*.rb'
+      - 'app/models/ci/**/*.rb'
+      - 'ee/app/models/ci/**/*.rb'
+    sources:
+      - path: doc/development/cicd/configuration.md
+        url: https://docs.gitlab.com/development/cicd/configuration/
+      - path: doc/development/cicd/cicd_tables.md
+        url: https://docs.gitlab.com/development/cicd/cicd_tables/
+
+  # ── Frontend (4 sub-domains) ──────────────────────────────────────────────
+
+  frontend-vue:
+    description: Vue.js components, state management, patterns
+    group: Frontend
+    owner_team: '@gitlab-org/maintainers/frontend'
+    prerequisite: true
+    file_filters:
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/assets/javascripts/**/*.js'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/assets/javascripts/**/*.js'
+      - '**/*.ts'
+    baseline: .ai/principles/baselines/frontend-vue.md
+    sources:
+      - path: doc/development/fe_guide/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/
+      - path: doc/development/fe_guide/style/vue.md
+        url: https://docs.gitlab.com/development/fe_guide/style/vue/
+      - path: doc/development/fe_guide/style/javascript.md
+        url: https://docs.gitlab.com/development/fe_guide/style/javascript/
+      - path: doc/development/fe_guide/style/typescript.md
+        url: https://docs.gitlab.com/development/fe_guide/style/typescript/
+      - path: doc/development/fe_guide/design_patterns.md
+        url: https://docs.gitlab.com/development/fe_guide/design_patterns/
+      - path: doc/development/fe_guide/state_management.md
+        url: https://docs.gitlab.com/development/fe_guide/state_management/
+      - path: doc/development/fe_guide/pinia.md
+        url: https://docs.gitlab.com/development/fe_guide/pinia/
+      - path: doc/development/fe_guide/axios.md
+        url: https://docs.gitlab.com/development/fe_guide/axios/
+      - path: doc/development/i18n/externalization.md
+        url: https://docs.gitlab.com/development/i18n/externalization/
+
+  frontend-style:
+    description: CSS/SCSS, Tailwind, dark mode
+    group: Frontend
+    owner_team: '@gitlab-org/maintainers/frontend'
+    file_filters:
+      - 'app/assets/stylesheets/**/*.scss'
+      - 'ee/app/assets/stylesheets/**/*.scss'
+    baseline: .ai/principles/baselines/frontend-style.md
+    sources:
+      - path: doc/development/fe_guide/style/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/style/
+      - path: doc/development/fe_guide/style/scss.md
+        url: https://docs.gitlab.com/development/fe_guide/style/scss/
+      - path: doc/development/fe_guide/dark_mode.md
+        url: https://docs.gitlab.com/development/fe_guide/dark_mode/
+
+  frontend-haml:
+    description: HAML templates, ViewComponents, Pajamas
+    group: Frontend
+    owner_team: '@gitlab-org/maintainers/frontend'
+    file_filters:
+      - 'app/views/**/*.haml'
+      - 'ee/app/views/**/*.haml'
+    sources:
+      - path: doc/development/fe_guide/style/html.md
+        url: https://docs.gitlab.com/development/fe_guide/style/html/
+      - path: doc/development/fe_guide/haml.md
+        url: https://docs.gitlab.com/development/fe_guide/haml/
+
+  frontend-a11y:
+    description: Frontend accessibility patterns and requirements
+    group: Frontend
+    owner_team: '@gitlab-org/maintainers/frontend'
+    file_filters:
+      - 'app/assets/javascripts/**/*.vue'
+      - 'app/views/**/*.haml'
+      - 'ee/app/assets/javascripts/**/*.vue'
+      - 'ee/app/views/**/*.haml'
+    sources:
+      - path: doc/development/fe_guide/accessibility/_index.md
+        url: https://docs.gitlab.com/development/fe_guide/accessibility/
+      - path: doc/development/fe_guide/accessibility/best_practices.md
+        url: https://docs.gitlab.com/development/fe_guide/accessibility/best_practices/
+
+  # ── QA (2 sub-domains) ───────────────────────────────────────────────────
+
+  qa-rspec:
+    description: RSpec patterns, factories, shared examples
+    group: Testing
+    owner_team: '@abdwdd @alexpooley'
+    team_slug: qa
+    file_filters:
+      - 'spec/**/*_spec.rb'
+      - 'ee/spec/**/*_spec.rb'
+      - 'qa/**/*'
+    baseline: .ai/principles/baselines/qa-rspec.md
+    sources:
+      - path: doc/development/testing_guide/_index.md
+        url: https://docs.gitlab.com/development/testing_guide/
+      - path: doc/development/testing_guide/best_practices.md
+        url: https://docs.gitlab.com/development/testing_guide/best_practices/
+      - path: doc/development/testing_guide/testing_levels.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_levels/
+      - path: doc/development/testing_guide/testing_migrations_guide.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_migrations_guide/
+      - path: doc/development/testing_guide/testing_rake_tasks.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_rake_tasks/
+
+  qa-jest:
+    description: Jest, jsdom, Vue Test Utils patterns
+    group: Testing
+    owner_team: '@gitlab-org/maintainers/frontend'
+    secondary_teams:
+      - '@abdwdd @alexpooley'
+    file_filters:
+      - 'spec/frontend/**/*'
+      - 'ee/spec/frontend/**/*'
+    sources:
+      - path: doc/development/testing_guide/frontend_testing.md
+        url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
+
+  # ── Remaining (unchanged) ─────────────────────────────────────────────────
+
+  performance:
+    description: Performance and scalability
+    group: Performance
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - 'app/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/lib/**/*.rb'
+    sources:
+      - path: doc/development/merge_request_concepts/performance.md
+        url: https://docs.gitlab.com/development/merge_request_concepts/performance/
+
+  documentation:
+    description: Documentation style and completeness
+    group: Documentation
+    owner_team: '@gitlab-org/technical-writing/tw-docops'
+    file_filters:
+      - 'doc/**/*.md'
+      - 'locale/**/*'
+    baseline: .ai/principles/baselines/documentation.md
+    sources:
+      - path: doc/development/documentation/styleguide/_index.md
+        url: https://docs.gitlab.com/development/documentation/styleguide/
+      - path: doc/development/documentation/workflow.md
+        url: https://docs.gitlab.com/development/documentation/workflow/
+
+  feature-flags:
+    description: Feature flag usage and lifecycle
+    group: Feature Flags
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    file_filters:
+      - 'config/feature_flags/**/*.yml'
+      - 'ee/config/feature_flags/**/*.yml'
+    baseline: .ai/principles/baselines/feature-flags.md
+    sources:
+      - path: doc/development/feature_flags/_index.md
+        url: https://docs.gitlab.com/development/feature_flags/
+
+  analytics:
+    description: Analytics instrumentation and metrics
+    group: Analytics
+    owner_team: '@gitlab-org/analytics-section/analytics-instrumentation/engineers'
+    team_slug: analytics-instrumentation
+    secondary_teams:
+      - '@gitlab-org/analytics-section/product-analytics/engineers/frontend'
+    file_filters:
+      - 'config/events/**/*.yml'
+      - 'config/metrics/**/*.yml'
+      - 'ee/config/events/**/*.yml'
+      - 'ee/config/metrics/**/*.yml'
+    sources:
+      - path: doc/development/internal_analytics/review_guidelines.md
+        url: https://docs.gitlab.com/development/internal_analytics/review_guidelines/
+      - path: doc/development/internal_analytics/internal_event_instrumentation/quick_start.md
+        url: https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
+      - path: doc/development/internal_analytics/metrics/metrics_instrumentation.md
+        url: https://docs.gitlab.com/development/internal_analytics/metrics/metrics_instrumentation/

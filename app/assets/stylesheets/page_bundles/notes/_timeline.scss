@@ -31,6 +31,7 @@
   background-color: var(--timeline-entry-internal-note-background-color) !important;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific note-footer element
 .note-footer:has(.internal-note) .reply-placeholder-input-field {
   @apply gl-mt-4;
 }

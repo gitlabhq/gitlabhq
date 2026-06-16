@@ -24,7 +24,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 11.19.0
+    ref: 11.20.0
     file:
       - /ci/notify-slack.gitlab-ci.yml
       - /ci/qa-report.gitlab-ci.yml
@@ -162,6 +162,9 @@ stages:
     - cp qa/tmp/test-code-paths-mapping-*.json e2e-test-mapping/ 2>/dev/null || echo "No backend test mapping files found"
     - echo "Processing E2E frontend coverage..."
     - NODE_OPTIONS="--max-old-space-size=4096" yarn node scripts/frontend/merge_e2e_coverage.js
+    - echo "Converting per-example Istanbul coverage to per-test line-hit format..."
+    - mkdir -p coverage-e2e-per-test-frontend
+    - NODE_OPTIONS="--max-old-space-size=4096" yarn node scripts/frontend/convert_e2e_istanbul_to_per_test_coverage.js || echo "Istanbul per-test conversion failed (non-fatal)"
     - echo "Collecting E2E frontend test mappings..."
     - cp qa/tmp/js-coverage-by-example-*.json coverage-e2e-frontend/ 2>/dev/null || echo "No E2E frontend test mapping files found"
     - echo "Collecting E2E test report files..."
@@ -171,6 +174,7 @@ stages:
     paths:
       - coverage-e2e-backend/
       - coverage-e2e-frontend/
+      - coverage-e2e-per-test-frontend/
       - e2e-test-mapping/
       - e2e-test-reports/
     expire_in: 7d

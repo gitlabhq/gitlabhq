@@ -9,7 +9,7 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(discussion).not_to be_nil
-      expect(discussion['individual_note']).to eq(false)
+      expect(discussion['individual_note']).to be(false)
       expect(discussion['notes'].first['body']).to eq(diff_note.note)
     end
   end
@@ -24,7 +24,7 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
       expect(json_response['id']).to eq(diff_note.discussion_id)
       expect(json_response['notes'].first['body']).to eq(diff_note.note)
       expect(json_response['notes'].first['position']).to eq(position.stringify_keys)
-      expect(json_response['notes'].first['line_range']).to eq(nil)
+      expect(json_response['notes'].first['line_range']).to be_nil
     end
   end
 

@@ -401,6 +401,27 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
       expect(result[:stdout]).not_to include('.claude/skills/gitlab-coding-principles/SKILL.md')
     end
 
+    it 'allows .claude/skills/README.md committed' do
+      setup_valid_repo
+      add_tracked_file('.claude/skills/README.md')
+
+      result = run_doctor
+
+      expect(result[:exit_code]).to eq(0)
+      expect(result[:stdout]).not_to include('.claude/skills/README.md')
+    end
+
+    it 'allows files under the .claude/skills/glab/ directory committed' do
+      setup_valid_repo
+      add_tracked_file('.claude/skills/glab/SKILL.md')
+      add_tracked_file('.claude/skills/glab/references/work-items.md')
+
+      result = run_doctor
+
+      expect(result[:exit_code]).to eq(0)
+      expect(result[:stdout]).not_to include('.claude/skills/glab/')
+    end
+
     it 'reports AGENTS.local.md as forbidden when force-committed at root' do
       setup_valid_repo
       add_tracked_file('AGENTS.local.md', '# personal overrides')

@@ -8,6 +8,7 @@ module Authz
       InvalidInputError = Class.new(StandardError)
 
       BOUNDARY_TYPE_ORDER = { project: 0, group: 1, user: 2, instance: 3 }.freeze
+      NOT_FOUND_MESSAGE = '404 Not Found'
 
       def initialize(boundaries:, permissions:, token:)
         @boundaries = Array(boundaries).compact_blank
@@ -135,7 +136,7 @@ module Authz
       end
 
       def resource_not_found_error
-        ::ServiceResponse.error(message: '404 Not Found', reason: :resource_not_found)
+        ::ServiceResponse.error(message: NOT_FOUND_MESSAGE, reason: :resource_not_found)
       end
 
       def token_type

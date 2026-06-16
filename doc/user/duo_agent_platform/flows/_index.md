@@ -25,6 +25,7 @@ title: Flows
 - Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.8.
+- Feature flag `ai_catalog_flows` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216969) in GitLab 18.8.
 - Additional flags are required for foundational flows.
 - Foundational flows [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Custom flows [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) to beta in GitLab 18.8.
@@ -56,16 +57,12 @@ For information about the security of flows, see [the composite identity documen
 
 ## Prerequisites
 
-To use flows:
+<!-- Note: These prerequisites are duplicated on each flow sub-page. Update all pages when editing. -->
 
-- You must meet the [prerequisites](../_index.md#prerequisites).
-
-To execute flows in the GitLab UI:
-
-- You must turn on flows with [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
-- To use flows that create code, you must
-  [configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- Either [configure your own runners](execution.md#configure-runners) or ensure that [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) are enabled in your project and working.
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+- Turn on **Allow foundational flows** [for the top-level group](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- [Configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Configure your own runners](execution.md#configure-runners) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Monitor running flows in the GitLab UI
 

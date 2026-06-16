@@ -50,6 +50,8 @@ export const USERS_CATEGORY = s__('GlobalSearch|Users');
 
 export const ISSUES_CATEGORY = s__('GlobalSearch|Recent issues');
 
+export const WORK_ITEMS_CATEGORY = s__('GlobalSearch|Recent work items');
+
 export const MERGE_REQUEST_CATEGORY = s__('GlobalSearch|Recent merge requests');
 
 export const RECENT_EPICS_CATEGORY = s__('GlobalSearch|Recent epics');
@@ -62,6 +64,7 @@ export const HELP_CATEGORY = s__('GlobalSearch|Help');
 
 export const SEARCH_RESULTS_ORDER = [
   MERGE_REQUEST_CATEGORY,
+  WORK_ITEMS_CATEGORY,
   ISSUES_CATEGORY,
   RECENT_EPICS_CATEGORY,
   GROUPS_CATEGORY,

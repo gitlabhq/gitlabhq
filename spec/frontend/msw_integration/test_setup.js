@@ -1,4 +1,5 @@
 import { fetch, Request, Response, Headers } from '@whatwg-node/fetch';
+import { clearMissingOperations, missingOperations } from 'jest/msw_integration/test_helpers';
 import { server } from './server';
 import { setupRouter } from './setup_utils';
 import { baseMetadata } from './constants';
@@ -45,4 +46,13 @@ afterEach(() => {
   global.metadata = baseMetadata;
 });
 
-afterAll(() => server.close());
+afterAll(() => {
+  if (missingOperations.size > 0) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Test suite is missing graphql handlers for operations: ${Array.from(missingOperations, (el) => `\n - ${el}`)}\n\nSee https://docs.gitlab.com/ee/development/testing_guide/frontend_testing/#write-feature-handlers`,
+    );
+    clearMissingOperations();
+  }
+  server.close();
+});

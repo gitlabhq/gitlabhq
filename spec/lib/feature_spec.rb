@@ -330,7 +330,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
     it 'caches the status in L1 and L2 caches',
       :request_store, :use_clean_rails_memory_store_caching do
-        described_class.enable(:disabled_feature_flag)
+        stub_feature_flags(disabled_feature_flag: true)
         flipper_key = "flipper/v1/feature/disabled_feature_flag"
 
         expect(described_class.send(:l2_cache_backend))
@@ -774,7 +774,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
   end
 
   describe '.enable' do
-    subject { described_class.enable(key, thing) }
+    subject(:enable_feature) { described_class.enable(key, thing) }
 
     let(:key) { :awesome_feature }
     let(:thing) { true }
@@ -888,10 +888,106 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         end
       end
     end
+
+    context 'event publishing' do
+      it 'publishes FeatureFlagModifiedEvent' do
+        expect(Gitlab::EventStore).to receive(:publish).with(
+          an_instance_of(Gitlab::FeatureFlags::FeatureFlagModifiedEvent)
+        )
+
+        enable_feature
+      end
+
+      it 'includes feature_key in event data' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:feature_key]).to eq(key.to_s)
+        end
+
+        enable_feature
+      end
+
+      it 'includes state in event data' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:state]).to eq('on')
+        end
+
+        enable_feature
+      end
+
+      it 'includes operation for global enable' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:operation]).to eq(Feature::OPERATION_ENABLED_GLOBALLY)
+          expect(event.data[:actor]).to be_nil
+        end
+
+        enable_feature
+      end
+
+      context 'when enabling for a specific actor' do
+        let(:thing) { create(:user) }
+
+        it 'includes the actor and operation in event data', :aggregate_failures do
+          expect(Gitlab::EventStore).to receive(:publish) do |event|
+            expect(event.data[:operation]).to eq(Feature::OPERATION_ENABLED_ACTOR)
+            expect(event.data[:actor]).to eq(thing.flipper_id)
+            expect(event.data[:state]).to eq('conditional')
+          end
+
+          enable_feature
+        end
+      end
+
+      context 'when event publishing fails' do
+        before do
+          allow(Gitlab::EventStore).to receive(:publish).and_raise(StandardError.new('test error'))
+        end
+
+        it 'tracks the exception but does not raise' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            feature_key: key,
+            operation: Feature::OPERATION_ENABLED_GLOBALLY
+          )
+
+          expect { enable_feature }.not_to raise_error
+        end
+      end
+
+      context 'when the feature flag is already enabled' do
+        before do
+          described_class.enable(key)
+        end
+
+        it 'does not publish an event' do
+          expect(Gitlab::EventStore).not_to receive(:publish)
+
+          enable_feature
+        end
+      end
+
+      context 'when the feature flag is already enabled for some actors and a new actor is added' do
+        let(:existing_actor) { create(:user) }
+        let(:thing) { create(:user) }
+
+        before do
+          described_class.enable(key, existing_actor)
+        end
+
+        it 'publishes an event for the new actor', :aggregate_failures do
+          expect(Gitlab::EventStore).to receive(:publish) do |event|
+            expect(event.data[:operation]).to eq(Feature::OPERATION_ENABLED_ACTOR)
+            expect(event.data[:actor]).to eq(thing.flipper_id)
+            expect(event.data[:state]).to eq('conditional')
+          end
+
+          enable_feature
+        end
+      end
+    end
   end
 
   describe '.disable' do
-    subject { described_class.disable(key, thing) }
+    subject(:disable_feature) { described_class.disable(key, thing) }
 
     let(:key) { :awesome_feature }
     let(:thing) { false }
@@ -1038,6 +1134,96 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               .with(a_string_matching(/Did you mean/))
             described_class.disable(key)
           end
+        end
+      end
+    end
+
+    context 'event publishing' do
+      before do
+        described_class.enable(key)
+      end
+
+      it 'publishes FeatureFlagModifiedEvent' do
+        expect(Gitlab::EventStore).to receive(:publish).with(
+          an_instance_of(Gitlab::FeatureFlags::FeatureFlagModifiedEvent)
+        )
+
+        disable_feature
+      end
+
+      it 'includes feature_key in event data' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:feature_key]).to eq(key.to_s)
+        end
+
+        disable_feature
+      end
+
+      it 'includes state in event data' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:state]).to eq('off')
+        end
+
+        disable_feature
+      end
+
+      it 'includes operation for global disable' do
+        expect(Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event.data[:operation]).to eq(Feature::OPERATION_DISABLED_GLOBALLY)
+          expect(event.data[:actor]).to be_nil
+        end
+
+        disable_feature
+      end
+
+      context 'when disabling for a specific actor' do
+        let(:thing) { create(:user) }
+
+        before do
+          # Reset to off first (undoing the outer context's global enable),
+          # then enable only for the specific actor so we can test actor-level disable.
+          described_class.disable(key)
+          described_class.enable(key, thing)
+        end
+
+        it 'includes the actor and operation in event data', :aggregate_failures do
+          expect(Gitlab::EventStore).to receive(:publish) do |event|
+            expect(event.data[:operation]).to eq(Feature::OPERATION_DISABLED_ACTOR)
+            expect(event.data[:actor]).to eq(thing.flipper_id)
+            expect(event.data[:state]).to eq('off')
+          end
+
+          disable_feature
+        end
+      end
+
+      context 'when event publishing fails' do
+        before do
+          allow(Gitlab::EventStore).to receive(:publish).and_raise(StandardError.new('test error'))
+        end
+
+        it 'tracks the exception but does not raise' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(StandardError),
+            feature_key: key,
+            operation: Feature::OPERATION_DISABLED_GLOBALLY
+          )
+
+          expect { disable_feature }.not_to raise_error
+        end
+      end
+
+      context 'when the feature flag is already disabled' do
+        before do
+          # Undo the outer context's global enable so the flag is already disabled
+          # when disable_feature is called, ensuring no duplicate event is published.
+          described_class.disable(key)
+        end
+
+        it 'does not publish an event' do
+          expect(Gitlab::EventStore).not_to receive(:publish)
+
+          disable_feature
         end
       end
     end
@@ -1215,6 +1401,10 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     let(:key) { :awesome_feature }
     let(:percentage) { 50 }
 
+    before do
+      stub_feature_flag_definition(key)
+    end
+
     it_behaves_like 'logging' do
       let(:expected_action) { :enable_percentage_of_time }
       let(:expected_extra) { { "extra.percentage" => percentage.to_s } }
@@ -1247,6 +1437,10 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
     let(:key) { :awesome_feature }
     let(:percentage) { 50 }
+
+    before do
+      stub_feature_flag_definition(key)
+    end
 
     it_behaves_like 'logging' do
       let(:expected_action) { :enable_percentage_of_actors }
@@ -1534,6 +1728,26 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
             'Endpoint:GET /api/v4/projects/:id',
             'Endpoint:ProjectsController#show'
           ])
+        end
+      end
+
+      context 'when project is specified by numeric ID' do
+        let_it_be(:project) { create(:project) }
+
+        subject { described_class.new(project: project.id.to_s) }
+
+        it 'returns the project as a target' do
+          expect(subject.targets).to eq([project])
+        end
+      end
+
+      context 'when project is specified by full path' do
+        let_it_be(:project) { create(:project) }
+
+        subject { described_class.new(project: project.full_path) }
+
+        it 'returns the project as a target' do
+          expect(subject.targets).to eq([project])
         end
       end
 

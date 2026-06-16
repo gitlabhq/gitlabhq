@@ -1,0 +1,10 @@
+---
+name: code_completion_v4_endpoint
+description: Routes Code Suggestions completions through the AI Gateway v4 /code/suggestions endpoint instead of the legacy v2 /code/completions endpoint.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598413
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239271
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602067
+milestone: '19.1'
+group: group::ai coding
+type: gitlab_com_derisk
+default_enabled: false

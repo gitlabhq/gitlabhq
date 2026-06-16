@@ -45,5 +45,11 @@ module BulkImports
       self.new(s_("BulkImport|Migration by direct transfer is disabled on the source or destination instance. " \
                   "Ask an administrator to enable this feature on both instances and try again."))
     end
+
+    def self.cross_organization_destination(destination_namespace)
+      self.new(format(s_("BulkImport|Import failed. Destination '%{destination}' belongs to a different " \
+                         "organization than the current one. All entities in a single migration must belong " \
+                         "to your current organization."), destination: destination_namespace.presence || '<root>'))
+    end
   end
 end

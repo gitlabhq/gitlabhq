@@ -6,10 +6,12 @@ import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { joinPaths, stripRelativeUrlRootFromPath } from '~/lib/utils/url_utility';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import getUserAchievements from './graphql/get_user_achievements.query.graphql';
 
 export default {
   name: 'UserAchievements',
+  directives: { SafeHtml },
   components: { GlAvatar, GlBadge, GlPopover, GlSprintf },
   mixins: [timeagoMixin],
   inject: ['rootUrl', 'userId'],
@@ -38,10 +40,14 @@ export default {
   methods: {
     processNodes(nodes) {
       return Object.entries(groupBy(nodes, 'achievement.id')).map(([id, values]) => {
+        const sortedValues = [...values].sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
         const {
           achievement: { name, avatarUrl, description, namespace },
           createdAt,
-        } = values[0];
+        } = sortedValues[0];
+        const mostRecent = sortedValues[sortedValues.length - 1];
         const count = values.length;
         return {
           id: `user-achievement-${id}`,
@@ -49,6 +55,7 @@ export default {
           timeAgo: this.timeFormatted(createdAt),
           avatarUrl: avatarUrl || gon.gitlab_logo,
           description,
+          awardMessageHtml: mostRecent.awardMessageHtml,
           namespace: namespace && {
             fullPath: namespace.fullPath,
             webUrl: joinPaths(
@@ -126,6 +133,12 @@ export default {
               </template>
             </gl-sprintf>
           </div>
+          <div
+            v-if="userAchievement.awardMessageHtml"
+            v-safe-html="userAchievement.awardMessageHtml"
+            class="gl-mt-5"
+            data-testid="achievement-award-message"
+          ></div>
           <div
             v-if="userAchievement.description"
             class="gl-mt-5"

@@ -43,6 +43,7 @@ project:
   - read_confidential_issues
   - read_internal_note
   - read_merge_request
+  - read_merge_request_iid
   - reopen_issue
   - update_design
   - update_issue

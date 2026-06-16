@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:project) { build(:project, :repository) }
+  let_it_be(:project, freeze: false) { build(:project, :repository) }
   let_it_be(:max_chars) { 100 }
-  let_it_be(:user) do
+  let_it_be(:user, freeze: false) do
     user = create(:user, username: 'gfm')
     project.add_maintainer(user)
     user

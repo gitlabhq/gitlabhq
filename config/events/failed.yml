@@ -5,6 +5,8 @@ identifiers:
 - project
 - user
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '15.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92637
 tiers:

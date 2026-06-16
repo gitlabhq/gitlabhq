@@ -174,6 +174,6 @@ RSpec.shared_examples 'no access to any release data' do
   end
 
   it 'returns nil' do
-    expect(data).to eq(nil)
+    expect(data).to be_nil
   end
 end

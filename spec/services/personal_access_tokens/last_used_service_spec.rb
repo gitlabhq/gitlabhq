@@ -13,6 +13,10 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     context 'when the personal access token was used 10 minutes ago', :freeze_time do
       let(:personal_access_token) { create(:personal_access_token, last_used_at: 10.minutes.ago) }
 
+      before do
+        stub_feature_flags(audit_event_pat_unseen_ip: false)
+      end
+
       it 'updates the last_used_at timestamp' do
         expect { service_execution }.to change { personal_access_token.last_used_at }
       end
@@ -218,15 +222,135 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     end
 
     context 'when the last_used_at timestamp is nil' do
-      let_it_be(:personal_access_token) { create(:personal_access_token, last_used_at: nil) }
+      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token, last_used_at: nil) }
 
       it 'updates the last_used_at timestamp' do
         expect { service_execution }.to change { personal_access_token.last_used_at }
       end
     end
 
+    describe 'audit event for unseen IP' do
+      let(:current_ip_address) { '10.0.0.1' }
+
+      before do
+        allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+        allow(::Gitlab::Audit::Auditor).to receive(:audit)
+      end
+
+      context 'when last_used_at is nil (first use)', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: nil) }
+
+        it 'does not fire an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
+            hash_including(name: 'personal_access_token_used_from_unseen_ip')
+          )
+        end
+      end
+
+      context 'when last_used_at is set and IP is new', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
+
+        it 'fires an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).to have_received(:audit).with(
+            hash_including(
+              name: 'personal_access_token_used_from_unseen_ip',
+              authentication_event: true,
+              authentication_provider: :pat,
+              additional_details: hash_including(
+                pat_id: personal_access_token.id,
+                pat_name: personal_access_token.name
+              )
+            )
+          )
+        end
+
+        it 'sets author and scope to the token owner' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).to have_received(:audit).with(
+            hash_including(
+              author: personal_access_token.user,
+              scope: personal_access_token.user,
+              target: personal_access_token.user
+            )
+          )
+        end
+      end
+
+      context 'when last_used_at is set and IP is already known', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 11.minutes.ago) }
+
+        before do
+          personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+            organization: personal_access_token.organization,
+            ip_address: current_ip_address)
+        end
+
+        it 'does not fire an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
+            hash_including(name: 'personal_access_token_used_from_unseen_ip')
+          )
+        end
+      end
+
+      context 'when there is no current IP address', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
+
+        before do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(nil)
+        end
+
+        it 'does not fire an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
+            hash_including(name: 'personal_access_token_used_from_unseen_ip')
+          )
+        end
+      end
+
+      context 'when the lease is already taken', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
+        let(:lease_key) { "pat:last_used_update_lock:#{personal_access_token.id}" }
+
+        before do
+          stub_exclusive_lease_taken(lease_key, timeout: described_class::LEASE_TIMEOUT)
+        end
+
+        it 'does not fire an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
+            hash_including(name: 'personal_access_token_used_from_unseen_ip')
+          )
+        end
+      end
+
+      context 'when audit_event_pat_unseen_ip feature flag is disabled', :freeze_time do
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
+
+        before do
+          stub_feature_flags(audit_event_pat_unseen_ip: false)
+        end
+
+        it 'does not fire an audit event' do
+          service_execution
+
+          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
+            hash_including(name: 'personal_access_token_used_from_unseen_ip')
+          )
+        end
+      end
+    end
+
     context 'when not a personal access token' do
-      let_it_be(:personal_access_token) { create(:oauth_access_token) }
+      let_it_be(:personal_access_token, freeze: false) { create(:oauth_access_token) }
 
       it 'does not execute' do
         expect(service_execution).to be_nil
@@ -234,7 +358,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     end
 
     context 'when the exclusive lease is taken' do
-      let_it_be(:personal_access_token) { create(:personal_access_token) }
+      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token) }
       let(:lease_key) { "pat:last_used_update_lock:#{personal_access_token.id}" }
 
       it 'does not update the last_used_at timestamp' do
@@ -244,6 +368,18 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
           receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
         )
 
+        expect { service_execution }.not_to change { personal_access_token.last_used_at }
+      end
+    end
+
+    context 'when the token is frozen' do
+      let(:personal_access_token) { create(:personal_access_token, last_used_at: 1.year.ago) }
+
+      before do
+        personal_access_token.freeze
+      end
+
+      it 'does not update the last_used_at timestamp' do
         expect { service_execution }.not_to change { personal_access_token.last_used_at }
       end
     end

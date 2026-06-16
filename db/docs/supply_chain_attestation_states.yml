@@ -8,15 +8,6 @@ feature_categories:
 classes:
   - Geo::SupplyChainAttestationState
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: supply_chain_attestation_id
-        table: slsa_attestations
-        sharding_key: project_id
-        belongs_to: supply_chain_attestation
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
-desired_sharding_key_migration_job_name: BackfillSupplyChainAttestationStatesProjectId
+sharding_key:
+  project_id: projects
 table_size: small

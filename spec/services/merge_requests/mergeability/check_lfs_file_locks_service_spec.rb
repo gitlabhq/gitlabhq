@@ -99,20 +99,20 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
     context 'when skip check is true' do
       let(:skip_check) { true }
 
-      it { expect(skip).to eq(true) }
+      it { expect(skip).to be(true) }
     end
 
     context 'when skip check is false' do
       let(:skip_check) { false }
 
-      it { expect(skip).to eq(false) }
+      it { expect(skip).to be(false) }
     end
   end
 
   describe '#cacheable?' do
     subject(:cacheable) { check_lfs_file_locks.cacheable? }
 
-    it { expect(cacheable).to eq(true) }
+    it { expect(cacheable).to be(true) }
   end
 
   describe '#cache_key' do

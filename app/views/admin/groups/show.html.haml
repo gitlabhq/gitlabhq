@@ -70,7 +70,7 @@
                   = project.full_path + '.git'
         - else
           %p.gl-text-center= _('No projects')
-      - unless @projects.size < Kaminari.config.default_per_page
+      - if @projects.total_pages > 1
         - c.with_footer do
           = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
@@ -111,7 +111,7 @@
             locals: { membership_source: @group,
             group: @group,
             current_user_is_group_owner: current_user_is_group_owner }
-      - unless @members.size < Kaminari.config.default_per_page
+      - if @members.total_pages > 1
         - c.with_footer do
           = paginate @members, param_name: 'members_page', theme: 'gitlab'
 

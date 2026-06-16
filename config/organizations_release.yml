@@ -1,0 +1,37 @@
+# Organization flags registry.
+#
+# Organization flags are the Organizations team's own feature flags. Rather than
+# each owning a backing flag, they share a small fixed ladder of stage flags
+# (see Organizations::Release::Stage); this file records which stage each one is
+# at, and is the single source of truth for that.
+#
+# For the release model -- the stages, audiences, target platforms, and rollout
+# rules -- see the handbook:
+# https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/organizations/release-stages/
+#
+# Feature code checks an organization flag with:
+#   Organizations::Release.enabled?(:flag_name, actor)
+#
+# To advance or roll back a flag, change its `stage` in a merge request.
+# Valid stages: experimental, beta, la_25, la_50, la_75, la_100, ga.
+#
+# The caller passes the feature flag actor (for example an Organization or User,
+# or nil for the instance-wide gate). Pass a consistent actor type at every call
+# site for a flag: the shared stage flags bucket by actor type for percentage
+# rollouts.
+#
+# Flags are added here as feature code adopts the release layer (calls
+# Organizations::Release.enabled?). A flag declares the stage a real, wired-up
+# feature launches at -- almost always `experimental`. We do not seed flags
+# ahead of their first call site: the generated release status doc is
+# public-facing, and an entry with no call site would publish a rollout state
+# that no code honors.
+#
+# Example of a single entry (see the schema documented above):
+#
+#   flags:
+#     - name: my_flag
+#       description: What the flag gates.
+#       stage: experimental
+---
+flags: []

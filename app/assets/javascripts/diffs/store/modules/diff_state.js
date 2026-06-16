@@ -41,4 +41,5 @@ export default () => ({
   latestDiff: true,
   virtualScrollerDisabled: false,
   linkedFileHash: null,
+  gitalyErrorMessage: null,
 });

@@ -4,6 +4,9 @@
 - content_for :reload_on_member_invite_success, true
 - content_for :hide_invite_members_button, true
 
+- if Gitlab::Security::SecurityManagerConfig.enabled? && can?(current_user, :admin_project_member, @project)
+  #js-security-manager-role-banner
+
 = render ::Layouts::IndexLayout.new(heading: _("Project members"), page_heading_sr_only: !show_the_header) do |c|
   - if show_the_header
     - c.with_description do

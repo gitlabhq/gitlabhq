@@ -11,6 +11,12 @@ RSpec.describe 'lock a terraform state', feature_category: :infrastructure_as_co
   let(:state) { create(:terraform_state, project: project) }
   let(:mutation) { graphql_mutation(:terraform_state_lock, id: state.to_global_id.to_s) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :lock_terraform_state do
+    let(:boundary_object) { project }
+    let(:mutation) { graphql_mutation(:terraform_state_lock, id: state.to_global_id.to_s) }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   before do
     expect(state).not_to be_locked
     post_graphql_mutation(mutation, current_user: user)

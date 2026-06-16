@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Milestoneable do
-  let_it_be(:group, reload: true) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
 
   shared_examples_for 'an object that can be assigned a milestone' do
     describe 'Validation' do
@@ -111,39 +111,39 @@ RSpec.describe Milestoneable do
   end
 
   describe 'release scopes' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
-    let_it_be(:release_1) { create(:release, tag: 'v1.0', project: project) }
-    let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project) }
-    let_it_be(:release_3) { create(:release, tag: 'v3.0', project: project) }
-    let_it_be(:release_4) { create(:release, tag: 'v4.0', project: project) }
+    let_it_be(:release_1, freeze: false) { create(:release, tag: 'v1.0', project: project) }
+    let_it_be(:release_2, freeze: false) { create(:release, tag: 'v2.0', project: project) }
+    let_it_be(:release_3, freeze: false) { create(:release, tag: 'v3.0', project: project) }
+    let_it_be(:release_4, freeze: false) { create(:release, tag: 'v4.0', project: project) }
 
-    let_it_be(:milestone_1) { create(:milestone, releases: [release_1], title: 'm1', project: project) }
-    let_it_be(:milestone_2) { create(:milestone, releases: [release_1, release_2], title: 'm2', project: project) }
-    let_it_be(:milestone_3) { create(:milestone, releases: [release_2, release_4], title: 'm3', project: project) }
-    let_it_be(:milestone_4) { create(:milestone, releases: [release_3], title: 'm4', project: project) }
-    let_it_be(:milestone_5) { create(:milestone, releases: [release_3], title: 'm5', project: project) }
-    let_it_be(:milestone_6) { create(:milestone, title: 'm6', project: project) }
+    let_it_be(:milestone_1, freeze: false) { create(:milestone, releases: [release_1], title: 'm1', project: project) }
+    let_it_be(:milestone_2, freeze: false) { create(:milestone, releases: [release_1, release_2], title: 'm2', project: project) }
+    let_it_be(:milestone_3, freeze: false) { create(:milestone, releases: [release_2, release_4], title: 'm3', project: project) }
+    let_it_be(:milestone_4, freeze: false) { create(:milestone, releases: [release_3], title: 'm4', project: project) }
+    let_it_be(:milestone_5, freeze: false) { create(:milestone, releases: [release_3], title: 'm5', project: project) }
+    let_it_be(:milestone_6, freeze: false) { create(:milestone, title: 'm6', project: project) }
 
-    let_it_be(:issue_1) { create(:issue, milestone: milestone_1, project: project) }
-    let_it_be(:issue_2) { create(:issue, milestone: milestone_1, project: project) }
-    let_it_be(:issue_3) { create(:issue, milestone: milestone_2, project: project) }
-    let_it_be(:issue_4) { create(:issue, milestone: milestone_5, project: project) }
-    let_it_be(:issue_5) { create(:issue, milestone: milestone_6, project: project) }
-    let_it_be(:issue_6) { create(:issue, project: project) }
+    let_it_be(:issue_1, freeze: false) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_2, freeze: false) { create(:issue, milestone: milestone_1, project: project) }
+    let_it_be(:issue_3, freeze: false) { create(:issue, milestone: milestone_2, project: project) }
+    let_it_be(:issue_4, freeze: false) { create(:issue, milestone: milestone_5, project: project) }
+    let_it_be(:issue_5, freeze: false) { create(:issue, milestone: milestone_6, project: project) }
+    let_it_be(:issue_6, freeze: false) { create(:issue, project: project) }
 
-    let_it_be(:items) { Issue.all }
+    let_it_be(:items, freeze: false) { Issue.all }
 
     describe '#any_milestone' do
       context 'when milestone filter is present and related closing issues are joined' do
-        let_it_be(:merge_request_1) { create(:merge_request, source_project: project, source_branch: 'feature-1') }
-        let_it_be(:merge_request_2) { create(:merge_request, source_project: project, source_branch: 'feature-2') }
+        let_it_be(:merge_request_1, freeze: false) { create(:merge_request, source_project: project, source_branch: 'feature-1') }
+        let_it_be(:merge_request_2, freeze: false) { create(:merge_request, source_project: project, source_branch: 'feature-2') }
 
-        let_it_be(:mrc_issue_1) { create(:merge_requests_closing_issues, issue: issue_1, merge_request: merge_request_1) }
-        let_it_be(:mrc_issue_2) { create(:merge_requests_closing_issues, issue: issue_2, merge_request: merge_request_2) }
+        let_it_be(:mrc_issue_1, freeze: false) { create(:merge_requests_closing_issues, issue: issue_1, merge_request: merge_request_1) }
+        let_it_be(:mrc_issue_2, freeze: false) { create(:merge_requests_closing_issues, issue: issue_2, merge_request: merge_request_2) }
 
         it 'returns merge request closing issues of any milestone' do
-          relation = items.joins(merge_requests_closing_issues: :issue).any_milestone
+          relation = items.joins(merge_request_closing_issues: :issue).any_milestone
 
           expect(relation).to contain_exactly(issue_1, issue_2)
         end

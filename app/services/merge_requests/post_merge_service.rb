@@ -73,7 +73,7 @@ module MergeRequests
         end
       else
         delay = 0
-        merge_request.merge_requests_closing_issues.preload_issue
+        merge_request.merge_request_closing_issues.preload_issue
                      .find_each(batch_size: BATCH_SIZE).with_index(1) do |closing_issue, index| # rubocop:disable CodeReuse/ActiveRecord -- Would require exact redefinition of the method
           delay += 5 if (index % 5) == 0
           close_issue(closing_issue.issue, merge_request, !closing_issue.from_mr_description, delay: delay)

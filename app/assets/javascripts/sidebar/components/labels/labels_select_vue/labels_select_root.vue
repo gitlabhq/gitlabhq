@@ -19,6 +19,7 @@ Vue.use(Vuex);
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue` instead.
 export default {
+  name: 'LabelsSelectRoot',
   store: new Vuex.Store(labelsSelectModule()),
   components: {
     DropdownTitle,

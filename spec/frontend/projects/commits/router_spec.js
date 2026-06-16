@@ -25,4 +25,36 @@ describe('Commits router spec', () => {
       expect(actualParams).toEqual(expectedParams);
     });
   });
+
+  describe('commitsPathEncoded route', () => {
+    it('matches the initial ref encoded with encodeURIComponent', async () => {
+      const router = createRouter(basePath, escapedRef);
+      // encodeURIComponent('main') === 'main' (no special chars), so this
+      // just confirms the encoded route is wired up.
+      await router.push(`/${encodeURIComponent(escapedRef)}/`);
+
+      expect(router.currentRoute.name).toBe('commitsPath');
+    });
+
+    it('matches a slashed ref encoded with encodeURIComponent', async () => {
+      const slashedRef = 'feature/my-branch';
+      const router = createRouter(basePath, slashedRef);
+      await router.push(`/${encodeURIComponent(slashedRef)}/`);
+
+      expect(router.currentRoute.name).toBe('commitsPathEncoded');
+    });
+  });
+
+  describe('commitsAnyRef fallback', () => {
+    it('captures the encoded ref as a single param for refs with slashes', async () => {
+      const router = createRouter(basePath, escapedRef);
+      const encodedRef = encodeURIComponent('feature/foo');
+      await router.push(`/${encodedRef}/app/models/user.rb`);
+
+      expect(router.currentRoute.name).toBe('commitsAnyRef');
+      // Vue Router auto-decodes params, so we get the decoded ref back.
+      // The important thing is that it's captured as a single param, not split.
+      expect(router.currentRoute.params.ref).toBe('feature/foo');
+    });
+  });
 });

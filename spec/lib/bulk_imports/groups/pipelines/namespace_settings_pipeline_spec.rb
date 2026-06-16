@@ -5,12 +5,15 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, feature_category: :importers do
   subject(:pipeline) { described_class.new(context) }
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, namespace_settings: create(:namespace_settings)) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
-  let_it_be(:entity) { create(:bulk_import_entity, :group_entity, group: group, bulk_import: bulk_import) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group, namespace_settings: create(:namespace_settings)) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:entity, freeze: false) do
+    create(:bulk_import_entity, :group_entity, group: group, bulk_import: bulk_import)
+  end
+
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   before do
     group.add_owner(user)

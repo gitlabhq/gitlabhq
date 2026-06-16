@@ -32,6 +32,7 @@ export default {
       required: true,
     },
   },
+  emits: ['snoozed', 'un-snoozed'],
   computed: {
     showSnoozingDropdown() {
       return !this.isSnoozed && this.isPending;

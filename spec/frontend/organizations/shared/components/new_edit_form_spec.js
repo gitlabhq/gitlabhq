@@ -16,6 +16,7 @@ import VisibilityLevelRadioButtons from '~/visibility_level/components/visibilit
 import {
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -174,12 +175,12 @@ describe('NewEditForm', () => {
     ).toBe(true);
   });
 
-  it('renders `Visibility level` field with the private as the only option', () => {
+  it('renders `Visibility level` field with private and public options', () => {
     createComponent();
 
     expect(findVisibilityLevelRadioButtons().props()).toEqual({
       checked: VISIBILITY_LEVEL_PRIVATE_INTEGER,
-      visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER],
+      visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER, VISIBILITY_LEVEL_PUBLIC_INTEGER],
       visibilityLevelDescriptions: ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
     });
   });

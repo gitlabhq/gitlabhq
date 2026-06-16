@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/cron_worker_context'
 
-RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
+RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext, feature_category: :scalability do
   it 'adds an offense when including CronjobQueue' do
     expect_offense(<<~RUBY)
       class SomeWorker

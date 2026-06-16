@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Pages::DeletePagesDeploymentWorker, feature_category: :pages do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let!(:pages_deployment) { create(:pages_deployment, project: project) }
 
   let(:event) do

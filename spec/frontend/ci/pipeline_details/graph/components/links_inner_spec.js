@@ -196,7 +196,7 @@ describe('Links Inner component', () => {
     it('highlight needs on hover', async () => {
       const firstLink = findAllLinksPath().at(0);
 
-      const defaultColorClass = 'gl-stroke-gray-200';
+      const defaultColorClass = 'gl-stroke-gray-700';
       const hoverColorClass = 'gl-stroke-blue-400';
 
       expect(firstLink.classes(defaultColorClass)).toBe(true);

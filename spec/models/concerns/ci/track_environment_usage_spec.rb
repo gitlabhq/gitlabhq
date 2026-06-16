@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TrackEnvironmentUsage do
+RSpec.describe Ci::TrackEnvironmentUsage, feature_category: :continuous_integration do
   describe '#verifies_environment?' do
     subject { build.verifies_environment? }
 
@@ -34,7 +34,7 @@ RSpec.describe Ci::TrackEnvironmentUsage do
   end
 
   describe 'deployment_name?' do
-    let(:build) { create(:ci_build) }
+    let(:build) { build_stubbed(:ci_build) }
 
     subject { build.branch? }
 

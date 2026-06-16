@@ -4,7 +4,8 @@ classes:
 - MergeRequests::StatusCheckResponse
 feature_categories:
 - compliance_management
-description: TODO
+description: Stores responses from external status checks required for merge request
+  approval.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61135
 milestone: '13.12'
 gitlab_schema: gitlab_main_org

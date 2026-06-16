@@ -624,4 +624,95 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
       expect { service.execute }.to raise_error(cleanup_error)
     end
   end
+
+  describe 'record_store parameter' do
+    let(:deleted_parent_records) do
+      LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100)
+    end
+
+    def build_service(**overrides)
+      described_class.new(
+        parent_table: '_test_loose_fk_parent_table',
+        loose_foreign_key_definitions: loose_foreign_key_definitions,
+        deleted_parent_records: deleted_parent_records,
+        connection: ::ApplicationRecord.connection,
+        **overrides
+      )
+    end
+
+    context 'when processing records successfully' do
+      let(:record_store) { class_double(LooseForeignKeys::DeletedRecord) }
+
+      before do
+        parent_record_1.delete
+        allow(record_store).to receive(:connection).and_return(LooseForeignKeys::DeletedRecord.connection)
+      end
+
+      it 'invokes mark_records_processed on the injected record_store' do
+        service = build_service(record_store: record_store)
+
+        expect(record_store).to receive(:mark_records_processed).and_return(1)
+
+        service.execute
+      end
+    end
+
+    context 'when over the modification limit' do
+      let(:modification_tracker) { instance_double(LooseForeignKeys::ModificationTracker) }
+      let(:record_store) { class_double(LooseForeignKeys::DeletedRecord) }
+
+      before do
+        parent_record_1.delete
+        allow(modification_tracker).to receive(:over_limit?).and_return(true)
+        allow(modification_tracker).to receive(:add_deletions)
+        allow(record_store).to receive(:connection).and_return(LooseForeignKeys::DeletedRecord.connection)
+      end
+
+      it 'invokes reschedule on the injected record_store for records above attempts threshold' do
+        records = deleted_parent_records
+        records.each { |r| r.update!(cleanup_attempts: described_class::CLEANUP_ATTEMPTS_BEFORE_RESCHEDULE + 1) }
+
+        service = build_service(
+          deleted_parent_records: records,
+          modification_tracker: modification_tracker,
+          record_store: record_store
+        )
+
+        expect(record_store).to receive(:reschedule).and_return(records.size)
+        allow(record_store).to receive(:increment_attempts).and_return(0)
+
+        service.execute
+      end
+
+      it 'invokes increment_attempts on the injected record_store for records below attempts threshold' do
+        records = deleted_parent_records
+        records.each { |r| r.update!(cleanup_attempts: 0) }
+
+        service = build_service(
+          deleted_parent_records: records,
+          modification_tracker: modification_tracker,
+          record_store: record_store
+        )
+
+        expect(record_store).to receive(:increment_attempts).and_return(records.size)
+        allow(record_store).to receive(:reschedule).and_return(0)
+
+        service.execute
+      end
+    end
+
+    describe '#db_config_name' do
+      let(:db_name) { 'gitlab_db' }
+      let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: db_name) }
+      let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool, db_config: db_config) }
+      let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::AbstractAdapter, pool: connection_pool) }
+      let(:record_store) { class_double(LooseForeignKeys::DeletedRecord, connection: connection) }
+
+      it 'resolves the correct config name via record_store.connection' do
+        service = build_service(record_store: record_store)
+
+        expect(service.send(:db_config_name)).to eq(db_name)
+      end
+    end
+  end
 end

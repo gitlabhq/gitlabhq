@@ -344,8 +344,9 @@ describe('WorkItemNotes component', () => {
         after: undefined,
         fullPath: 'test-path',
         iid: '1',
-        pageSize: 20,
+        pageSize: DEFAULT_PAGE_SIZE_NOTES,
         sort: DISCUSSIONS_SORT_ENUM[ASC],
+        useWorkItemFeatures: false,
       });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
     });
@@ -380,6 +381,7 @@ describe('WorkItemNotes component', () => {
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
           sort: DISCUSSIONS_SORT_ENUM[ASC],
+          useWorkItemFeatures: false,
         });
 
         await nextTick();
@@ -390,6 +392,7 @@ describe('WorkItemNotes component', () => {
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
           after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
           sort: DISCUSSIONS_SORT_ENUM[ASC],
+          useWorkItemFeatures: false,
         });
       });
 
@@ -407,6 +410,7 @@ describe('WorkItemNotes component', () => {
             iid: '1',
             pageSize: DEFAULT_PAGE_SIZE_NOTES,
             sort: DISCUSSIONS_SORT_ENUM[DESC],
+            useWorkItemFeatures: false,
           });
 
           await nextTick();
@@ -417,6 +421,7 @@ describe('WorkItemNotes component', () => {
             pageSize: DEFAULT_PAGE_SIZE_NOTES,
             after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
             sort: DISCUSSIONS_SORT_ENUM[DESC],
+            useWorkItemFeatures: false,
           });
         });
       });

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループイシューボードAPI
 ---
 
@@ -12,13 +12,13 @@ title: グループイシューボードAPI
 
 {{< /details >}}
 
-[グループイシューボード](../user/project/issue_board.md#group-issue-boards)へのすべてのAPIコールは、認証を行う必要があります。
+このAPIを使用して、[グループイシューボード](../user/project/issue_board.md#group-issue-boards)を管理します。このAPIへのすべての呼び出しには認証が必要です。
 
-ユーザーがグループのメンバーではなく、グループが非公開の場合、そのグループに対する`GET`リクエストの結果として、`404`ステータスコードが返されます。
+ユーザーがグループのメンバーではなく、そのグループがプライベートである場合、`GET`リクエストは`404`ステータスコードになります。
 
 ## グループ内のすべてのグループイシューボードをリストします {#list-all-group-issue-boards-in-a-group}
 
-指定されたグループのイシューボードをリストします。
+指定されたグループのすべてのグループイシューボードをリストします。
 
 ```plaintext
 GET /groups/:id/boards
@@ -29,10 +29,12 @@ GET /groups/:id/boards
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -83,9 +85,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-[GitLab Premium](https://about.gitlab.com/pricing/)またはUltimateのユーザーには、複数のグループボードを持つ機能があるため、異なるパラメータが表示されます。
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーは、複数のグループボードを持つことができるため、異なるパラメータが表示されます。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -136,9 +138,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## 単一グループイシューボード {#single-group-issue-board}
+## 取得するグループイシューボード {#retrieve-a-group-issue-board}
 
-単一グループイシューボードを取得します。
+指定されたグループイシューボードを取得する。
 
 ```plaintext
 GET /groups/:id/boards/:board_id
@@ -150,10 +152,12 @@ GET /groups/:id/boards/:board_id
 | `board_id` | 整数 | はい | ボードのID。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -202,9 +206,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
   }
 ```
 
-[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、複数のグループイシューボードを持つ機能があるため、異なるパラメータが表示されます。
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーは、複数のグループイシューボードを持つことができるため、異なるパラメータが表示されます。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -253,7 +257,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
   }
 ```
 
-## グループイシューボードの作成 {#create-a-group-issue-board}
+## グループイシューボードを作成する {#create-a-group-issue-board}
 
 {{< details >}}
 
@@ -262,7 +266,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /details >}}
 
-グループイシューボードを作成します。
+指定されたグループにグループイシューボードを作成します。
 
 ```plaintext
 POST /groups/:id/boards
@@ -274,10 +278,12 @@ POST /groups/:id/boards
 | `name` | 文字列 | はい | 新しいボードの名前。 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards?name=newboard"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards?name=newboard"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -299,9 +305,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   }
 ```
 
-## グループイシューボードの更新 {#update-a-group-issue-board}
+## グループイシューボードを更新する {#update-a-group-issue-board}
 
-グループイシューボードを更新します。
+指定されたグループイシューボードを更新します。
 
 ```plaintext
 PUT /groups/:id/boards/:board_id
@@ -312,18 +318,20 @@ PUT /groups/:id/boards/:board_id
 | `id`                         | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id`                   | 整数        | はい      | ボードのID。 |
 | `name`                       | 文字列         | いいえ       | ボードの新しい名前。 |
-| `hide_backlog_list`          | ブール値        | いいえ       | [開く]リストを非表示にします。 |
-| `hide_closed_list`           | ブール値        | いいえ       | [閉じる]リストを非表示にします。 |
-| `assignee_id`                | 整数        | いいえ       | ボードのスコープを設定する担当者。PremiumおよびUltimateのみです。 |
-| `milestone_id`               | 整数        | いいえ       | ボードのスコープを設定するマイルストーン。PremiumおよびUltimateのみです。 |
-| `labels`                     | 文字列         | いいえ       | ボードのスコープを設定するラベル名のカンマ区切りリスト。PremiumおよびUltimateのみです。 |
-| `weight`                     | 整数        | いいえ       | ボードのスコープを設定する0〜9のウェイト範囲。PremiumおよびUltimateのみです。 |
+| `hide_backlog_list`          | ブール値        | いいえ       | Openリストを非表示にします。 |
+| `hide_closed_list`           | ブール値        | いいえ       | Closedリストを非表示にします。 |
+| `assignee_id`                | 整数        | いいえ       | ボードのスコープとするassignee。PremiumおよびUltimateのみです。 |
+| `milestone_id`               | 整数        | いいえ       | ボードのスコープとするマイルストーン。PremiumおよびUltimateのみです。 |
+| `labels`                     | 文字列         | いいえ       | ボードのスコープとするラベル名のカンマ区切りリスト。PremiumおよびUltimateのみです。 |
+| `weight`                     | 整数        | いいえ       | ボードのスコープとする0から9までのウェイト範囲。PremiumおよびUltimateのみです。 |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -369,7 +377,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
   }
 ```
 
-## グループイシューボードの削除 {#delete-a-group-issue-board}
+## グループイシューボードを削除する {#delete-a-group-issue-board}
 
 {{< details >}}
 
@@ -378,7 +386,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 {{< /details >}}
 
-グループイシューボードを削除します。
+指定されたグループイシューボードを削除します。
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id
@@ -390,12 +398,14 @@ DELETE /groups/:id/boards/:board_id
 | `board_id` | 整数 | はい | ボードのID。 |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1"
 ```
 
-## グループイシューボードリストをリストします {#list-group-issue-board-lists}
+## グループイシューボードイシューボードリストをリストする {#list-group-issue-board-lists}
 
-ボードのリストのリストを取得します。`open`と`closed`のリストは含まれません
+指定されたボードのすべてのグループイシューボードイシューボードリストをリストします。`open`と`closed`のリストは含まれません。
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists
@@ -407,10 +417,12 @@ GET /groups/:id/boards/:board_id/lists
 | `board_id` | 整数 | はい | ボードのID。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -444,9 +456,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## 単一グループイシューボードリスト {#single-group-issue-board-list}
+## 取得するグループイシューボードイシューボードリスト {#retrieve-a-group-issue-board-list}
 
-単一ボードリストを取得します。
+指定されたグループイシューボードイシューボードリストを取得する。
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists/:list_id
@@ -459,10 +471,12 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | 整数 | はい | ボードのリストのID。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -476,9 +490,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## 新規グループイシューボードリスト {#new-group-issue-board-list}
+## グループイシューボードイシューボードリストを作成する {#create-a-group-issue-board-list}
 
-イシューボードリストを作成します。
+指定されたボードにグループイシューボードイシューボードリストを作成します。
 
 ```plaintext
 POST /groups/:id/boards/:board_id/lists
@@ -489,15 +503,17 @@ POST /groups/:id/boards/:board_id/lists
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
 | `label_id` | 整数 | いいえ | ラベルのID。 |
-| `assignee_id` | 整数 | いいえ | ユーザーのIDPremiumおよびUltimateのみです。 |
+| `assignee_id` | 整数 | いいえ | ユーザーのID。PremiumおよびUltimateのみです。 |
 | `milestone_id` | 整数 | いいえ | マイルストーンのID。PremiumおよびUltimateのみです。 |
 | `iteration_id` | 整数 | いいえ | イテレーションのID。PremiumおよびUltimateのみです。 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/12/lists?milestone_id=7"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/12/lists?milestone_id=7"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -520,9 +536,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 }
 ```
 
-## グループイシューボードリストの編集 {#edit-group-issue-board-list}
+## グループイシューボードイシューボードリストを更新する {#update-a-group-issue-board-list}
 
-既存のイシューボードリストを更新します。この呼び出しは、リストの位置を変更するために使用されます。
+指定されたグループイシューボードイシューボードリストを更新します。この呼び出しはリストの位置を変更するために使用されます。
 
 ```plaintext
 PUT /groups/:id/boards/:board_id/lists/:list_id
@@ -533,13 +549,15 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 | `id`            | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
 | `list_id` | 整数 | はい | ボードのリストのID。 |
-| `position` | 整数 | はい | リストの位置 |
+| `position` | 整数 | はい | リストの位置。 |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1?position=2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -553,9 +571,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 }
 ```
 
-## グループイシューボードリストの削除 {#delete-a-group-issue-board-list}
+## グループイシューボードイシューボードリストを削除する {#delete-a-group-issue-board-list}
 
-管理者とグループオーナーのみが対象です。問題となっているボードリストを削除します。
+指定されたグループイシューボードイシューボードリストを削除します。管理者およびグループオーナーのみ。
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id/lists/:list_id
@@ -568,5 +586,7 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | 整数 | はい | ボードのリストのID。 |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1"
 ```

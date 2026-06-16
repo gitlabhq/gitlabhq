@@ -134,7 +134,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :security_reports_docs_path do |merge_request|
-    help_page_path('user/application_security/detect/security_scanning_results.md', anchor: 'merge-request-security-widget')
+    help_page_path('user/application_security/detect/security_scanning_results.md', anchor: 'merge-request-reports')
   end
 
   expose :enabled_reports do |merge_request|
@@ -175,7 +175,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     merge_request.open? &&
       merge_request.source_branch_exists? &&
       !merge_request.source_project.has_ci? &&
-      merge_request.commits_count > 0 &&
       can?(current_user, :read_build, merge_request.source_project) &&
       can?(current_user, :create_pipeline, merge_request.source_project)
   end

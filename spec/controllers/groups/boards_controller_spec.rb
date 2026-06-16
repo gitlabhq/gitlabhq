@@ -12,7 +12,7 @@ RSpec.describe Groups::BoardsController, feature_category: :team_planning do
 
   describe 'GET index' do
     it 'creates a new board when group does not have one' do
-      expect { list_boards }.to change(group.boards, :count).by(1)
+      expect { list_boards }.to change { group.boards.count }.by(1)
     end
 
     context 'when format is HTML' do
@@ -70,7 +70,7 @@ RSpec.describe Groups::BoardsController, feature_category: :team_planning do
 
     context 'when format is HTML' do
       it 'renders template' do
-        expect { read_board board: board }.to change(BoardGroupRecentVisit, :count).by(1)
+        expect { read_board board: board }.to change { BoardGroupRecentVisit.count }.by(1)
 
         expect(response).to render_template :show
         expect(response.media_type).to eq 'text/html'

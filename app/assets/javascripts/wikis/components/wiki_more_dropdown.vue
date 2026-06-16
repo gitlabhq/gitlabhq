@@ -12,6 +12,7 @@ import CloneWikiModal from './clone_wiki_modal.vue';
 import DeleteWikiModal from './delete_wiki_modal.vue';
 
 export default {
+  name: 'WikiMoreDropdown',
   components: {
     GlIcon,
     GlDisclosureDropdown,

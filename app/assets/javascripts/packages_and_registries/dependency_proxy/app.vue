@@ -23,6 +23,7 @@ import { getPageParams } from '~/packages_and_registries/shared/utils';
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
 export default {
+  name: 'DependencyProxyApp',
   components: {
     GlAlert,
     GlButton,

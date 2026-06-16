@@ -19,7 +19,7 @@ module Terraform
 
     mount_file_store_uploader StateUploader
 
-    delegate :project_id, :uuid, to: :terraform_state, allow_nil: true
+    delegate :project_id, :project, :uuid, to: :terraform_state, allow_nil: true
 
     before_create :set_encrypted_flag
 

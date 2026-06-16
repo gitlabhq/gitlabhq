@@ -574,7 +574,7 @@ RSpec.describe API::API, feature_category: :system_access do
       get api("/projects/#{project.id}/repository/commits", user)
 
       expect(response).to have_gitlab_http_status(:service_unavailable)
-      expect(response.headers['Retry-After']).to be(50)
+      expect(response.headers['Retry-After']).to eq(50)
       expect(json_response).to eql(
         'message' => 'Upstream Gitaly has been exhausted. Try again later'
       )
@@ -807,6 +807,161 @@ RSpec.describe API::API, feature_category: :system_access do
       end
 
       it_behaves_like 'unallowed clients'
+    end
+  end
+
+  describe 'rescue_from handler responses', :aggregate_failures do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, creator: user) }
+
+    let(:path) { "/projects/#{project.id}/repository/commits" }
+
+    before_all do
+      project.add_maintainer(user)
+    end
+
+    context 'with Gitlab::Access::AccessDeniedError' do
+      it 'returns 403' do
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(Gitlab::Access::AccessDeniedError.new)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).to eq('message' => '403 Forbidden')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"403 Forbidden"}')
+      end
+    end
+
+    context 'with ActiveRecord::RecordNotFound' do
+      it 'returns 404' do
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(ActiveRecord::RecordNotFound.new('missing'))
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response).to eq('message' => '404 Not found')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"404 Not found"}')
+      end
+    end
+
+    context 'with Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError' do
+      it 'returns 409' do
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError.new('locked'))
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:conflict)
+        expect(json_response).to eq('message' => '409 Conflict: Resource lock')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"409 Conflict: Resource lock"}')
+      end
+    end
+
+    context 'with UploadedFile::InvalidPathError' do
+      it 'returns 400 with the exception message' do
+        error = UploadedFile::InvalidPathError.new('bad path')
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(error)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq('message' => 'bad path')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"bad path"}')
+      end
+    end
+
+    context 'with ObjectStorage::RemoteStoreError' do
+      it 'returns 500 with the exception message' do
+        error = ObjectStorage::RemoteStoreError.new('store down')
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(error)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response).to eq('message' => 'store down')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"store down"}')
+      end
+    end
+
+    context 'with Gitlab::Auth::TooManyIps' do
+      it 'returns 403' do
+        error = Gitlab::Auth::TooManyIps.new(user.id, '127.0.0.1', 5)
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(error)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).to eq('message' => '403 Forbidden')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq('{"message":"403 Forbidden"}')
+      end
+    end
+
+    context 'with Gitlab::Git::ResourceExhaustedError' do
+      it 'returns 503 and Retry-After header' do
+        error = Gitlab::Git::ResourceExhaustedError.new('Upstream Gitaly has been exhausted. Try again later', 50)
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(error)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(json_response).to eq('message' => 'Upstream Gitaly has been exhausted. Try again later')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to eq(50)
+        expect(response.body).to eq('{"message":"Upstream Gitaly has been exhausted. Try again later"}')
+      end
+    end
+
+    context 'with RateLimitedService::RateLimitedError' do
+      it 'returns 429, logs the request and nests the message' do
+        error = RateLimitedService::RateLimitedError.new(key: :foo, rate_limiter: nil)
+        allow(error).to receive(:log_request)
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(error)
+
+        get api(path, user)
+
+        expect(error).to have_received(:log_request)
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response).to eq('message' => { 'error' => error.message })
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to eq({ 'message' => { 'error' => error.message } }.to_json)
+      end
+    end
+
+    context 'with an unhandled exception' do
+      it 'returns 500 via handle_api_exception' do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(RuntimeError.new('boom'))
+
+        get api(path, user)
+
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response['message']).to include('RuntimeError', 'boom')
+        expect(response.media_type).to eq('application/json')
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response.headers['Retry-After']).to be_nil
+        expect(response.body).to include('RuntimeError', 'boom')
+      end
     end
   end
 end

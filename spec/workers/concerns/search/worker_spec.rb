@@ -51,10 +51,10 @@ RSpec.describe Search::Worker, feature_category: :global_search do
       [
         # checks elasticsearch_pause_indexing
         ElasticIndexInitialBulkCronWorker,
-        ElasticIndexBulkCronWorker,
+        Search::Elastic::IndexBulkCronWorker,
         # advanced search framework operations
         Elastic::MigrationWorker,
-        ElasticClusterReindexingCronWorker,
+        Search::Elastic::ClusterReindexingCronWorker,
         Search::Elastic::TriggerIndexingWorker,
         Search::Elastic::MetricsUpdateCronWorker,
         Elastic::ProjectTransferWorker,

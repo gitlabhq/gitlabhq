@@ -9,7 +9,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
 
   let_it_be(:source_project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user, maintainer_of: source_project) }
-  let_it_be(:project, refind: true) { fork_project(source_project, current_user, { repository: true }) }
+  let_it_be_with_refind(:project) { fork_project(source_project, current_user, { repository: true }) }
   let_it_be(:target_branch) { project.default_branch }
 
   let(:mutation) do
@@ -33,7 +33,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
   end
 
   context 'when the branch is protected', :use_clean_rails_redis_caching do
-    let_it_be(:protected_branch) do
+    let_it_be(:protected_branch, freeze: false) do
       create(:protected_branch, :no_one_can_push, project: project, name: target_branch)
     end
 

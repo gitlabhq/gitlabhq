@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Rubygems::CreatePackageFileService, feature_category: :package_registry do
-  let_it_be(:package) { create(:rubygems_package, without_package_files: true) }
+  let_it_be(:package, freeze: false) { create(:rubygems_package, without_package_files: true) }
 
   describe '#execute' do
     let(:file_name) { 'example-1.2.3.gem' }

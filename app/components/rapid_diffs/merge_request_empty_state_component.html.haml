@@ -1,0 +1,7 @@
+- case type
+- when :initial_preparation
+  = render RapidDiffs::EmptyStateComponent.new(message: _('Building your merge request… This page will update when the build is complete.'))
+- when :already_merged
+  = render RapidDiffs::EmptyStateComponent.new(message: s_('MergeRequest|Changes already merged'), description: already_merged_description)
+- else
+  = render RapidDiffs::EmptyStateComponent.new

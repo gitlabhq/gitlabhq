@@ -134,6 +134,12 @@ RSpec.describe Import::Offline::Imports::ScheduleImportService, :aggregate_failu
         .to(fake_metadata[:entities_mapping].stringify_keys)
     end
 
+    it 'updates the offline configuration with the source hostname' do
+      expect { service.execute }
+        .to change { bulk_import.offline_configuration.reload.source_hostname }
+        .to(fake_metadata[:source_hostname])
+    end
+
     it 'creates a bulk import entity for the group' do
       expect { service.execute }
         .to change { BulkImports::Entity.count }.by(1)

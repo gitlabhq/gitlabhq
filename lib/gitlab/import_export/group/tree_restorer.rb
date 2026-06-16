@@ -51,7 +51,7 @@ module Gitlab
           end
 
           def delete_attributes(*names)
-            names.map(&method(:delete_attribute))
+            names.map { |name| delete_attribute(name) }
           end
         end
         private_constant :GroupAttributes

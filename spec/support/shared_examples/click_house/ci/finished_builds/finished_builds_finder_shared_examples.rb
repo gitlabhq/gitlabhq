@@ -183,9 +183,10 @@ RSpec.shared_examples 'finished builds finder aggregations' do
         let(:status) { :failed }
         let(:rspec_result) { result.find { |r| r['name'] == 'rspec' } }
 
-        it 'calculates failed rate correctly and rounds off to 2 decimal places', :aggregate_failures do
-          expect(rspec_result.fetch('rate_of_failed')).to be_within(0.01).of(66.67)
-          is_expected.to be_rounded_to_decimal_places('rate_of_failed', decimal_places: 2)
+        it 'calculates failed rate correctly' do
+          # rspec has 2 failed + 1 canceled + 0 success. Denominator excludes
+          # canceled/skipped, so 2 / (2 + 0) = 100%.
+          expect(rspec_result.fetch('rate_of_failed')).to eq(100.0)
         end
       end
     end
@@ -747,7 +748,10 @@ end
 RSpec::Matchers.define :be_rounded_to_decimal_places do |field_name, decimal_places:|
   match do |values|
     @unrounded = values.select do |value|
-      frac = BigDecimal(value.fetch(field_name).to_s).frac
+      raw = value.fetch(field_name)
+      next if raw.nil? # NULL values have nothing to round
+
+      frac = BigDecimal(raw.to_s).frac
       frac != frac.round(decimal_places)
     end
 

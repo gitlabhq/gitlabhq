@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:another_user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
-  let_it_be(:entity) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:another_user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       :project_entity,
@@ -20,8 +20,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
     )
   end
 
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:importer_user_mapping_enabled) { false }
 
@@ -419,7 +419,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
     end
 
     context 'when importer_user_mapping is enabled' do
-      let_it_be(:source_user) do
+      let_it_be(:source_user, freeze: false) do
         create(:import_source_user,
           import_type: ::Import::SOURCE_DIRECT_TRANSFER,
           namespace: group,

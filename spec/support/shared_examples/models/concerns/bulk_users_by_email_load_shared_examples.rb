@@ -2,8 +2,8 @@
 
 RSpec.shared_examples 'a BulkUsersByEmailLoad model' do
   describe '#users_by_emails' do
-    let_it_be(:user1) { create(:user, emails: [create(:email, email: 'user1@example.com')]) }
-    let_it_be(:user2) { create(:user, emails: [create(:email, email: 'user2@example.com')]) }
+    let_it_be(:user1, freeze: false) { create(:user, emails: [create(:email, email: 'user1@example.com')]) }
+    let_it_be(:user2, freeze: false) { create(:user, emails: [create(:email, email: 'user2@example.com')]) }
 
     subject(:model) { described_class.new(id: non_existing_record_id) }
 

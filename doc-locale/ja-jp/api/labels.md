@@ -1,8 +1,8 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ラベルAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: プロジェクトラベルAPI
 ---
 
 {{< details >}}
@@ -14,15 +14,18 @@ title: ラベルAPI
 
 {{< history >}}
 
-- `archived`属性は、GitLab 18.3で`labels_archive`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/4233)されました。デフォルトでは無効になっています。
+- `archived`属性がGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/4233)され、`labels_archive`という[フラグ](../administration/feature_flags/_index.md)が付けられました。
+- GitLab 18.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/556700)になりました。機能フラグ`labels_archive`は削除されました。
 
 {{< /history >}}
 
-[ラベル](../user/project/labels.md)をREST APIで使用して操作します。
+このAPIを使用して、[プロジェクトラベル](../user/project/labels.md)を管理します。
 
-## ラベルの一覧表示 {#list-labels}
+グループラベルの場合は、[グループラベルAPI](group_labels.md)を使用します。
 
-特定のプロジェクトのすべてのラベルを取得します。
+## すべてのプロジェクトラベルをリスト表示 {#list-all-project-labels}
+
+指定されたプロジェクトのすべてのラベルをリスト表示します。
 
 APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20個の結果を返します。
 
@@ -33,10 +36,10 @@ GET /projects/:id/labels
 | 属性     | 型           | 必須 | 説明                                                                                                                                                                  |
 | ---------     | -------        | -------- | ---------------------                                                                                                                                                        |
 | `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                                                              |
-| `with_counts` | ブール値        | いいえ       | イシューとマージリクエストの数を組み込むかどうか。`false`がデフォルトです。 |
+| `with_counts` | ブール値        | いいえ       | イシューとマージリクエストの数をインクルードするかどうか。`false`がデフォルトです。 |
 | `include_ancestor_groups` | ブール値 | いいえ | 祖先グループを含めます。`true`がデフォルトです。 |
-| `search` | 文字列 | いいえ | ラベルをフィルタリングするキーワード。 |
-| `archived` | ブール値 | いいえ | ラベルがアーカイブされているかどうか。設定されていない場合、すべてのラベルを返します。`labels_archive`機能フラグを有効にする必要があります。 |
+| `search` | 文字列 | いいえ | ラベルをフィルタリングするためのキーワード。 |
+| `archived` | ブール値 | いいえ | `true`の場合、アーカイブされたラベルのみを返します。設定されていない場合、すべてのラベルを返します。 |
 
 ```shell
 curl \
@@ -44,7 +47,7 @@ curl \
   --url "https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -126,9 +129,9 @@ curl \
 ]
 ```
 
-## 単一プロジェクトラベルを取得します {#get-a-single-project-label}
+## プロジェクトラベルを取得する {#retrieve-a-project-label}
 
-特定のプロジェクトの単一のラベルを取得します。
+プロジェクトの指定されたラベルを取得します。
 
 ```plaintext
 GET /projects/:id/labels/:label_id
@@ -146,7 +149,7 @@ curl \
   --url "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -166,9 +169,9 @@ curl \
 }
 ```
 
-## 新しいラベルを作成 {#create-a-new-label}
+## プロジェクトラベルを作成 {#create-a-project-label}
 
-指定されたリポジトリに、指定された名前と色で新しいラベルを作成します。
+指定された名前と色で、指定されたプロジェクトのラベルを作成します。
 
 ```plaintext
 POST /projects/:id/labels
@@ -178,10 +181,10 @@ POST /projects/:id/labels
 | ------------- | ------- | -------- | ---------------------------- |
 | `id`      | 整数または文字列    | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `name`        | 文字列  | はい      | ラベルの名前        |
-| `color`       | 文字列  | はい      | ラベルの色。先頭が「#」記号の6桁の16進数表記（#FFAABBなど）か、または[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定。 |
-| `description` | 文字列  | いいえ       | ラベルの説明。 |
-| `priority`    | 整数 | いいえ       | ラベルの優先度。優先度を削除するには、ゼロ以上または`null`にする必要があります。 |
-| `archived`    | ブール値 | いいえ       | ラベルがアーカイブされているかどうか。`false`がデフォルトです。`labels_archive`機能フラグを有効にする必要があります。 |
+| `color`       | 文字列  | はい      | 先頭に「#」記号が付いた6桁の16進表記（例: #FFAABB）で指定されたラベルの色、または[CSSの色名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれか。 |
+| `description` | 文字列  | いいえ       | ラベルの説明 |
+| `priority`    | 整数 | いいえ       | ラベルの優先度。0以上であるか、`null`を設定して優先度を削除する必要があります。 |
+| `archived`    | ブール値 | いいえ       | `true`の場合、ラベルをアーカイブ済みとしてマークします。デフォルト値: `false`。 |
 
 ```shell
 curl --request POST \
@@ -190,7 +193,7 @@ curl --request POST \
   --data "name=feature&color=#5843AD"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -210,9 +213,9 @@ curl --request POST \
 }
 ```
 
-## ラベルを削除 {#delete-a-label}
+## プロジェクトラベルを削除 {#delete-a-project-label}
 
-指定された名前のラベルを削除します。
+プロジェクトから指定されたラベルを削除します。
 
 ```plaintext
 DELETE /projects/:id/labels/:label_id
@@ -221,7 +224,7 @@ DELETE /projects/:id/labels/:label_id
 | 属性 | 型    | 必須 | 説明           |
 | --------- | ------- | -------- | --------------------- |
 | `id`            | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
+| `label_id` | 整数または文字列 | はい | プロジェクトのラベルのIDまたはタイトル。 |
 
 ```shell
 curl --request DELETE \
@@ -229,15 +232,12 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> パラメータに`name`を含む古いエンドポイント`DELETE /projects/:id/labels`は引き続き利用可能ですが、非推奨です。
 
-パラメータに`name`を含む古いエンドポイント`DELETE /projects/:id/labels`はまだ利用可能ですが、非推奨です。
+## プロジェクトラベルを更新 {#update-a-project-label}
 
-{{< /alert >}}
-
-## 既存のラベルを編集 {#edit-an-existing-label}
-
-既存のラベルを新しい名前または新しい色で更新します。ラベルを更新するには、少なくとも1つのパラメータが必要です。
+指定されたプロジェクトの指定されたラベルを新しい名前または色で更新します。ラベルを更新するには、少なくとも1つのパラメータが必要です。
 
 ```plaintext
 PUT /projects/:id/labels/:label_id
@@ -246,12 +246,12 @@ PUT /projects/:id/labels/:label_id
 | 属性       | 型    | 必須                          | 説明                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | 整数または文字列    | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
-| `new_name`      | 文字列  | はい（`color`が指定されていない場合）    | ラベルの新しい名前        |
-| `color`         | 文字列  | はい（`new_name`が指定されていない場合） | ラベルの色。先頭が「#」記号の6桁の16進数表記（#FFAABBなど）か、または[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定。 |
-| `description`   | 文字列  | いいえ                                | 新しいラベルの説明 |
-| `priority`    | 整数 | いいえ       | ラベルの新しい優先度。優先度を削除するには、ゼロ以上または`null`にする必要があります。 |
-| `archived`    | ブール値 | いいえ       | ラベルがアーカイブされているかどうか。`labels_archive`機能フラグを有効にする必要があります。 |
+| `label_id` | 整数または文字列 | はい | プロジェクトのラベルのIDまたはタイトル。 |
+| `new_name`      | 文字列  | `color`が指定されていない場合はyes    | ラベルの新しい名前        |
+| `color`         | 文字列  | `new_name`が指定されていない場合はyes | 先頭に「#」記号が付いた6桁の16進表記（例: #FFAABB）で指定されたラベルの色、または[CSSの色名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれか。 |
+| `description`   | 文字列  | いいえ                                | ラベルの新しい説明 |
+| `priority`    | 整数 | いいえ       | ラベルの新しい優先度。0以上であるか、`null`を設定して優先度を削除する必要があります。 |
+| `archived`    | ブール値 | いいえ       | `true`の場合、ラベルをアーカイブ済みとしてマークします。デフォルト値: `false`。 |
 
 ```shell
 curl --request PUT \
@@ -260,7 +260,7 @@ curl --request PUT \
   --data "new_name=docs&color=#8E44AD&description=Documentation"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -280,15 +280,12 @@ curl --request PUT \
 }
 ```
 
-{{< alert type="note" >}}
-
-パラメータに`name`または`label_id`を含む古いエンドポイント`PUT /projects/:id/labels`はまだ利用可能ですが、非推奨です。
-
-{{< /alert >}}
+> [!note]
+> パラメータに`name`または`label_id`を含む古いエンドポイント`PUT /projects/:id/labels`は引き続き利用可能ですが、非推奨です。
 
 ## プロジェクトラベルをグループラベルにプロモート {#promote-a-project-label-to-a-group-label}
 
-プロジェクトラベルをグループラベルにプロモートラベルはIDを保持します。
+指定されたプロジェクトラベルをグループラベルにプロモートします。このラベルは元のIDを保持します。
 
 ```plaintext
 PUT /projects/:id/labels/:label_id/promote
@@ -297,7 +294,7 @@ PUT /projects/:id/labels/:label_id/promote
 | 属性       | 型    | 必須                          | 説明                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | 整数または文字列    | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
+| `label_id` | 整数または文字列 | はい | プロジェクトのラベルのIDまたはタイトル。 |
 
 ```shell
 curl --request PUT \
@@ -305,7 +302,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/1/labels/documentation/promote"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -322,15 +319,12 @@ curl --request PUT \
 }
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> パラメータに`name`を含む古いエンドポイント`PUT /projects/:id/labels/promote`は引き続き利用可能ですが、非推奨です。
 
-パラメータに`name`を含む古いエンドポイント`PUT /projects/:id/labels/promote`はまだ利用可能ですが、非推奨です。
+## プロジェクトラベルを購読 {#subscribe-to-a-project-label}
 
-{{< /alert >}}
-
-## ラベルにサブスクライブ {#subscribe-to-a-label}
-
-認証済みユーザーが通知を受信できるように、ラベルをサブスクライブさせます。ユーザーがすでにラベルをサブスクライブしている場合、ステータスコード`304`が返されます。
+認証済みユーザーを、指定されたプロジェクトラベルに購読させて通知を受け取ります。ユーザーがすでにラベルを購読している場合、ステータスコード`304`が返されます。
 
 ```plaintext
 POST /projects/:id/labels/:label_id/subscribe
@@ -347,7 +341,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/labels/1/subscribe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -367,9 +361,9 @@ curl --request POST \
 }
 ```
 
-## ラベルの登録解除 {#unsubscribe-from-a-label}
+## プロジェクトラベルの購読を解除 {#unsubscribe-from-a-project-label}
 
-通知を受信しないようにするため、認証済みユーザーをラベルからサブスクライブ解除します。ユーザーがラベルをサブスクライブしていない場合、ステータスコード`304`が返されます。
+認証済みユーザーを、指定されたプロジェクトラベルの購読から解除して通知の受信を停止します。ユーザーがラベルを購読していない場合、ステータスコード`304`が返されます。
 
 ```plaintext
 POST /projects/:id/labels/:label_id/unsubscribe

@@ -17,6 +17,8 @@ RSpec.describe GitlabSchema.types['UserAchievement'], feature_category: :user_pr
       revoked_at
       priority
       show_on_profile
+      award_message
+      award_message_html
     ]
   end
 

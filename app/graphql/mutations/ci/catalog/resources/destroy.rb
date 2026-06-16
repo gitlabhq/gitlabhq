@@ -8,6 +8,8 @@ module Mutations
           graphql_name 'CatalogResourcesDestroy'
 
           authorize :add_catalog_resource
+          authorize_granular_token permissions: :delete_catalog_resource,
+            boundary_argument: :project_path, boundary_type: :project
 
           def resolve(project_path:)
             project = authorized_find!(project_path: project_path)

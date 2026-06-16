@@ -161,6 +161,16 @@ export default {
         },
       });
     },
+    openWorkItemPanel() {
+      this.$apollo.mutate({
+        mutation: setActiveBoardItemMutation,
+        variables: {
+          boardItem: this.item,
+          listId: this.list.id,
+          isIssue: this.isIssueBoard,
+        },
+      });
+    },
     changeFocusInColumn(currentCard, i) {
       // Building a list using data-col-index instead of just traversing the ul is necessary for swimlanes
       const columnCards = [
@@ -262,6 +272,7 @@ export default {
         :index="index"
         :show-work-item-type-icon="showWorkItemTypeIcon"
         @setFilters="$emit('setFilters', $event)"
+        @view-all-sessions="openWorkItemPanel"
       >
         <slot></slot>
       </board-card-inner>

@@ -154,7 +154,7 @@ RSpec.describe 'Groups > Members > Manage members', :js, feature_category: :grou
 
       wait_for_requests
 
-      expect(page).to have_content('No matches found')
+      expect(page).to have_content('To invite someone new to GitLab, enter their email.')
 
       find(member_dropdown_selector).set('undisclosed_email@gitlab.com')
       wait_for_requests
@@ -178,13 +178,16 @@ RSpec.describe 'Groups > Members > Manage members', :js, feature_category: :grou
       click_on 'Invite members'
 
       page.within invite_modal_selector do
-        field = find(member_dropdown_selector)
-        field.native.send_keys :tab
-        field.click
+        find(member_dropdown_selector).set(user1.name[0..2])
 
         wait_for_requests
 
         expect(page).to have_content(user1.name)
+
+        find(member_dropdown_selector).set(user2.name[0..2])
+
+        wait_for_requests
+
         expect(page).to have_content(user2.name)
         expect(page).not_to have_content(internal_project_bot.name)
         expect(page).not_to have_content(external_project_bot.name)

@@ -1303,6 +1303,36 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'with format extension' do
+      let(:release_notes) { '## 1.0.0 (2020-01-01)' }
+
+      before do
+        allow_next_instance_of(::Repositories::ChangelogService) do |service|
+          allow(service).to receive(:execute).with(commit_to_changelog: false).and_return(release_notes)
+        end
+      end
+
+      it 'returns plain text markdown with .txt extension', :aggregate_failures do
+        get(
+          api("/projects/#{project.id}/repository/changelog.txt", user),
+          params: { version: '1.0.0' }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to start_with('text/plain')
+        expect(response.body).to eq(release_notes)
+      end
+
+      it 'returns 404 with an unsupported extension', :aggregate_failures do
+        get(
+          api("/projects/#{project.id}/repository/changelog.zip", user),
+          params: { version: '1.0.0' }
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_repository_changelog do
       let(:boundary_object) { project }
 

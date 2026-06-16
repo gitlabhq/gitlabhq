@@ -20,20 +20,12 @@ module Ci
       end
 
       def execute
-        # rubocop: disable Style/SoleNestedConditional -- Temporary for FF readability
-        if Feature.disabled?(:ci_atomic_processing_check_inside_lease, project)
-          return unless pipeline.needs_processing?
-        end
-
         # Run the process only if we can obtain an exclusive lease; returns nil if lease is unavailable
         success = try_obtain_lease do
-          if Feature.enabled?(:ci_atomic_processing_check_inside_lease, project)
-            next unless pipeline.needs_processing?
-          end
+          next unless pipeline.needs_processing?
 
           process!
         end
-        # rubocop: enable Style/SoleNestedConditional
 
         if success
           # If any jobs changed from stopped to alive status during pipeline processing, we must
@@ -44,8 +36,8 @@ module Ci
             ResetSkippedJobsService.new(project, user).execute(jobs)
           end
 
-          needs_processing = pipeline.needs_processing?
-          log_processing_check_mismatch(needs_processing)
+          # If @new_collection is already evaluated from new_alive_jobs, we can use it to avoid another call to DB
+          needs_processing = @new_collection ? @new_collection.processing_jobs.any? : pipeline.needs_processing?
 
           # Re-schedule if we need further processing
           PipelineProcessWorker.perform_async(pipeline.id) if needs_processing
@@ -173,7 +165,6 @@ module Ci
 
         return [] if initial_stopped_job_names.empty?
 
-        # Change @new_collection back to local var if FF `ci_atomic_processing_log_check_mismatch` reverted
         @new_collection = AtomicProcessingService::StatusCollection.new(pipeline)
         new_alive_job_names = initial_stopped_job_names - @new_collection.stopped_job_names
 
@@ -210,26 +201,6 @@ module Ci
           pipeline_id: pipeline.id,
           user_id: jobs.first.user.id,
           jobs_count: jobs.count
-        )
-      end
-
-      # Temporary monitoring to determine if the last pipeline.needs_processing?
-      # can be replaced with new_collection.processing_jobs.any?.
-      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/598584.
-      def log_processing_check_mismatch(needs_processing)
-        return unless Feature.enabled?(:ci_atomic_processing_log_check_mismatch, project)
-        return unless @new_collection # Populated via new_alive_jobs
-
-        processing_jobs_any = @new_collection.processing_jobs.any?
-        return if needs_processing == processing_jobs_any
-
-        Gitlab::AppJsonLogger.info(
-          class: self.class.name,
-          message: 'needs_processing? differs from new_collection.processing_jobs.any?',
-          project_id: project.id,
-          pipeline_id: pipeline.id,
-          needs_processing: needs_processing,
-          processing_jobs_any: processing_jobs_any
         )
       end
     end

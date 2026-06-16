@@ -475,6 +475,7 @@ $diff-file-header-top: 11px;
     @apply gl-mt-5;
   }
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific reports widgets container
   &:empty,
   &:has(.reports-widgets-container:empty) {
     display: none;
@@ -815,11 +816,7 @@ $diff-file-header-top: 11px;
     &.is-merge-request {
       margin-left: auto;
       margin-right: auto;
-      max-width: $fixed-layout-width - ($container-margin-xl * 2);
-
-      .page-with-panels & {
-        max-width: $fixed-layout-width - $container-margin-xl;
-      }
+      max-width: calc(#{$fixed-layout-width} - (var(--container-padding-x) * 2));
     }
   }
 }

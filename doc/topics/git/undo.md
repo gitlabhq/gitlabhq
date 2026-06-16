@@ -269,14 +269,14 @@ flowchart LR
    accTitle: Git revert operation workflow diagram
    accDescr: Shows commits A, B, C in sequence, then commit -B that reverses B's changes, followed by D. Commit B remains in history.
 
-   REMOTE["REMOTE"] --> A(A)
+   REMOTE(REMOTE) --> A(A)
    A --> B(B)
    B --> C(C)
    C --> negB("-B")
    negB --> D(D)
 
    B:::crossed
-   classDef crossed stroke:#000,stroke-width:3px,color:#000,stroke-dasharray: 5 5
+   classDef crossed stroke-width:3px,stroke-dasharray: 5 5
 
    negB -.->|reverts| B
 ```

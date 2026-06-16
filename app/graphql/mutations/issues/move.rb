@@ -5,6 +5,9 @@ module Mutations
     class Move < Base
       graphql_name 'IssueMove'
 
+      authorize_granular_token permissions: :move_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :target_project_path,
         GraphQL::Types::ID,
         required: true,

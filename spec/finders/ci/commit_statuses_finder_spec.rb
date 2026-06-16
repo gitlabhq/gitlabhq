@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:release) { create(:release, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:release, freeze: false) { create(:release, project: project) }
   let_it_be(:user) { create(:user) }
 
   let_it_be(:tags) { project.repository.tags }
@@ -156,7 +156,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
       end
 
       context 'when builds are private' do
-        let_it_be(:project) { create(:project, :repository, builds_access_level: ProjectFeature::PRIVATE) }
+        let_it_be(:project, freeze: false) { create(:project, :repository, builds_access_level: ProjectFeature::PRIVATE) }
 
         before_all do
           create(
@@ -180,7 +180,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
       end
 
       context 'when not a member of a private project' do
-        let_it_be(:project) { create(:project, :private, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
 
         subject(:execute) { described_class.new(project, project.repository, user, refs).execute }
 

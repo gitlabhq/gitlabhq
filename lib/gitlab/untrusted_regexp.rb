@@ -76,10 +76,10 @@ module Gitlab
       scan_regexp.match(text)
     end
 
-    def match?(text, allow_empty_string: false)
+    def match?(text)
       return false if text.nil?
 
-      (allow_empty_string || text.present?) && scan(text).present?
+      scan(text).present?
     end
 
     def replace(text, rewrite)

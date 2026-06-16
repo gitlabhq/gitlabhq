@@ -3,20 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Issuables::CrmOrganizationFilter do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
 
-  let_it_be(:crm_organization1) { create(:crm_organization, group: group) }
-  let_it_be(:crm_organization2) { create(:crm_organization, group: group) }
-  let_it_be(:contact1) { create(:contact, group: group, organization: crm_organization1) }
-  let_it_be(:contact2) { create(:contact, group: group, organization: crm_organization1) }
-  let_it_be(:contact3) { create(:contact, group: group, organization: crm_organization2) }
+  let_it_be(:crm_organization1, freeze: false) { create(:crm_organization, group: group) }
+  let_it_be(:crm_organization2, freeze: false) { create(:crm_organization, group: group) }
+  let_it_be(:contact1, freeze: false) { create(:contact, group: group, organization: crm_organization1) }
+  let_it_be(:contact2, freeze: false) { create(:contact, group: group, organization: crm_organization1) }
+  let_it_be(:contact3, freeze: false) { create(:contact, group: group, organization: crm_organization2) }
 
-  let_it_be(:contact1_issue) { create(:issue, project: project) }
-  let_it_be(:contact2_issue) { create(:issue, project: project) }
-  let_it_be(:contact3_issue) { create(:issue, project: project) }
-  let_it_be(:issues) { Issue.where(id: [contact1_issue.id, contact2_issue.id, contact3_issue.id]) }
+  let_it_be(:contact1_issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:contact2_issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:contact3_issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:issues, freeze: false) { Issue.where(id: [contact1_issue.id, contact2_issue.id, contact3_issue.id]) }
 
   let(:params) { {} }
 

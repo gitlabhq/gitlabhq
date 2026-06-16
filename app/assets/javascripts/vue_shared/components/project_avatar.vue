@@ -4,6 +4,7 @@ import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
+  name: 'ProjectAvatar',
   components: {
     GlAvatar,
   },

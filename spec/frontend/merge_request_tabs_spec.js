@@ -897,7 +897,13 @@ describe('MergeRequestTabs', () => {
           targetVersions: [{ selected: true, version_index: 1, start_sha: 'ghi' }],
         });
         jest.spyOn(testContext.class, 'tabShown').mockResolvedValue();
-        const disc = { ...discussion, active: false };
+        // When comparing version-to-version, diffRefs.base_sha collapses onto start_sha ('ghi').
+        // The discussion's original_position must match the collapsed diffRefs.
+        const disc = {
+          ...discussion,
+          active: false,
+          original_position: { ...discussion.original_position, base_sha: 'ghi' },
+        };
         await testContext.class.navigateToDiffNote(disc);
         expect(visitUrl).not.toHaveBeenCalled();
         expect(testContext.class.rapidDiffsApp.scrollToDiffNote).toHaveBeenCalledWith(disc);

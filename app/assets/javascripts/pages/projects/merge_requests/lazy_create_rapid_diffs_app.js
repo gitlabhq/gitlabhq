@@ -11,7 +11,9 @@ function isRapidDiffsEnabled() {
 }
 
 async function createRapidDiffsApp() {
-  const { createMergeRequestRapidDiffsApp } = await import('~/rapid_diffs/merge_request_app');
+  const { createMergeRequestRapidDiffsApp } = await import(
+    'ee_else_ce/rapid_diffs/merge_request_app'
+  );
   return createMergeRequestRapidDiffsApp();
 }
 

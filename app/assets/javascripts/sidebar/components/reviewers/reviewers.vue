@@ -29,6 +29,7 @@ export default {
       default: TYPE_ISSUE,
     },
   },
+  emits: ['assign-self', 'remove-reviewer', 'request-review'],
   computed: {
     hasNoUsers() {
       return !this.users.length;

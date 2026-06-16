@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { I18N_EDIT } from '../constants';
 
 export default {
+  name: 'RunnerEditButton',
   components: {
     GlButton,
   },

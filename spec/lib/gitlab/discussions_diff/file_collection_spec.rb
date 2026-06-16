@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DiscussionsDiff::FileCollection, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::DiscussionsDiff::FileCollection, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let!(:diff_note_a) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }
   let!(:diff_note_b) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }
@@ -92,6 +92,21 @@ RSpec.describe Gitlab::DiscussionsDiff::FileCollection, :clean_gitlab_redis_shar
 
       expect(diff_file_a).not_to be_highlight_loaded
       expect(diff_file_b).to be_highlight_loaded
+    end
+
+    context 'when one of the note diff files cannot build a raw diff file' do
+      # This mirrors the production case where a corrupt YAML position causes
+      # NoteDiffFile#raw_diff_file to return nil. Such entries must be filtered
+      # out so they cannot crash the discussions endpoint downstream.
+      before do
+        allow(note_diff_file_a).to receive(:raw_diff_file).and_return(nil)
+      end
+
+      it 'skips the nil entry without raising', :aggregate_failures do
+        expect { subject.load_highlight }.not_to raise_error
+        expect(subject.find_by_id(note_diff_file_a.id)).to be_nil
+        expect(subject.find_by_id(note_diff_file_b.id)).not_to be_nil
+      end
     end
   end
 end

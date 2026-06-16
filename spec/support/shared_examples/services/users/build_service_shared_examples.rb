@@ -42,7 +42,7 @@ RSpec.shared_examples 'common user build items' do
     let(:params) { base_params.except(:organization_id) }
 
     it 'does not assign organization' do
-      expect(user.namespace.organization).to eq(nil)
+      expect(user.namespace.organization).to be_nil
     end
   end
 

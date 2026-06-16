@@ -8,11 +8,13 @@ import TooltipOnTruncateDirective from '~/vue_shared/directives/tooltip_on_trunc
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import PipelineLabels from './pipeline_labels.vue';
 
 export default {
   name: 'PipelineUrl',
   components: {
+    CommitPopover,
     GlIcon,
     GlLink,
     PipelineLabels,
@@ -49,10 +51,13 @@ export default {
       return this.commitRef?.tag || this.pipeline?.type === 'tag';
     },
     commitUrl() {
-      return this.pipeline?.commit?.commit_path || this.pipeline?.commit?.webUrl;
+      return this.pipeline?.commit?.commit_path || this.pipeline?.commit?.webPath;
     },
     commitShortSha() {
       return this.pipeline?.commit?.short_id || this.pipeline?.commit?.shortId;
+    },
+    popoverTargetId() {
+      return `pipeline-commit-popover-${this.pipeline.commit?.sha}`;
     },
     refUrl() {
       return this.commitRef?.ref_url || this.commitRef?.path || `commits/${this.pipeline?.ref}`;
@@ -226,12 +231,19 @@ export default {
           variant="subtle"
         />
         <gl-link
+          :id="popoverTargetId"
           :href="commitUrl"
           class="gl-mr-0 gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
           data-testid="commit-short-sha"
           @click="trackClick('click_commit_sha')"
           >{{ commitShortSha }}</gl-link
         >
+        <commit-popover
+          v-if="pipeline.commit"
+          :popover-target-id="popoverTargetId"
+          :commit="pipeline.commit"
+          class="gl-z-3"
+        />
       </div>
 
       <user-avatar-link

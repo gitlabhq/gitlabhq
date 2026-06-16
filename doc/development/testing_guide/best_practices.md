@@ -534,48 +534,39 @@ results are available, and not just the first failure.
 
 #### Avoid waiting for elements you expect to be absent
 
-Capybara's default wait time applies whenever you query for an element, including
-negative assertions. When checking that an element does _not_ appear inside a
-container that has already loaded, Capybara waits the full timeout before
-concluding the element is absent. This makes the test slow by design, even when
-the assertion is correct.
-
-##### Custom `have_no_testid` matcher
-
-The `have_testid` matcher uses `has_css?` internally, so negating it with
-`not_to` still waits the full timeout. Use `have_no_testid` instead, which uses
-`has_no_css?` and returns immediately when the element is absent:
+Capybara's query methods either return immediately when their condition is
+satisfied or wait the full default timeout. Positive forms wait for the
+element to appear; negative forms wait for it to disappear. Always use the
+form that matches what you expect, so the fast path is the common path. For
+example, for a link that is hidden:
 
 ```ruby
-# Slow: not_to have_testid uses has_css? internally, waits the full timeout
-expect(page).not_to have_testid('relationship-blocks-icon')
-expect(page).not_to have_testid('issuable-weight-content')
+# Good: returns immediately when absent
+expect(page).to have_no_link('Edit')
 
-# Fast: have_no_testid uses has_no_css? returns immediately when absent
-expect(page).to have_no_testid('relationship-blocks-icon')
-expect(page).to have_no_testid('issuable-weight-content')
+# Bad: waits the full timeout
+expect(page.has_link?('Edit')).to be(false)
 ```
 
-##### Generic Capybara matchers
-
-For other Capybara matchers inside a container you have already confirmed is
-loaded, pass `wait: 0` to skip the timeout:
+**Important:** an absence check can pass before the element has finished
+rendering. Always confirm the page is loaded before checking for absence -
+for example, with a positive matcher or a `within_*` block:
 
 ```ruby
-# Slow: waits the full Capybara default timeout before concluding the link is absent
-within_testid('search-filter') do
-  has_link?(scope)
-end
-
-# Fast: when the container is already confirmed loaded, wait: 0 skips the timeout
-within_testid('search-filter') do
-  has_link?(scope, wait: 0)
-end
+expect(page).to have_testid('search-filter')   # confirm page is loaded
+expect(page).to have_no_link('Edit')           # then check absence
 ```
 
-Do not use `wait: 0` on the container itself or on any element whose presence you
-cannot guarantee has already been established. Prefer `have_no_testid` over
-`wait: 0` whenever you are asserting on a `data-testid` attribute.
+Use `wait: 0` to skip the wait in conditional logic. **Note:** Only use it
+when you can't avoid conditional logic, and only inside a region you have
+already confirmed loaded; otherwise you get the wrong answer. Conditional
+logic in tests makes specs non-deterministic.
+
+```ruby
+within_testid('search-filter') do
+  click_link 'Edit' if has_link?('Edit', wait: 0)
+end
+```
 
 #### Mock expensive external operations
 
@@ -1837,14 +1828,8 @@ expect(:z).not_to be_one_of(%i[a b c])
 The inverse of `have_testid`.
 
 ```ruby
-# Prefer have_no_testid over not_to have_testid
 expect(page).to have_no_testid('relationship-blocks-icon')
 ```
-
-Prefer `have_no_testid` over `expect(page).not_to have_testid(...)`. The `have_testid`
-matcher uses `has_css?` internally, so negating it with `not_to` waits the full
-Capybara timeout before concluding the element is absent. `have_no_testid` uses
-`has_no_css?` and returns immediately. See [Avoid waiting for elements you expect to be absent](#avoid-waiting-for-elements-you-expect-to-be-absent).
 
 ### Testing query performance
 

@@ -32,14 +32,6 @@ export default {
     dropdownItems() {
       return [
         {
-          text: __('View commit details'),
-          icon: 'commit',
-          href: this.commit.webPath,
-          extraAttrs: {
-            'data-testid': 'view-commit-details',
-          },
-        },
-        {
           text: __('Copy commit SHA'),
           icon: 'copy-to-clipboard',
           action: this.copyCommitSHA,

@@ -9,6 +9,7 @@ export default class Autosave {
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     this.key = Array.isArray(key) ? `autosave/${key.join('/')}` : `autosave/${key}`;
     this.fallbackKey = fallbackKey;
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- autosave key identifier with a /lockVersion suffix, not a navigational URL
     this.lockVersionKey = `${this.key}/lockVersion`;
     this.lockVersion = lockVersion;
     this.restore();

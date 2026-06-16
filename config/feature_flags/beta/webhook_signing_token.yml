@@ -1,8 +1,0 @@
----
-name: webhook_signing_token
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230944
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596374
-milestone: '19.0'
-type: beta
-group: group::import
-default_enabled: true

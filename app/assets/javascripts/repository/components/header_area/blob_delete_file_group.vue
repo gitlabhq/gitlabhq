@@ -7,6 +7,7 @@ import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 
 export default {
+  name: 'BlobDeleteFileGroup',
   components: {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,

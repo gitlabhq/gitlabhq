@@ -83,7 +83,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
       it 'does not delete the inactive projects' do
         worker.perform
 
-        expect(inactive_large_project.reload.pending_delete).to eq(false)
+        expect(inactive_large_project.reload.pending_delete).to be(false)
       end
     end
 

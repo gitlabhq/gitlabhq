@@ -18,7 +18,7 @@ import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue'
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
-import { Mousetrap } from '~/lib/mousetrap';
+import { Mousetrap, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { useNotes } from '~/notes/store/legacy_notes';
@@ -298,6 +298,8 @@ export default {
     },
     async quoteReply() {
       if (!this.shouldShow) return;
+
+      suppressShortcutsUntilInputFocus();
 
       const discussionEl = querySelectionClosest('.js-discussion-container');
 

@@ -3,6 +3,7 @@ import InviteMembersTrigger from '~/invite_members/components/invite_members_tri
 import { __ } from '~/locale';
 
 export default {
+  name: 'SidebarInviteMembers',
   displayText: __('Invite members'),
   components: {
     InviteMembersTrigger,

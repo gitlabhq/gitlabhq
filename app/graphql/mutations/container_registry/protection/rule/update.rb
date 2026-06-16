@@ -10,6 +10,8 @@ module Mutations
             'who can modify container images based on user roles.'
 
           authorize :admin_container_image
+          authorize_granular_token permissions: :update_container_repository_protection_rule,
+            boundary_argument: :id, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],

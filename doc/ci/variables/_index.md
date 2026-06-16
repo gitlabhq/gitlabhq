@@ -220,6 +220,7 @@ To set a group CI/CD variable to only be available for certain environments:
 {{< history >}}
 
 - Default visibility [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195494) from **Visible** to **Masked** in GitLab 18.3.
+- **Masked and hidden** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/592708) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -438,8 +439,7 @@ job:
 
 {{< history >}}
 
-- **Expand variable** option [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/410414) to **Expand variable reference** in GitLab 16.3.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209144) to disabled by default in GitLab 18.6.
+- **Expand variable** option [disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209144) by default in GitLab 18.6.
 
 {{< /history >}}
 
@@ -467,12 +467,6 @@ To enable variable expansion for the variable:
 > the use of the `$` to reference other variables.
 
 ## CI/CD variable precedence
-
-{{< history >}}
-
-- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
-
-{{< /history >}}
 
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines

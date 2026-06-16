@@ -2,7 +2,7 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: GitLabにおけるマージリクエストのコンテキストコミットに関するREST APIのドキュメント。
+description: GitLabのマージリクエストコンテキストコミット用のREST APIに関するドキュメント。
 title: マージリクエストコンテキストコミットAPI
 ---
 
@@ -13,11 +13,11 @@ title: マージリクエストコンテキストコミットAPI
 
 {{< /details >}}
 
-あなたのマージリクエストが以前のマージリクエストを基にしている場合、[以前にマージされたコミットをコンテキストとして含める](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests)必要があるかもしれません。このAPIを使用して、マージリクエストにコミットを追加し、より多くのコンテキストを提供します。
+MRが以前のMRに基づいてビルドされている場合、MRに[コンテキストのために以前マージされたコミットを含める](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests)必要があるかもしれません。より多くのコンテキストのために、このAPIを使用してマージリクエストにコミットを追加します。
 
-## マージリクエストのコンテキストコミットを一覧表示 {#list-context-commits-for-a-merge-request}
+## マージリクエストのコンテキストコミットをリスト表示 {#list-context-commits-for-a-merge-request}
 
-単一のマージリクエストのコンテキストコミットを一覧表示します。
+単一のマージリクエストのコンテキストコミットをリスト表示します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/context_commits

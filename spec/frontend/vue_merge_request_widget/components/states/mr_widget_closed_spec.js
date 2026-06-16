@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { shallowMount, mount } from '@vue/test-utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import api from '~/api';
@@ -17,12 +18,18 @@ import { MR_WIDGET_CLOSED_REOPEN_FAILURE } from '~/vue_merge_request_widget/i18n
 jest.mock('~/api', () => ({
   updateMergeRequest: jest.fn(),
 }));
+jest.mock('~/tracking', () => ({
+  InternalEvents: { trackEvent: jest.fn() },
+}));
 jest.mock('~/vue_shared/plugins/global_toast');
 
 useMockLocationHelper();
 
 const MOCK_DATA = {
   iid: 1,
+  isRemovingSourceBranch: false,
+  canRemoveSourceBranch: false,
+  sourceBranchRemoved: true,
   metrics: {
     mergedBy: {},
     closedBy: {
@@ -41,12 +48,17 @@ const MOCK_DATA = {
   targetProjectId: 'twitter/flight',
 };
 
+const service = {
+  removeSourceBranch: jest.fn(),
+};
+
 function createComponent({ shallow = true, props = {} } = {}) {
   const mounter = shallow ? shallowMount : mount;
 
   return mounter(closedComponent, {
     propsData: {
-      mr: MOCK_DATA,
+      mr: { ...MOCK_DATA },
+      service,
       ...props,
     },
   });
@@ -60,8 +72,15 @@ function findReopenActionButton(wrapper) {
   return findActions(wrapper).find('button[data-testid="extension-actions-reopen-button"]');
 }
 
+function findDeleteBranchButton(wrapper) {
+  return wrapper.findAll('button').wrappers.find((w) => w.text() === 'Delete source branch');
+}
+
 describe('MRWidgetClosed', () => {
   let wrapper;
+
+  // Stubbing requestAnimationFrame because GlDisclosureDropdown uses it to delay its `action` event.
+  useFakeRequestAnimationFrame();
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -167,6 +186,70 @@ describe('MRWidgetClosed', () => {
 
         expect(showGlobalToast).toHaveBeenCalledTimes(1);
         expect(showGlobalToast).toHaveBeenCalledWith(MR_WIDGET_CLOSED_REOPEN_FAILURE);
+      });
+    });
+
+    describe('delete source branch', () => {
+      beforeEach(() => {
+        service.removeSourceBranch.mockReset();
+        window.gon = { current_user_id: 1 };
+        wrapper = createComponent({
+          shallow: false,
+          props: {
+            mr: {
+              ...MOCK_DATA,
+              canRemoveSourceBranch: true,
+              sourceBranchRemoved: false,
+            },
+          },
+        });
+      });
+
+      it('is displayed when sourceBranchRemoved is false', () => {
+        expect(findDeleteBranchButton(wrapper).exists()).toBe(true);
+      });
+
+      it('is not displayed when sourceBranchRemoved is true', () => {
+        wrapper = createComponent({
+          shallow: false,
+          props: { mr: { ...MOCK_DATA, canRemoveSourceBranch: true, sourceBranchRemoved: true } },
+        });
+
+        expect(findDeleteBranchButton(wrapper)).toBe(undefined);
+      });
+
+      it('is not displayed when canRemoveSourceBranch is false', () => {
+        wrapper = createComponent({
+          shallow: false,
+          props: { mr: { ...MOCK_DATA, canRemoveSourceBranch: false, sourceBranchRemoved: false } },
+        });
+
+        expect(findDeleteBranchButton(wrapper)).toBe(undefined);
+      });
+
+      it('is not displayed when isRemovingSourceBranch is true', () => {
+        wrapper = createComponent({
+          shallow: false,
+          props: {
+            mr: {
+              ...MOCK_DATA,
+              canRemoveSourceBranch: true,
+              sourceBranchRemoved: false,
+              isRemovingSourceBranch: true,
+            },
+          },
+        });
+
+        expect(findDeleteBranchButton(wrapper)).toBe(undefined);
+      });
+
+      it('removes the button when branch is successfully deleted', async () => {
+        service.removeSourceBranch.mockResolvedValue({ data: { message: 'Branch was deleted' } });
+
+        await findDeleteBranchButton(wrapper).trigger('click');
+        await waitForPromises();
+
+        expect(findDeleteBranchButton(wrapper)).toBe(undefined);
       });
     });
   });

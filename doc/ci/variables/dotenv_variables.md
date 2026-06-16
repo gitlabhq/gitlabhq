@@ -34,8 +34,10 @@ You can use dotenv variables in the following ways:
 - Set dynamic environment URLs based on deployment outputs.
 - Share variables across multi-project pipelines.
 
-Dotenv variables can only be used in job scripts, not to configure pipelines.
-They take [precedence](_index.md#cicd-variable-precedence) over job variables
+You can use dotenv variables in job `script` sections or with keywords that support [variable expansion on the runner](where_variables_can_be_used.md#gitlab-ciyml-file).
+You cannot use dotenv variables in `rules` sections.
+
+Dotenv variables take [precedence](_index.md#cicd-variable-precedence) over job variables
 and default variables defined in `.gitlab-ci.yml`,
 but not over project, group, instance, or pipeline variables.
 
@@ -234,4 +236,4 @@ and the gem's implementation.
 
 For GitLab.com tier limits, see [GitLab.com CI/CD settings](../../user/gitlab_com/_index.md#cicd).
 
-To change these limits on GitLab Self-Managed, see [CI/CD limits](../../administration/instance_limits.md#cicd-limits).
+To change these limits on GitLab Self-Managed, see [CI/CD limits](../../administration/cicd/limits.md#limit-dotenv-file-size).

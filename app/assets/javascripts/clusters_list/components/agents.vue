@@ -15,6 +15,7 @@ import AgentTable from './agent_table.vue';
 import AgentConfigsTable from './agents_configs_table.vue';
 
 export default {
+  name: 'ClustersListAgents',
   i18n: {
     feedbackBannerTitle: s__('ClusterAgents|Tell us what you think'),
     feedbackBannerText: s__(
@@ -175,7 +176,8 @@ export default {
         !this.queryErrored &&
         !this.agentList.length &&
         !this.sharedAgentsQueryErrored &&
-        !this.sharedAgentsList.length
+        !this.sharedAgentsList.length &&
+        !this.availableConfigs.length
       );
     },
     showFeedbackBanner() {

@@ -11,3 +11,4 @@ group:
   permissions: []
   raw_permissions:
   - read_group
+  - upload_file

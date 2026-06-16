@@ -31,6 +31,7 @@ const BADGE_DATA = {
 };
 
 export default {
+  name: 'RunnerTypeBadge',
   components: {
     GlBadge,
   },

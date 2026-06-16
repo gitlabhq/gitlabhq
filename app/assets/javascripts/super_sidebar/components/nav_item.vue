@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -22,7 +22,6 @@ export default {
     GlAvatar,
     GlButton,
     GlIcon,
-    GlBadge,
     NavItemLink,
     NavItemRouterLink,
   },
@@ -71,6 +70,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['nav-item-keydown-esc', 'nav-link-click', 'nav-pin-keydown-esc', 'pin-add', 'pin-remove'],
   data() {
     return {
       isMouseIn: false,
@@ -145,8 +145,7 @@ export default {
       return {
         'gl-px-2 gl-mx-2 gl-leading-normal': this.isSubitem,
         'gl-px-2': !this.isSubitem,
-        '!gl-pl-5 gl-rounded-small': this.isFlyout,
-        'gl-rounded-lg': !this.isFlyout,
+        '!gl-pl-5 gl-rounded-default': this.isFlyout,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
@@ -214,7 +213,7 @@ export default {
     <component
       :is="navItemLinkComponent"
       v-bind="linkProps"
-      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-1 !gl-text-default !gl-no-underline focus:gl-focus-inset"
+      class="application-chrome-nav-item super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-1 !gl-no-underline focus:gl-focus-inset"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
       :aria-label="item.title"
@@ -254,7 +253,7 @@ export default {
       </div>
       <div
         v-show="!isIconOnly"
-        class="gl-grow gl-text-default gl-break-anywhere"
+        class="gl-grow gl-break-anywhere"
         :class="{ 'gl-w-max': isFlyout, 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >
@@ -268,17 +267,16 @@ export default {
         v-if="hasEndSpace && !isIconOnly"
         class="nav-item-link-badge gl-flex gl-min-w-6 gl-items-start gl-justify-end"
       >
-        <gl-badge
+        <span
           v-if="hasPill"
-          variant="neutral"
-          class="gl-mr-1"
+          class="gl-mr-3 gl-min-w-3 gl-text-center gl-text-sm"
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
           data-testid="pill-badge"
         >
           {{ pillData }}
-        </gl-badge>
+        </span>
       </span>
     </component>
     <gl-button

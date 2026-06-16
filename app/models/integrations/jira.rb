@@ -368,7 +368,7 @@ module Integrations
 
       commit_id = case entity
                   when Commit then entity.id
-                  when MergeRequest then entity.diff_head_sha
+                  when MergeRequest then entity.squash_commit_sha || entity.merge_commit_sha || entity.diff_head_sha
                   end
 
       commit_url = build_entity_url(:commit, commit_id)
@@ -431,7 +431,7 @@ module Integrations
       result = {}.merge!(server_info, client_info) if server_info && client_info
 
       success = server_info.present? && client_info.present?
-      result = @error&.message unless success
+      result = jira_error_message(@error) unless success
       { success: success, result: result }
     end
 
@@ -472,7 +472,11 @@ module Integrations
     private
 
     def jira_issue_match_regex
-      jira_regex = jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex.source
+      # `Gitlab::UntrustedRegexp` is RE2-backed and RE2 does not support
+      # lookbehind, so we override the default `expression_escape` to keep an
+      # RE2-compatible source. The outer `\b` below already handles the
+      # boundary before the prefix.
+      jira_regex = jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex(expression_escape: '').source
 
       Gitlab::UntrustedRegexp.new("\\b#{jira_issue_prefix}(?P<issue>#{jira_regex})")
     end
@@ -731,6 +735,16 @@ module Integrations
       log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path,
         client_status: e.try(:code))
       nil
+    end
+
+    def jira_error_message(error)
+      return unless error
+      return error.message unless error.respond_to?(:code)
+
+      code = error.code.to_i
+      return error.message if code == 0
+
+      format(s_('JiraService|Jira returned HTTP %{code}: %{message}'), code: code, message: error.message)
     end
 
     def client_url

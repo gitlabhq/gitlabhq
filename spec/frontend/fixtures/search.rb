@@ -7,7 +7,7 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller, fea
 
   render_views
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     sign_in(user)

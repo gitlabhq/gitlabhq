@@ -195,6 +195,7 @@ export const NAMESPACE_ACCESS_TYPES = [
 ];
 
 export const ACCESS_USER_ENUM = 'USER';
+export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
 export const ACCESS_NAMESPACE_ENUMS = ['GROUP', 'PROJECT'];
 
 export const MAX_NAME_LENGTH = 200;

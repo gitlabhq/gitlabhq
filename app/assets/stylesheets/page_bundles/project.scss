@@ -160,7 +160,7 @@
 
     .project-page-sidebar {
       position: sticky;
-      top: calc(#{$calc-application-header-height} + #{$gl-spacing-scale-4});
+      top: $gl-spacing-scale-4;
       width: 100%;
       height: calc(
         #{$calc-application-viewport-height} - #{$gl-spacing-scale-4}

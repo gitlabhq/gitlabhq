@@ -31,7 +31,7 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
 
     context 'when not using fallback config' do
       it 'creates its own connection pool' do
-        expect(fallback_class.pool == described_class.pool).to eq(false)
+        expect(fallback_class.pool == described_class.pool).to be(false)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
       end
 
       it 'uses the fallback class connection pool' do
-        expect(fallback_class.pool == described_class.pool).to eq(true)
+        expect(fallback_class.pool == described_class.pool).to be(true)
       end
     end
   end
@@ -96,7 +96,7 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
 
     context 'when no redis config file exsits' do
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       context 'when resque.yml exists' do

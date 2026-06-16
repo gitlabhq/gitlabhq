@@ -12,7 +12,7 @@ module RapidDiffs
       diff_version_index(merge_request_diff)
     end
 
-    expose :merge_head?, as: :head
+    expose :merge_head?, as: :is_merge_head
     expose :latest?, as: :latest
 
     expose :short_commit_sha do |merge_request_diff|

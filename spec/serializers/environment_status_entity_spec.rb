@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe EnvironmentStatusEntity, feature_category: :continuous_delivery do
   let_it_be(:non_member) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:deployment) { create(:deployment, :succeed, :review_app) }
+  let_it_be(:deployment, freeze: false) { create(:deployment, :succeed, :review_app) }
   let_it_be(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
   let_it_be(:environment) { deployment.environment }
   let_it_be(:project) { deployment.project }

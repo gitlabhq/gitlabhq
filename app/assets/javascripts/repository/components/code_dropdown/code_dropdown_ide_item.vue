@@ -4,6 +4,7 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { InternalEvents } from '~/tracking';
 
 export default {
+  name: 'CodeDropdownIdeItem',
   components: {
     GlButton,
     GlButtonGroup,

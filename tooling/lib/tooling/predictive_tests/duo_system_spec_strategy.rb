@@ -25,8 +25,10 @@ module Tooling
         result = selector.select_tests
 
         if result[:confidence] < DuoTestSelector::CONFIDENCE_THRESHOLD
-          logger.warn "Duo returned low confidence (#{result[:confidence]}): #{result[:reasoning]}"
-          logger.warn "Skipping Duo predictions, will use fallback strategies"
+          logger.warn "Duo confidence below threshold: " \
+            "#{result[:confidence]} < #{DuoTestSelector::CONFIDENCE_THRESHOLD}. " \
+            "Skipping Duo predictions; falling back to non-Duo strategies."
+          logger.warn "Reasoning: #{result[:reasoning]}"
           @confident = false
           return []
         end

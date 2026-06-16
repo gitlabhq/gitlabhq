@@ -58,10 +58,10 @@ module MergeRequests
       return unless merge_request.instance_of?(MergeRequest)
 
       args = {
-        mentionable_type: 'MergeRequest',
-        mentionable_id: merge_request.id,
-        hook_data: merge_data,
-        is_confidential: false
+        'mentionable_type' => 'MergeRequest',
+        'mentionable_id' => merge_request.id,
+        'hook_data' => merge_data,
+        'is_confidential' => false
       }
 
       merge_request.run_after_commit_or_now do
@@ -301,9 +301,8 @@ module MergeRequests
     end
 
     def publish_assigned_reviewers_event(merge_request, new_reviewers)
-      # We are publishing an event just to validate the new CloudEvent functionality. This event is not consumed yet
+      # No consumers for this event yet. See here for more information
       # See here: https://gitlab.com/gitlab-org/gitlab/-/work_items/599509
-      return unless ::Feature.enabled?(:trigger_merge_requests_assigned_reviewers_cloud_event, merge_request.project)
 
       assigned_reviewers_event = AssignedReviewersEvent.build(
         current_user: current_user,

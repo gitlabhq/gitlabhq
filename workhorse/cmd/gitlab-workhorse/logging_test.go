@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestStartLoggingValidFormats(t *testing.T) {
+func TestConfigureLoggingV2ValidFormats(t *testing.T) {
 	tests := []struct {
 		format string
 	}{
@@ -23,7 +24,76 @@ func TestStartLoggingValidFormats(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.format, func(t *testing.T) {
-			closer, err := startLogging("", tt.format)
+			logger, closer, err := configureLoggingV2("", tt.format)
+			require.NoError(t, err)
+			require.NotNil(t, logger)
+			require.NotNil(t, closer)
+			defer closer.Close()
+		})
+	}
+}
+
+// Workhorse has historically been configured to treat "stdout" as a
+// stream name, not a file path.
+func TestConfigureLoggingV2StdoutFile(t *testing.T) {
+	r, w, err := os.Pipe()
+	require.NoError(t, err)
+
+	origStdout := os.Stdout
+	os.Stdout = w
+	t.Cleanup(func() { os.Stdout = origStdout })
+
+	logger, closer, err := configureLoggingV2("stdout", jsonLogFormat)
+	require.NoError(t, err)
+	require.NotNil(t, logger)
+	require.NotNil(t, closer)
+	defer closer.Close()
+
+	logger.Info("hello stdout")
+
+	w.Close()
+	var buf bytes.Buffer
+	_, _ = io.Copy(&buf, r)
+
+	assert.Contains(t, buf.String(), "hello stdout")
+}
+
+func TestConfigureLoggingV2NoneFormatIgnoresFile(t *testing.T) {
+	// When format is "none", the discard writer must be used regardless of the file argument.
+	tmpFile := t.TempDir() + "/test.log"
+	logger, closer, err := configureLoggingV2(tmpFile, noneLogType)
+	require.NoError(t, err)
+	require.NotNil(t, logger)
+	require.NotNil(t, closer)
+	defer closer.Close()
+
+	logger.Info("this message should be discarded")
+
+	_, statErr := os.Stat(tmpFile)
+	require.True(t, os.IsNotExist(statErr), "log file must not be created when format is none")
+}
+
+func TestConfigureLoggingV2UnknownFormat(t *testing.T) {
+	logger, closer, err := configureLoggingV2("", "unknown-format")
+	require.Error(t, err)
+	require.Nil(t, logger)
+	require.Nil(t, closer)
+	require.Contains(t, err.Error(), "unrecognized format value")
+}
+
+func TestConfigureLoggingV1ValidFormats(t *testing.T) {
+	tests := []struct {
+		format string
+	}{
+		{format: jsonLogFormat},
+		{format: textLogFormat},
+		{format: structuredFormat},
+		{format: noneLogType},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.format, func(t *testing.T) {
+			closer, err := configureLoggingV1("", tt.format)
 			require.NoError(t, err)
 			require.NotNil(t, closer)
 			defer closer.Close()
@@ -31,16 +101,16 @@ func TestStartLoggingValidFormats(t *testing.T) {
 	}
 }
 
-func TestStartLoggingUnknownFormat(t *testing.T) {
-	closer, err := startLogging("", "unknown-format")
+func TestConfigureLoggingV1UnknownFormat(t *testing.T) {
+	closer, err := configureLoggingV1("", "unknown-format")
 	require.Error(t, err)
 	require.Nil(t, closer)
 	require.Contains(t, err.Error(), "unknown logFormat")
 }
 
-// TestStartLoggingWithStdout verifies that "stdout" is accepted as a log file destination
+// TestConfigureLoggingV1WithStdout verifies that "stdout" is accepted as a log file destination
 // and that log output is actually written to stdout.
-func TestStartLoggingWithStdout(t *testing.T) {
+func TestConfigureLoggingV1WithStdout(t *testing.T) {
 	logFile := "stdout"
 	tests := []struct {
 		format string
@@ -55,12 +125,12 @@ func TestStartLoggingWithStdout(t *testing.T) {
 			require.NoError(t, err)
 			defer r.Close()
 
-			// Replace os.Stdout before calling startLogging
+			// Replace os.Stdout before calling configureLoggingV1
 			origStdout := os.Stdout
 			os.Stdout = w
 			t.Cleanup(func() { os.Stdout = origStdout })
 
-			closer, err := startLogging(logFile, tt.format)
+			closer, err := configureLoggingV1(logFile, tt.format)
 			require.NoError(t, err)
 			require.NotNil(t, closer)
 			defer closer.Close()
@@ -77,7 +147,7 @@ func TestStartLoggingWithStdout(t *testing.T) {
 
 // TestStartLoggingWithStderr verifies that "" and "stderr" are accepted as log file destinations
 // and that log output is actually written to stderr.
-func TestStartLoggingWithStderr(t *testing.T) {
+func TestConfigureLoggingV1WithStderr(t *testing.T) {
 	tests := []struct {
 		name     string
 		format   string
@@ -95,12 +165,12 @@ func TestStartLoggingWithStderr(t *testing.T) {
 			require.NoError(t, err)
 			defer r.Close()
 
-			// Replace os.Stderr before calling startLogging
+			// Replace os.Stderr before calling configureLoggingV1
 			origStderr := os.Stderr
 			os.Stderr = w
 			t.Cleanup(func() { os.Stderr = origStderr })
 
-			closer, err := startLogging(tt.filePath, tt.format)
+			closer, err := configureLoggingV1(tt.filePath, tt.format)
 			require.NoError(t, err)
 			require.NotNil(t, closer)
 			defer closer.Close()
@@ -116,7 +186,7 @@ func TestStartLoggingWithStderr(t *testing.T) {
 }
 
 // TestStartLoggingNoneDiscardsOutput verifies that noneLogType discards all log output.
-func TestStartLoggingNoneDiscardsOutput(t *testing.T) {
+func TestConfigureLoggingV1NoneDiscardsOutput(t *testing.T) {
 	tests := []struct {
 		name                 string
 		logPath              string
@@ -154,7 +224,7 @@ func TestStartLoggingNoneDiscardsOutput(t *testing.T) {
 				os.Stderr = origStderr
 			})
 
-			closer, err := startLogging(tt.logPath, noneLogType)
+			closer, err := configureLoggingV1(tt.logPath, noneLogType)
 			require.NoError(t, err)
 			require.NotNil(t, closer)
 			defer closer.Close()

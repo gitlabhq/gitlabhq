@@ -103,6 +103,7 @@ export default {
       `link_url=${encodeURIComponent(linkUrl)}`,
       `image_url=${encodeURIComponent(imageUrl)}`,
     ].join('&');
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- appending /render suffix to a server-provided endpoint URL. Not ideal but acceptable.
     const renderEndpoint = `${state.apiEndpointUrl}/render?${parameters}`;
     return axios
       .get(renderEndpoint)

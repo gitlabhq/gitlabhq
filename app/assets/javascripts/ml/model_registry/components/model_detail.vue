@@ -49,7 +49,7 @@ export default {
   },
   emptyState: {
     modelCardDescription: s__(
-      'MlModelRegistry|No description available. To add a description, click "Edit model" above.',
+      'MlModelRegistry|No description available. To add a description, click "Edit" above.',
     ),
   },
 };

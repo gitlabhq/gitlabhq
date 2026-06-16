@@ -1,0 +1,9 @@
+---
+name: read_any_token
+description: Grants the ability to read information about any token
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_any_token

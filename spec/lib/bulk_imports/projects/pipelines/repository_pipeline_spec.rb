@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:parent) { create(:project) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:parent, freeze: false) { create(:project) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
   let_it_be(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
 
-  let_it_be(:entity) do
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       :project_entity,

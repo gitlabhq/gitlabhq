@@ -6,11 +6,16 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre') }
-  let_it_be(:projects) { create_list(:project, 2, namespace: group) }
-  let_it_be(:shared_group) { create(:group) }
-  let_it_be(:group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) do
+    create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre')
+  end
+
+  let_it_be(:projects, freeze: false) { create_list(:project, 2, namespace: group) }
+  let_it_be(:shared_group, freeze: false) { create(:group) }
+  let_it_be(:group_group_link, freeze: false) do
+    create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+  end
 
   describe GroupsController, '(JavaScript fixtures)', type: :controller do
     render_views
@@ -40,8 +45,8 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
 
     context 'when group has subgroups' do
-      let_it_be(:subgroup) { create(:group, parent: group) }
-      let_it_be(:nested_subgroup) { create(:group, parent: subgroup, name: 'foo bar baz') }
+      let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+      let_it_be(:nested_subgroup, freeze: false) { create(:group, parent: subgroup, name: 'foo bar baz') }
 
       it 'groups/dashboard/index_with_children.json' do
         get :index, format: :json, params: { filter: 'foo bar baz' }
@@ -52,10 +57,10 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
   end
 
   describe Groups::ChildrenController, '(JavaScript fixtures)', type: :controller do
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:nested_subgroup) { create(:group, parent: subgroup, name: 'foo bar baz') }
-    let_it_be(:project) { create(:project, namespace: subgroup, name: 'Sub project 1') }
-    let_it_be(:nested_project) { create(:project, namespace: nested_subgroup, name: 'Sub project 2') }
+    let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+    let_it_be(:nested_subgroup, freeze: false) { create(:group, parent: subgroup, name: 'foo bar baz') }
+    let_it_be(:project, freeze: false) { create(:project, namespace: subgroup, name: 'Sub project 1') }
+    let_it_be(:nested_project, freeze: false) { create(:project, namespace: nested_subgroup, name: 'Sub project 2') }
 
     before do
       group.add_owner(user)
@@ -69,9 +74,12 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
 
     context 'when there are subgroups and projects that are pending deletion' do
-      let_it_be(:inactive_subgroup) { create(:group_with_deletion_schedule, parent: group) }
-      let_it_be(:inactive_nested_subgroup) { create(:group, parent: inactive_subgroup, name: 'foo bar baz') }
-      let_it_be(:inactive_project) { create(:project, namespace: inactive_subgroup) }
+      let_it_be(:inactive_subgroup, freeze: false) { create(:group_with_deletion_schedule, parent: group) }
+      let_it_be(:inactive_nested_subgroup, freeze: false) do
+        create(:group, parent: inactive_subgroup, name: 'foo bar baz')
+      end
+
+      let_it_be(:inactive_project, freeze: false) { create(:project, namespace: inactive_subgroup) }
 
       it 'groups/inactive_children.json' do
         get :index, format: :json, params: { group_id: group.full_path, active: false }
@@ -115,8 +123,10 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
 
     describe 'shared groups' do
-      let_it_be(:shared_group_2) { create(:group, :private, name: "shared group 2") }
-      let_it_be(:group_group_link) { create(:group_group_link, shared_group: shared_group_2, shared_with_group: group) }
+      let_it_be(:shared_group_2, freeze: false) { create(:group, :private, name: "shared group 2") }
+      let_it_be(:group_group_link, freeze: false) do
+        create(:group_group_link, shared_group: shared_group_2, shared_with_group: group)
+      end
 
       before do
         shared_group.add_owner(user)
@@ -136,8 +146,8 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
 
     describe 'shared projects' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
+      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be(:project_group_link, freeze: false) { create(:project_group_link, project: project, group: group) }
 
       before do
         project.add_owner(user)

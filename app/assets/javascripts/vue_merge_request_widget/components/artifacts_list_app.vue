@@ -1,12 +1,11 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
-import createStore from '../stores/artifacts_list';
+import { mapActions, mapState } from 'pinia';
+import { useArtifactsList } from '../stores/artifacts_list';
 import ArtifactsList from './artifacts_list.vue';
 import MrCollapsibleExtension from './mr_collapsible_extension.vue';
 
 export default {
-  store: createStore(),
+  name: 'ArtifactsListApp',
   components: {
     ArtifactsList,
     MrCollapsibleExtension,
@@ -18,8 +17,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['artifacts', 'isLoading', 'hasError']),
-    ...mapGetters(['title']),
+    ...mapState(useArtifactsList, ['artifacts', 'isLoading', 'hasError', 'title']),
     hasArtifacts() {
       return this.artifacts.length > 0;
     },
@@ -29,7 +27,7 @@ export default {
     this.fetchArtifacts();
   },
   methods: {
-    ...mapActions(['setEndpoint', 'fetchArtifacts']),
+    ...mapActions(useArtifactsList, ['setEndpoint', 'fetchArtifacts']),
   },
 };
 </script>

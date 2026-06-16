@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.shared_examples 'projects_with_variables_query' do
   describe '.projects_with_variables' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
-    let_it_be(:project3) { create(:project) }
-    let_it_be(:project4) { create(:project) }
+    let_it_be(:project1, freeze: false) { create(:project) }
+    let_it_be(:project2, freeze: false) { create(:project) }
+    let_it_be(:project3, freeze: false) { create(:project) }
+    let_it_be(:project4, freeze: false) { create(:project) }
 
     let(:project_ids) { [project1.id, project2.id, project3.id, project4.id] }
 

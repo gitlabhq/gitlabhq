@@ -143,8 +143,21 @@ class MigrationSchemaValidator
       .downcase
   end
 
+  # setup_db dumps db/schema_cache.yml from the fully-migrated schema. Rolling a migration back makes that
+  # cache stale, so any subsequent Rails boot (db:schema:dump, db:migrate) would SELECT columns that no longer
+  # exist (e.g. via ApplicationSetting.current in an initializer), failing with PG::UndefinedColumn. Clearing
+  # it before a rollback makes ActiveRecord read the live schema instead.
+  # NB: db:schema:cache:clear has no per-database variant, so it must not go through scripts/db_tasks (which
+  # would append ":main" in decomposed setups); run it directly to clear every database's cache, matching the
+  # unwrapped db:schema:cache:dump in setup_db that produced them.
+  def clear_schema_cache!
+    run("bundle exec rake db:schema:cache:clear")
+  end
+
   def validate_schema_on_rollback!
     return unless committed_migrations.any?
+
+    clear_schema_cache!
 
     committed_migrations.reverse_each do |filename|
       version = find_migration_version(filename)

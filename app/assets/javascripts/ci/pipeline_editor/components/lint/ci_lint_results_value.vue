@@ -2,6 +2,7 @@
 import { isEmpty } from 'lodash-es';
 
 export default {
+  name: 'CiLintResultsValue',
   props: {
     item: {
       type: Object,

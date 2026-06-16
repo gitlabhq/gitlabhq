@@ -8,7 +8,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:group, developers: user) }
 
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(
       :project, :with_avatar, :custom_repo,
       name: 'Component Repository',
@@ -86,7 +86,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'components' do
-    let_it_be(:version) do
+    let_it_be(:version, freeze: false) do
       create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
     end
 
@@ -106,7 +106,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       }
     end
 
-    let_it_be(:components) do
+    let_it_be(:components, freeze: false) do
       create_list(
         :ci_catalog_resource_component, 2, version: version, last_30_day_usage_count: 9, spec: { inputs: inputs }
       )
@@ -190,7 +190,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'querying component inputs with rules' do
-    let_it_be(:version) do
+    let_it_be(:version, freeze: false) do
       create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
     end
 
@@ -219,7 +219,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       }
     end
 
-    let_it_be(:component_with_rules) do
+    let_it_be(:component_with_rules, freeze: false) do
       create(:ci_catalog_resource_component, version: version, spec: { inputs: inputs_with_rules })
     end
 
@@ -282,7 +282,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       project.repository.add_tag(user, '2.0.0', 'branch_v2')
     end
 
-    let_it_be(:version1) do
+    let_it_be(:version1, freeze: false) do
       release = create(:release,
         project: project,
         tag: '1.0.0',
@@ -293,7 +293,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: resource, release: release)
     end
 
-    let_it_be(:version2) do
+    let_it_be(:version2, freeze: false) do
       release = create(:release,
         project: project,
         tag: '2.0.0',

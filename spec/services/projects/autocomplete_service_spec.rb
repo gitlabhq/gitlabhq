@@ -3,23 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AutocompleteService, :with_current_organization, feature_category: :groups_and_projects do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:owner) { create(:user, owner_of: project) }
-  let_it_be(:issue) { create(:issue, project: project, title: 'Issue 1') }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+  let_it_be(:owner, freeze: false) { create(:user, owner_of: project) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project, title: 'Issue 1') }
 
   describe '#issues' do
+    context 'with work_items_autocomplete feature flag' do
+      it 'calls work_items when feature flag is enabled' do
+        stub_feature_flags(work_items_autocomplete: true)
+        autocomplete = described_class.new(project, owner)
+
+        expect(autocomplete).to receive(:work_items).and_call_original
+        autocomplete.issues
+      end
+
+      it 'uses IssuesFinder when feature flag is disabled' do
+        stub_feature_flags(work_items_autocomplete: false)
+        autocomplete = described_class.new(project, owner)
+
+        expect(autocomplete).not_to receive(:work_items)
+        expect(autocomplete.issues).to be_present
+      end
+    end
+
     describe 'confidential issues' do
-      let_it_be(:author) { create(:user) }
-      let_it_be(:assignee) { create(:user) }
-      let_it_be(:non_member) { create(:user) }
+      let_it_be(:author, freeze: false) { create(:user) }
+      let_it_be(:assignee, freeze: false) { create(:user) }
+      let_it_be(:non_member, freeze: false) { create(:user) }
       let(:member) { create(:user) }
-      let_it_be(:admin) { create(:admin) }
-      let_it_be(:security_issue_1) do
+      let_it_be(:admin, freeze: false) { create(:admin) }
+      let_it_be(:security_issue_1, freeze: false) do
         create(:issue, :confidential, project: project, title: 'Security issue 1', author: author)
       end
 
-      let_it_be(:security_issue_2) do
+      let_it_be(:security_issue_2, freeze: false) do
         create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee])
       end
 
@@ -120,12 +138,12 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
     end
 
     context 'when search param is given' do
-      let_it_be(:issue_8) { create(:issue, project: project, iid: 8) }
-      let_it_be(:issue_80) { create(:issue, project: project, iid: 80) }
-      let_it_be(:issue_800) { create(:issue, project: project, iid: 800) }
-      let_it_be(:issue_8000) { create(:issue, project: project, iid: 8000) }
-      let_it_be(:issue_80000) { create(:issue, project: project, iid: 80000) }
-      let_it_be(:issue_90000) { create(:issue, project: project, title: 'gitlab issue 8', iid: 90000) }
+      let_it_be(:issue_8, freeze: false) { create(:issue, project: project, iid: 8) }
+      let_it_be(:issue_80, freeze: false) { create(:issue, project: project, iid: 80) }
+      let_it_be(:issue_800, freeze: false) { create(:issue, project: project, iid: 800) }
+      let_it_be(:issue_8000, freeze: false) { create(:issue, project: project, iid: 8000) }
+      let_it_be(:issue_80000, freeze: false) { create(:issue, project: project, iid: 80000) }
+      let_it_be(:issue_90000, freeze: false) { create(:issue, project: project, title: 'gitlab issue 8', iid: 90000) }
 
       it 'returns limited list of matching issues' do
         autocomplete = described_class.new(project, owner, { search: '8' })
@@ -137,8 +155,132 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
     end
   end
 
+  describe '#work_items' do
+    it 'returns work items using WorkItemsFinder' do
+      autocomplete = described_class.new(project, owner)
+      result = autocomplete.work_items
+
+      expect(result).to be_present
+      expect(result).to all(be_a(WorkItem))
+    end
+
+    it 'includes work item icons in list' do
+      autocomplete = described_class.new(project, owner)
+      work_items = autocomplete.work_items.map(&:icon_name)
+
+      expect(work_items).to all(start_with('work-item-'))
+    end
+
+    context 'with search parameter' do
+      let_it_be(:issue_8, freeze: false) { create(:issue, project: project, iid: 8) }
+      let_it_be(:issue_80, freeze: false) { create(:issue, project: project, iid: 80) }
+      let_it_be(:issue_800, freeze: false) { create(:issue, project: project, iid: 800) }
+      let_it_be(:issue_8000, freeze: false) { create(:issue, project: project, iid: 8000) }
+      let_it_be(:issue_80000, freeze: false) { create(:issue, project: project, iid: 80000) }
+      let_it_be(:issue_90000, freeze: false) { create(:issue, project: project, title: 'gitlab issue 8', iid: 90000) }
+
+      it 'filters work items by search term' do
+        autocomplete = described_class.new(project, owner, { search: '8' })
+        work_item_iids = autocomplete.work_items.map(&:iid)
+
+        expect(work_item_iids).to eq([90000, 80000, 8000, 800, 80])
+      end
+
+      it 'filters work items by title' do
+        autocomplete = described_class.new(project, owner, { search: 'gitlab' })
+        work_item_iids = autocomplete.work_items.map(&:iid)
+
+        expect(work_item_iids).to include(90000)
+      end
+    end
+
+    context 'with confidential work items' do
+      let(:author) { create(:user) }
+      let(:assignee) { create(:user) }
+      let(:non_member) { create(:user) }
+      let(:member) { create(:user) }
+      let(:admin) { create(:admin) }
+      let!(:security_issue_1) do
+        create(:issue, :confidential, project: project, title: 'Security issue 1', author: author)
+      end
+
+      let!(:security_issue_2) do
+        create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee])
+      end
+
+      it 'does not list project confidential work items for guests' do
+        autocomplete = described_class.new(project, nil)
+        work_items = autocomplete.work_items.map(&:iid)
+
+        expect(work_items).to include issue.iid
+        expect(work_items).not_to include security_issue_1.iid
+        expect(work_items).not_to include security_issue_2.iid
+      end
+
+      it 'does not list project confidential work items for non project members' do
+        autocomplete = described_class.new(project, non_member)
+        work_items = autocomplete.work_items.map(&:iid)
+
+        expect(work_items).to include issue.iid
+        expect(work_items).not_to include security_issue_1.iid
+        expect(work_items).not_to include security_issue_2.iid
+      end
+
+      it 'lists project confidential work items for author' do
+        autocomplete = described_class.new(project, author)
+        work_items = autocomplete.work_items.map(&:iid)
+
+        expect(work_items).to include issue.iid
+        expect(work_items).to include security_issue_1.iid
+        expect(work_items).not_to include security_issue_2.iid
+      end
+
+      it 'lists project confidential work items for assignee' do
+        autocomplete = described_class.new(project, assignee)
+        work_items = autocomplete.work_items.map(&:iid)
+
+        expect(work_items).to include issue.iid
+        expect(work_items).not_to include security_issue_1.iid
+        expect(work_items).to include security_issue_2.iid
+      end
+
+      it 'lists project confidential work items for project members' do
+        project.add_developer(member)
+
+        autocomplete = described_class.new(project, member)
+        work_items = autocomplete.work_items.map(&:iid)
+
+        expect(work_items).to include issue.iid
+        expect(work_items).to include security_issue_1.iid
+        expect(work_items).to include security_issue_2.iid
+      end
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'lists all project work items for admin' do
+          autocomplete = described_class.new(project, admin)
+          work_items = autocomplete.work_items.map(&:iid)
+
+          expect(work_items).to include issue.iid
+          expect(work_items).to include security_issue_1.iid
+          expect(work_items).to include security_issue_2.iid
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'does not list project confidential work items for admin' do
+          autocomplete = described_class.new(project, admin)
+          work_items = autocomplete.work_items.map(&:iid)
+
+          expect(work_items).to include issue.iid
+          expect(work_items).not_to include security_issue_1.iid
+          expect(work_items).not_to include security_issue_2.iid
+        end
+      end
+    end
+  end
+
   describe '#milestones' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let!(:group_milestone1) { create(:milestone, group: group, due_date: '2017-01-01', title: 'Second Title') }
     let!(:group_milestone2) { create(:milestone, group: group, due_date: '2017-01-01', title: 'First Title') }
     let!(:project_milestone) { create(:milestone, project: project, due_date: '2016-01-01') }
@@ -179,12 +321,12 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
   end
 
   describe '#wikis' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:project) { create(:project, :public, group: group) }
-    let_it_be(:wiki) { create(:project_wiki, project: project) }
-    let_it_be(:page1) { create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1') }
-    let_it_be(:page2) do
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+    let_it_be(:wiki, freeze: false) { create(:project_wiki, project: project) }
+    let_it_be(:page1, freeze: false) { create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1') }
+    let_it_be(:page2, freeze: false) do
       create(:wiki_page, wiki: wiki, title: 'page2', content: "---\ntitle: Real title\n---\ncontent2")
     end
 
@@ -235,10 +377,10 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
   end
 
   describe '#contacts' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:contact_1) { create(:contact, group: group) }
-    let_it_be(:contact_2) { create(:contact, group: group) }
-    let_it_be(:contact_3) { create(:contact, :inactive, group: group) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:contact_1, freeze: false) { create(:contact, group: group) }
+    let_it_be(:contact_2, freeze: false) { create(:contact, group: group) }
+    let_it_be(:contact_3, freeze: false) { create(:contact, :inactive, group: group) }
 
     let(:issue) { nil }
 
@@ -290,16 +432,16 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
       expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
     end
 
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group, :nested, developers: user) }
-    let_it_be(:sub_group) { create(:group, parent: group) }
-    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group, :nested, developers: user) }
+    let_it_be(:sub_group, freeze: false) { create(:group, parent: group) }
+    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
     let(:issue) { create(:issue, project: project) }
 
-    let_it_be(:label1) { create(:label, project: project) }
-    let_it_be(:label2) { create(:label, project: project) }
-    let_it_be(:sub_group_label) { create(:group_label, group: sub_group) }
-    let_it_be(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
+    let_it_be(:label1, freeze: false) { create(:label, project: project) }
+    let_it_be(:label2, freeze: false) { create(:label, project: project) }
+    let_it_be(:sub_group_label, freeze: false) { create(:group_label, group: sub_group) }
+    let_it_be(:parent_group_label, freeze: false) { create(:group_label, group: group.parent, group_id: group.id) }
 
     it 'returns labels from project and ancestor groups' do
       service = described_class.new(project, user)
@@ -333,7 +475,7 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
     end
 
     context 'with archived labels' do
-      let_it_be(:archived_label) { create(:label, :archived, project: project) }
+      let_it_be(:archived_label, freeze: false) { create(:label, :archived, project: project) }
 
       subject(:results) { described_class.new(project, user).labels_as_hash(nil) }
 
@@ -372,7 +514,7 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
   end
 
   describe '#snippets' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     it 'passes organization_id to SnippetsFinder' do
       expect(SnippetsFinder).to receive(:new).with(

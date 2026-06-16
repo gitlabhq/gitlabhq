@@ -24,5 +24,4 @@
      - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/project/import/).
   stage: Foundations
   tiers:
-  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/5255
   documentation_url: https://docs.gitlab.com/user/project/import/

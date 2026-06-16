@@ -18,8 +18,18 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **SQL performance, transactions, batching**: Read .ai/principles/distilled/database-queries.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
 - **ClickHouse database concerns**: Read .ai/principles/distilled/clickhouse.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
 
+**Cells:**
+- **Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources**: Read .ai/principles/distilled/cells-fundamentals.md *(load for any cells work)*
+- **Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness**: Read .ai/principles/distilled/cells-claims.md *(also load: .ai/principles/distilled/cells-fundamentals.md)*
+
 **Security:**
 - **Security vulnerabilities and secure coding**: Read .ai/principles/distilled/security.md
+- **Authentication, authorization, token handling, OAuth, SAML, identity linking, composite identity, session management, 2FA, MFA, password management**: Read .ai/principles/distilled/authentication.md
+
+**Permissions:**
+- **Where to check permissions, naming conventions, role definitions**: Read .ai/principles/distilled/permissions-fundamentals.md *(load for any permissions work)*
+- **Granular PAT (GPAT) compliance for GraphQL types and mutations**: Read .ai/principles/distilled/permissions-graphql-gpat.md *(also load: .ai/principles/distilled/permissions-fundamentals.md)*
+- **Granular PAT (GPAT) compliance for REST endpoints and job tokens**: Read .ai/principles/distilled/permissions-rest-gpat.md *(also load: .ai/principles/distilled/permissions-fundamentals.md)*
 
 **Code Review:**
 - **General code review practices and acceptance checklist**: Read .ai/principles/distilled/code-review.md
@@ -35,6 +45,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 
 **Workers:**
 - **Sidekiq worker design and reliability**: Read .ai/principles/distilled/workers.md
+
+**CI/CD:**
+- **GitLab CI/CD internals — adding pipeline configuration keywords (Ci::Config::Entry classes, feature-flag gating, JSON schema) and creating CI routing/partitioned tables. NOTE this is about GitLab's own CI implementation, not authoring a project's .gitlab-ci.yml**: Read .ai/principles/distilled/cicd-internals.md
 
 **Frontend:**
 - **Vue.js components, state management, patterns**: Read .ai/principles/distilled/frontend-vue.md *(load for any frontend work)*

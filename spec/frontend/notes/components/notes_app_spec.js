@@ -159,7 +159,7 @@ describe('note_app', () => {
       );
     });
 
-    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/410409
+    // gitlab:quarantine_issue_url=https://gitlab.com/gitlab-org/gitlab/-/issues/410409
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('should render form comment button as disabled', () => {
       expect(findCommentButton().props('disabled')).toEqual(true);

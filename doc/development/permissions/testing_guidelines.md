@@ -91,12 +91,12 @@ rather than a generic `project`.
 
 ```ruby
 RSpec.describe ProjectPolicy do
-  describe 'write_ai_agents' do
+  describe 'write_example_feature' do
     let_it_be(:project) { private_project }
 
     before do
-      stub_feature_flags(agent_registry: true)
-      stub_licensed_features(ai_agents: true)
+      stub_feature_flags(example_feature: true)
+      stub_licensed_features(example_feature: true)
     end
 
     where(:current_user, :allowed) do
@@ -109,38 +109,38 @@ RSpec.describe ProjectPolicy do
 
     with_them do
       if params[:allowed]
-        it { expect_allowed(:write_ai_agents) }
+        it { expect_allowed(:write_example_feature) }
       else
-        it { expect_disallowed(:write_ai_agents) }
+        it { expect_disallowed(:write_example_feature) }
       end
     end
 
     context 'with admin mode enabled', :enable_admin_mode do
       let(:current_user) { admin }
 
-      it { expect_allowed(:write_ai_agents) }
+      it { expect_allowed(:write_example_feature) }
     end
 
     context 'without admin mode enabled' do
       let(:current_user) { admin }
 
-      it { expect_disallowed(:write_ai_agents) }
+      it { expect_disallowed(:write_example_feature) }
     end
 
-    context 'when agent_registry feature flag is disabled' do
+    context 'when example_feature feature flag is disabled' do
       before do
-        stub_feature_flags(agent_registry: false)
+        stub_feature_flags(example_feature: false)
       end
 
-      it { expect_disallowed(:write_ai_agents) }
+      it { expect_disallowed(:write_example_feature) }
     end
 
-    context 'when ai_agents licensed feature is disabled' do
+    context 'when example_feature licensed feature is disabled' do
       before do
-        stub_licensed_features(ai_agents: false)
+        stub_licensed_features(example_feature: false)
       end
 
-      it { expect_disallowed(:write_ai_agents) }
+      it { expect_disallowed(:write_example_feature) }
     end
   end
 end

@@ -61,7 +61,7 @@ RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
     if model.respond_to?(:iid)
       is_expected.to have_header "X-GitLab-#{model.class.name}-IID", model.iid.to_s
     else
-      expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to eq nil
+      expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to be_nil
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
     if model.respond_to?(:state)
       is_expected.to have_header "X-GitLab-#{model.class.name}-State", model.state.to_s
     else
-      expect(subject.header["X-GitLab-#{model.class.name}-State"]).to eq nil
+      expect(subject.header["X-GitLab-#{model.class.name}-State"]).to be_nil
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
     if model.is_a?(WorkItem) && model.respond_to?(:work_item_type)
       is_expected.to have_header "X-GitLab-#{model.class.name}-Type", model.work_item_type.name
     else
-      expect(subject.header["X-GitLab-#{model.class.name}-Type"]).to eq nil
+      expect(subject.header["X-GitLab-#{model.class.name}-Type"]).to be_nil
     end
   end
 end

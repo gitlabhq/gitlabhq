@@ -1,0 +1,9 @@
+---
+name: create_ai_catalog_third_party_flow
+description: Grants the ability to create AI catalog external agents
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_ai_catalog_third_party_flow

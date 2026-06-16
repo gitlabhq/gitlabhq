@@ -27,7 +27,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         within('.wiki-sidebar') do
           expect(page).to have_content('another')
           expect(page).to have_link('View all pages')
-          expect(page).not_to have_css("[data-testid='expand-pages-list']")
+          expect(page).to have_no_css("[data-testid='expand-pages-list']")
         end
       end
 
@@ -38,7 +38,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My custom sidebar')
-          expect(page).not_to have_content('another')
+          expect(page).to have_no_content('another')
         end
       end
     end
@@ -102,7 +102,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
 
       within('.wiki-sidebar') do
-        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']").size).to eq(3)
+        expect(page).to have_css("[data-testid='wiki-sidebar-entry-collapser']", count: 3)
       end
     end
 
@@ -112,14 +112,14 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
       within('.wiki-sidebar') do
         first("[data-testid='wiki-sidebar-entry-collapser']").click
-        (11..15).each { |i| expect(page).not_to have_content("my page #{i}") }
-        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(1)
-        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(1)
+        (11..15).each { |i| expect(page).to have_no_content("my page #{i}") }
+        expect(page).to have_css("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90", count: 1)
+        expect(page).to have_css("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)", count: 1)
 
         first("[data-testid='wiki-sidebar-entry-collapser']").click
         (11..15).each { |i| expect(page).to have_content("my page #{i}") }
-        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(3)
-        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(0)
+        expect(page).to have_css("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90", count: 3)
+        expect(page).to have_no_css("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)")
       end
     end
 

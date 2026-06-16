@@ -18,5 +18,7 @@ module Layouts
     renders_one :actions
     renders_one :alerts
     renders_one :sidebar
+    renders_one :widgets
+    renders_one :activity
   end
 end

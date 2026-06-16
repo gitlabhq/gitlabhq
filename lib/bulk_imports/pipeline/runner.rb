@@ -77,7 +77,7 @@ module BulkImports
           'Skipping pipeline due to failed entity',
           pipeline_step: step,
           step_class: class_name,
-          importer: 'gitlab_migration'
+          importer: context.import_source
         )
       rescue BulkImports::NetworkError => e
         raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay), cause: e if e.retriable?(context.tracker)

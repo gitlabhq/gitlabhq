@@ -925,7 +925,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           let(:request) { head api(route('files%2Flfs%2Flfs_object.iso') + '/raw', current_user), params: params.merge(lfs: true) }
 
           context 'and the file has an lfs object' do
-            let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+            let_it_be(:lfs_object, freeze: false) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
 
             it 'responds with 404' do
               request
@@ -1065,7 +1065,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like '404 response'
 
         context 'and the file has an lfs object' do
-          let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+          let_it_be(:lfs_object, freeze: false) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
 
           it_behaves_like '404 response'
 

@@ -136,6 +136,14 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
       .map(&:strip)
   end
 
+  def unique_index_prefix?(table, target_keys)
+    ApplicationRecord.connection.indexes(table).any? do |index|
+      next false unless index.unique
+
+      Array(index.columns).take(target_keys.size) == target_keys
+    end
+  end
+
   def ch_column_names(ch_table)
     query =
       <<~SQL
@@ -200,6 +208,12 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
             "(#{lookup_primary_keys.join(', ')}) don't start with the PostgreSQL table's primary keys " \
             "(#{postgresql_primary_keys.join(', ')})"
         end
+
+        if lookup_primary_keys.sort != clickhouse_primary_keys.sort
+          @errors << "the ClickHouse lookup table '#{lookup_table}' primary keys " \
+            "(#{lookup_primary_keys.join(', ')}) don't cover the same columns as the main ClickHouse table " \
+            "'#{clickhouse_table}' primary keys (#{clickhouse_primary_keys.join(', ')})"
+        end
       end
     end
 
@@ -213,8 +227,9 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
       target_keys = Array(roc['target_keys'])
 
       target_postgresql_pks = ApplicationRecord.connection.primary_keys(roc['target_stream_identifier'])
-      if target_postgresql_pks != target_keys
-        @errors << "refresh_on_change.target_keys must match with the PostgreSQL primary keys of #{target_identifier}"
+      unless target_postgresql_pks == target_keys || unique_index_prefix?(roc['target_stream_identifier'], target_keys)
+        @errors << "refresh_on_change.target_keys must match with the PostgreSQL primary keys of " \
+          "#{target_identifier}, or be a prefix of a unique index on #{target_identifier}"
       end
 
       source_keys = Array(roc['source_keys'])

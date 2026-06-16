@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Banzai::UploadsController, feature_category: :markdown do
   describe '#show' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:txt_upload) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
     let(:jpg_upload) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
     let(:secret) { FileUploader.generate_secret }
 
     context 'with project upload' do
-      let_it_be(:project, reload: true) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
 
       before_all do
         project.add_guest(user)
@@ -34,7 +34,15 @@ RSpec.describe Banzai::UploadsController, feature_category: :markdown do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it 'returns 404 when user does not have access' do
+        it 'redirects anonymous user to sign-in' do
+          get "/-/project/#{project.id}/uploads/#{secret}/doc_sample.txt"
+
+          expect(response).to redirect_to(new_user_session_path)
+        end
+
+        it 'returns 404 when authenticated user does not have access' do
+          sign_in(create(:user))
+
           get "/-/project/#{project.id}/uploads/#{secret}/doc_sample.txt"
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -63,7 +71,15 @@ RSpec.describe Banzai::UploadsController, feature_category: :markdown do
             project.update!(enforce_auth_checks_on_uploads: true)
           end
 
-          it 'returns 404 when user does not have access' do
+          it 'redirects anonymous user to sign-in' do
+            get "/-/project/#{project.id}/uploads/#{secret}/rails_sample.jpg"
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+
+          it 'returns 404 when authenticated user does not have access' do
+            sign_in(create(:user))
+
             get "/-/project/#{project.id}/uploads/#{secret}/rails_sample.jpg"
 
             expect(response).to have_gitlab_http_status(:not_found)
@@ -96,7 +112,15 @@ RSpec.describe Banzai::UploadsController, feature_category: :markdown do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it 'returns 404 when user does not have access' do
+        it 'redirects anonymous user to sign-in' do
+          get "/-/group/#{group.id}/uploads/#{secret}/doc_sample.txt"
+
+          expect(response).to redirect_to(new_user_session_path)
+        end
+
+        it 'returns 404 when authenticated user does not have access' do
+          sign_in(create(:user))
+
           get "/-/group/#{group.id}/uploads/#{secret}/doc_sample.txt"
 
           expect(response).to have_gitlab_http_status(:not_found)

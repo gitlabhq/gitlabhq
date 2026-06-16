@@ -97,6 +97,16 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
 
       # Users are restricted from enabling or disabling the feature
       it { is_expected.to eq(:feature_disabled) }
+
+      context 'and email_otp_enabled application setting is enabled' do
+        before do
+          stub_application_setting(email_otp_enabled: true)
+        end
+
+        # The application setting acts as an alternative enable path,
+        # so email OTP is enabled and no restriction applies.
+        it { is_expected.not_to eq(:feature_disabled) }
+      end
     end
 
     context 'when user uses an external authenticator and has no GitLab password' do
@@ -187,14 +197,31 @@ RSpec.describe Users::EmailOtpEnrollment, feature_category: :system_access do
       user.set_email_otp_required_after_based_on_restrictions
     end
 
-    it 'does not perform any checks when email_based_mfa FF is disabled' do
+    it 'does not perform any checks when email_based_mfa FF and email_otp_enabled setting are disabled' do
       stub_feature_flags(email_based_mfa: false)
+      stub_application_setting(email_otp_enabled: false)
       allow(user).to receive(:must_require_email_otp?).and_call_original
       allow(Gitlab::Auth::TwoFactorAuthVerifier).to receive(:new).and_call_original
 
       set_email_otp
       expect(user).not_to have_received(:must_require_email_otp?)
       expect(Gitlab::Auth::TwoFactorAuthVerifier).not_to have_received(:new)
+    end
+
+    context 'when email_based_mfa FF is disabled but email_otp_enabled setting is enabled' do
+      let(:new_email_otp_required_after) { nil }
+
+      before do
+        stub_feature_flags(email_based_mfa: false)
+        stub_application_setting(email_otp_enabled: true)
+      end
+
+      it 'performs checks instead of returning early' do
+        allow(user).to receive(:must_require_email_otp?).and_call_original
+
+        set_email_otp
+        expect(user).to have_received(:must_require_email_otp?)
+      end
     end
 
     context 'when must_require_email_otp?' do

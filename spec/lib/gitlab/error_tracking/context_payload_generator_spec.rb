@@ -20,7 +20,7 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
   end
 
   context 'user metadata' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it 'appends user metadata to the payload' do
       payload = {}

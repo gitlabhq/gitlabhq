@@ -10,6 +10,7 @@ import FormCustomHeaderItem from './form_custom_header_item.vue';
 const MAXIMUM_CUSTOM_HEADERS = 20;
 
 export default {
+  name: 'FormCustomHeaders',
   components: {
     CrudComponent,
     FormCustomHeaderItem,

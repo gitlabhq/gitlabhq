@@ -3,46 +3,75 @@
 module Ci
   module JobArtifacts
     class DestroyAllExpiredService
-      include ::Gitlab::ExclusiveLeaseHelpers
       include ::Gitlab::LoopHelpers
 
       BATCH_SIZE = 100
       LOOP_LIMIT = 500
       LOOP_TIMEOUT = 5.minutes
-      LOCK_TIMEOUT = 6.minutes
-      EXCLUSIVE_LOCK_KEY = 'expired_job_artifacts:destroy:lock'
 
-      def initialize
-        @removed_artifacts_count = 0
-        @start_at = Time.current
+      Result = Struct.new(
+        :destroyed_count,
+        :more_work_likely,
+        :drain_loops,
+        :partitions_exhausted,
+        :exited_early,
+        keyword_init: true
+      )
+
+      def initialize(mod_bucket:, max_buckets:)
+        @mod_bucket = mod_bucket
+        @max_buckets = max_buckets
+        @destroyed_count = 0
+        @drain_loops = 0
+        @partitions_exhausted = 0
+        @exited_early = false
       end
 
       ##
-      # Destroy expired job artifacts on GitLab instance
-      #
-      # This destroy process cannot run for more than 6 minutes. This is for
-      # preventing multiple `ExpireBuildArtifactsWorker` CRON jobs run concurrently,
-      # which is scheduled every 7 minutes.
+      # Destroys expired job artifacts for the given mod_bucket by iterating
+      # over physical partition groups of `p_ci_job_artifacts`. Each query is
+      # scoped to a single partition group so PostgreSQL can prune partitions.
       def execute
-        in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
-          destroy_unlocked_job_artifacts
+        partitions = Ci::JobArtifact.partition_groups
+
+        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
+          if partitions.empty?
+            @exited_early = true
+            break
+          end
+
+          destroyed = drain(partitions.first)
+          if destroyed == 0
+            partitions.shift
+            @partitions_exhausted += 1
+          else
+            @destroyed_count += destroyed
+            @drain_loops += 1
+          end
         end
 
-        @removed_artifacts_count
+        Result.new(
+          destroyed_count: @destroyed_count,
+          more_work_likely: @destroyed_count > BATCH_SIZE,
+          drain_loops: @drain_loops,
+          partitions_exhausted: @partitions_exhausted,
+          exited_early: @exited_early
+        )
       end
 
       private
 
-      def destroy_unlocked_job_artifacts
-        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
-          artifacts = Ci::JobArtifact.expired_before(@start_at).non_trace.artifact_unlocked.limit(BATCH_SIZE)
-          service_response = destroy_batch(artifacts)
-          @removed_artifacts_count += service_response[:destroyed_artifacts_count]
-        end
-      end
+      def drain(partition_ids)
+        relation = Ci::JobArtifact
+          .expired_and_deletable
+          .in_partition(partition_ids)
+          .for_mod_bucket(@mod_bucket, @max_buckets)
+          .limit(BATCH_SIZE)
 
-      def destroy_batch(artifacts)
-        Ci::JobArtifacts::DestroyBatchService.new(artifacts, skip_projects_on_refresh: true).execute
+        Ci::JobArtifacts::DestroyBatchService
+          .new(relation, skip_projects_on_refresh: true)
+          .execute
+          .fetch(:destroyed_artifacts_count)
       end
     end
   end

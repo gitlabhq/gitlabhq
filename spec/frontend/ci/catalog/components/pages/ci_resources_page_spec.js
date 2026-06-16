@@ -44,6 +44,7 @@ describe('CiResourcesPage', () => {
     minAccessLevel: null,
     verificationLevel: null,
     topics: [],
+    groupIds: [],
   };
 
   const createComponent = () => {
@@ -384,6 +385,51 @@ describe('CiResourcesPage', () => {
 
       it('passes the topics to the search component', () => {
         expect(findCatalogSearch().props('initialTopics')).toEqual(['ruby', 'ci-cd']);
+      });
+    });
+
+    describe('when groups are present in URL', () => {
+      beforeEach(async () => {
+        setWindowLocation('?groups=1,2');
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+      });
+
+      it('converts numeric IDs to GIDs and passes them to the graphql query', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
+        expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
+          ...defaultQueryVariables,
+          groupIds: ['gid://gitlab/Group/1', 'gid://gitlab/Group/2'],
+        });
+      });
+
+      it('passes the groups to the search component', () => {
+        expect(findCatalogSearch().props('initialGroups')).toEqual(['1', '2']);
+      });
+    });
+
+    describe('when search component emits a group filter', () => {
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+        await findCatalogSearch().vm.$emit('update-filters', {
+          searchTerm: null,
+          verificationLevel: null,
+          topics: [],
+          groups: ['1', '2'],
+        });
+      });
+
+      it('passes converted group GIDs to the graphql query', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
+        expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
+          groupIds: ['gid://gitlab/Group/1', 'gid://gitlab/Group/2'],
+        });
+      });
+
+      it('updates the URL with the numeric group IDs', () => {
+        expect(window.location.search).toContain('groups=1%2C2');
       });
     });
   });

@@ -326,114 +326,22 @@ If [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in) is used t
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../settings/continuous_integration.md#set-default-artifacts-expiration).
 
-Artifacts are deleted by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every 7 minutes (`*/7 * * * *` in [Cron](../../topics/cron/_index.md) syntax).
-
-To change the default schedule on which expired artifacts are deleted:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if
-   it already exists and is commented out), substituting your schedule in cron
-   syntax:
-
-   ```ruby
-   gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Helm chart (Kubernetes)" >}}
-
-1. Export the Helm values:
-
-   ```shell
-   helm get values gitlab > gitlab_values.yaml
-   ```
-
-1. Edit `gitlab_values.yaml`:
-
-   ```yaml
-   global:
-     appConfig:
-       cron_jobs:
-         expire_build_artifacts_worker:
-           cron: "*/7 * * * *"
-   ```
-
-1. Save the file and apply the new values:
-
-   ```shell
-   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Docker" >}}
-
-1. Edit `docker-compose.yml`:
-
-   ```yaml
-   version: "3.6"
-   services:
-     gitlab:
-       environment:
-         GITLAB_OMNIBUS_CONFIG: |
-           gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   docker compose up -d
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-1. Edit `/home/git/gitlab/config/gitlab.yml`:
-
-   ```yaml
-   production: &base
-     cron_jobs:
-       expire_build_artifacts_worker:
-         cron: "*/7 * * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   # For systems running systemd
-   sudo systemctl restart gitlab.target
-
-   # For systems running SysV init
-   sudo service gitlab restart
-   ```
-
-{{< /tab >}}
-
-{{< /tabs >}}
+Expired artifacts are deleted by the `Ci::ScheduleBulkDeleteJobArtifactCronWorker` Sidekiq cron job, which runs every 30 minutes (`*/30 * * * *` in [Cron](../../topics/cron/_index.md) syntax) and enqueues `Ci::BulkDeleteExpiredJobArtifactsWorker` to perform the deletion.
 
 ## Set the maximum file size of the artifacts
 
 If artifacts are enabled, you can change the maximum file size of the
-artifacts through the [**Admin** area settings](../settings/continuous_integration.md#set-maximum-artifacts-size).
+artifacts through the [**Admin** area settings](limits.md#maximum-artifacts-size).
 
 ## Storage statistics
 
-You can see the total storage used for job artifacts for groups and projects in:
+You can view the total storage used for job artifacts for groups and projects.
 
-- The **Admin** area
-- The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
+To find which groups or projects use the most storage:
+
+- In the **Admin** area, go to **Overview** > **Projects** and sort by **Storage size**.
+- Use the [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
+  to return storage statistics for each group or project.
 
 ## Implementation details
 

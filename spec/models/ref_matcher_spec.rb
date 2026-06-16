@@ -13,6 +13,10 @@ RSpec.describe RefMatcher, feature_category: :source_code_management do
     it_behaves_like 'RefMatcher#matches?'
   end
 
+  describe '#overlaps?' do
+    it_behaves_like 'RefMatcher#overlaps?'
+  end
+
   describe '#wildcard?' do
     it_behaves_like 'RefMatcher#wildcard?'
   end

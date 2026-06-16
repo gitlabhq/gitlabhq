@@ -106,7 +106,7 @@ export default {
       :date-range-options="dateRangeOptions"
       disable-date-range-string
       @selected="onSelectPredefinedDateRange"
-      @customDateRangeSelected="onSelectCustomDateRange"
+      @custom-date-range-selected="onSelectCustomDateRange"
     />
     <date-time-range-picker
       v-if="shouldShowDateRangePicker"

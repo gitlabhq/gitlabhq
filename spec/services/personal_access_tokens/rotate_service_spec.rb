@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
     let_it_be(:current_user) { create(:user, :with_namespace) }
-    let_it_be(:token, reload: true) do
+    let_it_be_with_reload(:token) do
       create(:personal_access_token, user: current_user, expires_at: Time.zone.today + 30.days)
     end
 
@@ -70,7 +70,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
     end
 
     context 'when rotating a granular token' do
-      let_it_be(:token, reload: true) do
+      let_it_be_with_reload(:token) do
         create(:granular_pat, user: current_user, expires_at: Time.zone.today + 30.days)
       end
 
@@ -136,7 +136,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
     end
 
     context 'when user tries to rotate already revoked token' do
-      let_it_be(:token, reload: true) { create(:personal_access_token, :revoked) }
+      let_it_be_with_reload(:token) { create(:personal_access_token, :revoked) }
 
       it 'returns an error' do
         expect { response }.not_to change { token.reload.revoked? }.from(true)
@@ -210,7 +210,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
     context 'when granular' do
       let_it_be(:project) { create(:project, developers: current_user) }
       let_it_be(:boundary) { Authz::Boundary.for(project) }
-      let_it_be(:token, reload: true) do
+      let_it_be_with_reload(:token) do
         create(:granular_pat, user: current_user, boundary: boundary, permissions: :create_work_item)
       end
 
@@ -297,7 +297,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
           end
 
           context 'when token is a granular token' do
-            let_it_be(:token, reload: true) { create(:granular_pat, user: current_user) }
+            let_it_be_with_reload(:token) { create(:granular_pat, user: current_user) }
 
             it_behaves_like 'rotates token successfully'
           end

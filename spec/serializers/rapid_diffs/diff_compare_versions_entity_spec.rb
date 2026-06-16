@@ -52,7 +52,8 @@ RSpec.describe RapidDiffs::DiffCompareVersionsEntity, feature_category: :code_re
           merge_request: merge_request,
           merge_request_diffs: [diff_3, diff_2, diff_1],
           diff_id: options[:diff_id],
-          start_sha: options[:start_sha]
+          start_sha: options[:start_sha],
+          only_context_commits: false
         )
         .and_call_original
 
@@ -207,6 +208,76 @@ RSpec.describe RapidDiffs::DiffCompareVersionsEntity, feature_category: :code_re
     context 'when commit_id is not present' do
       it 'does not include commit' do
         expect(serialized).not_to have_key(:commit)
+      end
+    end
+
+    describe 'context_commits' do
+      let(:context_commits_diff) { instance_double(ContextCommitsDiff) }
+      let(:diff_refs) do
+        Gitlab::Diff::DiffRefs.new(
+          base_sha: 'base_sha_abc',
+          head_sha: 'head_sha_def',
+          start_sha: 'base_sha_abc'
+        )
+      end
+
+      before do
+        allow(merge_request).to receive(:context_commits_diff).and_return(context_commits_diff)
+      end
+
+      context 'when context commits diff is empty' do
+        before do
+          allow(context_commits_diff).to receive(:empty?).and_return(true)
+        end
+
+        it 'is nil' do
+          expect(serialized[:context_commits]).to be_nil
+        end
+      end
+
+      context 'when context commits diff has commits' do
+        before do
+          allow(context_commits_diff).to receive_messages(
+            empty?: false,
+            commits_count: 3,
+            diff_refs: diff_refs
+          )
+        end
+
+        it 'exposes href, commits_count, selected and diff_refs' do
+          expect(serialized[:context_commits]).to include(
+            commits_count: 3,
+            selected: false,
+            diff_refs: {
+              base_sha: 'base_sha_abc',
+              head_sha: 'head_sha_def',
+              start_sha: 'base_sha_abc'
+            }
+          )
+          expect(serialized[:context_commits][:href]).to include('only_context_commits=true')
+        end
+
+        context 'when only_context_commits is true' do
+          let(:options) do
+            {
+              diff_id: diff_1.id,
+              start_sha: diff_3.head_commit_sha,
+              only_context_commits: 'true'
+            }
+          end
+
+          it 'marks context commits as selected' do
+            expect(serialized[:context_commits][:selected]).to be(true)
+          end
+
+          it 'passes only_context_commits flag to source version entity' do
+            expect(RapidDiffs::DiffSourceVersionEntity).to receive(:represent)
+              .with(anything, hash_including(only_context_commits: true))
+              .and_call_original
+
+            serialized
+          end
+        end
       end
     end
   end

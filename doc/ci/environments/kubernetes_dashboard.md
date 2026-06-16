@@ -13,15 +13,6 @@ title: Dashboard for Kubernetes
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags/_index.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../policy/development_stages_support.md#beta).
-- Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
-- Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
-
-{{< /history >}}
-
 Use the dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
@@ -29,15 +20,6 @@ with CI/CD or GitOps.
 ![Dashboard showing the status of Kubernetes pods and services.](img/kubernetes_summary_ui_v17_2.png)
 
 ## Configure a dashboard
-
-{{< history >}}
-
-- Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags/_index.md) named `kubernetes_namespace_for_environment`. Disabled by default.
-- Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
-- Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `flux_resource_for_environment`.
-- Selecting the related Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
-
-{{< /history >}}
 
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
@@ -127,14 +109,6 @@ To view a configured dashboard:
 A list of pods is displayed. Select a pod to view its details.
 
 ### Flux sync status
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
-- Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `flux_resource_for_environment`.
-- Customizing the name of the Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
-
-{{< /history >}}
 
 You can review the sync status of your Flux deployments from a dashboard.
 To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,

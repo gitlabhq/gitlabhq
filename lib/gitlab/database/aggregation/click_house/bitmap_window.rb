@@ -62,12 +62,12 @@ module Gitlab
             true
           end
 
-          def build_window_sql(_context, bitmap_alias, over_alias: over_dimension)
+          def build_window_sql(_context, bitmap_alias, over_alias: over_dimension, partition_aliases: [])
             case operation
             when :lag
-              build_lag_sql(bitmap_alias, over_alias)
+              build_lag_sql(bitmap_alias, over_alias, partition_aliases)
             when :intersection
-              build_intersection_sql(bitmap_alias, over_alias)
+              build_intersection_sql(bitmap_alias, over_alias, partition_aliases)
             end
           end
 
@@ -82,18 +82,26 @@ module Gitlab
 
           private
 
-          def build_lag_sql(bitmap_alias, over_alias)
+          def partition_clause(partition_aliases)
+            return '' if partition_aliases.empty?
+
+            "PARTITION BY #{partition_aliases.join(', ')} "
+          end
+
+          def build_lag_sql(bitmap_alias, over_alias, partition_aliases = [])
             # LaggedCount#to_outer_arel returns a UInt64 (from uniqExact), not a bitmap array,
             # so 0 is the correct default for the first row - unlike build_intersection_sql
             # which uses [] because RetainedCount#to_outer_arel returns Array(UInt64).
-            "lagInFrame(#{bitmap_alias}, #{lag_offset}, 0) OVER (ORDER BY #{over_alias} ASC)".squish
+            "lagInFrame(#{bitmap_alias}, #{lag_offset}, 0) OVER (" \
+              "#{partition_clause(partition_aliases)}ORDER BY #{over_alias} ASC)".squish
           end
 
-          def build_intersection_sql(bitmap_alias, over_alias)
+          def build_intersection_sql(bitmap_alias, over_alias, partition_aliases = [])
             # Only reached when operation == :intersection (i.e. RetainedCount subclass).
             # RetainedCount#to_outer_arel returns Array(UInt64) via groupArray, so
             # lagInFrame works on arrays and [] is the correct default for the first row.
-            lagged = "lagInFrame(#{bitmap_alias}, #{lag_offset}, []) OVER (ORDER BY #{over_alias} ASC)"
+            lagged = "lagInFrame(#{bitmap_alias}, #{lag_offset}, []) OVER (" \
+              "#{partition_clause(partition_aliases)}ORDER BY #{over_alias} ASC)"
             "length(arrayIntersect(#{bitmap_alias}, #{lagged}))".squish
           end
         end

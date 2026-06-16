@@ -403,3 +403,32 @@ To turn on the display of user data on the [GitLab Credits dashboard](../../subs
 1. Expand **Visibility and access controls**.
 1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
 1. Select **Save changes**.
+
+## Allow access to the MCP server
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230311) in GitLab 19.0
+  [with a flag](../feature_flags/_index.md) named `mcp_server_availability_setting`.
+  Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Prerequisites:
+
+- Administrator access.
+
+To allow access to the MCP server for your instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Visibility and access controls**.
+1. In the **MCP client access** section, select the **Allow connection to GitLab** checkbox.
+1. Select **Save changes**.
+
+When you turn off this setting, the MCP API rejects all requests.

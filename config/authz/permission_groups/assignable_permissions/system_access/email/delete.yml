@@ -2,6 +2,7 @@
 name: delete_email
 description: Grants the ability to delete emails
 boundaries:
+  - instance
   - user
 available_for:
   - granular_access_token

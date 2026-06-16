@@ -7,6 +7,112 @@ RSpec.describe Ci::ProjectMetric, feature_category: :pipeline_composition do
     it { is_expected.to belong_to(:project) }
   end
 
+  describe 'validations' do
+    it 'allows ci_config_generated_by to be nil' do
+      expect(build(:ci_project_metric, ci_config_generated_by: nil)).to be_valid
+    end
+
+    it 'allows ci_config_generated_by with a valid value' do
+      expect(build(:ci_project_metric, ci_config_generated_by: 'ci_expert_agent/v1')).to be_valid
+    end
+
+    it 'rejects ci_config_generated_by exceeding 255 characters' do
+      expect(build(:ci_project_metric, ci_config_generated_by: 'a' * 256)).not_to be_valid
+    end
+  end
+
+  describe '.ci_config_generated_by_for' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when a ci_project_metrics record exists with a stored value' do
+      before do
+        create(:ci_project_metric, :ai_generated, project: project)
+      end
+
+      it 'returns the stored ci_config_generated_by value' do
+        expect(described_class.ci_config_generated_by_for(project.id)).to eq('ci_expert_agent/v1')
+      end
+    end
+
+    context 'when no ci_project_metrics record exists' do
+      it 'returns nil' do
+        expect(described_class.ci_config_generated_by_for(project.id)).to be_nil
+      end
+    end
+
+    context 'when a record exists with nil ci_config_generated_by' do
+      before do
+        create(:ci_project_metric, project: project, ci_config_generated_by: nil)
+      end
+
+      it 'returns nil' do
+        expect(described_class.ci_config_generated_by_for(project.id)).to be_nil
+      end
+    end
+  end
+
+  describe '.track_ai_generated_config!' do
+    let_it_be(:project) { create(:project) }
+
+    it 'creates a new record when none exists for the project' do
+      expect do
+        described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+      end.to change { described_class.count }.by(1)
+    end
+
+    it 'sets ci_config_generated_by to the given value' do
+      described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+      expect(described_class.find_by(project_id: project.id).ci_config_generated_by).to eq('ci_expert_agent/v1')
+    end
+
+    it 'does not raise on conflict for an existing project record' do
+      create(:ci_project_metric, project: project, ci_config_generated_by: nil)
+
+      expect do
+        described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+      end.not_to raise_error
+    end
+
+    it 'does not overwrite first_pipeline_succeeded_at on existing records' do
+      succeeded_at = 1.day.ago
+      create(:ci_project_metric, project: project, first_pipeline_succeeded_at: succeeded_at)
+
+      described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+      metric = described_class.find_by(project_id: project.id)
+      expect(metric.first_pipeline_succeeded_at).to be_within(1.second).of(succeeded_at)
+    end
+
+    it 'does not create or update for an unknown agent source' do
+      expect do
+        result = described_class.track_ai_generated_config!(project.id, author_source: 'fake_agent')
+        expect(result).to be_nil
+      end.not_to change { described_class.count }
+    end
+
+    it 'rejects empty string' do
+      expect do
+        result = described_class.track_ai_generated_config!(project.id, author_source: '')
+        expect(result).to be_nil
+      end.not_to change { described_class.count }
+    end
+
+    it 'rejects nil' do
+      expect do
+        result = described_class.track_ai_generated_config!(project.id, author_source: nil)
+        expect(result).to be_nil
+      end.not_to change { described_class.count }
+    end
+
+    it 'rejects arbitrary user input' do
+      expect do
+        result = described_class.track_ai_generated_config!(project.id, author_source: 'some_random_agent/v99')
+        expect(result).to be_nil
+      end.not_to change { described_class.count }
+    end
+  end
+
   describe 'factory' do
     it 'creates a valid record' do
       expect(build(:ci_project_metric)).to be_valid
@@ -17,6 +123,35 @@ RSpec.describe Ci::ProjectMetric, feature_category: :pipeline_composition do
 
       expect(metric).to be_valid
       expect(metric.first_pipeline_succeeded_at).to be_present
+    end
+
+    it 'creates a valid record with ai_generated trait' do
+      metric = build(:ci_project_metric, :ai_generated)
+
+      expect(metric).to be_valid
+      expect(metric.ci_config_generated_by).to eq('ci_expert_agent/v1')
+    end
+  end
+
+  describe 'integration' do
+    it 'tracks, upserts, and preserves other columns correctly' do
+      project = create(:project)
+      succeeded_at = 2.days.ago
+
+      described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+      metric = described_class.find_by!(project_id: project.id)
+      expect(metric.ci_config_generated_by).to eq('ci_expert_agent/v1')
+
+      metric.update!(first_pipeline_succeeded_at: succeeded_at)
+
+      described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+      expect(described_class.where(project_id: project.id).count).to eq(1)
+
+      metric.reload
+      expect(metric.ci_config_generated_by).to eq('ci_expert_agent/v1')
+      expect(metric.first_pipeline_succeeded_at).to be_within(1.second).of(succeeded_at)
     end
   end
 

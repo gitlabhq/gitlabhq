@@ -248,7 +248,6 @@ Style/ClassAndModuleChildren:
     - 'app/models/issue/email.rb'
     - 'app/models/issue/metrics.rb'
     - 'app/models/issues/csv_import.rb'
-    - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/merge_request/cleanup_schedule.rb'
     - 'app/models/merge_request/diff_commit_user.rb'
     - 'app/models/merge_request/metrics.rb'

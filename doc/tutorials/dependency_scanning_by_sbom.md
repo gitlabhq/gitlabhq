@@ -221,11 +221,12 @@ Now that we have a solution, we'll go ahead and upgrade the `fastify` dependency
 1. On GitLab.com, go to **Code** > **Merge requests** and select **Create merge request**.
 1. On the **New merge request** page, scroll to the bottom and select **Create merge request**.
 
-   After the merge request pipeline completes, wait for the security results widget to appear.
-   Processing the security report typically takes a minute or two.
-1. In the security results widget, select **Show details** ({{< icon name="chevron-lg-down" >}}).
+   After the merge request pipeline completes, wait for the security scan report
+   to appear in the **Reports** tab. Processing the security report typically
+   takes a minute or two.
+1. Select the **Reports** tab, then select **Security scan**.
 
-   The security results widget states that the changes in the merge request fix 7 vulnerabilities,
+   The security scan report states that the changes in the merge request fix 7 vulnerabilities,
    including the vulnerability you triaged and analyzed.
 1. Select **Merge**.
 

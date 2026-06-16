@@ -20,6 +20,7 @@ import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  name: 'ContainerProtectionRepositoryRuleForm',
   components: {
     GlAlert,
     GlButton,

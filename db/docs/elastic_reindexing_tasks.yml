@@ -4,7 +4,8 @@ classes:
 - Search::Elastic::ReindexingTask
 feature_categories:
 - global_search
-description: TODO
+description: Stores Elasticsearch reindexing tasks for managing index version upgrades
+  and migrations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069
 milestone: '13.2'
 gitlab_schema: gitlab_main_cell_local

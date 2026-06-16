@@ -33,16 +33,16 @@ RSpec.shared_examples 'validation on Time arguments' do
 end
 
 RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' do
-  let_it_be(:milestone) { create(:milestone, group: group) }
-  let_it_be(:label) { create(:group_label, group: group) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, group: group) }
+  let_it_be(:label, freeze: false) { create(:group_label, group: group) }
 
-  let_it_be(:author) { create(:user) }
-  let_it_be(:assignee) { create(:user) }
+  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be(:assignee, freeze: false) { create(:user) }
 
-  let_it_be(:issue1) { create(:issue, project: project1, author: author, created_at: 12.days.ago) }
-  let_it_be(:issue2) { create(:issue, project: project2, author: author, created_at: 13.days.ago) }
+  let_it_be(:issue1, freeze: false) { create(:issue, project: project1, author: author, created_at: 12.days.ago) }
+  let_it_be(:issue2, freeze: false) { create(:issue, project: project2, author: author, created_at: 13.days.ago) }
 
-  let_it_be(:issue3) do
+  let_it_be(:issue3, freeze: false) do
     create(:labeled_issue,
       project: project1,
       labels: [label],
@@ -52,7 +52,7 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
       created_at: 14.days.ago)
   end
 
-  let_it_be(:issue4) do
+  let_it_be(:issue4, freeze: false) do
     create(:labeled_issue,
       project: project2,
       labels: [label],
@@ -60,7 +60,9 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
       created_at: 15.days.ago)
   end
 
-  let_it_be(:issue_outside_of_the_range) { create(:issue, project: project2, author: author, created_at: 50.days.ago) }
+  let_it_be(:issue_outside_of_the_range, freeze: false) do
+    create(:issue, project: project2, author: author, created_at: 50.days.ago)
+  end
 
   let(:query) do
     <<~QUERY
@@ -150,7 +152,7 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
     let(:current_user) { create(:user) }
 
     it 'returns nil' do
-      expect(result).to eq(nil)
+      expect(result).to be_nil
     end
   end
 
@@ -158,15 +160,15 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
 end
 
 RSpec.shared_examples 'value stream analytics flow metrics deploymentCount examples' do
-  let_it_be(:deployment1) do
+  let_it_be(:deployment1, freeze: false) do
     create(:deployment, :success, environment: production_environment1, finished_at: 5.days.ago)
   end
 
-  let_it_be(:deployment2) do
+  let_it_be(:deployment2, freeze: false) do
     create(:deployment, :success, environment: production_environment2, finished_at: 10.days.ago)
   end
 
-  let_it_be(:deployment3) do
+  let_it_be(:deployment3, freeze: false) do
     create(:deployment, :success, environment: production_environment2, finished_at: 15.days.ago)
   end
 
@@ -214,7 +216,7 @@ RSpec.shared_examples 'value stream analytics flow metrics deploymentCount examp
     let(:current_user) { create(:user) }
 
     it 'returns nil' do
-      expect(result).to eq(nil)
+      expect(result).to be_nil
     end
   end
 

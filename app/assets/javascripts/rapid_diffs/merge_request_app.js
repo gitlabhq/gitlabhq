@@ -6,14 +6,17 @@ import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { adapters } from '~/rapid_diffs/app/adapter_configs/merge_request';
 import { useCodeReview } from '~/diffs/stores/code_review';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
+import { useTestCoverage } from '~/rapid_diffs/stores/test_coverage';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { initCommitWidget } from '~/rapid_diffs/app/init_commit_widget';
 import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 import { initLineRangeSelection } from '~/rapid_diffs/app/init_line_range_selection';
+import { initHotkeys } from '~/rapid_diffs/app/init_hotkeys';
 
-class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
+export class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
 
   async init() {
@@ -21,9 +24,13 @@ class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
     super.init();
     this.#initCompareVersions();
     this.#initCommitWidget();
+    this.#initCoverage();
+    this.#initChangesTabCount();
     await this.#initDiscussions();
     initNewDiscussionToggle(this.root, { allowExpandedLines: true });
     initLineRangeSelection(this.root);
+    // initHotkeys returns a teardown function, but there is no destroy lifecycle yet
+    initHotkeys();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -91,6 +98,29 @@ class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
 
   #initCommitWidget() {
     initCommitWidget(this.root.querySelector('[data-commit-widget]'));
+  }
+
+  #initCoverage() {
+    const { coverageEndpoint } = this.appData;
+    if (!coverageEndpoint) return;
+    const store = useTestCoverage(pinia);
+    store.endpoint = coverageEndpoint;
+    store.fetchCoverage();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  #initChangesTabCount() {
+    const tabCount = document.querySelector('.js-changes-tab-count');
+    if (!tabCount) return;
+    const store = useDiffsView(pinia);
+    watch(
+      () => store.totalFilesCount,
+      (count) => {
+        if (count == null) return;
+        tabCount.textContent = count;
+      },
+      { immediate: true },
+    );
   }
 }
 

@@ -11,8 +11,6 @@ module Tooling
   class FindChanges
     include Helpers::PredictiveTestsHelper
 
-    ALLOWED_FILE_TYPES = ['.js', '.vue', '.md', '.scss'].freeze
-
     def initialize(
       from:,
       changed_files_pathname: nil,
@@ -56,10 +54,6 @@ module Tooling
       return changes if changed_files_pathname.nil?
 
       write_array_to_file(changed_files_pathname, changes, append: from_api? ? false : true)
-    end
-
-    def only_allowed_files_changed
-      file_changes.any? && file_changes.all? { |file| ALLOWED_FILE_TYPES.include?(File.extname(file)) }
     end
 
     private

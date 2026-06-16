@@ -63,12 +63,13 @@ describe('DiffFileDiscussions', () => {
     noteBody: '',
   });
 
-  const createComponent = () => {
+  const createComponent = (extraProvide = {}) => {
     wrapper = shallowMount(DiffFileDiscussions, {
       provide: {
         store,
         userPermissions: { can_create_note: true },
         filePaths: { oldPath, newPath },
+        ...extraProvide,
       },
     });
   };
@@ -116,12 +117,28 @@ describe('DiffFileDiscussions', () => {
     expect(wrapper.emitted('empty')).toStrictEqual([[]]);
   });
 
-  it('delegates note saving to store.createFileDiscussion', async () => {
+  it('delegates note saving to store.createFileDiscussion with undefined showWhitespace when not provided', async () => {
     const form = createFileForm();
     store.discussions = [form];
     createComponent();
     await wrapper.findComponent(NoteForm).props('saveNote')('my comment');
-    expect(store.createFileDiscussion).toHaveBeenCalledWith(form, 'my comment');
+    expect(store.createFileDiscussion).toHaveBeenCalledWith({
+      discussion: form,
+      noteBody: 'my comment',
+      showWhitespace: undefined,
+    });
+  });
+
+  it('passes injected showWhitespace to store.createFileDiscussion', async () => {
+    const form = createFileForm();
+    store.discussions = [form];
+    createComponent({ showWhitespace: false });
+    await wrapper.findComponent(NoteForm).props('saveNote')('my comment');
+    expect(store.createFileDiscussion).toHaveBeenCalledWith({
+      discussion: form,
+      noteBody: 'my comment',
+      showWhitespace: false,
+    });
   });
 
   describe('draft notes', () => {
@@ -184,7 +201,11 @@ describe('DiffFileDiscussions', () => {
         store.discussions = [form];
         createComponent();
         await wrapper.findComponent(NoteForm).props('saveDraft')('draft comment');
-        expect(store.createDraftFileDiscussion).toHaveBeenCalledWith(form, 'draft comment');
+        expect(store.createDraftFileDiscussion).toHaveBeenCalledWith({
+          discussion: form,
+          noteBody: 'draft comment',
+          showWhitespace: undefined,
+        });
       });
     });
 

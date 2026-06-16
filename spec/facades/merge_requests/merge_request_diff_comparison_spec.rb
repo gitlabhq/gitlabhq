@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::MergeRequestDiffComparison, feature_category: :integrations do
+RSpec.describe MergeRequests::MergeRequestDiffComparison, feature_category: :code_review_workflow do
   include RepoHelpers
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 

@@ -83,6 +83,13 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cancel',
+    'creating-note:done',
+    'creating-note:failed',
+    'creating-note:start',
+    'creating-note:success',
+  ],
   data() {
     return {
       errors: [],

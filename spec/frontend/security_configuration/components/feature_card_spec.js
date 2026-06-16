@@ -47,6 +47,9 @@ describe('FeatureCard component', () => {
 
   const findFeatureStatus = () => wrapper.findByTestId('feature-status');
 
+  const findEnableButtonTooltip = () =>
+    wrapper.findByTestId(`${feature.type.replace(/_/g, '-')}-enable-button-tooltip`);
+
   const expectAction = (action, canUserConfigure, configurationPath) => {
     const expectEnableAction = action === 'enable';
     const expectConfigureAction = action === 'configure';
@@ -196,6 +199,42 @@ describe('FeatureCard component', () => {
         });
       },
     );
+  });
+
+  describe('disabled button tooltip', () => {
+    describe('when user cannot configure', () => {
+      beforeEach(() => {
+        feature = makeFeature({
+          type: REPORT_TYPE_SAST,
+          available: true,
+          configurationPath: '/foo',
+          canUserConfigure: false,
+        });
+        createComponent({ feature });
+      });
+
+      it('shows a tooltip explaining why the button is disabled', () => {
+        expect(findEnableButtonTooltip().attributes('title')).toBe(
+          'Only security managers, maintainers, and owners can toggle this feature.',
+        );
+      });
+    });
+
+    describe('when user can configure', () => {
+      beforeEach(() => {
+        feature = makeFeature({
+          type: REPORT_TYPE_SAST,
+          available: true,
+          configurationPath: '/foo',
+          canUserConfigure: true,
+        });
+        createComponent({ feature });
+      });
+
+      it('does not show a tooltip', () => {
+        expect(findEnableButtonTooltip().attributes('title')).toBeUndefined();
+      });
+    });
   });
 
   describe('secondary feature', () => {

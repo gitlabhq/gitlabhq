@@ -101,7 +101,7 @@ RSpec.describe MemberSerializer, feature_category: :groups_and_projects do
     it 'handles last group owner assignment' do
       group_member = members.last
 
-      expect { representation }.to change(group_member, :last_owner)
+      expect { representation }.to change { group_member.last_owner }
                                      .from(nil).to(true)
     end
 

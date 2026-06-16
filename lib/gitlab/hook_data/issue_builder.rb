@@ -27,6 +27,7 @@ module Gitlab
           description
           discussion_locked
           due_date
+          start_date
           id
           iid
           last_edited_at

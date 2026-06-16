@@ -4,7 +4,7 @@ classes:
 - Users::BannedUser
 feature_categories:
 - user_management
-description: TODO
+description: Stores records of users who have been banned from the GitLab instance.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64728
 milestone: '14.2'
 gitlab_schema: gitlab_main_user

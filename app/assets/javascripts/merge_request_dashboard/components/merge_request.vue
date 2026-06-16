@@ -22,6 +22,7 @@ import AssignedUsers from './assigned_users.vue';
 import StatusBadge from './status_badge.vue';
 
 export default {
+  name: 'MergeRequest',
   apollo: {
     isShowingLabels: {
       query: isShowingLabelsQuery,

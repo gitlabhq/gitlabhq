@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:project) { create(:project, pages_https_only: false) }
+  let_it_be(:project, freeze: false) { create(:project, pages_https_only: false) }
   let_it_be(:user) { create(:user) }
 
   before do

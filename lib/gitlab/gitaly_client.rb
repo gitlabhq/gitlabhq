@@ -404,21 +404,17 @@ module Gitlab
         gitaly_context['scoped-user-id'] = identity.scoped_user.id.to_s
       end
 
-      context_data = Gitlab::ApplicationContext.current
-
       feature_stack = Thread.current[:gitaly_feature_stack]
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
       metadata['x-gitlab-correlation-id'] = Labkit::Correlation::CorrelationId.current_id if Labkit::Correlation::CorrelationId.current_id
       metadata['gitaly-session-id'] = session_id
-      metadata['username'] = context_data['meta.user'] if context_data&.fetch('meta.user', nil)
-      metadata['user_id'] = context_data['meta.user_id'].to_s if context_data&.fetch('meta.user_id', nil)
-      metadata[Labkit::Fields::GL_USER_ID] = context_data['meta.gl_user_id'].to_s if context_data&.fetch('meta.gl_user_id', nil)
-      metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data&.fetch('meta.remote_ip', nil)
       metadata['relative-path-bin'] = relative_path if relative_path
       metadata['gitaly-client-context-bin'] = gitaly_context.to_json if gitaly_context.present?
 
+      metadata.merge!(application_context_metadata)
+      metadata.merge!(mvcc_manifest_metadata)
       metadata.merge!(Feature::Gitaly.server_feature_flags(**feature_flag_actors))
       metadata.merge!(route_to_primary)
 
@@ -427,6 +423,33 @@ module Gitlab
 
       { metadata: metadata, deadline: deadline_info[:deadline] }
     end
+
+    def self.application_context_metadata
+      context_data = Gitlab::ApplicationContext.current
+      return {} unless context_data
+
+      metadata = {}
+      metadata['username'] = context_data['meta.user'] if context_data['meta.user']
+      metadata['user_id'] = context_data['meta.user_id'].to_s if context_data['meta.user_id']
+      metadata[Labkit::Fields::GL_USER_ID] = context_data['meta.gl_user_id'].to_s if context_data['meta.gl_user_id']
+      metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data['meta.remote_ip']
+      metadata
+    end
+    private_class_method :application_context_metadata
+
+    # Forward the in-flight MVCC manifest sha (set by Gitaly's pre-receive
+    # hook handler after it uploaded the new state to durable storage) so the
+    # Gitaly callback handler--which may land on any replica--resolves OIDs
+    # against the just-uploaded state. Empty when Rails wasn't reached through
+    # an MVCC inspection chain; no header attached, Gitaly falls back to the
+    # durable manifest as usual.
+    def self.mvcc_manifest_metadata
+      manifest = Gitlab::Git::HookEnv.mvcc_manifest
+      return {} unless manifest
+
+      { 'x-gitaly-mvcc-manifest' => manifest }
+    end
+    private_class_method :mvcc_manifest_metadata
 
     # The GitLab `internal/allowed/` API sets the :gitlab_git_relative_path
     # variable. This provides the repository relative path which can be used to

@@ -65,6 +65,14 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cancelEditing',
+    'noteEdited',
+    'resolve',
+    'startEditing',
+    'startReplying',
+    'toggleDiscussionReplies',
+  ],
   computed: {
     hasReplies() {
       return Boolean(this.replies.length);

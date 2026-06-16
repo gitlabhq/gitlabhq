@@ -7,7 +7,9 @@ module API
     feature_category :code_review_workflow
 
     resource :suggestions do
-      desc 'Apply suggestion patch in the Merge Request it was created' do
+      desc 'Apply a suggestion to a merge request' do
+        detail 'Applies a suggested patch in a merge request. You must have the Developer, ' \
+          'Maintainer, or Owner role.'
         success Entities::Suggestion
         tags %w[suggestions]
       end
@@ -25,7 +27,9 @@ module API
         end
       end
 
-      desc 'Apply multiple suggestion patches in the Merge Request where they were created' do
+      desc 'Apply multiple suggestions to a merge request' do
+        detail 'Applies multiple suggested patches in a merge request. You must have the ' \
+          'Developer, Maintainer, or Owner role.'
         success Entities::Suggestion
         tags %w[suggestions]
       end

@@ -211,100 +211,62 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
             expect { resolve }.not_to raise_error
           end
         end
-
-        context 'when a later matching directive uses a registered boundary proc' do
-          let(:owner_with_proc) do
-            Class.new(Types::BaseObject) { graphql_name 'GranularTokenProcOwnerType' }
-          end
-
-          let(:boundary_proc) { ->(_obj) { project } }
-
-          let(:field) do
-            create_field_with_directive(
-              owner: owner_with_proc,
-              boundary_type: 'project',
-              permissions: ['read_wiki']
-            )
-          end
-
-          before do
-            allow(field).to receive(:directives).and_return([group_directive, project_directive])
-            allow(extension).to receive(:boundary).and_call_original
-            allow(extension).to receive(:boundary)
-              .with(object, arguments, context, group_directive)
-              .and_return(nil)
-            allow(owner_with_proc).to receive(:granular_token_boundary_procs)
-              .and_return({ 'project' => boundary_proc })
-            allow(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).and_call_original
-          end
-
-          it 'passes the proc to BoundaryExtractor for the matching directive' do
-            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
-              hash_including(boundary_proc: boundary_proc)
-            ).at_least(:once).and_call_original
-
-            expect { resolve }.not_to raise_error
-          end
-        end
       end
 
-      context 'with a boundary proc registered on the field owner' do
-        let(:owner_with_proc) do
-          Class.new(Types::BaseObject) { graphql_name 'GranularTokenProcOwnerType' }
-        end
-
-        let(:boundary_proc) { ->(_obj) { project } }
-
+      context 'with a traversal directive' do
         let(:field) do
           create_field_with_directive(
-            owner: owner_with_proc,
-            boundary_type: 'project',
-            permissions: ['read_wiki']
+            boundary: 'itself', permissions: ['read_wiki'], boundary_type: 'project', traversal: true
           )
         end
 
-        before do
-          allow(owner_with_proc).to receive(:granular_token_boundary_procs)
-            .and_return({ 'project' => boundary_proc })
+        it 'does not call the authorization service and resolves successfully' do
+          expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+          expect(resolve).to eq('field_value')
         end
 
-        it 'passes the proc to BoundaryExtractor' do
-          expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
-            hash_including(boundary_proc: boundary_proc)
-          ).and_call_original
+        it 'verifies the token can read the boundary' do
+          expect(access_token).to receive(:can?).with(:read_boundary, anything).and_return(true)
 
-          expect { resolve }.not_to raise_error
+          resolve
         end
 
-        context 'when no proc is registered for the boundary_type' do
-          before do
-            allow(owner_with_proc).to receive(:granular_token_boundary_procs).and_return({})
-          end
+        context 'when the token has no scope on the boundary' do
+          let_it_be(:other_project) { create(:project, :private) }
+          let(:object) { other_project }
 
-          it 'passes nil boundary_proc to BoundaryExtractor' do
-            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
-              hash_including(boundary_proc: nil)
-            ).and_call_original
-
-            expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-          end
-        end
-
-        context 'when the field owner does not respond to granular_token_boundary_procs' do
-          let(:field) do
-            create_field_with_directive(
-              owner: owner_without_directive,
-              boundary_type: 'project',
-              permissions: ['read_wiki']
+          it 'raises a ResourceNotAvailable 404' do
+            expect { resolve }.to raise_error(
+              Gitlab::Graphql::Errors::ResourceNotAvailable,
+              ::Authz::Tokens::AuthorizeGranularScopesService::NOT_FOUND_MESSAGE
             )
           end
+        end
 
-          it 'passes nil boundary_proc to BoundaryExtractor' do
-            expect(Gitlab::Graphql::Authz::BoundaryExtractor).to receive(:new).with(
-              hash_including(boundary_proc: nil)
-            ).and_call_original
+        it 'caches the traversal check by boundary so the token is checked only once' do
+          expect(access_token).to receive(:can?).once.with(:read_boundary, anything).and_return(true)
 
-            expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          resolve
+          resolve
+        end
+
+        context 'when the boundary type is standalone (user or instance)' do
+          %w[user instance].each do |standalone_type|
+            context "when boundary_type is #{standalone_type}" do
+              let(:field) do
+                create_field_with_directive(
+                  boundary: standalone_type, permissions: ['read_wiki'],
+                  boundary_type: standalone_type, traversal: true
+                )
+              end
+
+              it 'falls back to the regular permission check instead of traversal' do
+                expect(::Authz::Tokens::AuthorizeGranularScopesService).to receive(:new).and_call_original
+
+                expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+              end
+            end
           end
         end
       end

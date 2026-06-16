@@ -8,10 +8,15 @@ module Integrations
       include Gitlab::EncryptedAttribute
 
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :integration_id, optional: true
-      belongs_to :project, inverse_of: self.table_name.to_sym, foreign_key: :project_id, optional: true
-      belongs_to :group, inverse_of: self.table_name.to_sym, foreign_key: :group_id, optional: true
-      belongs_to :organization, inverse_of: self.table_name.to_sym, foreign_key: :organization_id, optional: true,
+      # rubocop:disable Rails/InverseOf -- the parent models have no matching has_one
+      # reflection for the per-data-field table, so any inverse_of: here would point at
+      # a non-existent association and raise InverseOfAssociationNotFoundError when
+      # Reflection#check_validity! runs (e.g. during let_it_be(freeze: true) deep_freeze).
+      belongs_to :project, foreign_key: :project_id, optional: true
+      belongs_to :group, foreign_key: :group_id, optional: true
+      belongs_to :organization, foreign_key: :organization_id, optional: true,
         class_name: 'Organizations::Organization'
+      # rubocop:enable Rails/InverseOf
 
       before_validation :set_sharding_key
 

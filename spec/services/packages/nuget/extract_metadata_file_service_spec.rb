@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
 
-  let_it_be(:package_file) { build(:package_file, :nuget) }
-  let_it_be(:package_zip_file) { Zip::File.new(package_file.file) }
+  let_it_be(:package_file, freeze: false) { build(:package_file, :nuget) }
+  let_it_be(:package_zip_file, freeze: false) { Zip::File.new(package_file.file) }
 
   let(:service) { described_class.new(package_zip_file) }
 

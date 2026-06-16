@@ -4,6 +4,7 @@ import { mapState } from 'pinia';
 import { useBatchComments } from '~/batch_comments/store';
 
 export default {
+  name: 'DraftsCount',
   components: {
     GlBadge,
   },

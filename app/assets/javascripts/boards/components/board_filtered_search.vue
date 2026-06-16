@@ -21,8 +21,7 @@ import {
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import { convertOldTypeTokenEnumToGid } from '~/work_items/list/utils';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
@@ -33,8 +32,7 @@ export default {
   i18n: {
     search: __('Search'),
   },
-  components: { FilteredSearch },
-  mixins: [glFeatureFlagMixin()],
+  components: { FilteredSearchBar },
   inject: ['fullPath', 'initialFilterParams', 'hasCustomFieldsFeature'],
   props: {
     isSwimlanesOn: {
@@ -76,19 +74,13 @@ export default {
       },
       result() {
         // TODO remove when we no longer need to convert old type=ISSUE params to new type=1 params
-        if (
-          this.glFeatures.workItemConfigurableTypes &&
-          this.getFilteredSearchValue.some((token) => token.type === TOKEN_TYPE_TYPE)
-        ) {
+        if (this.getFilteredSearchValue.some((token) => token.type === TOKEN_TYPE_TYPE)) {
           const tokens = convertOldTypeTokenEnumToGid(
             this.getFilteredSearchValue,
             this.workItemTypesConfiguration,
           );
           this.handleFilter(tokens);
         }
-      },
-      skip() {
-        return !this.glFeatures.workItemConfigurableTypes;
       },
     },
   },
@@ -539,7 +531,7 @@ export default {
 </script>
 
 <template>
-  <filtered-search
+  <filtered-search-bar
     :key="filteredSearchKey"
     class="gl-w-full"
     namespace=""

@@ -3,7 +3,7 @@
 RSpec.shared_examples 'issuable participants' do
   context 'when resource parent is public' do
     context 'and users are referenced on notes' do
-      let_it_be(:notes_author) { create(:user) }
+      let_it_be(:notes_author, freeze: false) { create(:user) }
 
       let(:note_params) { params.merge(author: notes_author) }
 
@@ -43,9 +43,9 @@ RSpec.shared_examples 'issuable participants' do
 
       context 'and note is confidential' do
         context 'and mentions users' do
-          let_it_be(:guest_1) { create(:user) }
-          let_it_be(:guest_2) { create(:user) }
-          let_it_be(:reporter) { create(:user) }
+          let_it_be(:guest_1, freeze: false) { create(:user) }
+          let_it_be(:guest_2, freeze: false) { create(:user) }
+          let_it_be(:reporter, freeze: false) { create(:user) }
 
           before do
             issuable_parent.add_guest(guest_1)

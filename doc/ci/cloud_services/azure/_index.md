@@ -13,8 +13,8 @@ title: Configure OpenID Connect in Azure to retrieve temporary credentials
 {{< /details >}}
 
 > [!warning]
-> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
+> `CI_JOB_JWT_V2` was [removed in GitLab 17.0](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).
+> Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial demonstrates how to use a JSON web token (JWT) in a GitLab CI/CD job
 to retrieve temporary credentials from Azure without needing to store secrets.

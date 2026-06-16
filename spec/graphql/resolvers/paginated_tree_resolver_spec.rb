@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::Tree::TreeType.connection_type)

@@ -196,7 +196,7 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
-    let_it_be(:events) { create_pair(:resource_label_event, issue: work_item) }
+    let_it_be(:events, freeze: false) { create_pair(:resource_label_event, issue: work_item) }
 
     it 'builds synthetic note' do
       first_event = events.first

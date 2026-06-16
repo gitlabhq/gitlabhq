@@ -6,14 +6,14 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request, feat
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'gitlab-test') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
-  let_it_be(:early_mrs) do
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'gitlab-test') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
+  let_it_be(:early_mrs, freeze: false) do
     4.times { |i| create(:merge_request, source_project: project, source_branch: "branch-#{i}") }
   end
 
-  let_it_be(:mr) { create(:merge_request, source_project: project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:mr, freeze: false) { create(:merge_request, source_project: project) }
+  let_it_be(:user, freeze: false) { project.owner }
 
   it 'api/merge_requests/get.json' do
     get api("/projects/#{project.id}/merge_requests", user)

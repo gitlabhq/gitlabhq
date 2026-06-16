@@ -185,6 +185,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         before do
           stub_ci_pipeline_yaml_file(nil)
 
+          allow_any_instance_of(Repository).to receive(:ref_exists?) { true }
           allow(Gitlab::Git::Commit).to receive(:between) { [] }
         end
 

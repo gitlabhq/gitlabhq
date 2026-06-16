@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, feature_category: :pipeline_composition do
   include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, namespace: group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: group) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:job) do
@@ -325,7 +325,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       let_it_be(:tag) { project.repository.tags.first }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project, tag: true, ref: tag.name) }
-      let_it_be(:release) { create(:release, tag: tag.name, project: project) }
+      let_it_be(:release, freeze: false) { create(:release, tag: tag.name, project: project) }
 
       it 'includes release variables' do
         expect(subject.to_hash).to include(release_description_key => release.description)
@@ -670,7 +670,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       let(:release_description_key) { 'CI_RELEASE_DESCRIPTION' }
 
       let_it_be(:tag) { project.repository.tags.first }
-      let_it_be(:release) { create(:release, tag: tag.name, project: project) }
+      let_it_be(:release, freeze: false) { create(:release, tag: tag.name, project: project) }
       let_it_be(:pipeline) { build(:ci_pipeline, project: project, tag: true, ref: tag.name) }
 
       it 'includes release variables' do
@@ -916,7 +916,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     context 'when ref is merge request' do
       let_it_be(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
       let_it_be(:pipeline) { merge_request.pipelines_for_merge_request.first }
-      let_it_be(:job) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline) }
+      let_it_be(:job, freeze: false) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline) }
 
       context 'when the pipeline is protected' do
         before do

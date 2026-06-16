@@ -5,6 +5,7 @@ import {
   PROJECTS_CATEGORY,
   MERGE_REQUEST_CATEGORY,
   ISSUES_CATEGORY,
+  WORK_ITEMS_CATEGORY,
   RECENT_EPICS_CATEGORY,
   COMMAND_PALETTE_TYPE_PAGES,
   COMMAND_PALETTE_TYPE_FILES,
@@ -41,6 +42,7 @@ const getEntityId = (item, searchContext) => {
       return item.group_id || item.id || searchContext?.group?.id;
     case PROJECTS_CATEGORY:
     case ISSUES_CATEGORY:
+    case WORK_ITEMS_CATEGORY:
     case MERGE_REQUEST_CATEGORY:
       return item.project_id || item.id || searchContext?.project?.id;
     default:
@@ -54,6 +56,7 @@ const getEntityName = (item, searchContext) => {
       return item.group_name || item.value || item.label || searchContext?.group?.name;
     case PROJECTS_CATEGORY:
     case ISSUES_CATEGORY:
+    case WORK_ITEMS_CATEGORY:
     case MERGE_REQUEST_CATEGORY:
       return item.project_name || item.value || item.label || searchContext?.project?.name;
     default:

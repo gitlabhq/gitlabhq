@@ -89,7 +89,7 @@ module BulkImports
       # `MyTransformerTwo` method is the last.
       def transformers
         strong_memoize(:transformers) do
-          defined_transformers = self.class.transformers.map(&method(:instantiate))
+          defined_transformers = self.class.transformers.map { |transformer| instantiate(transformer) }
 
           transformers = []
           transformers << self if respond_to?(:transform)

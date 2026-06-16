@@ -1,0 +1,56 @@
+# Fetch all notes (comments) on a group-level epic.
+#
+# Pass values as GraphQL variables (glab api graphql -f ...), NOT by string
+# substitution. Variables avoid escaping traps and work on every GitLab version.
+#
+# Variables:
+#   groupPath  group fullPath, plain slashes, e.g. "gitlab-org" or "gitlab-org/foundations"
+#   epicIid    epic IID as a string, e.g. "16428"
+#   pageSize   discussions per page (default 100 if omitted by the caller)
+#   cursor     null for the first page; pageInfo.endCursor for subsequent pages
+#
+# Usage (first page; -f for String vars, -F for the Int pageSize):
+#   glab api graphql -f groupPath=gitlab-org -f epicIid="16428" \
+#     -F pageSize=100 -f query="$(cat epic-notes.graphql)"
+#
+# See scripts/epic-notes.sh for a ready-to-run wrapper that handles pagination.
+#
+# Source of truth: this is a hand-maintained mirror. The canonical schema lives in
+# doc/api/graphql/reference (and the frontend query
+# app/assets/javascripts/work_items/graphql/notes/work_item_notes_by_iid.query.graphql),
+# but those are Apollo build-loader documents (#import fragments, ee_else_ce) that
+# `glab api graphql` cannot execute, so this self-contained copy is maintained by hand.
+# No CI hook validates it against the schema — verify against the reference if a field
+# stops resolving.
+
+query($groupPath: ID!, $epicIid: String!, $pageSize: Int = 100, $cursor: String) {
+  group(fullPath: $groupPath) {
+    workItem(iid: $epicIid) {
+      id
+      title
+      widgets {
+        type
+        ... on WorkItemWidgetNotes {
+          discussions(first: $pageSize, after: $cursor) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            nodes {
+              notes {
+                nodes {
+                  id
+                  body
+                  author {
+                    username
+                  }
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

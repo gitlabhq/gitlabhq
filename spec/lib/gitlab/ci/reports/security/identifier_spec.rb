@@ -121,6 +121,14 @@ RSpec.describe Gitlab::Ci::Reports::Security::Identifier do
         expect(identifier_1 == identifier_2).to eq(equal)
       end
     end
+
+    context 'when the other object is not an identifier' do
+      let(:identifier) { create(:ci_reports_security_identifier) }
+
+      it 'is not equal instead of raising' do
+        expect(identifier).not_to eq('not an identifier')
+      end
+    end
   end
 
   describe '#vendor' do

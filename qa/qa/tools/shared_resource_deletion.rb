@@ -66,6 +66,11 @@ module QA
           when resource[:type] == 'project' && should_remove_registry_tags?(response, retry_count, max_retries)
             remove_registry_tags(resource)
             retry_count += 1
+          when should_retry_server_error?(response, retry_count, max_retries)
+            path = resource_path(resource)
+            logger.warn("Server error (#{response&.code}) deleting #{path}, retry #{retry_count + 1}/#{max_retries}")
+            sleep retry_count * 5
+            retry_count += 1
           else
             return log_failure(resource, response)
           end
@@ -411,6 +416,17 @@ module QA
       def should_remove_security_policy?(response, retry_count, max_retries)
         response&.code == HTTP_STATUS_BAD_REQUEST &&
           response&.include?("security policy project") &&
+          retry_count < max_retries
+      end
+
+      # Checks if response indicates a server error that may be transient and worth retrying
+      #
+      # @param [Hash] response
+      # @param [Integer] retry_count
+      # @param [Integer] max_retries
+      # @return [Boolean]
+      def should_retry_server_error?(response, retry_count, max_retries)
+        [HTTP_STATUS_SERVER_ERROR, HTTP_STATUS_SERVICE_UNAVAILABLE].include?(response&.code) &&
           retry_count < max_retries
       end
 

@@ -12,6 +12,7 @@ import {
 } from '../../constants';
 
 export default {
+  name: 'CiEditorHeader',
   i18n: {
     browseCatalog: __('CI/CD Catalog'),
     help: __('Help'),

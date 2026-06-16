@@ -19,6 +19,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'PipelineEditorHome',
   EDITOR_APP_DRAWER_HELP,
   EDITOR_APP_DRAWER_JOB_ASSISTANT,
   EDITOR_APP_DRAWER_AI_ASSISTANT,

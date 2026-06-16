@@ -37,6 +37,30 @@ RSpec.describe 'lograge', type: :request, feature_category: :observability do
 
       get("/api/v4/endpoint", params: large_params, headers: headers)
     end
+
+    it 'logs the core fields and excludes request_id, which correlation_id already covers' do
+      expect(Lograge.formatter).to receive(:call).and_wrap_original do |original, data|
+        field_names = data.keys.map(&:to_s)
+
+        # grape_logging 2.1.0+ adds a `request_id` field sourced from
+        # `action_dispatch.request_id` -- the same value GitLab already logs as
+        # `correlation_id` (Labkit::Middleware::Rack derives one from the other).
+        # The grape_logging 3.0.0 upgrade must keep it suppressed so api_json.log
+        # output does not change. See gitlab-org/gitlab#596161.
+        expect(field_names).not_to include('request_id')
+
+        # Lock the stable core of the api_json.log schema. Volatile fields
+        # (db_* counters, cpu_s, pid, worker_id) are intentionally excluded.
+        expect(field_names).to include(
+          'status', 'method', 'path', 'params', 'host', 'route',
+          'correlation_id', 'time', 'duration_s', 'db_duration_s', 'view_duration_s'
+        )
+
+        original.call(data)
+      end
+
+      get("/api/v4/endpoint", params: {}, headers: headers)
+    end
   end
 
   context 'for Controller requests' do
@@ -115,6 +139,32 @@ RSpec.describe 'lograge', type: :request, feature_category: :observability do
         .and_call_original
 
       get("/", params: large_params, headers: headers)
+    end
+
+    context 'when X-Gitlab-Duo-Workflow-Id header is present' do
+      let(:headers) { { 'X-Gitlab-Duo-Workflow-Id' => 'wf-test-123' } }
+
+      it 'includes duo_workflow_id in the log' do
+        expect(Lograge.formatter).to receive(:call)
+          .with(a_hash_including(Labkit::Fields::DUO_WORKFLOW_ID => 'wf-test-123'))
+          .and_call_original
+
+        expect(Lograge.logger).to receive(:send)
+          .with(anything, include('"duo_workflow_id":"wf-test-123"'))
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context 'when X-Gitlab-Duo-Workflow-Id header is absent' do
+      it 'does not include duo_workflow_id in the log' do
+        expect(Lograge.formatter).to receive(:call)
+          .with(hash_not_including(Labkit::Fields::DUO_WORKFLOW_ID))
+          .and_call_original
+
+        subject
+      end
     end
   end
 

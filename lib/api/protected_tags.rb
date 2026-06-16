@@ -14,8 +14,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc "Get a project's protected tags" do
-        detail 'This feature was introduced in GitLab 11.3.'
+      desc 'List all protected tags' do
+        detail 'Lists all protected tags for a specified project.'
         is_array true
         success code: 200, model: Entities::ProtectedTag
         failure [
@@ -37,8 +37,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a single protected tag' do
-        detail 'This feature was introduced in GitLab 11.3.'
+      desc 'Retrieve a protected tag or wildcard protected tag' do
+        detail 'Retrieves a specified protected tag or wildcard protected tag.'
         success code: 200, model: Entities::ProtectedTag
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -59,8 +59,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Protect a single tag or wildcard' do
-        detail 'This feature was introduced in GitLab 11.3.'
+      desc 'Protect a repository tag' do
+        detail 'Protects a specified repository tag using a wildcard protected tag.'
         success code: 201, model: Entities::ProtectedTag
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -99,8 +99,8 @@ module API
         end
       end
 
-      desc 'Unprotect a single tag' do
-        detail 'This feature was introduced in GitLab 11.3.'
+      desc 'Unprotect repository tags' do
+        detail 'Unprotects a specified protected tag or wildcard protected tag.'
         success code: 204
         failure [
           { code: 403, message: 'Unauthenticated' },

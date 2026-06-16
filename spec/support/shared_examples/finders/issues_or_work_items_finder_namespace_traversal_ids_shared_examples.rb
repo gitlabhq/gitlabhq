@@ -9,7 +9,7 @@ RSpec.shared_examples 'issues or work items finder with namespace_traversal_ids 
   let(:params) { { group_id: group.id, include_subgroups_param => true } }
   let(:scope) { 'all' }
   let(:expected_items) { [item1, item4, item5] }
-  let_it_be(:group_level_item) { create(factory, :group_level, namespace: group) }
+  let_it_be(:group_level_item, freeze: false) { create(factory, :group_level, namespace: group) }
 
   before_all do
     group.add_developer(user)
@@ -155,7 +155,7 @@ RSpec.shared_examples 'issues or work items finder with namespace_traversal_ids 
   end
 
   describe '#ensure_state_filter_for_index' do
-    let_it_be(:closed_item) { create(factory, project: project1, state: 'closed') }
+    let_it_be(:closed_item, freeze: false) { create(factory, project: project1, state: 'closed') }
 
     context 'when state filter is passed' do
       let(:params) { { group_id: group.id, include_subgroups_param => true, state: 'opened' } }

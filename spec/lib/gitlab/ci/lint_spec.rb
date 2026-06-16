@@ -898,7 +898,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       end
 
       context 'when the ref is a tag' do
-        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
         let(:ref) { 'test' }
 
         before do

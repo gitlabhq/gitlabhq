@@ -19,7 +19,7 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
     subject(:perform) { worker.perform }
 
     context 'when feature flag is disabled' do
-      let!(:expiring_token) do
+      let_it_be(:expiring_token) do
         create(:deploy_token, :project_type, projects: [project], expires_at: 15.days.from_now.iso8601)
       end
 
@@ -81,11 +81,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when timestamp update fails' do
-        let!(:expiring_token_1) do
+        let_it_be(:expiring_token_1) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 25.days.from_now.iso8601)
         end
 
-        let!(:expiring_token_2) do
+        let_it_be(:expiring_token_2) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 28.days.from_now.iso8601)
         end
 
@@ -112,11 +112,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when tokens expire within 30 days' do
-        let!(:expiring_token) do
+        let_it_be(:expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 15.days.from_now.iso8601)
         end
 
-        let!(:expiring_token2) do
+        let_it_be(:expiring_token2) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 20.days.from_now.iso8601)
         end
 
@@ -125,11 +125,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
             thirty_days_notification_sent_at: Time.current)
         end
 
-        let!(:not_expiring_token) do
+        let_it_be(:not_expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 6.months.from_now.iso8601)
         end
 
-        let!(:revoked_token) do
+        let_it_be(:revoked_token) do
           create(:deploy_token, :project_type, :revoked, projects: [project], expires_at: 28.days.from_now.iso8601)
         end
 
@@ -168,11 +168,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when tokens expire within 60 days' do
-        let!(:expiring_token) do
+        let_it_be(:expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 36.days.from_now.iso8601)
         end
 
-        let!(:expiring_token2) do
+        let_it_be(:expiring_token2) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 47.days.from_now.iso8601)
         end
 
@@ -181,11 +181,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
             sixty_days_notification_sent_at: Time.current)
         end
 
-        let!(:not_expiring_token) do
+        let_it_be(:not_expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 6.months.from_now.iso8601)
         end
 
-        let!(:revoked_token) do
+        let_it_be(:revoked_token) do
           create(:deploy_token, :project_type, :revoked, projects: [project], expires_at: 58.days.from_now.iso8601)
         end
 
@@ -235,7 +235,7 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
           end
 
           context 'with a single resource deploy token' do
-            let!(:expiring_token) do
+            let_it_be(:expiring_token) do
               create(:deploy_token, :project_type, projects: [project_test], expires_at: 5.days.from_now.iso8601)
             end
 
@@ -401,27 +401,27 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when there are expiring deploy tokens' do
-        let!(:expiring_seven_day_token) do
+        let_it_be(:expiring_seven_day_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 6.days.from_now.iso8601)
         end
 
-        let!(:expiring_thirty_day_token) do
+        let_it_be(:expiring_thirty_day_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 15.days.from_now.iso8601)
         end
 
-        let!(:expiring_sixty_day_token) do
+        let_it_be(:expiring_sixty_day_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 45.days.from_now.iso8601)
         end
 
-        let!(:revoked_token) do
+        let_it_be(:revoked_token) do
           create(:deploy_token, :revoked, :project_type, projects: [project], expires_at: 5.days.from_now.iso8601)
         end
 
-        let!(:not_expiring_token) do
+        let_it_be(:not_expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 6.months.from_now.iso8601)
         end
 
-        let!(:notified_token) do
+        let_it_be(:notified_token) do
           create(
             :deploy_token,
             :project_type,
@@ -494,7 +494,7 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when testing project webhook execution with deploy token' do
-        let!(:project_expiring_token) do
+        let_it_be(:project_expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 6.days.from_now.iso8601)
         end
 
@@ -526,7 +526,7 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
       end
 
       context 'when webhook execution fails for a project deploy token' do
-        let!(:expiring_token) do
+        let_it_be(:expiring_token) do
           create(:deploy_token, :project_type, projects: [project], expires_at: 5.days.from_now.iso8601)
         end
 

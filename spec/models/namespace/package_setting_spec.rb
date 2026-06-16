@@ -24,7 +24,7 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     it { is_expected.to validate_length_of(:terraform_module_duplicate_exception_regex).is_at_most(255) }
 
     describe 'regex values' do
-      let_it_be(:package_settings) { create(:namespace_package_setting) }
+      let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting) }
 
       subject { package_settings }
 
@@ -45,7 +45,7 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
 
   describe 'scopes' do
     describe '.namespace_id_in' do
-      let_it_be(:package_settings) { create(:namespace_package_setting) }
+      let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting) }
       let_it_be(:other_package_settings) { create(:namespace_package_setting) }
 
       subject { described_class.namespace_id_in([package_settings.namespace_id]) }
@@ -54,7 +54,7 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     end
 
     describe '.with_terraform_module_duplicates_allowed_or_exception_regex' do
-      let_it_be(:package_settings) { create(:namespace_package_setting) }
+      let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting) }
 
       subject { described_class.with_terraform_module_duplicates_allowed_or_exception_regex }
 
@@ -92,7 +92,7 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     package_types.each do |package_type|
       context "with package_type:#{package_type}" do
         let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
-        let_it_be(:package_settings) { package.project.namespace.package_settings }
+        let_it_be(:package_settings, freeze: false) { package.project.namespace.package_settings }
 
         it 'raises an error' do
           expect { subject }.to raise_error(Namespace::PackageSetting::PackageSettingNotImplemented)
@@ -113,7 +113,7 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
           let(:package_name) { package.name }
           let(:package_version) { package.version }
           let_it_be(:package_type) { package.package_type }
-          let_it_be(:package_setting) { package.project.namespace.package_settings }
+          let_it_be(:package_setting, freeze: false) { package.project.namespace.package_settings }
 
           where(:duplicates_allowed, :duplicate_exception_regex, :result) do
             true  | ref(:package_name)    | false

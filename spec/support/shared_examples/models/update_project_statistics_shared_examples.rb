@@ -119,7 +119,7 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
             expect(Namespaces::ScheduleAggregationWorker)
               .not_to receive(:perform_async)
 
-            expect(Projects::DestroyService.new(project, project.first_owner).execute).to eq(true)
+            expect(Projects::DestroyService.new(project, project.first_owner).execute).to be(true)
           end
         end
       end

@@ -9,10 +9,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   include Ci::PipelineVariableHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
-  let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
+  let_it_be_with_reload(:group) { create_default(:group, :allow_runner_registration_token) }
+  let_it_be_with_reload(:project) { create_default(:project, :repository, group: group) }
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create_default(
       :ci_pipeline,
       project: project,
@@ -22,7 +22,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     )
   end
 
-  let_it_be(:build, refind: true) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
+  let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
 
   let(:allow_runner_registration_token) { false }
   let_it_be(:public_project) { create(:project, :public) }
@@ -112,7 +112,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'scopes' do
     let_it_be(:old_project) { create(:project) }
     let_it_be(:new_project) { create(:project) }
-    let_it_be(:old_build) { create(:ci_build, created_at: 1.week.ago, updated_at: 1.week.ago, project: old_project) }
+    let_it_be(:old_build, freeze: false) { create(:ci_build, created_at: 1.week.ago, updated_at: 1.week.ago, project: old_project) }
     let_it_be(:new_build) { create(:ci_build, created_at: 1.minute.ago, updated_at: 1.minute.ago, project: new_project) }
 
     describe 'created_after' do
@@ -575,23 +575,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'callbacks' do
-    context 'when running after_create callback' do
-      it 'does not execute hooks when chain is handling webhooks' do
-        allow(Gitlab::SafeRequestStore).to receive(:[]).and_call_original
-        allow(Gitlab::SafeRequestStore).to receive(:[]).with(:ci_triggering_build_hooks_via_chain).and_return(true)
-
-        expect_next(described_class).not_to receive(:execute_hooks)
-
-        create(:ci_build, pipeline: pipeline)
-      end
-
-      it 'executes hooks when chain is not handling webhooks' do
-        expect_next(described_class).to receive(:execute_hooks)
-
-        create(:ci_build, pipeline: pipeline)
-      end
-    end
-
     describe 'job status update subscription trigger' do
       %w[cancel! drop! run! skip! success!].each do |action|
         shared_examples "when build receives #{action} event" do
@@ -962,7 +945,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject(:schedule) { build.schedule }
 
     before do
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
     end
 
     let(:build) { create(:ci_build, :created, :schedulable, user: user, pipeline: pipeline) }
@@ -1732,7 +1715,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when user is a developer' do
       before do
-        project.add_developer(cache_user)
+        project.add_developer(cache_user) # -- Does not work in before_all
       end
 
       it { is_expected.to be_falsy }
@@ -1740,7 +1723,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when user is a maintainer' do
       before do
-        project.add_maintainer(cache_user)
+        project.add_maintainer(cache_user) # -- Does not work in before_all
       end
 
       it { is_expected.to be_truthy }
@@ -2454,7 +2437,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         allow(build).to receive(:auto_retry_allowed?) { true }
       end
 
@@ -2694,7 +2677,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.other_scheduled_actions }
 
     before do
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
     end
 
     context "when other build's status is success" do
@@ -2734,7 +2717,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
     before do
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
     end
 
     it 'enqueues the build' do
@@ -3980,7 +3963,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'when an Apple App Store integration exists' do
-        let_it_be(:apple_app_store_integration) do
+        let_it_be(:apple_app_store_integration, freeze: false) do
           create(:apple_app_store_integration, project: project)
         end
 
@@ -4086,7 +4069,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'when the google_play integration exists' do
-        let_it_be(:google_play_integration) do
+        let_it_be(:google_play_integration, freeze: false) do
           create(:google_play_integration, project: project)
         end
 
@@ -4775,6 +4758,36 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         build.drop!(:server_timeout_running)
         expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
       end
+
+      context 'with a pending_state' do
+        let(:pending_state_created_at) { build.started_at + 1.second }
+
+        before do
+          build.create_pending_state(
+            state: 'failed',
+            trace_checksum: 'crc32:12345678',
+            created_at: pending_state_created_at
+          )
+        end
+
+        it 'preserves the pending_state anchor' do
+          build.drop!(:server_timeout_running)
+
+          expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+        end
+
+        context 'when ci_anchor_finished_at_to_pending_state is disabled' do
+          before do
+            stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
+          end
+
+          it 'preserves existing server timeout behavior' do
+            build.drop!(:server_timeout_running)
+
+            expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
+          end
+        end
+      end
     end
 
     context 'when the failure reason is not server_timeout_running' do
@@ -4794,6 +4807,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'overwrites finished_at' do
         build.drop!(:server_timeout_canceling)
         expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
+      end
+
+      context 'with a pending_state' do
+        let(:pending_state_created_at) { build.started_at + 1.second }
+
+        before do
+          build.create_pending_state(
+            state: 'canceled',
+            trace_checksum: 'crc32:12345678',
+            created_at: pending_state_created_at
+          )
+        end
+
+        it 'preserves the pending_state anchor' do
+          build.drop!(:server_timeout_canceling)
+
+          expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+          expect(build.failure_reason).to eq('server_timeout_canceling')
+        end
+
+        context 'when ci_anchor_finished_at_to_pending_state is disabled' do
+          before do
+            stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
+          end
+
+          it 'preserves existing server timeout behavior' do
+            build.drop!(:server_timeout_canceling)
+
+            expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
+          end
+        end
       end
     end
 
@@ -4830,6 +4874,187 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.drop(reason)
           expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
         end
+      end
+    end
+  end
+
+  describe 'state transition: running => terminal anchors finished_at to pending_state', :freeze_time do
+    let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+
+    let(:pending_state_created_at) { 90.seconds.ago }
+    let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+    before do
+      build.create_pending_state(
+        state: 'success',
+        trace_checksum: 'crc32:12345678',
+        created_at: pending_state_created_at
+      )
+    end
+
+    context 'when ci_anchor_finished_at_to_pending_state is enabled' do
+      it 'anchors finished_at to pending_state.created_at on running => success' do
+        build.success!
+
+        expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+      end
+
+      it 'anchors finished_at to pending_state.created_at on running => failed' do
+        build.drop!(:script_failure)
+
+        expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+      end
+
+      context 'when no pending_state exists' do
+        before do
+          build.pending_state.delete
+          build.reload
+        end
+
+        it 'falls back to Time.current via the CommitStatus before_transition' do
+          build.success!
+
+          expect(build.reload.finished_at).to be_like_time(Time.current)
+        end
+      end
+
+      context 'when transitioning running => failed via server_timeout_running' do
+        let(:timeout) { 1000 }
+        let(:build) { create(:ci_build, :running, pipeline: pipeline, timeout: timeout) }
+        let(:pending_state_created_at) { build.started_at + 1.second }
+
+        it 'preserves the pending_state anchor as the runner-reported completion time' do
+          build.drop!(:server_timeout_running)
+
+          expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+        end
+      end
+    end
+
+    context 'when ci_anchor_finished_at_to_pending_state is disabled' do
+      before do
+        stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
+      end
+
+      it 'preserves the existing Time.current behavior' do
+        build.success!
+
+        expect(build.reload.finished_at).to be_like_time(Time.current)
+      end
+    end
+  end
+
+  describe '#set_finished_at', :freeze_time do
+    let(:timeout_finished_at) { Time.current }
+    let(:pending_state_created_at) { 90.seconds.ago }
+    let(:build) { create(:ci_build, :running) }
+    let(:transition) { instance_double(StateMachines::Transition, args: [], from: 'running', to: 'success') }
+
+    context 'with a pending_state' do
+      before do
+        build.create_pending_state(
+          state: 'failed',
+          trace_checksum: 'crc32:12345678',
+          created_at: pending_state_created_at
+        )
+      end
+
+      it 'sets pending_state.created_at independently of the current finished_at value' do
+        build.finished_at = 1.hour.from_now
+
+        build.set_finished_at(transition)
+
+        expect(build.finished_at).to be_like_time(pending_state_created_at)
+      end
+
+      context 'when ci_anchor_finished_at_to_pending_state is disabled' do
+        before do
+          stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
+        end
+
+        it 'sets the given timestamp' do
+          build.set_finished_at(transition)
+
+          expect(build.finished_at).to be_like_time(timeout_finished_at)
+        end
+      end
+    end
+
+    context 'without a pending_state' do
+      it 'sets the given timestamp' do
+        build.set_finished_at(transition)
+
+        expect(build.finished_at).to be_like_time(timeout_finished_at)
+      end
+    end
+
+    context 'for a running server-timeout transition' do
+      let(:build) { create(:ci_build, :running, timeout: 1000, started_at: 30.minutes.ago) }
+      let(:transition) do
+        instance_double(StateMachines::Transition, args: [failure_reason], from: 'running', to: 'failed')
+      end
+
+      shared_examples 'returns the running timeout cap' do
+        it 'sets the timeout cap' do
+          build.set_finished_at(transition)
+
+          expect(build.finished_at).to be_like_time(build.started_at + build.timeout.seconds)
+        end
+      end
+
+      context 'when the failure reason is a symbol' do
+        let(:failure_reason) { :server_timeout_running }
+
+        it_behaves_like 'returns the running timeout cap'
+      end
+
+      context 'when the failure reason is a string' do
+        let(:failure_reason) { 'server_timeout_running' }
+
+        it_behaves_like 'returns the running timeout cap'
+      end
+
+      context 'when the failure reason is a Reason object' do
+        let(:failure_reason) do
+          ::Gitlab::Ci::Build::Status::Reason.fabricate(build, :server_timeout_running)
+        end
+
+        it_behaves_like 'returns the running timeout cap'
+      end
+    end
+
+    context 'for a canceling server-timeout transition' do
+      let(:build) { create(:ci_build, :canceling, timeout: 1000, started_at: 30.minutes.ago) }
+      let(:transition) do
+        instance_double(StateMachines::Transition, args: [failure_reason], from: 'canceling', to: 'canceled')
+      end
+
+      shared_examples 'returns the canceling timeout cap' do
+        it 'sets the timeout cap' do
+          build.set_finished_at(transition)
+
+          expect(build.finished_at).to be_like_time(build.started_at + build.timeout.seconds)
+        end
+      end
+
+      context 'when the failure reason is a symbol' do
+        let(:failure_reason) { :server_timeout_canceling }
+
+        it_behaves_like 'returns the canceling timeout cap'
+      end
+
+      context 'when the failure reason is a string' do
+        let(:failure_reason) { 'server_timeout_canceling' }
+
+        it_behaves_like 'returns the canceling timeout cap'
+      end
+
+      context 'when the failure reason is a Reason object' do
+        let(:failure_reason) do
+          ::Gitlab::Ci::Build::Status::Reason.fabricate(build, :server_timeout_canceling)
+        end
+
+        it_behaves_like 'returns the canceling timeout cap'
       end
     end
   end
@@ -5088,7 +5313,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'pages deployments', feature_category: :pages do
-    let_it_be(:build, reload: true) { create(:ci_build, name: 'pages', pipeline: pipeline, user: user) }
+    let_it_be_with_reload(:build) { create(:ci_build, name: 'pages', pipeline: pipeline, user: user) }
 
     context 'when pages are enabled' do
       before do
@@ -5967,7 +6192,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         before do
           build.update!(user: user)
-          project.add_developer(user)
+          project.add_developer(user) # -- Does not work in before_all
         end
 
         it 'resolves the todo for the old failed build' do
@@ -6490,10 +6715,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'id_tokens with ci_cd_settings integration' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'main') }
-    let_it_be(:environment) { create(:environment, name: 'production', project: project) }
+    let_it_be(:environment, freeze: false) { create(:environment, name: 'production', project: project) }
 
     let(:build) do
       create(
@@ -6728,7 +6953,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'partition pruning' do
     describe '.find_by_token' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let_it_be(:job) { create(:ci_build, pipeline: pipeline, status: :running) }
       let_it_be(:token) { job.token }
@@ -6745,7 +6970,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     describe 'for persisting record' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let(:job) { FactoryBot.build(:ci_build, pipeline: pipeline, status: :running) }
 
@@ -6760,7 +6985,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '.with_pipeline_iid' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let_it_be(:pipeline) do
       create(:ci_pipeline,

@@ -179,6 +179,25 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#publish_params' do
+    context 'for a diff draft note' do
+      let(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request) }
+
+      it 'includes line_code so set_line_code can short-circuit at publish time', :aggregate_failures do
+        expect(draft_note.publish_params).to include(:line_code)
+        expect(draft_note.publish_params[:line_code]).to eq(draft_note.line_code)
+      end
+    end
+
+    context 'for a non-diff draft note' do
+      let(:draft_note) { build(:draft_note, merge_request: merge_request) }
+
+      it 'does not include line_code' do
+        expect(draft_note.publish_params).not_to include(:line_code)
+      end
+    end
+  end
+
   describe '.bulk_insert_and_keep_commits!' do
     let_it_be(:user) { create(:user) }
     let(:drafts) do

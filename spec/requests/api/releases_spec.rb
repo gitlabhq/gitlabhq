@@ -147,7 +147,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       get api("/projects/#{project.id}/releases", maintainer)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.first['upcoming_release']).to eq(true)
+      expect(json_response.first['upcoming_release']).to be(true)
     end
 
     it 'returns an upcoming_release status for a past release' do
@@ -157,7 +157,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       get api("/projects/#{project.id}/releases", maintainer)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.first['upcoming_release']).to eq(false)
+      expect(json_response.first['upcoming_release']).to be(false)
     end
 
     it 'filters by updated_at' do
@@ -395,7 +395,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       it 'does not include description_html' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
-        expect(json_response['description_html']).to eq(nil)
+        expect(json_response['description_html']).to be_nil
       end
 
       context 'with evidence' do
@@ -418,7 +418,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
       context 'when release is associated to mutiple milestones' do
         context 'milestones order' do
-          let_it_be(:project) { create(:project, :repository, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
           let_it_be_with_reload(:release_with_milestones) { create(:release, tag: 'v3.14', project: project) }
 
           let(:actual_milestone_title_order) do
@@ -951,7 +951,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
       expect(project.releases.last.name).to eq('New release without description')
       expect(project.releases.last.tag).to eq('v0.1')
-      expect(project.releases.last.description).to eq(nil)
+      expect(project.releases.last.description).to be_nil
     end
 
     it 'sets the released_at to the current time if the released_at parameter is not provided' do
@@ -1369,7 +1369,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     end
 
     context 'when the project is a catalog resource' do
-      let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
+      let_it_be(:project, freeze: false) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
       let_it_be(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       let(:params) do
@@ -1863,13 +1863,13 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   describe 'GET /groups/:id/releases' do
     let_it_be(:user1) { create(:user, can_create_group: false) }
     let_it_be(:admin) { create(:admin) }
-    let_it_be(:group1) { create(:group) }
+    let_it_be(:group1, freeze: false) { create(:group) }
     let_it_be(:group2) { create(:group, :private) }
-    let_it_be(:project1) { create(:project, namespace: group1) }
-    let_it_be(:project2) { create(:project, namespace: group2) }
-    let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-    let_it_be(:release1) { create(:release, project: project1) }
-    let_it_be(:release2) { create(:release, project: project2) }
+    let_it_be(:project1, freeze: false) { create(:project, namespace: group1) }
+    let_it_be(:project2, freeze: false) { create(:project, namespace: group2) }
+    let_it_be(:project3, freeze: false) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+    let_it_be(:release1, freeze: false) { create(:release, project: project1) }
+    let_it_be(:release2, freeze: false) { create(:release, project: project2) }
     let_it_be(:release3) { create(:release, project: project3) }
 
     it_behaves_like 'GET request permissions for admin mode' do
@@ -1986,7 +1986,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     context 'with group releases' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:group_project) { create(:project, :repository, namespace: group) }
+      let_it_be(:group_project, freeze: false) { create(:project, :repository, namespace: group) }
       let!(:group_release) { create(:release, project: group_project, tag: 'v0.2', author: maintainer) }
 
       before do

@@ -1,8 +1,8 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: インスタンスレベルインスタンスのCI/CD変数API
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: インスタンスレベルCI/CD変数API
 ---
 
 {{< details >}}
@@ -14,15 +14,15 @@ title: インスタンスレベルインスタンスのCI/CD変数API
 
 このAPIを使用して、インスタンスの[CI/CD変数](../ci/variables/_index.md#for-an-instance)を操作します。
 
-## すべてのインスタンス変数をリスト表示 {#list-all-instance-variables}
+## すべてのインスタンス変数をリスト {#list-all-instance-variables}
 
 {{< history >}}
 
-- `description`パラメータがGitLab 16.8で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)。
+- `description`パラメータはGitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)されました。
 
 {{< /history >}}
 
-すべてのインスタンスレベルの変数のリストを取得します。結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
+すべてのインスタンスレベルの変数をリストします。結果のページネーションを制御するには、`page`および`per_page` [ページネーション](rest/_index.md#offset-based-pagination)パラメータを使用します。
 
 ```plaintext
 GET /admin/ci/variables
@@ -57,11 +57,11 @@ curl \
 ]
 ```
 
-## インスタンス変数の詳細を表示 {#show-instance-variable-details}
+## インスタンス変数の詳細を取得 {#retrieve-instance-variable-details}
 
 {{< history >}}
 
-- `description`パラメータがGitLab 16.8で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)。
+- `description`パラメータはGitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)されました。
 
 {{< /history >}}
 
@@ -93,17 +93,17 @@ curl \
 }
 ```
 
-## インスタンス変数を作成 {#create-instance-variable}
+## インスタンス変数の作成 {#create-instance-variable}
 
 {{< history >}}
 
-- `description`パラメータがGitLab 16.8で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)。
+- `description`パラメータはGitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)されました。
 
 {{< /history >}}
 
 新しいインスタンスレベルの変数を作成します。
 
-[インスタンスレベルの変数の最大数](../administration/instance_limits.md#cicd-variable-limits)は変更可能です。
+[最大数のインスタンスレベルの変数](../administration/cicd/limits.md#instance-cicd-variable-limit)は変更できます。
 
 ```plaintext
 POST /admin/ci/variables
@@ -111,13 +111,13 @@ POST /admin/ci/variables
 
 | 属性       | 型    | 必須 | 説明 |
 |-----------------|---------|----------|-------------|
-| `key`           | 文字列  | はい      | 変数の`key`。最大255文字、`A-Z`、`a-z`、`0-9`、および`_`のみが許可されます。 |
+| `key`           | 文字列  | はい      | 変数の`key`。最大255文字で、`A-Z`、`a-z`、`0-9`、`_`のみが許可されています。 |
 | `value`         | 文字列  | はい      | 変数の`value`。最大10,000文字。 |
 | `description`   | 文字列  | いいえ       | 変数の説明。最大255文字。 |
 | `masked`        | ブール値 | いいえ       | 変数がマスクされるかどうかを指定します。 |
 | `protected`     | ブール値 | いいえ       | 変数が保護されるかどうかを指定します。 |
 | `raw`           | ブール値 | いいえ       | 変数が展開可能かどうか。 |
-| `variable_type` | 文字列  | いいえ       | 変数の種類。使用可能な種類は、`env_var`（デフォルト）と`file`です。 |
+| `variable_type` | 文字列  | いいえ       | 変数のタイプ。利用可能なタイプは、`env_var`（デフォルト）と`file`です。 |
 
 ```shell
 curl --request POST \
@@ -139,11 +139,11 @@ curl --request POST \
 }
 ```
 
-## インスタンス変数を更新 {#update-instance-variable}
+## インスタンス変数の更新 {#update-instance-variable}
 
 {{< history >}}
 
-- `description`パラメータがGitLab 16.8で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)。
+- `description`パラメータはGitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418331)されました。
 
 {{< /history >}}
 
@@ -156,12 +156,12 @@ PUT /admin/ci/variables/:key
 | 属性       | 型    | 必須 | 説明 |
 |-----------------|---------|----------|-------------|
 | `description`   | 文字列  | いいえ       | 変数の説明。最大255文字。 |
-| `key`           | 文字列  | はい      | 変数の`key`。最大255文字、`A-Z`、`a-z`、`0-9`、および`_`のみが許可されます。 |
+| `key`           | 文字列  | はい      | 変数の`key`。最大255文字で、`A-Z`、`a-z`、`0-9`、`_`のみが許可されています。 |
 | `masked`        | ブール値 | いいえ       | 変数がマスクされるかどうかを指定します。 |
 | `protected`     | ブール値 | いいえ       | 変数が保護されるかどうかを指定します。 |
 | `raw`           | ブール値 | いいえ       | 変数が展開可能かどうか。 |
 | `value`         | 文字列  | はい      | 変数の`value`。最大10,000文字。 |
-| `variable_type` | 文字列  | いいえ       | 変数の種類。使用可能な種類は、`env_var`（デフォルト）と`file`です。 |
+| `variable_type` | 文字列  | いいえ       | 変数のタイプ。利用可能なタイプは、`env_var`（デフォルト）と`file`です。 |
 
 ```shell
 curl --request PUT \
@@ -182,7 +182,7 @@ curl --request PUT \
 }
 ```
 
-## インスタンス変数を削除 {#remove-instance-variable}
+## インスタンス変数の削除 {#delete-instance-variable}
 
 インスタンスレベルの変数を削除します。
 

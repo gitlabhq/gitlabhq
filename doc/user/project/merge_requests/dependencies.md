@@ -128,8 +128,10 @@ To create a new merge request and mark it as dependent on another:
 
 1. [Create a new merge request](creating_merge_requests.md).
 1. In **Merge request dependencies**, paste either the reference or the full URL
-   to the merge requests that should merge before this work merges. References
-   are in the form of `path/to/project!merge_request_id`.
+   to the merge requests that should merge before this work merges. For example:
+   - `!1234` (for a merge request in the same project)
+   - `gitlab-org/gitlab!1234`
+   - `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1234`
 1. Select **Create merge request**.
 
 ## Edit a merge request to add a dependency
@@ -146,8 +148,10 @@ To do this:
 1. In the left sidebar, select **Code** > **Merge requests** and identify your merge request.
 1. Select **Edit**.
 1. In **Merge request dependencies**, paste either the reference or the full URL
-   to the merge requests that should merge before this work merges. References
-   are in the form of `path/to/project!merge_request_id`.
+   to the merge requests that should merge before this work merges. For example:
+   - `!1234` (for a merge request in the same project)
+   - `gitlab-org/gitlab!1234`
+   - `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1234`
 
 ## Remove a dependency from a merge request
 

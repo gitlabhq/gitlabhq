@@ -1,8 +1,8 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GitLabのマージトレインのREST APIのドキュメント。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabのマージトレインのためのREST APIに関するドキュメント。
 title: マージトレインAPI
 ---
 
@@ -13,15 +13,15 @@ title: マージトレインAPI
 
 {{< /details >}}
 
-このAPIを使用して、[merge trains](../ci/pipelines/merge_trains.md)とやり取りします。
+このAPIを使用して、[マージトレイン](../ci/pipelines/merge_trains.md)を操作します。
 
 前提条件: 
 
-- デベロッパーロール以上が必要です。
+- デベロッパー、メンテナー、またはオーナーロールが必要です。
 
-すべてのマージトレインエンドポイントは、`page`および`per_page`パラメータを使用して、[offset-based pagination](rest/_index.md#offset-based-pagination)（オフセットベースのページネーション）をサポートします。
+すべてのマージトレインエンドポイントは、`page`および`per_page`パラメータを使用して、[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートします。
 
-## プロジェクトのすべてのマージトレインをリストします {#list-all-merge-trains-for-a-project}
+## プロジェクトのすべてのマージトレインをリストする {#list-all-merge-trains-for-a-project}
 
 指定されたプロジェクトのすべてのマージトレインをリストします。
 
@@ -29,11 +29,11 @@ title: マージトレインAPI
 GET /projects/:id/merge_trains
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 | --------- | ----------------- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `scope`   | 文字列            | いいえ       | 指定されたスコープでフィルタリングされたマージトレインを返します。使用可能なスコープは、`active`（マージ対象）および`complete`（マージ済み）です。 |
 | `sort`    | 文字列            | いいえ       | `asc`または`desc`順にソートされたマージトレインを返します。デフォルトは`desc`です。 |
 
@@ -66,14 +66,14 @@ GET /projects/:id/merge_trains
 | `pipeline.status`           | 文字列   | パイプラインのステータス。 |
 | `pipeline.updated_at`       | 日時 | パイプラインが最後に更新されたときのタイムスタンプ。 |
 | `pipeline.web_url`          | 文字列   | パイプラインのWeb URL。 |
-| `status`                    | 文字列   | マージトレインのステータス。指定可能な値：`idle`、`stale`、`fresh`、`merging`、`merged`、`skip_merged`。 |
+| `status`                    | 文字列   | マージトレインでのマージリクエストのステータス。アクティブなマージトレインの指定可能な値: `idle`、`fresh`、または`stale`。完了したマージトレインの指定可能な値: `merging`、`merged`、または`skip_merged`。 |
 | `target_branch`             | 文字列   | ターゲットブランチの名前。 |
 | `updated_at`                | 日時 | マージトレインが最後に更新されたときのタイムスタンプ。 |
 | `user`                      | オブジェクト   | マージリクエストをマージトレインに追加したユーザー。 |
 | `user.avatar_url`           | 文字列   | ユーザーのアバターURL。 |
 | `user.id`                   | 整数  | ユーザーのID。 |
 | `user.name`                 | 文字列   | ユーザーの名前。 |
-| `user.state`                | 文字列   | ユーザーアカウントのユーザー状態。 |
+| `user.state`                | 文字列   | ユーザーアカウントの状態。 |
 | `user.username`             | 文字列   | ユーザーのユーザー名。 |
 | `user.web_url`              | 文字列   | ユーザープロファイルのWeb URL。 |
 
@@ -84,7 +84,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -128,7 +128,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## マージトレイン内のすべてのマージリクエストをリストします {#list-all-merge-requests-in-a-merge-train}
+## マージトレイン内のすべてのマージリクエストをリストする {#list-all-merge-requests-in-a-merge-train}
 
 ターゲットブランチのマージトレイン内のすべてのマージリクエストをリストします。
 
@@ -136,11 +136,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/merge_trains/:target_branch
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型              | 必須 | 説明 |
 | --------------- | ----------------- | -------- | ----------- |
-| `id`            | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `target_branch` | 文字列            | はい      | マージトレインのターゲットブランチ。 |
 | `scope`         | 文字列            | いいえ       | 指定されたスコープでフィルタリングされたマージトレインを返します。使用可能なスコープは、`active`（マージ対象）および`complete`（マージ済み）です。 |
 | `sort`          | 文字列            | いいえ       | `asc`または`desc`順にソートされたマージトレインを返します。デフォルトは`desc`です。 |
@@ -174,14 +174,14 @@ GET /projects/:id/merge_trains/:target_branch
 | `pipeline.status`           | 文字列   | パイプラインのステータス。 |
 | `pipeline.updated_at`       | 日時 | パイプラインが最後に更新されたときのタイムスタンプ。 |
 | `pipeline.web_url`          | 文字列   | パイプラインのWeb URL。 |
-| `status`                    | 文字列   | マージトレインのステータス。指定可能な値：`idle`、`stale`、`fresh`、`merging`、`merged`、`skip_merged`。 |
+| `status`                    | 文字列   | マージトレインでのマージリクエストのステータス。アクティブなマージトレインの指定可能な値: `idle`、`fresh`、または`stale`。完了したマージトレインの指定可能な値: `merging`、`merged`、または`skip_merged`。 |
 | `target_branch`             | 文字列   | ターゲットブランチの名前。 |
 | `updated_at`                | 日時 | マージトレインが最後に更新されたときのタイムスタンプ。 |
 | `user`                      | オブジェクト   | マージリクエストをマージトレインに追加したユーザー。 |
 | `user.avatar_url`           | 文字列   | ユーザーのアバターURL。 |
 | `user.id`                   | 整数  | ユーザーのID。 |
 | `user.name`                 | 文字列   | ユーザーの名前。 |
-| `user.state`                | 文字列   | ユーザーアカウントのユーザー状態。 |
+| `user.state`                | 文字列   | ユーザーアカウントの状態。 |
 | `user.username`             | 文字列   | ユーザーのユーザー名。 |
 | `user.web_url`              | 文字列   | ユーザープロファイルのWeb URL。 |
 
@@ -192,7 +192,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -241,17 +241,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## マージトレインステータスを取得する {#retrieve-merge-train-status}
 
-指定されたマージリクエストのマージトレインステータスを取得する。
+指定されたマージリクエストのマージトレインステータスを取得します。
 
 ```plaintext
 GET /projects/:id/merge_trains/merge_requests/:merge_request_iid
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型              | 必須 | 説明 |
 | ------------------- | ----------------- | -------- | ----------- |
-| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid` | 整数           | はい      | マージリクエストの内部ID。 |
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
@@ -283,14 +283,14 @@ GET /projects/:id/merge_trains/merge_requests/:merge_request_iid
 | `pipeline.status`           | 文字列   | パイプラインのステータス。 |
 | `pipeline.updated_at`       | 日時 | パイプラインが最後に更新されたときのタイムスタンプ。 |
 | `pipeline.web_url`          | 文字列   | パイプラインのWeb URL。 |
-| `status`                    | 文字列   | マージトレインのステータス。指定可能な値：`idle`、`stale`、`fresh`、`merging`、`merged`、`skip_merged`。 |
+| `status`                    | 文字列   | マージトレインでのマージリクエストのステータス。アクティブなマージトレインの指定可能な値: `idle`、`fresh`、または`stale`。完了したマージトレインの指定可能な値: `merging`、`merged`、または`skip_merged`。 |
 | `target_branch`             | 文字列   | ターゲットブランチの名前。 |
 | `updated_at`                | 日時 | マージトレインが最後に更新されたときのタイムスタンプ。 |
 | `user`                      | オブジェクト   | マージリクエストをマージトレインに追加したユーザー。 |
 | `user.avatar_url`           | 文字列   | ユーザーのアバターURL。 |
 | `user.id`                   | 整数  | ユーザーのID。 |
 | `user.name`                 | 文字列   | ユーザーの名前。 |
-| `user.state`                | 文字列   | ユーザーアカウントのユーザー状態。 |
+| `user.state`                | 文字列   | ユーザーアカウントの状態。 |
 | `user.username`             | 文字列   | ユーザーのユーザー名。 |
 | `user.web_url`              | 文字列   | ユーザープロファイルのWeb URL。 |
 
@@ -301,7 +301,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -346,7 +346,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## マージリクエストをマージトレインに追加します {#add-a-merge-request-to-a-merge-train}
+## マージリクエストをマージトレインに追加する {#add-a-merge-request-to-a-merge-train}
 
 指定されたマージリクエストをマージトレインに追加します。
 
@@ -354,11 +354,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
 ```
 
-サポートされている属性: 
+サポートされている属性は以下のとおりです: 
 
 | 属性                | 型              | 必須 | 説明 |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                     | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`      | 整数           | はい      | マージリクエストの内部ID。 |
 | `auto_merge`             | ブール値           | いいえ       | trueの場合、チェックに合格すると、マージリクエストがマージトレインに追加されます。falseまたは未指定の場合、マージリクエストはマージトレインに直接追加されます。 |
 | `sha`                    | 文字列            | いいえ       | 存在する場合、SHAはソースブランチの`HEAD`と一致する必要があります。そうでない場合、マージは失敗します。 |
@@ -367,8 +367,8 @@ POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
 
 成功した場合、以下を返します:
 
-- [`201 Created`](rest/troubleshooting.md#status-codes)マージリクエストがマージトレインにすぐに追加される場合。
-- [`202 Accepted`](rest/troubleshooting.md#status-codes)マージリクエストがマージトレインに追加されるようにスケジュールされている場合。
+- [`201 Created`](rest/troubleshooting.md#status-codes): マージリクエストがマージトレインにすぐに追加される場合。
+- [`202 Accepted`](rest/troubleshooting.md#status-codes): マージリクエストがマージトレインに追加されるようにスケジュールされている場合。
 
 次のレスポンス属性が返されます:
 
@@ -399,14 +399,14 @@ POST /projects/:id/merge_trains/merge_requests/:merge_request_iid
 | `pipeline.status`           | 文字列   | パイプラインのステータス。 |
 | `pipeline.updated_at`       | 日時 | パイプラインが最後に更新されたときのタイムスタンプ。 |
 | `pipeline.web_url`          | 文字列   | パイプラインのWeb URL。 |
-| `status`                    | 文字列   | マージトレインのステータス。指定可能な値：`idle`、`stale`、`fresh`、`merging`、`merged`、`skip_merged`。 |
+| `status`                    | 文字列   | マージトレインでのマージリクエストのステータス。アクティブなマージトレインの指定可能な値: `idle`、`fresh`、または`stale`。完了したマージトレインの指定可能な値: `merging`、`merged`、または`skip_merged`。 |
 | `target_branch`             | 文字列   | ターゲットブランチの名前。 |
 | `updated_at`                | 日時 | マージトレインが最後に更新されたときのタイムスタンプ。 |
 | `user`                      | オブジェクト   | マージリクエストをマージトレインに追加したユーザー。 |
 | `user.avatar_url`           | 文字列   | ユーザーのアバターURL。 |
 | `user.id`                   | 整数  | ユーザーのID。 |
 | `user.name`                 | 文字列   | ユーザーの名前。 |
-| `user.state`                | 文字列   | ユーザーアカウントのユーザー状態。 |
+| `user.state`                | 文字列   | ユーザーアカウントの状態。 |
 | `user.username`             | 文字列   | ユーザーのユーザー名。 |
 | `user.web_url`              | 文字列   | ユーザープロファイルのWeb URL。 |
 
@@ -418,7 +418,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

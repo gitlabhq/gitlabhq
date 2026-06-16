@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user, organization: current_organization) }
-  let_it_be(:project, reload: true) { create(:project, :repository, creator: build(:user)) } # ensure creator != owner to avoid N+1 false-positive
-  let_it_be(:project2) { create(:project, :public) }
-  let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
-  let_it_be(:personal_project_with_stars) { create(:project, namespace: user.namespace, star_count: 10) }
-  let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.sha, ref: project.default_branch) }
+  let_it_be(:user, freeze: false) { create(:user, organization: current_organization) }
+  let_it_be_with_reload(:project) { create(:project, :repository, creator: build(:user)) } # ensure creator != owner to avoid N+1 false-positive
+  let_it_be(:project2, freeze: false) { create(:project, :public) }
+  let_it_be(:personal_project, freeze: false) { create(:project, namespace: user.namespace) }
+  let_it_be(:personal_project_with_stars, freeze: false) { create(:project, namespace: user.namespace, star_count: 10) }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, :success, project: project, sha: project.commit.sha, ref: project.default_branch) }
 
   before do
     project.add_developer(user)
@@ -44,7 +44,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
   end
 
   context 'when last_activity_at and update_at are present', time_travel_to: '2025-01-27T09:44:07Z' do
-    let_it_be(:project_with_last_activity) do
+    let_it_be(:project_with_last_activity, freeze: false) do
       create(
         :project,
         namespace: user.namespace,
@@ -90,7 +90,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
   end
 
   context 'when a project is archived' do
-    let_it_be(:archived_project) { create(:project, :archived, namespace: user.namespace) }
+    let_it_be(:archived_project, freeze: false) { create(:project, :archived, namespace: user.namespace) }
     let(:personal_tab) { find(".nav-item:nth-child(3)") }
     let(:member_tab) { find(".nav-item:nth-child(4)") }
 
@@ -157,8 +157,8 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     end
 
     context 'guest user of project and project has private pipelines' do
-      let_it_be(:guest_user) { create(:user) }
-      let_it_be(:project_with_private_pipelines) { create(:project, namespace: user.namespace, public_builds: false) }
+      let_it_be(:guest_user, freeze: false) { create(:user) }
+      let_it_be(:project_with_private_pipelines, freeze: false) { create(:project, namespace: user.namespace, public_builds: false) }
 
       before_all do
         project_with_private_pipelines.add_guest(guest_user)
@@ -191,7 +191,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
   end
 
   context 'when project has topics' do
-    let_it_be(:project_with_topics) { create(:project, namespace: user.namespace, topic_list: 'topic1') }
+    let_it_be(:project_with_topics, freeze: false) { create(:project, namespace: user.namespace, topic_list: 'topic1') }
 
     it 'shows project topics' do
       visit member_dashboard_projects_path
@@ -240,7 +240,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
   end
 
   context 'for delayed deletion' do
-    let_it_be(:project) { create(:project, :archived, namespace: user.namespace, marked_for_deletion_at: Date.current) }
+    let_it_be(:project, freeze: false) { create(:project, :archived, namespace: user.namespace, marked_for_deletion_at: Date.current) }
 
     it 'renders Restore button', :js do
       visit inactive_dashboard_projects_path

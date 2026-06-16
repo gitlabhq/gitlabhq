@@ -1,7 +1,74 @@
 # Allowed expose fields for high-impact REST API entities.
 # The API/EntityExposureGrowth cop flags any expose call whose first argument
-# is not in this list. See https://gitlab.com/groups/gitlab-org/-/epics/20829
+# is not in this list. See https://docs.gitlab.com/development/api_styleguide/#high-impact-entities-and-feature-bounded-entities
 ---
+ee/lib/api/entities/approval_rule.rb:
+- approvals_required
+- approvers
+- contains_hidden_groups?
+- groups
+- report_type
+- users
+ee/lib/api/entities/approval_rule_short.rb:
+- id
+- name
+- rule_type
+ee/lib/api/entities/epic.rb:
+- _links
+- author
+- closed_at
+- color
+- confidential
+- created_at
+- description
+- downvotes
+- due_date_fixed
+- due_date_from_inherited_source
+- due_date_from_milestones
+- due_date_is_fixed?
+- end_date
+- end_date
+- epic_issues
+- group
+- group_id
+- id
+- iid
+- imported?
+- imported_from
+- labels
+- parent
+- parent_id
+- parent_iid
+- reference
+- references
+- self
+- start_date
+- start_date_fixed
+- start_date_from_inherited_source
+- start_date_from_milestones
+- start_date_is_fixed?
+- state
+- subscribed?
+- text_color
+- title
+- updated_at
+- upvotes
+- web_edit_url
+- web_url
+- work_item_id
+ee/lib/api/entities/iteration.rb:
+- created_at
+- description
+- due_date
+- group_id
+- id
+- iid
+- sequence
+- start_date
+- state_enum
+- title
+- updated_at
+- web_url
 ee/lib/api/entities/ldap_group_link.rb:
 - cn
 - filter
@@ -23,6 +90,39 @@ ee/lib/api/entities/scim_identity.rb:
 - active
 - extern_uid
 - group_id
+ee/lib/api/entities/work_items/features/color.rb:
+- color
+- text_color
+ee/lib/api/entities/work_items/features/health_status.rb:
+- health_status
+ee/lib/api/entities/work_items/features/iteration.rb:
+- iteration
+ee/lib/api/entities/work_items/features/linked_items.rb:
+- blocked_by_count
+- blocking_count
+ee/lib/api/entities/work_items/features/progress.rb:
+- current_value
+- end_value
+- progress
+- start_value
+- updated_at
+ee/lib/api/entities/work_items/features/requirement_legacy.rb:
+- legacy_iid
+ee/lib/api/entities/work_items/features/status.rb:
+- category
+- color
+- description
+- icon_name
+- id
+- name
+- position
+- status
+ee/lib/api/entities/work_items/features/verification_status.rb:
+- verification_status
+ee/lib/api/entities/work_items/features/weight.rb:
+- rolled_up_completed_weight
+- rolled_up_weight
+- weight
 lib/api/entities/award_emoji.rb:
 - awardable_id
 - awardable_type
@@ -52,6 +152,26 @@ lib/api/entities/basic_project_details.rb:
 - star_count
 - topic_names
 - topic_names
+- visibility
+- web_url
+lib/api/entities/basic_repository_storage_move.rb:
+- created_at
+- destination_storage_name
+- error_message
+- human_state_name
+- id
+- source_storage_name
+lib/api/entities/basic_snippet.rb:
+- author
+- created_at
+- description
+- http_url_to_repo
+- id
+- project_id
+- raw_url
+- ssh_url_to_repo
+- title
+- updated_at
 - visibility
 - web_url
 lib/api/entities/ci/job.rb:
@@ -92,6 +212,21 @@ lib/api/entities/ci/job_basic.rb:
 - tag
 - user
 - web_url
+lib/api/entities/ci/pipeline.rb:
+- archived?
+- before_sha
+- committed_at
+- coverage
+- created_at
+- detailed_status
+- duration
+- finished_at
+- queued_duration
+- started_at
+- tag
+- updated_at
+- user
+- yaml_errors
 lib/api/entities/ci/pipeline_basic.rb:
 - created_at
 - id
@@ -173,6 +308,12 @@ lib/api/entities/container_expiration_policy.rb:
 lib/api/entities/custom_attribute.rb:
 - key
 - value
+lib/api/entities/discussion.rb:
+- id
+- individual_note?
+- notes
+- resolvable?
+- resolved?
 lib/api/entities/group.rb:
 - archived
 - auto_devops_enabled
@@ -213,6 +354,27 @@ lib/api/entities/group.rb:
 - two_factor_grace_period
 - uploads_size
 - wiki_size
+lib/api/entities/hook.rb:
+- alert_status
+- branch_filter_strategy
+- created_at
+- custom_headers
+- custom_webhook_template
+- description
+- disabled_until
+- enable_ssl_verification
+- id
+- merge_requests_events
+- name
+- organization_id
+- push_events
+- push_events_branch_filter
+- repository_update_events
+- signing_token_present
+- tag_push_events
+- token_present
+- url
+- url_variables
 lib/api/entities/identity.rb:
 - provider
 lib/api/entities/integration_basic.rb:
@@ -256,6 +418,22 @@ lib/api/entities/issuable_time_stats.rb:
 - time_estimate
 - total_time_spent
 - total_time_spent
+lib/api/entities/issue.rb:
+- _links
+- award_emoji
+- closed_as_duplicate_of
+- has_tasks
+- imported?
+- imported_from
+- moved_to_id
+- notes
+- project
+- references
+- self
+- service_desk_reply_to
+- severity
+- subscribed
+- task_status
 lib/api/entities/issue_basic.rb:
 - assignee
 - assignees
@@ -276,18 +454,82 @@ lib/api/entities/issue_basic.rb:
 - upvotes
 - user_notes_count
 - web_url
+lib/api/entities/label.rb:
+- closed_issues_count
+- open_issues_count
+- open_merge_requests_count
+- subscribed
+lib/api/entities/label_basic.rb:
+- archived
+- color
+- description
+- description_html
+- id
+- name
+- text_color
 lib/api/entities/license_basic.rb:
 - key
 - name
 - nickname
 - source_url
 - url
+lib/api/entities/list.rb:
+- id
+- label
+- position
 lib/api/entities/member.rb:
 - access_level
 - created_at
 - created_by
 - expires_at
 - user
+lib/api/entities/merge_request_basic.rb:
+- allow_collaboration
+- allow_collaboration
+- assignee
+- assignees
+- author
+- cannot_be_merged?
+- closed_at
+- closed_by
+- description_html
+- detailed_merge_status
+- diff_head_sha
+- discussion_locked
+- downvotes
+- draft?
+- draft?
+- force_remove_source_branch?
+- imported?
+- imported_from
+- labels
+- merge_after
+- merge_commit_sha
+- merge_status
+- merge_user
+- merge_when_pipeline_succeeds
+- mergeable_discussions_state?
+- merged_at
+- merged_by
+- milestone
+- prepared_at
+- reference
+- references
+- reviewers
+- should_remove_source_branch?
+- source_branch
+- source_project_id
+- squash
+- squash_commit_sha
+- squash_on_merge?
+- target_branch
+- target_project_id
+- task_completion_status
+- time_stats
+- title_html
+- upvotes
+- user_notes_count
+- web_url
 lib/api/entities/milestone.rb:
 - due_date
 - expired
@@ -298,6 +540,9 @@ lib/api/entities/milestone.rb:
 - state
 - title
 - web_url
+lib/api/entities/ml/mlflow/key_value.rb:
+- name
+- value
 lib/api/entities/namespace/root_storage_statistics.rb:
 - build_artifacts_size
 - container_registry_size
@@ -320,6 +565,44 @@ lib/api/entities/namespace_basic.rb:
 - parent_id
 - path
 - web_url
+lib/api/entities/note.rb:
+- author
+- body
+- commands_changes
+- commands_changes
+- commit_id
+- confidential?
+- confidential?
+- created_at
+- id
+- imported?
+- imported_from
+- noteable_id
+- noteable_iid
+- noteable_type
+- position
+- project_id
+- resolvable?
+- resolved?
+- resolved_at
+- resolved_by
+- suggestions
+- summary
+- system?
+- type
+- updated_at
+lib/api/entities/personal_access_token.rb:
+- active?
+- created_at
+- description
+- expires_at
+- granular
+- id
+- last_used_at
+- name
+- revoked
+- scopes
+- user_id
 lib/api/entities/platform/kubernetes.rb:
 - api_url
 - authorization_type
@@ -453,6 +736,17 @@ lib/api/entities/project_statistics.rb:
 - storage_size
 - uploads_size
 - wiki_size
+lib/api/entities/protected_branch.rb:
+- allow_force_push
+- id
+- merge_access_levels
+- name
+- push_access_levels
+lib/api/entities/protected_ref_access.rb:
+- access_level
+- deploy_key_id
+- humanize
+- id
 lib/api/entities/provider/gcp.rb:
 - cluster_id
 - endpoint
@@ -461,6 +755,22 @@ lib/api/entities/provider/gcp.rb:
 - num_nodes
 - status_name
 - zone
+lib/api/entities/ssh_key.rb:
+- created_at
+- expires_at
+- id
+- last_used_at
+- publishable_key
+- title
+- usage_type
+lib/api/entities/suggestion.rb:
+- appliable?
+- applied
+- from_content
+- from_line
+- id
+- to_content
+- to_line
 lib/api/entities/task_completion_status.rb:
 - completed_count
 - count
@@ -486,3 +796,79 @@ lib/api/entities/user_safe.rb:
 - name
 - public_email
 - username
+lib/api/entities/work_item_basic.rb:
+- features
+lib/api/entities/work_items/features.rb: []
+lib/api/entities/work_items/features/award_emoji.rb:
+- downvotes
+- new_custom_emoji_path
+- upvotes
+lib/api/entities/work_items/features/description.rb:
+- description
+- description_html
+- edited?
+- last_edited_at
+- last_edited_by
+- task_completion_status
+lib/api/entities/work_items/features/designs.rb:
+- copy_state
+- design_collection
+lib/api/entities/work_items/features/error_tracking.rb:
+- sentry_issue_identifier
+lib/api/entities/work_items/features/hierarchy.rb:
+- has_parent
+- parent
+lib/api/entities/work_items/features/labels.rb:
+- allows_scoped_labels
+- labels
+lib/api/entities/work_items/features/start_and_due_date.rb:
+- due_date
+- roll_up
+- start_date
+lib/api/entities/work_items/features/time_tracking.rb:
+- human_readable_attributes
+- human_time_estimate
+- human_total_time_spent
+- id
+- spent_at
+- summary
+- time_estimate
+- time_spent
+- timelogs
+- total_time_spent
+- user
+lib/api/entities/work_items/features/work_item_reference.rb:
+- confidential
+- global_id
+- id
+- iid
+- reference
+- state
+- title
+- web_path
+- web_url
+- work_item_type
+lib/api/entities/work_items/label.rb:
+- color
+- description
+- id
+- text_color
+- title
+lib/api/entities/work_items/permissions.rb:
+- admin_parent_link
+- admin_work_item
+- admin_work_item_link
+- clone_work_item
+- create_note
+- delete_work_item
+- mark_note_as_internal
+- move_work_item
+- read_work_item
+- report_spam
+- set_work_item_metadata
+- summarize_comments
+- update_work_item
+lib/api/entities/work_items/type.rb:
+- icon_name
+- id
+- name

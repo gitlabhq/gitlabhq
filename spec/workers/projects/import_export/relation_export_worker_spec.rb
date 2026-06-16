@@ -37,7 +37,7 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
 
       worker
 
-      expect(project_relation_export.reload.failed?).to eq(true)
+      expect(project_relation_export.reload.failed?).to be(true)
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
 
         worker
 
-        expect(project_relation_export.reload.queued?).to eq(true)
+        expect(project_relation_export.reload.queued?).to be(true)
       end
     end
 

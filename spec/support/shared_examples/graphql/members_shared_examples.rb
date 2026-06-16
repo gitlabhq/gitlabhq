@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a working membership object query' do |model_option|
-  let_it_be(:member_source) { member.source }
-  let_it_be(:member_source_type) { member_source.class.to_s.downcase }
+  let_it_be(:member_source, freeze: false) { member.source }
+  let_it_be(:member_source_type, freeze: false) { member_source.class.to_s.downcase }
 
   it 'contains edge to expected project' do
     expect(
@@ -22,18 +22,18 @@ RSpec.shared_examples 'a working membership object query' do |model_option|
 end
 
 RSpec.shared_examples 'querying members with a group' do
-  let_it_be(:root_group) { create(:group, :private) }
-  let_it_be(:group_1)    { create(:group, :private, parent: root_group, name: 'Main Group') }
-  let_it_be(:group_2)    { create(:group, :private, parent: root_group) }
+  let_it_be(:root_group, freeze: false) { create(:group, :private) }
+  let_it_be(:group_1, freeze: false)    { create(:group, :private, parent: root_group, name: 'Main Group') }
+  let_it_be(:group_2, freeze: false)    { create(:group, :private, parent: root_group) }
 
-  let_it_be(:user_1) { create(:user, name: 'test user') }
-  let_it_be(:user_2) { create(:user, name: 'test user 2') }
-  let_it_be(:user_3) { create(:user, name: 'another user 1') }
-  let_it_be(:user_4) { create(:user, name: 'another user 2') }
+  let_it_be(:user_1, freeze: false) { create(:user, name: 'test user') }
+  let_it_be(:user_2, freeze: false) { create(:user, name: 'test user 2') }
+  let_it_be(:user_3, freeze: false) { create(:user, name: 'another user 1') }
+  let_it_be(:user_4, freeze: false) { create(:user, name: 'another user 2') }
 
-  let_it_be(:root_group_member) { create(:group_member, user: user_4, group: root_group) }
-  let_it_be(:group_1_member)    { create(:group_member, user: user_2, group: group_1) }
-  let_it_be(:group_2_member)    { create(:group_member, user: user_3, group: group_2) }
+  let_it_be(:root_group_member, freeze: false) { create(:group_member, user: user_4, group: root_group) }
+  let_it_be(:group_1_member, freeze: false)    { create(:group_member, user: user_2, group: group_1) }
+  let_it_be(:group_2_member, freeze: false)    { create(:group_member, user: user_3, group: group_2) }
 
   let(:args) { {} }
   let(:base_args) { { relations: described_class.arguments['relations'].default_value } }
@@ -107,7 +107,7 @@ RSpec.shared_examples 'querying members with a group' do
       end
 
       context 'when filtering by non-existent user id' do
-        let_it_be(:non_member_user) { create(:user) }
+        let_it_be(:non_member_user, freeze: false) { create(:user) }
         let(:args) { { ids: [non_member_user.id] } }
 
         it 'returns empty result' do
@@ -125,7 +125,7 @@ RSpec.shared_examples 'querying members with a group' do
     end
 
     context 'when user can not see resource members' do
-      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_user, freeze: false) { create(:user) }
 
       subject(:group_members) do
         resolve(

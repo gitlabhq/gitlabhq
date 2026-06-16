@@ -25,6 +25,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete'],
   translations: {
     createdTimeagoLabel: s__('UserList|created %{timeago}'),
     deleteListTitle: s__('UserList|Delete %{name}?'),

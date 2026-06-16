@@ -13,6 +13,7 @@ import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_sele
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 
 export default {
+  name: 'RunnerCreateWizardRequiredFields',
   components: {
     GlButton,
     GlFormGroup,

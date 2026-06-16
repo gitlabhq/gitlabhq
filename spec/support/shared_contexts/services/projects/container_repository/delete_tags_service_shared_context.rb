@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'container repository delete tags service shared context' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :private) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be_with_reload(:repository) { create(:container_repository, :root, project: project) }
 
   let(:params) { { tags: tags } }

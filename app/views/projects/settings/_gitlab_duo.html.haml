@@ -1,0 +1,11 @@
+- if @project.licensed_ai_features_available?
+  = render ::Layouts::SettingsBlockComponent.new(s_('ProjectSettings|GitLab Duo'),
+    id: 'js-gitlab-duo-settings',
+    testid: 'gitlab-duo-settings-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = s_('ProjectSettings|Configure GitLab Duo features for this project.')
+    - c.with_body do
+      = form_for @project, html: { multipart: true, class: "duo-settings-form", id: duo_settings_form_id }, authenticity_token: true do |f|
+        %template.js-gitlab-duo-settings-form-data{ type: "application/json" }= gitlab_duo_settings_data(@project).to_json.html_safe
+        .js-gitlab-duo-settings-form{ data: { targetFormId: duo_settings_form_id } }

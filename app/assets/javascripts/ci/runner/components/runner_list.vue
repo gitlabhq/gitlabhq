@@ -29,6 +29,7 @@ const defaultFields = [
 ];
 
 export default {
+  name: 'RunnerList',
   components: {
     GlFormCheckbox,
     GlTableLite,

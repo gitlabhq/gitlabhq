@@ -44,6 +44,15 @@ no-jh-check:
   script:
     - scripts/no-dir-check jh
 
+unique-by-index-check:
+  extends:
+    - .preflight-job-base
+    - .preflight:rules:unique-by-index-check
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION_DEFAULT}
+  allow_failure: true
+  script:
+    - scripts/lint/check_unique_by_indexes.rb
+
 .pipeline-tier-base:
   needs: []
   extends:

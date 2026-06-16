@@ -14,11 +14,13 @@ RSpec.describe Mutations::Achievements::Award, feature_category: :user_profile d
   let(:mutation) { graphql_mutation(:achievements_award, params) }
   let(:achievement_id) { achievement&.to_global_id }
   let(:recipient_id) { recipient&.to_global_id }
+  let(:award_message) { nil }
   let(:params) do
     {
       achievement_id: achievement_id,
-      user_id: recipient_id
-    }
+      user_id: recipient_id,
+      award_message: award_message
+    }.compact
   end
 
   subject { post_graphql_mutation(mutation, current_user: current_user) }
@@ -96,6 +98,30 @@ RSpec.describe Mutations::Achievements::Award, feature_category: :user_profile d
         .to eq(achievement.to_global_id.to_s)
       expect(graphql_data_at(:achievements_award, :user_achievement, :user, :id))
         .to eq(recipient.to_global_id.to_s)
+    end
+
+    context 'with an award_message' do
+      let(:award_message) { 'For exceptional work' }
+
+      it 'creates an achievement with the award_message', :aggregate_failures do
+        expect { subject }.to change { Achievements::UserAchievement.count }.by(1)
+
+        user_achievement_id = GitlabSchema.parse_gid(
+          graphql_data_at(:achievements_award, :user_achievement, :id), expected_type: ::Achievements::UserAchievement
+        ).model_id
+
+        expect(Achievements::UserAchievement.find(user_achievement_id).award_message).to eq('For exceptional work')
+      end
+    end
+
+    context 'with an award_message that exceeds the maximum length' do
+      let(:award_message) { 'a' * 201 }
+
+      it 'returns a validation error' do
+        subject
+
+        expect(graphql_errors.to_s).to include('awardMessage is too long')
+      end
     end
   end
 end

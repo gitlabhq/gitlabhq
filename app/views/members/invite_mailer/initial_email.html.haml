@@ -27,7 +27,7 @@
         = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the following role: %{role}.%{br_tag}This is a %{role_type} role.")) % placeholders
     %p.invite-actions
       = link_to join_text, join_url, class: 'invite-btn-join'
-%tr.border-top
+%tr{ class: "!gl-border-t" }
   %td.text-content.mailer-align-left.half-width
     %h4
       = s_('InviteEmail|%{project_or_group} details') % { project_or_group: member_source.model_name.singular.capitalize }

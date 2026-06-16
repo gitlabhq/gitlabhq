@@ -537,7 +537,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
     end
 
     context 'with package file pending destruction' do
-      let_it_be(:package) do
+      let_it_be(:package, freeze: false) do
         create(:terraform_module_package, project: project, name: 'module-555/pending-destruction', version: '1.0.0')
       end
 

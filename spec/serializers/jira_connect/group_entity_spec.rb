@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::GroupEntity do
+RSpec.describe JiraConnect::GroupEntity, feature_category: :integrations do
   subject do
     described_class.new(subscription.namespace).as_json
   end
 
-  let(:subscription) { create(:jira_connect_subscription) }
+  let(:subscription) { build_stubbed(:jira_connect_subscription) }
 
   it 'contains all necessary elements of the group', :aggregate_failures do
     expect(subject[:name]).to eq(subscription.namespace.name)

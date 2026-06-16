@@ -195,6 +195,7 @@ RSpec.describe "Admin::Projects", :with_current_organization, feature_category: 
       fill_in 'Project description (optional)', with: 'Funny Dog'
 
       click_button 'Save changes'
+      expect(page).to have_content("Project 'Scooby-Doo' was successfully updated")
 
       visit edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param })
 

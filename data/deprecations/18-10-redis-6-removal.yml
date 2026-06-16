@@ -24,8 +24,9 @@
 
     See the following resources for migrating an external Redis 6 deployment:
 
-    - **AWS ElastiCache**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
-      [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
+    - **AWS ElastiCache**: ElastiCache for Redis 7.2 is not available on AWS. Migrate to
+      [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/).
+      For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
     - **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
       [GCP Memorystore documentation](https://cloud.google.com/memorystore/docs/redis/supported-versions).
     - **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can

@@ -1,0 +1,9 @@
+---
+name: delete_identity
+description: Grants the ability to delete user identities
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_identity

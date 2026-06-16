@@ -45,11 +45,6 @@ module Sidebars
           }
         end
 
-        override :has_pill?
-        def has_pill?
-          Feature.enabled?(:show_work_items_sidebar_count, context.current_user)
-        end
-
         override :pill_count_field
         def pill_count_field
           'openWorkItemsCount'
@@ -67,7 +62,7 @@ module Sidebars
           super.merge({
             pill_count: pill_count,
             pill_count_field: pill_count_field,
-            has_pill: has_pill?,
+            has_pill: true,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             item_id: :project_issue_list
           })

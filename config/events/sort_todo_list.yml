@@ -8,6 +8,8 @@ additional_properties:
   label:
     description: Sort direction chosen by the user
 product_group: engagement
+product_categories:
+- notifications
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
 tiers:

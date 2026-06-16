@@ -9,3 +9,9 @@ replication_targets:
   - name: clickhouse_main
     target: siphon_namespaces
     priority: 2
+    refresh_on_change:
+      - target_stream_identifier: projects
+        target_keys:
+          - project_namespace_id
+        source_keys:
+          - id

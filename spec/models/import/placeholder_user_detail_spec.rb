@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::PlaceholderUserDetail, type: :model, feature_category: :importers do
+RSpec.describe Import::PlaceholderUserDetail, feature_category: :importers do
   describe 'associations' do
     it 'belong to placeholder_user' do
       is_expected.to belong_to(:placeholder_user).class_name('User').inverse_of(:placeholder_user_detail)
@@ -28,13 +28,13 @@ RSpec.describe Import::PlaceholderUserDetail, type: :model, feature_category: :i
   end
 
   describe '.eligible_for_deletion' do
-    let!(:eligible_record1) do
+    let_it_be(:eligible_record1) do
       create(:import_placeholder_user_details,
         :eligible_for_deletion
       )
     end
 
-    let!(:eligible_record2) do
+    let_it_be(:eligible_record2) do
       create(:import_placeholder_user_details,
         deletion_attempts: 0,
         namespace: nil,
@@ -42,7 +42,7 @@ RSpec.describe Import::PlaceholderUserDetail, type: :model, feature_category: :i
       )
     end
 
-    let!(:ineligible_recent_attempt) do
+    let_it_be(:ineligible_recent_attempt) do
       create(:import_placeholder_user_details,
         deletion_attempts: 1,
         namespace: nil,
@@ -50,7 +50,7 @@ RSpec.describe Import::PlaceholderUserDetail, type: :model, feature_category: :i
       )
     end
 
-    let!(:ineligible_max_attempts) do
+    let_it_be(:ineligible_max_attempts) do
       create(:import_placeholder_user_details,
         deletion_attempts: 15,
         namespace: nil,
@@ -58,7 +58,7 @@ RSpec.describe Import::PlaceholderUserDetail, type: :model, feature_category: :i
       )
     end
 
-    let!(:ineligible_group_present) do
+    let_it_be(:ineligible_group_present) do
       create(:import_placeholder_user_details)
     end
 

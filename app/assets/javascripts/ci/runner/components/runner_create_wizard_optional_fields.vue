@@ -23,6 +23,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'RunnerCreateWizardOptionalFields',
   components: {
     GlForm,
     GlButton,

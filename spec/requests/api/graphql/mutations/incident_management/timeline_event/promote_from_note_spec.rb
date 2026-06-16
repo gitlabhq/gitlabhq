@@ -6,10 +6,10 @@ RSpec.describe 'Promote an incident timeline event from a comment', feature_cate
   include GraphqlHelpers
   include NotesHelper
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, developers: user) }
-  let_it_be(:incident) { create(:incident, project: project) }
-  let_it_be(:comment) { create(:note, project: project, noteable: incident, note: 'a' * 281) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, developers: user) }
+  let_it_be(:incident, freeze: false) { create(:incident, project: project) }
+  let_it_be(:comment, freeze: false) { create(:note, project: project, noteable: incident, note: 'a' * 281) }
 
   let(:input) { { note_id: comment.to_global_id.to_s } }
   let(:mutation) do

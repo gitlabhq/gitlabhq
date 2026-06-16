@@ -23,7 +23,10 @@ module API
         #   merge_request_iid (required)  - IID of MR
         # Examples:
         #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
-        desc 'List approvals for merge request' do
+        desc 'Retrieve approval state for a merge request' do
+          detail 'Retrieves the approval state for a specified merge request. In the response, `approved_by` ' \
+            'contains information about all approvers of the merge request, regardless of whether those approvals ' \
+            'satisfy any approval rule.'
           success ::API::Entities::MergeRequestApprovals
           failure [
             { code: 404, message: 'Not found' }
@@ -45,7 +48,10 @@ module API
         # Examples:
         #   POST /projects/:id/merge_requests/:merge_request_iid/approve
         #
-        desc 'Approve a merge request' do
+        desc 'Approve merge request' do
+          detail 'Approves a specified merge request. The currently authenticated user must be an eligible approver. ' \
+            'The `sha` parameter ensures you are approving the current version of the merge request. If defined, ' \
+            'the value must match the merge request’s HEAD commit SHA. A mismatch returns a `409 Conflict` response.'
           success code: 201, model: ::API::Entities::MergeRequestApprovals
           failure [
             { code: 404, message: 'Not found' },
@@ -81,7 +87,9 @@ module API
           present_approval(merge_request)
         end
 
-        desc 'Remove an approval from a merge request' do
+        desc 'Unapprove a merge request' do
+          detail 'Unapproves a merge request. Removes the approval for the currently authenticated user from a ' \
+            'specified merge request.'
           success code: 201, model: ::API::Entities::MergeRequestApprovals
           failure [
             { code: 404, message: 'Not found' },
@@ -102,8 +110,9 @@ module API
           present_approval(merge_request)
         end
 
-        desc 'Remove all merge request approvals' do
-          detail 'Clear all approvals of merge request. This feature was added in GitLab 15.4'
+        desc 'Reset approvals for a merge request' do
+          detail 'Resets all approvals for a specified merge request. Available only to bot users with a valid ' \
+            'project or group token. Human users receive a `401 Unauthorized` response.'
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }

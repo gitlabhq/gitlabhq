@@ -7,7 +7,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
 
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:work_item, refind: true) do
+  let_it_be_with_refind(:work_item) do
     create(:work_item, :confidential, project: project, description: '- [ ] A task in a list', lock_version: 3)
   end
 
@@ -82,6 +82,20 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
 
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::CreateFromTask }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:workItemCreateFromTask, input, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before do
+        allow(Gitlab::QueryLimiting).to receive(:enabled?).and_return(false)
+      end
     end
   end
 end

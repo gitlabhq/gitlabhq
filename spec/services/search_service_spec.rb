@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchService, feature_category: :global_search do
-  let_it_be(:user) { create(:user) }
+RSpec.describe SearchService, :with_current_organization, feature_category: :global_search do
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let_it_be(:accessible_group) { create(:group, :private) }
   let_it_be(:inaccessible_group) { create(:group, :private) }
@@ -92,6 +92,20 @@ RSpec.describe SearchService, feature_category: :global_search do
     subject { described_class.new(user, search: valid_search).search_type }
 
     it { is_expected.to eq('basic') }
+  end
+
+  describe '#user_requested_scope' do
+    it 'returns the scope param as provided by the user' do
+      service = described_class.new(user, scope: 'blobs', search: valid_search)
+
+      expect(service.user_requested_scope).to eq('blobs')
+    end
+
+    it 'returns nil when no scope param is provided' do
+      service = described_class.new(user, search: valid_search)
+
+      expect(service.user_requested_scope).to be_nil
+    end
   end
 
   describe '#show_snippets?' do
@@ -386,7 +400,8 @@ RSpec.describe SearchService, feature_category: :global_search do
         search_objects = described_class.new(
           user,
           snippets: 'true',
-          search: snippet.title).search_objects
+          search: snippet.title,
+          organization_id: current_organization.id).search_objects
 
         expect(search_objects.first).to eq snippet
       end

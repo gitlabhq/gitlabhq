@@ -109,7 +109,7 @@ Configuration changes requested with a [support ticket](https://support.gitlab.c
 - Are applied during your environment's weekly four-hour maintenance window.
 - Can be requested for options specified during onboarding or for optional features listed on this page.
 - May be postponed to the following week if GitLab needs to perform high-priority maintenance tasks.
-- Can't be applied outside the weekly maintenance window unless they qualify for [emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).
+- Can't be applied outside the weekly maintenance window unless they qualify for [emergency support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#how-to-engage-emergency-support).
 
 > [!note]
 > Even if a change request meets the minimum lead time, it might not be applied during the upcoming maintenance window.

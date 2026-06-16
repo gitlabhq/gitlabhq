@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::CommitStats do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   let(:commit) { Gitlab::Git::Commit.find(repository, TestEnv::BRANCH_SHA['feature']) }
 

@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Gitlab OIDC Authorization Code Flow', feature_category: :system_access do
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'https://example.com/oauth/callback', scopes: 'openid profile email api') }
-  let_it_be(:user) { create(:user, :with_namespace, email: 'test@example.com', organizations: [create(:organization)]) }
+  let_it_be(:user, freeze: false) do
+    create(:user, :with_namespace, email: 'test@example.com', organizations: [create(:organization)])
+  end
+
   let_it_be(:client_id) { application.uid }
   let_it_be(:client_secret) { application.secret }
 
@@ -77,6 +80,7 @@ RSpec.describe 'Gitlab OIDC Authorization Code Flow', feature_category: :system_
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(tokens).to include('access_token', 'id_token', 'expires_in')
+        expect(json_response['expires_in']).to be(Gitlab::CurrentSettings.oauth_access_token_expires_in)
       end
 
       it 'validates ID token structure' do

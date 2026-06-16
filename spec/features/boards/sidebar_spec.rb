@@ -12,7 +12,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   let_it_be(:label) { create(:label, project: project, name: 'Label') }
   let_it_be(:list) { create(:list, board: board, label: label, position: 0) }
 
-  let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, relative_position: 1) }
 
   before do
     project.add_maintainer(user)

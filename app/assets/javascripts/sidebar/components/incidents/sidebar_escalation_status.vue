@@ -9,6 +9,7 @@ import { getStatusLabel } from '../../utils';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 
 export default {
+  name: 'SidebarEscalationStatus',
   i18n,
   components: {
     EscalationStatus,

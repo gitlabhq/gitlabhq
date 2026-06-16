@@ -26,15 +26,20 @@ The granular token authorization system adds fine-grained permission checks to G
 - **Location**: `app/graphql/directives/authz/granular_scope.rb`
 - **Purpose**: Declares required permissions and boundary extraction strategy
 - **Arguments**:
-  - `permissions`: Array of required permission strings (e.g., `['read_issue']`)
-  - `boundary`: Method name to extract boundary from resolved object
-  - `boundary_argument`: Argument name containing the boundary
-  - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`, `instance`). Used for validation and documentation of the permission boundary
+  - `permissions`: Array of required permission strings (for example, `['read_issue']`).
+  - `boundary`: Method name to extract boundary from resolved object.
+  - `boundary_argument`: Argument name containing the boundary.
+  - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`,
+    `instance`). Used for validation and documentation of the permission boundary.
+  - `traversal`: When `true`, the directive verifies only that the token is scoped to the
+    boundary (`read_boundary`). The listed permissions are not enforced on the field
+    itself. Use for entry-point fields like `Query.group(fullPath:)` where downstream
+    fields enforce the real permissions.
 
 ### 3. Directive Finder
 
 - **Location**: `lib/gitlab/graphql/authz/directive_finder.rb`
-- **Purpose**: Locates applicable directives by checking field, owner type, implementing type, and return type
+- **Purpose**: Locates applicable directives in priority order: field, implementing type, return type, owner type
 - **Includes**: `TypeUnwrapper` module for unwrapping GraphQL type wrappers
 
 ### 4. Boundary Extractor
@@ -95,10 +100,23 @@ def authorization_enabled?(context)
 end
 ```
 
-- If not using a granular PAT, granular scope authorization is skipped (legacy PATs use existing scope authorization)
+- If not using a granular PAT, granular scope authorization is skipped (legacy PATs
+  use existing scope authorization).
 - Certain fields are automatically skipped:
-  - **Mutation response fields** (e.g., `createIssue.issue`) - Authorization happens on the mutation itself, not the response wrapper
-  - **Permission metadata fields** (e.g., `issue.userPermissions`) - These return permission information, not actual data
+  - **Mutation response fields** (for example, `createIssue.issue`). Authorization
+    happens on the mutation itself, not the response wrapper.
+  - **Permission metadata fields** (for example, `issue.userPermissions`). These
+    return permission information, not actual data.
+  - **Edge wrapper fields** (for example, `groupMembers.nodes`,
+    `groupMembers.cursor`). These traverse to the underlying node type, which
+    enforces authorization on its own fields.
+  - **Traversal to an authorized return type**. When a field has no own directive,
+    its owner type carries a directive, and the unwrapped return type carries its
+    own directive and has deeper authorized sub-fields, the owner-level directive
+    is skipped. The return type's directive applies when fields on the child object
+    are resolved. Leaf return types (all scalar fields) are not skipped because an
+    empty result would bypass the check entirely. For more details, see
+    [Traversal to an authorized return type](#traversal-to-an-authorized-return-type).
 
 **Step 2: Directive Discovery**
 
@@ -109,18 +127,21 @@ directive = DirectiveFinder.new(@field).find(object)
 The `DirectiveFinder` checks for directives in this priority order, **returning the first match found**:
 
 1. **Field-level directive** (`FIELD_DEFINITION`): Applied directly to the field
-1. **Owner type directive** (`OBJECT`): Applied to the type that owns the field
 1. **Implementing type directive** (for interfaces): Applied to the concrete type implementing an interface
    - Only checked when the field owner is an interface and an `object` is provided
-   - Resolves the actual model type (e.g., `Issue`) from `GitlabSchema.types`
+   - Resolves the actual model type (for example, `Issue`) from `GitlabSchema.types`
 1. **Return type directive**: Applied to the type returned by the field
-   - Always checked as a fallback if no directive found at previous levels
    - Unwraps GraphQL type wrappers to find the base type:
      - List types: `[Type]` → `Type`
      - NonNull types: `Type!` → `Type`
-     - Connection types: `TypeConnection` → `Type` (e.g., `IssueConnection` → `IssueType`)
+     - Connection types: `TypeConnection` → `Type` (for example, `IssueConnection` → `IssueType`)
    - Works with both `boundary_argument` and `boundary` strategies
    - When using `boundary` with an `:id` argument, enables ID fallback for boundary extraction
+1. **Owner type directive** (`OBJECT`): Applied to the type that owns the field
+   - Checked last so that a field leading to a leaf authorized type (for example,
+     `project.languages` → `RepositoryLanguageType`) uses that type's directive rather than
+     the containing type's directive (for example, `read_project`). This ensures the correct
+     permission is enforced even when the result is empty.
 
 **Step 3: Boundary Extraction**
 
@@ -267,7 +288,7 @@ authorize_with_cache!(context, boundary, permissions)
 
 This method:
 
-1. **Checks cache**: `context[:authz_cache]` to avoid duplicate checks
+1. **Checks cache**: `context[:authz_cache]` to avoid duplicate checks.
 1. **Calls authorization service**:
 
    ```ruby
@@ -278,9 +299,13 @@ This method:
    ).execute
    ```
 
-1. **Verifies**: Token has required permissions for the boundary
-1. **Raises error** if unauthorized: `raise_resource_not_available_error!(response.message)`
-1. **Caches result** to avoid redundant checks
+1. **Verifies**: Token has required permissions for the boundary.
+1. **Raises error** if unauthorized: `raise_resource_not_available_error!(response.message)`.
+1. **Caches result** to avoid redundant checks.
+
+When the matched directive has `traversal: true`, the extension uses a separate
+authorization path that only verifies the boundary is visible to the token. For
+more details, see [Entry-point fields with `traversal: true`](#entry-point-fields-with-traversal-true).
 
 **Step 5: Field Resolution**
 
@@ -392,6 +417,112 @@ end
 1. Authorization service checks: Does token have `read_issue` permission for this project?
 1. If yes: field resolves (Issue is fetched again by resolver)
 1. If no: raises error before field resolution
+
+### Scenario 4: Entry-point field with `traversal: true`
+
+**GraphQL Request:**
+
+```graphql
+query {
+  group(fullPath: "gitlab-org") {
+    groupMembers {
+      nodes {
+        id
+      }
+    }
+  }
+}
+```
+
+**Entry-point directive** on `Query.group`:
+
+```ruby
+field :group, Types::GroupType,
+  resolver: Resolvers::GroupResolver,
+  directives: granular_scope_directive(
+    permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
+    traversal: true
+  )
+```
+
+**Timeline:**
+
+1. Extension called for `group` field.
+1. Directive resolved on the field, with `traversal: true`.
+1. Boundary extracted from `arguments[:full_path]` (`"gitlab-org"`).
+1. Authorization service runs in traversal mode and verifies
+   `token.can?(:read_boundary, boundary)`. The `read_group` permission is not
+   enforced.
+1. Extension called for `groupMembers` field. Owner is `GroupType` (which carries
+   a `read_group` directive). Return type is `GroupMemberType` (which carries a
+   `read_member` directive). The traversal skip applies, so no token check fires.
+1. Extension called for `nodes` field. Skipped as an edge wrapper.
+1. Extension called for `id` field on each `GroupMember`. Owner is
+   `GroupMemberType`, which requires `read_member`. The token is checked for
+   `read_member` against the group boundary.
+
+The token reaches the members data with only `read_member`, matching the REST
+endpoint `GET /api/v4/groups/:id/members`.
+
+## Traversal to an authorized return type
+
+A field on a granular-token-authorized type would otherwise inherit the owner
+type's directive. The owner directive becomes redundant when the field's
+unwrapped return type also carries a granular-token directive. The return
+type's directive enforces authorization when fields on the child object
+resolve. The `SkipRules` class detects this case and skips the owner-level
+check.
+
+The skip applies when **all** of the following are true:
+
+- The field has no own granular-token directive (an explicit field-level
+  directive always wins).
+- The field's owner type carries a granular-token directive.
+- The field's unwrapped return type (after stripping list, non-null, and
+  connection wrappers) carries a granular-token directive.
+- The return type has at least one field whose own unwrapped return type carries
+  a granular-token directive (that is, it is not a "leaf" type whose fields all
+  return plain scalars).
+
+The fourth condition is required for safety: when the return type is a leaf
+(all its fields return scalars, for example `RepositoryLanguageType` or
+`PushRulesType`), no per-item resolver fires for an empty collection or a `nil`
+result. Skipping the collection-level check would let an empty result bypass
+authorization entirely. For leaf types, the collection-level check is the only
+enforcement point, so the skip must not fire.
+
+**Effect**: a token with only the child resource's permission can traverse to it
+through the parent, without also needing the parent's read permission. Data
+fields on the parent (which return scalars or other unauthorized types) still
+require the parent's permission.
+
+**Example**: `Group.groupMembers` returns `GroupMemberType`. Both `GroupType`
+and `GroupMemberType` declare granular-token directives. Resolving
+`group.groupMembers` no longer requires `read_group`. Resolving any field on
+each `GroupMember` requires `read_member`. Resolving `group.name` (a scalar)
+still requires `read_group`.
+
+## Entry-point fields with `traversal: true`
+
+Top-level fields like `Query.group(fullPath:)` and `Query.project(fullPath:)`
+exist to resolve a boundary from a path argument. They do not expose data
+themselves. Downstream fields enforce the actual permissions. Set
+`traversal: true` on the directive to declare this intent.
+
+When `traversal: true`:
+
+- The boundary is resolved from `boundary_argument` as usual.
+- The authorization service runs in traversal mode and checks only
+  `token.can?(:read_boundary, boundary)`. The `permissions` argument is not
+  enforced. It remains in the directive for documentation.
+- If no boundary resolves, or the boundary is not visible to the token, the
+  service returns `404 Not Found` and the field returns `null` with an error.
+
+The traversal cache key is `[:traversal, boundary.class, boundary.namespace&.id]`,
+separate from permission-based cache keys.
+
+`traversal: true` only applies to `project` and `group` boundary types. For all other
+boundary types, the extension falls back to the regular permission check.
 
 ## Performance Optimizations
 
@@ -528,10 +659,16 @@ raise_resource_not_available_error!(response.message)
    - **Note**: This validation runs as part of CI to ensure all directive permissions reference valid assignable permissions
 
 1. **Multiple directives found**
-   - **Behavior**: Uses first match in priority order (field → owner → implementing type → return type)
-   - **Result**: May not use expected directive if multiple apply
-   - **Best practice**: Apply directive at only one level per field to avoid confusion
-   - **Note**: The directive finder stops at the first match and does not check subsequent levels
+   - **Behavior**: Uses first match in priority order (field, implementing type,
+     return type, owner).
+   - **Result**: May not use expected directive if multiple apply.
+   - **Best practice**: Apply directive at only one level per field to avoid
+     confusion.
+   - **Note**: The directive finder stops at the first match and does not check
+     subsequent levels. The owner-level directive is also skipped when the field
+     traverses to an authorized return type with deeper authorized sub-fields.
+     For more details, see
+     [Traversal to an authorized return type](#traversal-to-an-authorized-return-type).
 
 ## See Also
 

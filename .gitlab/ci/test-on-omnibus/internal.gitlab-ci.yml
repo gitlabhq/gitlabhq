@@ -1,5 +1,13 @@
 # E2E test job base used in pipelines triggered within gitlab projects which have access to `gitlab` repo code
 
+# Builds the QA image on demand so a single play on `e2e:test-on-omnibus-ee`
+# builds the image (here, in `.pre`) and then runs the tests. Shares its
+# definition with the parent `build-qa-image` via `.build-qa-image-base`.
+build-qa-image:
+  extends:
+    - .build-qa-image-base
+  stage: .pre
+
 .omnibus-e2e:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-docker-${DOCKER_VERSION}
   extends:

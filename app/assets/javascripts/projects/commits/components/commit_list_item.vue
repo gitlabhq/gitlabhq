@@ -73,6 +73,10 @@ export default {
         label: this.isCollapsed ? 'collapse' : 'expand',
       });
     },
+    onRowClick() {
+      if (!this.commit.description) return;
+      this.onClick();
+    },
   },
 };
 </script>
@@ -81,7 +85,17 @@ export default {
   <li
     class="commit-list-item commit-card gl-border gl-overflow-hidden gl-rounded-lg @md/panel:gl-ml-7"
   >
-    <div class="gl-flex gl-w-full gl-items-center gl-px-4 gl-py-3">
+    <div
+      class="gl-flex gl-w-full gl-items-center gl-px-4 gl-py-3 focus:-gl-outline-offset-2"
+      :class="{ 'gl-cursor-pointer': commit.description }"
+      :tabindex="commit.description ? 0 : -1"
+      :aria-expanded="commit.description ? String(!isCollapsed) : undefined"
+      data-testid="commit-row"
+      @click="onRowClick"
+      @keydown.enter="onRowClick"
+      @keydown.space.prevent="onRowClick"
+    >
+      <!-- Prevent the description toggle -->
       <user-avatar-link
         v-if="commit.author"
         :link-href="commit.author.webPath"
@@ -89,6 +103,7 @@ export default {
         :img-alt="avatarLinkAltText"
         :img-size="32"
         class="gl-my-2 gl-mr-5 gl-hidden @md/panel:gl-block"
+        @click.stop
       />
       <user-avatar-image
         v-else
@@ -97,19 +112,22 @@ export default {
         :size="32"
       />
       <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @md/panel:gl-flex">
-        <h3 class="gl-m-0 gl-min-w-0 gl-grow gl-text-base">
+        <h3 class="gl-m-0 gl-min-w-0 gl-grow gl-pt-1 gl-text-base @md/panel:gl-pt-0">
           <div class="gl-flex">
+            <!-- Prevent the description toggle -->
             <gl-link
               :href="commit.webPath"
-              class="gl-inline-block gl-min-w-0 gl-max-w-full gl-truncate gl-font-bold gl-text-default hover:gl-text-default"
+              class="gl-inline-block gl-min-w-0 gl-max-w-full gl-font-bold gl-text-default hover:gl-text-default @md/panel:gl-truncate"
               data-testid="commit-title-link"
-              :class="{ 'gl-italic': !commit.message }"
               :title="commit.title"
+              @click.stop
             >
               {{ commit.title }}
             </gl-link>
           </div>
-          <div class="gl-text-wrap gl-text-sm gl-font-normal !gl-text-subtle">
+          <div
+            class="gl-text-wrap gl-pb-2 gl-pt-1 gl-text-sm gl-font-normal !gl-text-subtle @md/panel:gl-pb-0 @md/panel:gl-pt-0"
+          >
             <span
               v-if="commit.author"
               :data-user-id="userId"
@@ -117,10 +135,12 @@ export default {
               data-testid="commit-user-popover"
               class="js-user-popover"
             >
+              <!-- Prevent the description toggle -->
               <gl-link
                 :href="commit.author.webPath"
                 class="js-user-link gl-text-default"
                 data-testid="commit-author-link"
+                @click.stop
               >
                 {{ commit.author.name }}</gl-link
               >
@@ -139,7 +159,8 @@ export default {
             }}</span>
           </div>
         </h3>
-        <div class="gl-flex gl-items-center gl-gap-4">
+        <!-- Prevent the description toggle -->
+        <div class="gl-flex gl-items-center gl-gap-4" @click.stop>
           <badges :commit="commit" />
           <action-buttons
             :is-collapsed="isCollapsed"
@@ -149,15 +170,12 @@ export default {
           />
         </div>
       </div>
-      <overflow-menu
-        :commit="commit"
-        class="gl-block @md/panel:gl-hidden"
-        data-testid="overflow-menu"
-      />
+      <!-- Prevent the description toggle -->
       <div
         v-if="commit.description"
-        class="gl-border-l gl-ml-3 gl-block gl-h-7 gl-border-l-section @md/panel:gl-hidden"
+        class="gl-block @md/panel:gl-hidden"
         data-testid="narrow-screen-expand-collapse-button-container"
+        @click.stop
       >
         <expand-collapse-button
           :is-collapsed="isCollapsed"
@@ -167,6 +185,13 @@ export default {
           @click="onClick"
         />
       </div>
+      <!-- Prevent the description toggle -->
+      <overflow-menu
+        :commit="commit"
+        class="gl-block @md/panel:gl-hidden"
+        data-testid="overflow-menu"
+        @click.stop
+      />
     </div>
 
     <gl-collapse :visible="!isCollapsed">

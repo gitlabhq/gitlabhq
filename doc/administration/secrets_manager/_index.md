@@ -7,15 +7,16 @@ title: GitLab Secrets Manager (OpenBao)
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16319) in GitLab 18.8 as an experiment, made available to some initial testers in a closed [beta](../../policy/development_stages_support.md#beta) in GitLab 18.8.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
 
 {{< /history >}}
 
@@ -24,7 +25,7 @@ an open-source secrets management solution. OpenBao provides secure storage, acc
 for secrets used in your GitLab instance.
 
 GitLab CI/CD jobs using secrets from the GitLab Secrets Manager must use
-[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 18.6 or later.
+[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 19.0 or later.
 
 ## OpenBao architecture
 
@@ -34,8 +35,7 @@ OpenBao integrates with GitLab as an optional component that runs in parallel to
 - OpenBao stores data in PostgreSQL.
   The Helm chart configures OpenBao to use a separate logical database on the same PostgreSQL instance.
   Configure the connection using `global.openbao.psql` in the Helm chart.
-- OpenBao gets the unseal key from a secret store.
-- OpenBao reads the unseal key from a Kubernetes secret mounted by the Helm chart.
+- OpenBao gets the unseal key from a configured secret store (by default, a Kubernetes secret mounted by the Helm chart).
 - OpenBao posts audit logs to the Rails backend when audit logs are enabled.
 
 ```mermaid
@@ -65,8 +65,7 @@ and optionally multiple standby nodes that take over if the active node fails.
 Prerequisites:
 
 - Administrator access.
-- GitLab 18.8 or later.
-- For installing OpenBao alongside a Linux package instance, GitLab 19.0 or later.
+- GitLab 19.0 or later.
 - A Kubernetes cluster.
 - For Cloud Native GitLab deployments, an external (non-Omnibus) PostgreSQL instance.
   The external PostgreSQL instance is required by the GitLab Helm chart for Cloud Native deployments,
@@ -190,6 +189,29 @@ Each secret, including its metadata and stored versions, requires approximately 
 Storage growth is negligible for all reference architecture tiers.
 Allocating 5 to 10 GB of database storage provides ample headroom.
 
+## Enable GitLab Secrets Manager
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235502) in GitLab 19.0
+
+{{< /history >}}
+
+When Secrets Manager is enabled for the instance,
+you can then enable it for specific [groups and projects](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager).
+
+Prerequisites:
+
+- Administrator access.
+- OpenBao must be installed and configured.
+
+To enable the Secret Manager for the instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Secrets Manager**.
+1. Turn on the **Secrets Manager** toggle.
+
 ## Monitor your OpenBao deployment
 
 Use the following queries to verify that your deployment is correctly sized and to
@@ -238,6 +260,54 @@ sum(rate(container_cpu_cfs_periods_total{container="openbao-server"}[5m]))
 A throttle ratio above 0.25 (25%) indicates the CPU limit is too low for the current workload.
 When OpenBao is throttled, goroutines waiting for CPU time cause increased secret fetch latency.
 
+### OpenBao metrics
+
+Use OpenBao Prometheus metrics to monitor request latency, storage backend performance, cache
+efficiency, and node health.
+
+By default, OpenBao serves metrics on an unauthenticated listener on port `8209` at the path `/v1/sys/metrics`.
+Metric names use the `openbao_` prefix, and OpenBao retains metric data for 24 hours.
+To change the port, metrics prefix, or retention time, see the
+[monitoring configuration options](https://docs.gitlab.com/charts/charts/openbao/#monitoring-configuration-options).
+
+The metrics port is not exposed through a service, so configure your monitoring to scrape the
+OpenBao pods directly.
+
+If you use the Prometheus Operator, the GitLab chart includes a PodMonitor
+that is disabled by default. To enable it, set `openbao.podMonitor.enabled` to `true`.
+
+These metrics are the most useful for operating the deployment:
+
+| Metric                               | Type    | Description |
+|--------------------------------------|---------|-------------|
+| `openbao_core_active`                | Gauge   | Whether the node is the active node (`1`) or a standby node (`0`). |
+| `openbao_core_unsealed`              | Gauge   | Whether the node is unsealed (`1`) or sealed (`0`). |
+| `openbao_core_in_flight_requests`    | Gauge   | Number of requests being processed concurrently. |
+| `openbao_core_handle_request`        | Summary | Latency of request handling. |
+| `openbao_postgres_get`               | Summary | Time to read an entry from the PostgreSQL storage backend. |
+| `openbao_postgres_put`               | Summary | Time to write an entry to the PostgreSQL storage backend. |
+| `openbao_postgres_list`              | Summary | Time to list entries in the PostgreSQL storage backend. |
+| `openbao_postgres_delete`            | Summary | Time to delete an entry from the PostgreSQL storage backend. |
+| `openbao_barrier_get`                | Summary | Time to read an entry through the encryption barrier. |
+| `openbao_barrier_put`                | Summary | Time to write an entry through the encryption barrier. |
+| `openbao_barrier_list`               | Summary | Time to list entries through the encryption barrier. |
+| `openbao_barrier_delete`             | Summary | Time to delete an entry through the encryption barrier. |
+| `openbao_cache_hit`                  | Counter | Number of cache hits. |
+| `openbao_cache_miss`                 | Counter | Number of cache misses. |
+| `openbao_cache_write`                | Counter | Number of cache writes. |
+| `openbao_audit_log_request_failure`  | Counter | Number of audit log request failures. |
+| `openbao_audit_log_response_failure` | Counter | Number of audit log response failures. |
+| `openbao_runtime_alloc_bytes`        | Gauge   | Bytes of memory allocated by the OpenBao process. |
+
+Summary metrics expose `_count`, `_sum`, and quantile series (`0.5`, `0.9`, and `0.99`). To
+calculate an average, divide the rate of the `_sum` series by the rate of the `_count` series, as
+shown in [Confirm latency is elevated](troubleshooting.md#confirm-latency-is-elevated).
+
+For the thresholds and diagnostic queries that use these metrics, see
+[Diagnose slow secret operations](troubleshooting.md#diagnose-slow-secret-operations).
+
+For the complete list of OpenBao metrics, see [OpenBao telemetry metrics](https://openbao.org/docs/internals/telemetry/metrics/all/).
+
 ### Health check endpoints
 
 OpenBao provides health check endpoints for monitoring:
@@ -246,18 +316,6 @@ OpenBao provides health check endpoints for monitoring:
 - `<your-openbao-url>/v1/sys/seal-status`: Returns the seal status
 
 You can integrate these endpoints with your monitoring system.
-
-## Backup and restore
-
-OpenBao stores data in a separate logical database on PostgreSQL. Back up this database alongside your
-regular GitLab backup to ensure secrets can be restored after a failure.
-
-For detailed backup and restore procedures specific to OpenBao, see the [OpenBao backup documentation](https://docs.gitlab.com/charts/charts/openbao/#back-up-openbao).
-
-## Recovery key management
-
-For information about managing the OpenBao recovery key, including storing, viewing, and using it
-to generate a root token, see [recovery key management](recovery_key.md).
 
 ## High availability
 
@@ -292,6 +350,15 @@ For more information, see
 OpenBao supports [Geo](../geo/_index.md) deployments. OpenBao is deployed on both the primary and
 secondary Geo sites, but only the primary site runs an active OpenBao node.
 
+> [!warning]
+> OpenBao does not support Geo failover to a secondary site that uses a different domain. If the
+> secondary site keeps its own domain instead of updating DNS to point the primary domain to it,
+> you must manually re-provision JWT authentication for every project and group where GitLab Secrets
+> Manager is enabled. Re-provisioning applies at the root level and for each namespace, and is
+> time-consuming for large deployments. A migration tool is being proposed in
+> [issue 595722](https://gitlab.com/gitlab-org/gitlab/-/issues/595722). Until a tool exists, update
+> DNS records so the primary domain points to the promoted secondary site.
+
 ### OpenBao behavior in Geo
 
 On the primary site, OpenBao runs as an active
@@ -318,16 +385,22 @@ Prerequisites:
 - OpenBao must be installed and working on the primary site before you deploy it on the secondary.
   For more information, see [Install OpenBao](#install-openbao).
 
-1. The secondary OpenBao must use the same unseal key as the primary to decrypt replicated data.
-   Copy the `gitlab-openbao-unseal` Kubernetes secret from the primary cluster to the secondary
-   cluster:
+1. The secondary OpenBao must use the same unseal configuration as the primary to decrypt replicated data.
+   The steps depend on your configured unseal method:
 
-   ```shell
-   kubectl --namespace gitlab get secret gitlab-openbao-unseal -o yaml
-   ```
+   - Kubernetes secret (default): Copy the `gitlab-openbao-unseal` Kubernetes secret from the
+     primary cluster to the secondary cluster:
 
-   Apply the exported secret to the secondary cluster. For more information, see
-   [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets).
+     ```shell
+     kubectl --namespace gitlab get secret gitlab-openbao-unseal -o yaml
+     ```
+
+     Apply the exported secret to the secondary cluster. For more information, see
+     [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets).
+
+   - KMS-based auto-unseal: Configure the secondary cluster with the same KMS key.
+     For more information, see
+     [Unsealing and initialization options](https://docs.gitlab.com/charts/charts/openbao/#unsealing-and-initialization-options).
 
 1. If you plan to update the DNS record of the primary domain to point to the secondary site during failover,
    you might want to configure OpenBao accordingly ahead of time.
@@ -342,7 +415,7 @@ Prerequisites:
    ```
 
    For more information on chart configuration options,
-   see [Geo configuration](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration).
+   see the [OpenBao chart documentation](https://docs.gitlab.com/charts/charts/openbao/).
 
 1. Deploy the GitLab Helm chart on the secondary site. OpenBao pods start and remain in standby
    mode. This is expected.
@@ -369,55 +442,10 @@ Prerequisites:
 
 ## Troubleshooting
 
-When working with the Secrets Manager, you might encounter the following issues.
+To diagnose deployment, connectivity, provisioning, sealing, database, audit, and Geo
+problems, see [Troubleshooting OpenBao](troubleshooting.md).
 
-### Troubleshoot Geo deployments
+## Maintenance
 
-| Symptom | Cause | Resolution |
-|---------|-------|------------|
-| `cipher: message authentication failed` or `unknown key ID` in secondary OpenBao logs | Unseal key mismatch between primary and secondary | Copy `gitlab-openbao-unseal` from the primary cluster to the secondary cluster and restart OpenBao pods. |
-| `failed to acquire lock` in secondary OpenBao logs | OpenBao standby on read-only database | Expected behavior. No action required. |
-| `cannot execute INSERT in a read-only transaction` in secondary OpenBao logs | OpenBao attempting leader election on read replica | Expected behavior. No action required. |
-| JWT authentication fails after Geo failover | `jwt_audience` does not match `boundAudiences` in OpenBao | Set `jwt_audience` to the primary OpenBao URL on both sites. |
-
-### Diagnose slow secret operations
-
-Use this section when CI/CD jobs are slow to fetch secrets or secret operations time out.
-
-#### Confirm latency is elevated
-
-Use the following query to measure average request latency in milliseconds.
-The query works at any traffic level, including low-traffic deployments:
-
-```prometheus
-rate(openbao_core_handle_request_sum[5m])
-/
-rate(openbao_core_handle_request_count[5m])
-```
-
-Under normal load, average latency across all request types is typically 3–7 ms.
-Investigate if average latency consistently exceeds 20 ms.
-
-When OpenBao is actively processing requests, use the following query for P99 latency:
-
-```prometheus
-openbao_core_handle_request{quantile="0.99"}
-```
-
-Normal P99 is below 10 ms. This query returns `NaN` when OpenBao is idle because
-the summary window has no recent observations. Use the rate-based query in that case.
-
-#### Identify potential issues
-
-| Potential issue             | What to check                   | Query                                                                       | Threshold           | Action                                                             |
-|-----------------------------|---------------------------------|-----------------------------------------------------------------------------|---------------------|--------------------------------------------------------------------|
-| CPU limit too low           | CFS throttle ratio              | [CPU throttling query](#cpu-throttling)                                     | > 25%               | Increase CPU limit                                                 |
-| Demand exceeds CPU capacity | CPU utilization                 | [CPU utilization query](#cpu-utilization)                                   | > 50% of request    | Scale to the next row in the [sizing table](#pod-resources)        |
-| Request surge               | In-flight requests              | `openbao_core_in_flight_requests`                                           | Sustained above 5   | Transient. Monitor for recurrence.                                 |
-| PostgreSQL bottleneck       | Average PostgreSQL read latency | `rate(openbao_postgres_get_sum[5m]) / rate(openbao_postgres_get_count[5m])` | > 5 ms              | Check PostgreSQL resources and connection pool                     |
-| Memory pressure             | Memory utilization              | [Memory utilization query](#memory-utilization)                             | Near memory request | Increase memory using the [namespace formula](#memory-utilization) |
-
-If PostgreSQL latency is elevated, check whether the connection pool is saturated.
-If all connections are busy, additional requests queue and cause latency.
-For connection pool configuration, see [Database resources](#database-resources).
-Verify connection count in your PostgreSQL monitoring or in the OpenBao logs.
+To back up and restore OpenBao, manage the recovery key, or recover OpenBao authentication, see
+[Maintain OpenBao](maintenance.md).

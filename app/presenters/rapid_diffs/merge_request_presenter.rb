@@ -6,7 +6,7 @@ module RapidDiffs
     delegator_override_with ::Gitlab::Utils::StrongMemoize
     extend ::Gitlab::Utils::Override
 
-    presents ::MergeRequest, as: :resource
+    presents ::MergeRequests::VersionedMergeRequest, as: :resource
 
     attr_reader :conflicts, :current_user
 
@@ -14,10 +14,7 @@ module RapidDiffs
       subject, diff_view:, diff_options:,
       current_user: nil, request_params: nil, environment: nil, conflicts: nil
     )
-      super(
-        ::MergeRequests::VersionedMergeRequest.from_diff_options(subject, diff_options),
-        diff_view:, diff_options:, current_user:, request_params:, environment:
-      )
+      super(subject, diff_view:, diff_options:, current_user:, request_params:, environment:)
       @conflicts = conflicts
     end
 
@@ -31,6 +28,18 @@ module RapidDiffs
 
     def diff_file_endpoint
       diff_file_project_merge_request_path(resource.project, resource, diff_options_from_params)
+    end
+
+    def coverage_endpoint
+      return unless resource.has_coverage_reports?
+
+      coverage_reports_project_merge_request_path(resource.project, resource, format: :json)
+    end
+
+    def codequality_endpoint
+      return unless resource.has_codequality_reports?
+
+      codequality_reports_project_merge_request_path(resource.project, resource, format: :json)
     end
 
     override(:reload_stream_url)
@@ -74,6 +83,10 @@ module RapidDiffs
 
     def project_path
       resource.project.full_path
+    end
+
+    def project_name
+      resource.project.name_with_namespace
     end
 
     def user_permissions
@@ -133,8 +146,17 @@ module RapidDiffs
         resource,
         diff_id: request_params[:diff_id],
         start_sha: request_params[:start_sha],
-        commit_id: request_params[:commit_id]
+        commit_id: request_params[:commit_id],
+        only_context_commits: request_params[:only_context_commits]
       ).as_json
+    end
+
+    override(:empty_state_type)
+    def empty_state_type
+      return :initial_preparation if resource.initial_preparation?
+      return :already_merged if resource.changes_already_in_target?
+
+      super
     end
 
     protected

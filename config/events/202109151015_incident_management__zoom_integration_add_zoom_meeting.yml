@@ -4,6 +4,8 @@ action: add_zoom_meeting
 extra_properties:
 identifiers:
 product_group: platform_insights
+product_categories:
+- incident_management
 milestone: "12.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18620
 tiers:

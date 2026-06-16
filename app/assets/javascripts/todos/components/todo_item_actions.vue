@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change'],
   computed: {
     isDone() {
       return this.todo.state === TODO_STATE_DONE;

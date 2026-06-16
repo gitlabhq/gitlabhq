@@ -1,3 +1,4 @@
+//nolint:dupl // Similar structure to listblobs.go but different protobuf types
 package git
 
 import (

@@ -16,7 +16,7 @@ module API
 
       def self.create_issue_mcp_params
         [
-          :id, :title, :description, :assignee_ids, :milestone_id, :labels, :confidential
+          :id, :title, :description, :assignee_ids, :milestone_id, :milestone, :labels, :confidential
         ]
       end
 
@@ -29,10 +29,12 @@ module API
           :description,
           :discussion_locked,
           :due_date,
+          :start_date,
           :labels,
           :add_labels,
           :remove_labels,
           :milestone_id,
+          :milestone,
           :state_event,
           :title,
           :issue_type

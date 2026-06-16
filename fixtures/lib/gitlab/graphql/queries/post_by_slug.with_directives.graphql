@@ -1,0 +1,11 @@
+query postBySlugWithDirectives($skipField: Boolean = false) {
+  post(slug: "validating-queries") {
+    title @skip(if: $skipField)
+    content @include(if: $skipField)
+    author @include(if: $skipField) {
+      name
+      handle
+      verified
+    }
+  }
+}

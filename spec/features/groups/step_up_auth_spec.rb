@@ -17,20 +17,11 @@ RSpec.describe 'Group step-up authentication', :with_current_organization, :js, 
   end
 
   let(:provider_oidc_config_with_step_up_auth) do
-    GitlabSettings::Options.new(
-      name: provider_oidc,
-      step_up_auth: {
-        namespace: {
-          id_token: {
-            required: { acr: 'gold' }
-          }
-        }
-      }
-    )
+    build(:omniauth_provider_config, :with_namespace_scope, provider_name: provider_oidc)
   end
 
   let(:provider_oidc_config_without_step_up_auth) do
-    GitlabSettings::Options.new(name: provider_oidc)
+    build(:omniauth_provider_config, :no_step_up_auth, provider_name: provider_oidc)
   end
 
   let(:additional_info_rejected_step_up_auth) { { extra: { raw_info: { acr: 'bronze' } } } }
@@ -230,7 +221,7 @@ RSpec.describe 'Group step-up authentication', :with_current_organization, :js, 
 
     # rubocop:disable RSpec/AvoidConditionalStatements -- Testing deterministic behavior after sign-in: either success or fail.
     if expect_fail
-      expect(page).to have_current_path(new_group_step_up_auth_path(group))
+      expect(page).to have_content('Step-up authentication required.')
     else
       expect(page).to have_current_path(group_path(group))
     end

@@ -753,9 +753,17 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
 
     context 'with PyPI PEP 503 normalization' do
-      pypi_type = Packages::Package.package_types[:pypi]
+      let(:pypi_type) { Packages::Package.package_types[:pypi] }
 
       it_behaves_like 'PEP 503 normalized matching' do
+        let!(:pep503_project) { create(:project) }
+        let!(:pep503_rule) do
+          create(:package_protection_rule,
+            project: pep503_project,
+            package_type: :pypi,
+            package_name_pattern: 'my-package*')
+        end
+
         let(:find_result) do
           result = described_class.for_push_exists_for_projects_and_packages(
             [[pep503_project.id, package_name, pypi_type]]

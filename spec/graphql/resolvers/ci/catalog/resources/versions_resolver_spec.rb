@@ -9,23 +9,23 @@ RSpec.describe Resolvers::Ci::Catalog::Resources::VersionsResolver, feature_cate
   let(:search) { nil }
   let(:args) { { name: name, search: search }.compact }
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
   let(:ctx) { { current_user: current_user } }
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:resource) { create(:ci_catalog_resource, :published, project: project) }
-  let_it_be(:release_v1) { create(:release, project: project, tag: '1.0.0') }
-  let_it_be(:release_v2) { create(:release, project: project, tag: '2.0.0') }
-  let_it_be(:release_v2_beta) { create(:release, project: project, tag: '2.0.0-beta') }
-  let_it_be(:version_v1) do
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, :published, project: project) }
+  let_it_be(:release_v1, freeze: false) { create(:release, project: project, tag: '1.0.0') }
+  let_it_be(:release_v2, freeze: false) { create(:release, project: project, tag: '2.0.0') }
+  let_it_be(:release_v2_beta, freeze: false) { create(:release, project: project, tag: '2.0.0-beta') }
+  let_it_be(:version_v1, freeze: false) do
     create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v1, semver: '1.0.0')
   end
 
-  let_it_be(:version_v2) do
+  let_it_be(:version_v2, freeze: false) do
     create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v2, semver: '2.0.0')
   end
 
-  let_it_be(:version_v2_beta) do
+  let_it_be(:version_v2_beta, freeze: false) do
     create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v2_beta, semver: '2.0.0-beta')
   end
 

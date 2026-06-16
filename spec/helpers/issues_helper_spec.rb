@@ -157,8 +157,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let_it_be_with_reload(:project1) { create(:project, service_desk_enabled: true) }
     let_it_be_with_reload(:project2) { create(:project, service_desk_enabled: true) }
     let_it_be(:support_bot) { create(:support_bot) }
-    let_it_be_with_reload(:old_issue) { create(:issue, author: support_bot, project: project1) }
-    let_it_be_with_reload(:new_issue) { create(:issue, author: support_bot, project: project2) }
+    let_it_be_with_reload(:old_issue) { create(:issue, :ticket, author: support_bot, project: project1) }
+    let_it_be_with_reload(:new_issue) { create(:issue, :ticket, author: support_bot, project: project2) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }

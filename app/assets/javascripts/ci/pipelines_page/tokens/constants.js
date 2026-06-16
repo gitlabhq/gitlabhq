@@ -53,4 +53,8 @@ export const PIPELINE_SOURCES = [
     text: s__('PipelineSource|Agent Session'),
     value: 'duo_workflow',
   },
+  {
+    text: s__('PipelineSource|Dependency Management Security Update'),
+    value: 'dependency_management_security_update',
+  },
 ];

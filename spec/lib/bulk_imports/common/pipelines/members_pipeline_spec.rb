@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
-  let_it_be(:member_user1) { create(:user, email: 'email1@email.com') }
-  let_it_be(:member_user2) { create(:user, email: 'email2@email.com') }
-  let_it_be(:member_data) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:member_user1, freeze: false) { create(:user, email: 'email1@email.com') }
+  let_it_be(:member_user2, freeze: false) { create(:user, email: 'email2@email.com') }
+  let_it_be(:member_data, freeze: false) do
     {
       user_id: member_user1.id,
       created_by_id: member_user2.id,
@@ -339,7 +339,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
   end
 
   context 'when importing to group' do
-    let_it_be(:portable) { create(:group) }
+    let_it_be(:portable, freeze: false) { create(:group) }
 
     let(:portable_with_parent) { create(:group, parent: parent) }
     let(:entity) { create(:bulk_import_entity, :group_entity, group: portable, bulk_import: bulk_import) }
@@ -373,7 +373,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
   end
 
   context 'when importing to project' do
-    let_it_be(:portable) { create(:project) }
+    let_it_be(:portable, freeze: false) { create(:project) }
 
     let(:portable_with_parent) { create(:project, namespace: parent) }
     let(:entity) { create(:bulk_import_entity, :project_entity, project: portable, bulk_import: bulk_import) }

@@ -109,12 +109,33 @@ module MergeRequests
       end
 
       def fast_forward!(src_sha)
+        verify_advancement = Feature.enabled?(:verify_ff_merge_advancement, project)
+
+        # Capture the target tip up front and pass it as target_sha so Gitaly
+        # optimistically locks the ref: if the branch moved underneath us the
+        # fast-forward is rejected instead of silently no-op'ing.
+        prior_target_sha = repository.commit(merge_request.target_branch)&.sha if verify_advancement
+
+        # Only forward target_sha on the flag-enabled path so the legacy call
+        # stays byte-for-byte identical to the original (no target_sha: nil).
+        ff_merge_opts = { merge_request: merge_request }
+        ff_merge_opts[:target_sha] = prior_target_sha if verify_advancement
+
         commit_sha = repository.ff_merge(
           current_user,
           src_sha,
           merge_request.target_branch,
-          merge_request: merge_request
+          **ff_merge_opts
         )
+
+        # ff_merge returns a blank result when Gitaly swallows a failed reference
+        # update, and the unchanged tip when the ref did not advance (e.g. a
+        # rebase that collapsed onto the target). Recording the merge here would
+        # write no commit yet still delete the source branch, losing the MR's
+        # work. See https://gitlab.com/gitlab-org/gitlab/-/work_items/598820.
+        if verify_advancement && (commit_sha.blank? || commit_sha == prior_target_sha)
+          raise_error('Fast-forward merge did not advance the target branch')
+        end
 
         { commit_sha: commit_sha }
       end

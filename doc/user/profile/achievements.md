@@ -78,10 +78,17 @@ To view a user's achievements:
 
 To retrieve a list of a user's achievements, query the [`user` GraphQL type](../../api/graphql/reference/_index.md#user).
 
+The `User.userAchievements` field accepts an optional `includeHidden` parameter. When set to `true`,
+the response includes achievements hidden from the profile. Hidden achievements are included
+only in the following cases:
+
+- The requesting user is the same as the requested user.
+- The requesting user has the Maintainer or Owner role in the group the achievement belongs to.
+
 ```graphql
 query {
   user(username: "<username>") {
-    userAchievements {
+    userAchievements(includeHidden: true) {
       nodes {
         achievement {
           name
@@ -185,8 +192,18 @@ mutation achievementsUpdate($file: Upload!) {
 
 ## Award an achievement
 
-You can award an achievement to a user to recognize their contributions.
-The user receives an email notification when they are awarded an achievement.
+{{< history >}}
+
+- Recipient approval [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227918) in GitLab 19.0.
+
+{{< /history >}}
+
+You can award achievements to users to recognize their contributions. After awarding the user, they receive
+an email notification with a link to accept the achievement. Achievements are not visible on a profile
+until the user accepts them.
+
+The acceptance link remains valid for 30 days. After that time, call the
+[`userAchievementsUpdate` GraphQL mutation](#change-visibility-of-specific-achievements) to accept the achievement.
 
 Prerequisites:
 

@@ -3,6 +3,7 @@ import { GlAvatar, GlAvatarLink, GlBadge, GlLink } from '@gitlab/ui';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
+  name: 'RunnerAssignedItem',
   components: {
     GlAvatar,
     GlAvatarLink,

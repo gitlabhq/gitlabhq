@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'members bulk update mutation' do
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
-  let_it_be(:member1) { create(member_type, source: source, user: user1) }
-  let_it_be(:member2) { create(member_type, source: source, user: user2) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
+  let_it_be(:member1, freeze: false) { create(member_type, source: source, user: user1) }
+  let_it_be(:member2, freeze: false) { create(member_type, source: source, user: user2) }
 
   let(:extra_params) { { expires_at: 10.days.from_now } }
   let(:input_params) { input.merge(extra_params) }

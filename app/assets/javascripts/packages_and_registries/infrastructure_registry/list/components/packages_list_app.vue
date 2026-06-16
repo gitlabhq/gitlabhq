@@ -1,7 +1,6 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
@@ -13,9 +12,11 @@ import InfrastructureTitle from '~/packages_and_registries/infrastructure_regist
 import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
 import PackageList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default {
+  name: 'PackagesListApp',
   components: {
     GlEmptyState,
     GlLink,
@@ -42,9 +43,9 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      filter: (state) => state.filter,
-      packagesCount: (state) => state.pagination?.total,
+    ...mapState(useInfrastructureList, {
+      filter: (store) => store.filter,
+      packagesCount: (store) => store.pagination?.total,
     }),
     emptySearch() {
       return (
@@ -71,7 +72,12 @@ export default {
     this.checkDeleteAlert();
   },
   methods: {
-    ...mapActions(['requestPackagesList', 'requestDeletePackage', 'setSorting', 'setFilter']),
+    ...mapActions(useInfrastructureList, [
+      'requestPackagesList',
+      'requestDeletePackage',
+      'setSorting',
+      'setFilter',
+    ]),
     onPageChanged(page) {
       return this.requestPackagesList({
         page,

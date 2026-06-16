@@ -50,6 +50,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['pin-remove', 'pin-reorder'],
   data() {
     return {
       expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false' || this.wasPinnedNav,

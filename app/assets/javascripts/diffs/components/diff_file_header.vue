@@ -34,6 +34,7 @@ import DiffStats from './diff_stats.vue';
 const createHotkeyHtml = (key) => `<kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`;
 
 export default {
+  name: 'DiffFileHeader',
   components: {
     ClipboardButton,
     DiffStats,

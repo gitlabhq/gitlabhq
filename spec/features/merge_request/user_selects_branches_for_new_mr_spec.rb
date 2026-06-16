@@ -114,7 +114,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
       end
     end
 
-    let_it_be(:diffs) { merge_request.diffs }
+    let_it_be(:diffs, freeze: false) { merge_request.diffs }
 
     before do
       visit project_new_merge_request_path(project, merge_request: params)

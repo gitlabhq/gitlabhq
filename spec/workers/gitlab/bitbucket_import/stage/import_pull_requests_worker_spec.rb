@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_started) }
+  let_it_be(:project, freeze: false) { create(:project, :import_started) }
 
   subject(:worker) { described_class.new }
 

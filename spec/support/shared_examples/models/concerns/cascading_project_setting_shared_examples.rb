@@ -24,13 +24,13 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       it 'returns project setting' do
         project_settings.update!(settings_attribute_name => true)
 
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
 
       it 'returns the correct dirty value' do
         project_settings.send("#{settings_attribute_name}=", true)
 
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       end
 
       it 'returns the parent value' do
-        expect(cascading_attribute).to eq(false)
+        expect(cascading_attribute).to be(false)
       end
 
       it 'does not allow the local value to be saved' do
@@ -65,7 +65,7 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       end
 
       it 'returns the application setting value' do
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
 
       it 'does not allow the local value to be saved' do
@@ -87,7 +87,7 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       end
 
       it 'returns the application setting value' do
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
     end
   end
@@ -95,11 +95,11 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
   describe "##{settings_attribute_name}_locked?" do
     shared_examples 'not locked' do
       it 'is not locked by an ancestor' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(false)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(false)
       end
 
       it 'is not locked by application setting' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(false)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(false)
       end
 
       it 'does not return a locked namespace' do
@@ -118,11 +118,11 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       end
 
       it 'is locked by an ancestor' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(true)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(true)
       end
 
       it 'is not locked by application setting' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(false)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(false)
       end
 
       it 'returns a locked namespace settings object' do
@@ -145,11 +145,11 @@ RSpec.shared_examples 'a cascading project setting boolean attribute' do
       end
 
       it 'is not locked by an ancestor' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(false)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(false)
       end
 
       it 'is locked by application setting' do
-        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(true)
+        expect(project_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(true)
       end
 
       it 'does not return a locked namespace' do

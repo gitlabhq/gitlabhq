@@ -180,11 +180,11 @@ module Gitlab
     def apply_sort(results, scope: nil)
       # Due to different uses of sort param we prefer order_by when
       # present
-      sort_by = ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
+      sort_by = ::Search::SortOptions.sort_and_direction(order_by, sort)
 
       # Reset sort to default if the chosen one is not supported by scope
-      if Gitlab::Search::SortOptions::SCOPE_ONLY_SORT[sort_by] &&
-          Gitlab::Search::SortOptions::SCOPE_ONLY_SORT[sort_by].exclude?(scope)
+      if ::Search::SortOptions::SCOPE_ONLY_SORT[sort_by] &&
+          ::Search::SortOptions::SCOPE_ONLY_SORT[sort_by].exclude?(scope)
         sort_by = nil
       end
 
@@ -209,6 +209,7 @@ module Gitlab
     def projects
       scope = limit_projects
       scope = scope.self_and_ancestors_non_archived unless filters[:include_archived]
+      scope = scope.id_in(current_user_authorized_project_ids) if filters[:autocomplete] && current_user
 
       scope.search(query, include_namespace: true, use_minimum_char_limit: false)
     end

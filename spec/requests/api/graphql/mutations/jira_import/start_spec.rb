@@ -7,7 +7,7 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:jira_project_key) { 'AA' }
   let(:project_path) { project.full_path }
@@ -95,7 +95,7 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
         end
 
         context 'when issues feature are disabled' do
-          let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+          let_it_be_with_reload(:project) { create(:project, :issues_disabled) }
 
           it_behaves_like 'a mutation that returns errors in the response', errors: ['Cannot import because issues are not available in this project.']
         end

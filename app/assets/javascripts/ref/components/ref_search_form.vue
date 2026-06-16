@@ -23,6 +23,7 @@ export const FILTER_OPTIONS = {
 export const FILTER_OPTIONS_ARRAY = Object.values(FILTER_OPTIONS);
 
 export default {
+  name: 'RefSearchForm',
   i18n,
   filterOptions: FILTER_OPTIONS_ARRAY,
   components: {

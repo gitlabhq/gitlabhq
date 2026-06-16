@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe BulkImports::Pipeline::ExtractedData do
+RSpec.describe BulkImports::Pipeline::ExtractedData, feature_category: :importers do
   let(:data) { 'data' }
   let(:has_next_page) { true }
   let(:cursor) { 'cursor' }

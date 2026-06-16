@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../../rubocop/cop/gitlab/rspec/avoid_setup'
 
-RSpec.describe RuboCop::Cop::Gitlab::RSpec::AvoidSetup do
+RSpec.describe RuboCop::Cop::Gitlab::RSpec::AvoidSetup, feature_category: :tooling do
   context 'when calling let_it_be' do
     let(:source) do
       <<~SRC

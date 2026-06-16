@@ -34,7 +34,7 @@ RSpec.describe Snippets::CountService, :with_current_organization, feature_categ
   end
 
   describe '#execute' do
-    subject { described_class.new(user, author: user).execute }
+    subject { described_class.new(user, organization_id: current_organization.id, author: user).execute }
 
     it 'returns a hash of counts' do
       expect(subject).to match({

@@ -13,7 +13,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     it { is_expected.to validate_presence_of(:project) }
 
     describe '#validate_mirror_count' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
       before do
         stub_const('RemoteMirror::MAX_MIRRORS_PER_PROJECT', 3)
@@ -72,7 +72,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     end
 
     describe '#enabling_mirror?' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
       it 'returns true when enabling a disabled mirror' do
         mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: false)
@@ -525,7 +525,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#disabled?' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     subject { remote_mirror.disabled? }
 

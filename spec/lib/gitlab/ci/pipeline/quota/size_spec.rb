@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Quota::Size, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:project, reload: true) { create(:project, :repository, namespace: namespace) }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: namespace) }
   let_it_be_with_refind(:plan_limits) { create(:plan_limits, :default_plan) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }

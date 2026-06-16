@@ -186,10 +186,10 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
   end
 
   describe '#update_counters_with_lease' do
-    let_it_be(:first_attribute) { counter_attributes.first }
-    let_it_be(:second_attribute) { counter_attributes.second }
+    let_it_be(:first_attribute, freeze: false) { counter_attributes.first }
+    let_it_be(:second_attribute, freeze: false) { counter_attributes.second }
 
-    let_it_be(:increments) do
+    let_it_be(:increments, freeze: false) do
       increments_hash = {}
 
       increments_hash[first_attribute] = 1

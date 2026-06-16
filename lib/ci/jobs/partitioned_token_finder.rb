@@ -42,7 +42,7 @@ module Ci
       end
 
       def known_non_job_token_types
-        ::Authn::AgnosticTokenIdentifier::TOKEN_TYPES - [::Authn::Tokens::CiJobToken]
+        ::Authn::AgnosticTokenIdentifier.token_types - [::Authn::Tokens::CiJobToken]
       end
     end
   end

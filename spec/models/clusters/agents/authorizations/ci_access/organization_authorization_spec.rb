@@ -7,7 +7,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::OrganizationAuthoriza
   it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
 
   describe '#config_project' do
-    let(:record) { create(:agent_ci_access_organization_authorization) }
+    let(:record) { build_stubbed(:agent_ci_access_organization_authorization) }
 
     it { expect(record.config_project).to eq(record.agent.project) }
   end

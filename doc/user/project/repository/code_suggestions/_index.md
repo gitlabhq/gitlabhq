@@ -23,7 +23,7 @@ title: Code Suggestions
 
 {{< history >}}
 
-- [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
+- [Introduced support for Gemini Enterprise Agent Platform Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 - [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
@@ -201,30 +201,12 @@ in memory by the model vendor.
 Prompt caching significantly improves latency by avoiding the re-processing of
 cached prompt and input data. The cached data is never logged to any persistent storage.
 
-#### Turn off prompt caching
+You can [turn off prompt caching](../../../gitlab_duo/data_usage.md#turn-off-prompt-caching):
 
-You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Agentic Chat](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+- On GitLab.com: For a top-level group.
+- On GitLab Self-Managed: For an instance.
 
-Prerequisites:
-
-- Administrator access for GitLab Self-Managed.
-
-On GitLab.com:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Disable the **Prompt caching** toggle.
-1. Select **Save changes**.
-
-On GitLab Self-Managed:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
-1. Select **Save changes**.
+This setting applies to all GitLab Duo Agent Platform features.
 
 ### Direct and indirect connections
 

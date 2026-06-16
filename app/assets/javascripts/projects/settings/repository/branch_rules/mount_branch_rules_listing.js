@@ -22,6 +22,7 @@ export default function mountBranchRulesListing(el) {
     canAdminGroupProtectedBranches,
     groupSettingsRepositoryPath,
     securityPoliciesPath,
+    canCreateBranchRule,
   } = el.dataset;
 
   return new Vue({
@@ -37,6 +38,7 @@ export default function mountBranchRulesListing(el) {
       canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
       groupSettingsRepositoryPath,
       securityPoliciesPath,
+      canCreateBranchRule: parseBoolean(canCreateBranchRule),
     },
     render(createElement) {
       return createElement(BranchRulesApp);

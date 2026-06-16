@@ -293,10 +293,6 @@ class Todo < ApplicationRecord
     project || group
   end
 
-  def unmergeable?
-    action == UNMERGEABLE
-  end
-
   def build_failed?
     action == BUILD_FAILED
   end
@@ -305,34 +301,12 @@ class Todo < ApplicationRecord
     action == ASSIGNED
   end
 
-  def review_requested?
-    action == REVIEW_REQUESTED
-  end
-
-  def merge_train_removed?
-    action == MERGE_TRAIN_REMOVED
-  end
-
   def member_access_requested?
     action == MEMBER_ACCESS_REQUESTED
   end
 
-  def review_submitted?
-    action == REVIEW_SUBMITTED
-  end
-
   def member_access_type
     target.class.name.downcase
-  end
-
-  def access_request_url(only_path: false)
-    if target.instance_of? Group
-      Gitlab::Routing.url_helpers.group_group_members_url(self.target, tab: 'access_requests', only_path: only_path)
-    elsif target.instance_of? Project
-      Gitlab::Routing.url_helpers.project_project_members_url(self.target, tab: 'access_requests', only_path: only_path)
-    else
-      ""
-    end
   end
 
   def done?
@@ -359,18 +333,6 @@ class Todo < ApplicationRecord
 
   def for_design?
     target_type == DesignManagement::Design.name
-  end
-
-  def for_alert?
-    target_type == AlertManagement::Alert.name
-  end
-
-  def for_issue_or_work_item?
-    [Issue.name, WorkItem.name].any?(target_type)
-  end
-
-  def for_ssh_key?
-    target_type == Key.name
   end
 
   def parentless_type?
@@ -423,10 +385,6 @@ class Todo < ApplicationRecord
     when WikiPage::Meta
       build_wiki_page_target_url
     end
-  end
-
-  def self_added?
-    author == user
   end
 
   private

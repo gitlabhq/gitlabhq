@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlForm, GlFormGroup, GlFormInput, GlAlert } from '@gitlab/ui';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -9,6 +8,7 @@ import { InternalEvents } from '~/tracking';
 import Api from '~/api';
 
 export default {
+  name: 'CommentTemplatesForm',
   components: {
     GlButton,
     GlForm,

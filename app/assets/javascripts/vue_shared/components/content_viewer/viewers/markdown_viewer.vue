@@ -4,6 +4,7 @@ import { forEach, escape } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import { projectPreviewMarkdownPath } from '~/lib/utils/path_helpers/project';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 const { CancelToken } = axios;
@@ -78,11 +79,7 @@ export default {
         };
 
         axios
-          .post(
-            `${gon.relative_url_root}/${this.projectPath}/-/preview_markdown`,
-            postBody,
-            postOptions,
-          )
+          .post(projectPreviewMarkdownPath(this.projectPath), postBody, postOptions)
           .then(({ data }) => {
             let previewContent = data.body;
             forEach(this.images, ({ src, title = '', alt }, key) => {

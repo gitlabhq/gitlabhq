@@ -13,6 +13,7 @@ module Ci
       add_job_variables_attributes!(new_attributes, new_job_variables)
       add_job_inputs_attributes!(new_attributes, new_job_inputs)
       add_job_definition_attributes!(new_attributes)
+      add_job_source_attributes!(new_attributes)
 
       new_attributes[:user] = current_user
 
@@ -50,6 +51,18 @@ module Ci
       attributes[:inputs_attributes] = new_job_inputs.map do |name, value|
         { name: name, value: value, project: project }
       end
+    end
+
+    # The job_source records the origin of a job (e.g. a security policy), which
+    # drives the policy badge. A cloned job stays governed by the same policy, so
+    # the source must be carried over rather than falling back to the pipeline source.
+    def add_job_source_attributes!(attributes)
+      return unless job.job_source
+
+      attributes[:job_source_attributes] = {
+        source: job.job_source.source,
+        project_id: project_id
+      }
     end
 
     def add_job_definition_attributes!(attributes)

@@ -7,7 +7,7 @@ RSpec.describe Projects::Settings::BranchRulesController, feature_category: :sou
 
   describe 'GET #index' do
     context 'when user is a maintainer' do
-      let_it_be(:user) { create(:user, maintainer_of: project) }
+      let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
 
       before do
         sign_in(user)
@@ -21,7 +21,7 @@ RSpec.describe Projects::Settings::BranchRulesController, feature_category: :sou
     end
 
     context 'when user is a guest' do
-      let_it_be(:user) { create(:user, guest_of: project) }
+      let_it_be(:user, freeze: false) { create(:user, guest_of: project) }
 
       before do
         sign_in(user)

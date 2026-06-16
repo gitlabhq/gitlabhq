@@ -1,0 +1,3 @@
+---
+gitlab_subscriptions_offline_cloud_license_provision_worker:
+  status: disabled

@@ -26,7 +26,7 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :organization
 
   subject(:update_organization) { post_graphql_mutation_with_uploads(mutation, current_user: current_user) }
 
-  it { expect(described_class).to require_graphql_authorizations(:admin_organization) }
+  it { expect(described_class).to require_graphql_authorizations(:update_organization) }
 
   it_behaves_like 'authorizing granular token permissions for GraphQL', :update_organization do
     let(:boundary_object) { :instance }

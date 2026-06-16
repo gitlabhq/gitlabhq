@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresqlDatabaseTasks::LoadSchemaVersionsMixin do
+RSpec.describe Gitlab::Database::PostgresqlDatabaseTasks::LoadSchemaVersionsMixin, feature_category: :database do
   let(:instance_class) do
     klass = Class.new do
       def structure_load
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Database::PostgresqlDatabaseTasks::LoadSchemaVersionsMixi
 
   it 'calls SchemaMigrations load_all' do
     connection = double('connection')
-    allow(instance).to receive(:connection).and_return(connection)
+    allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:migration_connection).and_return(connection)
 
     expect(instance).to receive(:original_structure_load).ordered
     expect(Gitlab::Database::SchemaMigrations).to receive(:load_all).with(connection).ordered

@@ -33,7 +33,7 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
 
     # Select project1
 
-    click_on 'Select a project'
+    find('button:not([aria-disabled="true"])', text: 'Select a project').click
 
     within_project_listbox do
       expect_listbox_item('Alice / foo')

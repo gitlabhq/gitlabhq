@@ -70,6 +70,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         create_organization_api_limit: 10,
         custom_http_clone_url_root: nil,
         decompress_archive_file_timeout: 210,
+        security_update_scheduler_max_concurrency: 30,
         default_artifacts_expire_in: '30 days',
         default_branch_name: nil,
         default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -113,6 +114,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         enable_language_server_restrictions: false,
         eks_integration_enabled: false,
         email_confirmation_setting: 'off',
+        email_otp_enabled: false,
         email_restrictions_enabled: false,
         enforce_email_subaddress_restrictions: false,
         enforce_terms: false,
@@ -263,7 +265,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
           'session_expire_from_init' => false,
-          'require_minimum_email_based_otp_for_users_with_passwords' => false
+          'require_minimum_email_based_otp_for_users_with_passwords' => false,
+          'email_otp_enabled' => false
         },
         signup_enabled: Settings.gitlab['signup_enabled'],
         silent_admin_exports_enabled: false,
@@ -322,7 +325,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes,
-        pipeline_limit_per_user: 0
+        pipeline_limit_per_user: 0,
+        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
       )
     end
   end
@@ -2278,6 +2282,34 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
     end
 
+    describe 'oauth_settings jsonb settings' do
+      context 'for oauth_settings jsonB schema validation' do
+        it { is_expected.to allow_value({}).for(:oauth_settings) }
+        it { is_expected.to allow_value({ oauth_access_token_expires_in: nil }).for(:oauth_settings) }
+      end
+
+      describe '#oauth_access_token_expires_in' do
+        it 'defaults to ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN' do
+          expect(setting.oauth_access_token_expires_in).to eq(ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN)
+        end
+
+        it { is_expected.to allow_value(nil).for(:oauth_access_token_expires_in) }
+
+        it "allows DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN (7200)" do
+          is_expected.to allow_value(
+          ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
+        ).for(:oauth_access_token_expires_in)
+        end
+
+        it { is_expected.not_to allow_value(7201).for(:oauth_access_token_expires_in) }
+        it { is_expected.to allow_value(7200).for(:oauth_access_token_expires_in) }
+        it { is_expected.to allow_value(300).for(:oauth_access_token_expires_in) }
+        it { is_expected.not_to allow_value(299).for(:oauth_access_token_expires_in) }
+        it { is_expected.not_to allow_value(0).for(:oauth_access_token_expires_in) }
+        it { is_expected.not_to allow_value(-1).for(:oauth_access_token_expires_in) }
+      end
+    end
+
     describe 'diff_limits jsonb settings' do
       context 'for diff_limits json schema validation' do
         it 'allows valid integer values' do
@@ -2301,6 +2333,38 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.not_to allow_value({ attribute => -1 }).for(:diff_limits) }
           it { is_expected.not_to allow_value({ attribute => 0 }).for(:diff_limits) }
           it { is_expected.not_to allow_value({ attribute => 'abc' }).for(:diff_limits) }
+        end
+      end
+    end
+
+    describe 'dependency_management_settings jsonb settings' do
+      context 'for dependency_management_settings json schema validation' do
+        it 'allows a valid concurrency value' do
+          is_expected.to allow_value({ security_update_scheduler_max_concurrency: 50 })
+            .for(:dependency_management_settings)
+        end
+
+        it 'allows zero to pause scheduling' do
+          is_expected.to allow_value({ security_update_scheduler_max_concurrency: 0 })
+            .for(:dependency_management_settings)
+        end
+
+        it 'allows empty hash' do
+          is_expected.to allow_value({}).for(:dependency_management_settings)
+        end
+
+        it 'does not allow unknown properties' do
+          is_expected.not_to allow_value({ unknown_key: 1 }).for(:dependency_management_settings)
+        end
+
+        it 'does not allow negative values' do
+          is_expected.not_to allow_value({ security_update_scheduler_max_concurrency: -1 })
+            .for(:dependency_management_settings)
+        end
+
+        it 'does not allow non-integer values' do
+          is_expected.not_to allow_value({ security_update_scheduler_max_concurrency: 'abc' })
+            .for(:dependency_management_settings)
         end
       end
     end
@@ -2396,6 +2460,55 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
   end
 
   it_behaves_like 'application settings examples'
+
+  describe '#validate_logging_field_dual_emit_target' do
+    context 'when logging_field_dual_emit_target is nil' do
+      before do
+        setting.logging_field_dual_emit_target = nil
+      end
+
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
+    end
+
+    context 'when logging_field_dual_emit_target is greater than logging_field_schema_version' do
+      before do
+        setting.logging_field_schema_version = 1
+        setting.logging_field_dual_emit_target = 2
+      end
+
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
+    end
+
+    context 'when logging_field_dual_emit_target is equal to logging_field_schema_version' do
+      before do
+        setting.logging_field_schema_version = 1
+        setting.logging_field_dual_emit_target = 1
+      end
+
+      it 'is not valid' do
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages[:logging_field_dual_emit_target].first)
+          .to eq('must be greater than logging_field_schema_version (1)')
+      end
+    end
+
+    context 'when logging_field_dual_emit_target is less than logging_field_schema_version' do
+      before do
+        setting.logging_field_schema_version = 2
+        setting.logging_field_dual_emit_target = 1
+      end
+
+      it 'is not valid' do
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages[:logging_field_dual_emit_target].first)
+          .to eq('must be greater than logging_field_schema_version (2)')
+      end
+    end
+  end
 
   describe 'kroki_format_supported?' do
     it 'returns true when Excalidraw is enabled' do

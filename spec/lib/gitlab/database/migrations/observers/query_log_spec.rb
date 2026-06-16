@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
+RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog, feature_category: :database do
   subject { described_class.new(observation, directory_path, connection) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new(version: migration_version, name: migration_name) }

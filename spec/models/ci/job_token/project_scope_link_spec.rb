@@ -29,7 +29,7 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
   end
 
   describe 'unique index' do
-    let!(:link) { create(:ci_job_token_project_scope_link) }
+    let_it_be(:link) { create(:ci_job_token_project_scope_link) }
 
     it 'raises an error, when not unique' do
       expect do
@@ -142,7 +142,7 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
     end
 
     context 'when link is not found' do
-      let(:target_project) { create(:project) }
+      let_it_be(:target_project) { create(:project) }
 
       it { is_expected.to be_nil }
     end

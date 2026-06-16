@@ -1,0 +1,9 @@
+---
+name: update_add_on_purchase
+description: Grants the ability to update add-on purchases
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_add_on_purchase

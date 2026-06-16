@@ -20,10 +20,10 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     }
   end
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let_it_be(:alert) do
+  let_it_be(:alert, freeze: false) do
     create(:alert_management_alert, project: project, payload: payload)
   end
 
@@ -177,9 +177,9 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     fill_in 'Add a reply', with: '/promote_to_incident'
     click_button 'Comment'
 
+    expect(page).to have_testid('work-item-type-icon', text: 'Incident')
     expect(issue.reload.issue_type).to eq('incident')
     expect(page).to have_css('h1', text: issue.title)
-    expect(page).to have_testid('work-item-type-icon', text: 'Incident')
   end
 
   it 'routes the user to the issue details page when the `issue_type` is set to issue',
@@ -208,7 +208,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     visit incident_project_issues_path(project, confidential_incident)
     wait_for_requests
 
-    sticky_header = find_in_page_or_panel_by_scrolling('[data-testid=issue-sticky-header]')
+    sticky_header = find_in_panel_by_scrolling('[data-testid=issue-sticky-header]')
 
     page.within(sticky_header) do
       expect(page).to have_text 'Confidential'
@@ -223,9 +223,5 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     within '.right-sidebar' do
       click_button "Expand sidebar"
     end
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
   end
 end

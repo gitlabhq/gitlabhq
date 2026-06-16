@@ -104,7 +104,7 @@ export default {
     :aria-label="__(`Work Items Onboarding Modal`)"
     @hide="$emit('close')"
   >
-    <div class="text-center">
+    <div class="!gl-text-center">
       <transition name="fade" mode="out-in">
         <div :key="currentStep" class="gl-mb-5">
           <h2 class="gl-heading-2">{{ step.title }}</h2>

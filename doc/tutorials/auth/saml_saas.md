@@ -433,4 +433,4 @@ If you encounter issues during this tutorial, see the following resources:
 
 - [Common SAML errors and solutions](../../user/group/saml_sso/troubleshooting.md)
 - [How to unlink and relink accounts](../../user/group/saml_sso/_index.md#unlink-accounts)
-- [Support resources](https://about.gitlab.com/support/)
+- [Support resources](https://support.gitlab.com/)

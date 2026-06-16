@@ -520,6 +520,7 @@ export function base64DecodeUnicode(str) {
 }
 
 // returns an array of errors (if there are any)
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- '//' is an invalid branch name character, not a URL
 const INVALID_BRANCH_NAME_CHARS = [' ', '~', '^', ':', '?', '*', '[', '..', '@{', '\\', '//'];
 
 /**

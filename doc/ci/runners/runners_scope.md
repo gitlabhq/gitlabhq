@@ -22,7 +22,7 @@ GitLab Runner has the following types of runners, which are available based on w
 
 ## Instance runners
 
-*Instance runners* are available to every project in a GitLab instance.
+Instance runners are available to every project in a GitLab instance.
 
 Use instance runners when you have multiple jobs with similar requirements. Rather than
 having multiple runners idling for many projects, you can have a few runners that handle
@@ -40,14 +40,6 @@ If you are using GitLab.com:
   included with your account.
 
 ### Create an instance runner with a runner authentication token
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags/_index.md)
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -243,14 +235,6 @@ Group runners process jobs by using a first in, first out queue.
 
 ### Create a group runner with a runner authentication token
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags/_index.md). Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -320,12 +304,6 @@ how to [register a runner](https://docs.gitlab.com/runner/register/#register-wit
 
 ### View group runners
 
-{{< history >}}
-
-- Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
@@ -337,13 +315,6 @@ You can do this for GitLab Self-Managed or for GitLab.com.
 1. In the left sidebar, select **Build** > **Runners**.
 
 #### Filter group runners to show only inherited
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101099) in GitLab 15.5. Feature flag `runners_finder_all_available` removed.
-
-{{< /history >}}
 
 You can choose to show all runners in the list, or show only
 those that are inherited from the instance or other groups.
@@ -375,12 +346,6 @@ instance. If you pause a group runner that is used by multiple projects, the run
 
 ### Delete a group runner
 
-{{< history >}}
-
-- Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
@@ -409,17 +374,11 @@ To delete a single or multiple group runners:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-You can clean up group runners that have been inactive for more than three months.
+You can clean up group runners that have been inactive for more than seven days.
 
 Group runners are those that were created in a specific group.
 
@@ -487,14 +446,6 @@ If you delete the owner project:
 You cannot unassign a runner from the owner project. Delete the runner instead.
 
 ### Create a project runner with a runner authentication token
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags/_index.md). Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -663,12 +614,6 @@ If a runner contacts the GitLab instance, the connection is recreated.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
-
-{{< /history >}}
-
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
 The **Median job queued time** value is calculated by sampling the queue duration of the
@@ -693,12 +638,6 @@ To view runner statistics:
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -771,8 +710,7 @@ project.
 
 {{< history >}}
 
-- [Introduced for administrators](https://gitlab.com/gitlab-org/gitlab/-/issues/348299) in GitLab 15.1.
-- [Made available for groups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/422621) in GitLab 18.2.
+- [Introduced for groups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/422621) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -782,12 +720,6 @@ see the note when they view the runner details.
 Use this feature to inform others about consequences or problems related to changing the runner configuration.
 
 ## Enable use of runner registration tokens in projects and groups
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148557) in GitLab 16.11
-
-{{< /history >}}
 
 > [!warning]
 > The option to pass runner registration tokens and support for certain configuration arguments is considered legacy

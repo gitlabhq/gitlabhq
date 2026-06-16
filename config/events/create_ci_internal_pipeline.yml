@@ -12,6 +12,8 @@ additional_properties:
   property:
     description: The source of the config, e.g. the repository, auto_devops or similar.
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142356
 tiers:

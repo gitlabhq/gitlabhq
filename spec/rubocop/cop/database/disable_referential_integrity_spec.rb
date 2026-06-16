@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/disable_referential_integrity'
 
-RSpec.describe RuboCop::Cop::Database::DisableReferentialIntegrity do
+RSpec.describe RuboCop::Cop::Database::DisableReferentialIntegrity, feature_category: :database do
   it 'registers the use of disable_referential_integrity with a send receiver' do
     expect_offense(<<~RUBY)
       foo.disable_referential_integrity

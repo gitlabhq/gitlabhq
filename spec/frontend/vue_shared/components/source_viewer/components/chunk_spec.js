@@ -40,6 +40,7 @@ describe('Chunk component', () => {
   const findLineNumbers = () => wrapper.findAllByTestId('line-numbers');
   const findContent = () => wrapper.findByTestId('content');
   const findBlameLink = (lineNumber = 1) => wrapper.findByTestId(`blame-link-${lineNumber}`);
+  const findHighlightOverlay = () => wrapper.find('code[inert]');
 
   beforeEach(() => {
     mockBlameActions = {
@@ -107,8 +108,8 @@ describe('Chunk component', () => {
       });
 
       it('renders highlighted content', () => {
-        expect(findContent().text()).toBe(CHUNK_2.highlightedContent);
-        expect(findContent().attributes('style')).toBe('margin-left: 96px;');
+        expect(findHighlightOverlay().exists()).toBe(true);
+        expect(findHighlightOverlay().attributes('style')).toBe('margin-left: 96px;');
       });
     });
   });
@@ -189,6 +190,150 @@ describe('Chunk component', () => {
 
         const actualHref = findBlameLink(1).attributes('href');
         expect(actualHref).toBe(`${blamePath}${wrapper.vm.pageSearchString}#L1`);
+      });
+    });
+  });
+
+  describe('two-layer rendering (Ctrl+F fix)', () => {
+    const findRawLayer = () => wrapper.find('code[data-testid="content"]:not([inert])');
+
+    beforeEach(() => {
+      document.elementsFromPoint = jest.fn().mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      delete document.elementsFromPoint;
+    });
+
+    describe('raw layer', () => {
+      it.each([{ isHighlighted: false }, { isHighlighted: true }])(
+        'always renders raw content layer when isHighlighted is $isHighlighted',
+        ({ isHighlighted }) => {
+          createComponent({ ...CHUNK_2, isHighlighted });
+          expect(findRawLayer().exists()).toBe(true);
+          expect(findRawLayer().text()).toBe(CHUNK_2.rawContent);
+        },
+      );
+
+      it('renders raw layer with transparent text so it is invisible to the user', () => {
+        createComponent(CHUNK_2);
+        expect(findRawLayer().classes()).toContain('!gl-text-transparent');
+      });
+
+      it('pins raw layer min-height to totalLines so the overlay cannot overhang', () => {
+        createComponent(CHUNK_2);
+        expect(findRawLayer().attributes('style')).toContain(
+          `min-height: calc(${CHUNK_2.totalLines} * var(--source-line-height))`,
+        );
+      });
+    });
+
+    describe('highlighted overlay layer', () => {
+      it.each([
+        { isHighlighted: false, shouldExist: false },
+        { isHighlighted: true, shouldExist: true },
+      ])(
+        'highlight overlay exists: $shouldExist when isHighlighted is $isHighlighted',
+        ({ isHighlighted, shouldExist }) => {
+          createComponent({ ...CHUNK_2, isHighlighted });
+          expect(findHighlightOverlay().exists()).toBe(shouldExist);
+        },
+      );
+
+      it('marks the highlighted overlay as inert so browser find skips it', () => {
+        createComponent({ ...CHUNK_2, isHighlighted: true });
+        expect(findHighlightOverlay().attributes('inert')).toBeDefined();
+      });
+
+      it('positions the highlighted overlay absolutely so it overlays the raw layer', () => {
+        createComponent({ ...CHUNK_2, isHighlighted: true });
+        expect(findHighlightOverlay().classes()).toContain('gl-absolute');
+      });
+    });
+
+    describe('forwardEventToHighlight', () => {
+      const mockClientX = 100;
+      const mockClientY = 200;
+
+      beforeEach(() => {
+        createComponent({ ...CHUNK_2, isHighlighted: true });
+      });
+
+      it('temporarily removes inert, dispatches event on target, then restores inert', () => {
+        const overlay = findHighlightOverlay().element;
+        const mockTarget = document.createElement('span');
+        overlay.appendChild(mockTarget);
+
+        document.elementsFromPoint.mockReturnValue([mockTarget]);
+        const dispatchSpy = jest.spyOn(mockTarget, 'dispatchEvent');
+
+        wrapper.vm.forwardEventToHighlight({
+          type: 'click',
+          clientX: mockClientX,
+          clientY: mockClientY,
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: 'click',
+            bubbles: true,
+            clientX: mockClientX,
+            clientY: mockClientY,
+          }),
+        );
+        expect(overlay.hasAttribute('inert')).toBe(true);
+      });
+
+      it('does nothing if the highlighted overlay ref is not present', () => {
+        createComponent({ ...CHUNK_2, isHighlighted: false });
+        expect(() => {
+          wrapper.vm.forwardEventToHighlight({ type: 'click', clientX: 0, clientY: 0 });
+        }).not.toThrow();
+      });
+
+      it('does nothing if no element from the overlay is found at the coordinates', () => {
+        document.elementsFromPoint.mockReturnValue([]);
+        expect(() => {
+          wrapper.vm.forwardEventToHighlight({
+            type: 'click',
+            clientX: mockClientX,
+            clientY: mockClientY,
+          });
+        }).not.toThrow();
+      });
+
+      it('restores inert even if no target element is found', () => {
+        const overlay = findHighlightOverlay().element;
+        document.elementsFromPoint.mockReturnValue([]);
+
+        wrapper.vm.forwardEventToHighlight({
+          type: 'click',
+          clientX: mockClientX,
+          clientY: mockClientY,
+        });
+
+        expect(overlay.hasAttribute('inert')).toBe(true);
+      });
+    });
+
+    describe('raw layer pointer event forwarding', () => {
+      beforeEach(() => {
+        createComponent({ ...CHUNK_2, isHighlighted: true });
+      });
+
+      it('forwards click events from raw layer to highlighted overlay', async () => {
+        await findRawLayer().trigger('click');
+        expect(document.elementsFromPoint).toHaveBeenCalled();
+      });
+
+      it('forwards mouseover events from raw layer to highlighted overlay', async () => {
+        await findRawLayer().trigger('mouseover');
+        expect(document.elementsFromPoint).toHaveBeenCalled();
+      });
+
+      it('forwards mouseout events from raw layer to highlighted overlay', async () => {
+        await findRawLayer().trigger('mouseout');
+        expect(document.elementsFromPoint).toHaveBeenCalled();
       });
     });
   });

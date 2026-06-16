@@ -373,6 +373,7 @@ module QA
           page_class.validate_elements_present! if page_class.respond_to?(:validate_elements_present!)
 
           handle_qa_cookies
+          handle_onetrust_consent
 
           yield.tap { clear! } if block
         end
@@ -389,6 +390,17 @@ module QA
         end
 
         private
+
+        def handle_onetrust_consent
+          return unless QA::Runtime::Env.running_on_live_env?
+          return if QA::Runtime::Env.running_in_ci?
+
+          Capybara.current_session.driver.browser.manage.add_cookie(
+            name: 'OptanonAlertBoxClosed',
+            value: Time.now.utc.iso8601
+          )
+          Capybara.current_session.driver.browser.navigate.refresh
+        end
 
         def handle_qa_cookies
           return unless QA::Runtime::Env.qa_cookies

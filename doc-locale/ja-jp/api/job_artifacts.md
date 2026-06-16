@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ジョブアーティファクトAPI
 ---
 
@@ -24,7 +24,7 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/:job_id/artifacts
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 | ----------- | ----------------- | -------- | ----------- |
@@ -34,12 +34,14 @@ GET /projects/:id/jobs/:job_id/artifacts
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、アーティファクトファイルを提供します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --location --output artifacts.zip \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts" \
+  --output artifacts.zip
 ```
 
 CI/CDジョブトークンを使用したリクエストの例:
@@ -49,22 +51,31 @@ CI/CDジョブトークンを使用したリクエストの例:
 artifact_download:
   stage: test
   script:
-    - 'curl --location --output artifacts.zip \
-         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"'
+    - 'curl --request GET \
+         --location \
+         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN" \
+         --output artifacts.zip'
 ```
 
 ## 参照名でジョブアーティファクトをダウンロードする {#download-job-artifacts-by-reference-name}
 
-参照名を使用して、最新の成功したパイプラインでジョブのアーティファクトのアーカイブをダウンロードします。
+{{< history >}}
+
+- `search_recent_successful_pipelines`属性は、GitLab 18.7で[フラグ](../administration/feature_flags/_index.md) `ci_search_recent_successful_pipelines`として[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864)されました。デフォルトでは無効になっています。
+- 機能フラグ`ci_search_recent_successful_pipelines`はGitLab 18.10で削除されました。
+
+{{< /history >}}
+
+最新の正常なパイプラインから、参照名を使用してジョブのアーティファクトアーカイブをダウンロードします。`search_recent_successful_pipelines=true`の場合、検索には指定された参照の最新の正常なパイプラインが最大100件含まれます。
 
 最新の成功したパイプラインは、作成時刻に基づいて決定します。個々のジョブの開始時刻または終了時刻は、どのパイプラインが最新のパイプラインになるかに影響しません。
 
 [親パイプラインと子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)の場合、アーティファクトは親から子への階層順に検索されます。親パイプラインと子のパイプラインの両方に同じ名前のジョブがある場合、親パイプラインのアーティファクトが返されます。
 
-前提要件:
+前提条件: 
 
 - `success`ステータスで完了したパイプラインが必要です。
-- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります:
+- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります。
   - 正常に完了している。
   - `allow_failure: true`が設定されている。
 
@@ -74,7 +85,7 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 | ----------- | ----------------- | -------- | ----------- |
@@ -82,13 +93,17 @@ GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 | `job`       | 文字列            | はい      | ジョブの名前。 |
 | `ref_name`  | 文字列            | はい      | リポジトリ内のブランチ名またはタグ名。参照またはSHA参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`refs/merge-requests/:iid/head`を使用します。 |
 | `job_token` | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| `search_recent_successful_pipelines` | ブール値 | いいえ | 最新のパイプラインだけでなく、最近の正常なパイプライン全体を検索します。`false`がデフォルトです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、アーティファクトファイルを提供します。
 
-リクエスト例:
+ジョブまたはアーティファクトが見つからない場合、[`404`](rest/troubleshooting.md#status-codes)を返します。
+
+リクエスト例: 
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
 ```
@@ -100,13 +115,24 @@ CI/CDジョブトークンを使用したリクエストの例:
 artifact_download:
   stage: test
   script:
-    - 'curl --location --output artifacts.zip \
-         --url "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"'
+    - 'curl --request GET \
+         --location \
+         --url "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN" \
+         --output artifacts.zip'
+```
+
+最近のパイプライン検索を使用したリクエストの例:
+
+```shell
+curl --request GET \
+  --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&search_recent_successful_pipelines=true"
 ```
 
 ## ジョブIDで1つのアーティファクトファイルをダウンロードする {#download-a-single-artifact-file-by-job-id}
 
-ジョブIDを使用してジョブのアーティファクトから1つのファイルをダウンロードします。ファイルはアーカイブから抽出され、クライアントにストリーミングされます。
+ジョブIDを使用して、ジョブのアーティファクトから単一ファイルをダウンロードします。ファイルはアーカイブから抽出され、クライアントにストリーミングされます。
 
 cURLを使用してGitLab.comからアーティファクトをダウンロードする場合は、リクエストがCDNを介してリダイレクトされる可能性があるため、`--location`パラメータを使用します。
 
@@ -114,7 +140,7 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型              | 必須 | 説明 |
 | --------------- | ----------------- | -------- | ----------- |
@@ -125,28 +151,130 @@ GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、単一のアーティファクトファイルを送信します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
 ```
 
+## アーティファクトアーカイブ内のすべてのファイルをリスト表示します {#list-all-files-in-the-artifacts-archive}
+
+{{< history >}}
+
+- GitLab 18.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/31448)されました。
+
+{{< /history >}}
+
+指定したジョブのアーティファクトアーカイブ内のすべてのファイルとディレクトリをリスト表示します。この操作では、アーカイブ全体を抽出せずにアーティファクトメタデータを読み取るため、大規模なアーカイブの閲覧に効率的です。
+
+```plaintext
+GET /projects/:id/jobs/:job_id/artifacts/tree
+```
+
+サポートされている属性は以下のとおりです: 
+
+| 属性   | 型              | 必須 | 説明 |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `job_id`    | 整数           | はい      | ジョブのID。 |
+| `path`      | 文字列            | いいえ       | アーティファクトアーカイブ内で参照するパス。ルートディレクトリにデフォルト設定されます。 |
+| `recursive` | ブール値           | いいえ       | `true`の場合、すべてのエントリを再帰的に返します。デフォルトは`false`です。 |
+| `job_token` | 文字列            | いいえ       | 複数プロジェクトのパイプラインをトリガーするために使用されるCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+
+このエンドポイントは[ページネーション](rest/_index.md#pagination)をサポートしています。
+
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
+
+| 属性 | 型    | 説明 |
+|-----------|---------|-------------|
+| `name`    | 文字列  | ファイル名またはディレクトリ名。 |
+| `path`    | 文字列  | アーティファクトアーカイブ内の完全なパス。ディレクトリには末尾にスラッシュが含まれます。 |
+| `type`    | 文字列  | エントリのタイプ。指定可能な値: `file`、`directory`。 |
+| `size`    | 整数 | ファイルのバイトサイズ。ファイルの場合にのみ表示されます。 |
+| `mode`    | 文字列  | Unixファイルの8進形式モード。例えば、ファイルの場合は`100644`、ディレクトリの場合は`040755`です。 |
+
+ジョブ、アーティファクト、アーティファクトメタデータ、または指定されたパスが見つからない場合、[`404`](rest/troubleshooting.md#status-codes)を返します。
+
+リクエスト例: 
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree"
+```
+
+レスポンス例: 
+
+```json
+[
+  {
+    "name": "ci_build_artifacts.zip",
+    "path": "ci_build_artifacts.zip",
+    "type": "file",
+    "size": 1024,
+    "mode": "100644"
+  },
+  {
+    "name": "other_artifacts_0.1.2",
+    "path": "other_artifacts_0.1.2/",
+    "type": "directory",
+    "mode": "040755"
+  }
+]
+```
+
+サブディレクトリを閲覧するためのリクエスト例:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?path=coverage/reports"
+```
+
+再帰的リスト表示のためのリクエスト例:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?recursive=true"
+```
+
+CI/CDジョブトークンを使用したリクエストの例:
+
+```yaml
+# Uses the job_token parameter
+list_artifacts:
+  stage: test
+  script:
+    - 'curl --request GET \
+         --url "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts/tree?job_token=$CI_JOB_TOKEN"'
+```
+
 ## 参照名で単一のアーティファクトファイルをダウンロードする {#download-a-single-artifact-file-by-reference-name}
 
-参照名を使用して、最新の成功したパイプラインでジョブのアーティファクトから1つのファイルをダウンロードします。ファイルはアーカイブから抽出され、`plain/text`コンテンツタイプでクライアントにストリーミングされます。
+{{< history >}}
+
+- `search_recent_successful_pipelines`属性は、GitLab 18.9で[フラグ](../administration/feature_flags/_index.md) `ci_search_recent_successful_pipelines`として[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864)されました。デフォルトでは無効になっています。
+- 機能フラグ`ci_search_recent_successful_pipelines`はGitLab 18.10で削除されました。
+
+{{< /history >}}
+
+参照名を使用して、最新の成功したパイプラインでジョブのアーティファクトから1つのファイルをダウンロードします。ファイルはアーカイブから抽出され、`plain/text`コンテンツタイプでクライアントにストリーミングされます。`search_recent_successful_pipelines=true`の場合、検索には指定された参照の最新の正常なパイプラインが最大100件含まれます。
 
 [親パイプラインと子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)の場合、アーティファクトは親から子への階層順に検索されます。親パイプラインと子のパイプラインの両方に同じ名前のジョブがある場合、親パイプラインのアーティファクトが返されます。
 
 アーティファクトファイルは、[CSVエクスポート](../user/application_security/vulnerability_report/_index.md#exporting)の場合よりも詳細な情報を提供します。
 
-前提要件:
+前提条件: 
 
 - `success`ステータスで完了したパイプラインが必要です。
-- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります:
+- パイプラインに手動ジョブが含まれている場合は、これらのジョブが次のいずれかである必要があります。
   - 正常に完了している。
   - `allow_failure: true`が設定されている。
+- 最近の正常なパイプライン全体を検索するには、`ci_search_recent_successful_pipelines`機能フラグをプロジェクトで有効にする必要があります。
 
 cURLを使用してGitLab.comからアーティファクトをダウンロードする場合は、リクエストがCDNを介してリダイレクトされる可能性があるため、`--location`パラメータを使用します。
 
@@ -154,7 +282,7 @@ cURLを使用してGitLab.comからアーティファクトをダウンロード
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型              | 必須 | 説明 |
 | --------------- | ----------------- | -------- | ----------- |
@@ -163,15 +291,28 @@ GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 | `job`           | 文字列            | はい      | ジョブの名前。 |
 | `ref_name`      | 文字列            | はい      | リポジトリ内のブランチ名またはタグ名。`HEAD`参照と`SHA`参照はサポートされていません。マージリクエストパイプラインの場合は、ソースブランチ名の代わりに`refs/merge-requests/:iid/head`を使用します。 |
 | `job_token`     | 文字列            | いいえ       | マルチプロジェクトパイプライン用のCI/CDジョブトークン。PremiumおよびUltimateのみです。 |
+| `search_recent_successful_pipelines` | ブール値 | いいえ | 最新のパイプラインだけでなく、最近の正常なパイプライン全体を検索します。`false`がデフォルトです。 |
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)を返し、単一のアーティファクトファイルを送信します。
 
-リクエスト例:
+ジョブまたはアーティファクトファイルが見つからない場合、[`404`](rest/troubleshooting.md#status-codes)を返します。
+
+リクエスト例: 
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf"
+```
+
+最近のパイプライン検索を使用したリクエストの例:
+
+```shell
+curl --request GET \
+  --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/raw/some/release/file.pdf?job=pdf&search_recent_successful_pipelines=true"
 ```
 
 ## ジョブのアーティファクトを保持する {#keep-job-artifacts}
@@ -182,7 +323,7 @@ curl --location \
 POST /projects/:id/jobs/:job_id/artifacts/keep
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 | --------- | ----------------- | -------- | ----------- |
@@ -191,7 +332,7 @@ POST /projects/:id/jobs/:job_id/artifacts/keep
 
 成功した場合は、[`200`](rest/troubleshooting.md#status-codes)とジョブの詳細を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -199,7 +340,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts/keep"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -237,24 +378,24 @@ curl --request POST \
 
 特定ジョブに関連付けられているすべてのアーティファクトを削除します。アーティファクトは削除されると復元できません。
 
-前提要件:
+前提条件: 
 
-- プロジェクトのメンテナー以上のロールを持っている必要があります。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 
 ```plaintext
 DELETE /projects/:id/jobs/:job_id/artifacts
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 | --------- | ----------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数           | はい      | ジョブのID。 |
 
-成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -272,23 +413,23 @@ curl --request DELETE \
 
 標準クリーンアップはスケジュールに従って非同期的に行われるため、アーティファクトが削除されるまでに少し時間がかかることがあります。
 
-前提要件:
+前提条件: 
 
-- プロジェクトのメンテナー以上のロールを持っている必要があります。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 
 ```plaintext
 DELETE /projects/:id/artifacts
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-成功すると、[`202 Accepted`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`202 Accepted`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -304,12 +445,13 @@ curl --request DELETE \
 
 この問題は、マージリクエストパイプラインが、ブランチパイプラインとは異なる参照形式を使用するために発生します。マージリクエストパイプラインは、ソースブランチに直接ではなく、`refs/merge-requests/:iid/head`上で実行されます。
 
-マージリクエストパイプラインのジョブアーティファクトをダウンロードするには、ブランチ名の代わりに`ref_name`として`refs/merge-requests/:iid/head`を使用します。`:iid`はマージリクエストIDです。マージリクエストパイプラインでは、IDは`$CI_MERGE_REQUEST_IID`変数から、完全な`ref_name`は`$CI_MERGE_REQUEST_REF_PATH`変数から利用できます。
+マージリクエストパイプラインのジョブアーティファクトをダウンロードするには、ブランチ名の代わりに`ref_name`として`refs/merge-requests/:iid/head`を使用します。`:iid`はマージリクエストIDです。マージリクエストのパイプラインでは、IDは変数`$CI_MERGE_REQUEST_IID`から、完全な`ref_name`は変数`$CI_MERGE_REQUEST_REF_PATH`から利用できます。
 
-たとえば、マージリクエスト`!123`の場合は以下のようになります:
+たとえば、マージリクエスト`!123`の場合は以下のようになります。
 
 ```shell
-curl --location \
+curl --request GET \
+  --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/refs/merge-requests/123/head/raw/file.txt?job=test"
 ```

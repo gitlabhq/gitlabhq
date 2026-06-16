@@ -17,13 +17,13 @@ RSpec.shared_examples 'namespace traversal' do
     end
   end
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:nested_group) { create(:group, parent: group) }
-  let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
-  let_it_be(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
-  let_it_be(:groups) { [group, nested_group, deep_nested_group, very_deep_nested_group] }
-  let_it_be(:project) { create(:project, group: nested_group) }
-  let_it_be(:project_namespace) { project.project_namespace }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:nested_group, freeze: false) { create(:group, parent: group) }
+  let_it_be(:deep_nested_group, freeze: false) { create(:group, parent: nested_group) }
+  let_it_be(:very_deep_nested_group, freeze: false) { create(:group, parent: deep_nested_group) }
+  let_it_be(:groups, freeze: false) { [group, nested_group, deep_nested_group, very_deep_nested_group] }
+  let_it_be(:project, freeze: false) { create(:project, group: nested_group) }
+  let_it_be(:project_namespace, freeze: false) { project.project_namespace }
 
   describe '#root_ancestor' do
     it 'returns the correct root ancestor' do
@@ -116,7 +116,7 @@ RSpec.shared_examples 'namespace traversal' do
     end
 
     describe '#recursive_ancestors' do
-      let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
+      let_it_be(:groups, freeze: false) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
       it_behaves_like 'recursive version', :ancestors
     end
@@ -152,7 +152,7 @@ RSpec.shared_examples 'namespace traversal' do
     end
 
     describe '#recursive_ancestor_ids' do
-      let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
+      let_it_be(:groups, freeze: false) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
       it_behaves_like 'recursive version', :ancestor_ids
     end
@@ -198,7 +198,7 @@ RSpec.shared_examples 'namespace traversal' do
     end
 
     describe '#recursive_self_and_ancestors' do
-      let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
+      let_it_be(:groups, freeze: false) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
       it_behaves_like 'recursive version', :self_and_ancestors
     end
@@ -234,7 +234,7 @@ RSpec.shared_examples 'namespace traversal' do
     end
 
     describe '#recursive_self_and_ancestor_ids' do
-      let_it_be(:groups) { [nested_group, deep_nested_group, very_deep_nested_group] }
+      let_it_be(:groups, freeze: false) { [nested_group, deep_nested_group, very_deep_nested_group] }
 
       it_behaves_like 'recursive version', :self_and_ancestor_ids
     end
@@ -325,7 +325,7 @@ RSpec.shared_examples 'namespace traversal' do
     end
 
     describe '#recursive_self_and_descendants' do
-      let_it_be(:groups) { [group, nested_group, deep_nested_group] }
+      let_it_be(:groups, freeze: false) { [group, nested_group, deep_nested_group] }
 
       it_behaves_like 'recursive version', :self_and_descendants
 

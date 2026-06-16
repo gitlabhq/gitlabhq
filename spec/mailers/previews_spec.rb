@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared do
   # Setup needed for email previews
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, :import_failed, group: group, import_last_error: 'some error') }
+  let_it_be(:project, freeze: false) do
+    create(:project, :repository, :import_failed, group: group, import_last_error: 'some error')
+  end
+
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project, owner: user) }

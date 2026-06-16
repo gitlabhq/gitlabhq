@@ -42,6 +42,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
+    push_frontend_feature_flag(:explicit_mr_work_item_relations, project)
   end
 
   before_action do
@@ -526,7 +527,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def get_diffs_count
-    return @commit.raw_diffs.size if commit
+    return if commit
     return @merge_request.context_commits_diff.raw_diffs.size if show_only_context_commits?
     return @merge_request.merge_request_diffs.find_by_id(params[:diff_id])&.size if params[:diff_id]
     return @merge_request.merge_head_diff.size if @merge_request.diffable_merge_ref? && params[:start_sha].blank?
@@ -584,6 +585,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           )
       end
     else
+      # Measure the immediate web merge journey end to end: from accepting the
+      # merge here until MergeWorker completes it. This captures Sidekiq enqueue
+      # and execution latency that no single request can measure. Started only on
+      # this path so the SLI is scoped to immediate web merges; MergeWorker's
+      # other callers (GraphQL, auto-merge) do not start it.
+      Labkit::UserExperienceSli.start(:immediate_web_merge)
+
       @merge_request.merge_async(current_user.id, merge_params)
 
       :success
@@ -637,7 +645,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     if pipeline&.active?
       ::Gitlab::PollingInterval.set_header(response, interval: 3000)
 
-      render json: '', status: :no_content && return
+      return render json: '', status: :no_content
     end
 
     case report_comparison[:status]
@@ -730,10 +738,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def complete_diff_path
+    return project_commit_path(project, commit, format: :diff) if commit
+
     merge_request_path(merge_request, format: :diff)
   end
 
   def email_format_path
+    return project_commit_path(project, commit, format: :patch) if commit
+
     merge_request_path(merge_request, format: :patch)
   end
 

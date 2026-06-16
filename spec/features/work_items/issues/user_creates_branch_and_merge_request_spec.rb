@@ -30,6 +30,8 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
     context 'when interacting with the dropdown' do
       before do
         visit project_issue_path(project, issue)
+
+        find('button:not([aria-disabled="true"])', text: 'Create merge request')
       end
 
       it 'shows elements' do

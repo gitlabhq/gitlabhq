@@ -5,6 +5,7 @@ import { VALID_DATA_TRANSFER_TYPE, VALID_IMAGE_FILE_MIMETYPE } from './constants
 import { isValidImage } from './utils';
 
 export default {
+  name: 'UploadDropzone',
   components: {
     GlLink,
     GlSprintf,

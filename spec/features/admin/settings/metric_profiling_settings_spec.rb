@@ -18,35 +18,36 @@ RSpec.describe 'Admin updates metrics and profiling settings', :request_store, :
 
   it 'change Prometheus settings' do
     within_testid('prometheus-settings') do
-      check 'Enable GitLab Prometheus metrics endpoint'
+      click_checked_field(_('Enable GitLab Prometheus metrics endpoint'))
+
+      expect_save_settings
+
+      expect_field_unchecked(_('Enable GitLab Prometheus metrics endpoint'))
     end
-
-    expect_save_settings('prometheus-settings')
-
-    expect(current_settings.prometheus_metrics_enabled?).to be true
   end
 
-  it 'change Performance bar settings' do
+  it 'change Performance bar settings', :aggregate_failures do
     group = create(:group)
 
     within_testid('performance-bar-settings-content') do
-      check 'Allow non-administrators access to the performance bar'
-      fill_in 'Allow access to members of the following group', with: group.path
+      click_unchecked_field _('Allow non-administrators access to the performance bar')
+      fill_field_with_new_value _('Allow access to members of the following group'), group.path.to_s
+
+      expect_save_settings(refresh: true)
+
+      expect_field_checked _('Allow non-administrators access to the performance bar')
+      expect_field_value(_('Allow access to members of the following group'), group.path.to_s)
     end
-
-    expect_save_settings('performance-bar-settings-content', refresh: true)
-
-    expect(find_field('Allow non-administrators access to the performance bar')).to be_checked
-    expect(find_field('Allow access to members of the following group').value).to eq group.path
 
     within_testid('performance-bar-settings-content') do
-      uncheck 'Allow non-administrators access to the performance bar'
+      click_checked_field _('Allow non-administrators access to the performance bar')
+
+      expect_save_settings
+
+      expect_field_unchecked _('Allow non-administrators access to the performance bar')
     end
 
-    expect_save_settings('performance-bar-settings-content')
-
-    expect(find_field('Allow non-administrators access to the performance bar')).not_to be_checked
-    expect(find_field('Allow access to members of the following group').value).to be_nil
+    expect_field_value(_('Allow access to members of the following group'), nil)
   end
 
   context 'for service usage data', :with_license do
@@ -91,9 +92,5 @@ RSpec.describe 'Admin updates metrics and profiling settings', :request_store, :
         expect(page).to have_text('Service Ping payload not found in the application cache')
       end
     end
-  end
-
-  def current_settings
-    ApplicationSetting.current_without_cache
   end
 end

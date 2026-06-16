@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Metrics::RackMiddleware do
+RSpec.describe Gitlab::Metrics::RackMiddleware, feature_category: :observability do
   let(:app) { double(:app) }
 
   let(:middleware) { described_class.new(app) }

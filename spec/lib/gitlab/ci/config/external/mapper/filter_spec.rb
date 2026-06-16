@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
     end
   end
 
-  let_it_be(:context) do
+  let_it_be(:context, freeze: false) do
     Gitlab::Ci::Config::External::Context.new(variables: variables)
   end
 

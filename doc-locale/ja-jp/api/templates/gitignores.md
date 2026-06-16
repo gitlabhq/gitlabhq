@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: .gitignore API
 ---
 
@@ -12,32 +12,32 @@ title: .gitignore API
 
 {{< /details >}}
 
-GitLabでは、`/gitignores`エンドポイントは、Git `.gitignore`テンプレートのリストを返します。詳しくは、[Gitの`.gitignore`に関するドキュメント](https://git-scm.com/docs/gitignore)をご覧ください。
+このAPIを使用して、gitignoreテンプレートを取得する。詳細については、[Gitの`.gitignore`に関するドキュメント](https://git-scm.com/docs/gitignore)を参照してください。
 
 ゲストロールのユーザーは、`.gitignore`テンプレートにアクセスできません。詳細については、[プロジェクトとグループの表示レベル](../../user/public_access.md)を参照してください。
 
-## すべての`.gitignore`テンプレート {#get-all-gitignore-templates}
+## すべての`.gitignore`テンプレートを一覧表示する {#list-all-gitignore-templates}
 
-すべての`.gitignore`テンプレートのリストを取得します。
+すべての`.gitignore`テンプレートを一覧表示します。
 
 ```plaintext
 GET /templates/gitignores
 ```
 
-成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
 | `key`     | 文字列 | `.gitignore`テンプレートのキー識別子。 |
 | `name`    | 文字列 | `.gitignore`テンプレートの表示名。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl "https://gitlab.example.com/api/v4/templates/gitignores"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -124,34 +124,34 @@ curl "https://gitlab.example.com/api/v4/templates/gitignores"
 ]
 ```
 
-## 単一の`.gitignore`テンプレートを取得 {#get-a-single-gitignore-template}
+## 単一の`.gitignore`テンプレートを取得する {#retrieve-a-single-gitignore-template}
 
-単一の`.gitignore`テンプレートを取得します。
+単一の`.gitignore`テンプレートを取得する。
 
 ```plaintext
 GET /templates/gitignores/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型   | 必須 | 説明 |
 |-----------|--------|----------|-------------|
 | `key`     | 文字列 | はい      | `.gitignore`テンプレートのキー。 |
 
-成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
 | `content` | 文字列 | `.gitignore`テンプレートのコンテンツ。 |
 | `name`    | 文字列 | `.gitignore`テンプレートの表示名。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl "https://gitlab.example.com/api/v4/templates/gitignores/Ruby"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

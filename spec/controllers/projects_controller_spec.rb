@@ -7,7 +7,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project, :with_export, service_desk_enabled: false) }
+  let_it_be_with_reload(:project) { create(:project, :with_export, service_desk_enabled: false) }
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project, freeze: false) { create(:project, :public, namespace: group) }
   let_it_be(:user, freeze: false) { create(:user) }
@@ -142,7 +142,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
       context 'design events are visible' do
         include DesignManagementTestHelpers
-        let(:other_project) { create(:project, namespace: user.namespace) }
 
         before do
           enable_design_management
@@ -208,7 +207,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context "project with empty repo" do
-      let_it_be(:empty_project) { create(:project_empty_repo, :public) }
+      let_it_be(:empty_project, freeze: false) { create(:project_empty_repo, :public) }
 
       before do
         sign_in(user)
@@ -230,7 +229,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context "project with broken repo" do
-      let_it_be(:empty_project) { create(:project, :public) }
+      let_it_be(:empty_project, freeze: false) { create(:project, :public) }
 
       before do
         sign_in(user)
@@ -488,9 +487,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       let(:old_path) { project.path + 'old' }
 
       before do
-        project.redirect_routes.create!(path: "#{project.namespace.full_path}/#{old_path}")
-
         project.add_developer(user)
+        project.redirect_routes.create!(path: "#{project.namespace.full_path}/#{old_path}")
         sign_in(user)
       end
 
@@ -675,7 +673,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'for a user with the ability to archive a project' do
       before do
         group.add_owner(user)
-
         post :archive, params: { namespace_id: project.namespace.path, id: project.path }
       end
 
@@ -692,7 +689,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'for a user that does not have the ability to archive a project' do
       before do
         project.add_maintainer(user)
-
         post :archive, params: {
           namespace_id: project.namespace.path,
           id: project.path
@@ -720,7 +716,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'for a user with the ability to unarchive a project' do
       before do
         group.add_owner(user)
-
         post :unarchive, params: {
           namespace_id: project.namespace.path,
           id: project.path
@@ -740,7 +735,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'for a user that does not have the ability to unarchive a project' do
       before do
         project.add_maintainer(user)
-
         post :unarchive, params: {
           namespace_id: project.namespace.path,
           id: project.path
@@ -758,7 +752,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   end
 
   describe '#housekeeping' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group) { create(:group, owners: user) }
     let(:housekeeping_service_dbl) { instance_double(::Repositories::HousekeepingService) }
     let(:params) do
       {
@@ -776,7 +770,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     context 'when authenticated as owner' do
       before do
-        group.add_owner(user)
         sign_in(user)
 
         allow(::Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
@@ -822,7 +815,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as developer' do
-      let(:developer) { create(:user) }
+      let_it_be(:developer) { create(:user) }
 
       before do
         group.add_developer(developer)
@@ -1012,13 +1005,13 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         it 'updates when the service allows access' do
           external_service_allow_access(user, project)
 
-          expect { subject }.to change(project, :description)
+          expect { subject }.to change { project.description }
         end
 
         it 'does not update when the service rejects access' do
           external_service_deny_access(user, project)
 
-          expect { subject }.not_to change(project, :description)
+          expect { subject }.not_to change { project.description }
         end
       end
     end
@@ -1292,8 +1285,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   end
 
   describe "#destroy", :enable_admin_mode do
-    let_it_be(:admin) { create(:admin) }
-
     let_it_be(:group) { create(:group, owners: user) }
     let_it_be_with_reload(:project) { create(:project, group: group) }
 
@@ -1397,8 +1388,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     before do
-      sign_in(user)
       project.add_developer(user)
+      sign_in(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -1427,8 +1418,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     before do
-      sign_in(user)
       project.add_developer(user)
+      sign_in(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -1487,7 +1478,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       context 'when project not forked' do
-        let(:unforked_project) { create(:project, namespace: user.namespace) }
+        let_it_be(:unforked_project) { create(:project, namespace: user.namespace) }
 
         it 'does nothing if project was not forked' do
           delete :remove_fork, params: {
@@ -1594,7 +1585,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context 'when private project' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       context 'as a guest' do
         it 'renders forbidden' do
@@ -1647,7 +1638,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context 'when not authorized' do
-      let(:private_project) { create(:project, :private) }
+      let_it_be(:private_project) { create(:project, :private) }
 
       it 'returns 404' do
         post :preview_markdown, params: { namespace_id: private_project.namespace, project_id: private_project, text: '*Markdown* text' }
@@ -1659,7 +1650,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'state filter on references' do
       let_it_be(:issue) { create(:issue, :closed, project: public_project) }
 
-      let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
+      let_it_be(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
 
       it 'renders JSON body with state filter for issues' do
         post :preview_markdown, params: {
@@ -1683,8 +1674,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context 'with suggestion on merge request' do
-      let(:project) { create(:project, :repository, maintainers: [user]) }
-      let(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:project) { create(:project, :repository, maintainers: [user]) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
       let(:diff_refs) { merge_request.diff_refs }
 
       it 'includes suggestions in response' do
@@ -1708,7 +1699,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     context 'when path parameter is provided' do
-      let(:project_with_repo) { create(:project, :repository) }
+      let_it_be(:project_with_repo) { create(:project, :repository, maintainers: user) }
       let(:preview_markdown_params) do
         {
           namespace_id: project_with_repo.namespace.full_path,
@@ -1716,10 +1707,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           text: "![](./logo-white.png)\n",
           path: 'files/images/README.md'
         }
-      end
-
-      before do
-        project_with_repo.add_maintainer(user)
       end
 
       it 'renders JSON body with image links expanded' do
@@ -1831,7 +1818,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       context 'when requesting a redirected path' do
-        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+        let_it_be(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
 
         it 'redirects to the canonical path' do
           get :show, params: { namespace_id: 'foo', id: 'bar' }
@@ -1865,7 +1852,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       context 'when requesting a redirected path' do
-        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+        let_it_be(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
 
         it 'returns not found' do
           post :toggle_star, params: { namespace_id: 'foo', id: 'bar' }
@@ -1895,7 +1882,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       context 'when requesting a redirected path' do
-        let!(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
+        let_it_be(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
 
         it 'returns not found' do
           delete :destroy, params: { namespace_id: 'foo', id: 'bar' }
@@ -2153,8 +2140,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'with rendered views' do
       render_views
 
-      let!(:note_with_line_break) { create(:note, project: public_project, note: "foo\\\nbar") }
-      let!(:event_with_line_break) { create(:event, :commented, project: public_project, target: note_with_line_break) }
+      let_it_be(:note_with_line_break) { create(:note, project: public_project, note: "foo\\\nbar") }
+      let_it_be(:event_with_line_break) { create(:event, :commented, project: public_project, target: note_with_line_break) }
 
       it 'renders note line breaks as self-closing XHTML br tags' do
         get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }

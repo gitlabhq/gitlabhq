@@ -16,8 +16,18 @@ module JiraConnectSubscriptions
         return error(jira_not_an_admin_error_message, 403)
       end
 
-      unless namespace && can?(current_user, :create_jira_connect_subscription, namespace)
-        return error(s_('JiraConnect|Cannot find namespace. Make sure you have sufficient permissions.'), 401)
+      # Return 404 when the user cannot read the namespace (including when it does not exist) so that
+      # we do not reveal the existence of private namespaces the user is not a member of.
+      unless namespace && can?(current_user, :read_namespace, namespace)
+        return error(s_('JiraConnect|Namespace not found. Check the group path and try again.'), 404)
+      end
+
+      unless can?(current_user, :create_jira_connect_subscription, namespace)
+        return error(
+          s_('JiraConnect|You do not have permission to link this namespace. ' \
+             'You must be a Maintainer or Owner of the group.'),
+          403
+        )
       end
 
       create_subscription

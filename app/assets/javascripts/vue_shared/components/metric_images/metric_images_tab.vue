@@ -8,6 +8,7 @@ import MetricImagesTable from '~/vue_shared/components/metric_images/metric_imag
 import MetricImageDetailsModal from './metric_image_details_modal.vue';
 
 export default {
+  name: 'MetricImagesTab',
   components: {
     GlLoadingIcon,
     MetricImagesTable,

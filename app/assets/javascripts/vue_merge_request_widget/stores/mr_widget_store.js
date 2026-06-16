@@ -41,6 +41,7 @@ export default class MergeRequestStore {
     this.multipleApprovalRulesAvailable = data.multiple_approval_rules_available || false;
     this.id = data.id;
     this.autoMergeEnabled = false;
+    this.commitsCount = null;
 
     this.setPaths(data);
 

@@ -21,30 +21,30 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionLogging, fe
         message: 'Organization state transition',
         organization_id: organization.id,
         from_state: :active,
-        to_state: :deletion_scheduled,
-        event: :schedule_deletion,
+        to_state: :soft_deleted,
+        event: :soft_delete,
         Labkit::Fields::GL_USER_ID => user.id
       )
     )
 
-    organization.schedule_deletion!(transition_user: user)
+    organization.soft_delete!(transition_user: user)
   end
 
   it 'logs successful state transitions without a user' do
-    organization.update_column(:state, Organizations::Organization.states['deletion_scheduled'])
+    organization.update_column(:state, Organizations::Organization.states['soft_deleted'])
 
     expect(Gitlab::AppLogger).to receive(:info).with(
       hash_including(
         message: 'Organization state transition',
         organization_id: organization.id,
-        from_state: :deletion_scheduled,
-        to_state: :deletion_in_progress,
-        event: :start_deletion,
+        from_state: :soft_deleted,
+        to_state: :active,
+        event: :restore,
         Labkit::Fields::GL_USER_ID => nil
       )
     )
 
-    organization.start_deletion!
+    organization.restore!
   end
 
   it 'logs failed state transitions' do
@@ -52,12 +52,12 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionLogging, fe
       hash_including(
         message: 'Organization state transition failed',
         organization_id: organization.id,
-        event: :cancel_deletion,
+        event: :restore,
         current_state: :active,
         Labkit::Fields::GL_USER_ID => user.id
       )
     )
 
-    organization.cancel_deletion(transition_user: user)
+    organization.restore(transition_user: user)
   end
 end

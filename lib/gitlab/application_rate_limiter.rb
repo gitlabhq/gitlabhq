@@ -100,6 +100,7 @@ module Gitlab
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           service_account_creation: { threshold: 10, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },
+          token_exchange: { threshold: 60, interval: 1.minute },
           update_environment_canary_ingress: { threshold: 1, interval: 1.minute },
           update_namespace_name: { threshold: -> { application_settings.update_namespace_name_rate_limit }, interval: 1.hour },
           user_large_commit_request: { threshold: 3, interval: 30.seconds },
@@ -323,7 +324,10 @@ module Gitlab
           interval_value: interval_value
         )
 
-        LabkitAdapter.record_divergence(key, labkit_decision, legacy_decision) unless labkit_decision.nil?
+        unless labkit_decision.nil?
+          LabkitAdapter.record_divergence(key, labkit_decision, legacy_decision,
+            interval_seconds: interval_value)
+        end
 
         legacy_decision
       end
@@ -357,17 +361,48 @@ module Gitlab
 
       # Routes a check through the labkit adapter when applicable, returning
       # labkit's boolean decision or nil if the adapter does not handle this
-      # call. The adapter only takes the plain IncrementPerAction strategy;
-      # per-resource and resource-usage strategies stay on the legacy path.
-      # Peek dispatches to a read-only Redis round-trip so the labkit counter
-      # only advances via paired non-peek call sites.
+      # call. Plain IncrementPerAction maps to labkit's INCR-mode rules;
+      # IncrementPerActionedResource maps to labkit's count_distinct (SADD)
+      # rules with +resource_id+ as the SET member. IncrementResourceUsagePerAction
+      # maps to labkit cost-mode rules (caller-supplied threshold/interval),
+      # passing the per-request consumption as labkit `check(cost:)`. Peek
+      # dispatches to a read-only Redis round-trip so the labkit counter only
+      # advances via paired non-peek call sites.
       def dispatch_to_labkit(key, scope:, strategy:, peek:, threshold:, interval:)
-        return unless strategy.is_a?(IncrementPerAction)
+        resource_id = nil
+        cost = nil
+        case strategy
+        when IncrementPerAction
+          # INCR-mode strategy maps to any non-count_distinct labkit rule.
+        when IncrementPerActionedResource
+          # SADD/SCARD-mode strategy is only equivalent to a count_distinct
+          # labkit rule. For INCR-mode keys called with a resource (e.g. an
+          # ad-hoc test call to a cohort 1-3 key with resource:) the labkit
+          # counter would diverge silently from legacy, so stay on legacy.
+          return unless LabkitAdapter.set_mode?(key)
 
-        return unless LabkitAdapter.shadow_or_enforce?(key, threshold_override: threshold,
-          interval_override: interval)
+          resource_id = strategy.resource_key
+        when IncrementResourceUsagePerAction
+          # Cost-mode: per-worker resource-usage accumulation. Cost is the
+          # resource consumed this request (read from SafeRequestStore via the
+          # strategy's resource_key); threshold/interval are the SidekiqLimits-
+          # resolved (override-aware) values passed by resource_usage_throttled?.
+          return unless LabkitAdapter.cost_mode?(key)
 
-        peek ? LabkitAdapter.run_peek!(key, scope: scope) : LabkitAdapter.run!(key, scope: scope)
+          cost = ::Gitlab::SafeRequestStore[strategy.resource_key.to_sym].to_f
+        else
+          return
+        end
+
+        context = { resource_id: resource_id, threshold: threshold, interval: interval }
+
+        return unless LabkitAdapter.shadow_or_enforce?(key, context: context)
+
+        if peek
+          LabkitAdapter.run_peek!(key, scope: scope, context: context)
+        else
+          LabkitAdapter.run!(key, scope: scope, context: context, cost: cost)
+        end
       end
 
       def rate_limit_value(value)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::UpdateModelService, feature_category: :mlops do
-  let_it_be(:model) { create(:ml_models) }
+  let_it_be(:model, freeze: false) { create(:ml_models) }
   let_it_be(:new_description) { 'updated model description' }
   let(:service) { described_class.new(model, new_description) }
 

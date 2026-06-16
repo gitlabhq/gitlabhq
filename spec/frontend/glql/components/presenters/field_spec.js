@@ -1,199 +1,43 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import FieldPresenter from '~/glql/components/presenters/field.vue';
-import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
-import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
-import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
-import BoolPresenter from '~/glql/components/presenters/bool.vue';
-import CiItemPresenter from '~/glql/components/presenters/ci_item.vue';
-import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
-import CodePresenter from '~/glql/components/presenters/code.vue';
-import DurationPresenter from '~/glql/components/presenters/duration.vue';
-import HtmlPresenter from '~/glql/components/presenters/html.vue';
-import NamedTextPresenter from '~/glql/components/presenters/named_text.vue';
-import UrlPresenter from '~/glql/components/presenters/url.vue';
-import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
-import LabelPresenter from '~/glql/components/presenters/label.vue';
-import LinkPresenter from '~/glql/components/presenters/link.vue';
-import MilestonePresenter from '~/glql/components/presenters/milestone.vue';
-import StatePresenter from '~/glql/components/presenters/state.vue';
-import TextPresenter from '~/glql/components/presenters/text.vue';
-import TimePresenter from '~/glql/components/presenters/time.vue';
-import UserPresenter from '~/glql/components/presenters/user.vue';
-import UserAvatarPresenter from '~/glql/components/presenters/user_avatar.vue';
-import NullPresenter from '~/glql/components/presenters/null.vue';
-import CollectionPresenter from '~/glql/components/presenters/collection.vue';
-import TypePresenter from '~/glql/components/presenters/type.vue';
-import PercentagePresenter from '~/glql/components/presenters/percentage.vue';
-import NumberPresenter from '~/glql/components/presenters/number.vue';
-import {
-  MOCK_EPIC,
-  MOCK_ISSUE,
-  MOCK_LABELS,
-  MOCK_MILESTONE,
-  MOCK_USER,
-  MOCK_DIMENSIONS,
-  MOCK_ASSIGNEES,
-  MOCK_MR_ASSIGNEES,
-  MOCK_MR_REVIEWERS,
-  MOCK_ITERATION,
-  MOCK_MR_AUTHOR,
-  MOCK_WORK_ITEM,
-  MOCK_STATUS,
-  MOCK_WORK_ITEM_TYPE,
-  MOCK_PIPELINE,
-  MOCK_JOB,
-  MOCK_CI_STAGE,
-  MOCK_GROUP,
-  MOCK_PROJECT,
-} from '../../mock_data';
+import { dataForField, presenterFor } from '~/glql/components/presenters/presenter_registry';
 
-const MOCK_LINK = { title: 'title', webUrl: 'url' };
+jest.mock('~/glql/components/presenters/presenter_registry');
 
 describe('FieldPresenter', () => {
-  let wrapper;
-  const createWrapper = (field, fieldKey, additionalProps = {}) => {
-    wrapper = mountExtended(FieldPresenter, {
-      propsData: { item: field, fieldKey, ...additionalProps },
-    });
+  // Render function (rather than `template`) keeps the stub compilable in the
+  // Vue 3 jest environment, which doesn't ship the runtime template compiler.
+  const StubPresenter = {
+    name: 'StubPresenter',
+    props: ['item', 'data'],
+    render: (h) => h('div'),
   };
+  const STUB_DATA = { resolved: true };
 
-  const propsOrAttributes = (component, propOrAttribute) => {
-    return component.props(propOrAttribute) || component.attributes(propOrAttribute);
-  };
-
-  it.each`
-    dataType       | field                   | presenter              | presenterName
-    ${'string'}    | ${'text'}               | ${TextPresenter}       | ${'TextPresenter'}
-    ${'number'}    | ${100}                  | ${TextPresenter}       | ${'TextPresenter'}
-    ${'boolean'}   | ${true}                 | ${BoolPresenter}       | ${'BoolPresenter'}
-    ${'object'}    | ${MOCK_LINK}            | ${LinkPresenter}       | ${'LinkPresenter'}
-    ${'date'}      | ${'2021-01-01'}         | ${TimePresenter}       | ${'TimePresenter'}
-    ${'user'}      | ${MOCK_USER}            | ${UserPresenter}       | ${'UserPresenter'}
-    ${'user'}      | ${MOCK_MR_AUTHOR}       | ${UserPresenter}       | ${'UserPresenter'}
-    ${'users'}     | ${MOCK_ASSIGNEES}       | ${CollectionPresenter} | ${'CollectionPresenter'}
-    ${'users'}     | ${MOCK_MR_ASSIGNEES}    | ${CollectionPresenter} | ${'CollectionPresenter'}
-    ${'users'}     | ${MOCK_MR_REVIEWERS}    | ${CollectionPresenter} | ${'CollectionPresenter'}
-    ${'label'}     | ${MOCK_LABELS.nodes[0]} | ${LabelPresenter}      | ${'LabelPresenter'}
-    ${'labels'}    | ${MOCK_LABELS}          | ${CollectionPresenter} | ${'CollectionPresenter'}
-    ${'milestone'} | ${MOCK_MILESTONE}       | ${MilestonePresenter}  | ${'MilestonePresenter'}
-    ${'issue'}     | ${MOCK_ISSUE}           | ${IssuablePresenter}   | ${'IssuablePresenter'}
-    ${'work_item'} | ${MOCK_WORK_ITEM}       | ${IssuablePresenter}   | ${'IssuablePresenter'}
-    ${'epic'}      | ${MOCK_EPIC}            | ${IssuablePresenter}   | ${'IssuablePresenter'}
-    ${'iteration'} | ${MOCK_ITERATION}       | ${IterationPresenter}  | ${'IterationPresenter'}
-    ${'status'}    | ${MOCK_STATUS}          | ${StatusPresenter}     | ${'StatusPresenter'}
-    ${'type'}      | ${MOCK_WORK_ITEM_TYPE}  | ${TypePresenter}       | ${'TypePresenter'}
-    ${'pipeline'}  | ${MOCK_PIPELINE}        | ${CiItemPresenter}     | ${'CiItemPresenter'}
-    ${'job'}       | ${MOCK_JOB}             | ${CiItemPresenter}     | ${'CiItemPresenter'}
-    ${'stage'}     | ${MOCK_CI_STAGE}        | ${NamedTextPresenter}  | ${'NamedTextPresenter'}
-    ${'project'}   | ${MOCK_PROJECT}         | ${LinkPresenter}       | ${'LinkPresenter'}
-    ${'group'}     | ${MOCK_GROUP}           | ${LinkPresenter}       | ${'LinkPresenter'}
-  `('renders $presenterName for data type: $dataType', ({ field, presenter }) => {
-    createWrapper({ key: field }, 'key');
-
-    const component = wrapper.findComponent(presenter);
-
-    expect(propsOrAttributes(component, 'item')).toBeDefined();
-    expect(propsOrAttributes(component, 'data')).toBeDefined();
-    expect(propsOrAttributes(component, 'field-key')).toBe('key');
+  beforeEach(() => {
+    presenterFor.mockReturnValue(StubPresenter);
+    dataForField.mockReturnValue(STUB_DATA);
   });
 
-  it('renders NullPresenter for null data', () => {
-    createWrapper({ key: null }, 'key');
-    const component = wrapper.findComponent(NullPresenter);
+  // Full mount (not shallow) so the dynamic <component :is="..."> resolves to
+  // StubPresenter rather than a shallow stub that hides its props.
+  const mount = (propsData) => mountExtended(FieldPresenter, { propsData });
 
-    expect(component.exists()).toBe(true);
-    expect(propsOrAttributes(component, 'data')).not.toBeDefined();
+  it('asks the registry which presenter and data to use', () => {
+    const item = { author: 'foo' };
+    mount({ item, fieldKey: 'author', variant: 'compact' });
+
+    expect(dataForField).toHaveBeenCalledWith(item, 'author');
+    expect(presenterFor).toHaveBeenCalledWith(item, 'author', 'compact');
   });
 
-  describe('if fieldKey is passed', () => {
-    it.each`
-      fieldKey               | field            | presenter              | presenterName
-      ${'user'}              | ${MOCK_USER}     | ${UserPresenter}       | ${'UserPresenter'}
-      ${'health'}            | ${'onTrack'}     | ${HealthPresenter}     | ${'HealthPresenter'}
-      ${'healthStatus'}      | ${'onTrack'}     | ${HealthPresenter}     | ${'HealthPresenter'}
-      ${'state'}             | ${'opened'}      | ${StatePresenter}      | ${'StatePresenter'}
-      ${'lastComment'}       | ${'lastComment'} | ${HtmlPresenter}       | ${'HtmlPresenter'}
-      ${'type'}              | ${'TASK'}        | ${TypePresenter}       | ${'TypePresenter'}
-      ${'duration'}          | ${3600}          | ${DurationPresenter}   | ${'DurationPresenter'}
-      ${'webPath'}           | ${'/foo'}        | ${UrlPresenter}        | ${'UrlPresenter'}
-      ${'shortSha'}          | ${'abc123'}      | ${CodePresenter}       | ${'CodePresenter'}
-      ${'refName'}           | ${'main'}        | ${CodePresenter}       | ${'CodePresenter'}
-      ${'acceptanceRate'}    | ${0.75}          | ${PercentagePresenter} | ${'PercentagePresenter'}
-      ${'acceptedCount'}     | ${1234}          | ${NumberPresenter}     | ${'NumberPresenter'}
-      ${'rejectedCount'}     | ${567}           | ${NumberPresenter}     | ${'NumberPresenter'}
-      ${'shownCount'}        | ${1801}          | ${NumberPresenter}     | ${'NumberPresenter'}
-      ${'totalCount'}        | ${10000}         | ${NumberPresenter}     | ${'NumberPresenter'}
-      ${'usersCount'}        | ${42}            | ${NumberPresenter}     | ${'NumberPresenter'}
-      ${'suggestionSizeSum'} | ${500000}        | ${NumberPresenter}     | ${'NumberPresenter'}
-    `('renders $presenterName for field key: $fieldKey', ({ fieldKey, field, presenter }) => {
-      createWrapper({ [fieldKey]: field }, fieldKey);
+  it('mounts the resolved presenter with item and data', () => {
+    const item = { author: 'foo' };
+    const wrapper = mount({ item, fieldKey: 'author', variant: 'compact' });
+    const presenter = wrapper.findComponent(StubPresenter);
 
-      const component = wrapper.findComponent(presenter);
-
-      expect(propsOrAttributes(component, 'item')).toBeDefined();
-      expect(propsOrAttributes(component, 'data')).toBe(field);
-      expect(propsOrAttributes(component, 'field-key')).toBe(fieldKey);
-    });
-  });
-
-  describe('type-scoped field key presenters', () => {
-    it('renders CiStatusPresenter for status on a CiJob', () => {
-      createWrapper({ __typename: 'CiJob', status: 'SUCCESS' }, 'status');
-
-      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(true);
-    });
-
-    it('renders CiStatusPresenter for status on a Pipeline', () => {
-      createWrapper({ __typename: 'Pipeline', status: 'FAILED' }, 'status');
-
-      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(true);
-    });
-
-    it('does not render CiStatusPresenter for status on other types', () => {
-      createWrapper({ __typename: 'Issue', status: 'open' }, 'status');
-
-      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(false);
-    });
-
-    it('renders UserAvatarPresenter for user on analytics dimensions', () => {
-      createWrapper({ ...MOCK_DIMENSIONS, user: MOCK_USER }, 'user');
-
-      expect(wrapper.findComponent(UserAvatarPresenter).exists()).toBe(true);
-    });
-
-    it('renders UserPresenter for user on other types', () => {
-      createWrapper({ user: MOCK_USER }, 'user');
-
-      expect(wrapper.findComponent(UserPresenter).exists()).toBe(true);
-    });
-
-    it('handles items without __typename for type-scoped fields', () => {
-      createWrapper({ status: 'open' }, 'status');
-
-      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(false);
-      expect(wrapper.findComponent(TextPresenter).exists()).toBe(true);
-    });
-  });
-
-  describe('variant-scoped field key presenters', () => {
-    const variant = 'compact';
-
-    it('renders UserPresenter for user field key with compact variant', () => {
-      createWrapper({ user: MOCK_USER }, 'user', { variant });
-
-      expect(wrapper.findComponent(UserPresenter).exists()).toBe(true);
-    });
-
-    it('renders UserPresenter for compact variant even when typename would match', () => {
-      createWrapper({ ...MOCK_DIMENSIONS, user: MOCK_USER }, 'user', { variant });
-
-      expect(wrapper.findComponent(UserPresenter).exists()).toBe(true);
-    });
-
-    it('falls through to typename when variant has no match', () => {
-      createWrapper({ __typename: 'Pipeline', status: 'FAILED' }, 'status', { variant });
-
-      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(true);
-    });
+    expect(presenter.exists()).toBe(true);
+    expect(presenter.props('item')).toBe(item);
+    expect(presenter.props('data')).toBe(STUB_DATA);
   });
 });

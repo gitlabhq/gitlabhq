@@ -354,6 +354,22 @@ export function isAbsolute(url) {
 }
 
 /**
+ * Returns true if `value` starts with what looks like a hostname label
+ * (alphanumeric, optional hyphens) followed by a dot — e.g. "gitlab.com",
+ * "gitlab.example.com/path", "192.168.1.1". Used as a heuristic to decide
+ * whether a scheme-less user input can safely have `https://` prepended.
+ *
+ * Keep in sync with the regex in
+ * JiraConnectInstallation#normalize_instance_url.
+ *
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export function isHostLike(value) {
+  return /^[a-zA-Z0-9][a-zA-Z0-9-]*\./.test(value);
+}
+
+/**
  * Returns true if url is a root-relative URL
  *
  * @param {String} url

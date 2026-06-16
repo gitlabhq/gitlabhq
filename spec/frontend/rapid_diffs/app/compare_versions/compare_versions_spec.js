@@ -10,7 +10,7 @@ describe('CompareVersions', () => {
     {
       id: 3,
       version_index: 3,
-      head: false,
+      is_merge_head: false,
       latest: true,
       selected: true,
       href: '/project/-/merge_requests/1/diffs?diff_id=3',
@@ -21,7 +21,7 @@ describe('CompareVersions', () => {
     {
       id: 2,
       version_index: 2,
-      head: false,
+      is_merge_head: false,
       latest: false,
       selected: false,
       href: '/project/-/merge_requests/1/diffs?diff_id=2',
@@ -35,7 +35,7 @@ describe('CompareVersions', () => {
     {
       id: 2,
       version_index: 2,
-      head: false,
+      is_merge_head: false,
       latest: false,
       selected: false,
       href: '/project/-/merge_requests/1/diffs?diff_id=3&start_sha=def456',
@@ -45,7 +45,7 @@ describe('CompareVersions', () => {
     {
       id: 'head',
       version_index: null,
-      head: true,
+      is_merge_head: true,
       latest: false,
       selected: true,
       href: '/project/-/merge_requests/1/diffs?diff_head=true',
@@ -170,7 +170,7 @@ describe('CompareVersions', () => {
         {
           id: 'base',
           version_index: null,
-          head: false,
+          is_merge_head: false,
           latest: false,
           selected: true,
           href: '/project/-/merge_requests/1/diffs?diff_id=3',
@@ -193,6 +193,68 @@ describe('CompareVersions', () => {
     });
   });
 
+  describe('context commits in source dropdown', () => {
+    const contextCommits = {
+      href: '/project/-/merge_requests/1/diffs?only_context_commits=true',
+      commits_count: 4,
+      selected: false,
+      diff_refs: { base_sha: 'cc_base', head_sha: 'cc_head', start_sha: 'cc_base' },
+    };
+
+    it('is not appended when contextCommits prop is null', () => {
+      createComponent();
+
+      const versions = findSourceDropdown().props('versions');
+      expect(versions.find((v) => v.id === 'context-commits')).toBeUndefined();
+    });
+
+    it('appends a divider-separated entry for context commits', () => {
+      createComponent({ contextCommits });
+
+      const versions = findSourceDropdown().props('versions');
+      const entry = versions.find((v) => v.id === 'context-commits');
+
+      expect(entry).toMatchObject({
+        id: 'context-commits',
+        href: contextCommits.href,
+        versionName: 'previously merged commits',
+        commitsText: '4 commits',
+        selected: false,
+        addDivider: true,
+      });
+    });
+
+    it('marks the entry selected when context commits is the active view', () => {
+      createComponent({
+        contextCommits: { ...contextCommits, selected: true },
+        sourceVersions: sourceVersions.map((v) => ({ ...v, selected: false })),
+      });
+
+      const versions = findSourceDropdown().props('versions');
+      const entry = versions.find((v) => v.id === 'context-commits');
+
+      expect(entry.selected).toBe(true);
+    });
+
+    it('shows the latest version button when context commits is selected', () => {
+      createComponent({
+        contextCommits: { ...contextCommits, selected: true },
+        sourceVersions: sourceVersions.map((v) => ({ ...v, selected: false })),
+      });
+
+      expect(findShowLatestVersionButton().exists()).toBe(true);
+    });
+
+    it('omits the divider when there are no other source versions', () => {
+      createComponent({ contextCommits, sourceVersions: [] });
+
+      const versions = findSourceDropdown().props('versions');
+      const entry = versions.find((v) => v.id === 'context-commits');
+
+      expect(entry.addDivider).toBe(false);
+    });
+  });
+
   describe('show latest version button', () => {
     it('is hidden when the latest source and latest target are selected', () => {
       expect(findShowLatestVersionButton().exists()).toBe(false);
@@ -203,7 +265,7 @@ describe('CompareVersions', () => {
         {
           id: 2,
           version_index: 2,
-          head: false,
+          is_merge_head: false,
           latest: false,
           selected: true,
           href: '/project/-/merge_requests/1/diffs?diff_id=3&start_sha=def456',
@@ -213,7 +275,7 @@ describe('CompareVersions', () => {
         {
           id: 'head',
           version_index: null,
-          head: true,
+          is_merge_head: true,
           latest: false,
           selected: false,
           href: '/project/-/merge_requests/1/diffs',
@@ -234,7 +296,7 @@ describe('CompareVersions', () => {
         {
           id: 3,
           version_index: 3,
-          head: false,
+          is_merge_head: false,
           latest: true,
           selected: false,
           href: '/project/-/merge_requests/1/diffs?diff_id=3',
@@ -245,7 +307,7 @@ describe('CompareVersions', () => {
         {
           id: 2,
           version_index: 2,
-          head: false,
+          is_merge_head: false,
           latest: false,
           selected: true,
           href: '/project/-/merge_requests/1/diffs?diff_id=2',

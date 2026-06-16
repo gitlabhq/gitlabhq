@@ -55,7 +55,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
           stub_const("#{MergeRequestDiff}::COMMITS_SAFE_SIZE", 2)
         end
 
-        it 'limits total commits' do
+        it 'limits total commits and sets truncated label' do
           get :new, params: large_diff_params
 
           expect(response).to be_successful
@@ -64,11 +64,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
           expect(assigns(:commits)).to be_an Array
           expect(total).to be > 0
           expect(assigns(:hidden_commit_count)).to be > 0
+          expect(assigns(:commits_count_label)).to eq("2+")
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
-      it 'shows total commits' do
+      it 'shows total commits with exact label' do
         get :new, params: large_diff_params
 
         expect(response).to be_successful
@@ -77,6 +78,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
         expect(assigns(:commits)).to be_an CommitCollection
         expect(total).to be > 0
         expect(assigns(:hidden_commit_count)).to eq(0)
+        expect(assigns(:commits_count_label)).to eq(total)
         expect(response).to have_gitlab_http_status(:ok)
       end
     end

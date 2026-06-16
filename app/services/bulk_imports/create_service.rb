@@ -77,6 +77,7 @@ module BulkImports
       validate_source_full_path!
       validate_setting_enabled!
       validate_import_destinations!
+      validate_destination_organizations!
     end
 
     def create_bulk_import
@@ -159,6 +160,26 @@ module BulkImports
           entity_params[:destination_name],
           entity_params[:source_type]
         )
+      end
+    end
+
+    # Rejects cross-organization imports when either side is isolated.
+    # Mirrors Members::CreatorService#commit_member.
+    # See https://gitlab.com/groups/gitlab-org/-/epics/17388 (Enforce Organization Data Isolation).
+    def validate_destination_organizations!
+      # fallback_organization is the request-scoped org (Current.organization at the
+      # controller/API layer). When absent (non-web callers, internal jobs), there is
+      # no request org to compare against, so this validation has no meaning.
+      return unless fallback_organization
+
+      Array.wrap(params).each do |entity_params|
+        destination_namespace = entity_params[:destination_namespace]
+        resolved_organization = organization(destination_namespace)
+
+        next if resolved_organization == fallback_organization
+        next unless resolved_organization.isolated? || fallback_organization.isolated?
+
+        raise BulkImports::Error.cross_organization_destination(destination_namespace)
       end
     end
 

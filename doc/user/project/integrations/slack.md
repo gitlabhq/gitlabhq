@@ -15,9 +15,9 @@ title: Slack notifications (deprecated)
 {{< /details >}}
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/435909) in GitLab 15.9
-> and is planned for removal in 19.0. Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
-> This change is a breaking change.
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/435909) in GitLab 15.9.
+> Use the [GitLab for Slack app](gitlab_slack_application.md) instead.
+> This feature has not yet been removed. When removed, this will be a breaking change.
 
 The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up

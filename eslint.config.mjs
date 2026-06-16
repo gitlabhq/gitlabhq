@@ -205,6 +205,10 @@ export default [
       // Dot-prefixed directories were implicitly ignored under legacy
       // eslintrc config (FlatCompat) but must be listed explicitly in flat config
       '.eslint_todo/**',
+
+      // Shared agent skills are documentation assets (including example
+      // .graphql queries), not application code, so they are not linted.
+      '.claude/skills/**',
     ],
   },
   // Legacy plugin configs (via FlatCompat)
@@ -519,6 +523,14 @@ export default [
       ],
     },
   },
+  // Page entrypoints must be top-level execution scripts and must not export anything.
+  // See `scripts/frontend/find_pages_without_top_level_execution.mjs`.
+  {
+    files: ['{,ee/,jh/}app/assets/javascripts/pages/**/index.js'],
+    rules: {
+      'local-rules/page-entrypoint-must-execute': 'error',
+    },
+  },
   // Vue file rules and Vue 3 compatibility
   {
     files: ['*.vue', '**/*.vue'],
@@ -780,7 +792,6 @@ export default [
       globals: {
         waitForElement: 'readonly',
         getText: 'readonly',
-        findByTestId: 'readonly',
         findInDrawer: 'readonly',
         findButtonByText: 'readonly',
         findByGraphQLId: 'readonly',
@@ -795,6 +806,8 @@ export default [
         capturedRequests: 'readonly',
         resetCapturedRequests: 'readonly',
         captureRequest: 'readonly',
+        screen: 'readonly',
+        within: 'readonly',
       },
     },
 
@@ -810,19 +823,23 @@ export default [
             ...specRestrictedImportsPaths,
             {
               name: 'helpers/wait_for_promises',
-              message: 'Use waitFor from @testing-library/dom instead.',
+              message: 'Use waitFor from @testing-library/vue instead.',
             },
             {
               name: 'helpers/vue_test_utils_helper',
               importNames: ['mountExtended', 'shallowMountExtended'],
               message:
-                'Use mount from @vue/test-utils instead. After mounting, use native DOM APIs for interactions and assertions.',
+                'Use fullMount from test_helpers.js instead. After mounting, use @testing-library/vue queries for interactions and assertions.',
             },
             {
               name: '@vue/test-utils',
-              importNames: ['createWrapper'],
               message:
-                'Do not wrap DOM elements in VTU wrappers. Use native DOM APIs (querySelector, click, getAttribute) instead.',
+                'Do not import from @vue/test-utils in MSW integration specs. Use @testing-library/vue for queries and fullMount from test_helpers.js for mounting.',
+            },
+            {
+              name: '@testing-library/dom',
+              message:
+                'Import from @testing-library/vue instead of @testing-library/dom. It re-exports everything from @testing-library/dom.',
             },
           ],
           patterns: [
@@ -830,7 +847,7 @@ export default [
             {
               group: ['vue'],
               importNames: ['nextTick'],
-              message: 'Use waitFor from @testing-library/dom instead of nextTick.',
+              message: 'Use waitFor from @testing-library/vue instead of nextTick.',
             },
           ],
         },
@@ -841,21 +858,27 @@ export default [
         {
           selector: 'CallExpression[callee.object.name=/[Rr]outer/][callee.property.name="push"]',
           message:
-            'Do not use router.push. Use the UI to trigger actions which in turn trigger route changes to simulate user behaviours.',
+            'Do not use router.push. Simulate user behaviours and assert the resulting HTML.',
         },
         {
           selector:
             'CallExpression[callee.object.property.name=/[Rr]outer/][callee.property.name="push"]',
           message:
-            'Do not use router.push. Use the UI to trigger actions which in turn trigger route changes to simulate user behaviours.',
+            'Do not use router.push. Simulate user behaviours and assert the resulting HTML.',
+        },
+        {
+          selector:
+            'MemberExpression[object.name=/[Rr]outer/][property.name="currentRoute"]',
+          message:
+            'Do not access the router properties directly. Simulate user behaviours and assert the resulting HTML.',
         },
         {
           selector: 'MemberExpression[property.name="nextTick"]',
-          message: 'Use waitFor from @testing-library/dom instead of nextTick.',
+          message: 'Use waitFor from @testing-library/vue instead of nextTick.',
         },
         {
           selector: 'MemberExpression[property.name="$nextTick"]',
-          message: 'Use waitFor from @testing-library/dom instead of $nextTick.',
+          message: 'Use waitFor from @testing-library/vue instead of $nextTick.',
         },
         {
           selector: 'MemberExpression[property.name="__vue__"]',
@@ -871,6 +894,16 @@ export default [
             'CallExpression[callee.object.property.name="vm"][callee.property.name="$emit"]',
           message:
             'Do not emit events on component instances. Trigger the user interaction that causes the event instead.',
+        },
+        {
+          selector: 'MemberExpression[object.name=/[Ss]tore/][property.name="state"]',
+          message:
+            'Do not access store.state directly. Simulate user behaviours and assert the resulting HTML.',
+        },
+        {
+          selector: 'MemberExpression[object.property.name=/[Ss]tore/][property.name="state"]',
+          message:
+            'Do not access store.state directly. Simulate user behaviours and assert the resulting HTML.',
         },
       ],
     },

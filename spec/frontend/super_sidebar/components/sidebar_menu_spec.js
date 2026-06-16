@@ -396,102 +396,79 @@ describe('Sidebar Menu', () => {
         });
       });
 
-      describe('when showWorkItemsSidebarCount feature flag is enabled', () => {
-        it('formats openWorkItemsCount as "10k+" when it equals the max limit', async () => {
-          handler = jest
-            .fn()
-            .mockResolvedValue(
-              sidebarDataCountResponse({ openWorkItemsCount: MAX_OPEN_WORK_ITEMS_COUNT }),
-            );
+      it('formats openWorkItemsCount as "10k+" when it equals the max limit', async () => {
+        handler = jest
+          .fn()
+          .mockResolvedValue(
+            sidebarDataCountResponse({ openWorkItemsCount: MAX_OPEN_WORK_ITEMS_COUNT }),
+          );
 
-          createWrapper({
-            items: menuItems,
-            panelType: 'project',
-            provide: { currentPath: 'group', glFeatures: { showWorkItemsSidebarCount: true } },
-          });
-
-          await waitForPromises();
-
-          expect(findPinnedSection().props('asyncCount')).toMatchObject({
-            openWorkItemsCount: '10k+',
-          });
+        createWrapper({
+          items: menuItems,
+          panelType: 'project',
+          provide: { currentPath: 'group' },
         });
 
-        it('formats openWorkItemsCount normally when below the max limit', async () => {
-          handler = jest
-            .fn()
-            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 9999 }));
+        await waitForPromises();
 
-          createWrapper({
-            items: menuItems,
-            panelType: 'project',
-            provide: { currentPath: 'group' },
-          });
-
-          await waitForPromises();
-
-          expect(findPinnedSection().props('asyncCount')).toMatchObject({
-            openWorkItemsCount: '10k',
-          });
-        });
-
-        it('does not append "+" to openIssuesCount even when it equals the max limit', async () => {
-          handler = jest
-            .fn()
-            .mockResolvedValue(
-              sidebarDataCountResponse({ openIssuesCount: MAX_OPEN_WORK_ITEMS_COUNT }),
-            );
-
-          createWrapper({
-            items: menuItems,
-            panelType: 'project',
-            provide: { currentPath: 'group' },
-          });
-
-          await waitForPromises();
-
-          expect(findPinnedSection().props('asyncCount')).toMatchObject({
-            openIssuesCount: '10k',
-          });
-        });
-
-        it('includes openWorkItemsCount in asyncCount', async () => {
-          handler = jest
-            .fn()
-            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 5 }));
-
-          createWrapper({
-            items: menuItems,
-            panelType: 'project',
-            provide: {
-              currentPath: 'group',
-              glFeatures: { showWorkItemsSidebarCount: true },
-            },
-          });
-
-          await waitForPromises();
-
-          expect(findPinnedSection().props('asyncCount')).toMatchObject({
-            openWorkItemsCount: '5',
-          });
+        expect(findPinnedSection().props('asyncCount')).toMatchObject({
+          openWorkItemsCount: '10k+',
         });
       });
 
-      describe('when showWorkItemsSidebarCount feature flag is disabled', () => {
-        it('does not show openWorkItemsCount', async () => {
-          handler = jest
-            .fn()
-            .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: null }));
+      it('formats openWorkItemsCount normally when below the max limit', async () => {
+        handler = jest
+          .fn()
+          .mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 9999 }));
 
-          createWrapper({
-            items: menuItems,
-            panelType: 'project',
-            provide: { currentPath: 'group', glFeatures: { showWorkItemsSidebarCount: false } },
-          });
+        createWrapper({
+          items: menuItems,
+          panelType: 'project',
+          provide: { currentPath: 'group' },
+        });
 
-          await waitForPromises();
+        await waitForPromises();
 
-          expect(findPinnedSection().props('asyncCount')).not.toHaveProperty('openWorkItemsCount');
+        expect(findPinnedSection().props('asyncCount')).toMatchObject({
+          openWorkItemsCount: '10k',
+        });
+      });
+
+      it('does not append "+" to openIssuesCount even when it equals the max limit', async () => {
+        handler = jest
+          .fn()
+          .mockResolvedValue(
+            sidebarDataCountResponse({ openIssuesCount: MAX_OPEN_WORK_ITEMS_COUNT }),
+          );
+
+        createWrapper({
+          items: menuItems,
+          panelType: 'project',
+          provide: { currentPath: 'group' },
+        });
+
+        await waitForPromises();
+
+        expect(findPinnedSection().props('asyncCount')).toMatchObject({
+          openIssuesCount: '10k',
+        });
+      });
+
+      it('includes openWorkItemsCount in asyncCount', async () => {
+        handler = jest.fn().mockResolvedValue(sidebarDataCountResponse({ openWorkItemsCount: 5 }));
+
+        createWrapper({
+          items: menuItems,
+          panelType: 'project',
+          provide: {
+            currentPath: 'group',
+          },
+        });
+
+        await waitForPromises();
+
+        expect(findPinnedSection().props('asyncCount')).toMatchObject({
+          openWorkItemsCount: '5',
         });
       });
     });

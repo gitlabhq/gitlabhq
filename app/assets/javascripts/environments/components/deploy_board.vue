@@ -25,6 +25,7 @@ import { STATUS_MAP, CANARY_STATUS } from '../constants';
 import CanaryIngress from './canary_ingress.vue';
 
 export default {
+  name: 'DeployBoard',
   components: {
     InstanceComponent,
     CanaryIngress,

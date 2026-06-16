@@ -55,12 +55,6 @@ module LoginHelpers
     click_oauth_provider(provider)
   end
 
-  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, expect_fail: false, additional_info: {})
-    response_object = saml_xml(saml_response) if saml_response.present?
-    mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
-    click_oauth_provider(provider, sign_in_path: new_admin_session_path, expect_fail: expect_fail)
-  end
-
   # Requires Javascript driver.
   def gitlab_sign_out(user = @current_user)
     within_testid('user-dropdown') do
@@ -136,7 +130,6 @@ module LoginHelpers
   end
 
   # Clicks the OAuth provider button and returns whether navigation occurred.
-  # Raises CsrfRetry if the session cookie is missing (Chrome intermittent bug), signalling the caller to retry.
   def click_oauth_provider_button(provider, sign_in_path, wait)
     if javascript_test?
       click_oauth_provider_button_js(provider, sign_in_path, wait)
@@ -150,6 +143,9 @@ module LoginHelpers
 
   CsrfRetry = Class.new(StandardError)
 
+  # Chrome intermittently fails to send cookies on the POST request, causing a silent
+  # CSRF failure that redirects back to sign-in.
+  # Raises CsrfRetry if the session cookie is missing, signalling the caller to retry.
   def click_oauth_provider_button_js(provider, sign_in_path, wait)
     navigated = false
     reqs = inspect_requests do
@@ -159,8 +155,6 @@ module LoginHelpers
       navigated = page.has_no_current_path?(sign_in_path, ignore_query: true, wait: wait)
     end
 
-    # Chrome intermittently fails to send cookies on the POST request, causing a silent
-    # CSRF failure that redirects back to sign-in.
     post_request = reqs.find { |r| r.url&.include?("/users/auth/#{provider}") }
     raise CsrfRetry unless post_request&.request_headers&.fetch('Cookie', '')&.include?('_gitlab_session')
 
@@ -311,7 +305,9 @@ module LoginHelpers
   # 3. Any provider actions on OmniauthCallbacksController that were lost
   #    when the controller was autoloaded while Provider.providers was
   #    stubbed to a subset (e.g. only [:saml]).
-  def self.cleanup_provider_routes
+  def cleanup_provider_routes
+    block_and_wait_for_requests_complete if RSpec.current_example.metadata[:type] == :feature
+
     Rails.application.routes.disable_clear_and_finalize = false
     Rails.application.reload_routes!
 

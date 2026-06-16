@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
+RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost, feature_category: :database do
   let(:load_balancer) do
     Gitlab::Database::LoadBalancing::LoadBalancer.new(
       Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)

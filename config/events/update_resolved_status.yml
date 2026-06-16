@@ -3,6 +3,8 @@ description: Tracks updates to the resolved status of items.
 internal_events: true
 action: update_resolved_status
 product_group: platform_insights
+product_categories:
+- observability
 milestone: '16.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121259
 tiers:

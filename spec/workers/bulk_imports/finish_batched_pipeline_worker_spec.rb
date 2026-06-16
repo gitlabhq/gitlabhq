@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :importers do
-  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:entity) do
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       :project_entity,

@@ -58,6 +58,7 @@ export default {
     showApprovers: { default: false },
     canAdminGroupProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
+    canCreateBranchRule: { default: false },
   },
   data() {
     return {
@@ -153,7 +154,7 @@ export default {
     class="gl-mb-5"
     :is-loading="$apollo.queries.branchRules.loading"
   >
-    <template #actions>
+    <template v-if="canCreateBranchRule" #actions>
       <gl-disclosure-dropdown
         :toggle-text="$options.i18n.addBranchRule"
         :items="getAddRuleItems"
@@ -165,7 +166,7 @@ export default {
       {{ $options.i18n.emptyState }}
     </template>
 
-    <template #default>
+    <template v-else #default>
       <ul class="content-list">
         <branch-rule
           v-for="(rule, index) in branchRules"

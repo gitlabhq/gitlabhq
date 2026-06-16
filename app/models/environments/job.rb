@@ -2,6 +2,8 @@
 
 module Environments
   class Job < ApplicationRecord
+    include Ci::Partitionable::AssociationFinder
+
     self.table_name = 'job_environments'
 
     belongs_to :environment
@@ -9,6 +11,7 @@ module Environments
     belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :ci_pipeline_id, inverse_of: :job_environments
     belongs_to :job, class_name: 'Ci::Processable', foreign_key: :ci_job_id, inverse_of: :job_environment
     belongs_to :deployment
+    partitionable_belongs_to_loader :pipeline
 
     validates :environment_id, :project_id, :ci_pipeline_id, :ci_job_id, presence: true
     validates :ci_job_id, uniqueness: { scope: :environment_id }

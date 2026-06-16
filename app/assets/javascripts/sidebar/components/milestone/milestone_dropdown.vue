@@ -23,6 +23,7 @@ const placeholderMilestone = {
 };
 
 export default {
+  name: 'MilestoneDropdown',
   issuableAttribute: IssuableAttributeType.Milestone,
   components: {
     GlDropdownItem,

@@ -17,6 +17,8 @@ module Import
         inverse_of: :offline_export
       has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :offline_export
 
+      before_validation :sanitize_source_hostname
+
       validates :source_hostname, :status, presence: true
       validate :validate_source_hostname
 
@@ -75,6 +77,14 @@ module Import
         return if uri && uri.scheme && uri.host && uri.path.blank? && uri.query.blank?
 
         errors.add(:source_hostname, :invalid, message: 'must contain only scheme and host')
+      end
+
+      def sanitize_source_hostname
+        return unless source_hostname.present?
+
+        self.source_hostname = Gitlab::UrlSanitizer.new(source_hostname).sanitized_url
+      rescue Addressable::URI::InvalidURIError
+        # Leave source_hostname as-is; validate_source_hostname will reject it
       end
 
       def schedule_configuration_purge

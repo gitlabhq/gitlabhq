@@ -12,12 +12,6 @@ title: Runner fleet dashboard for administrators
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6
-
-{{< /history >}}
-
 As a GitLab administrator, you can use the runner fleet dashboard to assess the health of your instance runners.
 The runner fleet dashboard shows:
 
@@ -30,9 +24,14 @@ The runner fleet dashboard shows:
 
 ## Dashboard metrics
 
+{{< details >}}
+
+Status: Beta
+
+{{< /details >}}
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) metrics, **Runner usage** and **Wait time to pick up job**, as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.7 with [flags](../../administration/feature_flags/_index.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
 - **Runner usage** and **Wait time to pick up job** metrics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424789) to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.1.
 
 {{< /history >}}
@@ -51,13 +50,8 @@ The following metrics are available in the runner fleet dashboard:
 | Online                        | Number of runners that are online for the entire instance. |
 | Offline                       | Number of runners that are currently offline. Runners that were registered but never connected to GitLab are not included in this count. |
 | Active runners                | The total number of runners that are currently active. |
-| Runner usage (previous month)<sup>1</sup> | **Requires ClickHouse**: The total compute minutes used by each project or group runner in the previous month. You can export this data as a CSV file for cost analysis. |
-| Wait time to pick a job<sup>1</sup>       | **Requires ClickHouse**: The average time a job waits in the queue before a runner picks it up. This metric provides insights into whether your runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives (SLOs). This data is updated every 24 hours. |
-
-**Footnotes**:
-
-1. This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-   For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
+| Runner usage (previous month) | **Requires ClickHouse**: The total compute minutes used by each project or group runner in the previous month. You can export this data as a CSV file for cost analysis. |
+| Wait time to pick a job       | **Requires ClickHouse**: The average time a job waits in the queue before a runner picks it up. This metric provides insights into whether your runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives (SLOs). This data is updated every 24 hours. |
 
 ## View the runner fleet dashboard
 
@@ -88,14 +82,3 @@ To export compute minutes used by instance runners:
 1. In the left sidebar, select **CI/CD** > **Runners**.
 1. Select **Fleet dashboard**.
 1. Select **Export CSV**.
-
-## Feedback
-
-To help us improve the runner fleet dashboard, you can provide feedback in
-[issue 421737](https://gitlab.com/gitlab-org/gitlab/-/issues/421737).
-In particular:
-
-- How easy or difficult it was to set up GitLab to make the dashboard work.
-- How useful you found the dashboard.
-- What other information you would like to see on that dashboard.
-- Any other related thoughts and ideas.

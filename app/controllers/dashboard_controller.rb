@@ -86,7 +86,13 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def load_user_events(user)
-    UserRecentEventsFinder.new(current_user, user, event_filter, params).execute
+    UserRecentEventsFinder.new(
+      current_user,
+      user,
+      event_filter,
+      params,
+      exclude_transferred_events: true
+    ).execute
   end
 
   def load_project_events
@@ -97,7 +103,7 @@ class DashboardController < Dashboard::ApplicationController
         current_user.authorized_projects
       end
 
-    finder_params = { filter: event_filter }
+    finder_params = { filter: event_filter, transfer_options: { exclude_transferred_events: true } }
     finder_params[:offset] = [params[:offset].to_i, 0].max
 
     if params[:limit].present?

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
 
     context 'when Redis calls are made' do
-      let_it_be(:redis_store_class) { define_helper_redis_store_class }
+      let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
       let(:redis_store_name) { redis_store_class.store_name.underscore }
 
       before do

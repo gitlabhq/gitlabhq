@@ -9,6 +9,10 @@ module Gitlab
         MAX_PROCESSING_TIME = 5.minutes
         LEASE_TIMEOUT = MAX_PROCESSING_TIME + 2.seconds
         MAX_BATCH_SIZE = 5_000
+        NON_TRANSIENT_ERRORS = [
+          Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError,
+          JSON::ParserError
+        ].freeze
 
         attr_reader :redis_key, :metadata_key, :worker_name
 
@@ -75,10 +79,49 @@ module Gitlab
           jobs = next_batch_from_queue(redis, limit: num_jobs_to_resume)
           return 0 if jobs.empty?
 
-          bulk_send_to_processing_queue(jobs)
+          begin
+            bulk_send_to_processing_queue(jobs)
+          rescue StandardError => e
+            if non_transient_error?(e)
+              send_jobs_individually(jobs)
+              return jobs.length
+            end
+
+            raise
+          end
+
           remove_processed_jobs(redis, limit: jobs.length)
 
           jobs.length
+        end
+
+        def non_transient_error?(error)
+          NON_TRANSIENT_ERRORS.any? { |klass| error.is_a?(klass) }
+        end
+
+        def send_jobs_individually(jobs)
+          return 0 if worker_klass.nil?
+
+          enqueued = 0
+          jobs.each do |job|
+            bulk_send_to_processing_queue([job])
+            enqueued += 1
+          rescue StandardError => e
+            raise unless non_transient_error?(e)
+
+            log_dropped_job(job, e)
+            dropped_job_counter.increment({ worker: @worker_name })
+          end
+
+          with_redis do |redis|
+            remove_processed_jobs(redis, limit: jobs.length)
+          end
+
+          enqueued
+        end
+
+        def log_dropped_job(job, error)
+          Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.dropped_poison_job_log(worker_name, job, error)
         end
 
         def num_jobs_to_resume
@@ -127,7 +170,7 @@ module Gitlab
         def prepare_and_store_metadata(jobs)
           queue = Queue.new
           args_list = []
-          jobs.map! do |job|
+          jobs.each do |job|
             deserialized = deserialize(job)
             queue.push(job_metadata(deserialized))
             args_list << deserialized['args']
@@ -166,6 +209,11 @@ module Gitlab
         def deferred_job_counter
           @deferred_job_counter ||= ::Gitlab::Metrics.counter(:sidekiq_concurrency_limit_deferred_jobs_total,
             'Count of jobs deferred by the concurrency limit middleware.')
+        end
+
+        def dropped_job_counter
+          @dropped_job_counter ||= ::Gitlab::Metrics.counter(:sidekiq_concurrency_limit_dropped_jobs_total,
+            'Count of poison jobs dropped from the concurrency limit buffered queue.')
         end
       end
     end

@@ -69,6 +69,7 @@ module Gitlab
         method = env['REQUEST_METHOD'].downcase
         method = 'INVALID' unless HTTP_METHODS.include?(method)
         started = ::Gitlab::Metrics::System.monotonic_time
+        ::Gitlab::RequestContext.instance.request_start_monotonic_time = started
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
 

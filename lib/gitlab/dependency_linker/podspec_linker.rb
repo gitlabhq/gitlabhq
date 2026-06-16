@@ -16,10 +16,10 @@ module Gitlab
 
         link_regex(/(git:|:git\s*=>)\s*['"](?<name>#{URL_REGEX})['"]/o, &:itself)
 
-        link_method_call('license', &method(:license_url))
-        link_regex(/license\s*=\s*\{\s*(type:|:type\s*=>)\s*#{STRING_REGEX}/o, &method(:license_url))
+        link_method_call('license') { |value| license_url(value) }
+        link_regex(/license\s*=\s*\{\s*(type:|:type\s*=>)\s*#{STRING_REGEX}/o) { |value| license_url(value) }
 
-        link_method_call('dependency', &method(:package_url))
+        link_method_call('dependency') { |value| package_url(value) }
       end
     end
   end

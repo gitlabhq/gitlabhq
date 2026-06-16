@@ -12,12 +12,6 @@ title: Project-level secure files
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) and feature flag `ci_secure_files` removed in GitLab 15.7.
-
-{{< /history >}}
-
 This feature is part of [Mobile DevOps](../mobile_devops/_index.md).
 The feature is still in development, but you can:
 

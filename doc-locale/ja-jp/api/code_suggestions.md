@@ -1,14 +1,14 @@
 ---
-stage: Create
-group: Code Creation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: コード提案のREST APIに関するドキュメント。
+stage: AI-powered
+group: AI Coding
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: コード提案のためのREST APIに関するドキュメント。
 title: コード提案API
 ---
 
-このAPIを使用して、[コード提案](../user/project/repository/code_suggestions/_index.md)機能にアクセスします。
+このAPIを使用してGitLab Duoのコード提案にアクセスします。
 
-## コード補完を生成 {#generate-code-completions}
+## コード補完を生成する {#generate-code-completions}
 
 {{< details >}}
 
@@ -18,10 +18,10 @@ title: コード提案API
 
 {{< history >}}
 
-- GitLab 16.2で`code_suggestions_completion_api`という名前の[フラグ](../administration/feature_flags/_index.md)とともに導入されました。デフォルトでは無効になっています。この機能は実験です。
-- このエンドポイントを呼び出す前にJSON Webトークンを生成する必要があった要件は、GitLab 16.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863)。
+- GitLab 16.2で、`code_suggestions_completion_api`という名前の[フラグ付き](../administration/feature_flags/_index.md)で導入されました。デフォルトでは無効になっています。この機能は実験です。
+- このエンドポイントを呼び出す前にJWTを生成する要件は、GitLab 16.3で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863)されました。
 - GitLab 16.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/416371)になりました。[機能フラグ`code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174)は削除されました。
-- `context`および`user_instruction`属性は、GitLab 17.1で`code_suggestions_context`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/462750)されました。デフォルトでは無効になっています。
+- GitLab 17.1で、`code_suggestions_context`という名前の[フラグ付き](../administration/feature_flags/_index.md)で、`context`と`user_instruction`の属性が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/462750)されました。デフォルトでは無効になっています。
 - `context`と`user_instruction`の属性は、GitLab 18.6で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/462750)されました。機能フラグ`code_suggestions_context`は削除されました。
 
 {{< /history >}}
@@ -30,13 +30,10 @@ title: コード提案API
 POST /code_suggestions/completions
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> このエンドポイントは、ユーザーごとに1分間に60リクエストのレート制限を設けています。
 
-このエンドポイントは、各ユーザーに対して1分あたり60リクエストにレート制限されています。
-
-{{< /alert >}}
-
-人工知能の抽象化レイヤーを使用して、コード補完を生成します。
+AI抽象化レイヤーを使用して、コード補完を生成します。
 
 このエンドポイントへのリクエストは、[AIゲートウェイ](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md)にプロキシされます。
 
@@ -44,31 +41,31 @@ POST /code_suggestions/completions
 
 | 属性          | 型    | 必須 | 説明 |
 |--------------------|---------|----------|-------------|
-| `current_file`     | ハッシュ    | はい      | コード提案が生成されているファイルの属性。この属性が受け入れる文字列のリストについては、[ファイルの属性](#file-attributes)を参照してください。 |
-| `intent`           | 文字列  | いいえ       | コード補完リクエストの目的。これは、`completion`または`generation`のいずれかです。 |
-| `stream`           | ブール値 | いいえ       | 応答を、準備ができ次第、より小さいチャンクとしてストリーミングするかどうか（該当する場合）。デフォルトは`false`です。 |
+| `current_file`     | ハッシュ    | はい      | サジェストが生成されるファイルについて。属性この属性が受け入れる文字列のリストについては、[ファイルの属性](#file-attributes)を参照してください。 |
+| `intent`           | 文字列  | いいえ       | 完了リクエストの目的。これは`completion`または`generation`のいずれかです。 |
+| `stream`           | ブール値 | いいえ       | 応答を準備ができた時点でより小さなチャンクとしてストリーミングするかどうか（該当する場合）。デフォルトは`false`です。 |
 | `project_path`     | 文字列  | いいえ       | プロジェクトのパス。 |
-| `generation_type`  | 文字列  | いいえ       | 生成リクエストのイベントのタイプ。これは、`comment`、`empty_function`、または`small_file`にすることができます。 |
-| `context`          | 配列   | いいえ       | コード提案に使用される追加のコンテキスト。この属性が受け入れるパラメータのリストについては、[コンテキストの属性](#context-attributes)を参照してください。 |
-| `user_instruction` | 文字列  | いいえ       | コード提案に関するユーザーの指示。 |
+| `generation_type`  | 文字列  | いいえ       | 生成リクエストのイベントタイプ。これは`comment`、`empty_function`、または`small_file`のいずれかです。 |
+| `context`          | 配列   | いいえ       | コード提案に使用される追加のコンテキスト。この属性が受け入れるパラメータのリストについては、[コンテキスト属性](#context-attributes)を参照してください。 |
+| `user_instruction` | 文字列  | いいえ       | ユーザーのコード提案への指示。 |
 
-### ファイルの属性 {#file-attributes}
+### ファイル属性 {#file-attributes}
 
-`current_file`属性は、次の文字列を受け入れます:
+`current_file`属性は、以下の文字列を受け入れます:
 
 - `file_name` - ファイル名。必須。
-- `content_above_cursor` - 現在のカーソル位置より上のファイルの内容。必須。
-- `content_below_cursor` - 現在のカーソル位置より下のファイルの内容。オプション。
+- `content_above_cursor` - 現在のカーソル位置より上のファイルコンテンツ。必須。
+- `content_below_cursor` - 現在のカーソル位置より下のファイルコンテンツ。オプション。
 
-### コンテキストの属性 {#context-attributes}
+### コンテキスト属性 {#context-attributes}
 
-`context`属性は、次の属性を持つ要素のリストを受け入れます:
+`context`属性は、以下の属性を持つ要素のリストを受け入れます:
 
-- `type` - コンテキスト要素のタイプ。これは、`file`または`snippet`のいずれかです。
-- `name` - コンテキスト要素の名前。ファイルまたはスニペットの名前。
-- `content` - コンテキスト要素の内容。ファイルまたは関数の本文。
+- `type` - コンテキスト要素のタイプ。これは`file`または`snippet`のいずれかです。
+- `name` - コンテキスト要素の名前。ファイルまたはコードスニペットの名前。
+- `content` - コンテキスト要素のコンテンツ。ファイルまたは関数の本体。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -84,7 +81,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/code_suggestions/completions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -113,16 +110,16 @@ curl --request POST \
 
 {{< /history >}}
 
-このエンドポイントを使用して、以下を検証します:
+このエンドポイントを使用して、次のいずれかを検証することができます:
 
 - プロジェクトで`code_suggestions`が有効になっている。
-- プロジェクトのグループのネームスペース設定で`code_suggestions`が有効になっている。
+- プロジェクトのグループで、`code_suggestions`がそのネームスペースの設定で有効になっている。
 
 ```plaintext
 POST code_suggestions/enabled
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型    | 必須 | 説明 |
 | ----------------- | ------- | -------- | ----------- |
@@ -130,25 +127,24 @@ POST code_suggestions/enabled
 
 成功した場合、以下を返します:
 
-- 機能が有効な場合は、[`200`](rest/troubleshooting.md#status-codes)。
-- 機能が無効になっている場合は[`403`](rest/troubleshooting.md#status-codes)。
+- 機能が有効な場合は[`200`](rest/troubleshooting.md#status-codes)。
+- 機能が無効な場合は[`403`](rest/troubleshooting.md#status-codes)。
 
-さらに、パスが空であるか、プロジェクトが存在しない場合は[`404`](rest/troubleshooting.md#status-codes)を返します。
+さらに、パスが空であるか、またはプロジェクトが存在しない場合は、[`404`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
   --url "https://gitlab.example.com/api/v4/code_suggestions/enabled" \
-  --header "Private-Token: <YOUR_ACCESS_TOKEN>" \
+  --header "PRIVATE-TOKEN: <YOUR_ACCESS_TOKEN>" \
   --header "Content-Type: application/json" \
   --data '{
       "project_path": "group/project_name"
-    }' \
-
+    }'
 ```
 
-## AIゲートウェイの直接接続の詳細をフェッチする {#fetch-direct-connection-details-for-the-ai-gateway}
+## AIゲートウェイへの直接接続詳細をフェッチする {#fetch-direct-connection-details-for-the-ai-gateway}
 
 {{< history >}}
 
@@ -161,15 +157,12 @@ curl --request POST \
 POST /code_suggestions/direct_access
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> このエンドポイントは、ユーザーごとに5分間に10リクエストのレート制限を設けています。
 
-このエンドポイントは、各ユーザーに対して5分あたり10リクエストにレート制限されています。
+IDEやクライアントがAIゲートウェイに`completion`リクエストを直接送信するために使用できる、ユーザー固有の接続詳細を返します。これには、AIゲートウェイにプロキシする必要があるヘッダーと、必須の認証トークンが含まれます。
 
-{{< /alert >}}
-
-IDE/クライアントが`completion`リクエストをAIゲートウェイに直接送信するために使用できるユーザー固有の接続詳細を返します。これには、AIゲートウェイにプロキシする必要があるヘッダーと、必要な認証トークンが含まれます。
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -177,7 +170,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/code_suggestions/direct_access"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -193,7 +186,7 @@ curl --request POST \
 }
 ```
 
-## 接続の詳細をフェッチする {#fetch-connection-details}
+## 接続詳細をフェッチする {#fetch-connection-details}
 
 {{< history >}}
 
@@ -205,15 +198,12 @@ curl --request POST \
 POST /code_suggestions/connection_details
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> このエンドポイントは、ユーザーごとに1分間に10リクエストのレート制限を設けています。
 
-このエンドポイントは、各ユーザーに対して1分あたり10リクエストにレート制限されています。
+IDEやクライアントがテレメトリーに使用できる、ユーザー固有の接続詳細を返します。これには、ユーザーが接続しているGitLabインスタンスに関するメタデータが含まれます。
 
-{{< /alert >}}
-
-ユーザーが接続されているGitLabインスタンスに関するメタデータなど、テレメトリ用にIDE/クライアントで使用できるユーザー固有の接続の詳細を返します。
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -221,7 +211,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/code_suggestions/connection_details"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

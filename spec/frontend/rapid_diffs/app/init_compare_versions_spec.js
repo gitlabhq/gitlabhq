@@ -5,13 +5,14 @@ import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_ve
 
 jest.mock('~/rapid_diffs/app/compare_versions/compare_versions.vue', () => ({
   name: 'CompareVersions',
-  props: ['sourceVersions', 'targetVersions'],
+  props: ['sourceVersions', 'targetVersions', 'contextCommits'],
   render(h) {
     return h('div', {
       attrs: {
         'data-compare-versions': 'true',
         'data-source-versions': JSON.stringify(this.sourceVersions),
         'data-target-versions': JSON.stringify(this.targetVersions),
+        'data-context-commits': JSON.stringify(this.contextCommits),
       },
     });
   },
@@ -37,7 +38,7 @@ describe('initCompareVersions', () => {
   ];
 
   const targetVersions = [
-    { id: 'head', version_index: null, head: true, selected: true, branch: 'main' },
+    { id: 'head', version_index: null, is_merge_head: true, selected: true, branch: 'main' },
   ];
 
   const appData = {
@@ -71,6 +72,27 @@ describe('initCompareVersions', () => {
       const el = findCompareVersions();
       expect(JSON.parse(el.dataset.sourceVersions)).toEqual(sourceVersions);
       expect(JSON.parse(el.dataset.targetVersions)).toEqual(targetVersions);
+    });
+
+    it('passes contextCommits prop and stores it when present in appData', () => {
+      const contextCommits = {
+        href: '/diffs?only_context_commits=true',
+        commits_count: 2,
+        selected: true,
+        diff_refs: { base_sha: 'b', head_sha: 'h', start_sha: 'b' },
+      };
+      setHTMLFixture('<div data-after-browser-toggle></div>');
+      initCompareVersions(document.querySelector('[data-after-browser-toggle]'), {
+        versions: {
+          source_versions: sourceVersions,
+          target_versions: targetVersions,
+          context_commits: contextCommits,
+        },
+      });
+
+      const el = findCompareVersions();
+      expect(JSON.parse(el.dataset.contextCommits)).toEqual(contextCommits);
+      expect(useMergeRequestVersions().contextCommits).toEqual(contextCommits);
     });
   });
 

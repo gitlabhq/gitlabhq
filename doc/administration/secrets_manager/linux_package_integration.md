@@ -7,22 +7,17 @@ title: Install OpenBao for a Linux package deployment of GitLab
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9669) in GitLab 19.0 as an experiment.
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9669) as a beta feature in GitLab 19.0.
 
 {{< /history >}}
-
-> [!warning]
-> This feature is an [experiment](../../policy/development_stages_support.md#experiment)
-> and subject to change without notice.
-> This feature is not ready for public testing or production use.
 
 Use a Kubernetes cluster to run OpenBao alongside a GitLab instance installed
 with the Linux package. OpenBao runs in the cluster and connects to a PostgreSQL
@@ -299,7 +294,7 @@ To install OpenBao by using Helm:
 
    # The chart deploys a Kubernetes Ingress resource by default, which you need to provide the hostname to be reachable for GitLab Rails and Sidekiq
    # Alternatively, you could configure it to deploy an HTTPRoute resource, if you prefer to deploy a Gateway API controller.
-   # 
+   #
    # For available network ingress and TLS configuration options, see:
    # https://docs.gitlab.com/charts/charts/openbao/#ingress-and-tls-configuration-options
    ingress:
@@ -500,4 +495,4 @@ To verify the installation:
    }
    ```
 
-1. [Enable the GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md#enable-or-disable-the-gitlab-secrets-manager).
+1. [Enable the GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager).

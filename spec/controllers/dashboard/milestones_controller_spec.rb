@@ -3,31 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Dashboard::MilestonesController do
-  let(:project) { create(:project) }
-  let(:group) { create(:group) }
-  let(:user) { create(:user) }
-  let(:project_milestone) { create(:milestone, project: project) }
-  let(:group_milestone) { create(:milestone, group: group) }
-  let(:milestone) { create(:milestone, group: group) }
-  let(:issue) { create(:issue, project: project, milestone: project_milestone) }
-  let(:group_issue) { create(:issue, milestone: group_milestone, project: create(:project, group: group)) }
-
-  let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
-  let!(:group_label) { create(:group_label, group: group, title: 'Group Issue Label', issues: [group_issue]) }
-  let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: project_milestone) }
-  let(:milestone_path) { dashboard_milestone_path(milestone.safe_title, title: milestone.title) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
+  let_it_be(:group) { create(:group, developers: user) }
+  let_it_be(:project_milestone) { create(:milestone, project: project) }
+  let_it_be(:group_milestone) { create(:milestone, group: group) }
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
-    group.add_developer(user)
   end
 
   describe "#index" do
-    let(:public_group) { create(:group, :public) }
-    let!(:public_milestone) { create(:milestone, group: public_group) }
-    let!(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
-    let!(:closed_project_milestone) { create(:milestone, project: project, state: 'closed') }
+    let_it_be(:public_group) { create(:group, :public) }
+    let_it_be(:public_milestone) { create(:milestone, group: public_group) }
+    let_it_be(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
+    let_it_be(:closed_project_milestone) { create(:milestone, project: project, state: 'closed') }
 
     render_views
 

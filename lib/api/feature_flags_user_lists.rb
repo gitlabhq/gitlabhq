@@ -22,8 +22,7 @@ module API
     resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags_user_lists do
         desc 'List all feature flag user lists for a project' do
-          detail 'Gets all feature flag user lists for the requested project. ' \
-                 'This feature was introduced in GitLab 12.10.'
+          detail 'Lists all feature flag user lists for a specified project.'
           success ::API::Entities::FeatureFlag::UserList
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -45,7 +44,7 @@ module API
         end
 
         desc 'Create a feature flag user list' do
-          detail 'Creates a feature flag user list. This feature was introduced in GitLab 12.10.'
+          detail 'Creates a feature flag user list in a specified project.'
           success ::API::Entities::FeatureFlag::UserList
           failure [
             { code: 400, message: 'Bad request' },
@@ -78,8 +77,8 @@ module API
         requires :iid, types: [String, Integer], desc: "The internal ID of the project's feature flag user list"
       end
       resource 'feature_flags_user_lists/:iid' do
-        desc 'Get a feature flag user list' do
-          detail 'Gets a feature flag user list. This feature was introduced in GitLab 12.10.'
+        desc 'Retrieve a feature flag user list' do
+          detail 'Retrieves a specified feature flag user list.'
           success ::API::Entities::FeatureFlag::UserList
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -94,7 +93,7 @@ module API
         end
 
         desc 'Update a feature flag user list' do
-          detail 'Updates a feature flag user list. This feature was introduced in GitLab 12.10.'
+          detail 'Updates a specified feature flag user list.'
           success ::API::Entities::FeatureFlag::UserList
           failure [
             { code: 400, message: 'Bad request' },
@@ -123,7 +122,8 @@ module API
         end
 
         desc 'Delete feature flag user list' do
-          detail 'Deletes a feature flag user list. This feature was introduced in GitLab 12.10.'
+          detail 'Deletes a specified feature flag user list.'
+          success code: 204, message: 'Resource deleted'
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' },

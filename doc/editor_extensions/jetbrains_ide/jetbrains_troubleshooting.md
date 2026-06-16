@@ -29,6 +29,10 @@ To troubleshoot GitLab Duo errors in your IDE:
    1. Restart your IDE, if prompted.
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project,
    [set a default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
+1. If you use JetBrains Remote Development and diagnostics indicate that a missing feature is enabled, check whether the GitLab Duo plugin is installed on both
+   the host and client machines. If it is, uninstall the plugin from the client machine and keep it
+   on the host machine only. For more information, see
+   [use with remote development](_index.md#use-with-remote-development).
 
 For support with Code Suggestions, see [troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
 

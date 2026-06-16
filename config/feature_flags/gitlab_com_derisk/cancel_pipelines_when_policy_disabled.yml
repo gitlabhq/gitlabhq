@@ -1,0 +1,10 @@
+---
+name: cancel_pipelines_when_policy_disabled
+description: Automatically cancels running pipelines when a pipeline execution schedule policy is disabled.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560629
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236748
+rollout_issue_url:
+milestone: '19.1'
+group: group::security policies
+type: gitlab_com_derisk
+default_enabled: false

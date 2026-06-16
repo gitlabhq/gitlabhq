@@ -91,8 +91,8 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe "#execute" do
-    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:chat_integration) { described_class.new({ project: project, webhook: webhook_url, branches_to_be_notified: 'all' }.merge(chat_integration_params)) }
     let(:chat_integration_params) { {} }
@@ -152,7 +152,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'issue events' do
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
       let(:data) { issue.to_hook_data(user) }
 
@@ -192,7 +192,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'merge request events' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
       let(:data) { merge_request.to_hook_data(user) }
 
@@ -210,7 +210,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'wiki page events' do
-      let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, project: project, message: 'user created page: Awesome wiki_page') }
+      let_it_be(:wiki_page, freeze: false) { create(:wiki_page, wiki: project.wiki, project: project, message: 'user created page: Awesome wiki_page') }
 
       let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
@@ -228,7 +228,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'deployment events' do
-      let_it_be(:deployment) { create(:deployment, project: project) }
+      let_it_be(:deployment, freeze: false) { create(:deployment, project: project) }
 
       let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, 'created', Time.current) }
 
@@ -236,7 +236,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'note event' do
-      let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note") }
+      let_it_be(:issue_note, freeze: false) { create(:note_on_issue, project: project, note: "issue note") }
 
       let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user, :create) }
 
@@ -252,7 +252,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         end
 
         context 'for confidential notes' do
-          let_it_be(:issue_note) { create(:note_on_issue, project: project, note: "issue note", confidential: true) }
+          let_it_be(:issue_note, freeze: false) { create(:note_on_issue, project: project, note: "issue note", confidential: true) }
 
           it 'falls back to note channel' do
             expect(::Slack::Messenger).to execute_with_options(channel: ['random'])
@@ -275,7 +275,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Push events' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
 
     before do
@@ -450,7 +450,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Note events' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
     before do
@@ -519,7 +519,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Pipeline events' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
     let(:pipeline) do
       create(:ci_pipeline, project: project, status: status, sha: project.commit.sha, ref: project.default_branch)
@@ -668,10 +668,10 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Deployment events' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :repository, creator: user) }
 
-    let_it_be(:deployment) do
+    let_it_be(:deployment, freeze: false) do
       create(:deployment, :success, project: project, sha: project.commit.sha, ref: project.default_branch)
     end
 
@@ -694,7 +694,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
         create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
-      let_it_be(:deployment) do
+      let_it_be(:deployment, freeze: false) do
         create(:deployment, :success, project: project, sha: project.commit.sha, ref: 'a-protected-branch')
       end
 

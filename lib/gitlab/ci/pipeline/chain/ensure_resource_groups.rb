@@ -6,7 +6,7 @@ module Gitlab
       module Chain
         class EnsureResourceGroups < Chain::Base
           def perform!
-            pipeline.stages.flat_map(&:statuses).each(&method(:ensure_resource_group))
+            pipeline.stages.flat_map(&:statuses).each { |status| ensure_resource_group(status) }
           end
 
           def break?

@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :importers do
   describe '#load' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:user, freeze: false) { create(:user, owner_of: organization) }
+    let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user, organization: organization) }
     let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
-    let_it_be(:organization) { create(:organization, users: [user]) }
-    let_it_be(:destination_group) { create(:group, organization: organization, path: entity.destination_namespace) }
+    let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:destination_group, freeze: false) { create(:group, organization: organization, path: entity.destination_namespace) }
 
     let(:service_double) { instance_double(::Groups::CreateService) }
     let(:data) { { 'path' => 'test' } }
@@ -97,6 +97,41 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
         end
 
         include_examples 'calls Group Create Service to create a new group'
+      end
+
+      # A subgroup path can exist in two organizations at once (top-level routes are
+      # globally unique, subgroup full paths under distinct parents are not), so this is
+      # the realistic shape of a cross-organization destination collision.
+      context 'when a same-path namespace exists in both the import and another organization' do
+        let(:colliding_path) { 'colliding-subgroup' }
+
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :create_group).and_return(true)
+
+          in_org_parent = create(:group, organization: organization)
+          in_org_group = create(:group, parent: in_org_parent, path: colliding_path)
+
+          foreign_organization = create(:organization)
+          foreign_parent = create(:group, organization: foreign_organization)
+          create(:group, parent: foreign_parent, path: colliding_path)
+
+          entity.update!(destination_namespace: in_org_group.full_path)
+        end
+
+        it 'resolves the destination organization from the import organization, not the foreign one' do
+          group_double = instance_double(::Group)
+          service_response = ServiceResponse.success(payload: { group: group_double })
+
+          expect(::Groups::CreateService)
+            .to receive(:new)
+            .with(context.current_user, data.merge('organization_id' => organization.id))
+            .and_return(service_double)
+
+          expect(service_double).to receive(:execute).and_return(service_response)
+          allow(entity).to receive(:update!)
+
+          subject.load(context, data)
+        end
       end
 
       context 'when user does not have 2FA enabled' do

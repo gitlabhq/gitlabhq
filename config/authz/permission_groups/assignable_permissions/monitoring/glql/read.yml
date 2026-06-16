@@ -1,0 +1,9 @@
+---
+name: read_glql
+description: Grants the ability to execute GLQL queries
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_glql

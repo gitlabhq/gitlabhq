@@ -6,11 +6,11 @@ RSpec.describe Projects::ReleasesController do
   include AccessMatchersForController
 
   let!(:project) { create(:project, :repository, :public) }
-  let_it_be(:private_project) { create(:project, :repository, :private) }
-  let_it_be(:developer)  { create(:user) }
-  let_it_be(:reporter)   { create(:user) }
-  let_it_be(:guest)      { create(:user) }
-  let_it_be(:user)       { developer }
+  let_it_be(:private_project, freeze: false) { create(:project, :repository, :private) }
+  let_it_be(:developer, freeze: false)  { create(:user) }
+  let_it_be(:reporter, freeze: false)   { create(:user) }
+  let_it_be(:guest, freeze: false)      { create(:user) }
+  let_it_be(:user, freeze: false)       { developer }
 
   let!(:release_1)       { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
   let!(:release_2)       { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }

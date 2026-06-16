@@ -29,7 +29,12 @@ module Organizations
             "GitlabSubscriptions::SeatAssignment", "GitlabSubscriptions::UserAddOnAssignment", "Authz::AdminRole",
             "Authz::GranularScope", "Authz::PersonalAccessTokenGranularScope",
             "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet", "ImportFailure",
-            "Clusters::Cluster", "AntiAbuse::Event"]
+            "Clusters::Cluster", "AntiAbuse::Event",
+            # Dependencies::DependencyListExport is scoped to one of project/group/pipeline per
+            # `only_one_exportable`. Its organization_id is derived from the project/group and
+            # cannot be updated independently under the
+            # num_nonnulls(group_id, organization_id, project_id) = 1 check constraint.
+            "Dependencies::DependencyListExport"]
         end
       end
 
@@ -105,6 +110,7 @@ module Organizations
           update_users(user_ids)
           update_user_projects(user_ids)
           update_todos(user_ids)
+          update_import_failures(user_ids)
           update_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
@@ -156,7 +162,18 @@ module Organizations
 
           Todo.for_author(old_bot&.id).for_user(user_ids).update_all(author_id: new_bot.id)
         end
+
+        update_organization_id_for(Todo) do |relation|
+          relation.where(user_id: user_ids)
+        end
       end
+
+      def update_import_failures(user_ids)
+        update_organization_id_for(ImportFailure) do |relation|
+          relation.where(user_id: user_ids)
+        end
+      end
+
       # rubocop:enable CodeReuse/ActiveRecord
 
       def new_organization_bots
@@ -228,6 +245,17 @@ module Organizations
 
             notes_batch.update_all(update_attributes)
           end
+
+        [
+          SnippetRepository,
+          SnippetStatistics,
+          SnippetUserMention,
+          Snippets::RepositoryStorageMove
+        ].each do |snippet_class|
+          update_organization_id_for(snippet_class, organization_key: :snippet_organization_id) do |relation|
+            relation.where(snippet_id: personal_snippets)
+          end
+        end
       end
 
       def note_transfer_attributes(transferring_user_ids)

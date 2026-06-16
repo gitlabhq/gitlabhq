@@ -111,6 +111,16 @@ RSpec.describe RuboCop::Cop::Gitlab::EventStoreDocRequired, feature_category: :t
     end
   end
 
+  describe '#external_dependency_checksum' do
+    let(:source_path) { File.join(rails_root, 'app/events/foo/bar_event.rb') }
+    let(:doc_exists) { false }
+    let(:doc_contents) { nil }
+
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
+
   context 'with a class that does not inherit from Gitlab::EventStore::Event' do
     let(:source_path) { File.join(rails_root, 'app/events/foo/bar_event.rb') }
     let(:doc_exists) { false }

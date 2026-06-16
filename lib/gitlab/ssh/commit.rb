@@ -32,10 +32,9 @@ module Gitlab
           key_id: signature.signed_by_key&.id,
           key_fingerprint_sha256: signature.key_fingerprint,
           user_id: signature.user_id,
-          verification_status: signature.verification_status
-        }.tap do |attrs|
-          attrs[:committer_email] = committer_email if check_for_mailmapped_commit_emails?
-        end
+          verification_status: signature.verification_status,
+          committer_email: committer_email
+        }
       end
     end
   end

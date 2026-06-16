@@ -73,12 +73,12 @@ share the same correlation ID in their logs, allowing you to trace requests acro
 
 ### Check the health of the Geo sites
 
-On the **primary** site:
+On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
 
-We perform the following health checks on each **secondary** site
+We perform the following health checks on each secondary site
 to help identify if something is wrong:
 
 - Is the site running?
@@ -124,7 +124,7 @@ health check manually to get this information and a few more details.
 
 {{< /history >}}
 
-This Rake task can be run on a **Rails** node in the **primary** or **secondary**
+This Rake task can be run on a **Rails** node in the primary or secondary
 Geo sites:
 
 ```shell
@@ -206,9 +206,9 @@ sudo setfacl -m u:git:r /etc/ssh/sshd_config
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
-node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site.
+node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo secondary site.
 
-GitLab does **not** verify objects that are stored in Object Storage. If you are using Object Storage, you will see all of the "verified" checks showing 0 successes. This is expected and not a cause for concern.
+GitLab does not verify objects that are stored in Object Storage. If you are using Object Storage, you will see all of the "verified" checks showing 0 successes. This is expected and not a cause for concern.
 
 ```shell
 sudo gitlab-rake gitlab:geo:status
@@ -353,9 +353,9 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the **Admin** area under **Geo** > **Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the **Admin** area under **Geo** > **Sites** on the web interface for the primary site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
-  when adding the secondary site in the **Admin** area of the **primary** site.
+  when adding the secondary site in the **Admin** area of the primary site.
 
 - Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`.
 
@@ -410,7 +410,7 @@ sudo gitlab-rake gitlab:geo:check
 ##### Message: Container Registry Geo events ... none found
 
 If `Container Registry Geo events ... none found` is displayed and you expect Container Registry
-replication events to be present, verify the registry notification configuration on the **primary** site is as per the [Container Registry replication configuration guide](../container_registry.md#configure-primary-site).
+replication events to be present, verify the registry notification configuration on the primary site is as per the [Container Registry replication configuration guide](../container_registry.md#configure-primary-site).
 
 ##### Message: Machine clock is synchronized ... Exception
 
@@ -504,10 +504,10 @@ If you're still having problems, see the [advanced replication troubleshooting](
 
 #### Are sites pointing to the correct database node?
 
-You should make sure your **primary** Geo [site](../../glossary.md) points to
+You should make sure your primary Geo [site](../../glossary.md) points to
 the database node that has write permissions.
 
-Any **secondary** sites should point only to read-only database nodes.
+Any secondary sites should point only to read-only database nodes.
 
 #### Can Geo detect the current site correctly?
 
@@ -531,7 +531,7 @@ sudo gitlab-rake gitlab:geo:check
 ```
 
 It displays the current machine's site name and whether the matching database
-record is a **primary** or **secondary** site.
+record is a primary or secondary site.
 
 ```plaintext
 This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
@@ -575,14 +575,14 @@ It is risky to reuse a secondary site without resetting it because the secondary
 
 If these kinds of risks do not apply, for example in a test environment, or if you know that the main Postgres database still contains all Geo events since the Geo site was added, then you can bypass this health check:
 
-1. Get the last processed event time. In Rails console in the **secondary** site, run:
+1. Get the last processed event time. In Rails console in the secondary site, run:
 
    ```ruby
    Geo::EventLogState.last.created_at.utc
    ```
 
 1. Copy the output, for example `2024-02-21 23:50:50.676918 UTC`.
-1. Update the created time of the secondary site to make it appear older. In Rails console in the **primary** site, run:
+1. Update the created time of the secondary site to make it appear older. In Rails console in the primary site, run:
 
    ```ruby
    GeoNode.secondary_nodes.last.update_column(:created_at, DateTime.parse('2024-02-21 23:50:50.676918 UTC') - 1.second)
@@ -590,7 +590,7 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
    This command assumes that the affected secondary site is the one that was created last.
 
-1. Update the secondary site's status in **Admin** > **Geo** > **Sites**. In Rails console in the **secondary** site, run:
+1. Update the secondary site's status in **Admin** > **Geo** > **Sites**. In Rails console in the secondary site, run:
 
    ```ruby
    Geo::MetricsUpdateWorker.new.perform
@@ -603,7 +603,7 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
 ### Geo site has a database that is writable
 
-This error message refers to a problem with the database replica on a **secondary** site,
+This error message refers to a problem with the database replica on a secondary site,
 which Geo expects to have access to. A secondary site database that is writable
 is an indication the database is not configured for replication with the primary site. It usually means, either:
 
@@ -612,12 +612,12 @@ is an indication the database is not configured for replication with the primary
 - Your database connection details are incorrect, that is you have specified the wrong
   user in your `/etc/gitlab/gitlab.rb` file.
 
-Geo **secondary** sites require two separate PostgreSQL instances:
+Geo secondary sites require two separate PostgreSQL instances:
 
-- A read-only replica of the **primary** site.
+- A read-only replica of the primary site.
 - A regular, writable instance that holds replication metadata. That is, the Geo tracking database.
 
-This error message indicates that the replica database in the **secondary** site is misconfigured and replication has stopped.
+This error message indicates that the replica database in the secondary site is misconfigured and replication has stopped.
 
 To restore the database and resume replication, you can do one of the following:
 
@@ -630,9 +630,9 @@ If you set up a new secondary from scratch, you must also [remove the old site f
 
 The most common problems that prevent the database from replicating correctly are:
 
-- **Secondary** sites cannot reach the **primary** site. Check credentials and
+- Secondary sites cannot reach the primary site. Check credentials and
   [firewall rules](../../_index.md#firewall-rules).
-- SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** site.
+- SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the primary site.
 - Database storage disk is full.
 - Database replication slot is misconfigured.
 - Database is not using a replication slot or another alternative and cannot catch-up because WAL files were purged.
@@ -644,7 +644,7 @@ Make sure you follow the [Geo database replication](../../setup/database.md) ins
 If you are using the Linux package installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
-- Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** site.
+- Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the secondary site.
 
 ### GitLab indicates that more than 100% of repositories were synced
 
@@ -685,9 +685,9 @@ In this case, make sure to update the changed URL on all your sites:
 
 ### Message: `ERROR: canceling statement due to conflict with recovery` during backup
 
-Running a backup on a Geo **secondary** [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/211668).
+Running a backup on a Geo secondary [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/211668).
 
-When running a backup on a **secondary** you might encounter the following error message:
+When running a backup on a secondary you might encounter the following error message:
 
 ```plaintext
 Dumping PostgreSQL database gitlabhq_production ...
@@ -830,3 +830,37 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
 {{< /tab >}}
 
 {{< /tabs >}}
+
+#### Use pre-calculated verification summaries
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590853) in GitLab 19.0 [with a flag](../../../../administration/feature_flags/_index.md) named `geo_job_artifact_verification_summaries`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Instead of reducing the metrics collection frequency, you can enable pre-calculated
+verification summaries for CI job artifacts. This replaces full table scans with
+incremental updates, so only changed data is recounted.
+
+When enabled, a background worker maintains summary counts in a dedicated table.
+A database trigger marks affected buckets as dirty when verification states change,
+and the worker recalculates only those buckets. This reduces database load from
+metrics collection by orders of magnitude on large instances.
+
+To enable:
+
+```shell
+sudo gitlab-rails runner 'Feature.enable(:geo_job_artifact_verification_summaries)'
+```
+
+To disable:
+
+```shell
+sudo gitlab-rails runner 'Feature.disable(:geo_job_artifact_verification_summaries)'
+```

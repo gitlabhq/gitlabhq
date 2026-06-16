@@ -2,6 +2,7 @@
 import { GlAvatar, GlLink, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { userPath } from '~/lib/utils/path_helpers/user';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { SNIPPET_VISIBILITY } from '~/snippets/constants';
 
@@ -37,7 +38,7 @@ export default {
       return `$${getIdFromGraphQLId(this.snippet.id)}`;
     },
     profilePath() {
-      return `${gon.relative_url_root || ''}/${this.userInfo.username}`;
+      return userPath(this.userInfo.username);
     },
     blobCount() {
       return this.snippet.blobs?.nodes?.length || 0;

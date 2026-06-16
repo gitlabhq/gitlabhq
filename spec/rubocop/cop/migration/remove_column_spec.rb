@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/remove_column'
 
-RSpec.describe RuboCop::Cop::Migration::RemoveColumn do
+RSpec.describe RuboCop::Cop::Migration::RemoveColumn, feature_category: :database do
   def source(meth = 'change')
     "def #{meth}; remove_column :table, :column; end"
   end

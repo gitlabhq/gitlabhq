@@ -22,46 +22,46 @@ RSpec.describe 'getting user information', feature_category: :user_management do
   end
 
   context 'looking up a user by username' do
-    let_it_be(:project_a) { create(:project, :repository) }
-    let_it_be(:project_b) { create(:project, :repository) }
-    let_it_be(:user, reload: true) { create(:user, developer_of: [project_a, project_b]) }
-    let_it_be(:authorised_user) { create(:user, developer_of: [project_a, project_b]) }
-    let_it_be(:unauthorized_user) { create(:user) }
-    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:project_a, freeze: false) { create(:project, :repository) }
+    let_it_be(:project_b, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:user) { create(:user, developer_of: [project_a, project_b]) }
+    let_it_be(:authorised_user, freeze: false) { create(:user, developer_of: [project_a, project_b]) }
+    let_it_be(:unauthorized_user, freeze: false) { create(:user) }
+    let_it_be(:admin, freeze: false) { create(:user, :admin) }
 
-    let_it_be(:assigned_mr) do
+    let_it_be(:assigned_mr, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_a, assignees: [user])
     end
 
-    let_it_be(:assigned_mr_b) do
+    let_it_be(:assigned_mr_b, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_b, assignees: [user])
     end
 
-    let_it_be(:assigned_mr_c) do
+    let_it_be(:assigned_mr_c, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_b, assignees: [user])
     end
 
-    let_it_be(:authored_mr) do
+    let_it_be(:authored_mr, freeze: false) do
       create(:merge_request, :unique_branches, source_project: project_a, author: user)
     end
 
-    let_it_be(:authored_mr_b) do
+    let_it_be(:authored_mr_b, freeze: false) do
       create(:merge_request, :unique_branches, source_project: project_b, author: user)
     end
 
-    let_it_be(:authored_mr_c) do
+    let_it_be(:authored_mr_c, freeze: false) do
       create(:merge_request, :unique_branches, source_project: project_b, author: user)
     end
 
-    let_it_be(:reviewed_mr) do
+    let_it_be(:reviewed_mr, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_a, reviewers: [user])
     end
 
-    let_it_be(:reviewed_mr_b) do
+    let_it_be(:reviewed_mr_b, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_b, reviewers: [user])
     end
 
-    let_it_be(:reviewed_mr_c) do
+    let_it_be(:reviewed_mr_c, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_b, reviewers: [user])
     end
 
@@ -393,7 +393,7 @@ RSpec.describe 'getting user information', feature_category: :user_management do
       end
 
       context 'we request the groupMemberships' do
-        let_it_be(:membership_a) { create(:group_member, user: user) }
+        let_it_be(:membership_a, freeze: false) { create(:group_member, user: user) }
 
         let(:group_memberships) { graphql_data_at(:user, :group_memberships, :nodes) }
         let(:user_fields) { 'groupMemberships { nodes { id } }' }
@@ -416,7 +416,7 @@ RSpec.describe 'getting user information', feature_category: :user_management do
       end
 
       context 'we request the projectMemberships' do
-        let_it_be(:membership_a) { create(:project_member, user: user) }
+        let_it_be(:membership_a, freeze: false) { create(:project_member, user: user) }
 
         let(:project_memberships) { graphql_data_at(:user, :project_memberships, :nodes) }
         let(:user_fields) { 'projectMemberships { nodes { id } }' }
@@ -528,27 +528,27 @@ RSpec.describe 'getting user information', feature_category: :user_management do
   end
 
   context 'authored merge requests' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:project) { create(:project, :public, group: group) }
-    let_it_be(:merge_request1) do
+    let_it_be(:current_user, freeze: false) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+    let_it_be(:merge_request1, freeze: false) do
       create(:merge_request, source_project: project, source_branch: '1', author: current_user)
     end
 
-    let_it_be(:merge_request2) do
+    let_it_be(:merge_request2, freeze: false) do
       create(:merge_request, source_project: project, source_branch: '2', author: current_user)
     end
 
-    let_it_be(:merge_request_different_user) do
+    let_it_be(:merge_request_different_user, freeze: false) do
       create(:merge_request, source_project: project, source_branch: '3', author: create(:user))
     end
 
-    let_it_be(:merge_request_different_group) do
+    let_it_be(:merge_request_different_group, freeze: false) do
       create(:merge_request, source_project: create(:project, :public), author: current_user)
     end
 
-    let_it_be(:merge_request_subgroup) do
+    let_it_be(:merge_request_subgroup, freeze: false) do
       create(:merge_request, source_project: create(:project, :public, group: subgroup), author: current_user)
     end
 

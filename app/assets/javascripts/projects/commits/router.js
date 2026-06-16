@@ -21,6 +21,23 @@ export const createRouter = (basePath, escapedRef) => {
         name: 'commitsPathDecoded',
         component: CommitListApp,
       },
+      {
+        // Support refs encoded with encodeURIComponent (slashes become %2F).
+        // This matches the initial ref when navigated to via the ref selector
+        // and then revisited via browser back/forward.
+        path: `/${encodeURIComponent(decodeURIComponent(escapedRef))}/:path*`,
+        name: 'commitsPathEncoded',
+        component: CommitListApp,
+      },
+      {
+        // Wildcard fallback so every URL still matches a route after a ref
+        // switch (the specific routes above are hardcoded to the initial ref).
+        // The ref is encoded with encodeURIComponent so params.ref is always
+        // a single, unambiguous segment — even for refs containing slashes.
+        path: '/:ref/:path*',
+        name: 'commitsAnyRef',
+        component: CommitListApp,
+      },
     ],
   });
 

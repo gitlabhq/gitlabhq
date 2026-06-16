@@ -262,6 +262,62 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  describe('fillContainer', () => {
+    describe('by default', () => {
+      beforeEach(() => {
+        buildWrapper();
+      });
+
+      it('does not put the fill class on the root', () => {
+        expect(wrapper.classes()).not.toContain('md-area-wrapper-fill');
+      });
+    });
+
+    describe('when fillContainer is true', () => {
+      beforeEach(() => {
+        buildWrapper({ propsData: { fillContainer: true } });
+      });
+
+      it('puts `md-area-wrapper-fill` on the root', () => {
+        expect(wrapper.classes()).toContain('md-area-wrapper-fill');
+      });
+    });
+  });
+
+  describe('hideModeSwitcher', () => {
+    describe('by default', () => {
+      it('shows the content editor switcher in markdown field', () => {
+        buildWrapper({ propsData: { enableContentEditor: true } });
+
+        expect(findMarkdownField().props('showContentEditorSwitcher')).toBe(true);
+      });
+
+      it('does not pass hideModeSwitcher to content editor', async () => {
+        buildWrapper();
+
+        await enableContentEditor();
+
+        expect(findContentEditor().props('hideModeSwitcher')).toBe(false);
+      });
+    });
+
+    describe('when hideModeSwitcher is true', () => {
+      it('hides the content editor switcher in markdown field', () => {
+        buildWrapper({ propsData: { enableContentEditor: true, hideModeSwitcher: true } });
+
+        expect(findMarkdownField().props('showContentEditorSwitcher')).toBe(false);
+      });
+
+      it('passes hideModeSwitcher to content editor', async () => {
+        buildWrapper({ propsData: { hideModeSwitcher: true } });
+
+        await enableContentEditor();
+
+        expect(findContentEditor().props('hideModeSwitcher')).toBe(true);
+      });
+    });
+  });
+
   describe('autosize', () => {
     it('autosizes the textarea when the value changes from outside the component', async () => {
       buildWrapper();
@@ -403,7 +459,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     await enableContentEditor();
     await enableMarkdownEditor();
 
+    expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(2);
+  });
+
+  it('emits initial editing mode on mount so parents can sync custom UI', () => {
+    buildWrapper();
+
     expect(wrapper.emitted(EDITING_MODE_MARKDOWN_FIELD)).toHaveLength(1);
+    expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toBeUndefined();
   });
 
   describe(`when editingMode is ${EDITING_MODE_MARKDOWN_FIELD}`, () => {

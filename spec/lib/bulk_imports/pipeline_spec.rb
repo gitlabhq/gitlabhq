@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe BulkImports::Pipeline do
+RSpec.describe BulkImports::Pipeline, feature_category: :importers do
   let(:context) { instance_double(BulkImports::Pipeline::Context, tracker: nil) }
 
   before do

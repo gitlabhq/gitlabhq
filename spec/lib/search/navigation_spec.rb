@@ -17,56 +17,10 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
     subject(:tab_enabled_for_project) { search_navigation.tab_enabled_for_project?(tab) }
 
-    context 'when user has ability for tab' do
-      before do
-        allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(true)
-      end
+    it 'delegates to Search::Scopes.scope_allowed_for_project?', :aggregate_failures do
+      expect(Search::Scopes).to receive(:scope_allowed_for_project?).with(tab, user, project_double).and_return(true)
 
-      it { is_expected.to be(true) }
-    end
-
-    context 'when user does not have ability for tab' do
-      before do
-        allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(false)
-      end
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when an array of projects is provided' do
-      let(:project) { Array.wrap(project_double) }
-
-      before do
-        allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(true)
-      end
-
-      it { is_expected.to be(true) }
-    end
-
-    context 'when project is not present' do
-      let_it_be(:project) { nil }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when checking work_items tab' do
-      let(:tab) { :work_items }
-
-      context 'when user has ability' do
-        before do
-          allow(search_navigation).to receive(:can?).with(user, :read_work_item, project_double).and_return(true)
-        end
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'when user does not have ability' do
-        before do
-          allow(search_navigation).to receive(:can?).with(user, :read_work_item, project_double).and_return(false)
-        end
-
-        it { is_expected.to be(false) }
-      end
+      expect(tab_enabled_for_project).to be(true)
     end
   end
 
@@ -76,7 +30,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     let(:project) { nil }
 
     before do
-      allow(search_navigation).to receive_messages(can?: true, tab_enabled_for_project?: false)
+      allow(Ability).to receive(:allowed?).and_return(true)
       allow(search_navigation).to receive(:tab_enabled_for_project?).and_call_original
     end
 
@@ -239,7 +193,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
       with_them do
         it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:can?).with(user, :read_code, project).and_return(ability_enabled)
+          allow(Ability).to receive(:allowed?).with(user, :read_code, project).and_return(ability_enabled)
 
           expect(tabs[:commits][:condition]).to eq(condition)
         end
@@ -287,6 +241,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         false | true | nil | false | false
         false | true | ref(:project_double) | false | false
         true | true | nil | false | true
+        true | false | nil | false | false
         true | true | ref(:project_double) | false | false
       end
 
@@ -294,8 +249,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         before do
           stub_application_setting(global_search_users_enabled: setting_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:users).and_return(tab_enabled)
-          allow(search_navigation).to receive(:can?)
-            .with(user, :read_users_list, project_double).and_return(can_read_users_list)
+          allow(Ability).to receive(:allowed?).with(user, :read_users_list).and_return(can_read_users_list)
         end
 
         it 'data item condition is set correctly' do

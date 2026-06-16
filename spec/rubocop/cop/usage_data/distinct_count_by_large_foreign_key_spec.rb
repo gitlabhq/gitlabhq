@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/distinct_count_by_large_foreign_key'
 
-RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
+RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey, feature_category: :service_ping do
   let(:allowed_foreign_keys) { [:author_id, :user_id, :'merge_requests.target_project_id'] }
   let(:msg) { 'Avoid doing `distinct_count` on foreign keys for large tables having above 100 million rows.' }
   let(:config) do

@@ -6,6 +6,7 @@ import { REGISTRATION_TOKEN_PLACEHOLDER } from '../constants';
 import getRunnerSetupInstructionsQuery from '../graphql/get_runner_setup.query.graphql';
 
 export default {
+  name: 'RunnerCliInstructions',
   components: {
     GlButton,
     GlCollapsibleListbox,

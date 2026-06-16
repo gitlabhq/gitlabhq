@@ -32,6 +32,7 @@ module Gitlab
         def execute
           raise ProjectNotFound if project.nil?
 
+          log_email_handler
           # Verification emails should never create tickets
           return if handled_custom_email_address_verification?
 
@@ -71,6 +72,14 @@ module Gitlab
         private
 
         attr_reader :project_id, :project_path, :service_desk_key
+
+        def parent_namespace
+          project.project_namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_PROJECT_ID => project.id }
+        end
 
         def contains_custom_email_address_verification_subaddress?
           return false unless to_address.present?

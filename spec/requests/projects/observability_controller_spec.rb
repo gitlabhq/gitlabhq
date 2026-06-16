@@ -7,7 +7,7 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before_all do
     group.add_maintainer(user)

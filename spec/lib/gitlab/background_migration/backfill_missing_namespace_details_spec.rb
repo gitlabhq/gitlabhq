@@ -14,9 +14,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceDetails, fea
       name: 'Namespace 1',
       path: 'namespace-1',
       type: 'Group',
-      organization_id: organization.id,
-      description: 'Description 1',
-      description_html: '<p>Description 1</p>'
+      organization_id: organization.id
     )
   end
 
@@ -25,9 +23,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceDetails, fea
       name: 'Namespace 2',
       path: 'namespace-2',
       type: 'Group',
-      organization_id: organization.id,
-      description: 'Description 2',
-      description_html: '<p>Description 2</p>'
+      organization_id: organization.id
     )
   end
 
@@ -36,9 +32,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceDetails, fea
       name: 'Namespace 3',
       path: 'namespace-3',
       type: 'Group',
-      organization_id: organization.id,
-      description: 'Description 3',
-      description_html: '<p>Description 3</p>'
+      organization_id: organization.id
     )
   end
 
@@ -74,30 +68,20 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceDetails, fea
     expect(namespace_details.where(namespace_id: namespace_3.id)).to exist
   end
 
-  it 'copies description fields from namespaces to namespace_details and leaves existing namespace_details unchanged',
-    :aggregate_failures do
+  it 'leaves existing namespace_details rows untouched', :aggregate_failures do
     details_1 = namespace_details.find_by(namespace_id: namespace_1.id)
     details_1.update!(description: "Updated Description 1", description_html: "<p>Updated html 1</p>")
 
-    details_2 = namespace_details.find_by(namespace_id: namespace_2.id)
-    expect(details_2).to be_nil
-
-    details_3 = namespace_details.find_by(namespace_id: namespace_2.id)
-    expect(details_3).to be_nil
+    expect(namespace_details.find_by(namespace_id: namespace_2.id)).to be_nil
+    expect(namespace_details.find_by(namespace_id: namespace_3.id)).to be_nil
 
     perform_migration
 
-    # Migration should have updated details_1 since it exists
     details_1 = namespace_details.find_by(namespace_id: namespace_1.id)
     expect(details_1.description).to eq('Updated Description 1')
     expect(details_1.description_html).to eq('<p>Updated html 1</p>')
 
-    details_2 = namespace_details.find_by(namespace_id: namespace_2.id)
-    expect(details_2.description).to eq('Description 2')
-    expect(details_2.description_html).to eq('<p>Description 2</p>')
-
-    details_3 = namespace_details.find_by(namespace_id: namespace_3.id)
-    expect(details_3.description).to eq('Description 3')
-    expect(details_3.description_html).to eq('<p>Description 3</p>')
+    expect(namespace_details.find_by(namespace_id: namespace_2.id)).to be_present
+    expect(namespace_details.find_by(namespace_id: namespace_3.id)).to be_present
   end
 end

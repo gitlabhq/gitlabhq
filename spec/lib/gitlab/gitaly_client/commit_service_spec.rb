@@ -1008,6 +1008,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             before: before,
             after: after,
             pagination_params: pagination_params,
+            global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false),
             order: order,
             skip: 100
           )
@@ -1067,6 +1068,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         end
 
         client.list_commits('master', { path: '' })
+      end
+    end
+
+    context 'with literal_pathspec' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'sets global_options with literal_pathspecs true' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.global_options).to eq(Gitaly::GlobalOptions.new(literal_pathspecs: true))
+          end.and_return([])
+        end
+
+        client.list_commits('master', { literal_pathspec: true })
       end
     end
 

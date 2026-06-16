@@ -40,10 +40,28 @@ describe('HiddenFilesWarning', () => {
     expect(wrapper.findAllComponents(GlButton)).toHaveLength(0);
   });
 
-  it('has a correct visible/total files text', () => {
-    createComponent();
-    expect(wrapper.text()).toContain(
-      'For a faster browsing experience, only 5 of 10 files are shown. Download one of the files below to see all changes',
-    );
+  const renderedText = () => wrapper.text().replace(/\s+/g, ' ').trim();
+
+  it('shows the collapsed count in the title when every file is listed', () => {
+    createComponent({ total: '10', visible: 4 });
+
+    expect(renderedText()).toContain('6 files are collapsed');
+    expect(renderedText()).toContain('To view all changes, download the diff.');
+    expect(renderedText()).not.toContain('listed on this page');
+  });
+
+  it('titles with the listed count and notes the collapsed count when the diff is truncated', () => {
+    createComponent({ total: '10+', visible: 4 });
+
+    expect(renderedText()).toContain('Only the first 10 files are listed on this page');
+    expect(renderedText()).toContain('6 of these files are collapsed.');
+    expect(renderedText()).not.toContain('10+');
+  });
+
+  it('omits the collapsed note when the diff is truncated but nothing is collapsed', () => {
+    createComponent({ total: '3+', visible: 3 });
+
+    expect(renderedText()).toContain('Only the first 3 files are listed on this page');
+    expect(renderedText()).not.toContain('collapsed');
   });
 });

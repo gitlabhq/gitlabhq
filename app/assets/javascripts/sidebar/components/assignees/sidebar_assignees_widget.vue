@@ -25,6 +25,7 @@ const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
 });
 
 export default {
+  name: 'SidebarAssigneesWidget',
   i18n: {
     unassigned: __('Unassigned'),
     assignee: __('Assignee'),

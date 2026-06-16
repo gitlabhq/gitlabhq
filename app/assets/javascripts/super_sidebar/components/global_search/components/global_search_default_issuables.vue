@@ -34,6 +34,7 @@ export default {
     SearchResultFocusLayover,
   },
   mixins: [trackingMixin],
+  emits: ['nothing-to-render'],
   computed: {
     ...mapState(['searchContext']),
     ...mapGetters(['defaultSearchOptions']),

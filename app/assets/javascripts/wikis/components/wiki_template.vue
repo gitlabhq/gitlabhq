@@ -10,6 +10,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 const trackingMixin = InternalEvents.mixin();
 
 export default {
+  name: 'WikiTemplate',
   components: {
     GlCollapsibleListbox,
     GlButton,
@@ -29,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   data() {
     return {
       searchTerm: '',

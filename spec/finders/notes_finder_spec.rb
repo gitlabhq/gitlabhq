@@ -17,7 +17,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       let!(:system_note) { create(:note_on_issue, project: project, system: true) }
 
       it 'returns only user notes when using only_comments filter' do
-        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:only_comments])
+        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:only_comments], organization_id: current_organization.id)
 
         notes = finder.execute
 
@@ -25,7 +25,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       end
 
       it 'returns only system notes when using only_activity filters' do
-        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:only_activity])
+        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:only_activity], organization_id: current_organization.id)
 
         notes = finder.execute
 
@@ -33,7 +33,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       end
 
       it 'gets all notes' do
-        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:all_activity])
+        finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:all_activity], organization_id: current_organization.id)
 
         notes = finder.execute
 
@@ -44,7 +44,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     it 'finds notes on merge requests' do
       create(:note_on_merge_request, project: project)
 
-      notes = described_class.new(user, project: project).execute
+      notes = described_class.new(user, project: project, organization_id: current_organization.id).execute
 
       expect(notes.count).to eq(1)
     end
@@ -52,7 +52,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     it 'finds notes on snippets' do
       create(:note_on_project_snippet, project: project)
 
-      notes = described_class.new(user, project: project).execute
+      notes = described_class.new(user, project: project, organization_id: current_organization.id).execute
 
       expect(notes.count).to eq(1)
     end
@@ -68,7 +68,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     it 'succeeds when no notes found' do
-      notes = described_class.new(create(:user), project: project).execute
+      notes = described_class.new(create(:user), project: project, organization_id: current_organization.id).execute
 
       expect(notes.count).to eq(0)
     end
@@ -87,7 +87,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       it 'publicly excludes notes on merge requests' do
         create(:note_on_merge_request, project: project)
 
-        notes = described_class.new(create(:user), project: project).execute
+        notes = described_class.new(create(:user), project: project, organization_id: current_organization.id).execute
 
         expect(notes.count).to eq(0)
       end
@@ -95,7 +95,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       it 'publicly excludes notes on issues' do
         create(:note_on_issue, project: project)
 
-        notes = described_class.new(create(:user), project: project).execute
+        notes = described_class.new(create(:user), project: project, organization_id: current_organization.id).execute
 
         expect(notes.count).to eq(0)
       end
@@ -103,7 +103,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       it 'publicly excludes notes on snippets' do
         create(:note_on_project_snippet, project: project)
 
-        notes = described_class.new(create(:user), project: project).execute
+        notes = described_class.new(create(:user), project: project, organization_id: current_organization.id).execute
 
         expect(notes.count).to eq(0)
       end
@@ -119,18 +119,18 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       let_it_be(:public_note) { create(:note_on_issue, project: public_project) }
 
       it 'shows all notes when the current_user has reporter access' do
-        notes = described_class.new(reporter_member, project: public_project).execute
+        notes = described_class.new(reporter_member, project: public_project, organization_id: current_organization.id).execute
         expect(notes).to contain_exactly internal_note, public_note
       end
 
       it 'shows only public notes when the current_user has guest access' do
-        notes = described_class.new(guest_member, project: public_project).execute
+        notes = described_class.new(guest_member, project: public_project, organization_id: current_organization.id).execute
         expect(notes).to contain_exactly public_note
       end
     end
 
     context 'for notes from users who have been banned', :enable_admin_mode, feature_category: :instance_resiliency do
-      subject(:finder) { described_class.new(user, project: project).execute }
+      subject(:finder) { described_class.new(user, project: project, organization_id: current_organization.id).execute }
 
       let_it_be(:banned_user) { create(:banned_user).user }
       let!(:banned_note) { create(:note_on_issue, project: project, author: banned_user) }
@@ -187,7 +187,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
 
       it 'finds notes on snippets' do
         note = create(:note_on_project_snippet, project: project)
-        params = { project: project, target_type: 'snippet', target_id: note.noteable.id }
+        params = { project: project, target_type: 'snippet', target_id: note.noteable.id, organization_id: current_organization.id }
 
         notes = described_class.new(user, params).execute
 
@@ -255,7 +255,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
         with_them do
           let(:personal_snippet) { create(:personal_snippet, author: author, visibility_level: snippet_visibility) }
           let(:note) { create(:note, noteable: personal_snippet) }
-          let(:params) { { project: project, target_type: 'personal_snippet', target_id: note.noteable.id } }
+          let(:params) { { project: project, target_type: 'personal_snippet', target_id: note.noteable.id, organization_id: current_organization.id } }
 
           subject(:notes) do
             described_class.new(current_user, params).execute
@@ -327,7 +327,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
 
     describe 'sorting' do
       it 'allows sorting' do
-        params = { project: project, sort: 'id_desc' }
+        params = { project: project, sort: 'id_desc', organization_id: current_organization.id }
 
         expect(Note).to receive(:order_id_desc).once
 
@@ -335,7 +335,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       end
 
       it 'defaults to sort by oldest first' do
-        params = { project: project }
+        params = { project: project, organization_id: current_organization.id }
 
         expect(Note).to receive(:order_created_at_id_asc).once
 
@@ -349,17 +349,17 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do
-      expect(described_class.new(nil, project: note.project, search: note.note).execute).to eq([note])
+      expect(described_class.new(nil, project: note.project, search: note.note, organization_id: current_organization.id).execute).to eq([note])
     end
 
     it 'returns notes with matching content regardless of the casing' do
-      expect(described_class.new(nil, project: note.project, search: 'WOW').execute).to eq([note])
+      expect(described_class.new(nil, project: note.project, search: 'WOW', organization_id: current_organization.id).execute).to eq([note])
     end
 
     it 'returns commit notes user can access' do
       note = create(:note_on_commit, project: project)
 
-      expect(described_class.new(create(:user), project: note.project, search: note.note).execute).to eq([note])
+      expect(described_class.new(create(:user), project: note.project, search: note.note, organization_id: current_organization.id).execute).to eq([note])
     end
 
     context "confidential issues" do
@@ -368,27 +368,27 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
 
       it "returns notes with matching content if user can see the issue" do
-        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note).execute).to eq([confidential_note])
+        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note, organization_id: current_organization.id).execute).to eq([confidential_note])
       end
 
       it "does not return notes with matching content if user can not see the issue" do
         user = create(:user)
-        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note).execute).to be_empty
+        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note, organization_id: current_organization.id).execute).to be_empty
       end
 
       it "does not return notes with matching content for project members with guest role" do
         user = create(:user)
         project.add_guest(user)
-        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note).execute).to be_empty
+        expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note, organization_id: current_organization.id).execute).to be_empty
       end
 
       it "does not return notes with matching content for unauthenticated users" do
-        expect(described_class.new(nil, project: confidential_note.project, search: confidential_note.note).execute).to be_empty
+        expect(described_class.new(nil, project: confidential_note.project, search: confidential_note.note, organization_id: current_organization.id).execute).to be_empty
       end
     end
 
     context 'inlines SQL filters on subqueries for performance' do
-      let(:sql) { described_class.new(nil, project: note.project, search: note.note).execute.to_sql }
+      let(:sql) { described_class.new(nil, project: note.project, search: note.note, organization_id: current_organization.id).execute.to_sql }
       let(:number_of_noteable_types) { 4 }
 
       specify 'project_id check' do
@@ -424,7 +424,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
 
     context 'for a snippet target' do
       let(:snippet) { create(:project_snippet, project: project) }
-      let(:params) { { project: project, target_type: 'snippet', target_id: snippet.id } }
+      let(:params) { { project: project, target_type: 'snippet', target_id: snippet.id, organization_id: current_organization.id } }
 
       it 'returns the snippet' do
         expect(subject.target).to eq(snippet)

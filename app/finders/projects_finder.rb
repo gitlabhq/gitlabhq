@@ -8,7 +8,6 @@
 #   current_user - which user use
 #   project_ids_relation: int[] - project ids to use
 #   params:
-#     trending: boolean
 #     owned: boolean
 #     non_public: boolean
 #     starred: boolean
@@ -91,7 +90,6 @@ class ProjectsFinder < UnionFinder
     collection = by_full_paths(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)
-    collection = by_trending(collection)
     collection = by_visibility_level(collection)
     collection = by_topics(collection)
     collection = by_topic_id(collection)
@@ -209,10 +207,6 @@ class ProjectsFinder < UnionFinder
 
   def by_starred(items)
     params[:starred].present? && current_user ? items.starred_by(current_user) : items
-  end
-
-  def by_trending(items)
-    params[:trending].present? ? items.trending : items
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -1,0 +1,12 @@
+# @feature_category: product_analytics
+
+query getDefaultProjects($fullPaths: [String!]) {
+  projects(fullPaths: $fullPaths) {
+    nodes {
+      id
+      name
+      avatarUrl
+      fullPath
+    }
+  }
+}

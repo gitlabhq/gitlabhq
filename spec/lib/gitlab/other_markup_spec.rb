@@ -5,6 +5,114 @@ require 'spec_helper'
 RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
   let(:context) { {} }
 
+  context 'when org-mode content' do
+    let(:file_name) { 'unimportant_name.org' }
+    let(:rendered) { render(file_name, input, context) }
+    let(:doc) { Nokogiri::HTML.fragment(rendered) }
+    let(:pre) { doc.css('pre').first }
+
+    context 'with auto-linking' do
+      let(:input) { 'See https://example.com for details.' }
+
+      it 'auto-links bare URLs', :aggregate_failures do
+        link = doc.at_css('a')
+
+        expect(link[:href]).to eq('https://example.com')
+        expect(link[:rel]).to eq('nofollow noreferrer noopener')
+        expect(link[:target]).to eq('_blank')
+        expect(link.text).to eq('https://example.com')
+      end
+    end
+
+    context 'with a source code block' do
+      let(:input) do
+        <<~ORG
+          #+begin_src ruby
+          def hello
+            puts "world"
+          end
+          #+end_src
+        ORG
+      end
+
+      it 'applies the canonical language attribute' do
+        expect(pre['data-canonical-lang']).to eq('ruby')
+      end
+    end
+
+    context 'with a PlantUML block' do
+      before do
+        Gitlab::CurrentSettings.current_application_settings.update!(
+          plantuml_enabled: true,
+          plantuml_url: 'https://plantuml.com/plantuml'
+        )
+      end
+
+      let(:input) do
+        <<~ORG
+          #+begin_src plantuml
+          Bob -> Alice: hello
+          Alice -> Bob: hi
+          #+end_src
+        ORG
+      end
+
+      let(:expected_img) do
+        <<~HTML.chomp
+          <img class="plantuml" src="https://plantuml.com/plantuml/png/U9npoazIqBLJSCp9J4wrKiX8pSd9vm9pGA9E-Kb0iKm0o4SAt000" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IEFsaWNlOiBoZWxsbwpBbGljZSAtPiBCb2I6IGhp">
+        HTML
+      end
+
+      it 'generates the PlantUML diagram' do
+        expect(rendered).to include(expected_img)
+      end
+    end
+
+    context 'with a Mermaid block' do
+      let(:input) do
+        <<~ORG
+          #+begin_src mermaid
+          graph TD;
+              A-->B;
+              A-->C;
+              B-->D;
+              C-->D;
+          #+end_src
+        ORG
+      end
+
+      it 'applies the canonical language attribute' do
+        expect(pre['data-canonical-lang']).to eq('mermaid')
+      end
+
+      it 'adds the JS hook for client-side rendering' do
+        expect(pre.at_css('code')[:class]).to include('js-render-mermaid')
+      end
+    end
+
+    context 'with a math block' do
+      let(:input) do
+        <<~ORG
+          #+begin_src math
+          \\sqrt{2}
+          #+end_src
+        ORG
+      end
+
+      it 'applies the canonical language attribute' do
+        expect(pre['data-canonical-lang']).to eq('math')
+      end
+
+      it 'preserves the math style attribute' do
+        expect(pre['data-math-style']).to eq('display')
+      end
+
+      it 'adds the JS hook for math rendering' do
+        expect(pre[:class]).to include('js-render-math')
+      end
+    end
+  end
+
   context 'when restructured text' do
     it 'renders' do
       input = <<~RST
@@ -41,6 +149,39 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
 
         expect(render('unimportant_name.rst', input, context)).to include(output.strip)
       end
+    end
+
+    it 'renders mermaid diagrams' do
+      input = <<~RST
+        .. code:: mermaid
+
+           graph TD;
+               A-->B;
+               A-->C;
+               B-->D;
+               C-->D;
+      RST
+
+      result = render('unimportant_name.rst', input, context)
+      doc = Nokogiri::HTML.fragment(result)
+      pre = doc.css('pre').first
+      expect(pre['data-canonical-lang']).to eq('mermaid')
+      expect(pre.at_css('code')[:class]).to include('js-render-mermaid')
+    end
+
+    it 'renders math source blocks' do
+      input = <<~RST
+        .. code:: math
+
+           \\sqrt{2}
+      RST
+
+      result = render('unimportant_name.rst', input, context)
+      doc = Nokogiri::HTML.fragment(result)
+      pre = doc.css('pre').first
+      expect(pre['data-canonical-lang']).to eq('math')
+      expect(pre['data-math-style']).to eq('display')
+      expect(pre[:class]).to include('js-render-math')
     end
   end
 
@@ -85,10 +226,10 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
   end
 
   context 'when rendering takes too long' do
-    let_it_be(:file_name) { 'foo.bar' }
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:context) { { project: project } }
-    let_it_be(:text) { +'Noël' }
+    let_it_be(:file_name, freeze: false) { 'foo.bar' }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:context, freeze: false) { { project: project } }
+    let_it_be(:text, freeze: false) { +'Noël' }
 
     before do
       stub_const('Gitlab::OtherMarkup::RENDER_TIMEOUT', 0.1)

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe 'Project wikis', :js, feature_category: :wiki do
+RSpec.describe 'Project wikis', feature_category: :wiki do
   let_it_be(:user) { create(:user) }
 
   let(:wiki) { create(:project_wiki, user: user, project: project) }
@@ -12,15 +12,21 @@ RSpec.describe 'Project wikis', :js, feature_category: :wiki do
     stub_feature_flags(wiki_immersive_editor: false)
   end
 
-  it_behaves_like 'User creates wiki page'
-  it_behaves_like 'User deletes wiki page'
-  it_behaves_like 'User previews wiki changes'
-  it_behaves_like 'User updates wiki page'
-  it_behaves_like 'User uses wiki shortcuts'
-  it_behaves_like 'User views AsciiDoc page with includes'
-  it_behaves_like 'User views a wiki page'
-  it_behaves_like 'User views wiki pages'
-  it_behaves_like 'User views wiki templates'
-  it_behaves_like 'User views wiki sidebar'
-  it_behaves_like 'User views Git access wiki page'
+  describe 'JS-driven flows', :js do
+    it_behaves_like 'User creates wiki page'
+    it_behaves_like 'User deletes wiki page'
+    it_behaves_like 'User previews wiki changes'
+    it_behaves_like 'User updates wiki page'
+    it_behaves_like 'User uses wiki shortcuts'
+    it_behaves_like 'User views AsciiDoc page with includes'
+    it_behaves_like 'User views a wiki page'
+    it_behaves_like 'User views wiki sidebar'
+    it_behaves_like 'User views Git access wiki page'
+  end
+
+  describe 'Server-rendered flows' do
+    it_behaves_like 'User views wiki pages'
+    it_behaves_like 'User views wiki templates'
+    it_behaves_like 'User views a wiki page non-Vue surfaces'
+  end
 end

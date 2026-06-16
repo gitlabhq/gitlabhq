@@ -61,6 +61,36 @@ describe IpynbDiff do
       end
     end
 
+    context 'when notebook source contains a Unicode surrogate-pair escape' do
+      # Oj decodes JSON surrogate-pair escapes (e.g. the 12-char sequence
+      # \\ud83d\\udcda for U+1F4DA) into 6 bytes of CESU-8 tagged as UTF-8,
+      # which crashes String#rstrip with Encoding::CompatibilityError.
+      def notebook_metadata
+        '"metadata":{"kernelspec":{"name":"python3"},"language_info":{"name":"python"}},' \
+          '"nbformat":4,"nbformat_minor":5'
+      end
+
+      let(:from) do
+        cell = '{"cell_type":"markdown","id":"a","metadata":{},"source":["surrogate: \\ud83d\\udcda\\n"]}'
+        %({"cells":[#{cell}],#{notebook_metadata}})
+      end
+
+      let(:to) { %({"cells":[],#{notebook_metadata}}) }
+
+      it 'does not raise' do
+        expect { subject }.not_to raise_error
+      end
+
+      it 'preserves the supplementary-plane character in the diff output' do
+        expected_char = [0x1F4DA].pack('U')
+        diff_text = subject.to_s(:text)
+
+        expect(diff_text).to include(expected_char)
+        expect(diff_text.encoding).to eq(Encoding::UTF_8)
+        expect(diff_text).to be_valid_encoding
+      end
+    end
+
     context 'when either notebook can not be processed' do
       using RSpec::Parameterized::TableSyntax
 

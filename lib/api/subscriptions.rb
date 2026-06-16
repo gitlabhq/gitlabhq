@@ -12,6 +12,8 @@ module API
     subscribables = [
       {
         type: 'merge_requests',
+        human_type: 'merge request',
+        article: 'a',
         entity: Entities::MergeRequest,
         source: Project,
         finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) },
@@ -19,6 +21,8 @@ module API
       },
       {
         type: 'issues',
+        human_type: 'issue',
+        article: 'an',
         entity: Entities::Issue,
         source: Project,
         finder: ->(id) { find_project_issue(id) },
@@ -26,6 +30,8 @@ module API
       },
       {
         type: 'labels',
+        human_type: 'project label',
+        article: 'a',
         entity: Entities::ProjectLabel,
         source: Project,
         finder: ->(id) { find_label(user_project, id) },
@@ -33,6 +39,8 @@ module API
       },
       {
         type: 'labels',
+        human_type: 'group label',
+        article: 'a',
         entity: Entities::GroupLabel,
         source: Group,
         finder: ->(id) { find_label(user_group, id) },
@@ -42,13 +50,17 @@ module API
 
     subscribables.each do |subscribable|
       source_type = subscribable[:source].name.underscore
+      subscribable_type = subscribable[:human_type]
+      subscribable_article = subscribable[:article]
 
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
         requires :subscribable_id, type: String, desc: 'The ID of a resource'
       end
       resource source_type.pluralize, requirements: SUBSCRIBE_ENDPOINT_REQUIREMENTS do
-        desc 'Subscribe to a resource' do
+        desc "Subscribe to #{subscribable_article} #{subscribable_type}" do
+          detail "Subscribes the currently authenticated user to a specified #{subscribable_type}. They will " \
+            "receive notifications on changes to this item."
           success subscribable[:entity]
           tags ['resource_subscriptions']
         end
@@ -64,7 +76,9 @@ module API
           end
         end
 
-        desc 'Unsubscribe from a resource' do
+        desc "Unsubscribe to #{subscribable_article} #{subscribable_type}" do
+          detail "Unsubscribes the currently authenticated user from a specified #{subscribable_type}. They will no " \
+            "longer receive notifications on changes to this item."
           success subscribable[:entity]
           tags ['resource_subscriptions']
         end

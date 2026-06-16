@@ -44,7 +44,6 @@ describe('Alert Details Sidebar Assignees', () => {
 
   const findAssigned = () => wrapper.findByTestId('assigned-users');
   const findDropdown = () => wrapper.findComponent(GlDropdownItem);
-  const findSidebarIcon = () => wrapper.findByTestId('assignees-icon');
   const findUnassigned = () => wrapper.findByTestId('unassigned-users');
 
   const mockDefaultHandler = (errors = []) =>
@@ -72,102 +71,70 @@ describe('Alert Details Sidebar Assignees', () => {
     return createMockApollo([[AlertSetAssignees, handlers]]);
   };
 
-  function mountComponent({
-    props,
-    sidebarCollapsed = true,
-    handlers = mockDefaultHandler(),
-  } = {}) {
+  function createComponent({ props, handlers = mockDefaultHandler() } = {}) {
     wrapper = shallowMountExtended(SidebarAssignees, {
       apolloProvider: createMockApolloProvider(handlers),
       propsData: {
         alert: { ...mockAlert },
         ...props,
-        sidebarCollapsed,
         projectPath: 'projectPath',
         projectId: '1',
       },
     });
   }
 
-  describe('sidebar expanded', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      window.gon = {
-        relative_url_root: mockUrlRoot,
-      };
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+    window.gon = {
+      relative_url_root: mockUrlRoot,
+    };
 
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockUsers);
-      mountComponent({
-        props: { alert: mockAlert },
-        sidebarCollapsed: false,
-      });
-    });
-
-    it('renders a unassigned option', async () => {
-      await waitForPromises();
-      expect(findDropdown().text()).toBe('Unassigned');
-    });
-
-    it('does not display the collapsed sidebar icon', () => {
-      expect(findSidebarIcon().exists()).toBe(false);
-    });
-
-    it('calls `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
-      await waitForPromises();
-      wrapper.findComponent(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
-
-      expect(requestHandlers).toHaveBeenCalledWith({
-        iid: '1527542',
-        assigneeUsernames: ['root'],
-        fullPath: 'projectPath',
-      });
-    });
-
-    it('emits an error when request contains error messages', async () => {
-      mountComponent({
-        sidebarCollapsed: false,
-        handlers: mockDefaultHandler(['There was a problem for sure.']),
-      });
-      await waitForPromises();
-
-      const SideBarAssigneeItem = wrapper.findAllComponents(SidebarAssignee).at(0);
-      await SideBarAssigneeItem.vm.$emit('update-alert-assignees');
-
-      await waitForPromises();
-      expect(wrapper.emitted('alert-error')).toHaveLength(1);
-    });
-
-    it('stops updating and cancels loading when the request fails', () => {
-      expect(findUnassigned().text()).toBe('assign yourself');
-    });
-
-    it('shows a user avatar, username and full name when a user is set', () => {
-      mountComponent({
-        props: { alert: mockAlerts[1] },
-      });
-
-      expect(findAssigned().findComponent(GlAvatar).props('src')).toBe('/url');
-      expect(findAssigned().find('.dropdown-menu-user-full-name').text()).toBe('root');
-      expect(findAssigned().find('.dropdown-menu-user-username').text()).toBe('@root');
+    mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockUsers);
+    createComponent({
+      props: { alert: mockAlert },
     });
   });
 
-  describe('sidebar collapsed', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
+  it('renders a unassigned option', async () => {
+    await waitForPromises();
+    expect(findDropdown().text()).toBe('Unassigned');
+  });
 
-      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, mockUsers);
+  it('calls `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
+    await waitForPromises();
+    wrapper.findComponent(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
 
-      mountComponent({
-        props: { alert: mockAlert },
-      });
+    expect(requestHandlers).toHaveBeenCalledWith({
+      iid: '1527542',
+      assigneeUsernames: ['root'],
+      fullPath: 'projectPath',
     });
-    it('does not display the status dropdown', () => {
-      expect(findDropdown().exists()).toBe(false);
+  });
+
+  it('emits an error when request contains error messages', async () => {
+    createComponent({
+      handlers: mockDefaultHandler(['There was a problem for sure.']),
+    });
+    await waitForPromises();
+
+    const SideBarAssigneeItem = wrapper.findAllComponents(SidebarAssignee).at(0);
+    await SideBarAssigneeItem.vm.$emit('update-alert-assignees');
+
+    await waitForPromises();
+    expect(wrapper.emitted('alert-error')).toHaveLength(1);
+  });
+
+  it('stops updating and cancels loading when the request fails', () => {
+    expect(findUnassigned().text()).toBe('assign yourself');
+  });
+
+  it('shows a user avatar, username and full name when a user is set', () => {
+    createComponent({
+      props: { alert: mockAlerts[1] },
     });
 
-    it('does display the collapsed sidebar icon', () => {
-      expect(findSidebarIcon().exists()).toBe(true);
-    });
+    expect(findAssigned().findComponent(GlAvatar).props('src')).toBe('/url');
+    expect(findAssigned().find('.dropdown-menu-user-full-name').text()).toBe('root');
+    expect(findAssigned().find('.dropdown-menu-user-username').text()).toBe('@root');
   });
 });

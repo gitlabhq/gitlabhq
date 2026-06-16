@@ -26,7 +26,7 @@ module API
     end
 
     desc 'List all deploy keys' do
-      detail 'Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires administrator access and is not available on GitLab.com.'
+      detail 'Lists all deploy keys for the instance.'
       success Entities::DeployKey
       failure [
         { code: 401, message: 'Unauthorized' },
@@ -51,7 +51,7 @@ module API
     end
 
     desc 'Create a deploy key' do
-      detail 'Create a deploy key for the GitLab instance. This endpoint requires administrator access.'
+      detail 'Creates a deploy key for the GitLab instance. Requires administrator access.'
       success Entities::DeployKey
       failure [
         { code: 400, message: 'Bad request' },
@@ -84,8 +84,8 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_admin_project }
 
-      desc 'List deploy keys for project' do
-        detail "Get a list of a project's deploy keys."
+      desc 'List all deploy keys for project' do
+        detail 'Lists all deploy keys for a specified project.'
         success Entities::DeployKeysProject
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -106,8 +106,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a single deploy key' do
-        detail 'Get a single key.'
+      desc 'Retrieve a deploy key' do
+        detail 'Retrieves a specified deploy key.'
         success Entities::DeployKeysProject
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -125,8 +125,9 @@ module API
         present key, with: Entities::DeployKeysProject
       end
 
-      desc 'Add deploy key' do
-        detail "Creates a new deploy key for a project. If the deploy key already exists in another project, it's joined to the current project only if the original one is accessible by the same user."
+      desc 'Add a deploy key for a project' do
+        detail 'Adds a deploy key for a specified project. If the deploy key already exists in another project, it ' \
+          'is joined to the current project only if the original one is accessible by the same user.'
         success Entities::DeployKeysProject
         failure [
           { code: 400, message: 'Bad request' },
@@ -177,7 +178,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Update deploy key' do
+      desc 'Update a deploy key' do
         detail 'Updates a deploy key for a project.'
         success Entities::DeployKey
         failure [
@@ -221,7 +222,8 @@ module API
       end
 
       desc 'Enable a deploy key' do
-        detail 'Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful. This feature was added in GitLab 8.11.'
+        detail 'Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code ' \
+          '201 when successful.'
         success Entities::DeployKey
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -244,8 +246,10 @@ module API
         end
       end
 
-      desc 'Delete deploy key' do
-        detail "Removes a deploy key from the project. If the deploy key is used only for this project, it's deleted from the system."
+      desc 'Delete a deploy key' do
+        detail 'Deletes a deploy key from the project. If the deploy key is used only for this project, it is ' \
+          'deleted from the system.'
+        success code: 204, message: 'Resource deleted'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }

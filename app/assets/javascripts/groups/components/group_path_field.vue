@@ -41,6 +41,11 @@ export default {
       required: false,
       default: false,
     },
+    inputClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -154,6 +159,7 @@ export default {
     <gl-form-input
       :id="id"
       class="gl-field-error-ignore !gl-h-auto"
+      :class="inputClass"
       :value="value"
       :placeholder="$options.i18n.placeholder"
       :state="state"

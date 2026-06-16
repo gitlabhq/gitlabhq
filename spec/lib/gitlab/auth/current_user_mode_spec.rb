@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: :system_access do
   let(:user) { build_stubbed(:user) }
 
-  subject { described_class.new(user) }
+  subject(:current_user_mode) { described_class.new(user) }
 
   describe '#initialize' do
     context 'with user' do
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
       end
 
       it 'has no session' do
-        subject
+        current_user_mode
         expect(Gitlab::Session.current).to be_nil
       end
     end
@@ -41,17 +41,17 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
 
       expect(Gitlab::NamespacedSessionStore).to receive(:new).with(described_class::SESSION_STORE_KEY, session)
 
-      subject.current_session_data
+      current_user_mode.current_session_data
       expect(Gitlab::Session.current).to eq(session)
     end
 
     it 'with session' do
       expect(Gitlab::Session.current).to eq(session)
-      subject = described_class.new(user, session)
+      mode = described_class.new(user, session)
 
       expect(Gitlab::NamespacedSessionStore).to receive(:new).with(described_class::SESSION_STORE_KEY, session)
 
-      subject.current_session_data
+      mode.current_session_data
       expect(Gitlab::Session.current).to eq(session)
     end
   end
@@ -65,45 +65,45 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
 
     shared_examples 'admin mode cannot be enabled' do
       it 'is false by default' do
-        expect(subject.admin_mode?).to be(false)
+        expect(current_user_mode.admin_mode?).to be(false)
       end
 
       it 'cannot be enabled with a valid password' do
-        subject.enable_admin_mode!(password: user.password)
+        current_user_mode.enable_admin_mode!(password: user.password)
 
-        expect(subject.admin_mode?).to be(false)
+        expect(current_user_mode.admin_mode?).to be(false)
       end
 
       it 'cannot be enabled with an invalid password' do
-        subject.enable_admin_mode!(password: nil)
+        current_user_mode.enable_admin_mode!(password: nil)
 
-        expect(subject.admin_mode?).to be(false)
+        expect(current_user_mode.admin_mode?).to be(false)
       end
 
       it 'cannot be enabled with empty params' do
-        subject.enable_admin_mode!
+        current_user_mode.enable_admin_mode!
 
-        expect(subject.admin_mode?).to be(false)
+        expect(current_user_mode.admin_mode?).to be(false)
       end
 
       it 'disable has no effect' do
-        subject.enable_admin_mode!
-        subject.disable_admin_mode!
+        current_user_mode.enable_admin_mode!
+        current_user_mode.disable_admin_mode!
 
-        expect(subject.admin_mode?).to be(false)
+        expect(current_user_mode.admin_mode?).to be(false)
       end
 
       context 'skipping password validation' do
         it 'cannot be enabled with a valid password' do
-          subject.enable_admin_mode!(password: user.password, skip_password_validation: true)
+          current_user_mode.enable_admin_mode!(password: user.password, skip_password_validation: true)
 
-          expect(subject.admin_mode?).to be(false)
+          expect(current_user_mode.admin_mode?).to be(false)
         end
 
         it 'cannot be enabled with an invalid password' do
-          subject.enable_admin_mode!(skip_password_validation: true)
+          current_user_mode.enable_admin_mode!(skip_password_validation: true)
 
-          expect(subject.admin_mode?).to be(false)
+          expect(current_user_mode.admin_mode?).to be(false)
         end
       end
     end
@@ -139,9 +139,9 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
         let(:user) { build_stubbed(:user) }
 
         it 'returns false' do
-          subject.request_admin_mode!
+          current_user_mode.request_admin_mode!
 
-          expect(subject.enable_admin_mode!(password: user.password)).to eq(false)
+          expect(current_user_mode.enable_admin_mode!(password: user.password)).to eq(false)
         end
       end
     end
@@ -178,8 +178,8 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
 
         context 'admin mode is enabled' do
           before do
-            subject.request_admin_mode!
-            subject.enable_admin_mode!(password: user.password)
+            current_user_mode.request_admin_mode!
+            current_user_mode.enable_admin_mode!(password: user.password)
           end
 
           it 'user is available only inside the yielded block' do
@@ -207,7 +207,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
           it 'admin mode is false' do
             described_class.bypass_session!(user.id) do
               expect(Gitlab::Session.current).to be_nil
-              expect(subject.admin_mode?).to be(false)
+              expect(current_user_mode.admin_mode?).to be(false)
               expect(described_class.bypass_session_admin_id).to be(user.id)
             end
 
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
           it 'admin mode is true' do
             described_class.bypass_session!(user.id) do
               expect(Gitlab::Session.current).to be_nil
-              expect(subject.admin_mode?).to be(true)
+              expect(current_user_mode.admin_mode?).to be(true)
               expect(described_class.bypass_session_admin_id).to be(user.id)
             end
 
@@ -236,7 +236,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
             described_class.bypass_session!(user.id)
 
             expect(Gitlab::Session.current).to be_nil
-            expect(subject.admin_mode?).to be(false)
+            expect(current_user_mode.admin_mode?).to be(false)
             expect(described_class.bypass_session_admin_id).to be(user.id)
 
             described_class.reset_bypass_session!
@@ -252,7 +252,7 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
             described_class.bypass_session!(user.id)
 
             expect(Gitlab::Session.current).to be_nil
-            expect(subject.admin_mode?).to be(true)
+            expect(current_user_mode.admin_mode?).to be(true)
             expect(described_class.bypass_session_admin_id).to be(user.id)
 
             described_class.reset_bypass_session!

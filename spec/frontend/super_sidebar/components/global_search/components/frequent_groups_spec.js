@@ -39,6 +39,7 @@ describe('FrequentlyVisitedGroups', () => {
   });
 
   beforeEach(() => {
+    gon.current_username = 'root';
     currentUserFrecentGroupsQueryHandler = jest.fn().mockResolvedValue({
       data: {
         frecentGroups: frecentGroupsMock,
@@ -117,6 +118,17 @@ describe('FrequentlyVisitedGroups', () => {
 
     it('renders with empty array', () => {
       expect(findFrequentItems().props('items')).toEqual([]);
+    });
+  });
+
+  describe('when user is not logged in', () => {
+    it('does not render frequent items, load frecent groups, and emits nothing-to-render event', () => {
+      gon.current_username = null;
+      createComponent();
+
+      expect(findFrequentItems().exists()).toBe(false);
+      expect(currentUserFrecentGroupsQueryHandler).not.toHaveBeenCalled();
+      expect(wrapper.emitted('nothing-to-render')).toHaveLength(1);
     });
   });
 });

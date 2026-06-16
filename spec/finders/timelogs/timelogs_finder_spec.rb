@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:group_a) { create(:group) }
-  let_it_be(:group_b) { create(:group) }
-  let_it_be(:project_a) { create(:project, :empty_repo, :public, group: group_a) }
-  let_it_be(:project_b) { create(:project, :empty_repo, :public, group: group_a) }
-  let_it_be(:project_c) { create(:project, :empty_repo, :public, group: group_b) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:group_a, freeze: false) { create(:group) }
+  let_it_be(:group_b, freeze: false) { create(:group) }
+  let_it_be(:project_a, freeze: false) { create(:project, :empty_repo, :public, group: group_a) }
+  let_it_be(:project_b, freeze: false) { create(:project, :empty_repo, :public, group: group_a) }
+  let_it_be(:project_c, freeze: false) { create(:project, :empty_repo, :public, group: group_b) }
 
-  let_it_be(:issue_a) { create(:issue, project: project_a) }
-  let_it_be(:issue_b) { create(:issue, project: project_b) }
-  let_it_be(:issue_c) { create(:issue, project: project_c) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project_a) }
+  let_it_be(:issue_a, freeze: false) { create(:issue, project: project_a) }
+  let_it_be(:issue_b, freeze: false) { create(:issue, project: project_b) }
+  let_it_be(:issue_c, freeze: false) { create(:issue, project: project_c) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project_a) }
 
   let_it_be(:timelog1, freeze: false) do
     create(:issue_timelog, issue: issue_a, user: current_user, spent_at: 2.days.ago.beginning_of_day, time_spent: 3000)

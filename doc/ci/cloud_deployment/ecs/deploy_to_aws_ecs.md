@@ -180,7 +180,7 @@ Now, the demo application is accessible from the internet.
 
    ![The demo application running in a browser.](img/view-running-app_v13_10.png)
 
-In this guide, HTTPS/SSL is **not** configured. You can access to the application through HTTP only
+In this guide, HTTPS/SSL is not configured. You can access to the application through HTTP only
 (for example, `http://<ec2-ipv4-address>`).
 
 ## Set up Continuous Deployment from GitLab

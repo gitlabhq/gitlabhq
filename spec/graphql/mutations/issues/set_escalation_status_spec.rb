@@ -7,8 +7,8 @@ RSpec.describe Mutations::Issues::SetEscalationStatus, feature_category: :api do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue, reload: true) { create(:incident, project: project) }
-  let_it_be(:escalation_status, reload: true) { create(:incident_management_issuable_escalation_status, issue: issue) }
+  let_it_be_with_reload(:issue) { create(:incident, project: project) }
+  let_it_be_with_reload(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
 
   let(:status) { :acknowledged }
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }

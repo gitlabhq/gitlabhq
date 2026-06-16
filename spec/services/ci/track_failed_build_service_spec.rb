@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Ci::TrackFailedBuildService, feature_category: :continuous_integration do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: user) }
 
-  let_it_be(:exit_code) { 42 }
-  let_it_be(:failure_reason) { "script_failure" }
+  let_it_be(:exit_code, freeze: false) { 42 }
+  let_it_be(:failure_reason, freeze: false) { "script_failure" }
 
   describe '#execute' do
     context 'when a build has failed' do
-      let_it_be(:build) { create(:ci_build, :failed, :sast_report, pipeline: pipeline, user: user) }
+      let_it_be(:build, freeze: false) { create(:ci_build, :failed, :sast_report, pipeline: pipeline, user: user) }
 
       subject { described_class.new(build: build, exit_code: exit_code, failure_reason: failure_reason) }
 
@@ -43,7 +43,7 @@ RSpec.describe Ci::TrackFailedBuildService, feature_category: :continuous_integr
     end
 
     context 'when a build has not failed' do
-      let_it_be(:build) { create(:ci_build, :success, :sast_report, pipeline: pipeline, user: user) }
+      let_it_be(:build, freeze: false) { create(:ci_build, :success, :sast_report, pipeline: pipeline, user: user) }
 
       subject { described_class.new(build: build, exit_code: nil, failure_reason: nil) }
 

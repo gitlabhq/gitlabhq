@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Environment', feature_category: :environment_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 

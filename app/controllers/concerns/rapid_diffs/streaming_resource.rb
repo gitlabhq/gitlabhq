@@ -7,8 +7,6 @@ module RapidDiffs
     include DiffHelper
 
     def diffs_stream
-      streaming_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-
       stream_headers
 
       offset = { offset_index: params.permit(:offset)[:offset].to_i }
@@ -16,10 +14,11 @@ module RapidDiffs
       context = view_context
 
       # view_context calls are not memoized, with explicit passing we are able to reuse it across renders
-      stream_diff_files(streaming_diff_options.merge(offset), context)
+      server_timings.measure(:streaming) do
+        stream_diff_files(streaming_diff_options.merge(offset), context)
+      end
 
-      streaming_time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - streaming_start_time).round(2)
-      response.stream.write "<server-timings streaming=\"#{streaming_time}\"></server-timings>"
+      response.stream.write "<server-timings #{server_timings.to_html_attributes}></server-timings>"
     rescue ActionController::Live::ClientDisconnected, IOError
       # Ignored
     rescue StandardError => e
@@ -39,6 +38,10 @@ module RapidDiffs
     end
 
     private
+
+    def server_timings
+      @server_timings ||= Gitlab::RapidDiffs::ServerTimings.new
+    end
 
     def streaming_diff_options
       diff_options
@@ -61,7 +64,9 @@ module RapidDiffs
     end
 
     def stream_diff_collection(options, view_context)
-      diff_files = rapid_diffs_presenter.diff_files_for_streaming(options)
+      diff_files = server_timings.measure(:rpc) do
+        rapid_diffs_presenter.diff_files_for_streaming(options)
+      end
 
       return render_empty_state if diff_files.empty?
 
@@ -76,15 +81,24 @@ module RapidDiffs
           skipped << diff_file
         else
           unless skipped.empty?
-            response.stream.write(diff_files_collection(skipped).render_in(view_context))
+            server_timings.measure(:rendering) do
+              response.stream.write(diff_files_collection(skipped).render_in(view_context))
+            end
             skipped = []
           end
 
-          response.stream.write(diff_file_component(diff_file).render_in(view_context))
+          highlight_diff_file(diff_file)
+          server_timings.measure(:rendering) do
+            response.stream.write(diff_file_component(diff_file).render_in(view_context))
+          end
         end
       end
 
-      response.stream.write(diff_files_collection(skipped).render_in(view_context)) unless skipped.empty?
+      return if skipped.empty?
+
+      server_timings.measure(:rendering) do
+        response.stream.write(diff_files_collection(skipped).render_in(view_context))
+      end
     end
 
     attr_reader :environment
@@ -104,15 +118,36 @@ module RapidDiffs
     end
 
     def stream_diff_blobs(options, view_context)
-      return render_empty_state if rapid_diffs_presenter.diff_files_for_streaming(options).count == 0
+      count = server_timings.measure(:rpc) do
+        rapid_diffs_presenter.diff_files_for_streaming(options).count
+      end
+
+      return render_empty_state if count == 0
 
       rapid_diffs_presenter.diff_files_for_streaming_by_changed_paths(options) do |diff_files_batch|
-        response.stream.write(diff_files_collection(diff_files_batch).render_in(view_context))
+        highlight_diff_files(diff_files_batch)
+        server_timings.measure(:rendering) do
+          response.stream.write(diff_files_collection(diff_files_batch).render_in(view_context))
+        end
       end
     end
 
+    def highlight_diff_file(diff_file)
+      return if diff_file.no_preview? || !diff_file.diffable_text?
+
+      server_timings.measure(:highlighting) { diff_file.highlighted_diff_lines }
+    end
+
+    def highlight_diff_files(diff_files)
+      diff_files.each { |diff_file| highlight_diff_file(diff_file) }
+    end
+
     def render_empty_state
-      response.stream.write render ::RapidDiffs::EmptyStateComponent.new, layout: false
+      response.stream.write render empty_state_component, layout: false
+    end
+
+    def empty_state_component
+      ::RapidDiffs::EmptyStateComponent.new
     end
 
     class Request < SimpleDelegator

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_becomes'
 
-RSpec.describe RuboCop::Cop::AvoidBecomes do
+RSpec.describe RuboCop::Cop::AvoidBecomes, feature_category: :database do
   it 'flags the use of becomes with a constant parameter' do
     expect_offense(<<~RUBY)
       foo.becomes(Project)

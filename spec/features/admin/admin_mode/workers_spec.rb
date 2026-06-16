@@ -68,7 +68,7 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
 
     # User deletion is async via GhostUserMigration, processed by a cron worker.
     # Explicitly run it to complete the deletion.
-    Users::MigrateRecordsToGhostUserInBatchesWorker.new.perform
+    Users::MigrateHumanRecordsToGhostUserInBatchesWorker.new.perform
 
     sign_in(user)
     enable_admin_mode!(user)

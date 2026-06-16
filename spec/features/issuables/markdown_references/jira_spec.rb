@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe "Jira", :js, feature_category: :markdown do
-  let(:user) { create(:user) }
-  let(:actual_project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:actual_project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:other_project) { create(:project, :public) }
+
   let(:merge_request) { create(:merge_request, target_project: actual_project, source_project: actual_project) }
   let(:issue_actual_project) { create(:issue, project: actual_project) }
-  let!(:other_project) { create(:project, :public) }
   let!(:issue_other_project) { create(:issue, project: other_project) }
   let(:issues) { [issue_actual_project, issue_other_project] }
 
@@ -91,7 +92,7 @@ RSpec.describe "Jira", :js, feature_category: :markdown do
     end
 
     context "when only external issues tracker is enabled for the actual project" do
-      let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
+      let_it_be(:actual_project, freeze: false) { create(:project, :public, :repository, :issues_disabled) }
 
       before do
         create(:jira_integration, project: actual_project)
@@ -104,7 +105,7 @@ RSpec.describe "Jira", :js, feature_category: :markdown do
     end
 
     context "when no tracker is enabled for the actual project" do
-      let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
+      let_it_be(:actual_project, freeze: false) { create(:project, :public, :repository, :issues_disabled) }
 
       include_examples 'correct references' do
         let(:referenced_issues) { [issue_other_project] }
@@ -114,7 +115,7 @@ RSpec.describe "Jira", :js, feature_category: :markdown do
   end
 
   context "when internal issues tracker is disabled for the other project" do
-    let(:other_project) { create(:project, :public, :repository, :issues_disabled) }
+    let_it_be(:other_project) { create(:project, :public, :repository, :issues_disabled) }
 
     context "when only internal issues tracker is enabled for the actual project" do
       include_examples "correct references" do
@@ -135,7 +136,7 @@ RSpec.describe "Jira", :js, feature_category: :markdown do
     end
 
     context "when only external issues tracker is enabled for the actual project" do
-      let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
+      let_it_be(:actual_project, freeze: false) { create(:project, :public, :repository, :issues_disabled) }
 
       before do
         create(:jira_integration, project: actual_project)
@@ -148,7 +149,7 @@ RSpec.describe "Jira", :js, feature_category: :markdown do
     end
 
     context "when no issues tracker is enabled for the actual project" do
-      let(:actual_project) { create(:project, :public, :repository, :issues_disabled) }
+      let_it_be(:actual_project, freeze: false) { create(:project, :public, :repository, :issues_disabled) }
 
       include_examples "correct references" do
         let(:referenced_issues) { [] }

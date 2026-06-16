@@ -8,6 +8,9 @@ identifiers:
 - user
 - namespace
 product_group: compliance
+product_categories:
+- audit_events
+- api
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107120
 tiers:

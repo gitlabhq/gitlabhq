@@ -23,7 +23,6 @@ import {
   SUPPORT_URL,
   VERIFICATION_CODE_REGEX,
   SUCCESS_RESPONSE,
-  FAILURE_RESPONSE,
 } from '../constants';
 import EmailForm from './email_form.vue';
 
@@ -124,22 +123,28 @@ export default {
       axios
         .post(this.verifyPath, { user: { verification_token: this.verificationCode } })
         .then(this.handleVerificationResponse)
-        .catch(this.handleError);
+        .catch(this.handleVerifyError);
     },
     handleVerificationResponse(response) {
-      if (response.data.status === undefined) {
-        this.handleError();
-      } else if (response.data.status === SUCCESS_RESPONSE) {
+      if (response.data.status === SUCCESS_RESPONSE) {
         visitUrl(response.data.redirect_path);
-      } else if (response.data.status === FAILURE_RESPONSE) {
-        this.verifyError = response.data.message;
+      } else {
+        this.handleError();
+      }
+    },
+    handleVerifyError(error) {
+      const data = error?.response?.data;
+      if (data?.message) {
+        this.verifyError = data.message;
+      } else {
+        this.handleError(error);
       }
     },
     resend(email = '') {
       axios
         .post(this.resendPath, { user: { email } })
         .then(this.handleResendResponse)
-        .catch(this.handleError)
+        .catch(this.handleResendError)
         .finally(this.resetForm);
     },
     sendToSecondaryEmail(email) {
@@ -152,28 +157,40 @@ export default {
       axios
         .post(this.skipPath, { user: { login: this.username } })
         .then(this.handleSkipResponse)
-        .catch(this.handleError);
+        .catch(this.handleSkipError);
     },
     handleSkipResponse(response) {
-      if (response.data.status === undefined) {
-        this.handleError();
-      } else if (response.data.status === SUCCESS_RESPONSE) {
+      if (response.data.status === SUCCESS_RESPONSE) {
         visitUrl(response.data.redirect_path);
-      } else if (response.data.status === FAILURE_RESPONSE) {
-        createAlert({ message: response.data.message });
+      } else {
+        this.handleError();
+      }
+    },
+    handleSkipError(error) {
+      const data = error?.response?.data;
+      if (data?.message) {
+        createAlert({ message: data.message });
+      } else {
+        this.handleError(error);
       }
     },
     handleResendResponse(response) {
-      if (response.data.status === undefined) {
-        this.handleError();
-      } else if (response.data.status === SUCCESS_RESPONSE) {
+      if (response.data.status === SUCCESS_RESPONSE) {
         this.showResendAfter = response.data.show_resend_after ?? null;
         createAlert({
           message: I18N_EMAIL_RESEND_SUCCESS,
           variant: VARIANT_SUCCESS,
         });
-      } else if (response.data.status === FAILURE_RESPONSE) {
-        createAlert({ message: response.data.message });
+      } else {
+        this.handleError();
+      }
+    },
+    handleResendError(error) {
+      const data = error?.response?.data;
+      if (data?.message) {
+        createAlert({ message: data.message });
+      } else {
+        this.handleError(error);
       }
     },
     onResendTimerExpired() {

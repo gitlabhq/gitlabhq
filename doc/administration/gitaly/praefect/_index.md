@@ -541,3 +541,21 @@ migrate off Gitaly Cluster (Praefect) to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](../configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../../operations/moving_repositories.md) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
+
+## Gitaly Cluster on Kubernetes
+
+{{< details >}}
+
+Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21774) in GitLab 19.1. This feature is in [beta](../../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances.  
+
+However, Gitaly Cluster on Kubernetes is currently in beta. We are working over these [known issues](#known-issues) and other related items before moving it to general availability.

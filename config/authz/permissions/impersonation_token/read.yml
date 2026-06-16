@@ -1,0 +1,3 @@
+---
+name: read_impersonation_token
+description: Grants the ability to read impersonation tokens

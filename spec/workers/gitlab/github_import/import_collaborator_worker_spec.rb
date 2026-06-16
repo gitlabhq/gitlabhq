@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ImportCollaboratorWorker, feature_category:
 
   describe '#import' do
     let(:project) do
-      instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state)
+      instance_double('Project', full_path: 'foo/bar', id: 1, organization_id: 1, import_state: import_state)
     end
 
     let(:import_state) { build_stubbed(:import_state, :started) }

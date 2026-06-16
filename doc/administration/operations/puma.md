@@ -47,9 +47,22 @@ set `per_worker_max_memory_mb` to the new RSS limit in megabytes:
 When workers are restarted, capacity to run GitLab is reduced for a short
 period of time. Set `per_worker_max_memory_mb` to a higher value if workers are replaced too often.
 
-Worker count is calculated based on CPU cores. A small GitLab deployment
-with 4-8 workers might experience performance issues if workers are being restarted
-too often (once or more per minute).
+Worker count is calculated automatically as the minimum of:
+
+- The number of CPUs available to the process, detected using `nproc`.
+  This respects cgroup CPU limits, so deployments in containers such as
+  LXC or Docker use the container's CPU quota rather than the host's
+  physical core count.
+- The number of workers that fit in available RAM, reserving 1.5 GB for
+  other processes and allowing approximately 1 GB per Puma worker.
+
+If the automatically produced result is less than two, the worker count is set to 2 workers, which is
+required for the web editor.
+If auto-detection produces incorrect results, set `puma['worker_processes']`
+explicitly in `/etc/gitlab/gitlab.rb`.
+
+A small GitLab deployment with 4-8 workers might experience performance issues
+if workers are being restarted too often (once or more per minute).
 
 A higher `per_worker_max_memory_mb` value could be beneficial if the server has free memory.
 

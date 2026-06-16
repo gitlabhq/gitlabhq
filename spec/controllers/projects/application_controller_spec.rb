@@ -25,7 +25,7 @@ RSpec.describe Projects::ApplicationController, feature_category: :groups_and_pr
 
   describe '#enforce_step_up_auth_for_namespace' do
     context 'with project in group namespace' do
-      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be_with_reload(:project) { create(:project, namespace: group) }
       let_it_be(:user, freeze: true) { create(:user, developer_of: project) }
 
@@ -35,7 +35,7 @@ RSpec.describe Projects::ApplicationController, feature_category: :groups_and_pr
     end
 
     context 'with project in user namespace (personal projects)' do
-      let_it_be(:user_namespace, reload: true) { create(:namespace, :with_namespace_settings) }
+      let_it_be_with_reload(:user_namespace) { create(:namespace, :with_namespace_settings) }
       let_it_be_with_reload(:project) { create(:project, namespace: user_namespace) }
       let_it_be(:user, freeze: true) { create(:user, developer_of: project) }
 

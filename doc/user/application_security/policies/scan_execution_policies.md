@@ -450,6 +450,8 @@ The concurrency control distributes the scheduled pipelines according to the [`t
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) for groups in GitLab 17.2 [with feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policies_with_latest_templates_group`. Disabled by default.
   - Enabled on [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/461474), and [GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) in GitLab 17.2.
   - Generally available in GitLab 17.3. Feature flags `scan_execution_policies_with_latest_templates` and `scan_execution_policies_with_latest_templates_group` removed.
+- `v2` template support for `dependency_scanning` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523986) in GitLab 18.4.
+- Default template for `dependency_scanning` [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598744) to `v2` for new policies in GitLab 19.1.
 
 {{< /history >}}
 
@@ -463,11 +465,25 @@ rule in the defined policy are met.
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI/CD variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI/CD job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `template` | `string` | `default` or `latest` | CI/CD template version to enforce. The `latest` version might introduce breaking changes and supports only `pipeline_sources` related to merge requests. For details, see [customize security scanning](../detect/security_configuration.md#customize-security-scanning). |
+| `template` | `string` | `default`, `latest`, or a scanner-specific version | CI/CD template version to enforce. `default` uses the stable template. `latest` uses the experimental template, which may include breaking changes — it is not the most current recommended version. Some scanners also support versioned templates that represent the recommended configuration. The `latest` template supports only `pipeline_sources` related to merge requests. For available versions per scanner, see [Scanner template versions](#scanner-template-versions). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 > [!note]
 > If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+
+### Scanner template versions
+
+The `template` field accepts `default` and `latest` for all scanner types. Some scanners support
+additional versioned templates. The recommended default varies by scanner — check the scanner
+documentation before setting this field.
+
+| Scanner | Supported templates | Documentation |
+|---------|---------------------|---------------|
+| `sast` | `default`, `latest` | [Stable vs latest SAST templates](../sast/_index.md#stable-vs-latest-sast-templates) |
+| `sast_iac` | `default`, `latest` | [Template editions](../detect/security_configuration.md#template-editions) |
+| `secret_detection` | `default`, `latest` | [Template editions](../detect/security_configuration.md#template-editions) |
+| `container_scanning` | `default`, `latest` | [Template editions](../detect/security_configuration.md#template-editions) |
+| `dependency_scanning` | `default`, `latest`, `v2` | [Dependency scanning by using SBOM](../dependency_scanning/dependency_scanning_sbom/_index.md) |
 
 ### Scanner behavior
 

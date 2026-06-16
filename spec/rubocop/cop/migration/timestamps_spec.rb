@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/timestamps'
 
-RSpec.describe RuboCop::Cop::Migration::Timestamps do
+RSpec.describe RuboCop::Cop::Migration::Timestamps, feature_category: :database do
   let(:migration_with_timestamps) do
     %q(
       class Users < ActiveRecord::Migration[4.2]

@@ -11,7 +11,7 @@ module Gitlab
         yield(self) if block_given?
 
         # freeze the subscriptions as safety measure to avoid further
-        # subcriptions after initialization.
+        # subscriptions after initialization.
         lock!
       end
 

@@ -10,7 +10,9 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       username: 'alice',
       email: 'private@example.com',
       website_url: 'https://example.com',
-      avatar: fixture_file_upload('spec/fixtures/dk.png')
+      avatar: fixture_file_upload('spec/fixtures/dk.png'),
+      first_name: 'Alice',
+      last_name: 'Smith'
     )
   end
 
@@ -33,6 +35,8 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       'name' => 'Alice',
       'nickname' => 'alice',
       'preferred_username' => 'alice',
+      'given_name' => 'Alice',
+      'family_name' => 'Smith',
       'email' => 'public@example.com',
       'email_verified' => true,
       'website' => 'https://example.com',
@@ -115,10 +119,10 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     end
 
     context 'UserInfo payload' do
-      let!(:group1) { create :group }
-      let!(:group2) { create :group }
-      let!(:group3) { create :group, parent: group2 }
-      let!(:group4) { create :group, parent: group3 }
+      let_it_be(:group1) { create :group }
+      let_it_be(:group2) { create :group }
+      let_it_be(:group3) { create :group, parent: group2 }
+      let_it_be(:group4) { create :group, parent: group3 }
 
       before do
         group1.add_member(user, GroupMember::OWNER)
@@ -158,10 +162,10 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     end
 
     context 'ID token payload' do
-      let!(:group1) { create :group }
-      let!(:group2) { create :group }
-      let!(:group3) { create :group, parent: group2 }
-      let!(:group4) { create :group, parent: group3 }
+      let_it_be(:group1) { create :group }
+      let_it_be(:group2) { create :group }
+      let_it_be(:group3) { create :group, parent: group2 }
+      let_it_be(:group4) { create :group, parent: group3 }
 
       before do
         group1.add_member(user, Gitlab::Access::OWNER)
@@ -192,13 +196,35 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'does not include any unknown properties' do
-        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy name nickname preferred_username email
-          email_verified website profile picture groups_direct]
+        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy name nickname preferred_username given_name
+          family_name email email_verified website profile picture groups_direct]
       end
 
       it 'does include groups' do
         expected_groups = [group1.full_path, group3.full_path]
         expect(@payload['groups_direct']).to match_array(expected_groups)
+      end
+    end
+
+    context 'when user has no first or last name' do
+      before do
+        user.update_columns(first_name: nil, last_name: nil, name: '')
+      end
+
+      it 'omits both given_name and family_name from the userinfo response', :aggregate_failures do
+        request_user_info!
+
+        expect(json_response.keys).not_to include('given_name')
+        expect(json_response.keys).not_to include('family_name')
+      end
+
+      it 'omits both given_name and family_name from the ID token', :aggregate_failures do
+        request_access_token!
+
+        payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)
+
+        expect(payload.keys).not_to include('given_name')
+        expect(payload.keys).not_to include('family_name')
       end
     end
 
@@ -363,10 +389,10 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     end
 
     context 'ID token payload' do
-      let!(:group1) { create :group }
-      let!(:group2) { create :group }
-      let!(:group3) { create :group, parent: group2 }
-      let!(:group4) { create :group, parent: group3 }
+      let_it_be(:group1) { create :group }
+      let_it_be(:group2) { create :group }
+      let_it_be(:group3) { create :group, parent: group2 }
+      let_it_be(:group4) { create :group, parent: group3 }
 
       before do
         group1.add_member(user, Gitlab::Access::OWNER)

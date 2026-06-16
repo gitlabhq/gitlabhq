@@ -15,7 +15,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
     end
 
     context 'when user has two-factor authentication disabled' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       it 'requires the current password to set up two factor authentication', :js do
         visit profile_two_factor_auth_path
@@ -35,7 +35,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
       end
 
       context 'when user authenticates with an external service' do
-        let_it_be(:user) { create(:omniauth_user) }
+        let_it_be(:user, freeze: false) { create(:omniauth_user) }
 
         it 'does not require the current password to set up two factor authentication', :js do
           visit profile_two_factor_auth_path
@@ -52,7 +52,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
       end
 
       context 'when invalid pin is provided' do
-        let_it_be(:user) { create(:omniauth_user) }
+        let_it_be(:user, freeze: false) { create(:omniauth_user) }
 
         it 'renders a error alert with a link to the troubleshooting section' do
           visit profile_two_factor_auth_path
@@ -64,7 +64,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
       end
 
       context 'when two factor is enforced for administrator users' do
-        let_it_be(:admin) { create(:admin) }
+        let_it_be(:admin, freeze: false) { create(:admin) }
 
         before do
           stub_application_setting(require_admin_two_factor_authentication: require_admin_two_factor_authentication)
@@ -114,7 +114,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         end
 
         context 'when invalid pin is provided' do
-          let_it_be(:user) { create(:omniauth_user) }
+          let_it_be(:user, freeze: false) { create(:omniauth_user) }
 
           it 'renders alert for global settings' do
             visit profile_two_factor_auth_path
@@ -126,7 +126,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         end
 
         context 'when invalid password is provided' do
-          let_it_be(:user) { create(:user) }
+          let_it_be(:user, freeze: false) { create(:user) }
 
           it 'renders a error alert with a link to the troubleshooting section' do
             visit profile_two_factor_auth_path
@@ -159,7 +159,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
     end
 
     context 'when user has two-factor authentication enabled' do
-      let_it_be(:user) { create(:user, :two_factor_via_otp, :two_factor_via_webauthn) }
+      let_it_be(:user, freeze: false) { create(:user, :two_factor_via_otp, :two_factor_via_webauthn) }
 
       it 'requires the current_password to delete the OTP authenticator', :js do
         visit profile_two_factor_auth_path
@@ -204,7 +204,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
       end
 
       context 'when user authenticates with an external service' do
-        let_it_be(:user) { create(:omniauth_user, :two_factor) }
+        let_it_be(:user, freeze: false) { create(:omniauth_user, :two_factor) }
 
         it 'does not require the current_password to delete the OTP authenticator', :js do
           visit profile_two_factor_auth_path

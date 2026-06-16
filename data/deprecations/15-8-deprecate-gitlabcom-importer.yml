@@ -14,4 +14,3 @@
     See [migrated group items](https://docs.gitlab.com/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/user/group/import/#migrated-project-items) for an overview.
   stage: Foundations
   tiers:
-  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/4895

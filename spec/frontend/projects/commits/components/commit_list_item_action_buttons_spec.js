@@ -63,12 +63,10 @@ describe('CommitListItemActionButtons', () => {
   });
 
   describe('expand/collapse button', () => {
-    it('renders with correct prop', () => {
-      expect(findExpandCollapseButton().props()).toEqual({
+    it('renders with correct props', () => {
+      expect(findExpandCollapseButton().props()).toMatchObject({
         anchorId: '',
         isCollapsed: true,
-        size: 'small',
-        accessibleLabel: 'Edit CODEOWNERS',
       });
     });
 

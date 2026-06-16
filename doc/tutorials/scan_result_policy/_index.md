@@ -122,7 +122,7 @@ Nice work, you've created a merge request approval policy. To test it, create so
 
    Wait for the pipeline to complete. This could be a few minutes.
 
-The merge request security widget confirms that security scanning detected one potential
+The merge request **Reports** tab confirms that security scanning detected one potential
 vulnerability. As defined in the merge request approval policy, the merge request is blocked and waiting for
 approval.
 

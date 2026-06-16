@@ -4,7 +4,8 @@ classes:
 - Ci::SecureFile
 feature_categories:
 - secrets_management
-description: TODO
+description: Stores secure files that can be used in CI/CD pipelines such as certificates
+  and provisioning profiles.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77886
 milestone: '14.7'
 gitlab_schema: gitlab_ci

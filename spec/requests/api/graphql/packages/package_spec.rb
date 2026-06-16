@@ -346,7 +346,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
     context 'public_package' do
       context 'when project is private' do
-        let_it_be(:private_project) { create(:project, :private, group: group) }
+        let_it_be(:private_project, freeze: false) { create(:project, :private, group: group) }
         let_it_be(:composer_package) { create(:composer_package_sti, project: private_project) }
         let(:package_global_id) { global_id_of(composer_package) }
 

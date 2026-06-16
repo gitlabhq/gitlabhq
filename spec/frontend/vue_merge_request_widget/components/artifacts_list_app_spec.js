@@ -2,49 +2,45 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { TEST_HOST as FAKE_ENDPOINT } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ArtifactsListApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
-import { getStoreConfig } from '~/vue_merge_request_widget/stores/artifacts_list';
+import { useArtifactsList } from '~/vue_merge_request_widget/stores/artifacts_list';
 import { artifacts } from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Merge Requests Artifacts list app', () => {
   let wrapper;
   let store;
+  let pinia;
   let mock;
 
-  const actionSpies = {
-    fetchArtifacts: jest.fn(),
-  };
-
-  beforeEach(() => {
+  beforeAll(() => {
     mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
+    mock.reset();
+  });
+
+  afterAll(() => {
     mock.restore();
   });
 
   const createComponent = () => {
-    const storeConfig = getStoreConfig();
-    store = new Vuex.Store({
-      ...storeConfig,
-      actions: {
-        ...storeConfig.actions,
-        ...actionSpies,
-      },
-    });
+    pinia = createTestingPinia();
+    store = useArtifactsList();
+    store.fetchArtifacts.mockResolvedValue();
 
     wrapper = mount(ArtifactsListApp, {
       propsData: {
         endpoint: FAKE_ENDPOINT,
       },
-      store,
+      pinia,
     });
   };
 
@@ -56,7 +52,7 @@ describe('Merge Requests Artifacts list app', () => {
   describe('while loading', () => {
     beforeEach(() => {
       createComponent();
-      store.dispatch('requestArtifacts');
+      store.isLoading = true;
     });
 
     it('renders a loading icon', () => {
@@ -79,10 +75,9 @@ describe('Merge Requests Artifacts list app', () => {
     beforeEach(() => {
       createComponent();
       mock.onGet(FAKE_ENDPOINT).reply(HTTP_STATUS_OK, artifacts, {});
-      store.dispatch('receiveArtifactsSuccess', {
-        data: artifacts,
-        status: HTTP_STATUS_OK,
-      });
+      store.artifacts = artifacts;
+      store.isLoading = false;
+      store.hasError = false;
     });
 
     it('renders a title with the number of artifacts', () => {
@@ -109,10 +104,9 @@ describe('Merge Requests Artifacts list app', () => {
     beforeEach(() => {
       createComponent();
       mock.onGet(FAKE_ENDPOINT).reply(HTTP_STATUS_OK, [], {});
-      store.dispatch('receiveArtifactsSuccess', {
-        data: [],
-        status: HTTP_STATUS_OK,
-      });
+      store.artifacts = [];
+      store.isLoading = false;
+      store.hasError = false;
     });
 
     it('does not render', () => {
@@ -125,7 +119,9 @@ describe('Merge Requests Artifacts list app', () => {
     beforeEach(() => {
       createComponent();
       mock.onGet(FAKE_ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {}, {});
-      store.dispatch('receiveArtifactsError');
+      store.isLoading = false;
+      store.hasError = true;
+      store.artifacts = [];
     });
 
     it('renders the error state', () => {

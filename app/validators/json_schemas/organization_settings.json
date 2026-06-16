@@ -15,6 +15,12 @@
         "integer",
         "null"
       ]
+    },
+    "security_tracked_context_quota": {
+      "type": [
+        "integer",
+        "null"
+      ]
     }
   }
 }

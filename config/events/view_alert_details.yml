@@ -2,6 +2,8 @@
 description: tracks when a user views the details of an alert
 action: view_alert_details
 product_group: platform_insights
+product_categories:
+- incident_management
 milestone: '13.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32846
 tiers:

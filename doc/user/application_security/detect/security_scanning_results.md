@@ -49,7 +49,7 @@ scanner outputs a security report artifact containing details of all findings or
 the specific security scanner.
 
 Security reports from [child pipelines](../../../ci/pipelines/downstream_pipelines.md#view-child-pipeline-reports-in-merge-requests)
-are included in pipeline security reports and merge request widgets.
+are included in pipeline security reports and merge request reports.
 
 In a development (non-default) branch, findings include any vulnerabilities present in the target
 branch when the development branch was created.
@@ -190,64 +190,13 @@ The selected security report is downloaded to your device.
 
 ![List of security reports](img/security_report_v18_1.png)
 
-## Merge request security widget
+## Merge request reports
 
-{{< details >}}
-
-- Tier: Ultimate
-
-{{< /details >}}
-
-The merge request displays a security widget that provides a summary of the difference the changes
-would make to the findings. It takes some time after the CI/CD pipeline has run to process the security
-reports, so there might be a delay until the security widget is shown.
-
-For example, consider two pipelines with these scan results:
-
-- The source branch pipeline detects two vulnerabilities identified as `V1` and `V2`.
-- The target branch pipeline detects two vulnerabilities identified as `V1` and `V3`.
-- `V2` appears on the merge request widget as "added".
-- `V3` appears on the merge request widget as "fixed".
-- `V1` exists on both branches and is not shown on the merge request widget.
-
-To show the differences between the source branch and the target branch, security reports from both
-are required. The system checks the last 10 commits on the target branch for valid security pipelines.
-For each commit, up to 10 of the most recent pipelines are checked for a security report. This approach ensures that a valid security report from an earlier commit is found, even if a commit skips the pipeline.
-If no security report is found, all findings are listed as new. Before enabling security scanning in
-merge requests, ensure that security scanning is enabled for the default branch.
-
-### View security widget
-
-View the merge request security widget to see the difference in findings the changes would make.
-
-Prerequisites:
-
-- The Developer, Maintainer, or Owner role for the project.
-
-To view the security widget:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Code** > **Merge requests**.
-1. Select a merge request.
-
-To see the details for each security report type, select **Show details**
-({{< icon name="chevron-down" >}}). For each security report type, the widget displays the first 25
-added and 25 fixed findings, sorted by severity. To see all findings on the source branch of the
-merge request, select **View all pipeline findings**.
-
-![Security scanning results in a merge request](img/mr_security_widget_v18_1.png)
+For security scan results in a merge request, see [merge request reports](../../project/merge_requests/reports.md).
 
 ## Troubleshooting
 
 When working with security scanning, you might encounter the following issues.
-
-### Dismissed vulnerabilities are visible in MR security widget
-
-When viewing the security widget in a merge request you might sometimes see dismissed
-vulnerabilities are still listed.
-
-No solution is yet available for this issue. For details, see
-[issue 411235](https://gitlab.com/gitlab-org/gitlab/-/issues/411235).
 
 ### Report parsing and scan ingestion errors
 

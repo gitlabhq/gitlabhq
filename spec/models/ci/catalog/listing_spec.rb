@@ -3,28 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:group) }
-  let_it_be(:public_namespace_project) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:namespace, freeze: false) { create(:group) }
+  let_it_be(:public_namespace_project, freeze: false) do
     create(:project, :public, namespace: namespace, name: 'A public namespace project', star_count: 10, reporters: user)
   end
 
-  let_it_be(:public_project) do
+  let_it_be(:public_project, freeze: false) do
     create(:project, :public, name: 'B public test project', star_count: 20, reporters: user)
   end
 
-  let_it_be(:namespace_project_a) do
+  let_it_be(:namespace_project_a, freeze: false) do
     create(:project, namespace: namespace, name: 'Test namespace project', star_count: 30, reporters: user)
   end
 
-  let_it_be(:namespace_project_b) do
+  let_it_be(:namespace_project_b, freeze: false) do
     create(:project, namespace: namespace, name: 'X namespace Project', star_count: 40, reporters: user)
   end
 
-  let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'Project with no access') }
-  let_it_be(:internal_project) { create(:project, :internal, name: 'Internal project', owners: user) }
+  let_it_be(:project_noaccess, freeze: false) { create(:project, namespace: namespace, name: 'Project with no access') }
+  let_it_be(:internal_project, freeze: false) { create(:project, :internal, name: 'Internal project', owners: user) }
 
-  let_it_be(:private_project) do
+  let_it_be(:private_project, freeze: false) do
     create(:project, namespace: namespace, name: 'B Project', description: 'Rspec test framework')
   end
 
@@ -35,25 +35,25 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
     let(:params) { {} }
 
-    let_it_be(:public_resource_a) do
+    let_it_be(:public_resource_a, freeze: false) do
       create(:ci_catalog_resource, :published, project: public_namespace_project,
         last_30_day_usage_count: 100, verification_level: 100)
     end
 
-    let_it_be(:public_resource_b) do
+    let_it_be(:public_resource_b, freeze: false) do
       create(:ci_catalog_resource, :published, project: public_project,
         last_30_day_usage_count: 70, verification_level: 100)
     end
 
-    let_it_be(:internal_resource) do
+    let_it_be(:internal_resource, freeze: false) do
       create(:ci_catalog_resource, :published, project: internal_project, last_30_day_usage_count: 80)
     end
 
-    let_it_be(:private_namespace_resource) do
+    let_it_be(:private_namespace_resource, freeze: false) do
       create(:ci_catalog_resource, :published, project: namespace_project_a, last_30_day_usage_count: 90)
     end
 
-    let_it_be(:unpublished_resource) { create(:ci_catalog_resource, project: namespace_project_b) }
+    let_it_be(:unpublished_resource, freeze: false) { create(:ci_catalog_resource, project: namespace_project_b) }
 
     it 'by default returns all resources visible to the current user' do
       is_expected.to contain_exactly(public_resource_a, public_resource_b, private_namespace_resource,
@@ -83,7 +83,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when the scope is :namespaces' do
-      let_it_be(:public_resource_no_namespace) do
+      let_it_be(:public_resource_no_namespace, freeze: false) do
         create(:ci_catalog_resource, project: create(:project, :public, name: 'public'))
       end
 
@@ -96,15 +96,24 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       # rubocop:disable RSpec/MultipleMemoizedHelpers -- Inherits helpers from parent context
       context 'with min_access_level parameter' do
-        let_it_be(:access_level_user) { create(:user) }
-        let_it_be(:maintainer_project) { create(:project, :private, name: 'maintainer project') }
-        let_it_be(:developer_project) { create(:project, :private, name: 'developer project') }
-        let_it_be(:reporter_project) { create(:project, :private, name: 'reporter project') }
-        let_it_be(:owner_project) { create(:project, :private, name: 'owner project') }
-        let_it_be(:maintainer_resource) { create(:ci_catalog_resource, :published, project: maintainer_project) }
-        let_it_be(:developer_resource) { create(:ci_catalog_resource, :published, project: developer_project) }
-        let_it_be(:reporter_resource) { create(:ci_catalog_resource, :published, project: reporter_project) }
-        let_it_be(:owner_resource) { create(:ci_catalog_resource, :published, project: owner_project) }
+        let_it_be(:access_level_user, freeze: false) { create(:user) }
+        let_it_be(:maintainer_project, freeze: false) { create(:project, :private, name: 'maintainer project') }
+        let_it_be(:developer_project, freeze: false) { create(:project, :private, name: 'developer project') }
+        let_it_be(:reporter_project, freeze: false) { create(:project, :private, name: 'reporter project') }
+        let_it_be(:owner_project, freeze: false) { create(:project, :private, name: 'owner project') }
+        let_it_be(:maintainer_resource, freeze: false) do
+          create(:ci_catalog_resource, :published, project: maintainer_project)
+        end
+
+        let_it_be(:developer_resource, freeze: false) do
+          create(:ci_catalog_resource, :published, project: developer_project)
+        end
+
+        let_it_be(:reporter_resource, freeze: false) do
+          create(:ci_catalog_resource, :published, project: reporter_project)
+        end
+
+        let_it_be(:owner_resource, freeze: false) { create(:ci_catalog_resource, :published, project: owner_project) }
 
         let(:list) { described_class.new(access_level_user) }
 
@@ -177,9 +186,9 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'with a sort parameter' do
-      let_it_be(:today) { Time.zone.now }
-      let_it_be(:yesterday) { today - 1.day }
-      let_it_be(:tomorrow) { today + 1.day }
+      let_it_be(:today, freeze: false) { Time.zone.now }
+      let_it_be(:yesterday, freeze: false) { today - 1.day }
+      let_it_be(:tomorrow, freeze: false) { today + 1.day }
 
       let(:params) { { sort: sort } }
 
@@ -191,7 +200,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when there is no sort parameter' do
-        let_it_be(:sort) { nil }
+        let_it_be(:sort, freeze: false) { nil }
 
         it 'contains catalog resources sorted by star_count descending' do
           is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
@@ -199,7 +208,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is created_at ascending' do
-        let_it_be(:sort) { :created_at_asc }
+        let_it_be(:sort, freeze: false) { :created_at_asc }
 
         it 'contains catalog resources sorted by created_at ascending' do
           is_expected.to eq([public_resource_b, public_resource_a, private_namespace_resource, internal_resource])
@@ -207,7 +216,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is created_at descending' do
-        let_it_be(:sort) { :created_at_desc }
+        let_it_be(:sort, freeze: false) { :created_at_desc }
 
         it 'contains catalog resources sorted by created_at descending' do
           is_expected.to eq([internal_resource, private_namespace_resource, public_resource_a, public_resource_b])
@@ -215,7 +224,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is name ascending' do
-        let_it_be(:sort) { :name_asc }
+        let_it_be(:sort, freeze: false) { :name_asc }
 
         it 'contains catalog resources for projects sorted by name ascending' do
           is_expected.to eq([public_resource_a, public_resource_b, internal_resource, private_namespace_resource])
@@ -223,7 +232,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is name descending' do
-        let_it_be(:sort) { :name_desc }
+        let_it_be(:sort, freeze: false) { :name_desc }
 
         it 'contains catalog resources for projects sorted by name descending' do
           is_expected.to eq([private_namespace_resource, internal_resource, public_resource_b, public_resource_a])
@@ -231,7 +240,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is latest_released_at ascending' do
-        let_it_be(:sort) { :latest_released_at_asc }
+        let_it_be(:sort, freeze: false) { :latest_released_at_asc }
 
         it 'contains catalog resources sorted by latest_released_at ascending with nulls last' do
           is_expected.to eq([public_resource_a, public_resource_b, private_namespace_resource, internal_resource])
@@ -239,7 +248,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is latest_released_at descending' do
-        let_it_be(:sort) { :latest_released_at_desc }
+        let_it_be(:sort, freeze: false) { :latest_released_at_desc }
 
         it 'contains catalog resources sorted by latest_released_at descending with nulls last' do
           is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
@@ -247,7 +256,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is star_count ascending' do
-        let_it_be(:sort) { :star_count_asc }
+        let_it_be(:sort, freeze: false) { :star_count_asc }
 
         it 'contains catalog resource sorted by star_count ascending' do
           is_expected.to eq([internal_resource, public_resource_a, public_resource_b, private_namespace_resource])
@@ -255,7 +264,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is usage_count descending' do
-        let_it_be(:sort) { :usage_count_desc }
+        let_it_be(:sort, freeze: false) { :usage_count_desc }
 
         it 'contains catalog resources sorted by last_30_day_usage_count descending' do
           is_expected.to eq([public_resource_a, private_namespace_resource, internal_resource, public_resource_b])
@@ -263,7 +272,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the sort is usage_count ascending' do
-        let_it_be(:sort) { :usage_count_asc }
+        let_it_be(:sort, freeze: false) { :usage_count_asc }
 
         it 'contains catalog resources sorted by last_30_day_usage_count ascending' do
           is_expected.to eq([public_resource_b, internal_resource, private_namespace_resource, public_resource_a])
@@ -272,9 +281,9 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when filtering by topics' do
-      let_it_be(:topic_ruby) { create(:topic, name: 'ruby') }
-      let_it_be(:topic_rails) { create(:topic, name: 'rails') }
-      let_it_be(:topic_gitlab) { create(:topic, name: 'gitlab') }
+      let_it_be(:topic_ruby, freeze: false) { create(:topic, name: 'ruby') }
+      let_it_be(:topic_rails, freeze: false) { create(:topic, name: 'rails') }
+      let_it_be(:topic_gitlab, freeze: false) { create(:topic, name: 'gitlab') }
 
       let(:params) { { topics: topic_names } }
 
@@ -336,12 +345,12 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when filtering by group_ids' do
-      let_it_be(:other_namespace) { create(:group) }
-      let_it_be(:other_namespace_project) do
+      let_it_be(:other_namespace, freeze: false) { create(:group) }
+      let_it_be(:other_namespace_project, freeze: false) do
         create(:project, :public, namespace: other_namespace, reporters: user)
       end
 
-      let_it_be(:other_namespace_resource) do
+      let_it_be(:other_namespace_resource, freeze: false) do
         create(:ci_catalog_resource, :published, project: other_namespace_project)
       end
 
@@ -370,9 +379,12 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'with descendant groups (direct match only)' do
-        let_it_be(:child_namespace) { create(:group, parent: namespace) }
-        let_it_be(:child_project) { create(:project, :public, namespace: child_namespace, reporters: user) }
-        let_it_be(:child_resource) { create(:ci_catalog_resource, :published, project: child_project) }
+        let_it_be(:child_namespace, freeze: false) { create(:group, parent: namespace) }
+        let_it_be(:child_project, freeze: false) do
+          create(:project, :public, namespace: child_namespace, reporters: user)
+        end
+
+        let_it_be(:child_resource, freeze: false) { create(:ci_catalog_resource, :published, project: child_project) }
 
         let(:params) { { group_ids: [namespace.id] } }
 
@@ -422,9 +434,12 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   end
 
   describe '#find_resource' do
-    let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
-    let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: project_noaccess) }
-    let_it_be(:unpublished_resource) do
+    let_it_be(:accessible_resource, freeze: false) { create(:ci_catalog_resource, :published, project: public_project) }
+    let_it_be(:inaccessible_resource, freeze: false) do
+      create(:ci_catalog_resource, :published, project: project_noaccess)
+    end
+
+    let_it_be(:unpublished_resource, freeze: false) do
       create(:ci_catalog_resource, project: public_namespace_project, state: :unpublished)
     end
 

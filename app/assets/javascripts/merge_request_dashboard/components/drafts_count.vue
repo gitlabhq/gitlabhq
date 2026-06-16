@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'DraftsCount',
   props: {
     count: {
       type: Number,

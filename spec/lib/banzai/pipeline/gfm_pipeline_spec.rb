@@ -6,7 +6,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
   it_behaves_like 'sanitize pipeline'
 
   describe ':reference_filter_nodes reuse' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
 
     it 'links an internal issues and keep updated nodes in result[:reference_filter_nodes]', :aggregate_failures do
       issue = create(:issue, project: project)
@@ -32,7 +32,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
   end
 
   describe 'integration between parsing regular and external issue references' do
-    let_it_be(:project) { create(:project, :with_redmine_integration, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :with_redmine_integration, :public) }
 
     # The ExternalIssueReferenceFilter once did all its work in the GfmPipeline --- now it still finds
     # the references, but doesn't resolve the link hrefs, which is done in the PostProcessPipeline.
@@ -174,7 +174,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
   end
 
   describe 'emoji in references' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
 
     let(:emoji) { '💯' }
 

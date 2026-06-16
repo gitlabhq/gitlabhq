@@ -108,7 +108,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
     context 'when querying for a single list' do
       let_it_be(:label_list) { create(:list, board: board, label: label, position: 10) }
-      let_it_be(:issues) do
+      let_it_be(:issues, freeze: false) do
         [
           create(:issue, project: project, labels: [label, label2]),
           create(:issue, project: project, labels: [label, label2], confidential: true),

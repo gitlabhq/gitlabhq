@@ -27,9 +27,9 @@ RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workf
     [:unique_branches, :unique_author]
   end
 
-  let_it_be(:mrs_a, reload: true) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_a) }
-  let_it_be(:mrs_b, reload: true) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_b) }
-  let_it_be(:mrs_c, reload: true) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_c) }
+  let_it_be_with_reload(:mrs_a) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_a) }
+  let_it_be_with_reload(:mrs_b) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_b) }
+  let_it_be_with_reload(:mrs_c) { create_list(:merge_request, 2, *mr_traits, **mr_attrs, source_project: project_c) }
   let_it_be(:other_mr) { create(:merge_request, source_project: project_x) }
 
   let(:mrs_data) { graphql_data_at(:group, :merge_requests, :nodes) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Extractors::SubgroupsExtractor do
+RSpec.describe BulkImports::Groups::Extractors::SubgroupsExtractor, feature_category: :importers do
   describe '#extract' do
     it 'returns ExtractedData response' do
       bulk_import = create(:bulk_import)

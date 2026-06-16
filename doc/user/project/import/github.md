@@ -63,14 +63,6 @@ Also, the organization the GitHub repository belongs to must not impose restrict
 [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
 on the GitLab instance you import to.
 
-### Accounts for user contribution mapping
-
-{{< history >}}
-
-- [Preparation requirement removed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) in GitLab 17.8.
-
-{{< /history >}}
-
 ## Known issues
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
@@ -298,8 +290,7 @@ Requirements:
 - The GitHub user's email address must match their GitLab email address.
 - If a user's email address in GitHub is set as their secondary email address in GitLab, they must confirm it.
 
-Using this method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are
-mapped during the import.
+Using this method, users are mapped during the import.
 
 If the requirements are not met, the importer can't map the particular user's contributions. In this case:
 

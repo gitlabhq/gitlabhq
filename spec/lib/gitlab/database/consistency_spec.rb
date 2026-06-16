@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Consistency do
+RSpec.describe Gitlab::Database::Consistency, feature_category: :database do
   let(:session) do
     Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer)
   end

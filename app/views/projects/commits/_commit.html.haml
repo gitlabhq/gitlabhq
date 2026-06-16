@@ -62,6 +62,8 @@
 
     .commit-actions.gl-flex.gl-items-center.gl-gap-3
       %div{ class: is_blob_page ? "gl-hidden @sm/panel:gl-flex gl-items-center gl-gap-3 gl-my-2": "gl-flex gl-items-center gl-gap-3 gl-my-2" }
+        - if commit.respond_to?(:has_agent_session?) && commit.has_agent_session?
+          = gl_badge_tag(s_('DuoAgentPlatform|GitLab Duo Agent session'), variant: :info, icon: 'session-ai', icon_only: true, class: 'gl-h-6 has-tooltip', title: s_('DuoAgentPlatform|Commit authored in a GitLab Duo Agent session'), data: { testid: 'commit-agent-session-badge' })
         - if tags.present?
           - if tags.size > 1
             = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace has-tooltip',  title: tags.join(', '),  href: project_commit_path(project, commit.id)) do

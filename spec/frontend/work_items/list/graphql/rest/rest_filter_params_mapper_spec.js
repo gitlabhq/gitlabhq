@@ -71,6 +71,34 @@ describe('convertGraphQLVarsToRestParams', () => {
       expect(params.get('per_page')).toBe('20');
     });
 
+    it('maps before/last to cursor/per_page for previous page', () => {
+      const params = convertGraphQLVarsToRestParams({ before: 'prev123', last: 10 });
+
+      expect(params.get('cursor')).toBe('prev123');
+      expect(params.get('per_page')).toBe('10');
+    });
+
+    it('uses beforeCursor as fallback for cursor', () => {
+      const params = convertGraphQLVarsToRestParams({ beforeCursor: 'cursor2' });
+
+      expect(params.get('cursor')).toBe('cursor2');
+    });
+
+    it('uses lastPageSize as fallback for per_page', () => {
+      const params = convertGraphQLVarsToRestParams({ lastPageSize: 15 });
+
+      expect(params.get('per_page')).toBe('15');
+    });
+
+    it('prefers afterCursor over beforeCursor when both present', () => {
+      const params = convertGraphQLVarsToRestParams({
+        afterCursor: 'next1',
+        beforeCursor: 'prev1',
+      });
+
+      expect(params.get('cursor')).toBe('next1');
+    });
+
     it('omits cursor/per_page when not provided', () => {
       const params = convertGraphQLVarsToRestParams({});
 

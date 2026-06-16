@@ -156,6 +156,7 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage vulnerabilities | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. | [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) | Group,<br> Project | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |
+| Update security AI workflow settings | Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission. | [`update_sec_ai_workflow_settings`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235831) | Project | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/issues/599602) |
 | View dependency list | Allows read-only access to the dependencies and licenses. | [`read_dependency`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) | Group,<br> Project | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/415255) |
 | View vulnerability reports and dashboards | Read vulnerability reports and security dashboards. | [`read_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120704) | Group,<br> Project | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/399119) |
 

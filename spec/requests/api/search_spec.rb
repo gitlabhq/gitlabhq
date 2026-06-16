@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project, reload: true) do
+  let_it_be_with_refind(:group) { create(:group) }
+  let_it_be_with_reload(:project) do
     create(:project, :wiki_repo, :public, name: 'awesome project', group: group)
   end
 
-  let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
+  let_it_be_with_refind(:repo_project) { create(:project, :public, :repository, group: group) }
 
   before do
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
@@ -1176,7 +1176,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           end
 
           context 'with non public pipeline' do
-            let_it_be(:repo_project) do
+            let_it_be_with_refind(:repo_project) do
               create(:project, :public, :repository, public_builds: false, group: group)
             end
 
@@ -1204,7 +1204,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           end
 
           context 'with public pipeline' do
-            let_it_be(:repo_project) do
+            let_it_be_with_refind(:repo_project) do
               create(:project, :public, :repository, public_builds: true, group: group)
             end
 

@@ -2,8 +2,8 @@
 
 RSpec.shared_examples 'all project settings sections exist and have correct anchor links' do
   let(:settings) { Search::ProjectSettings.new(project).all }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   it 'has only valid settings sections' do
     sign_in(user)
@@ -25,8 +25,8 @@ end
 
 RSpec.shared_examples 'all group settings sections exist and have correct anchor links' do
   let(:settings) { Search::GroupSettings.new(group).all }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:admin) } # some group settings require instance admin rights
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:user, freeze: false) { create(:admin) } # some group settings require instance admin rights
 
   it 'has only valid settings sections' do
     sign_in(user)

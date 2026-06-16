@@ -12,6 +12,7 @@ Choose and manage the subscription that's right for you and your organization.
 
 - [GitLab plans](choosing_subscription.md)
 - [GitLab Credits](gitlab_credits.md)
+- [GitLab Flex](gitlab_flex.md)
 - [Manage subscription](manage_subscription.md)
 - [Manage billing account](billing_account.md)
 - [Manage seats](manage_seats.md)

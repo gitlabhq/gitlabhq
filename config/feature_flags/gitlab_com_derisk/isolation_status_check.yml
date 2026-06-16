@@ -1,0 +1,10 @@
+---
+name: isolation_status_check
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210120
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578976
+milestone: '18.6'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

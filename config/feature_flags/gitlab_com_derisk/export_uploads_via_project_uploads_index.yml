@@ -1,0 +1,12 @@
+---
+name: export_uploads_via_project_uploads_index
+description: Query project uploads by the project_id sharding key during project export
+  so the index_project_uploads_on_project_id_and_id index serves the ORDER BY id LIMIT
+  batches used by find_each.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554957
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237088
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602183
+milestone: '19.1'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

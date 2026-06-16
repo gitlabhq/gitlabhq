@@ -13,7 +13,8 @@ module BulkImports
           import_entity = context.entity
 
           if import_entity.destination_namespace.present?
-            namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
+            namespace = import_entity.bulk_import.organization.namespaces
+              .find_by_full_path(import_entity.destination_namespace)
           end
 
           path = normalize_path(import_entity.destination_slug)

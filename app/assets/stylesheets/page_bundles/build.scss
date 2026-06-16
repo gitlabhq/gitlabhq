@@ -5,21 +5,8 @@
     @include build-log();
   }
 
-  .archived-job {
-    top: $calc-application-header-height;
-    border-radius: 2px 2px 0 0;
-    color: var(--orange-600, $orange-600);
-    background-color: var(--orange-50, $orange-50);
-    border: 1px solid var(--gl-border-color-default);
-  }
-
   .top-bar {
     @include job-log-top-bar;
-    @include translucent-glass-background(var(--gl-background-color-section));
-
-    &.has-archived-block {
-      top: calc(#{$calc-application-header-height} + 28px);
-    }
 
     &.affix {
       top: $calc-application-header-height;

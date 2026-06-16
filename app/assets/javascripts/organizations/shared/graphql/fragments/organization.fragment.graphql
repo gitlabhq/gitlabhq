@@ -5,4 +5,5 @@ fragment Organization on Organization {
   avatarUrl
   webPath
   rootPath
+  state
 }

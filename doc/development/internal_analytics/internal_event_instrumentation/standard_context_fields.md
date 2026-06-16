@@ -24,6 +24,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `global_user_id`  | string, null  | An anonymized `user_id` hash unique across instances.                                            | `longhash`         |
 | `is_gitlab_team_member` | boolean, null | Indicates if the action was triggered by a GitLab team member.                                   | `true`, `false`    |
 | `user_type`       | string, null  | Differentiates between human and bot usage.                                                       | `"human"`, `"bot"` |
+| `organization_id`       | integer, null  | ID of the associated organization. This is available when tracking is done inside any organization path. (example: [GitLab-org](https://gitlab.com/o/gitlab-org))                                                      | `1011` |
 
 ### Instance Information
 

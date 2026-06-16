@@ -63,7 +63,7 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
   end
 
   describe '#to_hash_variable' do
-    let_it_be(:ci_variable) { create(:ci_variable) }
+    let_it_be(:ci_variable, freeze: false) { create(:ci_variable) }
 
     subject { ci_variable }
 
@@ -110,7 +110,7 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
   end
 
   describe '.order_by' do
-    let_it_be(:relation) { Ci::Variable.all }
+    let_it_be(:relation, freeze: false) { Ci::Variable.all }
 
     it 'supports ordering by key ascending' do
       expect(relation).to receive(:reorder).with({ key: :asc })

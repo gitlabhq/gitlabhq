@@ -26,7 +26,7 @@ RSpec.describe Projects::NotesController, feature_category: :team_planning do
   end
 
   describe '#update' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:note) { create(:note_on_issue, project: project, noteable: issue, author: user) }
 
     before_all do

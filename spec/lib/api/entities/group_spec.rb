@@ -70,6 +70,36 @@ RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'marked_for_deletion_on attribute' do
+    subject(:marked_for_deletion_on) { described_class.new(group_pending_deletion).as_json[:marked_for_deletion_on] }
+
+    context 'when the group is scheduled for deletion' do
+      let_it_be(:group_pending_deletion) { create(:group_with_deletion_schedule, :deletion_scheduled) }
+
+      it 'returns the correct date' do
+        expect(marked_for_deletion_on).to be_a(Date)
+        expect(marked_for_deletion_on).to eq(group_pending_deletion.deletion_scheduled_at.to_date)
+      end
+
+      context 'when replace_group_deletion_schedule feature flag is disabled' do
+        before do
+          stub_feature_flags(replace_group_deletion_schedule: false)
+        end
+
+        it 'returns the correct date' do
+          expect(marked_for_deletion_on).to be_a(Date)
+          expect(marked_for_deletion_on).to eq(group_pending_deletion.marked_for_deletion_on)
+        end
+      end
+    end
+
+    context 'when the group is not scheduled for deletion' do
+      let_it_be(:group_pending_deletion) { create(:group) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'archived attribute' do
     let_it_be(:non_archived) { create(:group) }
     let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }

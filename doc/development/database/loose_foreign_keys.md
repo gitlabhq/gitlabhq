@@ -217,7 +217,8 @@ If the `worker_class` attribute is not specified, the table will default to usin
 - Each worker processes only the tables specifically assigned to it through the `worker_class` attribute
 - Tables without a `worker_class` specified are processed by the default `CleanupWorker`
 - When adding a new custom worker, you must also add it to the `ALLOWED_WORKER_CLASSES` constant in `lib/gitlab/database/loose_foreign_keys.rb`
-- When adding a new custom worker, you must also add its cron job configuration to `config/initializers/1_settings.rb`
+- When adding a new custom worker, you must also add its cron job configuration to
+  `config/schedule.yml` (FOSS) or `ee/config/schedule.yml` (EE)
 
 Example with mixed worker assignments:
 

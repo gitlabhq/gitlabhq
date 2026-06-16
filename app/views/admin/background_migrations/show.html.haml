@@ -10,16 +10,16 @@
     %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
       %thead{ role: 'rowgroup' }
         %tr{ role: 'row' }
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Id')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Min Value')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Max Value')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Batch size')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Sub-batch size')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Interval')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Pause time (ms)')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Created on')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Last updated')
-          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Status')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Id')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Min Value')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Max Value')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Batch size')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Sub-batch size')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Interval')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Pause time (ms)')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Created on')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Last updated')
+          %th.table-th-transparent{ role: 'cell', class: '!gl-border-b' }= _('Status')
       %tbody{ role: 'rowgroup' }
         = render partial: 'migration_full_information', migration: @migration
 

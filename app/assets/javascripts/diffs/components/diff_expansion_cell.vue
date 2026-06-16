@@ -13,6 +13,7 @@ const EXPAND_UP = 1;
 const EXPAND_DOWN = 2;
 
 export default {
+  name: 'DiffExpansionCell',
   i18n: {
     showMore: sprintf(s__('Diffs|Show %{unfoldCount} lines'), { unfoldCount: UNFOLD_COUNT }),
     showAll: s__('Diffs|Show all unchanged lines'),

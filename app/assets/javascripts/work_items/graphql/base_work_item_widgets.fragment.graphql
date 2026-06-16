@@ -60,7 +60,7 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetErrorTracking @skip(if: $useWorkItemFeatures) {
     identifier
   }
-  ... on WorkItemWidgetHierarchy {
+  ... on WorkItemWidgetHierarchy @skip(if: $useWorkItemFeatures) {
     hasChildren
     hasParent
     rolledUpCountsByType {

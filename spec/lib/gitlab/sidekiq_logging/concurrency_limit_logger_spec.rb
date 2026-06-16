@@ -90,4 +90,42 @@ RSpec.describe Gitlab::SidekiqLogging::ConcurrencyLimitLogger, feature_category:
       described_class.instance.worker_stats_log(worker_name, limit, queue_size, current)
     end
   end
+
+  describe '#dropped_poison_job_log' do
+    let(:worker_name) { 'TestWorker' }
+    let(:serialized_job) do
+      Gitlab::Json.dump({
+        'args' => [1234, 'hello'],
+        'jid' => 'da883554ee4fe414012f5f42',
+        'context' => {
+          'correlation_id' => 'cid',
+          'meta.project' => 'gitlab-org/gitlab'
+        },
+        'buffered_at' => 1_717_000_000.123
+      })
+    end
+
+    let(:error) do
+      Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError.new(worker_name, 2_000_000, 1_000_000)
+    end
+
+    it 'logs a dropped poison job message to the sidekiq logger' do
+      expected_payload = {
+        'class' => worker_name,
+        'jid' => 'da883554ee4fe414012f5f42',
+        'job_status' => 'dropped',
+        'message' => "#{worker_name} JID-da883554ee4fe414012f5f42: " \
+          'concurrency_limit: dropped poison job from buffered queue',
+        'exception.class' => 'Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError',
+        'exception.message' => error.message,
+        'job_size_bytes' => serialized_job.bytesize,
+        'concurrency_limit_buffered_at' => 1_717_000_000.123,
+        'correlation_id' => 'cid',
+        'meta.project' => 'gitlab-org/gitlab'
+      }
+      expect(Sidekiq.logger).to receive(:warn).with(a_hash_including(expected_payload)).and_call_original
+
+      described_class.instance.dropped_poison_job_log(worker_name, serialized_job, error)
+    end
+  end
 end

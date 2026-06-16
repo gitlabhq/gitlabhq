@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require_relative '../../scripts/failed_tests'
 
-RSpec.describe FailedTests do
+RSpec.describe FailedTests, feature_category: :tooling do
   let(:report_file) { 'spec/fixtures/scripts/test_report.json' }
   let(:options) { described_class::DEFAULT_OPTIONS.merge(previous_tests_report_path: report_file) }
   let(:frontend_failure_path) { 'path/to/fail_file_spec.js' }

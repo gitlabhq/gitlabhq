@@ -3,6 +3,7 @@ import { GlLink, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'LfsViewer',
   i18n: {
     lfsText: __(
       'This content could not be displayed because it is stored in LFS. You can %{linkStart}download it%{linkEnd} instead.',

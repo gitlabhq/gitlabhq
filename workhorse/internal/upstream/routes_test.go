@@ -136,9 +136,15 @@ func TestAllowedProxyRouteWithRateLimitCache(t *testing.T) {
 	config := newUpstreamConfig(railsServer.URL)
 	config.CircuitBreakerConfig.Enabled = true
 
-	upstreamHandler := newUpstream(*config, testDependencies(t, withRdb(rdb)), configureRoutes)
+	shutdownChan := make(chan struct{})
+	dependencies := testDependencies(t, withRdb(rdb), withShutdownChan(shutdownChan))
+	upstreamHandler := newUpstream(*config, dependencies, configureRoutes)
 	ws := httptest.NewServer(upstreamHandler)
-	defer ws.Close()
+
+	t.Cleanup(func() {
+		close(shutdownChan)
+		ws.Close()
+	})
 
 	// The first request receives a 429 from the server with Retry-After header,
 	// which caches the block for this user.

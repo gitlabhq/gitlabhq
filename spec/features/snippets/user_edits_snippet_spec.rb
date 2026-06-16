@@ -6,10 +6,10 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
   include DropzoneHelper
   include Features::SnippetSpecHelpers
 
-  let_it_be(:file_name) { 'test.rb' }
-  let_it_be(:content) { 'puts "test"' }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:snippet, reload: true) do
+  let_it_be(:file_name, freeze: false) { 'test.rb' }
+  let_it_be(:content, freeze: false) { 'puts "test"' }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:snippet) do
     create(
       :personal_snippet,
       :repository,

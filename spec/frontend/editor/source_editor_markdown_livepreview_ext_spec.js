@@ -310,19 +310,36 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       );
     });
 
-    it('puts the fetched content into the preview DOM element', async () => {
+    it('puts the fetched content into the preview DOM element when preview is shown', async () => {
       instance.markdownPreview.el = editorEl.parentElement;
+      instance.markdownPreview.shown = true;
       await fetchPreview();
       expect(instance.markdownPreview.el.innerHTML).toEqual(responseData);
     });
 
-    it('renders gfm in preview content', async () => {
+    it('does not update the DOM when preview is hidden (race condition guard)', async () => {
       instance.markdownPreview.el = editorEl.parentElement;
+      instance.markdownPreview.shown = false;
+      await fetchPreview();
+      expect(instance.markdownPreview.el.innerHTML).not.toEqual(responseData);
+    });
+
+    it('renders gfm in preview content when preview is shown', async () => {
+      instance.markdownPreview.el = editorEl.parentElement;
+      instance.markdownPreview.shown = true;
       await fetchPreview();
       expect(renderGFM).toHaveBeenCalled();
     });
 
+    it('does not render gfm when preview is hidden (race condition guard)', async () => {
+      instance.markdownPreview.el = editorEl.parentElement;
+      instance.markdownPreview.shown = false;
+      await fetchPreview();
+      expect(renderGFM).not.toHaveBeenCalled();
+    });
+
     it('catches the errors when fetching the preview', async () => {
+      mockAxios.resetHandlers();
       mockAxios.onPost().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       await fetchPreview();

@@ -19,6 +19,7 @@ export default {
       default: __('Reply to comment'),
     },
   },
+  emits: ['focus'],
 };
 </script>
 

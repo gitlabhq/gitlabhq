@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Notes::BuildService, feature_category: :team_planning do
   include AdminModeHelper
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:note) { create(:discussion_note_on_issue, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:note, freeze: false) { create(:discussion_note_on_issue, project: project) }
   let_it_be(:individual_note) { create(:note_on_issue, project: project) }
   let_it_be(:author) { note.author }
   let_it_be(:user) { author }
-  let_it_be(:noteable_author) { create(:user) }
-  let_it_be(:other_user) { create(:user) }
+  let_it_be(:noteable_author, freeze: false) { create(:user) }
+  let_it_be(:other_user, freeze: false) { create(:user) }
   let_it_be(:external) { create(:user, :external) }
 
   let(:base_params) { { note: 'Test' } }
@@ -33,7 +33,7 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
 
       context 'when a note with that original discussion ID exists' do
         context 'when discussion is resolved' do
-          let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+          let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
           let_it_be(:mr_note) { create(:discussion_note_on_merge_request, :resolved, noteable: merge_request, project: project, author: author) }
 
           let(:params) { { in_reply_to_discussion_id: mr_note.discussion_id } }
@@ -45,7 +45,7 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
         end
 
         context 'when noteable does not support replies' do
-          let_it_be(:note) { create(:note_on_commit, project: project) }
+          let_it_be(:note, freeze: false) { create(:note_on_commit, project: project) }
 
           it 'builds another individual note' do
             expect(new_note).to be_valid
@@ -89,8 +89,8 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
         end
 
         context 'when a snippet is private' do
-          let_it_be(:snippet) { create(:personal_snippet, :private, author: snippet_author) }
-          let_it_be(:note) { create(:discussion_note_on_personal_snippet, noteable: snippet) }
+          let_it_be(:snippet, freeze: false) { create(:personal_snippet, :private, author: snippet_author) }
+          let_it_be(:note, freeze: false) { create(:discussion_note_on_personal_snippet, noteable: snippet) }
 
           it 'creates a reply note when the author replies' do
             new_note = reply(note, snippet_author)
@@ -107,8 +107,8 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
         end
 
         context 'when a snippet is internal' do
-          let_it_be(:snippet) { create(:personal_snippet, :internal, author: snippet_author) }
-          let_it_be(:note) { create(:discussion_note_on_personal_snippet, noteable: snippet) }
+          let_it_be(:snippet, freeze: false) { create(:personal_snippet, :internal, author: snippet_author) }
+          let_it_be(:note, freeze: false) { create(:discussion_note_on_personal_snippet, noteable: snippet) }
 
           it 'creates a reply note when the author replies' do
             new_note = reply(note, snippet_author)
@@ -134,12 +134,12 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
     end
 
     context 'confidential comments' do
-      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:project, freeze: false) { create(:project, :public) }
       let_it_be(:guest) { create(:user) }
       let_it_be(:reporter) { create(:user) }
       let_it_be(:admin) { create(:admin) }
-      let_it_be(:issuable_assignee) { other_user }
-      let_it_be(:issue) do
+      let_it_be(:issuable_assignee, freeze: false) { other_user }
+      let_it_be(:issue, freeze: false) do
         create(:issue, project: project, author: noteable_author, assignees: [issuable_assignee])
       end
 
@@ -209,7 +209,7 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
       end
 
       context 'when replying to a confidential comment' do
-        let_it_be(:note) { create(:note_on_issue, confidential: true, noteable: issue, project: project) }
+        let_it_be(:note, freeze: false) { create(:note_on_issue, confidential: true, noteable: issue, project: project) }
 
         let(:params) { { in_reply_to_discussion_id: note.discussion_id, confidential: false } }
 
@@ -267,7 +267,7 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
       end
 
       context 'when replying to a public comment' do
-        let_it_be(:note) { create(:note_on_issue, confidential: false, noteable: issue, project: project) }
+        let_it_be(:note, freeze: false) { create(:note_on_issue, confidential: false, noteable: issue, project: project) }
 
         let(:params) { { in_reply_to_discussion_id: note.discussion_id, confidential: true } }
 

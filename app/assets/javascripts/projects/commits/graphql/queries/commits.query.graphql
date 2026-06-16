@@ -8,6 +8,7 @@ query getCommitList(
   $query: UntrustedRegexp
   $committedAfter: Time
   $committedBefore: Time
+  $path: String
 ) {
   project(fullPath: $projectPath) {
     id
@@ -20,6 +21,7 @@ query getCommitList(
         query: $query
         committedAfter: $committedAfter
         committedBefore: $committedBefore
+        path: $path
       ) {
         pageInfo {
           hasNextPage
@@ -34,6 +36,7 @@ query getCommitList(
           title
           titleHtml
           description
+          hasAgentSession @gl_introduced(version: "19.1.0")
           webPath
           webUrl
           tags

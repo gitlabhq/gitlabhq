@@ -1,6 +1,6 @@
 ---
-source_checksum: 1cb9cedfca568de2
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 7926d40e0326c319
+distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -75,7 +75,6 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Prefer `build_stubbed` or `build` over `create` when database persistence is not required
 - Prefer `instance_double` and `spy` over `FactoryBot.build(...)` for pure isolation
 - Use `let_it_be` instead of `let` for database-backed objects that do not change between examples
-- Use `let_it_be_with_reload` when the object must be modified in a `before` block across examples
 - Use `let_it_be_with_refind` only when a completely fresh object instance is required per example (note: incompatible with `stub_method`)
 - Treat objects inside `let_it_be` as immutable; use `freeze: true` to enforce this
 - DO NOT use `allow(object).to receive(:method)` stubs inside factories — use `stub_method` instead (factories only)
@@ -89,11 +88,14 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 ### Test Slowness
 
 - DO NOT add the `:js` metadata to a feature spec unless the test requires JavaScript reactivity in the browser
-- Use `have_no_testid` instead of `not_to have_testid` — the latter waits the full Capybara timeout before concluding the element is absent
-- Pass `wait: 0` to Capybara matchers inside a container already confirmed as loaded when asserting element absence; DO NOT use `wait: 0` on the container itself
+- Use `have_no_link` (or the appropriate negative Capybara matcher) rather than `expect(page.has_link?(...)).to be(false)` — the latter waits the full timeout before concluding the element is absent.
+- Confirm the page is loaded with a positive matcher before checking for element absence to avoid false-positive absence checks.
+- Use `wait: 0` only inside a region already confirmed as loaded when skipping the Capybara wait in conditional logic — DO NOT use `wait: 0` for regular absence assertions.
 - Mock external processes (shell-outs, Git commands, network calls, binary compilation) in feature and integration specs — DO NOT trigger real external operations when the logic under test is already covered by unit tests
 - Profile and optimize a slow shared example as a local spec before extracting it into a shared context
 - Prefer `build_stubbed` or `build` in shared examples — DO NOT use `create` unless the contract explicitly requires database state
+- Use `bin/rspec-stackprof --speedscope=true` to generate a flamegraph and identify where a slow test spends its time.
+- Run `FDOC=1 bin/rspec` (Factory Doctor) to find cases where database persistence is not needed; run `FPROF=1 bin/rspec` (Factory Profiler) to identify repetitive factory creation.
 
 ### View Specs
 
@@ -116,7 +118,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use semantic Capybara finders (`find_button`, `find_link`, `find_field`) — use `find_by_testid` only when the element is not a button, link, or field
 - DO NOT use `all()` with `.first` or block iteration to filter elements — use `find()` or a CSS child selector with `.ancestor()` instead.
 - Use semantic Capybara matchers (`have_button`, `have_link`, `have_field`, `have_select`, `have_checked_field`) — use `have_css` only when no specific matcher applies
-- Use `within_modal` helper to interact with GitLab UI modals.
+- Use `within_modal` helper to interact with GitLab UI modals; use `accept_gl_confirm` for confirmation modals that only need to be accepted.
 - Call the same externalizing method (for example, `_('...')`) in RSpec expectations against externalized content
 - Use `be_axe_clean` matcher to run automated accessibility testing in feature tests.
 
@@ -136,6 +138,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Place shared examples used only within one bounded context in that context's directory structure
 - Place shared examples used across multiple bounded contexts under `spec/support/shared_*`
 - DO NOT move shared examples to `spec/support/shared_*` unless they are actually shared across different bounded contexts
+- Profile and optimize slow shared examples before extracting them — a shared example included across 10 spec files multiplies its cost tenfold.
 
 ### Helpers
 
@@ -148,11 +151,13 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `require 'fast_spec_helper'` instead of `require 'spec_helper'` for classes well-isolated from Rails
 - Add `require_dependency` for gems not in `lib/` that are needed by `fast_spec_helper` specs
 - Use `rubocop_spec_helper` for RuboCop-related specs
+- Add the `:eager_load` tag when a test depends on all application code being loaded.
 
 ### Factories
 
 - Place factory definitions in `spec/factories/`, named using the pluralization of their corresponding model
 - Define only one top-level factory per file
+- Consider writing specs for factories in `spec/factories_specs/`, especially when custom logic is used in `after(:build)` hooks.
 - Use traits to clean up factory definitions and usages
 - DO NOT define attributes in a factory that are not required for the record to pass validation
 - DO NOT supply attributes when instantiating from a factory that are not required by the test
@@ -170,6 +175,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `reversible_migration` helper to test migrations with `change` or both `up` and `down` hooks.
 - DO NOT use `let_it_be`, `let_it_be_with_reload`, `let_it_be_with_refind`, or `before_all` in migration specs — use `let`, `let!`, `before`, or `before(:all)` instead.
 - Tag specs against a non-default database schema (for example, `:gitlab_ci`) with the appropriate `migration:` RSpec tag.
+- Add `:migration_with_transaction` metadata when testing migrations that alter seeded data in `deletion_except_tables` so the test runs within a transaction.
 
 ### Rake Task Tests
 
@@ -186,6 +192,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `expect_snowplow_event` to test Snowplow tracking calls — DO NOT mock `Gitlab::Tracking` directly
 - Specify at least a `category` argument when using `expect_no_snowplow_event` to avoid flaky failures from unrelated tracking calls
 - Use `have_no_testid` instead of `not_to have_testid`
+- Use `stub_file_read` and `expect_file_read` helpers to stub file contents — DO NOT stub `File.read` globally.
 
 ### EE-Specific and SaaS Tests
 
@@ -198,11 +205,12 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT manually specify values for sequence-generated columns — look up the value after the row is created
 - Mark specs that make direct Redis calls with `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state`, or `:clean_gitlab_redis_queues` as appropriate.
 - Use the `:sidekiq_inline` trait when a test requires Sidekiq to actually process jobs.
-- Use `stub_file_read` and `expect_file_read` helpers to stub file contents — DO NOT stub `File.read` globally
 - Use `stub_const` to modify constants in specs — DO NOT modify constants directly
 - Use `stub_env` to modify `ENV` in specs.
 - Mark Elasticsearch specs with `:elastic` or `:elastic_delete_by_query` metadata; use `:elastic_clean` only when the other traits cause issues (it is significantly slower)
 - Add the `:prometheus` tag to RSpec tests that exercise Prometheus metrics to ensure metrics are reset before each example.
+- Use `:permit_dns` label on tests that need to bypass universal DNS stubbing.
+- Mark feature specs that trigger rate limiting with `:clean_gitlab_redis_rate_limiting` to clear rate limiting data between specs; use `:disable_rate_limit` if a single test triggers the limit.
 
 ## Authoritative sources
 

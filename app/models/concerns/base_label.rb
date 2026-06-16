@@ -64,7 +64,13 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
     private
 
     def strip_whitespace_from_title
-      self[:title] = title&.strip
+      return unless title
+
+      stripped = title.strip
+      # Skip the attribute write when nothing changed; this avoids a needless
+      # AR mutation (which would raise FrozenError on a `let_it_be`-frozen
+      # subject) and is the dominant case after the first validation pass.
+      self[:title] = stripped unless stripped == title
     end
   end
 end

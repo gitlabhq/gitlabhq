@@ -4,6 +4,7 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import UncollapsedAssigneeList from './uncollapsed_assignee_list.vue';
 
 export default {
+  name: 'IssuableAssignees',
   components: {
     GlButton,
     UncollapsedAssigneeList,

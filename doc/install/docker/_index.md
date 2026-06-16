@@ -26,4 +26,5 @@ Find the GitLab official Docker images at:
 - [Configure GitLab running in a Docker container](configuration.md)
 - [Back up GitLab running in a Docker container](backup.md)
 - [Upgrade GitLab running in a Docker container](../../update/docker/_index.md)
+- [Migrate a Linux package GitLab instance to Docker](migrate.md)
 - [Troubleshooting GitLab running in a Docker container](troubleshooting.md)

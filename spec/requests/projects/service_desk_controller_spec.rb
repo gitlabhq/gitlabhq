@@ -9,7 +9,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       files: { '.gitlab/issue_templates/service_desk.md' => 'template' })
   end
 
-  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
 
   before do
     allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)

@@ -20,6 +20,7 @@
   }
 
   /* If a Vue app portals its breadcrumbs here (like `NewNamespacePage` does), hide the others! */
+  /* stylelint-disable-next-line gitlab/no-has -- scoped to direct children of breadcrumb container */
   > :has(~ .vue-portal-target) {
     display: none;
   }

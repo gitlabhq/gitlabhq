@@ -3,6 +3,7 @@ import { uniqueId } from 'lodash-es';
 import { GlAvatarLink, GlAvatar, GlTooltip } from '@gitlab/ui';
 
 export default {
+  name: 'UserLinkWithTooltip',
   components: {
     GlAvatarLink,
     GlAvatar,

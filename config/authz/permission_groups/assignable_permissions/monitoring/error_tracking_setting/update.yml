@@ -1,0 +1,9 @@
+---
+name: update_error_tracking_setting
+description: Grants the ability to update error tracking settings
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_error_tracking_setting

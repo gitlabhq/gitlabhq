@@ -49,6 +49,19 @@ RSpec.describe Compare, feature_category: :source_code_management do
       expect(commit_ids).to include(head_commit.id)
       expect(commit_ids.length).to eq(6)
     end
+
+    context 'with limit parameter' do
+      it 'passes the limit through to the raw compare and does not cache the result', :aggregate_failures do
+        expect(raw_compare).to receive(:commits).with(limit: 2).twice.and_call_original
+
+        result1 = compare.commits(limit: 2)
+        result2 = compare.commits(limit: 2)
+
+        expect(result1).to be_kind_of(CommitCollection)
+        expect(result1.count).to eq(2)
+        expect(result2).to be_kind_of(CommitCollection)
+      end
+    end
   end
 
   describe '#commit' do

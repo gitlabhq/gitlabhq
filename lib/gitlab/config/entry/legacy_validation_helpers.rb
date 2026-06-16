@@ -44,14 +44,14 @@ module Gitlab
         end
 
         def validate_variables(variables)
-          variables.is_a?(Hash) && variables.flatten.all?(&method(:validate_alphanumeric))
+          variables.is_a?(Hash) && variables.flatten.all? { |value| validate_alphanumeric(value) }
         end
 
         def validate_array_value_variables(variables)
           variables.is_a?(Hash) &&
-            variables.keys.all?(&method(:validate_alphanumeric)) &&
+            variables.keys.all? { |value| validate_alphanumeric(value) } &&
             variables.values.all? { |v| !v.nil? } &&
-            variables.values.flatten(1).all?(&method(:validate_alphanumeric))
+            variables.values.flatten(1).all? { |value| validate_alphanumeric(value) }
         end
 
         def validate_alphanumeric(value)

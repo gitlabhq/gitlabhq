@@ -7,6 +7,11 @@ module Mutations
       description 'Adds a closing merge request to a work item'
 
       authorize :update_work_item
+      authorize_granular_token permissions: :update_work_item,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary_type: :group }
+        ]
 
       argument :context_namespace_path, GraphQL::Types::ID,
         required: false,

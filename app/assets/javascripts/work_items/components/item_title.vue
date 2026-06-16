@@ -24,6 +24,7 @@ export default {
       required: false,
     },
   },
+  emits: ['title-changed', 'title-input'],
   computed: {
     headerClasses() {
       return this.useH1

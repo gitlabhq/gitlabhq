@@ -45,6 +45,8 @@ module Mutations
         description: 'Assets associated to the release.'
 
       authorize :create_release
+      authorize_granular_token permissions: :create_release,
+        boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:, assets: nil, **scalars)
         project = authorized_find!(project_path)

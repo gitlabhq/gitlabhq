@@ -203,7 +203,7 @@ export default {
 
         <template #input(expiresAt)="{ id, input, validation, value }">
           <gl-datepicker
-            show-clear-button
+            :show-clear-button="!maxDate"
             :max-date="maxDate"
             :min-date="minDate"
             :input-id="id"

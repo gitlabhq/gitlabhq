@@ -30,7 +30,7 @@ as shown in the following table:
 |:--------------------------------------------------------------------------------------------|:------------|:------------|:------------|
 | [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [See findings in a merge request widget](#merge-request-widget)                             | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [See findings in merge request reports](#merge-request-reports)                             | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [See findings in a pipeline report](#pipeline-details-view)                                 | {{< no >}}  | {{< yes >}} | {{< yes >}} |
 | [See findings in the merge request changes view](#merge-request-changes-view)               | {{< no >}}  | {{< no >}}  | {{< yes >}} |
 | [Analyze overall health in a project quality summary view](#project-quality-view)           | {{< no >}}  | {{< no >}}  | {{< yes >}} |
@@ -105,20 +105,17 @@ The following integrations are available to replace the built-in plugins:
 
 Code Quality results are shown in the:
 
-- [Merge request widget](#merge-request-widget)
+- [Merge request reports](#merge-request-reports)
 - [Merge request changes view](#merge-request-changes-view)
 - [Pipeline details view](#pipeline-details-view)
 - [Project quality view](#project-quality-view)
 
-### Merge request widget
+### Merge request reports
 
-Code Quality analysis results display in the merge request widget area if a report from the target
-branch is available for comparison. The merge request widget displays Code Quality findings and resolutions that
-were introduced by the changes made in the merge request. Multiple Code Quality findings with identical
-fingerprints display as a single entry in the merge request widget. Each individual finding is available in the
-full report available in the **Pipeline** details view.
+Code quality analysis results display in the merge request **Reports** tab.
+Multiple code quality findings with identical fingerprints display as a single entry.
 
-![List of code quality issues in the merge request, ordered by decreasing severity](img/code_quality_merge_request_widget_v18_2.png)
+For more information, see [merge request reports](../../user/project/merge_requests/reports.md).
 
 ### Merge request changes view
 

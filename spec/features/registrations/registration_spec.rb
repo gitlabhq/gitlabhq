@@ -28,21 +28,21 @@ RSpec.describe 'Registrations', :with_current_organization, feature_category: :a
       stub_application_setting(require_admin_approval_after_user_signup: false)
     end
 
-    context 'with quarantine', quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/42876'
-    } do
-      it 'becomes a member after confirmation' do
-        create(:group_member, :invited, :developer, source: group, invite_email: new_user.email)
+    it 'becomes a member after confirmation', :aggregate_failures do
+      create(:group_member, :invited, :developer, source: group, invite_email: new_user.email)
 
-        visit new_user_registration_path
-        fill_in_sign_up_form(new_user)
+      visit new_user_registration_path
+      fill_in_sign_up_form(new_user)
 
-        confirm_email(new_user)
-        visit polymorphic_path(group)
+      # Wait for registration to complete so `confirm_email` doesn't race the
+      # in-flight request and find the user before it is persisted.
+      expect(page).to have_no_current_path(new_user_registration_path)
 
-        expect(page).to have_content(group.name)
-        expect(page).not_to have_content('Page not found')
-      end
+      confirm_email(new_user)
+      visit polymorphic_path(group)
+
+      expect(page).to have_content(group.name)
+      expect(page).to have_no_content('Page not found')
     end
   end
 end

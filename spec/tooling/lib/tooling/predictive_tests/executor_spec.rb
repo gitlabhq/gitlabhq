@@ -185,7 +185,7 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
       context 'when duo_system_test_files_path is set and Duo is confident' do
         let(:duo_output_path) { File.join(temp_dir, 'duo_system_test_files.txt') }
         let(:duo_confident) { true }
-        let(:duo_spec_list) { ['spec/features/user_spec.rb'] }
+        let(:duo_spec_list) { ['spec/features/user_spec.rb', 'spec/features/group_spec.rb'] }
 
         let(:test_selector) do
           instance_double(
@@ -207,9 +207,20 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
                             .and_return(["diff content", instance_double(Process::Status, success?: true)])
         end
 
-        it 'saves Duo predictions to disk' do
+        it 'saves Duo predictions to disk, one spec per line with a trailing newline' do
           predictive_tests.execute
-          expect(File.read(duo_output_path)).to include('spec/features/user_spec.rb')
+          expect(File.read(duo_output_path)).to eq("spec/features/user_spec.rb\nspec/features/group_spec.rb\n")
+        end
+
+        context 'when Duo is confident but predicted zero specs' do
+          let(:duo_spec_list) { [] }
+
+          it 'writes an empty file so downstream treats it as "no predictions"' do
+            predictive_tests.execute
+            expect(File).to exist(duo_output_path)
+            expect(File.read(duo_output_path)).to eq('')
+            expect(File.size?(duo_output_path)).to be_nil
+          end
         end
       end
 

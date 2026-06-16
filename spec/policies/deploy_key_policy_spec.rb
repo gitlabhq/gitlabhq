@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
   subject { described_class.new(current_user, deploy_key) }
 
-  let_it_be(:current_user, refind: true) { create(:user) }
+  let_it_be_with_refind(:current_user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
 
   context 'when deploy key is public' do

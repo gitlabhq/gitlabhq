@@ -865,6 +865,7 @@ GET /projects/:id/integrations/external-wiki
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391) in GitLab 17.8. Feature flag `git_guardian_integration` removed.
 - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
+- `api_url` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599742) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -890,6 +891,7 @@ Parameters:
 | Parameter | Type | Required | Description                                   |
 | --------- | ---- | -------- |-----------------------------------------------|
 | `token` | string | yes | GitGuardian API token with `scan` scope. |
+| `api_url` | string | no | GitGuardian API base URL. Defaults to `https://api.gitguardian.com`. Use `https://api.eu1.gitguardian.com` for the EU region, or the URL of your self-hosted GitGuardian instance. Must use HTTPS. |
 | `use_inherited_settings` | boolean | no | Indicates whether to inherit the default settings. Defaults to `false`. |
 
 ### Disable GitGuardian

@@ -62,13 +62,6 @@ To validate a CI/CD YAML snippet without adding it to the **Edit** tab, use the
 
 ## View included CI/CD configuration
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_editor_file_tree`. Disabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
-
-{{< /history >}}
-
 You can review configuration added with the [`include`](../yaml/_index.md#include)
 keyword in the pipeline editor. In the upper-right corner, select the file tree ({{< icon name="file-tree" >}})
 to see a list of all included configuration files. Selected files open in a new tab
@@ -90,12 +83,6 @@ If the configuration does not have any `needs` relationships, then no lines are 
 each job depends only on the previous stage being completed successfully.
 
 ## View full configuration
-
-{{< history >}}
-
-- **View merged YAML** tab [renamed to **Full configuration**](https://gitlab.com/gitlab-org/gitlab/-/issues/377404) in GitLab 16.0.
-
-{{< /history >}}
 
 To view the fully expanded CI/CD configuration as one combined file, go to the
 pipeline editor's **Full configuration** tab. This tab displays an expanded configuration

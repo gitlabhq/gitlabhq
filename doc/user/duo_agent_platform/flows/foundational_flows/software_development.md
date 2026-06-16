@@ -41,6 +41,11 @@ Formerly known as GitLab Duo Workflow, this flow:
 
 This flow is available in VS Code, Visual Studio, and JetBrains.
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
+- Install and configure an [editor extension](../../../../editor_extensions/_index.md) for your IDE.
+
 ## Flow and Chat comparison
 
 Both the Software Development Flow and GitLab Duo Chat are available in your IDE in different tabs.
@@ -68,11 +73,6 @@ For example, the flow considers different solutions before it proposes an approa
 to the first viable path to provide quick results.
 
 ## Use the Software Development Flow
-
-Prerequisites:
-
-- Install and configure [an editor extension](../../../../editor_extensions/_index.md) for your IDE.
-- Ensure you meet [the other prerequisites](../../_index.md#prerequisites).
 
 To use the flow:
 

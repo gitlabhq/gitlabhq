@@ -107,7 +107,7 @@ The services feature does not add any software from the
 defined `services` images to the job's container.
 
 For example, if you have the following `services` defined in your job, the `php`,
-`node` or `go` commands are **not** available for your script, and the job fails:
+`node` or `go` commands are not available for your script, and the job fails:
 
 ```yaml
 job:

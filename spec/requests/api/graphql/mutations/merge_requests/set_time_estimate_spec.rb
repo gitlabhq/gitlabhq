@@ -7,7 +7,7 @@ RSpec.describe 'Setting time estimate of a merge request', feature_category: :co
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
   let(:input) do
     {

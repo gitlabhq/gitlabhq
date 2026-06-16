@@ -224,6 +224,31 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
         end
       end
 
+      context 'when transferred events exist' do
+        let!(:transferred_event) do
+          create(
+            :event,
+            :transferred,
+            project: other_project,
+            target: other_project,
+            target_type: 'Project',
+            author: user
+          )
+        end
+
+        it 'does not include transferred events without filter param' do
+          get :activity, params: { format: :json }
+
+          expect(json_response['count']).to eq(3)
+        end
+
+        it 'does not include transferred events with "projects" filter' do
+          get :activity, params: { format: :json, filter: :projects }
+
+          expect(json_response['count']).to eq(6)
+        end
+      end
+
       context 'with "followed" filter' do
         let_it_be(:followed_user) { create(:user) }
         let_it_be(:followed_user_private_project) { create(:project, :private) }

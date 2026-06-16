@@ -325,6 +325,22 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
 
 export const POLICIES_BY_RESOURCE = [
   {
+    resource: { value: 'BADGES', text: 'Badges' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_BADGES',
+        text: 'Read',
+        resource: { value: 'BADGES', text: 'Badges' },
+      },
+      {
+        value: 'ADMIN_BADGES',
+        text: 'Read and write',
+        resource: { value: 'BADGES', text: 'Badges' },
+      },
+    ],
+  },
+  {
     resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
     policies: [
       { value: '', text: 'None' },

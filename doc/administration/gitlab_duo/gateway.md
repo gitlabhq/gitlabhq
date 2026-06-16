@@ -47,7 +47,7 @@ The following factors influence where data is routed:
 - Service availability: In case of regional outages or service disruptions,
   requests might be automatically rerouted to ensure uninterrupted service.
 - Third-party dependencies: The GitLab AI infrastructure relies on third-party model providers,
-  like Google Vertex AI, which have their own data-handling practices.
+  like Gemini Enterprise Agent Platform, which have their own data-handling practices.
 
 ### Direct and indirect connections
 

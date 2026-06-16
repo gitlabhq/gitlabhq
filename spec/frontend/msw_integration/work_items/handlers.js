@@ -33,7 +33,7 @@ const OPERATION_NAME_OVERRIDES = {
   EEgetWorkItemStateCounts: fixtures.getWorkItemStateCounts,
   getWorkItemsFullEE: fixtures.getWorkItemsFull,
   getWorkItemsSlimEE: fixtures.getWorkItemsSlim,
-  getWorkItemsRest: GET_WORK_ITEMS_REST_GQL_MOCK,
+  getWorkItemsRestEE: GET_WORK_ITEMS_REST_GQL_MOCK,
 };
 
 const FIXTURE_RESPONSES = {

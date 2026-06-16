@@ -22,7 +22,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     claiming_attributes: [:id]
 
   context 'when runner registration is allowed' do
-    let_it_be(:project) { create(:project, :allow_runner_registration_token) }
+    let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token) }
 
     it_behaves_like 'ensures runners_token is prefixed' do
       subject(:record) { project }
@@ -223,7 +223,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it_behaves_like 'model with wiki' do
-      let_it_be(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
+      let_it_be_with_reload(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
       let(:container_without_wiki) { create(:project) }
     end
 
@@ -393,7 +393,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'updating a project' do
       let_it_be(:project_namespace) { create(:project_namespace) }
-      let_it_be(:project, reload: true) { project_namespace.project }
+      let_it_be_with_reload(:project) { project_namespace.project }
 
       context 'when project has an associated project namespace' do
         # when FF is disabled creating a project does not create a project_namespace, so we create one
@@ -574,7 +574,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     shared_examples 'share with group lock' do
-      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be_with_reload(:project) { create(:project, group: group) }
 
       context 'without share with group lock' do
@@ -730,7 +730,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     shared_examples 'includes projects in archived hierarchy' do
-      let_it_be(:group) { create(:group) }
+      let_it_be_with_refind(:group) { create(:group) }
       let_it_be(:active_project) { create(:project, group: group) }
       let_it_be(:archived_project) { create(:project, group: group, archived: true) }
 
@@ -753,7 +753,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     shared_examples 'excludes projects in archived hierarchy' do
-      let_it_be(:group) { create(:group) }
+      let_it_be_with_refind(:group) { create(:group) }
       let_it_be(:active_project) { create(:project, group: group) }
       let_it_be(:archived_project) { create(:project, group: group, archived: true) }
 
@@ -1001,8 +1001,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '.include_topics' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:topic) { create(:topic) }
+      let_it_be_with_refind(:project) { create(:project) }
+      let_it_be_with_refind(:topic) { create(:topic) }
 
       before_all do
         project.topics << topic
@@ -1100,7 +1100,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'and the last_activity_at is nil' do
-        let_it_be(:project) { create(:project) }
+        let_it_be_with_reload(:project) { create(:project) }
 
         before do
           project.update_column(:last_activity_at, nil)
@@ -1328,7 +1328,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     describe 'name format validation' do
       context 'name is unchanged' do
-        let_it_be(:invalid_path_project) do
+        let_it_be_with_reload(:invalid_path_project) do
           project = create(:project)
           project.update_attribute(:name, '.invalid_name')
           project
@@ -1407,7 +1407,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'path is unchanged' do
-        let_it_be(:invalid_path_project) do
+        let_it_be_with_reload(:invalid_path_project) do
           project = create(:project, :repository, :public)
           project.update_attribute(:path, 'foo.')
           project
@@ -1467,7 +1467,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#all_pipelines' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     before_all do
       create(:ci_pipeline, project: project, ref: 'master', source: :web)
@@ -1590,8 +1590,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#ancestors_archived?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_refind(:group) { create(:group) }
+    let_it_be_with_refind(:subgroup) { create(:group, parent: group) }
     let_it_be(:user_namespace_project) { create(:project) }
 
     let_it_be_with_reload(:group_project) { create(:project, group: group) }
@@ -1754,7 +1754,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#ci_pipelines' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     before_all do
       create(:ci_pipeline, project: project, ref: 'master', source: :web)
@@ -1891,7 +1891,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe 'runner registration token' do
-    let(:project) { create(:project, :allow_runner_registration_token, runners_token: initial_token) }
+    let_it_be_with_reload(:runner_namespace) { create(:namespace) }
+    let(:project) do
+      create(:project, :allow_runner_registration_token, runners_token: initial_token, namespace: runner_namespace)
+    end
 
     context 'when no token provided' do
       let(:initial_token) { '' }
@@ -2075,7 +2078,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       with_them do
-        let_it_be(:project) { create(:project) }
+        let_it_be_with_refind(:project) { create(:project) }
 
         before do
           if ci_cd_settings_attrs.nil?
@@ -2128,7 +2131,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '#resource_group_default_process_mode' do
-      let_it_be(:project) { create(:project) }
+      let_it_be_with_refind(:project) { create(:project) }
 
       it 'delegates to ci_cd_settings' do
         expect(project.resource_group_default_process_mode).to eq('unordered')
@@ -2552,7 +2555,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#get_issue' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
 
     let!(:issue) { create(:issue, project: project) }
@@ -2843,7 +2846,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#external_wiki' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     def subject
       project.reload.external_wiki
@@ -3031,9 +3034,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.sort_by_attribute' do
-    let_it_be(:project1) { create(:project, star_count: 2, last_activity_at: 1.minute.ago) }
-    let_it_be(:project2) { create(:project, star_count: 1) }
-    let_it_be(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
+    let_it_be_with_refind(:project1) { create(:project, star_count: 2, last_activity_at: 1.minute.ago) }
+    let_it_be_with_refind(:project2) { create(:project, star_count: 1) }
+    let_it_be_with_refind(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
 
     it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
@@ -3091,7 +3094,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             container_registry_size: size).project
         end
 
-        let_it_be(:project4) { create(:project) }
+        let_it_be_with_refind(:project4) { create(:project) }
 
         before_all do
           create_project_statistics_with_size(project1, 1)
@@ -3325,32 +3328,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       3.times do
         expect(described_class.cached_count).to eq(2)
       end
-    end
-  end
-
-  describe '.trending' do
-    let(:group)    { create(:group, :public) }
-    let(:project1) { create(:project, :public, :repository, group: group) }
-    let(:project2) { create(:project, :public, :repository, group: group) }
-
-    before do
-      create_list(:note_on_commit, 2, project: project1)
-
-      create(:note_on_commit, project: project2)
-
-      TrendingProject.refresh!
-    end
-
-    subject { described_class.trending.to_a }
-
-    it 'sorts projects by the amount of notes in descending order' do
-      expect(subject).to eq([project1, project2])
-    end
-
-    it 'does not take system notes into account' do
-      create_list(:note_on_commit, 10, project: project2, system: true)
-
-      expect(described_class.trending.to_a).to eq([project1, project2])
     end
   end
 
@@ -4765,7 +4742,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#latest_successful_build_for_ref!' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create_pipeline(project) }
+    let_it_be_with_reload(:pipeline) { create_pipeline(project) }
 
     context 'with many builds' do
       it 'gives the latest builds from latest pipeline' do
@@ -5055,6 +5032,46 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       safe_import_url = project.safe_import_url(masked: false)
 
       expect(safe_import_url).to eq(import_url)
+    end
+  end
+
+  describe '#external_import?' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    context 'when import_url is set' do
+      before do
+        project.update_column(:import_url, 'https://example.com/repo.git')
+      end
+
+      it { expect(project.external_import?).to be(true) }
+    end
+
+    context 'when import_url is blank' do
+      before do
+        project.update_column(:import_url, nil)
+      end
+
+      it { expect(project.external_import?).to be(false) }
+    end
+
+    # Regression: https://gitlab.com/gitlab-org/gitlab/-/issues/596707
+    context 'when import_url is malformed and cannot be parsed' do
+      before do
+        project.update_column(:import_url, 'git:\\\\fileserver01\\repos\\my-project\\source')
+      end
+
+      it 'returns true without raising Addressable::URI::InvalidURIError' do
+        expect { project.external_import? }.not_to raise_error
+        expect(project.external_import?).to be(true)
+      end
+
+      it 'does not block saving the project' do
+        expect { project.touch }.not_to raise_error
+      end
+
+      it 'does not block destroying the project' do
+        expect { project.destroy! }.not_to raise_error
+      end
     end
   end
 
@@ -6677,7 +6694,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   context 'hashed storage' do
-    let_it_be(:project) { create(:project, :repository, skip_disk_validation: true) }
+    let_it_be_with_reload(:project) { create(:project, :repository, skip_disk_validation: true) }
 
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
@@ -6716,7 +6733,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#has_ci?' do
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     context 'when has .gitlab-ci.yml' do
       before do
@@ -6771,7 +6788,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when the repository has a custom CI config file' do
-      let_it_be(:project) { create(:project, :small_repo, files: { 'my_ci_file.yml' => 'test' }) }
+      let_it_be_with_reload(:project) { create(:project, :small_repo, files: { 'my_ci_file.yml' => 'test' }) }
 
       before do
         project.ci_config_path = 'my_ci_file.yml'
@@ -6849,7 +6866,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 0)
     end
 
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     subject { project.auto_devops_enabled? }
 
@@ -6984,7 +7001,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#has_auto_devops_implicitly_enabled?' do
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     context 'when disabled in settings' do
       before do
@@ -7164,7 +7181,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'branch protection' do
       let_it_be(:namespace) { create(:namespace) }
 
-      let_it_be(:project) { create(:project, :repository, namespace: namespace) }
+      let_it_be_with_refind(:project) { create(:project, :repository, namespace: namespace) }
 
       before do
         create(:import_state, :started, project: project)
@@ -7228,7 +7245,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when the project does have a git repository' do
-        let_it_be(:project_with_repo) { create(:project, :test_repo) }
+        let_it_be_with_refind(:project_with_repo) { create(:project, :test_repo) }
 
         it 'creates a project_repository record' do
           expect { project_with_repo.after_import }.to change { ProjectRepository.count }.by(1)
@@ -9290,7 +9307,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#environments_for_scope' do
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     before do
       create_list(:environment, 2, project: project)
@@ -9467,7 +9484,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe 'topics' do
-    let_it_be(:project) { create(:project, name: 'topic-project', topic_list: 'topic1, topic2, topic3') }
+    let_it_be_with_reload(:project) { create(:project, name: 'topic-project', topic_list: 'topic1, topic2, topic3') }
 
     it 'topic_list returns correct string array' do
       expect(project.topic_list).to eq(%w[topic1 topic2 topic3])
@@ -9784,7 +9801,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     # runner_token_expiration_interval should not affect the expiration interval, only
     # project_runner_token_expiration_interval should.
     context 'when there is a group-enforced group interval' do
-      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9797,7 +9814,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     # subgroup_runner_token_expiration_interval should not affect the expiration interval, only
     # project_runner_token_expiration_interval should.
     context 'when there is a group-enforced subgroup interval' do
-      let_it_be(:group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9808,7 +9825,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when there is an owner group-enforced project interval' do
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9819,11 +9836,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when there is a grandparent group-enforced interval' do
-      let_it_be(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 3.days.to_i) }
+      let_it_be_with_refind(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 3.days.to_i) }
       let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
-      let_it_be(:parent_group_settings) { create(:namespace_settings) }
+      let_it_be_with_refind(:parent_group_settings) { create(:namespace_settings) }
       let_it_be(:parent_group) { create(:group, parent: grandparent_group, namespace_settings: parent_group_settings) }
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9834,9 +9851,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when there is a parent group-enforced interval overridden by group-enforced interval' do
-      let_it_be(:parent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 5.days.to_i) }
+      let_it_be_with_refind(:parent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 5.days.to_i) }
       let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9882,7 +9899,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_application_setting(project_runner_token_expiration_interval: 3.days.to_i)
       end
 
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9897,7 +9914,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_application_setting(project_runner_token_expiration_interval: 5.days.to_i)
       end
 
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -9908,7 +9925,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when group-enforced interval overrides project interval' do
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 3.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 3.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group, runner_token_expiration_interval: 4.days.to_i) }
 
@@ -9919,7 +9936,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'when project interval overrides group-enforced interval' do
-      let_it_be(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 5.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 5.days.to_i) }
       let_it_be(:group) { create(:group, namespace_settings: group_settings) }
       let_it_be(:project) { create(:project, group: group, runner_token_expiration_interval: 4.days.to_i) }
 
@@ -9931,7 +9948,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     # Unrelated groups should not affect the expiration interval.
     context 'when there is an enforced project interval in an unrelated group' do
-      let_it_be(:unrelated_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:unrelated_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:unrelated_group) { create(:group, namespace_settings: unrelated_group_settings) }
       let_it_be(:project) { create(:project) }
 
@@ -9944,7 +9961,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     # Subgroups should not affect the parent group expiration interval.
     context 'when there is an enforced project interval in a subgroup' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:subgroup_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:subgroup_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:subgroup) { create(:group, parent: group, namespace_settings: subgroup_settings) }
       let_it_be(:project) { create(:project, group: group) }
 
@@ -10041,7 +10058,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#self_deletion_in_progress_or_hidden?' do
-    let_it_be(:project) { create(:project, name: 'test-project') }
+    let_it_be_with_reload(:project) { create(:project, name: 'test-project') }
 
     where(:pending_delete, :hidden, :expected_result) do
       true  | false | true

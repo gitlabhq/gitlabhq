@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/batch_migrations_post_only'
 
-RSpec.describe RuboCop::Cop::Migration::BatchMigrationsPostOnly do
+RSpec.describe RuboCop::Cop::Migration::BatchMigrationsPostOnly, feature_category: :database do
   before do
     allow(cop).to receive(:in_post_deployment_migration?).and_return post_migration?
   end

@@ -46,6 +46,7 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
+        expect(assigns(:hide_search_settings)).to be(true)
       end
     end
 

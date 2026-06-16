@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'User views releases', :js, feature_category: :continuous_delivery do
-  let_it_be(:today) { Time.zone.now }
-  let_it_be(:yesterday) { today - 1.day }
+  let_it_be(:today, freeze: false) { Time.zone.now }
+  let_it_be(:yesterday, freeze: false) { today - 1.day }
   let_it_be(:tomorrow) { today + 1.day }
 
-  let_it_be(:project) { create(:project, :repository, :private) }
-  let_it_be(:release_v1) { create(:release, project: project, tag: 'v1', name: 'The first release', released_at: yesterday, created_at: today) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :private) }
+  let_it_be(:release_v1, freeze: false) { create(:release, project: project, tag: 'v1', name: 'The first release', released_at: yesterday, created_at: today) }
   let_it_be(:release_v2) { create(:release, project: project, tag: 'v2-with-a/slash', name: 'The second release', released_at: today, created_at: yesterday) }
   let_it_be(:release_v3) { create(:release, project: project, tag: 'v3', name: 'The third release', released_at: tomorrow, created_at: tomorrow) }
   let_it_be(:maintainer) { create(:user) }

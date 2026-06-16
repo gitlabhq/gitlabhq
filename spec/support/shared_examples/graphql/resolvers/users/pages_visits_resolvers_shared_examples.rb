@@ -5,15 +5,15 @@ RSpec.shared_examples 'namespace visits resolver' do
 
   describe '#resolve' do
     context 'when user is not logged in' do
-      let_it_be(:current_user) { nil }
+      let_it_be(:current_user, freeze: false) { nil }
 
       it 'returns nil' do
-        expect(resolve_items).to eq(nil)
+        expect(resolve_items).to be_nil
       end
     end
 
     context 'when user is logged in' do
-      let_it_be(:current_user) { create(:user) }
+      let_it_be(:current_user, freeze: false) { create(:user) }
 
       it 'returns frecent groups' do
         expect(resolve_items).to be_an_instance_of(Array)

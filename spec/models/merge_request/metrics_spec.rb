@@ -2,12 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequest::Metrics do
+RSpec.describe MergeRequest::Metrics, feature_category: :code_review_workflow do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:latest_closed_by).class_name('User') }
     it { is_expected.to belong_to(:merged_by).class_name('User') }
+  end
+
+  describe '#pipeline' do
+    it_behaves_like 'a partition-pruned pipeline association' do
+      let(:related_resource) { create(:merge_request).metrics.tap { |m| m.update!(pipeline_id: pipeline.id) } }
+    end
   end
 
   describe 'scopes' do

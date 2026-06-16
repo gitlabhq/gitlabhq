@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetBlob do
-  let(:snippet) { create(:project_snippet) }
+RSpec.describe SnippetBlob, feature_category: :source_code_management do
+  let(:snippet) { build_stubbed(:project_snippet) }
 
   subject { described_class.new(snippet) }
 

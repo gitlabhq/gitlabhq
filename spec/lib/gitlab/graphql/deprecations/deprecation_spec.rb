@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'active_model'
 
-RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :integrations do
+RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :api do
   let(:options) { {} }
 
   subject(:deprecation) { described_class.new(**options) }

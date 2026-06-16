@@ -15,38 +15,30 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
     end
   end
 
-  describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
-    context 'when deletion_scheduled_at is not present in namespace_details.state_metadata' do
-      before do
-        allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
-      end
+  describe '#self_deletion_scheduled_deletion_created_on' do
+    context 'when record is not scheduled for deletion' do
+      let_it_be(:record) { create(:group) }
 
-      context 'when deletion_scheduled_at column is present' do
-        it 'returns deletion_scheduled_at' do
-          allow(record).to receive(:deletion_scheduled_at).and_return(Time.current)
-
-          expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
-        end
-      end
-
-      context 'when record responds to :marked_for_deletion_on' do
-        it 'returns marked_for_deletion_on' do
-          allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
-
-          expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
-        end
-      end
+      specify { expect(record.self_deletion_scheduled_deletion_created_on).to be_nil }
     end
 
-    context 'when namespace_details.state_metadata is empty' do
-      before do
-        allow(record).to receive(:namespace_details).and_return(
-          instance_double(Namespace::Detail, state_metadata: {}, deletion_scheduled_at: nil)
-        )
-      end
+    context 'when record is scheduled for deletion' do
+      let_it_be(:record) { create(:group, :deletion_scheduled, deletion_scheduled_at: Time.current) }
 
-      it 'returns nil' do
-        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
+      specify { expect(record.self_deletion_scheduled_deletion_created_on).to eq(record.deletion_scheduled_at) }
+    end
+
+    context 'when record uses legacy columns' do
+      let_it_be(:record) { create(:group_with_deletion_schedule, marked_for_deletion_on: Date.current) }
+
+      specify { expect(record.self_deletion_scheduled_deletion_created_on).to be_nil }
+
+      context 'when replace_group_deletion_schedule feature flag is disabled' do
+        before do
+          stub_feature_flags(replace_group_deletion_schedule: false)
+        end
+
+        specify { expect(record.self_deletion_scheduled_deletion_created_on).to eq(record.marked_for_deletion_on) }
       end
     end
   end
@@ -161,12 +153,8 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
     end
 
     describe '#first_scheduled_for_deletion_in_hierarchy_chain' do
-      let_it_be_with_reload(:group) { create(:group) }
-
       context 'when the group has been marked for deletion' do
-        before do
-          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 1.day.ago)
-        end
+        let(:group) { create(:group_with_deletion_schedule, :deletion_scheduled) }
 
         it 'returns the group' do
           expect(group.first_scheduled_for_deletion_in_hierarchy_chain).to eq(group)

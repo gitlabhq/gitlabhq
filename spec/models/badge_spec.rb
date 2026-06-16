@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Badge do
+RSpec.describe Badge, feature_category: :groups_and_projects do
   let(:placeholder_url) { 'http://www.example.com/%{project_path}/%{project_id}/%{project_name}/%{project_namespace}/%{group_name}/%{gitlab_server}/%{gitlab_pages_domain}/%{default_branch}/%{commit_sha}/%{project_title}/%{latest_tag}' }
 
   describe 'validations' do

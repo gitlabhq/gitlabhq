@@ -33,9 +33,23 @@ export const MEMBERS_TO_GROUP_DEFAULT_INTRO_TEXT = s__(
 export const MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
 );
-export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
-export const MEMBERS_PLACEHOLDER = s__(
-  'InviteMembersModal|Select from GitLab usernames or enter email addresses',
+export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
+  "InviteMembersModal|Congratulations on creating your project, you're almost there!",
+);
+export const MAX_INVITES = 10;
+export const MIN_SEARCH_LENGTH = 3;
+export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Email addresses or GitLab usernames');
+export const INVALID_ENTRIES_FEEDBACK = s__(
+  'InviteMembersModal|One or more email addresses or usernames are invalid.',
+);
+export const EMPTY_INVITES_FEEDBACK = s__(
+  'InviteMembersModal|Enter an email address or GitLab username.',
+);
+export const NO_MATCHES_FOUND_TEXT = s__(
+  'InviteMembersModal|To invite someone new to GitLab, enter their email.',
+);
+export const INVITE_CAP_REACHED_TEXT = s__(
+  'InviteMembersModal|You can add up to %{max} members per invite. To add more, send another invite.',
 );
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');
@@ -94,8 +108,6 @@ export const MEMBER_ERROR_LIST_TEXT = s__(
 );
 export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
 export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
-export const EMPTY_INVITES_ALERT_TEXT = s__('InviteMembersModal|Please add members to invite');
-
 export const MEMBER_MODAL_LABELS = {
   modal: {
     default: {
@@ -113,12 +125,10 @@ export const MEMBER_MODAL_LABELS = {
     },
   },
   searchField: MEMBERS_SEARCH_FIELD,
-  placeHolder: MEMBERS_PLACEHOLDER,
   toastMessageSuccessful: MEMBER_INVITE_MESSAGE_SUCCESSFUL,
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,
   expandedErrors: EXPANDED_ERRORS,
-  emptyInvitesAlertText: EMPTY_INVITES_ALERT_TEXT,
   roleSelectLabel: MEMBERS_MODAL_ROLE_SELECT_LABEL,
 };
 

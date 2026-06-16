@@ -185,7 +185,7 @@ detect-tests:
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}
 
-detect-system-tests-duo-experiment:
+detect-system-tests-duo:
   extends:
     - .with-ci-node-image
   needs: []
@@ -214,7 +214,11 @@ detect-system-tests-duo-experiment:
           --changed-files-path $GLCI_PREDICTIVE_CHANGED_FILES_PATH
 
         echo "=== Duo Test Selection Results ==="
-        echo "System test specs: $(cat $GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH | wc -l)"
+        if [ -f "$GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH" ]; then
+          echo "System test specs: $(wc -l < "$GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH")"
+        else
+          echo "System test specs: 0 (Duo bailed; falling back to non-Duo strategies)"
+        fi
       fi
   artifacts:
     access: developer
@@ -244,16 +248,27 @@ verify-start-workflow-service-assets:
       npm view "@gitlab/duo-cli@${DUO_CLI_VERSION}" version || \
         { echo "ERROR: @gitlab/duo-cli@${DUO_CLI_VERSION} is not available on the npm registry. Update DUO_CLI_VERSION or publish the package." && exit 1; }
 
-      IMAGE_PATH=$(grep -oP 'IMAGE_PATH\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
-      IMAGE_REPO="${IMAGE_PATH%:*}"
-      IMAGE_TAG="${IMAGE_PATH##*:}"
-      echo "Checking availability of ${REGISTRY}/${IMAGE_PATH}..."
-      TOKEN=$(curl -sf "https://gitlab.com/jwt/auth?service=container_registry&scope=repository:${IMAGE_REPO}:pull" \
-        | grep -oP '"token":"\K[^"]+')
-      curl --fail -sf -o /dev/null \
-        -H "Authorization: Bearer ${TOKEN}" \
-        "https://${REGISTRY}/v2/${IMAGE_REPO}/manifests/${IMAGE_TAG}" || \
-        { echo "ERROR: ${REGISTRY}/${IMAGE_PATH} not found in registry. Update IMAGE_PATH or publish the image."; exit 1; }
+      check_image() {
+        local image_path="$1"
+        local image_repo="${image_path%:*}"
+        local image_tag="${image_path##*:}"
+        echo "Checking availability of ${REGISTRY}/${image_path}..."
+        local token
+        token=$(curl -sf "https://gitlab.com/jwt/auth?service=container_registry&scope=repository:${image_repo}:pull" \
+          | grep -oP '"token":"\K[^"]+')
+        curl --fail -sf -o /dev/null \
+          -H "Authorization: Bearer ${token}" \
+          "https://${REGISTRY}/v2/${image_repo}/manifests/${image_tag}" || \
+          { echo "ERROR: ${REGISTRY}/${image_path} not found in registry. Update IMAGE_PATH or publish the image."; exit 1; }
+      }
+
+      IMAGE_PATH=$(grep -oP '(?<![A-Z_])IMAGE_PATH\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      check_image "${IMAGE_PATH}"
+
+      HARDENED_IMAGE_PATH=$(grep -oP 'HARDENED_IMAGE_PATH\s*=\s*"\K[^"]+' "${SERVICE_FILE}")
+      if [ -n "${HARDENED_IMAGE_PATH}" ]; then
+        check_image "${HARDENED_IMAGE_PATH}"
+      fi
 
 detect-previous-failed-tests:
   extends:

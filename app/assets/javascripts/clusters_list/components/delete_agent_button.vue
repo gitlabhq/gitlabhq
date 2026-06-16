@@ -16,6 +16,7 @@ import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import { removeAgentFromStore } from '../graphql/cache_update';
 
 export default {
+  name: 'DeleteAgentButton',
   i18n: DELETE_AGENT_BUTTON,
   components: {
     GlButton,

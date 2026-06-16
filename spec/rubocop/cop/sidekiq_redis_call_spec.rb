@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/sidekiq_redis_call'
 
-RSpec.describe RuboCop::Cop::SidekiqRedisCall do
+RSpec.describe RuboCop::Cop::SidekiqRedisCall, feature_category: :scalability do
   it 'flags any use of Sidekiq.redis even without blocks' do
     expect_offense(<<~RUBY)
       Sidekiq.redis

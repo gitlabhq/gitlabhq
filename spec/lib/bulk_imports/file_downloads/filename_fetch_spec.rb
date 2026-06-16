@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe BulkImports::FileDownloads::FilenameFetch do
+RSpec.describe BulkImports::FileDownloads::FilenameFetch, feature_category: :importers do
   let(:dummy_instance) { dummy_class.new }
   let(:dummy_class) do
     Class.new do

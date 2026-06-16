@@ -337,19 +337,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           "Remote file `#{remote_url}` could not be fetched after 3 attempts because of a timeout error!"
         )
       end
-
-      context 'when ci_config_http_timeout feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_config_http_timeout: false)
-        end
-
-        it 'fails with timeout error' do
-          expect(pipeline).to be_persisted
-          expect(pipeline.error_messages.map(&:content)).to include(
-            "Remote file `#{remote_url}` could not be fetched after 3 attempts because of a timeout error!"
-          )
-        end
-      end
     end
   end
 end

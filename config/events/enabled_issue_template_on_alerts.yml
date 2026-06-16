@@ -3,6 +3,8 @@ description: Triggered when an issue template is selected for new incidents in I
 action: enabled_issue_template_on_alerts
 identifiers:
 product_group: platform_insights
+product_categories:
+- incident_management
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165305
 tiers:

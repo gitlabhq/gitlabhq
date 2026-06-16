@@ -28,6 +28,7 @@ export default {
       default: '',
     },
   },
+  emits: ['cancel', 'remove'],
   computed: {
     primaryButtonAttributes() {
       return {

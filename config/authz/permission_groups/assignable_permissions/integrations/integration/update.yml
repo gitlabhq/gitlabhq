@@ -1,0 +1,10 @@
+---
+name: update_integration
+description: Grants the ability to update integrations
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_integration

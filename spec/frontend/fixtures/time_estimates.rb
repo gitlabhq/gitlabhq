@@ -8,11 +8,11 @@ RSpec.describe 'Time estimates (GraphQL fixtures)', feature_category: :team_plan
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:developer) { create(:user) }
+    let_it_be(:developer, freeze: false) { create(:user) }
 
     context 'for issues time estimate' do
-      let_it_be(:project) { create(:project_empty_repo, :public) }
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
       let(:query_path) { 'sidebar/queries/issue_set_time_estimate.mutation.graphql' }
       let(:query) { get_graphql_query_as_string(query_path) }

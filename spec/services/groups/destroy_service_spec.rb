@@ -6,7 +6,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let!(:user)         { create(:user) }
-  let!(:group)        { create(:group_with_deletion_schedule, :deletion_scheduled) }
+  let!(:group)        { create(:group, :deletion_scheduled) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group) }
@@ -413,6 +413,21 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
               destroy_group(group2, group2_user, false)
             end
+
+            it 'logs the user-based project_authorizations refresh' do
+              allow(Gitlab::AppLogger).to receive(:info).and_call_original
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  message:
+                    "Refreshing project_authorizations of users to projects previously shared with destroyed group",
+                  group_id: group2.id,
+                  user_ids_count: a_value > 0,
+                  project_ids_count: 0
+                )
+              ).and_call_original
+
+              destroy_group(group2, group2_user, false)
+            end
           end
 
           context 'when group_destroy_update_project_authorizations_per_project is enabled' do
@@ -421,6 +436,20 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
             it 'calls the service to update project authorizations only with necessary project ids' do
               expect(AuthorizedProjectUpdate::ProjectAccessChangedService)
                 .to receive(:new).with(array_including(group1_project.id)).and_call_original
+
+              destroy_group(group2, group2_user, false)
+            end
+
+            it 'logs the project-based project_authorizations refresh' do
+              allow(Gitlab::AppLogger).to receive(:info).and_call_original
+              expect(Gitlab::AppLogger).to receive(:info).with(
+                hash_including(
+                  message: "Refreshing project_authorizations for projects previously shared with destroyed group",
+                  group_id: group2.id,
+                  user_ids_count: 0,
+                  project_ids_count: a_value > 0
+                )
+              ).and_call_original
 
               destroy_group(group2, group2_user, false)
             end

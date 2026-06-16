@@ -11,6 +11,14 @@ Browserslist: caniuse-lite is outdated\. Please run next command `yarn upgrade`
 # This warning is emitted by scripts/static-analysis.
 \*\*\*\* .+ had the following warning\(s\):
 
+# Commander 15 is ESM-only and is consumed by our CommonJS scripts (e.g.
+# scripts/frontend/extract_gettext_all.js) via Node's supported require(ESM)
+# path, which requires Node >= 22.12. Node emits an experimental warning for
+# this until the feature is marked stable. The warning is benign; ignore it.
+ExperimentalWarning: CommonJS module .+ is loading ES Module .+ using require\(\)\.
+Support for loading ES Module in require\(\) is an experimental feature and might change at any time
+\(Use `node --trace-warnings \.\.\.` to show where the warning was created\)
+
 # As of Ruby 3.1, one-line typesafe/destructuring pattern matching via "rightward assignment" has
 # been included for multiple years with no significant negative feedback or indications of removal.
 # In the event that it is removed in a future Ruby release, the changes required to fix it are

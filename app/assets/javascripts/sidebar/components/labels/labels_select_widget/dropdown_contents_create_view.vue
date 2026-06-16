@@ -12,6 +12,7 @@ import { DEFAULT_LABEL_COLOR } from './constants';
 const errorMessage = __('Error creating label.');
 
 export default {
+  name: 'DropdownContentsCreateViewWidget',
   components: {
     GlAlert,
     GlButton,

@@ -1,0 +1,9 @@
+---
+name: gate_token_exchange_endpoint
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/22052
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236798
+rollout_issue_url:
+milestone: '19.1'
+type: gitlab_com_derisk
+group: group::authentication
+default_enabled: false

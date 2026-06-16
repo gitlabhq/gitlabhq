@@ -17,6 +17,14 @@ module Gitlab
           new(table, from, to, partition_name: partition_name)
         end
 
+        def self.from_export_definition(table, partition_name, definition)
+          definition = definition.with_indifferent_access
+          from = Integer(definition[:from])
+          to = Integer(definition[:to])
+
+          new(table, from, to, partition_name: partition_name)
+        end
+
         attr_reader :table, :from, :to
 
         def initialize(table, from, to, partition_name: nil)
@@ -67,6 +75,14 @@ module Gitlab
 
         def holds_data?
           conn.execute("SELECT 1 FROM #{fully_qualified_partition} LIMIT 1").ntuples > 0
+        end
+
+        def export_definition
+          { partition_name: partition_name, from: from, to: to }
+        end
+
+        def covers?(other)
+          from <= other.from && to >= other.to
         end
 
         private

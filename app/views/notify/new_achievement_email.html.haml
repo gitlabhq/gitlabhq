@@ -4,6 +4,8 @@
 
 %p
   = safe_format(s_("Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"), bold_tag_pair, namespace_link: namespace_link, achievement_name: @achievement.name)
+- if @user_achievement.award_message.present?
+  = sanitize(@user_achievement.award_message_html)
 %p
   = safe_format(s_("Achievements|View your achievements on your %{link_start}profile%{link_end}."), profile_link_tag_pair)
 

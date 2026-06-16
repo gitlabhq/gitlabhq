@@ -7,7 +7,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
   let_it_be(:created_bulk_import) { create(:bulk_import, :created, updated_at: 2.hours.ago) }
   let_it_be(:started_bulk_import) { create(:bulk_import, :started, updated_at: 3.hours.ago) }
-  let_it_be(:finished_bulk_import) { create(:bulk_import, :finished, updated_at: 1.hour.ago) }
+  let_it_be(:finished_bulk_import, freeze: false) { create(:bulk_import, :finished, updated_at: 1.hour.ago) }
   let_it_be(:failed_bulk_import) { create(:bulk_import, :failed) }
   let_it_be(:stale_created_bulk_import) { create(:bulk_import, :created, updated_at: 3.days.ago) }
   let_it_be(:stale_started_bulk_import) { create(:bulk_import, :started, updated_at: 2.days.ago) }
@@ -196,11 +196,11 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe '#destination_group_roots' do
-    let_it_be(:import) { create(:bulk_import, :started) }
+    let_it_be(:import, freeze: false) { create(:bulk_import, :started) }
 
     let_it_be(:project_namespace) { create(:group) }
-    let_it_be(:project) { create(:project, namespace: project_namespace) }
-    let_it_be(:root_project_entity) do
+    let_it_be(:project, freeze: false) { create(:project, namespace: project_namespace) }
+    let_it_be(:root_project_entity, freeze: false) do
       create(:bulk_import_entity, :project_entity, project: project, bulk_import: import)
     end
 
@@ -263,8 +263,8 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe '#namespaces_with_unassigned_placeholders' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:entity) do
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:entity, freeze: false) do
       create(:bulk_import_entity, :group_entity, bulk_import: finished_bulk_import, group: group)
     end
 
@@ -357,16 +357,30 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#import_source' do
+    context 'when source_type is gitlab (direct transfer)' do
+      let(:bulk_import) { build(:bulk_import) }
+
+      it { expect(bulk_import.import_source).to eq(Import::SOURCE_DIRECT_TRANSFER) }
+    end
+
+    context 'when source_type is offline_export (offline transfer)' do
+      let(:bulk_import) { build(:bulk_import, :with_offline_configuration) }
+
+      it { expect(bulk_import.import_source).to eq(Import::SOURCE_OFFLINE_TRANSFER) }
+    end
+  end
+
   describe '#offline?' do
     subject(:offline) { bulk_import.offline? }
 
-    context 'with an associated offline configuration' do
+    context 'when source_type is offline_export (offline transfer)' do
       let(:bulk_import) { build(:bulk_import, :with_offline_configuration) }
 
       it { is_expected.to be(true) }
     end
 
-    context 'without an associated offline configuration' do
+    context 'when source_type is gitlab (direct transfer)' do
       let(:bulk_import) { build(:bulk_import) }
 
       it { is_expected.to be(false) }

@@ -14,8 +14,8 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: { id: %r{[^/]+} } do
-      desc 'Download export' do
-        detail 'This feature was introduced in GitLab 12.5.'
+      desc 'Retrieve a group export download' do
+        detail 'Retrieves the exported archive for a specified group.'
         tags %w[group_import_and_export]
         produces %w[application/octet-stream application/json]
         success code: 200
@@ -42,8 +42,8 @@ module API
         end
       end
 
-      desc 'Start export' do
-        detail 'This feature was introduced in GitLab 12.5.'
+      desc 'Create a group export' do
+        detail 'Creates a group export for a specified group.'
         tags %w[group_import_and_export]
         success code: 202
         failure [
@@ -77,8 +77,8 @@ module API
             Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
         end
 
-        desc 'Start relations export' do
-          detail 'This feature was introduced in GitLab 13.12'
+        desc 'Schedule a relations export for a group' do
+          detail 'Schedules a relations export for a specified group.'
           tags %w[group_import_and_export]
           success code: 202
           failure [
@@ -110,8 +110,8 @@ module API
           end
         end
 
-        desc 'Download relations export' do
-          detail 'This feature was introduced in GitLab 13.12'
+        desc 'Download a relations export for a group' do
+          detail 'Downloads a group relations export file.'
           produces %w[application/octet-stream application/json]
           tags %w[group_import_and_export]
           success code: 200
@@ -168,8 +168,8 @@ module API
           end
         end
 
-        desc 'Relations export status' do
-          detail 'This feature was introduced in GitLab 13.12'
+        desc 'Retrieve the status of an relations export for a group' do
+          detail 'Retrieves the status of a relations export for a group.'
           is_array true
           tags %w[group_import_and_export]
           success code: 200, model: Entities::BulkImports::ExportStatus

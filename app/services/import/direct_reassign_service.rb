@@ -67,8 +67,7 @@ module Import
       "ResourceStateEvent" => ["user_id"],
       "Snippet" => ["author_id"],
       "Timelog" => ["user_id"],
-      "Vulnerability" => %w[author_id resolved_by_id dismissed_by_id confirmed_by_id],
-      "WorkItems::Description" => ["last_edited_by_id"]
+      "Vulnerability" => %w[author_id resolved_by_id dismissed_by_id confirmed_by_id]
     }.freeze
 
     # Lists all models and attributes that are imported, reference users, and have an

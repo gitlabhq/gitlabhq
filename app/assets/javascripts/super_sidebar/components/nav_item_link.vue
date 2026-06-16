@@ -9,6 +9,7 @@ export default {
       required: true,
     },
   },
+  emits: ['nav-item-keydown-esc', 'nav-link-click'],
   computed: {
     isActive() {
       return this.item.is_active;

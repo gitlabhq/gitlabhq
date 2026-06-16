@@ -14,6 +14,8 @@ module Mutations
       include ResolvesProject
 
       authorize :create_pipeline
+      authorize_granular_token permissions: :validate_ci_config, boundary_argument: :project_path,
+        boundary_type: :project
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

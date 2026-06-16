@@ -13,11 +13,11 @@ title: LDAPグループリンク
 
 {{< /details >}}
 
-このAPIを使用して、LDAPグループリンクを管理します。詳細については、LDAPによる[グループメンバーシップ](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)の管理を参照してください。
+このAPIを使用して、LDAPグループリンクを管理します。詳細については、[LDAPによるグループメンバーシップの管理](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)を参照してください。
 
-## LDAPグループリンクを一覧表示 {#list-ldap-group-links}
+## すべてのLDAPグループリンクを一覧表示 {#list-all-ldap-group-links}
 
-LDAPグループリンクを一覧表示します。
+すべてのLDAPグループリンクを一覧表示します。
 
 ```plaintext
 GET /groups/:id/ldap_group_links
@@ -32,7 +32,8 @@ GET /groups/:id/ldap_group_links
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/ldap_group_links"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/4/ldap_group_links"
 ```
 
 レスポンス例: 
@@ -56,7 +57,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## CNまたはフィルターを使用してLDAPグループリンクを追加 {#add-an-ldap-group-link-with-cn-or-filter}
+## CNまたはフィルターでLDAPグループリンクを追加 {#add-an-ldap-group-link-with-cn-or-filter}
 
 CNまたはフィルターを使用してLDAPグループリンクを追加します。
 
@@ -69,10 +70,10 @@ POST /groups/:id/ldap_group_links
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `group_access` | 整数   | はい      | LDAPグループのメンバーに対するデフォルトのアクセスレベル。使用可能な値: `0`（アクセスなし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。 |
-| `provider` | 文字列        | はい      | LDAPグループリンクのLDAPプロバイダーID。 |
-| `cn`      | 文字列         | はい/いいえ   | LDAPグループのCN。`cn`または`filter`のいずれかを指定しますが、両方は指定しないでください。 |
-| `filter`  | 文字列         | はい/いいえ   | グループのLDAPフィルター。`cn`または`filter`のいずれかを指定しますが、両方は指定しないでください。 |
+| `group_access` | 整数   | はい      | LDAPグループのメンバーのデフォルトのアクセスレベルです。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、`50` (オーナー)。 |
+| `provider` | 文字列        | はい      | LDAPグループリンクのLDAPプロバイダーIDです。 |
+| `cn`      | 文字列         | はい/いいえ   | LDAPグループのCNです。`cn`または`filter`のいずれかを指定しますが、両方は指定できません。 |
+| `filter`  | 文字列         | はい/いいえ   | グループのLDAPフィルターです。`cn`または`filter`のいずれかを指定しますが、両方は指定できません。 |
 | `member_role_id` | 整数 | いいえ       | [メンバーロール](member_roles.md)のID。Ultimateのみです。 |
 
 リクエスト例: 
@@ -97,7 +98,7 @@ curl --request POST \
 }
 ```
 
-## CNまたはフィルターを使用してLDAPグループリンクを削除 {#delete-an-ldap-group-link-with-cn-or-filter}
+## CNまたはフィルターでLDAPグループリンクを削除 {#delete-an-ldap-group-link-with-cn-or-filter}
 
 CNまたはフィルターを使用してLDAPグループリンクを削除します。
 
@@ -110,9 +111,9 @@ DELETE /groups/:id/ldap_group_links
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `provider` | 文字列        | はい      | LDAPグループリンクのLDAPプロバイダーID。 |
-| `cn`      | 文字列         | はい/いいえ   | LDAPグループのCN。`cn`または`filter`のいずれかを指定しますが、両方は指定しないでください。 |
-| `filter`  | 文字列         | はい/いいえ   | グループのLDAPフィルター。`cn`または`filter`のいずれかを指定しますが、両方は指定しないでください。 |
+| `provider` | 文字列        | はい      | LDAPグループリンクのLDAPプロバイダーIDです。 |
+| `cn`      | 文字列         | はい/いいえ   | LDAPグループのCNです。`cn`または`filter`のいずれかを指定しますが、両方は指定できません。 |
+| `filter`  | 文字列         | はい/いいえ   | グループのLDAPフィルターです。`cn`または`filter`のいずれかを指定しますが、両方は指定できません。 |
 
 リクエスト例: 
 
@@ -126,11 +127,11 @@ curl --request DELETE \
 
 成功した場合、応答は返されません。
 
-## LDAPグループリンクを削除（非推奨） {#delete-an-ldap-group-link-deprecated}
+## LDAPグループリンクを削除する (非推奨) {#delete-an-ldap-group-link-deprecated}
 
-LDAPグループリンクを削除します。非推奨。将来のリリースで削除される予定です。代わりに[CNまたはフィルターを使用してLDAPグループリンクを削除](#delete-an-ldap-group-link-with-cn-or-filter)を使用してください。
+LDAPグループリンクを削除します。非推奨。将来のリリースで削除される予定です。代わりに[CNまたはフィルターでLDAPグループリンクを削除](#delete-an-ldap-group-link-with-cn-or-filter)を使用してください。
 
-CNを使用してLDAPグループリンクを削除:
+CNを持つLDAPグループリンクを削除します:
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links/:cn
@@ -141,7 +142,7 @@ DELETE /groups/:id/ldap_group_links/:cn
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `cn`      | 文字列         | はい      | LDAPグループのCN |
 
-特定のLDAPプロバイダーのLDAPグループリンクを削除:
+特定のLDAPプロバイダーのLDAPグループリンクを削除します:
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links/:provider/:cn

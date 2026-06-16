@@ -6,7 +6,6 @@ namespace :explore do
       get :active, to: 'projects#index', as: :active
       get :inactive, to: 'projects#index', as: :inactive
       get :all, to: 'projects#index', as: :all
-      get :trending
       get :topics
       get 'topics/:topic_name', action: :topic, as: :topic, constraints: { format: /(html|atom)/, topic_name: /.+?/ }
     end

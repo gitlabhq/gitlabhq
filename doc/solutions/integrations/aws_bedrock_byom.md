@@ -514,6 +514,19 @@ for p in profiles:
 > The `us.` prefix routes to US-only regions. The `global.` prefix
 > routes across all enabled regions.
 
+### Use an application inference profile ARN
+
+To track cost allocation or spend per team or project, use an
+[application inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-create.html)
+ARN as the model identifier instead of an inference profile ID. Use the following format:
+
+```plaintext
+bedrock/converse/arn:aws:bedrock:<region>:<account-id>:application-inference-profile/<id>
+```
+
+The `converse/` prefix routes the request through the Amazon Bedrock Converse API, which is
+required for ARN-based identifiers.
+
 ### Restart the AI Gateway with credentials
 
 If you haven't already, add your AWS credentials to

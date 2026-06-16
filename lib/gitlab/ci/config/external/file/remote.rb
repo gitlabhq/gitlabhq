@@ -108,18 +108,13 @@ module Gitlab
             strong_memoize_attr :fetch_async_content
 
             def http_options
-              options = { async: true }
-
-              if Feature.enabled?(:ci_config_http_timeout, context.project)
-                options.merge!(
-                  open_timeout: Config::HTTP_OPEN_TIMEOUT_SECONDS,
-                  read_timeout: Config::HTTP_READ_TIMEOUT_SECONDS,
-                  write_timeout: 30, # This is the default value today
-                  timeout: Config::HTTP_READ_TIMEOUT_SECONDS
-                )
-              end
-
-              options
+              {
+                async: true,
+                open_timeout: Config::HTTP_OPEN_TIMEOUT_SECONDS,
+                read_timeout: Config::HTTP_READ_TIMEOUT_SECONDS,
+                write_timeout: 30,
+                timeout: Config::HTTP_READ_TIMEOUT_SECONDS
+              }
             end
 
             def fetch_with_error_handling
@@ -134,7 +129,7 @@ module Gitlab
                   # Even with per-request HTTP timeouts, retries can accumulate beyond the
                   # overall config-fetch deadline, so we check the elapsed execution time
                   # before each attempt and fail fast with a TimeoutError when expired.
-                  context.check_execution_time! if Feature.enabled?(:ci_config_http_timeout, context.project)
+                  context.check_execution_time!
 
                   response = yield
 

@@ -11,7 +11,7 @@ import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import getCiCatalogResourceSharedData from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import getCiCatalogResourceVersions from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_versions.query.graphql';
 
-import CiResourceDetails from '~/ci/catalog/components/details/ci_resource_details.vue';
+import CiResourceDetails from 'ee_else_ce/ci/catalog/components/details/ci_resource_details.vue';
 import CiResourceDetailsPage from '~/ci/catalog/components/pages/ci_resource_details_page.vue';
 import CiResourceHeader from '~/ci/catalog/components/details/ci_resource_header.vue';
 import CiResourceHeaderSkeletonLoader from '~/ci/catalog/components/details/ci_resource_header_skeleton_loader.vue';

@@ -11,7 +11,7 @@ RSpec.describe Exportable, feature_category: :importers do
   let_it_be(:note2) { create(:system_note, project: project, noteable: issue) }
   let_it_be(:options) { { include: [{ notes: { only: [:note] }, milestone: { only: :title } }] } }
 
-  let_it_be(:model_klass) do
+  let_it_be(:model_klass, freeze: false) do
     Class.new(ApplicationRecord) do
       include Exportable
 

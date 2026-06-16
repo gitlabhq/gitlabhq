@@ -20,7 +20,7 @@ module Gitlab
 
       def link_urls
         # Link `github: "user/repo"` to https://github.com/user/repo
-        link_regex(GITHUB_REGEX, &method(:github_url))
+        link_regex(GITHUB_REGEX) { |link| github_url(link) }
 
         # Link `git: "https://gitlab.example.com/user/repo"` to https://gitlab.example.com/user/repo
         link_regex(GIT_REGEX, &:itself)

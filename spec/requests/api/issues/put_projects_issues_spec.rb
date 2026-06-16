@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:owner) { create(:owner) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:owner, freeze: false) { create(:owner) }
   let(:user2)             { create(:user) }
   let(:non_member)        { create(:user) }
-  let_it_be(:guest)       { create(:user) }
-  let_it_be(:author)      { create(:author) }
-  let_it_be(:assignee)    { create(:assignee) }
+  let_it_be(:guest, freeze: false)       { create(:user) }
+  let_it_be(:author, freeze: false)      { create(:author) }
+  let_it_be(:assignee, freeze: false)    { create(:assignee) }
   let(:admin)             { create(:user, :admin) }
   let(:issue_title)       { 'foo' }
   let(:issue_description) { 'closed' }
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :public, creator_id: owner.id, namespace: owner.namespace, reporters: user, guests: guest)
   end
 
@@ -52,14 +52,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       description: issue_description
   end
 
-  let_it_be(:label) do
+  let_it_be(:label, freeze: false) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
 
   let!(:label_link) { create(:label_link, label: label, target: issue) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
 
-  let_it_be(:empty_milestone) do
+  let_it_be(:empty_milestone, freeze: false) do
     create(:milestone, title: '2.0.0', project: project)
   end
 
@@ -385,6 +385,55 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_iid to update milestone' do
+    context 'with milestone' do
+      context 'by milestone_id' do
+        it 'updates the issue with milestone assigned' do
+          put api_for_user, params: { milestone_id: empty_milestone.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['milestone']['id']).to eq(empty_milestone.id)
+        end
+
+        it 'leaves the milestone unchanged when milestone_id is invalid' do
+          put api_for_user, params: { milestone_id: non_existing_record_id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['milestone']['id']).to eq(milestone.id)
+        end
+      end
+
+      context 'by milestone title' do
+        it 'updates the issue with milestone assigned' do
+          put api_for_user, params: { milestone: empty_milestone.title }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['milestone']['id']).to eq(empty_milestone.id)
+        end
+
+        it 'leaves the milestone unchanged when the milestone title does not match any milestone in scope' do
+          put api_for_user, params: { milestone: 'nonexistent' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['milestone']['id']).to eq(milestone.id)
+        end
+      end
+
+      it 'returns 400 when both milestone and milestone_id are provided' do
+        put api_for_user, params: { milestone: empty_milestone.title, milestone_id: empty_milestone.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 when milestone title exceeds the length limit' do
+        put api_for_user, params: { milestone: 'a' * 256 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include('milestone must be less than 255 characters')
+      end
+    end
+  end
+
   describe 'PUT /projects/:id/issues/:issue_iid to update state and label' do
     it 'updates a project issue', :aggregate_failures do
       put api_for_user, params: { labels: 'label2', state_event: 'close' }
@@ -448,13 +497,24 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update due date' do
-    it 'creates a new project issue', :aggregate_failures do
+    it 'updates the due date of a project issue', :aggregate_failures do
       due_date = 2.weeks.from_now.to_date.iso8601
 
       put api_for_user, params: { due_date: due_date }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['due_date']).to eq(due_date)
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_iid to update start date' do
+    it 'updates the start date of a project issue', :aggregate_failures do
+      start_date = 2.weeks.from_now.to_date.iso8601
+
+      put api_for_user, params: { start_date: start_date }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['start_date']).to eq(start_date)
     end
   end
 end

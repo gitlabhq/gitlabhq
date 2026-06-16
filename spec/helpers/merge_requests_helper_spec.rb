@@ -13,7 +13,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include MarkupHelper
   include SafeFormatHelper
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
   describe '#merge_params' do
     let(:merge_request) { create(:merge_request) }
@@ -57,10 +57,12 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     context 'for endpoint_diff_for_path' do
       context 'when sub-group project namespace' do
-        let_it_be(:group) { create(:group, :public) }
-        let_it_be(:subgroup) { create(:group, :private, parent: group) }
-        let_it_be(:project) { create(:project, :private, group: subgroup) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let_it_be(:group, freeze: false) { create(:group, :public) }
+        let_it_be(:subgroup, freeze: false) { create(:group, :private, parent: group) }
+        let_it_be(:project, freeze: false) { create(:project, :private, group: subgroup) }
+        let_it_be(:merge_request, freeze: false) do
+          create(:merge_request, source_project: project, target_project: project)
+        end
 
         it 'returns expected values' do
           expect(
@@ -211,8 +213,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#sticky_header_data' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:draft_merge_request) { create(:merge_request, :opened, :draft_merge_request) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:draft_merge_request, freeze: false) { create(:merge_request, :opened, :draft_merge_request) }
     let(:imported_merge_request) do
       create(:merge_request, source_project: project, target_project: project, imported_from: imported_from)
     end
@@ -262,6 +264,10 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { expect(tab_count_display(merge_request, 10)).to eq(10) }
       it { expect(tab_count_display(merge_request, '10')).to eq('10') }
     end
+
+    context 'when count is nil' do
+      it { expect(tab_count_display(merge_request, nil)).to eq('-') }
+    end
   end
 
   describe '#allow_collaboration_unavailable_reason' do
@@ -271,7 +277,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       create(:merge_request, author: author, source_project: project, source_branch: generate(:branch))
     end
 
-    let_it_be(:public_project) { create(:project, :small_repo, :public) }
+    let_it_be(:public_project, freeze: false) { create(:project, :small_repo, :public) }
     let(:project) { public_project }
     let(:forked_project) { fork_project(project) }
     let(:author) { project.creator }
@@ -362,7 +368,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#identity_verification_alert_data' do
-    let_it_be(:current_user) { build_stubbed(:user) }
+    let_it_be(:current_user, freeze: false) { build_stubbed(:user) }
     let(:merge_request) { build_stubbed(:merge_request, author: current_user) }
 
     subject { helper.identity_verification_alert_data(merge_request) }

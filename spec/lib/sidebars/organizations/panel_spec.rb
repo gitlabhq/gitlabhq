@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Organizations::Panel, feature_category: :navigation do
   let_it_be(:organization) { build(:organization) }
   let_it_be(:user) { build(:user) }
-  let_it_be(:context) { Sidebars::Context.new(current_user: user, container: organization) }
+  let_it_be(:context, freeze: false) { Sidebars::Context.new(current_user: user, container: organization) }
 
   subject { described_class.new(context) }
 

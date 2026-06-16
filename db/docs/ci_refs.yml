@@ -4,7 +4,8 @@ classes:
 - Ci::Ref
 feature_categories:
 - continuous_integration
-description: TODO
+description: Tracks the latest CI/CD health status (success, failed, fixed, broken,
+  still_failing) per Git ref so pipeline regressions can be detected.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16951
 milestone: '12.9'
 gitlab_schema: gitlab_ci

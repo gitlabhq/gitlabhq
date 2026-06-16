@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'destructible' do |factory:|
-  let_it_be(:item1) { create(factory, created_at: 1.month.ago, updated_at: 1.day.ago) }
-  let_it_be(:item2) { create(factory, created_at: 1.year.ago, updated_at: 1.year.ago) }
-  let_it_be(:item3) { create(factory, :pending_destruction, created_at: 2.years.ago, updated_at: 1.month.ago) }
-  let_it_be(:item4) { create(factory, :pending_destruction, created_at: 3.years.ago, updated_at: 2.weeks.ago) }
+  let_it_be(:item1, freeze: false) { create(factory, created_at: 1.month.ago, updated_at: 1.day.ago) }
+  let_it_be(:item2, freeze: false) { create(factory, created_at: 1.year.ago, updated_at: 1.year.ago) }
+  let_it_be(:item3, freeze: false) do
+    create(factory, :pending_destruction, created_at: 2.years.ago, updated_at: 1.month.ago)
+  end
+
+  let_it_be(:item4, freeze: false) do
+    create(factory, :pending_destruction, created_at: 3.years.ago, updated_at: 2.weeks.ago)
+  end
 
   describe '.next_pending_destruction' do
     it 'returns the oldest item pending destruction based on updated_at' do

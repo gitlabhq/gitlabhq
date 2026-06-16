@@ -601,7 +601,7 @@ class NotificationService
     return unless mailer.respond_to?(email_template)
 
     recipients ||= notifiable_users(
-      [pipeline.user], :watch,
+      pipeline_notification_recipients(pipeline, status), :watch,
       custom_action: :"#{status}_pipeline",
       target: pipeline
     ).map do |user|
@@ -997,6 +997,25 @@ class NotificationService
     else
       pipeline.status
     end
+  end
+
+  def pipeline_notification_recipients(pipeline, status)
+    recipients = [pipeline.user].compact
+
+    if status == 'failed'
+      # rubocop:disable CodeReuse/ActiveRecord -- eager-load author and merge_user to avoid N+1 when iterating head-pipeline MRs
+      merge_requests = pipeline.merge_requests_as_head_pipeline.includes(:author, :merge_user)
+      # rubocop:enable CodeReuse/ActiveRecord
+      merge_requests.each do |merge_request|
+        next unless merge_request.auto_merge_enabled?
+        next if [merge_request.author_id, merge_request.merge_user_id].include?(pipeline.user_id)
+
+        recipients << merge_request.author unless merge_request.author&.bot?
+        recipients << merge_request.merge_user unless merge_request.merge_user&.bot?
+      end
+    end
+
+    recipients.compact.uniq
   end
 
   def owners_and_maintainers_without_invites(project)

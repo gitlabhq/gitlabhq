@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe AbuseReport, feature_category: :insider_threat do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:report, reload: true) { create(:abuse_report) }
-  let_it_be(:user, reload: true) { create(:admin) }
+  let_it_be_with_reload(:report) { create(:abuse_report) }
+  let_it_be_with_reload(:user) { create(:admin) }
 
   subject { report }
 

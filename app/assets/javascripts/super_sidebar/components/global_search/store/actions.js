@@ -29,11 +29,17 @@ const doFetch = ({ commit, state, fetchType }) => {
     });
 };
 
+export const requestAutocomplete = ({ commit }) => {
+  commit(types.REQUEST_AUTOCOMPLETE);
+};
+
 export const fetchAutocompleteOptions = ({ commit, state }) => {
   commit(types.REQUEST_AUTOCOMPLETE);
   const promises = FETCH_TYPES.map((fetchType) => doFetch({ commit, state, fetchType }));
 
-  return Promise.all(promises);
+  return Promise.all(promises).finally(() => {
+    commit(types.RECEIVE_AUTOCOMPLETE_COMPLETE);
+  });
 };
 
 export const clearAutocomplete = ({ commit }) => {

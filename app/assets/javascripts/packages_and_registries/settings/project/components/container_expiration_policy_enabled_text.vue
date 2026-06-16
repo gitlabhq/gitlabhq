@@ -3,6 +3,7 @@ import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { localeDateFormat, isValidDate, newDate } from '~/lib/utils/datetime_utility';
 
 export default {
+  name: 'ContainerExpirationPolicyEnabledText',
   components: {
     GlIcon,
     GlSprintf,

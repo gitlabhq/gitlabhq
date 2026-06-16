@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with the container registry GitLab API returning tags' do
-  let_it_be(:tags_response) do
+  let_it_be(:tags_response, freeze: false) do
     [
       {
         name: 'test',
@@ -16,7 +16,7 @@ RSpec.shared_context 'with the container registry GitLab API returning tags' do
     ]
   end
 
-  let_it_be(:response_body) do
+  let_it_be(:response_body, freeze: false) do
     {
       pagination: {},
       response_body: ::Gitlab::Json.parse(tags_response.to_json)

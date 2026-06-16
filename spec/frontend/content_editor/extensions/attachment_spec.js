@@ -10,6 +10,7 @@ import Link from '~/content_editor/extensions/link';
 import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import waitForPromises from 'helpers/wait_for_promises';
 import { getLimitedMediaDimensions } from '~/lib/utils/media_utils';
 import { createTestEditor, expectDocumentAfterTransaction } from '../test_utils';
 import {
@@ -1068,6 +1069,102 @@ describe('content_editor/extensions/attachment', () => {
             uploadMultipleFiles();
           },
         });
+      });
+    });
+
+    describe('when a second media file is added before the first reports its dimensions', () => {
+      it('applies dimensions to each media node individually', async () => {
+        const firstDimensions = { width: 100, height: 80 };
+        const secondDimensions = { width: 200, height: 160 };
+
+        // Keep both uploads in flight (renderMarkdown unresolved) so each node
+        // retains its uploading marker while the dimension lookups resolve.
+        let completeUploads;
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve) => {
+            completeUploads = resolve;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test-file](test-file.png)' } });
+
+        let resolveFirstDimensions;
+        let resolveSecondDimensions;
+        getLimitedMediaDimensions
+          .mockReturnValueOnce(
+            new Promise((resolve) => {
+              resolveFirstDimensions = resolve;
+            }),
+          )
+          .mockReturnValueOnce(
+            new Promise((resolve) => {
+              resolveSecondDimensions = resolve;
+            }),
+          );
+
+        tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        await waitForPromises();
+        tiptapEditor.commands.uploadAttachment({ file: imageFileRetina });
+        await waitForPromises();
+
+        // The second image is now selected, but the first image's dimensions
+        // resolve last. They must still land on the first image.
+        resolveSecondDimensions(secondDimensions);
+        resolveFirstDimensions(firstDimensions);
+        await waitForPromises();
+
+        const images = [];
+        tiptapEditor.state.doc.descendants((node) => {
+          if (node.type.name === 'image') images.push(node.attrs);
+          return true;
+        });
+
+        expect(images).toHaveLength(2);
+        expect(images[0]).toMatchObject(firstDimensions);
+        expect(images[1]).toMatchObject(secondDimensions);
+
+        completeUploads({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+        await waitForPromises();
+      });
+
+      it('applies dimensions to the node even after the cursor moves away', async () => {
+        const dimensions = { width: 100, height: 80 };
+
+        // Keep the upload in flight so the node retains its uploading marker
+        // while the dimension lookup resolves.
+        let completeUpload;
+        renderMarkdown.mockReturnValue(
+          new Promise((resolve) => {
+            completeUpload = resolve;
+          }),
+        );
+        mock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test-file](test-file.png)' } });
+
+        let resolveDimensions;
+        getLimitedMediaDimensions.mockReturnValueOnce(
+          new Promise((resolve) => {
+            resolveDimensions = resolve;
+          }),
+        );
+
+        tiptapEditor.commands.uploadAttachment({ file: imageFile });
+        await waitForPromises();
+
+        // The user clicks elsewhere before the image's dimensions resolve.
+        tiptapEditor.commands.setTextSelection(0);
+
+        resolveDimensions(dimensions);
+        await waitForPromises();
+
+        let imageAttrs;
+        tiptapEditor.state.doc.descendants((node) => {
+          if (node.type.name === 'image') imageAttrs = node.attrs;
+          return true;
+        });
+
+        expect(imageAttrs).toMatchObject(dimensions);
+
+        completeUpload({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
+        await waitForPromises();
       });
     });
   });

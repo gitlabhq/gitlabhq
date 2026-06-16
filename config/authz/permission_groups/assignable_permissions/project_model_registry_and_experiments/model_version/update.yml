@@ -1,0 +1,9 @@
+---
+name: update_model_version
+description: Grants the ability to update a model version
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_model_version

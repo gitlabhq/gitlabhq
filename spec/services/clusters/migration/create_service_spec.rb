@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment_management do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group, maintainers: [user]) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:configuration_project) { project }

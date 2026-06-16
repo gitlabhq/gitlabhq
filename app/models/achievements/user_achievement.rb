@@ -2,6 +2,7 @@
 
 module Achievements
   class UserAchievement < ApplicationRecord
+    include CacheMarkdownField
     include FromUnion
     include SafelyChangeColumnDefault
 
@@ -42,10 +43,33 @@ module Achievements
 
     columns_changing_default :show_on_profile
 
+    cache_markdown_field :award_message, pipeline: :plain_markdown
+
+    before_create :sanitize_award_message_html
+    before_update :sanitize_award_message_html
+
     validates :show_on_profile, inclusion: { in: [false, true] }
+    validates :award_message, length: { maximum: 200 }
+
+    def skip_project_check?
+      true
+    end
 
     def revoked?
       revoked_by_user_id.present?
+    end
+
+    private
+
+    def sanitize_award_message_html
+      # award_message_html is populated by CacheMarkdownField's before_create/before_update.
+      # This callback runs after that, sanitizing the rendered HTML to strip unsafe tags
+      # before the record is persisted. The plain_markdown pipeline does not include a
+      # sanitization filter, so user-supplied HTML in award_message would otherwise be
+      # stored and exposed via the awardMessageHtml GraphQL field unsanitized.
+      return unless award_message_html.present?
+
+      self.award_message_html = Sanitize.fragment(award_message_html, Sanitize::Config::BASIC)
     end
   end
 end

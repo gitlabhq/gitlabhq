@@ -8,6 +8,7 @@ RSpec.describe Ci::InstanceVariable do
   it_behaves_like "CI variable"
 
   it { is_expected.to include_module(Ci::Maskable) }
+  it { is_expected.to include_module(Ci::HidableVariable) }
   it { is_expected.to validate_uniqueness_of(:key).with_message(/\(\w+\) has already been taken/) }
 
   context 'when variable type is env_var' do

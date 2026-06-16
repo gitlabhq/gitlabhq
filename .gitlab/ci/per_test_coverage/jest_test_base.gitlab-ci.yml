@@ -1,0 +1,31 @@
+# Self-contained base for the per-test-coverage jest child pipeline. A child
+# pipeline can't include the full frontend.gitlab-ci.yml, because GitLab
+# validates every included job's `extends` and `stage`, and frontend's jobs
+# depend on stages, a remote template, and anchors that only exist in the
+# assembled main pipeline. This pulls in only the anchor providers the jest
+# job needs.
+#
+# .frontend-test-base is a copy of the definition in frontend.gitlab-ci.yml;
+# keep them in sync. Its `needs` are dropped here because the jest
+# per-test-coverage job sets its own.
+include:
+  - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/ci-images.gitlab-ci.yml
+
+.frontend-test-base:
+  extends:
+    - .default-retry
+    - .with-ci-node-image
+  variables:
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
+    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+  stage: test-frontend
+  cache:
+    - !reference [.yarn-cache, cache]

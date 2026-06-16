@@ -24,7 +24,7 @@
   -# DiffNote
   = f.hidden_field :position
 
-  .discussion-form-container.discussion-with-resolve-btn.flex-column.p-0
+  %div{ class: "discussion-form-container discussion-with-resolve-btn !gl-flex-col !gl-p-0" }
     = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true, supports_quick_actions: supports_quick_actions } do
       = render 'shared/zen', f: f, testid: 'note-field',
         attr: :note,
@@ -35,7 +35,7 @@
       = render 'shared/notes/hints'
       .error-alert
 
-    .note-form-actions.clearfix.gl-flex.gl-flex-wrap
+    .note-form-actions.gl-clearfix.gl-flex.gl-flex-wrap
       = render partial: 'shared/notes/comment_button'
 
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close-discussion-note-form hide' }) do

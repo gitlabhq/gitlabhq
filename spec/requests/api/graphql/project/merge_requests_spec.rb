@@ -6,29 +6,29 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, :public, group: group) }
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:group_label) { create(:group_label, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public, group: group) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:label, freeze: false) { create(:label, project: project) }
+  let_it_be(:group_label, freeze: false) { create(:group_label, group: group) }
 
   let_it_be_with_reload(:merge_request_a) do
     create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label, group_label],
       reviewers: [current_user])
   end
 
-  let_it_be(:merge_request_b) do
+  let_it_be(:merge_request_b, freeze: false) do
     create(:merge_request, :closed, :unique_branches, source_project: project, reviewers: [current_user, create(:user)])
   end
 
-  let_it_be(:merge_request_c) do
+  let_it_be(:merge_request_c, freeze: false) do
     create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label, group_label])
   end
 
-  let_it_be(:merge_request_d) do
+  let_it_be(:merge_request_d, freeze: false) do
     create(:merge_request, :locked, :unique_branches, source_project: project)
   end
 
-  let_it_be(:merge_request_e) do
+  let_it_be(:merge_request_e, freeze: false) do
     create(:merge_request, :unique_branches, source_project: project)
   end
 

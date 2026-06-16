@@ -14,11 +14,11 @@ module API
 
     %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get list of all access tokens for the specified resource' do
-          detail 'This feature was introduced in GitLab 13.9.'
+        desc "List all #{source_type} access tokens" do
+          detail "Lists all #{source_type} access tokens for a specified #{source_type}."
           is_array true
           tags ['access_tokens']
-          success Entities::ResourceAccessToken
+          success code: 200, model: Entities::ResourceAccessToken
         end
         params do
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
@@ -36,10 +36,10 @@ module API
           present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource
         end
 
-        desc 'Get an access token for the specified resource by ID' do
-          detail 'This feature was introduced in GitLab 14.10.'
+        desc "Retrieve details on a #{source_type} access token" do
+          detail "Retrieves details on a specified #{source_type} access token."
           tags ['access_tokens']
-          success Entities::ResourceAccessToken
+          success code: 200, model: Entities::ResourceAccessToken
         end
         params do
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
@@ -59,8 +59,8 @@ module API
           present token, with: Entities::ResourceAccessToken, resource: resource
         end
 
-        desc 'Revoke a resource access token' do
-          detail 'This feature was introduced in GitLab 13.9.'
+        desc "Revoke a #{source_type} access token" do
+          detail "Revokes a specified #{source_type} access token."
           tags ['access_tokens']
           success code: 204
           failure [
@@ -88,17 +88,20 @@ module API
           service.success? ? no_content! : bad_request!(service.message)
         end
 
-        desc 'Create a resource access token' do
-          detail 'This feature was introduced in GitLab 13.9.'
+        desc "Create a #{source_type} access token" do
+          detail "Creates a #{source_type} access token for a specified #{source_type}. You cannot create a token " \
+            "with an access level greater than your account. For example, a user with the Maintainer role cannot " \
+            "create a #{source_type} access token with the Owner role. You must use a personal access token with " \
+            "this endpoint. You cannot authenticate with a #{source_type} access token."
           tags ['access_tokens']
-          success Entities::ResourceAccessTokenWithToken
+          success code: 201, model: Entities::ResourceAccessTokenWithToken
         end
         params do
           use :create_personal_access_token_params
           requires :id,
             type: String,
             desc: "The #{source_type} ID",
-            documentation: { example: 2 }
+            documentation: { example: '2' }
           requires :scopes,
             type: Array[String],
             values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
@@ -137,10 +140,14 @@ module API
           end
         end
 
-        desc 'Rotate a resource access token' do
-          detail 'This feature was introduced in GitLab 16.0.'
+        desc "Rotate a #{source_type} access token" do
+          detail "Rotates a #{source_type} access token. This immediately revokes the previous token and creates a " \
+            "token. Generally, this endpoint rotates a specific #{source_type} access token by authenticating with " \
+            "a personal access token. You can also use a #{source_type} access token to rotate itself. If you " \
+            "attempt to use this endpoint to rotate a token that was previously revoked, any active tokens from " \
+            "the same token family are revoked. This feature was introduced in GitLab 16.0."
           tags ['access_tokens']
-          success Entities::ResourceAccessTokenWithToken
+          success code: 200, model: Entities::ResourceAccessTokenWithToken
         end
         params do
           requires :id, type: String, desc: "The #{source_type} ID"

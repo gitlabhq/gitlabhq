@@ -97,7 +97,9 @@ if (WEBPACK_REPORT) {
   NO_HASHED_CHUNKS = true;
 }
 
-console.debug(`BABEL_ENV inside Webpack is: ${process.env.BABEL_ENV}`);
+if (process.env.DEBUG_BABEL_ENV === 'true') {
+  console.debug(`BABEL_ENV inside Webpack is: ${process.env.BABEL_ENV}`);
+}
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -116,7 +118,7 @@ const alias = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
-  lodash: 'lodash-es',
+  lodash$: 'lodash-es',
 
   // `raphael/raphael.no-deps` declares `eve` as an external dependency
   // (the package was renamed to `eve-raphael` years ago, but Raphael's
@@ -292,6 +294,15 @@ const shouldExcludeFromCompiling = (modulePath) => {
   );
 };
 
+// vue2_compiler.js wraps vue-template-compiler and injects distinct keys on same-tag
+// v-if/v-else branches (mirroring the Vue 3 compiler). It's the default for the Vue 2
+// build *and* for the `?vue3`-infected islands compiled here that run on @vue/compat:
+// without those keys the branches are patched in place, and @vue/compat crashes in
+// invokeDirectiveHook ("Cannot read properties of undefined (reading 'value')") when
+// they differ in directives (e.g. v-gl-tooltip on one branch only). The injected keys
+// are a no-op for the Vue 2 runtime. Only the full Vue 3 compiler build overrides it.
+vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
+
 if (USE_VUE3) {
   Object.assign(alias, CONTEXT_ALIASES);
 
@@ -311,8 +322,6 @@ if (USE_VUE3) {
     // Has no real effect here, since we're using thread-loader which serializes config passing to threads
     // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
     vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
-  } else {
-    vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
   }
 }
 

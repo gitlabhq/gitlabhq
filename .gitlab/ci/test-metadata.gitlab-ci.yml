@@ -83,7 +83,7 @@ export-predictive-test-metrics:
     - graphql-schema-dump
     # required to fetch knapsack report and get the projected test runtime metric
     - retrieve-tests-metadata
-    - detect-system-tests-duo-experiment
+    - detect-system-tests-duo
   before_script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh

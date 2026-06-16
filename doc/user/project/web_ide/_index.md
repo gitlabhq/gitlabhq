@@ -485,4 +485,4 @@ with the following information:
 - How often the problem occurs
 - Steps to reproduce the problem
 
-If you're on a paid tier, you can also [contact Support](https://about.gitlab.com/support/#contact-support) for help.
+If you're on a paid tier, you can also [contact Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support) for help.

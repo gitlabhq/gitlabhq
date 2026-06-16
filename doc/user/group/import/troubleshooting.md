@@ -253,3 +253,12 @@ The log entry includes:
 - `existing_group_id` or `existing_project_id`: The ID of the group or project that contains the existing milestone.
 
 With this information, you can locate the milestone and update the title to something you prefer.
+
+## Error: `Destination belongs to a different organization than the current one`
+
+Migrations by direct transfer fail when the source and destination namespaces belong to
+different organizations and either organization is marked as isolated.
+
+To resolve this error, migrate to a destination namespace that belongs to your
+current organization. For more information, see
+[issue 595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674).

@@ -170,7 +170,6 @@ RSpec/ReceiveMessages:
     - 'qa/spec/tools/test_resources_data_processor_spec.rb'
     - 'spec/bin/audit_event_type_spec.rb'
     - 'spec/bin/feature_flag_spec.rb'
-    - 'spec/bin/saas_feature_spec.rb'
     - 'spec/commands/sidekiq_cluster/cli_spec.rb'
     - 'spec/components/diffs/overflow_warning_component_spec.rb'
     - 'spec/components/rapid_diffs/diff_file_header_component_spec.rb'

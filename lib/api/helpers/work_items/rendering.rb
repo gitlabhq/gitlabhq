@@ -5,7 +5,7 @@ module API
     module WorkItems
       module Rendering
         def render_work_items_collection_for(resource_parent)
-          check_work_item_rest_api_feature_flag!
+          check_work_item_rest_api_index_feature_flag!
           check_pagination_param!(params)
 
           authorize! :read_work_item, resource_parent
@@ -19,12 +19,12 @@ module API
 
           params[:pagination] = 'keyset' if keyset_supported_for_order?
 
-          paginated = paginate_with_strategies(work_items_relation) do |records|
+          work_items = paginate_with_strategies(work_items_relation) do |records|
             preload_hierarchy_authorization(records, feature_keys)
             records
-          end
+          end.to_a
 
-          present paginated,
+          present work_items,
             with: Entities::WorkItemBasic,
             current_user: current_user,
             scope_validator: ::Gitlab::Auth::ScopeValidator.new(
@@ -33,22 +33,88 @@ module API
             access_token: access_token,
             requested_features: feature_keys,
             fields: field_keys,
-            resource_parent: resource_parent
+            resource_parent: resource_parent,
+            notifications_subscriptions: preload_notifications_subscriptions(work_items, feature_keys),
+            **count_preloads_for(work_items, field_keys, feature_keys)
         end
 
-        def render_work_item_response(result, status:)
+        def render_work_item_response(result, status:, notifications_subscriptions: nil)
           if result[:status] == :success
             feature_keys = requested_feature_keys(params[:features]&.keys&.join(','))
+            work_item = result[:work_item]
 
-            present result[:work_item],
+            present work_item,
               with: Entities::WorkItemBasic,
               current_user: current_user,
               requested_features: feature_keys,
               fields: requested_field_keys(params[:fields]),
+              notifications_subscriptions: notifications_subscriptions,
+              # Single-item render path: opt into the participant? fallback so the entity matches GraphQL's `subscribed`
+              notifications_allow_participant_fallback: true,
               status: status
           else
             render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
           end
+        end
+
+        def render_children_for(parent_work_item)
+          render_paginated_work_items_for(parent_work_item, entity: Entities::WorkItemBasic) do |preloads|
+            build_children_relation(parent_work_item, state: params[:state], preloads: preloads)
+          end
+        end
+
+        def render_linked_items_for(parent_work_item, link_type: nil)
+          render_paginated_work_items_for(
+            parent_work_item, entity: ::API::Entities::WorkItems::LinkedWorkItem
+          ) do |preloads|
+            build_linked_items_relation(
+              parent_work_item, state: params[:state], link_type: link_type, preloads: preloads
+            )
+          end
+        end
+
+        # Work items are loaded via the parent relation (keyset-ordered, by relative position for children), not via
+        # WorkItemsFinder. Pagination runs first so finalize sees the full page and produces a correct next-cursor,
+        # then per-record :read_work_item policy filters the response in Ruby. A page may therefore present fewer items
+        # than per_page when some records are not readable, but cursor advancement stays correct.
+        def render_paginated_work_items_for(parent_work_item, entity:)
+          check_work_item_rest_api_feature_flag!
+          check_pagination_param!(params)
+
+          authorize! :read_work_item, parent_work_item
+
+          resource_parent = parent_work_item.resource_parent
+          field_keys = requested_field_keys(params[:fields])
+          feature_keys = requested_feature_keys(params[:features])
+          preloads = preload_associations_for(field_keys, feature_keys, resource_parent)
+
+          relation = yield(preloads)
+
+          params[:pagination] = 'keyset'
+
+          paginated = paginate_with_strategies(relation) do |records|
+            preload_hierarchy_authorization(records, feature_keys)
+            records
+          end
+
+          records = Array(paginated)
+          preload_work_item_policies(records)
+
+          visible = DeclarativePolicy.user_scope do
+            records.select { |record| Ability.allowed?(current_user, :read_work_item, record) }
+          end
+
+          present visible,
+            with: entity,
+            current_user: current_user,
+            scope_validator: ::Gitlab::Auth::ScopeValidator.new(
+              access_token.present?, Gitlab::Auth::RequestAuthenticator.new(request)
+            ),
+            access_token: access_token,
+            requested_features: feature_keys,
+            fields: field_keys,
+            resource_parent: resource_parent,
+            notifications_subscriptions: preload_notifications_subscriptions(visible, feature_keys)
         end
 
         def render_work_item_for(resource_parent, work_item_iid)
@@ -77,7 +143,11 @@ module API
             ),
             access_token: access_token,
             requested_features: feature_keys,
-            fields: field_keys
+            fields: field_keys,
+            notifications_subscriptions: preload_notifications_subscriptions([work_item], feature_keys),
+            # Single-item render path: opt into the participant? fallback so the entity matches GraphQL's `subscribed`
+            notifications_allow_participant_fallback: true,
+            **count_preloads_for([work_item], field_keys, feature_keys)
         end
 
         private
@@ -110,6 +180,13 @@ module API
           return if Feature.enabled?(:work_item_rest_api, current_user)
 
           forbidden!('work_item_rest_api feature flag is disabled for this user')
+        end
+
+        def check_work_item_rest_api_index_feature_flag!
+          return if Feature.enabled?(:work_item_rest_api_index, current_user) ||
+            Feature.enabled?(:work_item_rest_api, current_user)
+
+          forbidden!('work_item_rest_api_index and work_item_rest_api feature flags are both disabled for this user')
         end
 
         def filter_requested_keys(requested_param, available_keys)

@@ -19,6 +19,7 @@ import NodeErrorHelpText from './node_error_help_text.vue';
 import ClustersEmptyState from './clusters_empty_state.vue';
 
 export default {
+  name: 'ClustersListClusters',
   nodeMemoryText: __('%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)'),
   nodeCpuText: __('%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)'),
   components: {

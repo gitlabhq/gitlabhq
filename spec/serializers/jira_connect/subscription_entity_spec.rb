@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionEntity do
+RSpec.describe JiraConnect::SubscriptionEntity, feature_category: :team_planning do
   subject do
     described_class.new(subscription).as_json
   end
 
-  let(:subscription) { create(:jira_connect_subscription) }
+  let(:subscription) { build_stubbed(:jira_connect_subscription) }
 
   it 'contains all necessary elements of the subscription', :aggregate_failures do
     expect(subject).to include(:created_at)

@@ -2,6 +2,7 @@
 import TableOfContentsHeading from './table_of_contents_heading.vue';
 
 export default {
+  name: 'TableOfContents',
   components: {
     TableOfContentsHeading,
   },

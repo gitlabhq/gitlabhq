@@ -88,6 +88,19 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    <my-component />
    ```
 
+## Component `name` property
+
+Every Vue component should have a `name` property. Use PascalCase derived from the filename.
+For example, `board_app.vue` becomes `name: 'BoardApp'`.
+
+For generic filenames like `app.vue` or `index.vue`, prefix with context from the directory path
+to create a unique name. For example, `admin/users/components/app.vue` becomes
+`name: 'AdminUsersApp'`.
+
+When an EE component shares a name with a CE component, add an `EE` suffix to the EE component
+name. For example, if both `app/` and `ee/app/` contain a `BranchSelector` component,
+the EE version should use `name: 'BranchSelectorEE'`.
+
 ## `<style>` tags
 
 We don't use `<style>` tags in Vue components for a few reasons:

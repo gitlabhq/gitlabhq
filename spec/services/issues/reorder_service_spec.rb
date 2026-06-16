@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Issues::ReorderService, feature_category: :team_planning do
   let_it_be(:user)    { create_default(:user) }
   let_it_be(:group)   { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, namespace: group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
 
   shared_examples 'issues reorder service' do
     context 'when reordering issues' do
@@ -47,9 +47,9 @@ RSpec.describe Issues::ReorderService, feature_category: :team_planning do
   end
 
   describe '#execute' do
-    let_it_be(:issue1, reload: true) { create(:issue, project: project, relative_position: 10) }
+    let_it_be_with_reload(:issue1) { create(:issue, project: project, relative_position: 10) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
-    let_it_be(:issue3, reload: true) { create(:issue, project: project, relative_position: 30) }
+    let_it_be_with_reload(:issue3) { create(:issue, project: project, relative_position: 30) }
 
     context 'when ordering issues in a project' do
       before do

@@ -9,12 +9,16 @@ module Gitlab
         server_info: Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub,
         agent_tracker: Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub,
         configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub,
-        autoflow: Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub,
         notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub,
-        managed_resources: Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub
+        managed_resources: Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub,
+        events_platform: Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub
       }.freeze
 
-      AUTOFLOW_CI_VARIABLE_ENV_SCOPE = 'autoflow/internal-use'
+      # Default deadline for a single subscribe stream. Chosen to sit slightly below KAS's
+      # server-side `max_connection_age` (defaults to 2 hours in gitlab-agent's
+      # `defaultAPIListenMaxConnectionAge`), so the client closes the stream cleanly first rather
+      # than depending on the server-side cutoff or any intermediary's idle timeout.
+      DEFAULT_SUBSCRIBE_DEADLINE = 110.minutes
 
       ConfigurationError = Class.new(StandardError)
 
@@ -76,39 +80,110 @@ module Gitlab
           ))
       end
 
-      def send_autoflow_event(project:, type:, id:, data:)
-        # We only want to send events if AutoFlow is enabled and no-op otherwise
-        return unless Feature.enabled?(:autoflow_enabled, project)
+      # Publishes one or more CloudEvents to the events_platform service in GitLab Relay.
+      #
+      # @param topic [String] the topic to publish to (e.g., "gitlab.events").
+      # @param events [Gitlab::Agent::Event::CloudEvent, Array<Gitlab::Agent::Event::CloudEvent>]
+      #   a single CloudEvent or an array of CloudEvents.
+      # @return [Array<String>] the broker message IDs assigned to the published events.
+      #   Returns an empty array when `events` is `nil` or empty (no RPC call is made).
+      def publish_events(topic:, events:)
+        return [] unless Feature.enabled?(:publish_events_to_relay, :instance)
 
-        # retrieve all AutoFlow-relevant variables
-        variables = project.variables.by_environment_scope(AUTOFLOW_CI_VARIABLE_ENV_SCOPE)
+        events = Array.wrap(events)
+        return [] if events.empty?
 
-        project_proto = Gitlab::Agent::Event::Project.new(
-          id: project.id,
-          full_path: project.full_path
+        request = Gitlab::Agent::EventsPlatform::Rpc::PublishRequest.new(
+          topic: topic,
+          events: events
         )
-        request = Gitlab::Agent::AutoFlow::Rpc::CloudEventRequest.new(
-          event: Gitlab::Agent::Event::CloudEvent.new(
-            id: id,
-            source: "GitLab",
-            spec_version: "v1",
-            type: type,
-            attributes: {
-              datacontenttype: Gitlab::Agent::Event::CloudEvent::CloudEventAttributeValue.new(
-                ce_string: "application/json"
+
+        stub_for(:events_platform)
+          .publish(request, metadata: metadata)
+          .message_ids
+          .to_a
+      end
+
+      # Subscribes to a topic on Relay's events_platform and yields each received CloudEvent to the
+      # given block. Acknowledges the broker after each successful block return; if the block raises,
+      # the in-flight event is NOT acknowledged and will be redelivered to another consumer in the
+      # group.
+      #
+      # The method loops until the server closes the stream (Relay shutdown, max connection age,
+      # deadline expiration, network error) or the block raises. It does NOT auto-reconnect; callers
+      # that need a long-lived subscription should wrap this method in a reconnect loop (see the
+      # planned `subscribe_events_resilient` wrapper).
+      #
+      # There is no custom stop API; long-running callers signal shutdown by raising a sentinel
+      # exception from inside the block.
+      #
+      # @param topic [String] the topic to subscribe to.
+      # @param consumer_group [String] the consumer group name. Multiple subscribers sharing a
+      #   consumer group share load.
+      # @param event_types [Array<String>] optional server-side filter on CloudEvent type names.
+      # @param deadline [ActiveSupport::Duration, Numeric] maximum time to keep the stream open
+      #   before the client closes it. Defaults to {DEFAULT_SUBSCRIBE_DEADLINE} so the client
+      #   closes slightly before the server's `max_connection_age`. Callers managing their own
+      #   reconnect loop may tune this.
+      # @yield [event] called for each received CloudEvent.
+      # @yieldparam event [Gitlab::Agent::Event::CloudEvent]
+      # @return [void] returns when the stream closes cleanly.
+      def subscribe_events(topic:, consumer_group:, event_types: [], deadline: DEFAULT_SUBSCRIBE_DEADLINE)
+        raise ArgumentError, 'a block is required' unless block_given?
+
+        return unless Feature.enabled?(:subscribe_events_from_relay, :instance)
+
+        ack_queue = SizedQueue.new(1)
+
+        requests = Enumerator.new do |y|
+          # First message must be SubscribeConfig.
+          y << Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
+            config: Gitlab::Agent::EventsPlatform::Rpc::SubscribeConfig.new(
+              topic: topic,
+              consumer_group: consumer_group,
+              event_types: event_types
+            )
+          )
+
+          # Then forward acks as the response loop queues them. A nil sentinel
+          # terminates the request stream.
+          loop do
+            msg = ack_queue.pop
+            break if msg.nil?
+
+            y << msg
+          end
+        end
+
+        # Pass an explicit deadline because the stub-level timeout would kill the streaming RPC.
+        responses = stub_for(:events_platform).subscribe(
+          requests,
+          deadline: Time.current + deadline,
+          metadata: metadata
+        )
+
+        begin
+          responses.each do |response|
+            yield response.event
+
+            # Ack only on successful block return so a raising block leaves
+            # the event unacknowledged for redelivery (at-least-once contract).
+            ack_queue.push(
+              Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
+                ack: Gitlab::Agent::EventsPlatform::Rpc::Ack.new(
+                  message_ids: [response.message_id]
+                )
               )
-            },
-            text_data: data.to_json
-          ),
-          flow_project: project_proto,
-          variables: variables.to_h { |v| [v.key, v.value] }
-        )
-
-        stub_for(:autoflow)
-          .cloud_event(request, metadata: metadata(
-            project: ::Feature::Kas.project_actor(project),
-            group: ::Feature::Kas.group_actor(project)
-          ))
+            )
+          end
+        ensure
+          # Close the request stream so the gRPC client thread can exit, whether
+          # we leave via block-raise, stream close, or normal completion. With
+          # SizedQueue(1), this push blocks briefly if a pending ack hasn't been
+          # drained yet - that is intentional, so the last ack is delivered before
+          # the stream closes.
+          ack_queue.push(nil)
+        end
       end
 
       def get_environment_template(agent:, template_name:)

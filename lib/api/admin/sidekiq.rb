@@ -10,8 +10,8 @@ module API
       namespace 'admin' do
         namespace 'sidekiq' do
           namespace 'queues' do
-            desc 'Drop jobs matching the given metadata from the Sidekiq queue' do
-              detail 'Removes jobs from the Sidekiq queue based on metadata criteria'
+            desc 'Delete jobs from a Sidekiq queue' do
+              detail 'Deletes jobs from a Sidekiq queue that match the specified metadata.'
               tags ['sidekiq']
             end
             params do

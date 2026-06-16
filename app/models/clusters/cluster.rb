@@ -25,7 +25,7 @@ module Clusters
     has_many :projects, through: :cluster_projects, class_name: '::Project'
     has_one :cluster_project, -> { order(id: :desc) }, class_name: 'Clusters::Project'
     has_many :deployment_clusters
-    has_many :deployments, inverse_of: :cluster, through: :deployment_clusters
+    has_many :deployments, through: :deployment_clusters
     has_many :environments, -> { distinct }, through: :deployments
 
     has_many :cluster_groups, class_name: 'Clusters::Group'
@@ -353,24 +353,6 @@ module Clusters
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.core_client.discover }
 
       { connection_status: result[:status], connection_error: result[:connection_error] }.compact
-    end
-
-    # To keep backward compatibility with AUTO_DEVOPS_DOMAIN
-    # environment variable, we need to ensure KUBE_INGRESS_BASE_DOMAIN
-    # is set if AUTO_DEVOPS_DOMAIN is set on any of the following options:
-    # ProjectAutoDevops#Domain, project variables or group variables,
-    # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
-    #
-    # This method should is scheduled to be removed on
-    # https://gitlab.com/gitlab-org/gitlab-foss/issues/56959
-    def legacy_auto_devops_domain
-      if project_type?
-        project&.auto_devops&.domain.presence ||
-          project.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence ||
-          project.group&.variables&.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      elsif group_type?
-        group.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
-      end
     end
 
     def restrict_modification

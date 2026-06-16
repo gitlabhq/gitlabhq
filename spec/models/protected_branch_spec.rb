@@ -97,7 +97,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   end
 
   describe '.protected_ref_accessible_to?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:guest) { create(:user) }
     let_it_be(:reporter) { create(:user) }
     let_it_be(:developer) { create(:user) }
@@ -199,7 +199,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   end
 
   describe '.by_name' do
-    let_it_be(:protected_branch) { create(:protected_branch, name: 'master') }
+    let_it_be(:protected_branch, freeze: false) { create(:protected_branch, name: 'master') }
     let_it_be(:another_protected_branch) { create(:protected_branch, name: 'stable') }
 
     it 'returns protected branches with a matching name' do
@@ -228,7 +228,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
   describe '.get_ids_by_name' do
     let(:branch_name) { 'branch_name' }
-    let_it_be(:protected_branch) { create(:protected_branch, name: 'branch_name') }
+    let_it_be(:protected_branch, freeze: false) { create(:protected_branch, name: 'branch_name') }
     let(:branch_id) { protected_branch.id }
 
     it 'returns the id for each protected branch matching name' do
@@ -284,9 +284,9 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   end
 
   describe '.after_name_and_id' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
-    let_it_be(:branch_1) { create(:protected_branch, project: project, name: 'abranch') }
+    let_it_be(:branch_1, freeze: false) { create(:protected_branch, project: project, name: 'abranch') }
     let_it_be(:branch_2) { create(:protected_branch, project: project, name: 'bbranch') }
     let_it_be(:branch_3) { create(:protected_branch, project: project, name: 'dbranch') }
     let_it_be(:branch_4) { create(:protected_branch, project: project, name: 'gbranch') }
@@ -325,8 +325,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   end
 
   describe '.excluding_name' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'a') }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:branch_a, freeze: false) { create(:protected_branch, project: project, name: 'a') }
     let_it_be(:branch_b) { create(:protected_branch, project: project, name: 'b') }
     let_it_be(:branch_c) { create(:protected_branch, project: project, name: 'c') }
 
@@ -553,8 +553,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
       end
 
       context 'with caching', :use_clean_rails_redis_caching do
-        let_it_be(:project) { create(:project, :repository) }
-        let_it_be(:protected_branch) { create(:protected_branch, project: project, name: "“jawn”") }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project, name: "“jawn”") }
 
         before do
           allow(described_class).to receive(:matching).and_call_original
@@ -652,8 +652,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   describe "#allow_force_push?" do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
 
     where(:group_level_value, :project_level_value, :result) do
       true    | false    | true

@@ -43,7 +43,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
       it 'marks the Todo as done' do
         subject
 
-        expect(todo.reload.done?).to eq(true)
+        expect(todo.reload.done?).to be(true)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
       it 'does not mark the Todo as done' do
         subject
 
-        expect(todo.reload.done?).to eq(false)
+        expect(todo.reload.done?).to be(false)
       end
     end
 

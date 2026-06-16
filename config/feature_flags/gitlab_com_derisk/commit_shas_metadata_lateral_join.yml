@@ -1,0 +1,9 @@
+---
+name: commit_shas_metadata_lateral_join
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/capacity-planning-trackers/gitlab-com/-/work_items/2925
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239187
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602010
+milestone: '19.1'
+group: group::database health
+type: gitlab_com_derisk
+default_enabled: false

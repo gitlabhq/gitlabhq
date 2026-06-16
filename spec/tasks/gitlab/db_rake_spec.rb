@@ -1022,7 +1022,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'dictionary generate' do
-    let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
+    let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db', database: 'fake_db') }
 
     let(:model) { ActiveRecord::Base }
     let(:connection) { model.connection }

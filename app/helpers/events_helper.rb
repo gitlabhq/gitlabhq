@@ -15,6 +15,7 @@ module EventsHelper
     'imported' => 'import',
     'joined' => 'users',
     'approved' => 'check',
+    'transferred' => 'check',
     'added' => 'upload',
     'removed' => 'remove'
   }.freeze
@@ -31,7 +32,8 @@ module EventsHelper
       left: s_('Event|left'),
       opened: s_('Event|opened'),
       updated: s_('Event|updated'),
-      'removed due to membership expiration from': s_('Event|removed due to membership expiration from')
+      'removed due to membership expiration from': s_('Event|removed due to membership expiration from'),
+      transferred: s_('Event|transferred')
     }.merge(
       localized_push_action_name_map,
       localized_created_project_action_name_map,
@@ -338,7 +340,70 @@ module EventsHelper
     current_controller?('users') ? ' gl-font-semibold gl-text-default' : ''
   end
 
+  def transferred_event_title(event)
+    return transferred_event_title_for_user_activity(event) if current_controller?('users')
+    return transferred_event_title_for_group_activity(event) if transferred_into_current_group?(event)
+
+    s_('Event|Transferred to a new namespace')
+  end
+
   private
+
+  def transferred_event_title_for_user_activity(event)
+    if event.project
+      safe_format(
+        s_('Event|Transferred project %{project_link} to a new namespace'),
+        project_link: link_to(
+          event.project.name,
+          project_path(event.project),
+          title: h(event.project.name),
+          class: 'gl-link'
+        )
+      )
+    elsif event.group
+      safe_format(
+        s_('Event|Transferred group %{group_link} to a new namespace'),
+        group_link: link_to(event.group.name, group_path(event.group), class: 'gl-link')
+      )
+    else
+      s_('Event|Transferred to a new namespace')
+    end
+  end
+
+  def transferred_event_title_for_group_activity(event)
+    if transferred_project_into_current_group?(event)
+      safe_format(
+        s_('Event|Transferred project %{project_link} into this group'),
+        project_link: link_to(
+          event.project.name,
+          project_path(event.project),
+          title: h(event.project.name),
+          class: 'gl-link'
+        )
+      )
+    elsif transferred_group_into_current_group?(event)
+      safe_format(
+        s_('Event|Transferred group %{group_link} into this group'),
+        group_link: link_to(event.group.name, group_path(event.group), class: 'gl-link')
+      )
+    else
+      s_('Event|Transferred to a new namespace')
+    end
+  end
+
+  def transferred_into_current_group?(event)
+    current_controller?('groups') &&
+      @group &&
+      (transferred_project_into_current_group?(event) || transferred_group_into_current_group?(event))
+  end
+
+  def transferred_project_into_current_group?(event)
+    event.project && event.project.namespace_id == @group.id
+  end
+
+  def transferred_group_into_current_group?(event)
+    event.group && event.group.parent_id == @group.id
+  end
 
   def design_url(design, opts = {})
     designs_project_issue_url(

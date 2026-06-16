@@ -1,0 +1,13 @@
+---
+table: container_repositories
+database: main
+replication_targets:
+- name: clickhouse_main
+  target: siphon_container_repositories
+  dedup_by:
+  - id
+  dedup_by_columns_lookup_table: siphon_container_repositories_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - project_id

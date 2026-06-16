@@ -35,6 +35,8 @@
   "last_ci_minutes_usage_notification_level": null,
   "runners_token": "token",
   "runners_token_encrypted": "encrypted",
+  "shared_runners_enabled": true,
+  "allow_descendants_override_disabled_shared_runners": false,
   "subgroup_creation_level": 1,
   "emails_enabled": false,
   "max_pages_size": null,

@@ -83,6 +83,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancelEditing', 'noteEdited', 'resolve', 'startEditing', 'startReplying'],
   data() {
     return {
       isDeleting: false,

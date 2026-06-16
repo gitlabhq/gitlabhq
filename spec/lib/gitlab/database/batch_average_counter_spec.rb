@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BatchAverageCounter do
+RSpec.describe Gitlab::Database::BatchAverageCounter, feature_category: :database do
   let(:model)  { Issue }
   let(:column) { :weight }
 

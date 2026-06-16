@@ -2,12 +2,16 @@
 - page_title _('Group members')
 - content_for :reload_on_member_invite_success, true
 - content_for :hide_invite_members_button, true
+- can_admin = can_admin_group_member?(@group)
 
 = render_if_exists 'groups/group_members/minimal_access_provisioning_alert'
-
-- if can_admin_group_member?(@group)
+- if Gitlab::Security::SecurityManagerConfig.enabled? && can_admin
+  #js-security-manager-role-banner
+- if can_admin
   = render_if_exists 'groups/group_members/link_to_pending_members'
-  = render ::Layouts::PageHeadingComponent.new(_('Group members')) do |c|
+
+= render ::Layouts::IndexLayout.new(heading: _('Group members'), page_heading_sr_only: !can_admin) do |c|
+  - if can_admin
     - c.with_description do
       = group_member_header_subtext(@group)
       - if current_appearance&.member_guidelines?
@@ -18,25 +22,24 @@
         .js-invite-group-trigger{ data: { classes: '@md/panel:gl-w-auto gl-w-full',
           display_text: _('Invite a group'),
           trigger_source: 'group_members_page' } }
-
       - if can_invite_group_member?(@group)
         .js-invite-members-trigger{ data: { variant: 'confirm',
           classes: '@md/panel:gl-w-auto gl-w-full',
           trigger_source: 'group_members_page',
           display_text: _('Invite members') } }
 
-= render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
+  = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
 
-= render_if_exists 'groups/group_members/ldap_sync'
+  = render_if_exists 'groups/group_members/ldap_sync'
 
-.js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
-                                                                          members: @members,
-                                                                          invited: @invited_members,
-                                                                          access_requests: @requesters,
-                                                                          banned: @banned || [],
-                                                                          include_relations: @include_relations,
-                                                                          pending_members_count: @pending_promotion_members_count,
-                                                                          placeholder_users: @placeholder_users_count,
-                                                                          params: params
-                                                                        ).to_json } }
-  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+  .js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
+                                                                            members: @members,
+                                                                            invited: @invited_members,
+                                                                            access_requests: @requesters,
+                                                                            banned: @banned || [],
+                                                                            include_relations: @include_relations,
+                                                                            pending_members_count: @pending_promotion_members_count,
+                                                                            placeholder_users: @placeholder_users_count,
+                                                                            params: params
+                                                                          ).to_json } }
+    = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

@@ -11,10 +11,7 @@ module Environments
       environment = to_resource(job)
 
       if environment.persisted?
-        job.run_after_commit do
-          job.link_to_environment(environment)
-        end
-
+        job.link_to_environment(environment)
         job.persisted_environment = environment
 
         track_environment_usage(job, environment)

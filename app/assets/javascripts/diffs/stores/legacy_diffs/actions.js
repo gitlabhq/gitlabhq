@@ -56,7 +56,7 @@ import {
   BUILDING_YOUR_MR,
   SOMETHING_WENT_WRONG,
   ERROR_LOADING_FULL_DIFF,
-  ERROR_DISMISSING_SUGESTION_POPOVER,
+  ERROR_DISMISSING_SUGGESTION_POPOVER,
   ENCODED_FILE_PATHS_TITLE,
   ENCODED_FILE_PATHS_MESSAGE,
 } from '../../i18n';
@@ -76,6 +76,7 @@ import {
   parseRapidDiffsLineHash,
   findDiffFileByShortHash,
   findLineCodeFromRapidDiffsHash,
+  extractGitalyErrorMessage,
 } from '../../store/utils';
 
 export function setBaseConfig(options) {
@@ -171,6 +172,7 @@ export async function fetchFileByFile() {
     // Overloading "batch" loading indicators so the UI stays mostly the same
     this[types.SET_BATCH_LOADING_STATE]('loading');
     this[types.SET_RETRIEVING_BATCHES](true);
+    this[types.SET_GITALY_ERROR_MESSAGE](null);
 
     const urlParams = {
       old_path: treeEntry.filePaths.old,
@@ -202,7 +204,11 @@ export async function fetchFileByFile() {
 
         eventHub.$emit('diffFilesModified');
       })
-      .catch(() => {
+      .catch((error) => {
+        const gitalyErrorMessage = extractGitalyErrorMessage(error);
+        if (gitalyErrorMessage) {
+          this[types.SET_GITALY_ERROR_MESSAGE](gitalyErrorMessage);
+        }
         this[types.SET_BATCH_LOADING_STATE]('error');
       })
       .finally(() => {
@@ -229,6 +235,7 @@ export function fetchDiffFilesBatch(linkedFileLoading = false) {
   if (!linkedFileLoading) {
     this[types.SET_BATCH_LOADING_STATE]('loading');
     this[types.SET_RETRIEVING_BATCHES](true);
+    this[types.SET_GITALY_ERROR_MESSAGE](null);
   }
   eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
@@ -323,6 +330,10 @@ export function fetchDiffFilesBatch(linkedFileLoading = false) {
         return null;
       })
       .catch((error) => {
+        const gitalyErrorMessage = extractGitalyErrorMessage(error);
+        if (gitalyErrorMessage) {
+          this[types.SET_GITALY_ERROR_MESSAGE](gitalyErrorMessage);
+        }
         this[types.SET_RETRIEVING_BATCHES](false);
         this[types.SET_BATCH_LOADING_STATE]('error');
         throw error;
@@ -980,7 +991,7 @@ export function setSuggestPopoverDismissed() {
     })
     .catch(() => {
       createAlert({
-        message: ERROR_DISMISSING_SUGESTION_POPOVER,
+        message: ERROR_DISMISSING_SUGGESTION_POPOVER,
       });
     });
 }
@@ -1124,6 +1135,7 @@ export function fetchLinkedFile(linkedFileUrl) {
 
   this[types.SET_BATCH_LOADING_STATE]('loading');
   this[types.SET_RETRIEVING_BATCHES](true);
+  this[types.SET_GITALY_ERROR_MESSAGE](null);
 
   return axios
     .get(linkedFileUrl)
@@ -1169,6 +1181,10 @@ export function fetchLinkedFile(linkedFileUrl) {
       eventHub.$emit('diffFilesModified');
     })
     .catch((error) => {
+      const gitalyErrorMessage = extractGitalyErrorMessage(error);
+      if (gitalyErrorMessage) {
+        this[types.SET_GITALY_ERROR_MESSAGE](gitalyErrorMessage);
+      }
       this[types.SET_BATCH_LOADING_STATE]('error');
       throw error;
     })

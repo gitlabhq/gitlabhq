@@ -51,7 +51,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'
     - 'ee/app/models/ee/application_setting.rb'
-    - 'ee/app/models/namespaces/free_user_cap/root_size.rb'
     - 'ee/app/policies/ee/project_policy.rb'
     - 'ee/app/presenters/ee/project_presenter.rb'
     - 'ee/app/services/ee/users/build_service.rb'

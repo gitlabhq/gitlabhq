@@ -11,6 +11,7 @@ const AVAILABILITY_STATUS = {
 };
 
 export default {
+  name: 'SidebarParticipant',
   components: {
     GlAvatarLabeled,
     GlBadge,

@@ -37,8 +37,8 @@ describe('Global Search Store Actions', () => {
 
   describe.each`
     axiosMock                                                                        | type         | expectedMutations
-    ${{ method: 'onGet', code: HTTP_STATUS_OK, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]}
-    ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }}       | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}
+    ${{ method: 'onGet', code: HTTP_STATUS_OK, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }, { type: types.RECEIVE_AUTOCOMPLETE_COMPLETE }]}
+    ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR, res: null }}       | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }, { type: types.RECEIVE_AUTOCOMPLETE_COMPLETE }]}
   `('fetchAutocompleteOptions', ({ axiosMock, type, expectedMutations }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
@@ -76,6 +76,20 @@ describe('Global Search Store Actions', () => {
 
       it(`should return ${expectedPath}`, () => {
         expect(actions.autocompleteQuery({ state, fetchType })).toBe(expectedPath);
+      });
+    });
+  });
+
+  describe('requestAutocomplete', () => {
+    beforeEach(() => {
+      state = createState({});
+    });
+
+    it('calls the REQUEST_AUTOCOMPLETE mutation', () => {
+      return testAction({
+        action: actions.requestAutocomplete,
+        state,
+        expectedMutations: [{ type: types.REQUEST_AUTOCOMPLETE }],
       });
     });
   });

@@ -16,18 +16,18 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
     let_it_be(:parent_project) { create(:project, :repository, :private) }
     let_it_be(:forked_project) { fork_project(parent_project, nil, repository: true, target_project: create(:project, :private, :repository)) }
 
-    let(:merge_request) do
+    let_it_be(:merge_request, freeze: false) do
       create(
         :merge_request, source_project: forked_project, source_branch: 'feature',
         target_project: parent_project, target_branch: 'master'
       )
     end
 
-    let!(:pipeline_in_parent) do
+    let_it_be(:pipeline_in_parent) do
       create(:ci_pipeline, :merged_result_pipeline, merge_request: merge_request, project: parent_project)
     end
 
-    let!(:pipeline_in_fork) do
+    let_it_be(:pipeline_in_fork) do
       create(:ci_pipeline, :merged_result_pipeline, merge_request: merge_request, project: forked_project)
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
   end
 
   describe '#all' do
-    let(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
 
     subject { described_class.new(merge_request, nil) }
@@ -124,7 +124,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
     end
 
     context 'with unsaved merge request' do
-      let(:merge_request) { build(:merge_request, source_project: create(:project, :repository)) }
+      let(:merge_request) { build(:merge_request, source_project: create(:project, :small_repo)) }
 
       let!(:pipeline) do
         create(
@@ -139,47 +139,46 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
     end
 
     context 'when pipelines exist for the branch and merge request' do
-      let(:source_ref) { 'feature' }
-      let(:target_ref) { 'master' }
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:source_ref) { 'feature' }
+      let_it_be(:target_ref) { 'master' }
+      let_it_be(:shas) { project.repository.commits(source_ref, limit: 2).map(&:id) }
 
-      let!(:branch_pipeline) do
-        create(
-          :ci_pipeline, source: :push, project: project,
-          ref: source_ref, sha: merge_request.merge_request_diff.head_commit_sha
-        )
-      end
-
-      let!(:tag_pipeline) do
-        create(:ci_pipeline, project: project, ref: source_ref, tag: true)
-      end
-
-      let!(:detached_merge_request_pipeline) do
-        create(
-          :ci_pipeline, source: :merge_request_event, project: project,
-          ref: source_ref, sha: shas.second, merge_request: merge_request
-        )
-      end
-
-      let(:merge_request) do
+      let_it_be_with_reload(:merge_request) do
         create(
           :merge_request, source_project: project, source_branch: source_ref,
           target_project: project, target_branch: target_ref
         )
       end
 
-      let(:project) { create(:project, :repository) }
-      let(:shas) { project.repository.commits(source_ref, limit: 2).map(&:id) }
+      let_it_be(:branch_pipeline) do
+        create(
+          :ci_pipeline, source: :push, project: project,
+          ref: source_ref, sha: merge_request.merge_request_diff.head_commit_sha
+        )
+      end
+
+      let_it_be(:tag_pipeline) do
+        create(:ci_pipeline, project: project, ref: source_ref, tag: true)
+      end
+
+      let_it_be(:detached_merge_request_pipeline) do
+        create(
+          :ci_pipeline, source: :merge_request_event, project: project,
+          ref: source_ref, sha: shas.second, merge_request: merge_request
+        )
+      end
 
       it 'returns merge request pipeline first' do
         expect(subject.all).to match_array([detached_merge_request_pipeline, branch_pipeline])
       end
 
       context 'when there are a branch pipeline and a merge request pipeline' do
-        let!(:branch_pipeline_2) do
+        let_it_be(:branch_pipeline_2) do
           create(:ci_pipeline, source: :push, project: project, ref: source_ref, sha: shas.first)
         end
 
-        let!(:detached_merge_request_pipeline_2) do
+        let_it_be(:detached_merge_request_pipeline_2) do
           create(
             :ci_pipeline, source: :merge_request_event, project: project,
             ref: source_ref, sha: shas.first, merge_request: merge_request
@@ -193,25 +192,25 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
       end
 
       context 'when there are multiple merge request pipelines from the same branch' do
-        let!(:branch_pipeline_2) do
-          create(:ci_pipeline, source: :push, project: project, ref: source_ref, sha: shas.first)
-        end
-
-        let!(:branch_pipeline_with_sha_not_belonging_to_merge_request) do
-          create(:ci_pipeline, source: :push, project: project, ref: source_ref)
-        end
-
-        let!(:detached_merge_request_pipeline_2) do
-          create(
-            :ci_pipeline, source: :merge_request_event, project: project,
-            ref: source_ref, sha: shas.first, merge_request: merge_request_2
-          )
-        end
-
-        let(:merge_request_2) do
+        let_it_be_with_reload(:merge_request_2) do
           create(
             :merge_request, source_project: project, source_branch: source_ref,
             target_project: project, target_branch: 'stable'
+          )
+        end
+
+        let_it_be(:branch_pipeline_2) do
+          create(:ci_pipeline, source: :push, project: project, ref: source_ref, sha: shas.first)
+        end
+
+        let_it_be(:branch_pipeline_with_sha_not_belonging_to_merge_request) do
+          create(:ci_pipeline, source: :push, project: project, ref: source_ref)
+        end
+
+        let_it_be(:detached_merge_request_pipeline_2) do
+          create(
+            :ci_pipeline, source: :merge_request_event, project: project,
+            ref: source_ref, sha: shas.first, merge_request: merge_request_2
           )
         end
 
@@ -234,7 +233,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
       end
 
       context 'when detached merge request pipeline is run on head ref of the merge request' do
-        let!(:detached_merge_request_pipeline) do
+        let_it_be(:detached_merge_request_pipeline) do
           create(
             :ci_pipeline, source: :merge_request_event, project: project,
             ref: merge_request.ref_path, sha: shas.second, merge_request: merge_request

@@ -17,8 +17,8 @@ module API
       optional :project, type: String, desc: "Use project as a context when creating references using GitLab Flavored Markdown"
     end
     resource :markdown do
-      desc "Render an arbitrary Markdown document" do
-        detail "This feature was introduced in GitLab 11.0."
+      desc 'Render Markdown content' do
+        detail 'Renders Markdown content as HTML.'
         success ::API::Entities::Markdown
         failure [
           { code: 400, message: 'Bad request' },

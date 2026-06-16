@@ -6,6 +6,7 @@ import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 const UPDATE_TOOLTIP_DEBOUNCED_WAIT_MS = 300;
 
 export default {
+  name: 'TooltipOnTruncate',
   directives: {
     GlTooltip: GlTooltipDirective,
     GlResizeObserver: GlResizeObserverDirective,

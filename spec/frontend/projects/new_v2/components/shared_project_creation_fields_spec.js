@@ -14,7 +14,7 @@ describe('Project creation form fields component', () => {
     namespace: {
       id: '1',
       fullPath: 'root',
-      isPersonal: true,
+      visibility: 'public',
     },
   };
 
@@ -79,21 +79,17 @@ describe('Project creation form fields component', () => {
     expect(findProjectSlugInput().element.value).toBe('my-awesome-project-123');
   });
 
-  it('emits namespace change', () => {
+  it('updates ProjectNameValidator namespace when a new namespace is selected', async () => {
     createComponent();
 
-    findNamespaceSelect().vm.$emit('onSelectNamespace', {
+    findNamespaceSelect().vm.$emit('on-select-namespace', {
       id: '2',
       fullPath: 'group/subgroup',
-      isPersonal: false,
+      visibility: 'public',
     });
+    await nextTick();
 
-    expect(wrapper.emitted('onSelectNamespace')).toHaveLength(1);
-    expect(wrapper.emitted('onSelectNamespace')[0][0]).toEqual({
-      id: '2',
-      fullPath: 'group/subgroup',
-      isPersonal: false,
-    });
+    expect(findProjectNameValidator().props('namespaceFullPath')).toBe('group/subgroup');
   });
 
   describe('validation', () => {
@@ -137,23 +133,23 @@ describe('Project creation form fields component', () => {
       });
     });
 
-    it('emits onValidateForm when project name validation status changes', () => {
+    it('emits on-validate-project-fields when project name validation status changes', () => {
       createComponent();
 
       findProjectNameInput().setValue('Test Name');
       findProjectNameInput().trigger('blur');
       findProjectSlugInput().setValue('test-name');
       findProjectSlugInput().trigger('blur');
-      findProjectNameValidator().vm.$emit('onValidation', true);
+      findProjectNameValidator().vm.$emit('on-validation', true);
 
-      expect(wrapper.emitted('onValidateForm')[0][0]).toEqual(true);
+      expect(wrapper.emitted('on-validate-project-fields')[0][0]).toEqual(true);
     });
 
-    it('emits onValidateForm with false when project name validation fails', () => {
+    it('emits on-validate-project-fields with false when project name validation fails', () => {
       createComponent();
-      findProjectNameValidator().vm.$emit('onValidation', false);
+      findProjectNameValidator().vm.$emit('on-validation', false);
 
-      expect(wrapper.emitted('onValidateForm')[0][0]).toEqual(false);
+      expect(wrapper.emitted('on-validate-project-fields')[0][0]).toEqual(false);
     });
   });
 
@@ -193,7 +189,6 @@ describe('Project creation form fields component', () => {
           namespace: {
             id: '1',
             fullPath: 'root',
-            isPersonal: false,
             visibility: 'private',
           },
         },
@@ -211,6 +206,27 @@ describe('Project creation form fields component', () => {
       });
 
       expect(findVisibilitySelector().props('checked')).toBe('10');
+    });
+
+    it('recalculates visibility options when namespace is changed', async () => {
+      createComponent();
+      await nextTick();
+
+      expect(findPrivateVisibilityLevelOption().props('disabled')).toBe(false);
+      expect(findInternalVisibilityLevelOption().props('disabled')).toBe(false);
+      expect(findPublicVisibilityLevelOption().props('disabled')).toBe(false);
+
+      findNamespaceSelect().vm.$emit('on-select-namespace', {
+        id: '2',
+        fullPath: 'private-group',
+        visibility: 'private',
+      });
+      await nextTick();
+
+      expect(findPrivateVisibilityLevelOption().props('disabled')).toBe(false);
+      // cannot change to higher visibility than private
+      expect(findInternalVisibilityLevelOption().props('disabled')).toBe(true);
+      expect(findPublicVisibilityLevelOption().props('disabled')).toBe(true);
     });
   });
 });

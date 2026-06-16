@@ -4,7 +4,8 @@ classes:
 - Ci::Variable
 feature_categories:
 - pipeline_composition
-description: TODO
+description: Stores CI/CD variables defined at the project level that are available
+  to pipeline jobs.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62
 milestone: '8.0'
 gitlab_schema: gitlab_ci

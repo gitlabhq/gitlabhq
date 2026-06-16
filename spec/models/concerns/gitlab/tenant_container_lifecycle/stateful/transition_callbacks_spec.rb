@@ -10,11 +10,9 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
 
   describe '#update_state_metadata' do
     where(:initial_state, :event, :args) do
-      :active               | :schedule_deletion  | ref(:user_args)
-      :deletion_scheduled   | :start_deletion     | {}
-      :deletion_in_progress | :reschedule_deletion | {}
-      :deletion_scheduled   | :cancel_deletion    | {}
-      :deletion_in_progress | :cancel_deletion    | {}
+      :active       | :soft_delete | ref(:user_args)
+      :soft_deleted | :hard_delete | ref(:user_args)
+      :soft_deleted | :restore     | {}
     end
 
     let(:user_args) { { transition_user: user } }
@@ -36,8 +34,8 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
     end
 
     it 'allows nil transition_user' do
-      organization.update_column(:state, Organizations::Organization.states['deletion_scheduled'])
-      organization.start_deletion!
+      organization.update_column(:state, Organizations::Organization.states['soft_deleted'])
+      organization.restore!
 
       metadata = organization.organization_detail.reload.state_metadata
 
@@ -45,75 +43,9 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
     end
   end
 
-  describe '#set_deletion_schedule_data', :freeze_time do
-    it 'sets deletion_scheduled_at and deletion_scheduled_by_user_id on successful schedule_deletion' do
-      organization.schedule_deletion!(transition_user: user)
-
-      organization_detail = organization.organization_detail.reload
-
-      expect(organization_detail.deletion_scheduled_at).to eq(Time.current)
-      expect(organization_detail.state_metadata['deletion_scheduled_by_user_id']).to eq(user.id)
-    end
-  end
-
-  describe '#clear_deletion_schedule_data' do
-    shared_examples 'clears deletion schedule data' do
-      it 'clears deletion_scheduled_at and deletion_scheduled_by_user_id on successful cancel_deletion' do
-        organization.cancel_deletion!
-
-        organization_detail = organization.organization_detail.reload
-
-        expect(organization_detail.deletion_scheduled_at).to be_nil
-        expect(organization_detail.state_metadata['deletion_scheduled_by_user_id']).to be_nil
-      end
-    end
-
-    context 'when cancelling from deletion_scheduled' do
-      before do
-        organization.schedule_deletion!(transition_user: user)
-      end
-
-      include_examples 'clears deletion schedule data'
-    end
-
-    context 'when cancelling from deletion_in_progress' do
-      before do
-        organization.schedule_deletion!(transition_user: user)
-        organization.start_deletion!
-      end
-
-      include_examples 'clears deletion schedule data'
-    end
-  end
-
-  describe '#set_deletion_error_data' do
-    before do
-      organization.schedule_deletion!(transition_user: user)
-      organization.start_deletion!
-    end
-
-    it 'sets deletion_error when provided in transition args' do
-      organization.reschedule_deletion!(deletion_error: 'Worker failed: timeout')
-
-      expect(organization.organization_detail.reload.deletion_error).to eq('Worker failed: timeout')
-    end
-
-    it 'does not set deletion_error when not provided' do
-      organization.reschedule_deletion!
-
-      expect(organization.organization_detail.reload.deletion_error).to be_nil
-    end
-
-    it 'does not set deletion_error when provided as empty string' do
-      organization.reschedule_deletion!(deletion_error: '')
-
-      expect(organization.organization_detail.reload.deletion_error).to be_nil
-    end
-  end
-
   describe '#update_state_metadata_on_failure' do
     it 'records an error and saves state_metadata when transition is invalid' do
-      organization.cancel_deletion(transition_user: user)
+      organization.restore(transition_user: user)
 
       metadata = organization.organization_detail.reload.state_metadata
 
@@ -133,9 +65,9 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
   end
 
   describe '#build_transition_error_message' do
-    let(:base_message) { 'Cannot transition from active to active via cancel_deletion' }
+    let(:base_message) { 'Cannot transition from active to active via restore' }
     let(:transition) do
-      instance_double(StateMachines::Transition, from_name: :active, to_name: :active, event: :cancel_deletion)
+      instance_double(StateMachines::Transition, from_name: :active, to_name: :active, event: :restore)
     end
 
     it 'includes state errors when present' do

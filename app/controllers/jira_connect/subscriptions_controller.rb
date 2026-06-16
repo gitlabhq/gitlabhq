@@ -62,7 +62,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   def destroy_service
-    subscription = current_jira_installation.subscriptions.find(params[:id])
+    subscription = current_jira_installation.subscriptions.find(params.permit(:id)[:id])
 
     JiraConnectSubscriptions::DestroyService.new(subscription, jira_user)
   end

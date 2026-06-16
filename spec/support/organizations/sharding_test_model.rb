@@ -16,7 +16,12 @@ module Organizations
         include Organizations::Sharding
 
         # Define associations with explicit class names
-        belongs_to :organization, class_name: '::Organizations::Organization', optional: true
+        # `def organization` is also defined in Organizations::Sharding concern, we only
+        # want to override that if we have organization id as a foreign key
+        if sharding_keys.value?('organizations')
+          belongs_to :organization, class_name: '::Organizations::Organization', optional: true
+        end
+
         belongs_to :namespace, class_name: '::Namespace', optional: true
         belongs_to :project, class_name: '::Project', optional: true
         belongs_to :user, class_name: '::User', optional: true

@@ -14,7 +14,7 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
         end
       end
 
-      let_it_be(:group) { create(:group, developers: [user]) }
+      let_it_be(:group, freeze: false) { create(:group, developers: [user]) }
       let_it_be(:params) do
         {
           bitbucket_email: 'user@example.com',

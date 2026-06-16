@@ -86,10 +86,10 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       end
 
       context 'when group has pending builds', :aggregate_failures do
-        let_it_be(:group) { create(:group, :shared_runners_disabled) }
+        let_it_be(:group, freeze: false) { create(:group, :shared_runners_disabled) }
         let_it_be(:sub_group) { create(:group, :shared_runners_disabled, parent: group) }
-        let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
-        let_it_be(:project2) { create(:project, namespace: sub_group, shared_runners_enabled: false) }
+        let_it_be(:project, freeze: false) { create(:project, namespace: group, shared_runners_enabled: false) }
+        let_it_be(:project2, freeze: false) { create(:project, namespace: sub_group, shared_runners_enabled: false) }
         let_it_be(:pending_build_1) { create(:ci_pending_build, project: project, instance_runners_enabled: false) }
         let_it_be(:pending_build_2) { create(:ci_pending_build, project: project, instance_runners_enabled: false) }
         let_it_be(:pending_build_3) { create(:ci_pending_build, project: project2, instance_runners_enabled: false) }

@@ -34,6 +34,7 @@ query getPipelines(
       nodes {
         ...PipelineDetails
         downstream(first: 3) {
+          count
           nodes {
             ...PipelineDownstreamItem
           }

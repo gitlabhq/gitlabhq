@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_context 'when doing OIDC key discovery' do
-  let_it_be(:rsa_key_1) { OpenSSL::PKey::RSA.new(2048) }
-  let_it_be(:rsa_key_2) { OpenSSL::PKey::RSA.new(2048) }
+  let_it_be(:rsa_key_1, freeze: false) { OpenSSL::PKey::RSA.new(2048) }
+  let_it_be(:rsa_key_2, freeze: false) { OpenSSL::PKey::RSA.new(2048) }
 
   subject(:jwks) do
     get '/oauth/discovery/keys'

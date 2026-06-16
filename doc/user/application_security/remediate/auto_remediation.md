@@ -59,13 +59,23 @@ vulnerabilities with known fix versions. For each eligible vulnerability:
 During the experiment phase, GitLab processes three vulnerabilities at a time, starting
 with the highest severity finding.
 
+## Configure scheduler concurrency
+
+Administrators can limit how many auto remediation scheduler jobs
+run concurrently across the Sidekiq fleet. Use the
+`security_update_scheduler_max_concurrency`
+[application setting](../../../api/settings.md) to set the cap. The default is `30`,
+and the value is capped at `200`. Set the value to `0` to pause scheduling.
+
 ## Supported package managers
 
 Auto remediation supports the following package managers:
 
-| Language | Package Manager | Files                     |
-| -------- | --------------- | ------------------------- |
-| Ruby     | Bundler         | `Gemfile`, `Gemfile.lock` |
+| Language | Package Manager | Files                                |
+| -------- | --------------- | ------------------------------------ |
+| Ruby     | Bundler         | `Gemfile`, `Gemfile.lock`            |
+| Java     | Maven           | `pom.xml`                            |
+| Java     | Gradle          | `build.gradle`, `build.gradle.kts`   |
 
 Support for additional ecosystems is planned. For details, see
 [epic 21643](https://gitlab.com/groups/gitlab-org/-/work_items/21643).

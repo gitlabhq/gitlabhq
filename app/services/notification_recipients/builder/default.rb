@@ -35,8 +35,11 @@ module NotificationRecipients
           add_recipients(previous_assignees, :mention, nil)
           add_recipients(target.assignees, :mention, NotificationReason::ASSIGNED)
         when :change_reviewer_merge_request
-          add_recipients(previous_assignees, :mention, nil)
-          add_recipients(target.reviewers, :mention, NotificationReason::REVIEW_REQUESTED)
+          previous_reviewers = Array(previous_assignees)
+          current_reviewers = target.reviewers.to_a
+
+          add_recipients(previous_reviewers - current_reviewers, :mention, nil)
+          add_recipients(current_reviewers - previous_reviewers, :mention, NotificationReason::REVIEW_REQUESTED)
         end
 
         add_subscribed_users

@@ -111,6 +111,12 @@ RSpec.describe RuboCop::Cop::Migration::EnsureFactoryForTable, feature_category:
     end
   end
 
+  describe '#external_dependency_checksum' do
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
+
   describe '.factories' do
     let(:table_names) { %w[unnested_ce nested_ce_factory unnested_ee nested_ee_factory unnested_jh nested_jh_factory] }
     let(:factories) do

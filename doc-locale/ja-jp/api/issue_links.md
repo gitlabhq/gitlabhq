@@ -1,9 +1,9 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GitLabのイシューリンクに関するREST APIのドキュメント。
-title: イシューリンク 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabのイシューリンク用のREST APIのドキュメント。
+title: イシューリンクAPI
 ---
 
 {{< details >}}
@@ -15,13 +15,15 @@ title: イシューリンク
 
 {{< history >}}
 
-- 単純な「関連」関係は、13.4でGitLab Freeに[移動](https://gitlab.com/gitlab-org/gitlab/-/issues/212329)しました。
+- シンプルな「関連する」関係は、GitLab Freeの13.4で[移動しました](https://gitlab.com/gitlab-org/gitlab/-/issues/212329)。
 
 {{< /history >}}
 
-## イシュー関係のリスト {#list-issue-relations}
+このAPIを使用して[イシューリンク](../user/project/issues/related_issues.md)を管理します。
 
-指定されたイシューの[リンクされたイシュー](../user/project/issues/related_issues.md)のリストを、関係の作成日時（昇順）でソートして取得します。イシューは、ユーザー認可に応じてフィルタリングされます。
+## すべてのイシューリンクを一覧表示 {#list-all-issue-links}
+
+指定されたイシューのすべての[リンクされたイシュー](../user/project/issues/related_issues.md)を、関係作成日時（昇順）でソートして一覧表示します。イシューはユーザーの認可に従ってフィルタリングされます。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links
@@ -32,7 +34,7 @@ GET /projects/:id/issues/:issue_iid/links
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
-| `issue_iid` | 整数 | はい      | プロジェクトのイシューの内部ID。 |
+| `issue_iid` | 整数 | はい      | プロジェクトのイシューの内部ID |
 
 ```json
 [
@@ -72,37 +74,39 @@ GET /projects/:id/issues/:issue_iid/links
 ]
 ```
 
-## イシューリンクを取得 {#get-an-issue-link}
+## イシューリンクを取得する {#retrieve-an-issue-link}
 
 {{< history >}}
 
 - GitLab 15.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228)されました。
+- `id`レスポンス属性は[GitLab](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) 18.9で導入されました。
 
 {{< /history >}}
 
-イシューリンクの詳細を取得します。
+指定されたイシューリンクの詳細を取得する。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links/:issue_link_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型           | 必須               | 説明                                                                 |
 |-----------------|----------------|------------------------|-----------------------------------------------------------------------------|
 | `id`            | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid`     | 整数        | はい | プロジェクトイシューの内部ID。                                           |
-| `issue_link_id` | 整数または文字列 | はい | イシュー関係の                                                |
+| `issue_link_id` | 整数または文字列 | はい | イシュー関係のID。                                                |
 
 レスポンスボディの属性:
 
 | 属性      | 型   | 説明                                                                               |
 |:---------------|:-------|:------------------------------------------------------------------------------------------|
+| `id`           | 整数 | イシューリンクのID。                                                                     |
 | `source_issue` | オブジェクト | 関係のソースイシューの詳細。                                          |
 | `target_issue` | オブジェクト | 関係のターゲットイシューの詳細。                                          |
-| `link_type`    | 文字列 | 関係の種類。使用できる値は、`relates_to`、`blocks`、`is_blocked_by`です。 |
+| `link_type`    | 文字列 | 関係の種類。指定可能な値は`relates_to`、`blocks`、`is_blocked_by`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -110,10 +114,11 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/84/issues/14/links/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,
@@ -180,7 +185,13 @@ curl --request GET \
 
 ## イシューリンクを作成 {#create-an-issue-link}
 
-2つのイシュー間に双方向の関係を作成します。ユーザーは、成功するために両方のイシューを更新できる必要があります。
+{{< history >}}
+
+- `id`レスポンス属性は[GitLab](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) 18.9で導入されました。
+
+{{< /history >}}
+
+2つのイシュー間に双方向の関係を作成します。成功するには、ユーザーは両方のイシューを更新できる必要があります。
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/links
@@ -189,10 +200,10 @@ POST /projects/:id/issues/:issue_iid/links
 | 属性           | 型           | 必須 | 説明                          |
 |---------------------|----------------|----------|--------------------------------------|
 | `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `issue_iid`         | 整数        | はい      | プロジェクトのイシューの内部ID。 |
-| `target_project_id` | 整数または文字列 | はい      | ターゲットプロジェクトのまたは[URLエンコードされたプロジェクトのパス](rest/_index.md#namespaced-paths)  |
-| `target_issue_iid`  | 整数または文字列 | はい      | ターゲットプロジェクトのイシューの内部 |
-| `link_type`         | 文字列         | いいえ       | 関係の種類（`relates_to`、`blocks`、`is_blocked_by`）は、`relates_to`がデフォルトです）。 |
+| `issue_iid`         | 整数        | はい      | プロジェクトのイシューの内部ID |
+| `target_project_id` | 整数または文字列 | はい      | ターゲットプロジェクトのIDまたは[URLエンコードされたプロジェクトのパス](rest/_index.md#namespaced-paths)  |
+| `target_issue_iid`  | 整数または文字列 | はい      | ターゲットプロジェクトのイシューの内部ID |
+| `link_type`         | 文字列         | いいえ       | 関係の種類（`relates_to`、`blocks`、`is_blocked_by`）、デフォルトは`relates_to`）。 |
 
 ```shell
 curl --request POST \
@@ -200,10 +211,11 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/4/issues/1/links?target_project_id=5&target_issue_iid=1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,
@@ -270,7 +282,13 @@ curl --request POST \
 
 ## イシューリンクを削除 {#delete-an-issue-link}
 
-イシューリンクを削除して、双方向の関係を削除します。
+{{< history >}}
+
+- `id`レスポンス属性は[GitLab](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) 18.9で導入されました。
+
+{{< /history >}}
+
+指定されたイシューリンクを削除し、双方向の関係を解除します。
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
@@ -279,12 +297,13 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 | 属性   | 型    | 必須 | 説明                          |
 |-------------|---------|----------|--------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)  |
-| `issue_iid` | 整数 | はい      | プロジェクトのイシューの内部ID。 |
-| `issue_link_id` | 整数または文字列 | はい      | イシュー関係の |
-| `link_type` | 文字列  | いいえ | 関係の種類（`relates_to`、`blocks`、`is_blocked_by`）は、`relates_to`がデフォルトです。 |
+| `issue_iid` | 整数 | はい      | プロジェクトのイシューの内部ID |
+| `issue_link_id` | 整数または文字列 | はい      | イシュー関係のID |
+| `link_type` | 文字列  | いいえ | 関係の種類（`relates_to`、`blocks`、`is_blocked_by`）、デフォルトは`relates_to` |
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,

@@ -16,10 +16,13 @@ import Step3 from '~/organizations/index/components/reconciliation/steps/step_3.
 import { mockDefaultOrganization } from 'jest/organizations/shared/mock_data';
 import {
   mockOrganizations,
+  mockGroup,
   organizationWithGroupsIndex,
   organizationWithGroups,
   organizationWithoutGroupsIndex,
   organizationWithoutGroups,
+  defaultOrgWithGroups,
+  organizationsWithDefault,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -30,10 +33,6 @@ describe('OrganizationReconciliationModal', () => {
   let wrapper;
   let mockApollo;
 
-  const organizationsWithDefault = [
-    mockDefaultOrganization,
-    ...organizationsForReconciliationResponse.data.organizations.nodes,
-  ];
   const responseWithDefault = {
     data: { organizations: { nodes: organizationsWithDefault } },
   };
@@ -395,6 +394,53 @@ describe('OrganizationReconciliationModal', () => {
         expect(step3Orgs).not.toEqual(
           expect.arrayContaining([expect.objectContaining({ id: mockDefaultOrganization.id })]),
         );
+      });
+    });
+
+    describe('initialDefaultOrgGroupIds persistence', () => {
+      const handlerWithDefault = jest.fn().mockResolvedValue(responseWithDefault);
+
+      beforeEach(async () => {
+        createComponent({ props: { visible: true }, handler: handlerWithDefault });
+        await waitForPromises();
+
+        findNextButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('passes initial default organization group IDs to step 2', () => {
+        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual([mockGroup.id]);
+      });
+
+      it('retains initial default organization group IDs after moving a group and navigating to step 3 and back', async () => {
+        const defaultOrgIndex = 0;
+        const targetOrgIndex = organizationsWithDefault.findIndex(
+          (org) => org.id === organizationWithoutGroups.id,
+        );
+
+        const updatedOrganizations = organizationsWithDefault
+          .toSpliced(defaultOrgIndex, 1, {
+            ...defaultOrgWithGroups,
+            groups: { ...defaultOrgWithGroups.groups, nodes: [] },
+          })
+          .toSpliced(targetOrgIndex, 1, {
+            ...organizationWithoutGroups,
+            groups: { ...organizationWithoutGroups.groups, nodes: [mockGroup] },
+          });
+
+        findStep2().vm.$emit('update', updatedOrganizations);
+        await nextTick();
+
+        findNextButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findStep3().exists()).toBe(true);
+
+        findPrevButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findStep2().props('organizations')).toEqual(updatedOrganizations);
+        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual([mockGroup.id]);
       });
     });
   });

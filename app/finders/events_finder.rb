@@ -6,7 +6,7 @@ class EventsFinder
 
   MAX_PER_PAGE = 100
 
-  attr_reader :source, :params, :current_user, :scope
+  attr_reader :source, :params, :current_user, :scope, :organization
 
   requires_cross_project_access unless: -> { source.is_a?(Project) }, model: Event
 
@@ -25,10 +25,12 @@ class EventsFinder
   #     page: integer
   #     with_associations: boolean
   #     sort: 'asc' or 'desc'
+  #     organization: Organizations::Organization
   def initialize(params = {})
     @source = params.delete(:source)
     @current_user = params.delete(:current_user)
     @scope = params.delete(:scope)
+    @organization = params.delete(:organization)
     @params = params
   end
 
@@ -38,6 +40,7 @@ class EventsFinder
     events = get_events
 
     events = by_current_user_access(events)
+    events = by_organization(events)
     events = by_action(events)
     events = by_target_type(events)
     events = by_created_at_before(events)
@@ -61,6 +64,20 @@ class EventsFinder
   def by_current_user_access(events)
     events.merge(Project.public_or_visible_to_user(current_user))
       .joins(:project)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # Filter events by organization. Since by_current_user_access already joins
+  # on projects (filtering out group and personal namespace events), we can
+  # simply filter by projects.organization_id directly. This is more efficient
+  # than using Event.in_organization which builds a UNION query with branches
+  # for group and personal namespace events that would always return 0 rows.
+  #
+  # rubocop: disable CodeReuse/ActiveRecord -- Finder pattern, query composition
+  def by_organization(events)
+    return events unless organization
+
+    events.where(projects: { organization_id: organization.id })
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

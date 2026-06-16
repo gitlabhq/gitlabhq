@@ -8,6 +8,7 @@ import CiLintWarnings from './ci_lint_warnings.vue';
 const thBorderColor = '!gl-border-default';
 
 export default {
+  name: 'CiLintResults',
   correct: {
     variant: 'success',
     text: __('Syntax is correct.'),

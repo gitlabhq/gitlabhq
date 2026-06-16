@@ -11,6 +11,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
+  name: 'IssuableMoveDropdown',
   components: {
     GlIcon,
     GlButton,
@@ -39,6 +40,7 @@ export default {
       default: false,
     },
   },
+  emits: ['dropdown-close', 'move-issuable', 'toggle-collapse'],
   data() {
     return {
       projects: [],

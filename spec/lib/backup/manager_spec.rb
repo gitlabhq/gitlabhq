@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Backup::Manager, feature_category: :backup_restore do
   include StubENV
 
-  let_it_be(:progress) { StringIO.new }
+  let_it_be(:progress, freeze: false) { StringIO.new }
   let(:logger) { subject.logger }
   let(:backup_tasks) { nil }
   let(:options) { build(:backup_options, :skip_none) }

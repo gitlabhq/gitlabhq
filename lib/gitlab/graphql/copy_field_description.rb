@@ -13,7 +13,13 @@ module Gitlab
         # E.g.:
         #   argument :name, GraphQL::Types::String, description: copy_field_description(Types::UserType, :name)
         def copy_field_description(type, field_name)
-          type.fields[field_name.to_s.camelize(:lower)].description
+          field = type.fields[field_name.to_s.camelize(:lower)]
+
+          if field.deprecation
+            field.deprecation.original_description
+          else
+            field.description
+          end
         end
       end
     end

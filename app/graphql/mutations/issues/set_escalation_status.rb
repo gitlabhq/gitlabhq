@@ -5,6 +5,9 @@ module Mutations
     class SetEscalationStatus < Base
       graphql_name 'IssueSetEscalationStatus'
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :status, Types::IncidentManagement::EscalationStatusEnum,
         required: true,
         description: 'Set the escalation status.'

@@ -3,8 +3,8 @@
 RSpec.shared_context 'group integration activation' do
   include_context 'instance and group integration activation'
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user, owner_of: group) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:user, freeze: false) { create(:user, owner_of: group) }
 
   before do
     sign_in(user)

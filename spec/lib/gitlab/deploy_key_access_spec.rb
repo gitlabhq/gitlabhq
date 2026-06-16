@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_management do
   let_it_be_with_refind(:project) { create(:project, :repository) }
-  let_it_be(:deploy_key) { create(:deploy_key, :owned, write_access_to: project) }
+  let_it_be(:deploy_key, freeze: false) { create(:deploy_key, :owned, write_access_to: project) }
 
   subject(:access) { described_class.new(deploy_key, container: project) }
 

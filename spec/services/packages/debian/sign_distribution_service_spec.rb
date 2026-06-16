@@ -13,10 +13,10 @@ RSpec.describe Packages::Debian::SignDistributionService, feature_category: :pac
       let(:detach) { detach }
 
       if container_type == :group
-        let_it_be(:distribution, refind: true) { create('debian_group_distribution', container: group) }
+        let_it_be_with_refind(:distribution) { create('debian_group_distribution', container: group) }
       else
         let_it_be(:project) { create(:project, group: group) }
-        let_it_be(:distribution, refind: true) { create('debian_project_distribution', container: project) }
+        let_it_be_with_refind(:distribution) { create('debian_project_distribution', container: project) }
       end
 
       describe '#execute' do

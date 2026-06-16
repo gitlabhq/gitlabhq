@@ -23,16 +23,17 @@ module Gitlab
     # is an anonymous SHA generated using details of the experiment.
     # This ensures deterministic assignment - same actor always gets same result.
     #
-    # If the `Feature.enabled?` check is false, we return nil implicitly,
-    # which will assign the control. If it returns true, we call super to
-    # assign a variant based on the experiment's distribution rules (if specified)
-    # or evenly across all non-control variants (default behavior of Gitlab::Experiment::Rollout::Percent).
+    # If the `Feature.enabled?` check is true, we call super to assign a variant
+    # based on the experiment's distribution rules (if specified) or evenly across
+    # all non-control variants (default behavior of Gitlab::Experiment::Rollout::Percent).
+    # If it's false, we return :control so the assignment is cached -- otherwise
+    # `only_assigned: true` tracking calls cannot see that this actor was bucketed.
     #
     # Since we exclude :control from #behavior_names, the feature flag's
     # rollout percentage determines the split: e.g., 30% flag rollout means
     # 70% get control (flag disabled) and 30% get variants (flag enabled).
     def execute_assignment
-      super if ::Feature.enabled?(feature_flag_name, self, type: :experiment)
+      ::Feature.enabled?(feature_flag_name, self, type: :experiment) ? super : :control
     end
 
     # This is what's provided to the `Feature.enabled?` call that will be

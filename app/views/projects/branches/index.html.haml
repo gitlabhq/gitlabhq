@@ -19,7 +19,7 @@
 
   .gl-flex.gl-items-center.gl-gap-3.gl-mt-3.gl-ml-auto{ class: '@sm/panel:gl-mt-0' }
     - if can_view_branch_rules?
-      = render Pajamas::ButtonComponent.new(variant: :confirm, category: :tertiary, href: project_settings_repository_path(@project, anchor: 'js-branch-rules'), button_options: { data: { testid: "view-branch-rules" }}) do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, category: :tertiary, href: project_settings_repository_path(@project, anchor: 'branch-rules'), button_options: { data: { testid: "view-branch-rules" }}) do
         = s_('Branches|View branch rules')
 
     - if can_push_code?

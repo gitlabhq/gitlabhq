@@ -845,7 +845,7 @@ You can:
 - Assign users [external](../administration/external_users.md), administrator or [auditor](../administration/auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each SAML sign in and updates user attributes as necessary.
-This feature **does not** allow you to automatically add users to GitLab
+This feature does not allow you to automatically add users to GitLab
 [Groups](../user/group/_index.md).
 
 Support for these groups depends on:

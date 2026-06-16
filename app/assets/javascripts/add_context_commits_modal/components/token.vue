@@ -1,8 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 
 export default {
+  name: 'AddContextCommitsToken',
   components: {
     GlFilteredSearchToken,
   },

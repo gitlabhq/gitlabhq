@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::I18n, feature_category: :internationalization do
-  let(:user) { create(:user, preferred_language: :es) }
+  let(:user) { build_stubbed(:user, preferred_language: :es) }
 
   describe '.selectable_locales' do
     include StubLanguagesTranslationPercentage

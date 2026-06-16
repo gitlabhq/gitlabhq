@@ -4,7 +4,9 @@ classes:
 - SamlGroupLink
 feature_categories:
 - user_management
-description: TODO
+description: Maps a SAML group name (or SCIM group UID) to a GitLab group, assigning
+  members the configured access level, custom role, and optional Duo seat on SAML/SCIM
+  sync.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45061
 milestone: '13.5'
 gitlab_schema: gitlab_main_org

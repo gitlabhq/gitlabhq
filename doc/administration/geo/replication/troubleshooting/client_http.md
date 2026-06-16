@@ -71,7 +71,7 @@ Check the NGINX logs for errors similar to this example:
 To resolve this issue:
 
 1. Set `nginx['proxy_custom_buffer_size'] = '8k'` in `/etc/gitlab.rb` on all web nodes on the secondary site.
-1. Reconfigure the **secondary** using `sudo gitlab-ctl reconfigure`.
+1. Reconfigure the secondary using `sudo gitlab-ctl reconfigure`.
 
 If you still get this error, you can further increase the buffer size by repeating the previous steps
 and changing the `8k` size, for example by doubling it to `16k`.
@@ -115,16 +115,16 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 ### Geo Admin area returns 404 error for a secondary site
 
 Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
-healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo **Admin** area on the web interface for
-the **primary** site.
+healthy, but a 404 Not Found error message for the secondary site is returned in the Geo **Admin** area on the web interface for
+the primary site.
 
 To resolve this issue:
 
 - Try restarting **each Rails, Sidekiq and Gitaly nodes on your secondary site** using `sudo gitlab-ctl restart`.
-- Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the **secondary** site is
-  using IPv6 to send its status to the **primary** site. If it is, add an entry to
-  the **primary** site using IPv4 in the `/etc/hosts` file. Alternatively, you should
-  [enable IPv6 on the **primary** site](https://docs.gitlab.com/omnibus/settings/nginx/#setting-the-nginx-listen-address-or-addresses).
+- Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the secondary site is
+  using IPv6 to send its status to the primary site. If it is, add an entry to
+  the primary site using IPv4 in the `/etc/hosts` file. Alternatively, you should
+  [enable IPv6 on the primary site](https://docs.gitlab.com/omnibus/settings/nginx/#setting-the-nginx-listen-address-or-addresses).
 
 ## WebSocket requests fail on Geo secondary sites
 

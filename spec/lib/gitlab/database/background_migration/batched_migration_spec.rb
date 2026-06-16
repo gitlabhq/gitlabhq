@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
       it 'updates the finished_at' do
         freeze_time do
-          expect { batched_migration.finish! }.to change(batched_migration, :finished_at).from(nil).to(Time.current)
+          expect { batched_migration.finish! }.to change { batched_migration.finished_at }.from(nil).to(Time.current)
         end
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       let!(:batched_migration) { create(:batched_background_migration) }
 
       it 'updates the started_at' do
-        expect { batched_migration.execute! }.to change(batched_migration, :started_at).from(nil).to(Time)
+        expect { batched_migration.execute! }.to change { batched_migration.started_at }.from(nil).to(Time)
       end
     end
   end

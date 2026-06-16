@@ -6,7 +6,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 
@@ -18,7 +18,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
   context 'when the user has full access to the project' do
     before do
-      project.add_maintainer(current_user)
+      project.add_maintainer(current_user) # -- Does not work in before_all
     end
 
     it 'includes the project', :use_clean_rails_memory_store_caching, :request_store do
@@ -59,7 +59,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
       context 'when another project member or owner who is not also the token owner' do
         before do
-          project.add_owner(other_user)
+          project.add_owner(other_user) # -- Does not work in before_all
           post_graphql(query, current_user: other_user)
         end
 
@@ -190,7 +190,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
   describe 'is_catalog_resource' do
     before do
-      project.add_owner(current_user)
+      project.add_owner(current_user) # -- Does not work in before_all
     end
 
     let(:catalog_resource_query) do
@@ -260,7 +260,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     end
 
     before do
-      project.add_reporter(current_user)
+      project.add_reporter(current_user) # -- Does not work in before_all
       create(:project_statistics, project: project, wiki_size: 100)
     end
 
@@ -276,7 +276,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
       before do
         pipeline = create(:ci_pipeline, project: project)
         create(:ci_build, project: project, pipeline: pipeline, name: 'a test job')
-        project.add_guest(current_user)
+        project.add_guest(current_user) # -- Does not work in before_all
       end
 
       it 'shows all jobs' do
@@ -342,7 +342,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
     context 'when user has reporter role' do
       before do
-        project.add_reporter(current_user)
+        project.add_reporter(current_user) # -- Does not work in before_all
       end
 
       it 'returns the timelog category with all its fields' do
@@ -464,23 +464,6 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
           global_id_of(trending_project2).to_s,
           global_id_of(non_trending_project).to_s
         )
-      end
-
-      context 'when disable_trending_args feature flag is disabled' do
-        before do
-          stub_feature_flags(disable_trending_args: false)
-        end
-
-        it 'returns only trending projects' do
-          post_graphql(projects_query, current_user: current_user)
-
-          project_ids = graphql_data_at(:projects, :nodes).pluck('id')
-
-          expect(project_ids).to contain_exactly(
-            global_id_of(trending_project1).to_s,
-            global_id_of(trending_project2).to_s
-          )
-        end
       end
     end
 

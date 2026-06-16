@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::NetworkController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :private) }
   let(:ref) { 'master' }
 
   describe 'GET #show' do
@@ -16,7 +16,7 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
       end
 
       context 'when project is public' do
-        let_it_be(:project) { create(:project, :repository, :public) }
+        let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
 
         it 'is successful' do
           subject

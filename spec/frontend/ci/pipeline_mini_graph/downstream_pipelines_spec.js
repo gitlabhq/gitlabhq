@@ -75,4 +75,36 @@ describe('Downstream Pipelines', () => {
       });
     });
   });
+
+  describe('when totalCount drives the counter', () => {
+    const firstThree = () => downstreamPipelines.slice(0, 3);
+
+    it.each`
+      totalCount | expectedCounter
+      ${5}       | ${'+2'}
+      ${4}       | ${'+1'}
+    `(
+      'renders +N counter using totalCount=$totalCount when only 3 pipelines are passed',
+      ({ totalCount, expectedCounter }) => {
+        createComponent({
+          pipelines: firstThree(),
+          totalCount,
+          pipelinePath: 'my/pipeline/path',
+        });
+
+        expect(findDownstreamDropdowns()).toHaveLength(3);
+        expect(findPipelineCounter().exists()).toBe(true);
+        expect(findPipelineCounter().text()).toBe(expectedCounter);
+      },
+    );
+
+    it('does not render the counter when totalCount is omitted and pipelines fit', () => {
+      createComponent({
+        pipelines: [singlePipeline],
+        pipelinePath: 'my/pipeline/path',
+      });
+
+      expect(findPipelineCounter().exists()).toBe(false);
+    });
+  });
 });

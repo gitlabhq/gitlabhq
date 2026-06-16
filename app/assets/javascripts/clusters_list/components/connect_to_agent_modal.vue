@@ -8,6 +8,7 @@ import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted
 import { CONNECT_MODAL_ID } from '../constants';
 
 export default {
+  name: 'ConnectToAgentModal',
   i18n: {
     title: s__('ClusterAgents|Connect to a cluster'),
     notConfiguredText: s__(

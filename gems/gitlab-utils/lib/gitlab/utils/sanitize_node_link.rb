@@ -44,6 +44,14 @@ module Gitlab
         UNSAFE_PROTOCOLS.none?(scheme)
       end
 
+      # Matches the canonical Ruby message for invalid UTF-8 byte sequences
+      # raised from `String#gsub` (and other regex/string operations) when
+      # the input contains bytes that are not valid UTF-8. Ruby raises a
+      # plain `ArgumentError` here -- neither Addressable nor stdlib wraps
+      # it -- so we match by message to avoid swallowing unrelated
+      # `ArgumentError`s.
+      INVALID_UTF8_BYTE_SEQUENCE_MESSAGE = 'invalid byte sequence in UTF-8'
+
       def permit_url?(url, remove_invalid_links: true)
         uri = Addressable::URI.parse(url)
         uri = uri.normalize
@@ -52,7 +60,22 @@ module Gitlab
         return true if safe_protocol?(uri.scheme)
 
         false
-      rescue Addressable::URI::InvalidURIError, Addressable::IDNA::PunycodeBigOutput
+      # `Addressable::URI#normalize` can raise `Encoding::CompatibilityError`
+      # (from `String#strip` in `normalized_host`) or `ArgumentError` (from
+      # `String#gsub` inside Ruby's `unicode_normalize`, via Addressable's
+      # pure IDNA implementation) when the URL contains an invalid UTF-8 byte
+      # sequence. Treat these the same as any other invalid URL.
+      rescue Addressable::URI::InvalidURIError,
+        Addressable::IDNA::PunycodeBigOutput,
+        Encoding::CompatibilityError
+        return false if remove_invalid_links
+
+        true
+      rescue ArgumentError => e
+        # Re-raise unrelated `ArgumentError`s so genuine bugs surface
+        # instead of being silently masked.
+        raise unless e.message.include?(INVALID_UTF8_BYTE_SEQUENCE_MESSAGE)
+
         return false if remove_invalid_links
 
         true

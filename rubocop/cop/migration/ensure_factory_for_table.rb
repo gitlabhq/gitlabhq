@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
 require_relative '../../code_reuse_helpers'
 
 module RuboCop
@@ -56,6 +57,10 @@ module RuboCop
           end
         end
 
+        def external_dependency_checksum
+          self.class.external_dependency_checksum
+        end
+
         private
 
         def factory?(table_name)
@@ -65,6 +70,14 @@ module RuboCop
         def self.factories
           @factories ||= Dir.glob("{,ee/,jh/}spec/factories/**/*.rb").map do |factory|
             factory.gsub(%r{^(ee/|jh/|)spec/factories/}, '').delete_suffix('.rb').tr('/', '_')
+          end
+        end
+
+        def self.external_dependency_checksum
+          @external_dependency_checksum ||= begin
+            root = File.expand_path('../../..', __dir__)
+            paths = Dir.glob("#{root}/{,ee/,jh/}spec/factories/**/*.rb")
+            Digest::SHA256.hexdigest(paths.join("\n"))
           end
         end
 

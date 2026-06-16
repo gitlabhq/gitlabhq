@@ -13,4 +13,9 @@ RSpec.describe RapidDiffs::EmptyStateComponent, type: :component, feature_catego
     render_inline(described_class.new(message: custom_message))
     expect(page).to have_text(custom_message)
   end
+
+  it "renders with a description when provided" do
+    render_inline(described_class.new(description: "Some descriptive copy"))
+    expect(page).to have_text("Some descriptive copy")
+  end
 end

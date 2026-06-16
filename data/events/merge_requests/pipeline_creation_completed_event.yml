@@ -1,0 +1,4 @@
+---
+event: MergeRequests::PipelineCreationCompletedEvent
+description: Published when an asynchronous MR-scoped pipeline creation attempt finishes. `pipeline_id` is set if a `Ci::Pipeline` row was persisted, nil if creation produced no pipeline (workflow:rules dropped, missing CI config, etc.). Used to re-trigger auto-merge when no `Ci::Pipeline.after_transition` will fire.
+feature_category: code_review_workflow

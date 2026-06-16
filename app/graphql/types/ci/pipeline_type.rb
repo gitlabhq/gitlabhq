@@ -141,7 +141,8 @@ module Types
         description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
-        description: 'Pipelines the pipeline will trigger.',
+        description: 'Latest pipelines triggered by the pipeline. ' \
+          'Pipelines from trigger jobs that have since been retried are excluded.',
         method: :triggered_pipelines_with_preloads
 
       field :upstream, Types::Ci::PipelineType, null: true,

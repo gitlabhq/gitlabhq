@@ -18,9 +18,8 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List freeze periods' do
-        detail 'Paginated list of Freeze Periods, sorted by created_at in ascending order. ' \
-               'This feature was introduced in GitLab 13.0.'
+      desc 'List all freeze periods' do
+        detail 'Lists all freeze periods for a specified project.'
         success Entities::FreezePeriod
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -42,8 +41,9 @@ module API
         present paginate(freeze_periods), with: Entities::FreezePeriod, current_user: current_user
       end
 
-      desc 'Get a freeze period' do
-        detail 'Get a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
+      desc 'Retrieve a freeze period' do
+        detail 'Retrieves a freeze period for a specified `freeze_period_id`. You must have the ' \
+          'Reporter, Developer, Maintainer, or Owner role for the project.'
         success Entities::FreezePeriod
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -62,7 +62,8 @@ module API
       end
 
       desc 'Create a freeze period' do
-        detail 'Creates a freeze period. This feature was introduced in GitLab 13.0.'
+        detail 'Creates a freeze period for a specified project. You must have the Maintainer or ' \
+          'Owner role for the project.'
         success Entities::FreezePeriod
         failure [
           { code: 400, message: 'Bad request' },
@@ -93,7 +94,8 @@ module API
       end
 
       desc 'Update a freeze period' do
-        detail 'Updates a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
+        detail 'Updates a freeze period for a specified `freeze_period_id`. You must have the ' \
+          'Maintainer or Owner role for the project.'
         success Entities::FreezePeriod
         failure [
           { code: 400, message: 'Bad request' },
@@ -120,7 +122,8 @@ module API
       end
 
       desc 'Delete a freeze period' do
-        detail 'Deletes a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
+        detail 'Deletes a freeze period for a specified `freeze_period_id`. You must have the ' \
+          'Maintainer or Owner role for the project.'
         success Entities::FreezePeriod
         failure [
           { code: 401, message: 'Unauthorized' }

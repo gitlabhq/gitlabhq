@@ -376,15 +376,12 @@ by the model vendor.
 Prompt caching significantly improves latency by avoiding the
 re-processing of cached prompt and input data.
 
-### Turn off prompt caching
+You can [turn off prompt caching](../gitlab_duo/data_usage.md#turn-off-prompt-caching):
 
-You can [turn off prompt caching](../project/repository/code_suggestions/_index.md#turn-off-prompt-caching)
-in the GitLab Duo settings, depending on the offering:
+- On GitLab.com: For a top-level group.
+- On GitLab Self-Managed: For an instance.
 
-- On GitLab.com, you can turn off caching for individual top-level groups.
-- On GitLab Self-Managed, you can turn off caching the entire instance.
-
-This also turns off prompt caching for Code Suggestions.
+This setting applies to all GitLab Duo Agent Platform features.
 
 ## Tool approvals
 
@@ -394,6 +391,10 @@ This also turns off prompt caching for Code Suggestions.
   - Introduced in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.72.0) 6.72.0
   - Introduced in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.33.0) 3.33.0
   - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.80.0) 8.80.0.
+- Pattern-based tool approval [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21850) in GitLab 19.1
+  - Introduced in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.83.2) 6.83.2.
+  - Introduced in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.38.0) 3.38.0.
+  - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.101.0) 8.101.0.
 
 {{< /history >}}
 
@@ -486,17 +487,25 @@ Prerequisites:
 
 - Tool approvals are turned on for your group or instance.
 - For GitLab Duo Chat in your local environment, install and configure one of the following:
-  - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0 or later.
-  - [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) 3.33.0 or later.
-  - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0 or later.
+  - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0 or later. For pattern-based tool approval, 6.83.2 or later.
+  - [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) 3.33.0 or later. For pattern-based tool approval, 3.38.0 or later.
+  - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0 or later. For pattern-based tool approval, 8.101.0 or later.
 
-To approve a tool for your current session:
+To approve or deny a tool for your current session:
 
 1. When a tool approval prompt appears, select the dropdown next to the approval button.
-1. Select **Approve for Session**.
+1. Select one of the following options:
+   - **Approve**: Chat can use the tool with these arguments once.
+   - **Approve for session**: Chat can use the tool with these arguments for the remainder of the
+     session. Different arguments require additional approval.
+   - **Approve all uses of this tool for session** (pattern or wildcard approval): Chat can use this
+     tool for the remainder of the session whenever the arguments match the approved pattern.
+     > [!note]
+     > If tool arguments contain shell metacharacters (`;`, `&&`, `|`, `$`, and others),
+     > pattern-based approval is not available. Use **Approve for session** instead.
+   - **Deny**: Chat cannot use the tool.
 
-The approval persists for the remainder of the Chat session and resets when
-you start a new conversation.
+All approvals reset when you start a new conversation.
 
 ## Chat feature comparison
 

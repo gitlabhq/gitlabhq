@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Merge Requests Context Commit Diffs', feature_category: :code_review_workflow do
   let_it_be(:sha1) { "33f3729a45c02fc67d00adb1b8bca394b0e761d9" }
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
   let_it_be(:merge_request_context_commit) { create(:merge_request_context_commit, merge_request: merge_request, sha: sha1) }
 

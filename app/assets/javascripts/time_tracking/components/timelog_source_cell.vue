@@ -3,6 +3,7 @@ import { GlLink } from '@gitlab/ui';
 import { issuableStatusText } from '~/issues/constants';
 
 export default {
+  name: 'TimelogSourceCell',
   components: {
     GlLink,
   },

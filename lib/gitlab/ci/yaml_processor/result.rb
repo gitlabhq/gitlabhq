@@ -10,7 +10,7 @@ module Gitlab
 
         attr_reader :ci_config, :errors, :warnings,
           :root_variables, :root_variables_with_prefill_data,
-          :stages, :jobs,
+          :stages, :jobs, :job_name_mappings,
           :workflow_rules, :workflow_name, :workflow_auto_cancel
 
         def initialize(ci_config: nil, errors: [], warnings: [])
@@ -120,6 +120,7 @@ module Gitlab
 
           @stages = @ci_config.stages
           @jobs = @ci_config.normalized_jobs
+          @job_name_mappings = @ci_config.job_name_mappings
 
           @workflow_rules = @ci_config.workflow_rules
           @workflow_name = @ci_config.workflow_name&.strip

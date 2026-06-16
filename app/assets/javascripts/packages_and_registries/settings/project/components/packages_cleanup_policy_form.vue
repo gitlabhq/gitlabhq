@@ -18,6 +18,7 @@ import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils
 import ExpirationDropdown from './expiration_dropdown.vue';
 
 export default {
+  name: 'PackagesCleanupPolicyForm',
   components: {
     GlButton,
     ExpirationDropdown,

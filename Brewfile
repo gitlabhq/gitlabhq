@@ -36,7 +36,7 @@ brew "heimdal"
 brew "icu4c"
 
 # Postgres client tooling and libraries for native extension
-brew "libpq@16"
+brew "libpq@17"
 
 # See https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2823
 brew "libssh2"

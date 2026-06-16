@@ -18,7 +18,7 @@
         "null"
       ]
     },
-    "deletion_error": {
+    "hard_deletion_error": {
       "type": [
         "string",
         "null"
@@ -30,7 +30,7 @@
         "null"
       ]
     },
-    "deletion_scheduled_by_user_id": {
+    "soft_deletion_scheduled_by_user_id": {
       "type": "number"
     },
     "confirmed_at": {

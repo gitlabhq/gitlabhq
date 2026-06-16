@@ -112,12 +112,6 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
-
-{{< /history >}}
-
 You can customize which roles have permission to cancel pipelines or jobs.
 
 By default, users with the Developer, Maintainer, or Owner role can cancel pipelines or jobs.
@@ -280,16 +274,26 @@ These changes do not apply to projects in an [external integration](../../user/p
 
 {{< /history >}}
 
-Users with the Owner role can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
-The system automatically deletes pipelines that were created before the configured value.
+Set a retention period to help manage pipeline storage and improve system performance.
+Pipelines older than the configured duration are deleted automatically by a background job.
+Cleanup runs periodically in the background, not immediately when a pipeline becomes eligible. Projects with a large backlog of old pipelines are cleaned up gradually over multiple runs.
+
+When a pipeline is deleted, its jobs, job logs, and artifacts are also permanently deleted.
+All pipelines older than the configured retention period are eligible for deletion, regardless of their status
+or whether they are the most recent pipeline for a given branch or tag.
+
+Prerequisites:
+
+- The Owner role for the project.
+
+To configure automatic pipeline cleanup:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
-1. In the **Automatic pipeline cleanup** field, enter the number of seconds, or a human-readable value like `2 weeks`.
-   Must be one day or more, and less than one year. Leave empty to never delete pipelines automatically.
-   Empty by default.
+1. In the **Automatic pipeline cleanup** field, enter a duration, for example `2 weeks` or `30 days`.
+   The value must be at least one day, and no more than the instance maximum (1 year by default). Leave empty to never delete pipelines automatically.
 1. Select **Save changes**.
 
 For GitLab Self-Managed, administrators can increase the upper limit for
-[automatic pipeline cleanup](../../administration/instance_limits.md#maximum-config-value-for-automatic-pipeline-cleanup).
+[automatic pipeline cleanup](../../administration/cicd/limits.md#maximum-retention-period-for-automatic-pipeline-cleanup).

@@ -24,8 +24,8 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
   describe 'validations' do
     describe 'ancestors_state validations' do
-      let_it_be(:parent) { create(:group) }
-      let_it_be(:child) { create(:group, parent: parent) }
+      let_it_be(:parent, freeze: false) { create(:group) }
+      let_it_be(:child, freeze: false) { create(:group, parent: parent) }
 
       after do
         parent.update!(state: :ancestor_inherited)

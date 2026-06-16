@@ -2,8 +2,10 @@
 description: Tracks clicks on toggle buttons within the application.
 action: click_toggle
 product_group: authentication
+product_categories:
+- user_profile
 milestone: '16.0'
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118700
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116732
 tiers:
   - free
   - premium

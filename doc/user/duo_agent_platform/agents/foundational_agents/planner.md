@@ -19,6 +19,8 @@ title: Planner Agent
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - To-do management introduced in GitLab 19.0.
+- [Orbit](https://docs.gitlab.com/orbit/) integration for graph-based queries
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/598775) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -29,6 +31,10 @@ The Planner Agent understands GitLab planning concepts, including work item hier
 (epics, issues, and tasks), milestones, labels, and weights. It can analyze work items,
 suggest prioritization strategies, and help you structure and communicate your plans.
 
+When you turn on [Orbit](https://docs.gitlab.com/orbit/) for your top-level group and in your user
+preferences, the Planner Agent can also use the knowledge graph to answer questions about
+relationships, dependencies, and historical context across projects.
+
 Use the Planner Agent when you need help with:
 
 - Prioritization: Applying frameworks like RICE, MoSCoW, or WSJF to rank work items.
@@ -36,13 +42,15 @@ Use the Planner Agent when you need help with:
 - Creating content: Drafting memos, requirements, and other planning artifacts, or creating
   epics, issues, and tasks directly when asked.
 - Dependency analysis: Identifying blocked work and understanding relationships between items.
-- Editing content: Updating work items, labels, milestones, and other attributes either when asked or after it
-  asks for confirmation to take action.
+- Editing content: Updating work items, labels, milestones, and other attributes either when asked
+  or after it asks for confirmation to take action.
 - To-do management: Adding to-dos to work items and marking them as done.
 - Planning sessions: Organizing sprints, milestones, or quarterly planning.
 - Status reporting: Generating summaries of progress, risks, and blockers.
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
 - Estimation: Suggesting relative sizing or effort estimates for work items.
+- Graph-based context: Finding similar past work, cross-project dependencies, and contributors
+  with related experience. Requires [Orbit](https://docs.gitlab.com/orbit/).
 
 You can leave feedback in [issue 583008](https://gitlab.com/gitlab-org/gitlab/-/work_items/583008).
 
@@ -68,6 +76,8 @@ To get the best results from your requests:
 Prerequisites:
 
 - [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
+- Optional. To use graph-based context, [turn on Orbit](https://docs.gitlab.com/orbit/remote/getting-started/) for your
+  top-level group and in your user preferences.
 
 To use the Planner Agent in the GitLab UI:
 
@@ -86,6 +96,8 @@ Prerequisites:
 - Install and configure [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)
   version 6.57.3 or later.
 - Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- Optional. To use graph-based context, [turn on Orbit](https://docs.gitlab.com/orbit/remote/getting-started/) for your
+  top-level group and in your user preferences.
 
 To use the Planner Agent in VS Code:
 
@@ -102,6 +114,8 @@ Prerequisites:
 - Install and configure the [GitLab Duo plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/setup.md)
   version 3.11.1 or later.
 - Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- Optional. To use graph-based context, [turn on Orbit](https://docs.gitlab.com/orbit/remote/getting-started/) for your
+  top-level group and in your user preferences.
 
 First, enable the GitLab Duo Agent Platform:
 
@@ -166,6 +180,12 @@ Then, to use the Planner Agent:
 - To-do management:
   - "Add a to-do for this work item: `<URL>`"
   - "Mark all my to-dos as done for this work item: `<URL>`"
+- Graph-based context (requires [Orbit](https://docs.gitlab.com/orbit/)):
+  - "Find epics similar to this one that have already shipped: `<URL>`"
+  - "How were similar initiatives broken down in the past for this work item: `<URL>`"
+  - "Is anyone already tracking work related to this idea?"
+  - "Which contributors have worked on areas related to this epic? `<URL>`"
+  - "What other work items across projects might this one depend on? `<URL>`"
 
 ## Known issues
 

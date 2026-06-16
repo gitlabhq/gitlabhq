@@ -7,7 +7,6 @@ boundaries:
 available_for:
   - granular_access_token
 permissions:
-  - update_work_item
   - add_issue_spent_time
   - add_merge_request_spent_time
   - create_issue_time_estimate

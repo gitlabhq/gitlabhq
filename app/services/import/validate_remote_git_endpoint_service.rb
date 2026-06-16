@@ -23,9 +23,10 @@ module Import
 
     def execute
       if uri && uri.hostname && Project::VALID_IMPORT_PROTOCOLS.include?(uri.scheme)
-        # Validate URL against security policies before attempting connection
-        validate_url_security!
+        # Inject auth credentials first so that validate_url_security!
+        # validates the final URL that will be sent to Gitaly.
         ensure_auth_credentials!
+        validate_url_security!
 
         return ServiceResponse.success if Gitlab::GitalyClient::RemoteService.exists?(uri.to_s) # rubocop: disable CodeReuse/ActiveRecord -- false positive
       end
@@ -33,7 +34,7 @@ module Import
       failure_response
     rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
       ServiceResponse.error(
-        message: e.message.gsub(uri, Gitlab::UrlSanitizer.new(uri).masked_url),
+        message: e.message.gsub(uri.to_s, Gitlab::UrlSanitizer.new(uri.to_s).masked_url),
         reason: 400
       )
     rescue GRPC::BadStatus
@@ -72,8 +73,14 @@ module Import
     def ensure_auth_credentials!
       return unless user && password
 
+      original_hostname = uri.hostname
+
       uri.user = Gitlab::UrlSanitizer.encode_percent(user)
       uri.password = Gitlab::UrlSanitizer.encode_percent(password)
+
+      return if uri.hostname == original_hostname
+
+      raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, uri.to_s
     end
   end
 end

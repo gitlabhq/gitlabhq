@@ -9,7 +9,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     stub_const('TestBlob', Struct.new(:path))
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
@@ -279,7 +279,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to be_falsey }
 
       context 'when the ref is a branch' do
-        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
 
         before do
           repository.add_branch(user, 'refs/remotes/origin/master', 'master')
@@ -289,7 +289,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'when the naked ref is a branch' do
-        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
 
         before do
           repository.add_branch(user, 'origin/master', 'master')
@@ -448,7 +448,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:ref) { nil }
     let(:kwargs) { { limit: 60 } }
@@ -701,7 +701,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits_by' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:oids) { TestEnv::BRANCH_SHA.values }
 
@@ -739,7 +739,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits_between' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:commit) { project.commit }
 
@@ -901,6 +901,22 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'with filename with pathspec characters' do
+      let(:project) { create(:project, :empty_repo) }
+      let(:filename) { ':wq' }
+      let(:newrev) { project.repository.commit('master').sha }
+
+      before do
+        create_file_in_repo(project, 'master', 'master', filename, 'Test file')
+      end
+
+      subject(:list_commits) { repository.list_commits(ref: 'master', path: filename, literal_pathspec: true).map(&:id) }
+
+      it 'returns commits' do
+        expect(list_commits).to eq([newrev])
+      end
+    end
+
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do
         expect_to_raise_storage_error { broken_repository.list_commits(ref: 'master') }
@@ -909,7 +925,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#expand_author_with_user_emails' do
-    let_it_be(:gitlab_user) { create(:user, name: 'Test User', email: 'test@example.com') }
+    let_it_be(:gitlab_user, freeze: false) { create(:user, name: 'Test User', email: 'test@example.com') }
 
     before_all do
       create(:email, :confirmed, user: gitlab_user, email: 'secondary@example.com')
@@ -997,7 +1013,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#merged_to_root_ref?' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     context 'merged branch without ff' do
       subject { repository.merged_to_root_ref?('branch-merged') }
@@ -1267,7 +1283,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#create_dir" do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     it "commits a change that creates a new directory" do
       expect do
@@ -1459,7 +1475,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "search_files_by_content" do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:results) { repository.search_files_by_content('feature', 'master') }
 
@@ -1701,7 +1717,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#fork_from' do
-    let_it_be(:source_project) { create(:project, :repository) }
+    let_it_be(:source_project, freeze: false) { create(:project, :repository) }
     let(:target_project) { create(:project) }
 
     it 'creates a fork of the source repository' do
@@ -1929,7 +1945,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#jenkinsfile?" do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('Jenkinsfile'), TestBlob.new('copying')]
@@ -2240,7 +2256,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'when the branch name is in Japanise' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
       let(:branch) { '日本' }
 
       before do
@@ -2312,7 +2328,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#branch_names', :clean_gitlab_redis_cache do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:branch_names) { %w[main develop] }
 
@@ -2373,7 +2389,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   context 'branch_names_include? method' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:branch_names) { %w[main develop] }
 
@@ -2413,7 +2429,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#tag_names', :clean_gitlab_redis_cache do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:tag_names) { %w[v1.0.0 v1.1.0] }
 
@@ -2473,7 +2489,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   context 'tag_names_include? method' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:tag_names) { %w[v1.0.0 v1.1.0] }
 
@@ -2618,7 +2634,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:cache) { repository.send(:cache) }
 
@@ -3558,7 +3574,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#find_tag' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     before do
       allow(Gitlab::GitalyClient).to receive(:call).and_call_original
@@ -4096,7 +4112,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe 'commit cache' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     it 'caches based on SHA' do
       # Gets the commit oid, and warms the cache
@@ -4264,7 +4280,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#merge_base' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     subject(:repository) { project.repository }
 
@@ -4405,7 +4421,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#lfs_enabled?' do
-    let_it_be(:project) { create(:project, :repository, :design_repo, lfs_enabled: true) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :design_repo, lfs_enabled: true) }
 
     subject { repository.lfs_enabled? }
 
@@ -4547,7 +4563,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#change_head' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:branch) { repository.container.default_branch }
 
@@ -4826,8 +4842,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#object_pool' do
-    let_it_be(:primary_project) { create(:project, :empty_repo) }
-    let_it_be(:forked_project) { create(:project, :fork_repository, forked_from_project: primary_project) }
+    let_it_be(:primary_project, freeze: false) { create(:project, :empty_repo) }
+    let_it_be(:forked_project, freeze: false) { create(:project, :fork_repository, forked_from_project: primary_project) }
 
     let(:repository) { primary_project.repository }
 
@@ -4922,7 +4938,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'for SHA256 repository' do
-      let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+      let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
       it { is_expected.to eq('sha256') }
     end
@@ -4972,7 +4988,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'for SHA256 repository' do
-        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+        let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_BLANK_SHA) }
       end
@@ -4996,7 +5012,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'for SHA256 repository' do
-        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+        let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
       end
@@ -5114,7 +5130,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with an empty branch' do
-      let_it_be(:project) { create(:project, :empty_repo) }
+      let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
 
       context 'when feature flag is enabled' do
         before do

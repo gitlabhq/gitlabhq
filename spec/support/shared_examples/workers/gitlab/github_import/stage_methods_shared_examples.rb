@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Gitlab::GithubImport::StageMethods do
-  let_it_be(:project) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
+  let_it_be(:project, freeze: false) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
 
   describe '.sidekiq_retries_exhausted' do
     it 'tracks the exception and marks the import as failed' do
       expect(Gitlab::Import::ImportFailureService).to receive(:track)
         .with(
-          project_id: 1,
+          project_id: project.id,
           exception: StandardError,
           fail_import: true,
           error_source: anything
         )
 
-      described_class.sidekiq_retries_exhausted_block.call({ 'args' => [1] }, StandardError.new)
+      described_class.sidekiq_retries_exhausted_block.call({ 'args' => [project.id] }, StandardError.new)
     end
   end
 
@@ -31,9 +31,22 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
 
   describe '#perform' do
     it 'returns if no project could be found' do
-      expect(worker).not_to receive(:import)
+      missing_project_id = non_existing_record_id
 
-      worker.perform(-1)
+      expect(worker).not_to receive(:import)
+      expect(Project).to receive(:find_by_id).with(missing_project_id).and_return(nil)
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          {
+            message: 'starting stage',
+            project_id: missing_project_id,
+            import_stage: described_class.name
+          }
+        )
+
+      worker.perform(missing_project_id)
     end
 
     it 'returns if the import state is no longer in progress' do
@@ -47,6 +60,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
             {
               message: 'starting stage',
               project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               import_stage: described_class.name
             }
           )
@@ -57,6 +71,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
           {
             message: 'Project import is no longer running. Stopping worker.',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             import_stage: described_class.name,
             import_status: 'failed'
           }
@@ -79,6 +94,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
           {
             message: 'starting stage',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             import_stage: described_class.name
           }
         )
@@ -89,6 +105,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
           {
             message: 'stage finished',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             import_stage: described_class.name
           }
         )
@@ -136,6 +153,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
               {
                 message: 'starting stage',
                 project_id: project.id,
+                Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
                 import_stage: described_class.name
               }
             )
@@ -146,6 +164,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
               {
                 message: 'stage retrying',
                 project_id: project.id,
+                Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
                 import_stage: described_class.name,
                 exception_class: error.name
               }
@@ -185,6 +204,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
           {
             message: 'starting stage',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             import_stage: described_class.name
           }
         )

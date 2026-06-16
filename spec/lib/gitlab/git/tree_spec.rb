@@ -3,10 +3,10 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   shared_examples 'repo' do
     subject(:tree) do

@@ -15,6 +15,7 @@ const wrapIssueWithState =
  * Renders block of issues
  */
 export default {
+  name: 'IssuesList',
   components: {
     SmartVirtualList,
     ReportItem,

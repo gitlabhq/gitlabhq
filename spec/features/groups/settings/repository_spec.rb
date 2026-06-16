@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Group Repository settings', :js, feature_category: :source_code_management do
   include WaitForRequests
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group, owners: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group, owners: user) }
 
   before do
     sign_in(user)

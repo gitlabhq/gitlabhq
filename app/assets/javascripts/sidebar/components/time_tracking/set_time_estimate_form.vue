@@ -16,6 +16,7 @@ const MUTATIONS = {
 };
 
 export default {
+  name: 'SetTimeEstimateForm',
   components: {
     GlFormGroup,
     GlFormInput,

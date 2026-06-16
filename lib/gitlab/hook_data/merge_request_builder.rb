@@ -71,6 +71,7 @@ module Gitlab
           human_total_time_spent: merge_request.human_total_time_spent,
           labels: merge_request.labels_hook_attrs,
           last_commit: merge_request.diff_head_commit&.hook_attrs,
+          merged_at: merge_request.metrics&.merged_at,
           reviewer_ids: merge_request.reviewer_ids,
           source: merge_request.source_project.try(:hook_attrs),
           state: merge_request.state,

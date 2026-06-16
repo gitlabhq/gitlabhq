@@ -211,6 +211,8 @@ export const VIEW_MERGE_REQUEST_WIDGET = 'view_merge_request_widget';
 export const EXPAND_MERGE_REQUEST_WIDGET = 'expand_merge_request_widget';
 export const CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET =
   'click_full_report_on_merge_request_widget';
+export const POST_MERGE_DELETE_BRANCH_EVENT = 'i_code_review_post_merge_delete_branch';
+export const POST_CLOSE_DELETE_BRANCH_EVENT = 'i_code_review_post_close_delete_branch';
 
 export { STATE_MACHINE };
 

@@ -5,6 +5,9 @@ action: unique_users_visiting_ci_catalog
 extra_properties:
 identifiers:
 product_group: pipeline_authoring
+product_categories:
+- component_catalog
+- pipeline_composition
 milestone: "16.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137564
 tiers:

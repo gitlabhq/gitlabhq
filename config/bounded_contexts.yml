@@ -85,6 +85,11 @@ domains:
       - team_planning
       - portfolio_management
 
+  Cd:
+    description: Continuous Deployment
+    feature_categories:
+      - continuous_delivery
+
   Cells:
     description: Manages cell-to-cluster operations such as claims, leases, and others.
     feature_categories:

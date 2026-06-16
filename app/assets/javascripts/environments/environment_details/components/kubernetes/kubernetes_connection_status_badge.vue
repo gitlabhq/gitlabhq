@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
 
 export default {
+  name: 'KubernetesConnectionStatusBadge',
   components: {
     GlBadge,
     GlPopover,

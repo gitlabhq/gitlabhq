@@ -8,7 +8,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'GET /projects/:id/job_token_scope' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
     let(:get_job_token_scope_path) { "/projects/#{project.id}/job_token_scope" }
@@ -84,7 +84,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'PATCH /projects/:id/job_token_scope' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
     let(:patch_job_token_scope_path) { "/projects/#{project.id}/job_token_scope" }
@@ -246,7 +246,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "GET /projects/:id/job_token_scope/allowlist" do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
 
     let_it_be(:user) { create(:user) }
 
@@ -321,7 +321,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "GET /projects/:id/job_token_scope/groups_allowlist" do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
 
     let_it_be(:user) { create(:user) }
@@ -389,7 +389,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "POST /projects/:id/job_token_scope/groups_allowlist" do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
 
@@ -510,7 +510,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
     let_it_be(:link) do
@@ -642,7 +642,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "POST /projects/:id/job_token_scope/allowlist" do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:project_inbound_allowed) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
@@ -780,7 +780,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'DELETE /projects/:id/job_token_scope/allowlist/:target_project_id' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:target_project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
     let_it_be(:link) do

@@ -220,13 +220,6 @@ and are protected at the same time.
 
 ### Configure group-level memberships
 
-{{< history >}}
-
-- Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Enabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) in GitLab 15.4.
-
-{{< /history >}}
-
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/_index.md) must be correctly
 configured:
@@ -251,7 +244,7 @@ configured:
     cannot override it.
   - [Project-level protected environments](#protecting-environments) can be
     combined with the group-level setting. If both group-level and project-level
-    environment configurations exist, to run a deployment job, the user must be allowed in **both**
+    environment configurations exist, to run a deployment job, the user must be allowed in both
     rulesets.
   - In a project or a subgroup of the top-level group, developers can be
     safely assigned the Maintainer role to tune their lower environments (such
@@ -270,12 +263,6 @@ To protect a group-level environment, make sure your environments have the corre
 [`deployment_tier`](_index.md#deployment-tier-of-environments) defined in `.gitlab-ci.yml`.
 
 #### Using the UI
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
-
-{{< /history >}}
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **CI/CD**.
@@ -296,6 +283,6 @@ Protected environments can also be used to require manual approvals before deplo
 
 ### Reporter can't run a trigger job that deploys to a protected environment in downstream pipeline
 
-A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might **not** be able to run a job if it's with a [`trigger`](../yaml/_index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/_index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#project-cicd).
+A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might not be able to run a job if it's with a [`trigger`](../yaml/_index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/_index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#project-cicd).
 
 See [this issue](https://gitlab.com/groups/gitlab-org/-/epics/8483) for more information about supporting `environment` keyword with `trigger` keyword.

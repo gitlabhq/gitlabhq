@@ -10,7 +10,7 @@ RSpec.describe Mutations::Releases::Delete do
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
-  let_it_be(:tag, freeze: false) { 'v1.1.0' }
+  let_it_be(:tag) { 'v1.1.0' }
   let_it_be(:release, freeze: false) { create(:release, project: project, tag: tag) }
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }

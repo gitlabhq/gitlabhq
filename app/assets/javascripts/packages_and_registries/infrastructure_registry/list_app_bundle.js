@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { s__ } from '~/locale';
+import { pinia } from '~/pinia/instance';
 import PackagesListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
-import { createStore } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import Translate from '~/vue_shared/translate';
 import { GROUP_PAGE_TYPE } from '~/packages_and_registries/infrastructure_registry/list/constants';
 
@@ -9,7 +9,6 @@ Vue.use(Translate);
 
 export default () => {
   const el = document.getElementById('js-vue-packages-list');
-  const store = createStore();
 
   const { pageType, resourceId, emptyListIllustration } = el.dataset;
   const isGroupPage = pageType === GROUP_PAGE_TYPE;
@@ -17,7 +16,7 @@ export default () => {
   return new Vue({
     el,
     name: 'PackagesListAppRoot',
-    store,
+    pinia,
     components: {
       PackagesListApp,
     },

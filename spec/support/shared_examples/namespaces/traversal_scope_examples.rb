@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'namespace traversal scopes' do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization, freeze: false) { create(:organization) }
 
   # Hierarchy 1
-  let_it_be(:group_1) { create(:group, organization: organization) }
-  let_it_be(:nested_group_1) { create(:group, parent: group_1) }
-  let_it_be(:deep_nested_group_1) { create(:group, parent: nested_group_1) }
+  let_it_be(:group_1, freeze: false) { create(:group, organization: organization) }
+  let_it_be(:nested_group_1, freeze: false) { create(:group, parent: group_1) }
+  let_it_be(:deep_nested_group_1, freeze: false) { create(:group, parent: nested_group_1) }
 
   # Hierarchy 2
-  let_it_be(:group_2) { create(:group, organization: organization) }
-  let_it_be(:nested_group_2) { create(:group, parent: group_2) }
-  let_it_be(:deep_nested_group_2) { create(:group, parent: nested_group_2) }
+  let_it_be(:group_2, freeze: false) { create(:group, organization: organization) }
+  let_it_be(:nested_group_2, freeze: false) { create(:group, parent: group_2) }
+  let_it_be(:deep_nested_group_2, freeze: false) { create(:group, parent: nested_group_2) }
 
   # All groups
-  let_it_be(:groups) do
+  let_it_be(:groups, freeze: false) do
     [
       group_1, nested_group_1, deep_nested_group_1,
       group_2, nested_group_2, deep_nested_group_2

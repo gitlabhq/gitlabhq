@@ -247,28 +247,47 @@ describe('WorkItemDescriptionRendered', () => {
   });
 
   describe('sortable lists', () => {
-    beforeEach(async () => {
+    describe.each`
+      listTag | description                          | descriptionHtml
+      ${'UL'} | ${'- item 1\n- item 2\n- item 3'}    | ${'<ul><li>item 1</li><li>item 2</li><li>item 3</li></ul>'}
+      ${'OL'} | ${'1. item a\n2. item b\n3. item c'} | ${'<ol><li>item a</li><li>item b</li><li>item c</li></ol>'}
+    `('for $listTag', ({ description, descriptionHtml }) => {
+      beforeEach(async () => {
+        createComponent({
+          canEdit: true,
+          workItemDescription: { description, descriptionHtml },
+        });
+        await nextTick();
+      });
+
+      it('creates Sortable with forceFallback enabled', () => {
+        expect(Sortable.create).toHaveBeenCalled();
+        const options = Sortable.create.mock.calls[0][1];
+        expect(options).toMatchObject({
+          forceFallback: true,
+          handle: '.drag-icon',
+        });
+      });
+    });
+
+    it('excludes footnotes from sortable lists', async () => {
       createComponent({
         canEdit: true,
         workItemDescription: {
-          description: '- item 1\n- item 2\n- item 3',
-          descriptionHtml: `<ul data-sourcepos="1:1-3:8" dir="auto" class="description">
-            <li data-sourcepos="1:1-1:8">item 1</li>
-            <li data-sourcepos="2:1-2:8">item 2</li>
-            <li data-sourcepos="3:1-3:8">item 3</li>
-          </ul>`,
+          description: 'test',
+          descriptionHtml: `
+            <section class="footnotes" data-footnotes>
+              <ol>
+                <li>footnote 1</li>
+                <li>footnote 2</li>
+              </ol>
+            </section>
+          `,
         },
       });
       await nextTick();
-    });
 
-    it('creates Sortable with forceFallback enabled', () => {
-      expect(Sortable.create).toHaveBeenCalled();
-      const options = Sortable.create.mock.calls[0][1];
-      expect(options).toMatchObject({
-        forceFallback: true,
-        handle: '.drag-icon',
-      });
+      expect(Sortable.create).not.toHaveBeenCalled();
     });
   });
 

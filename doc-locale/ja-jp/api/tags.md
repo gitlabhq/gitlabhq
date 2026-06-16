@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabのGitタグのためのREST APIに関するドキュメント
 title: タグAPI
 ---
@@ -15,7 +15,7 @@ title: タグAPI
 
 このAPIを使用して、[Gitタグ](../user/project/repository/tags/_index.md)を管理します。このAPIは、署名付きタグのX.509署名情報も返します。
 
-## プロジェクトリポジトリタグをリストする {#list-project-repository-tags}
+## すべてのプロジェクトリポジトリタグをリスト表示 {#list-all-project-repository-tags}
 
 {{< history >}}
 
@@ -23,30 +23,27 @@ title: タグAPI
 
 {{< /history >}}
 
-プロジェクトから、更新日時で降順にソートされたリポジトリタグの一覧を取得します。
+プロジェクトのすべてのリポジトリタグを、更新日時で降順にソートしてリスト表示します。
 
-{{< alert type="note" >}}
-
-リポジトリが公開されている場合、認証（`--header "PRIVATE-TOKEN: <your_access_token>"`）は必要ありません。
-
-{{< /alert >}}
+> [!note]
+> リポジトリが一般にアクセス可能である場合、認証（`--header "PRIVATE-TOKEN: <your_access_token>"`）は必要ありません。
 
 ```plaintext
 GET /projects/:id/repository/tags
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `order_by`   | 文字列            | いいえ       | `name`、`updated`、または`version`でタグを並べ替えて返します。`version`は、セマンティックバージョン番号で並べ替えます。デフォルトは`updated`です。 |
+| `order_by`   | 文字列            | いいえ       | タグを`name`、`updated`、または`version`で並べ替えて返します。`version`はセマンティックバージョン番号でソートします。デフォルトは`updated`です。 |
 | `page`       | 整数           | いいえ       | ページネーションの現在のページ番号。デフォルトは`1`です。 |
 | `page_token` | 文字列            | いいえ       | ページネーションを開始するタグの名前。キーセットページネーションに使用されます。 |
 | `search`     | 文字列            | いいえ       | 検索条件に一致するタグの一覧を返します。`^term`と`term$`を使用して、`term`で始まるタグと終わるタグを検索できます。他の正規表現はサポートされていません。 |
 | `sort`       | 文字列            | いいえ       | `asc`または`desc`の順にソートされたタグを返します。デフォルトは`desc`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
@@ -72,14 +69,14 @@ GET /projects/:id/repository/tags
 | `release.tag_name`       | 文字列  | リリースのタグ名。 |
 | `target`                 | 文字列  | タグが指すSHA。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
     --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -113,7 +110,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一リポジトリタグを取得する {#get-a-single-repository-tag}
+## 単一のリポジトリタグを取得する {#retrieve-a-single-repository-tag}
 
 {{< history >}}
 
@@ -121,20 +118,20 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-名前で指定された特定のリポジトリタグを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
+指定された名前のリポジトリタグを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/repository/tags/:tag_name
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
@@ -158,14 +155,14 @@ GET /projects/:id/repository/tags/:tag_name
 | `release`                | オブジェクト  | タグに関連付けられたリリース情報。 |
 | `target`                 | 文字列  | タグが指すSHA。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -208,7 +205,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/repository/tags
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
@@ -217,7 +214,7 @@ POST /projects/:id/repository/tags
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 | `message`  | 文字列            | いいえ       | 注釈付きタグを作成します。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                | 型    | 説明 |
 |--------------------------|---------|-------------|
@@ -241,7 +238,7 @@ POST /projects/:id/repository/tags
 | `release`                | オブジェクト  | タグに関連付けられたリリース情報。 |
 | `target`                 | 文字列  | タグが指すSHA。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -249,7 +246,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -278,7 +275,7 @@ curl --request POST \
 }
 ```
 
-作成されたタグの種類によって、`created_at`、`target`、および`message`の内容が決まります:
+作成されたタグの種類によって、`created_at`、`target`、および`message`の内容が決まります。
 
 - 注釈付きタグの場合:
   - `created_at`には、タグ作成時のタイムスタンプが含まれています。
@@ -293,40 +290,40 @@ curl --request POST \
 
 ## タグを削除する {#delete-a-tag}
 
-指定された名前のリポジトリのタグを削除します。
+指定された名前のリポジトリタグを削除します。
 
 ```plaintext
 DELETE /projects/:id/repository/tags/:tag_name
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-## タグのX.509署名を取得する {#get-x509-signature-of-a-tag}
+## タグのX.509署名を取得する {#retrieve-x509-signature-of-a-tag}
 
-タグが署名されている場合に[タグからX.509署名](../user/project/repository/signed_commits/x509.md)を取得します。署名されていないタグは、`404 Not Found`応答を返します。
+[X.509タグからの署名](../user/project/repository/signed_commits/x509.md)を、署名されている場合に取得します。署名されていないタグは、`404 Not Found`応答を返します。
 
 ```plaintext
 GET /projects/:id/repository/tags/:tag_name/signature
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                                             | 型    | 説明 |
 |-------------------------------------------------------|---------|-------------|
 | `signature_type`                                      | 文字列  | 署名のタイプ（`X509`）。 |
-| `verification_status`                                 | 文字列  | 署名の検証状態。 |
+| `verification_status`                                 | 文字列  | 署名の検証ステータス。 |
 | `x509_certificate`                                    | オブジェクト  | X.509証明書情報。 |
 | `x509_certificate.certificate_status`                 | 文字列  | 証明書のステータス。 |
 | `x509_certificate.email`                              | 文字列  | 証明書からのメールアドレス。 |
@@ -340,7 +337,7 @@ GET /projects/:id/repository/tags/:tag_name/signature
 | `x509_certificate.x509_issuer.subject`                | 文字列  | 発行者のサブジェクト。 |
 | `x509_certificate.x509_issuer.subject_key_identifier` | 文字列  | 発行者のサブジェクトキー識別子。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

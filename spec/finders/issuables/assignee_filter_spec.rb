@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:other_user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:other_user, freeze: false) { create(:user) }
 
   let(:params) { {} }
 
   subject(:filter) { described_class.new(params: params, current_user: user) }
 
   describe '#filter' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:issue_assigned_to_user, freeze: false) { create(:issue, project: project, assignees: [user]) }
     let_it_be(:issue_assigned_to_other, freeze: false) { create(:issue, project: project, assignees: [other_user]) }
-    let_it_be(:issues) { Issue.where(id: [issue_assigned_to_user.id, issue_assigned_to_other.id]) }
+    let_it_be(:issues, freeze: false) { Issue.where(id: [issue_assigned_to_user.id, issue_assigned_to_other.id]) }
 
     context 'when assignee_id and assignee_username are both provided' do
       let(:params) { { assignee_id: user.id, assignee_username: other_user.username } }
@@ -34,7 +34,7 @@ RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
 
     # Group handle scenarios: assignee_username=@group triggers OR-semantics expansion
     context 'with a group handle assignee_username' do
-      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:group, freeze: false) { create(:group, :private) }
 
       before_all do
         group.add_developer(user)
@@ -128,7 +128,7 @@ RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
     context 'when filtering by a group handle assignee_username' do
       let(:params) { { assignee_username: group.to_reference } }
 
-      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:group, freeze: false) { create(:group, :private) }
 
       before_all { group.add_developer(user) }
 

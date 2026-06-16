@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Graphql::Lazy do
+RSpec.describe Gitlab::Graphql::Lazy, feature_category: :api do
   def load(key)
     BatchLoader.for(key).batch do |keys, loader|
       keys.each { |x| loader.call(x, x * x) }

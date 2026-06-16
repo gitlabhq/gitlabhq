@@ -20,8 +20,9 @@ module API
         requires :id, type: String, desc: "The #{source_type} ID"
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Gets a list of group or project members viewable by the authenticated user,
-          excluding those with inherited membership from ancestor groups.' do
+        desc "List all direct members of a #{source_type}" do
+          detail "Lists all direct members of a specified #{source_type} viewable by the authenticated user. Does " \
+            "not return inherited members from ancestor groups or invited groups."
           success Entities::Member
           is_array true
           tags %w[members]
@@ -46,8 +47,12 @@ module API
           present_members members
         end
 
-        desc 'Gets a list of group or project members viewable by the authenticated user,
-          including those with inherited membership from ancestor groups.' do
+        desc "List all members of a #{source_type}" do
+          detail "Lists all members of a specified #{source_type} viewable by the authenticated user. Also returns " \
+            "inherited members from ancestor groups or invited groups. If a user is a member of this #{source_type} " \
+            "and one or more ancestor groups, only returns the highest `access_level`. Members from an invited " \
+            "group are returned if the invited group is public, the requester is a member of an invited group, " \
+            "or the requester is a member of the shared group or project."
           success Entities::Member
           is_array true
           tags %w[members]
@@ -169,6 +174,7 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Removes a user from a group or project.' do
+          success code: 204, message: 'Resource deleted'
           tags %w[members]
         end
         params do

@@ -5,6 +5,7 @@ import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import { formatToShortName } from '../utils/format_refs';
 
 export default {
+  name: 'RefsDropdown',
   ENABLED_TYPE_REFS: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
   i18n: {
     /**

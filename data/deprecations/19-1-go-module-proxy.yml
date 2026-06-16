@@ -1,0 +1,21 @@
+- title: "Go module proxy (experimental) is deprecated"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.1"
+  breaking_change: false
+  window:
+  reporter: trizzi
+  stage: package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592132
+  check_impact:
+  impact: low
+  impact_details:
+  impact_offering: [GitLab.com, Dedicated, self-managed]
+  scope: [project]
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The experimental Go module proxy in the GitLab package registry is deprecated and will be removed in GitLab 20.0. This feature never progressed beyond experimental status.
+
+    It will be replaced by a **Go virtual registry**, which will provide a more complete and reliable experience for resolving Go modules through GitLab.
+
+    **Action required:** If you are using GitLab as a Go module proxy, plan to migrate to the Go virtual registry once it becomes available. In the interim, you may configure an alternative proxy (such as `proxy.golang.org` or a self-hosted solution) by updating your `GOPROXY` environment variable.

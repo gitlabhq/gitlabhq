@@ -60,6 +60,7 @@ export default {
       },
     },
   },
+  emits: ['updated'],
   data: () => ({
     groups: [],
     loading: false,

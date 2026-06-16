@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: プッシュルールを使用して、リポジトリが受け入れるGitコミットの内容と形式を制御します。コミットメッセージの標準を設定し、シークレットや認証情報が誤って追加されないようにします。
-title: グループプッシュルール
+title: グループプッシュルールAPI
 ---
 
 {{< details >}}
@@ -13,30 +13,34 @@ title: グループプッシュルール
 
 {{< /details >}}
 
-[プッシュルール](../user/group/access_and_permissions.md#group-push-rules)を使用して、リポジトリが受け入れるGitコミットの内容と形式を制御します。プッシュルールエンドポイントは、グループのオーナーと管理者のみが利用できます。
+このAPIを使用して、グループ内の新規作成プロジェクトの[グループプッシュルール](../user/project/repository/push_rules.md#group-push-rules)を管理します。
 
-## グループのプッシュルールを取得します {#get-the-push-rules-of-a-group}
+前提条件: 
 
-グループのプッシュルールを取得します。
+- グループのオーナーロールを持つか、インスタンスの管理者である必要があります。
+
+## グループのプッシュルールを取得する {#retrieve-the-push-rules-of-a-group}
+
+指定されたグループのプッシュルールを取得する。
 
 ```plaintext
 GET /groups/:id/push_rule
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | グループの[URLエンコードされたパス](rest/_index.md#namespaced-paths)またはID。 |
+| `id`      | 整数または文字列 | はい      | グループのID、またはグループの[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                         | 型    | 説明 |
 |-----------------------------------|---------|-------------|
-| `author_email_regex`              | 文字列  | この正規表現に一致するコミットの作成者のメールアドレスのみを許可します。 |
+| `author_email_regex`              | 文字列  | この正規表現に一致するコミット作成者のメールアドレスのみを許可します。 |
 | `branch_name_regex`               | 文字列  | この正規表現に一致するブランチ名のみを許可します。 |
-| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールが自分自身で確認済みのメールの1つである場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_committer_name_check`     | ブール値 | `true`の場合、コミットの作成者名が自分のGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールアドレスが自身の検証済みメールアドレスのいずれかである場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_name_check`     | ブール値 | `true`の場合、コミット作成者名がGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
 | `commit_message_negative_regex`   | 文字列  | この正規表現に一致するコミットメッセージを拒否します。 |
 | `commit_message_regex`            | 文字列  | この正規表現に一致するコミットメッセージのみを許可します。 |
 | `created_at`                      | 文字列  | プッシュルールが作成された日時。 |
@@ -44,19 +48,19 @@ GET /groups/:id/push_rule
 | `file_name_regex`                 | 文字列  | この正規表現に一致するファイル名を拒否します。 |
 | `id`                              | 整数 | プッシュルールのID。 |
 | `max_file_size`                   | 整数 | 許可される最大ファイルサイズ（MB）。 |
-| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成することを許可します。 |
-| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットが含まれている可能性のあるファイルを拒否します。 |
+| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成者できます。 |
+| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットを含む可能性のあるファイルを拒否します。 |
 | `reject_non_dco_commits`          | ブール値 | `true`の場合、DCO認証されていないコミットを拒否します。 |
 | `reject_unsigned_commits`         | ブール値 | `true`の場合、署名されていないコミットを拒否します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/2/push_rule"
 ```
 
-すべての設定が無効になっているプッシュルールが構成されている場合の応答例:
+すべての設定が無効になっている場合にプッシュルールが構成されている場合の応答例:
 
 ```json
 {
@@ -78,7 +82,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-グループに対してプッシュルールが一度も構成されていない場合、[`404 Not Found`](rest/troubleshooting.md#status-codes)を返します:
+グループにプッシュルールが構成されていない場合、[`404 Not Found`](rest/troubleshooting.md#status-codes)を返します:
 
 ```json
 {
@@ -86,57 +90,50 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> これは、[プロジェクトプッシュルールAPI](project_push_rules.md#retrieve-the-push-rules-of-a-project)とは異なります。このAPIは、プッシュルールが構成されていない場合に、リテラル文字列`"null"`とともにHTTP `200 OK`を返します。
 
-これは[プロジェクトのプッシュルール](project_push_rules.md#get-project-push-rules)とは異なり、プッシュルールが構成されていない場合、HTTP `200 OK`はリテラル文字列`"null"`を返します。
-
-{{< /alert >}}
-
-無効にすると、一部のブール型の属性は、`false`の代わりに`null`を返します。例: 
+無効になっている場合、一部のブール属性は`false`ではなく`null`を返します。例: 
 
 - `commit_committer_check`
 - `reject_unsigned_commits`
 - `reject_non_dco_commits`
 
-## グループにプッシュルールを追加します {#add-push-rules-to-a-group}
+## グループにプッシュルールを追加する {#add-push-rules-to-a-group}
 
-プッシュルールをグループに追加します。これまでプッシュルールを定義していない場合にのみ使用してください。
+指定されたグループにプッシュルールを追加します。これまでにプッシュルールを定義していない場合にのみ使用してください。
 
 ```plaintext
 POST /groups/:id/push_rule
 ```
 
-サポートされている属性は以下のとおりです:
-
-<!-- markdownlint-disable MD056 -->
+サポートされている属性は以下のとおりです: 
 
 | 属性                         | 型           | 必須 | 説明 |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | 整数または文字列 | はい   | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `author_email_regex`              | 文字列         | いいえ       | この属性で指定された正規表現に一致するコミットの作成者のメールアドレスのみを許可します（例: `@my-company.com$`）。 |
-| `branch_name_regex`               | 文字列         | いいえ       | この属性で指定された正規表現に一致するブランチ名のみを許可します（例: `(feature\|hotfix)\/.*`）。 |
-| `commit_committer_check`          | ブール値        | いいえ       | `true`の場合、コミッターのメールが自分自身で確認済みのメールの1つである場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_committer_name_check`     | ブール値        | いいえ       | `true`の場合、コミットの作成者名が自分のGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_message_negative_regex`   | 文字列         | いいえ       | この属性で指定された正規表現に一致するコミットメッセージを拒否します（例: `ssh\:\/\/`）。 |
-| `commit_message_regex`            | 文字列         | いいえ       | `true`の場合、この属性で指定された正規表現に一致するコミットメッセージのみを許可します（例: `Fixed \d+\..*`）。 |
+| `author_email_regex`              | 文字列         | いいえ       | この属性で提供される正規表現に一致するコミット作成者のメールアドレスのみを許可します。`@my-company.com$`など。 |
+| `branch_name_regex`               | 文字列         | いいえ       | この属性で提供される正規表現に一致するブランチ名のみを許可します。`(feature\|hotfix)\/.*`など。 |
+| `commit_committer_check`          | ブール値        | いいえ       | `true`の場合、コミッターのメールアドレスが自身の検証済みメールアドレスのいずれかである場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_name_check`     | ブール値        | いいえ       | `true`の場合、コミット作成者名がGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_message_negative_regex`   | 文字列         | いいえ       | この属性で提供される正規表現に一致するコミットメッセージを拒否します。`ssh\:\/\/`など。 |
+| `commit_message_regex`            | 文字列         | いいえ       | `true`の場合、この属性で提供される正規表現に一致するコミットメッセージのみを許可します。`Fixed \d+\..*`など。 |
 | `deny_delete_tag`                 | ブール値        | いいえ       | タグの削除を拒否します。 |
-| `file_name_regex`                 | 文字列         | いいえ       | この属性で指定された正規表現に一致するファイル名を拒否します（例: `(jar\|exe)$`）。 |
+| `file_name_regex`                 | 文字列         | いいえ       | この属性で提供される正規表現に一致するファイル名を拒否します。`(jar\|exe)$`など。 |
 | `max_file_size`                   | 整数        | いいえ       | 許可される最大ファイルサイズ（MB）。 |
-| `member_check`                    | ブール値        | いいえ       | `true`の場合、GitLabユーザーのみがコミットを作成することを許可します。 |
-| `prevent_secrets`                 | ブール値        | いいえ       | `true`の場合、シークレットを[含む](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml)可能性のあるファイルを拒否します。 |
+| `member_check`                    | ブール値        | いいえ       | `true`の場合、GitLabユーザーのみがコミットを作成者できます。 |
+| `prevent_secrets`                 | ブール値        | いいえ       | `true`の場合、[シークレットを含む](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml)可能性のあるファイルを拒否します。 |
 | `reject_non_dco_commits`          | ブール値        | いいえ       | `true`の場合、DCO認証されていないコミットを拒否します。 |
 | `reject_unsigned_commits`         | ブール値        | いいえ       | `true`の場合、署名されていないコミットを拒否します。 |
 
-<!-- markdownlint-enable MD056 -->
-
-成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                         | 型    | 説明 |
 |-----------------------------------|---------|-------------|
-| `author_email_regex`              | 文字列  | この正規表現に一致するコミットの作成者のメールアドレスのみを許可します。 |
+| `author_email_regex`              | 文字列  | この正規表現に一致するコミット作成者のメールアドレスのみを許可します。 |
 | `branch_name_regex`               | 文字列  | この正規表現に一致するブランチ名のみを許可します。 |
-| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールが自分自身で確認済みのメールの1つである場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_committer_name_check`     | ブール値 | `true`の場合、コミットの作成者名が自分のGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールアドレスが自身の検証済みメールアドレスのいずれかである場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_name_check`     | ブール値 | `true`の場合、コミット作成者名がGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
 | `commit_message_negative_regex`   | 文字列  | この正規表現に一致するコミットメッセージを拒否します。 |
 | `commit_message_regex`            | 文字列  | `true`の場合、この正規表現に一致するコミットメッセージのみを許可します。 |
 | `created_at`                      | 文字列  | プッシュルールが作成された日時。 |
@@ -144,12 +141,12 @@ POST /groups/:id/push_rule
 | `file_name_regex`                 | 文字列  | この正規表現に一致するファイル名を拒否します。 |
 | `id`                              | 整数 | プッシュルールのID。 |
 | `max_file_size`                   | 整数 | 許可される最大ファイルサイズ（MB）。 |
-| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成することを許可します。 |
-| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットが含まれている可能性のあるファイルを拒否します。 |
+| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成者できます。 |
+| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットを含む可能性のあるファイルを拒否します。 |
 | `reject_non_dco_commits`          | ブール値 | `true`の場合、DCO認証されていないコミットを拒否します。 |
 | `reject_unsigned_commits`         | ブール値 | `true`の場合、署名されていないコミットを拒否します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -157,7 +154,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/19/push_rule?prevent_secrets=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -179,45 +176,41 @@ curl --request POST \
 }
 ```
 
-## グループのプッシュルールを編集します {#edit-the-push-rules-of-a-group}
+## グループのプッシュルールを更新する {#update-push-rules-of-a-group}
 
-グループのプッシュルールを編集します。
+指定されたグループのプッシュルールを更新します。
 
 ```plaintext
 PUT /groups/:id/push_rule
 ```
 
-サポートされている属性は以下のとおりです:
-
-<!-- markdownlint-disable MD056 -->
+サポートされている属性は以下のとおりです: 
 
 | 属性                         | 型           | 必須 | 説明 |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | 整数または文字列 | はい   | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `author_email_regex`              | 文字列         | いいえ       | この属性で指定された正規表現に一致するコミットの作成者のメールアドレスのみを許可します（例: `@my-company.com$`）。 |
-| `branch_name_regex`               | 文字列         | いいえ       | この属性で指定された正規表現に一致するブランチ名のみを許可します（例: `(feature\|hotfix)\/.*`）。 |
-| `commit_committer_check`          | ブール値        | いいえ       | `true`の場合、コミッターのメールが自分自身で確認済みのメールの1つである場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_committer_name_check`     | ブール値        | いいえ       | `true`の場合、コミットの作成者名が自分のGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_message_negative_regex`   | 文字列         | いいえ       | この属性で指定された正規表現に一致するコミットメッセージを拒否します（例: `ssh\:\/\/`）。 |
-| `commit_message_regex`            | 文字列         | いいえ       | `true`の場合、この属性で指定された正規表現に一致するコミットメッセージのみを許可します（例: `Fixed \d+\..*`）。 |
+| `author_email_regex`              | 文字列         | いいえ       | この属性で提供される正規表現に一致するコミット作成者のメールアドレスのみを許可します。`@my-company.com$`など。 |
+| `branch_name_regex`               | 文字列         | いいえ       | この属性で提供される正規表現に一致するブランチ名のみを許可します。`(feature\|hotfix)\/.*`など。 |
+| `commit_committer_check`          | ブール値        | いいえ       | `true`の場合、コミッターのメールアドレスが自身の検証済みメールアドレスのいずれかである場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_name_check`     | ブール値        | いいえ       | `true`の場合、コミット作成者名がGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_message_negative_regex`   | 文字列         | いいえ       | この属性で提供される正規表現に一致するコミットメッセージを拒否します。`ssh\:\/\/`など。 |
+| `commit_message_regex`            | 文字列         | いいえ       | `true`の場合、この属性で提供される正規表現に一致するコミットメッセージのみを許可します。`Fixed \d+\..*`など。 |
 | `deny_delete_tag`                 | ブール値        | いいえ       | `true`の場合、タグの削除を拒否します。 |
-| `file_name_regex`                 | 文字列         | いいえ       | この属性で指定された正規表現に一致するファイル名を拒否します（例: `(jar\|exe)$`）。 |
+| `file_name_regex`                 | 文字列         | いいえ       | この属性で提供される正規表現に一致するファイル名を拒否します。`(jar\|exe)$`など。 |
 | `max_file_size`                   | 整数        | いいえ       | 許可される最大ファイルサイズ（MB）。 |
-| `member_check`                    | ブール値        | いいえ       | `true`の場合、GitLabユーザーのみがコミットを作成することを許可します。 |
-| `prevent_secrets`                 | ブール値        | いいえ       | `true`の場合、シークレットを[含む](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml)可能性のあるファイルを拒否します。 |
+| `member_check`                    | ブール値        | いいえ       | `true`の場合、GitLabユーザーのみがコミットを作成者できます。 |
+| `prevent_secrets`                 | ブール値        | いいえ       | `true`の場合、[シークレットを含む](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml)可能性のあるファイルを拒否します。 |
 | `reject_non_dco_commits`          | ブール値        | いいえ       | `true`の場合、DCO認証されていないコミットを拒否します。 |
 | `reject_unsigned_commits`         | ブール値        | いいえ       | `true`の場合、署名されていないコミットを拒否します。 |
 
-<!-- markdownlint-enable MD056 -->
-
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                         | 型    | 説明 |
 |-----------------------------------|---------|-------------|
-| `author_email_regex`              | 文字列  | この正規表現に一致するコミットの作成者のメールアドレスのみを許可します。 |
+| `author_email_regex`              | 文字列  | この正規表現に一致するコミット作成者のメールアドレスのみを許可します。 |
 | `branch_name_regex`               | 文字列  | この正規表現に一致するブランチ名のみを許可します。 |
-| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールが自分自身で確認済みのメールの1つである場合にのみ、ユーザーからのコミットを許可します。 |
-| `commit_committer_name_check`     | ブール値 | `true`の場合、コミットの作成者名が自分のGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_check`          | ブール値 | `true`の場合、コミッターのメールアドレスが自身の検証済みメールアドレスのいずれかである場合にのみ、ユーザーからのコミットを許可します。 |
+| `commit_committer_name_check`     | ブール値 | `true`の場合、コミット作成者名がGitLabアカウント名と一致する場合にのみ、ユーザーからのコミットを許可します。 |
 | `commit_message_negative_regex`   | 文字列  | この正規表現に一致するコミットメッセージを拒否します。 |
 | `commit_message_regex`            | 文字列  | `true`の場合、この正規表現に一致するコミットメッセージのみを許可します。 |
 | `created_at`                      | 文字列  | プッシュルールが作成された日時。 |
@@ -225,12 +218,12 @@ PUT /groups/:id/push_rule
 | `file_name_regex`                 | 文字列  | この正規表現に一致するファイル名を拒否します。 |
 | `id`                              | 整数 | プッシュルールのID。 |
 | `max_file_size`                   | 整数 | 許可される最大ファイルサイズ（MB）。 |
-| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成することを許可します。 |
-| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットが含まれている可能性のあるファイルを拒否します。 |
+| `member_check`                    | ブール値 | `true`の場合、GitLabユーザーのみがコミットを作成者できます。 |
+| `prevent_secrets`                 | ブール値 | `true`の場合、シークレットを含む可能性のあるファイルを拒否します。 |
 | `reject_non_dco_commits`          | ブール値 | `true`の場合、DCO認証されていないコミットを拒否します。 |
 | `reject_unsigned_commits`         | ブール値 | `true`の場合、署名されていないコミットを拒否します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -238,7 +231,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/19/push_rule?member_check=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -260,23 +253,23 @@ curl --request PUT \
 }
 ```
 
-## グループのプッシュルールを削除します {#delete-the-push-rules-of-a-group}
+## グループのプッシュルールを削除する {#delete-the-push-rules-of-a-group}
 
-グループのすべてのプッシュルールを削除します。
+指定されたグループのすべてのプッシュルールを削除します。
 
 ```plaintext
 DELETE /groups/:id/push_rule
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-成功すると、応答本文なしで[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、応答ボディなしで[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

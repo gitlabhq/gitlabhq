@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   it_behaves_like 'can collect git garbage' do
     let(:resource) { project }
@@ -24,7 +24,7 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
     end
 
     context 'when the repository has joined a pool' do
-      let_it_be(:pool) { create(:pool_repository, :ready, source_project: project) }
+      let_it_be(:pool, freeze: false) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do
         allow(subject).to receive(:gitaly_call)

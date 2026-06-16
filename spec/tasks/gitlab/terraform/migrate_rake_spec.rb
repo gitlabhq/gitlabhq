@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:terraform_states', :silence_stdout do
-  let!(:version) { create(:terraform_state_version) }
+RSpec.describe 'gitlab:terraform_states', :silence_stdout, feature_category: :infrastructure_as_code do
+  let(:version) { build_stubbed(:terraform_state_version) }
 
   let(:logger) { instance_double(Logger) }
   let(:helper) { double }

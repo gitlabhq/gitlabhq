@@ -1,20 +1,15 @@
-.base-image-build-buildx:
-  extends: .use-buildx
-  variables:
-    GIT_LFS_SKIP_SMUDGE: 1 # disable pulling objects from lfs
-  retry: 2
-
-# This image is used by:
-# - The `e2e:test-on-omnibus-ee` child pipeline test stage jobs
+# Parent-pipeline copy of the QA image. Consumed by:
+# - `build-qa-image as-if-foss` → `e2e:test-on-omnibus-ce` (CE / security MR & nightly flow)
+# - `start-release-environments-security-pipeline` on stable-branch / RC pipelines
+# The EE flow builds its own copy inside the `e2e:test-on-omnibus-ee` child pipeline
+# (see `.gitlab/ci/test-on-omnibus/internal.gitlab-ci.yml`).
+# Build steps are shared via `.build-qa-image-base` (global.gitlab-ci.yml).
 # See https://docs.gitlab.com/development/testing_guide/end_to_end/#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
-    - .base-image-build-buildx
+    - .build-qa-image-base
     - .build-images:rules:build-qa-image
   stage: build-images
-  needs: []
-  script:
-    - scripts/build_qa_image
 
 build-qa-image as-if-foss:
   extends:

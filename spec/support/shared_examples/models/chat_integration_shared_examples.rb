@@ -38,7 +38,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
   end
 
   describe "#execute" do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:webhook_url) { "https://example.gitlab.com/" }
@@ -226,7 +226,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       let(:sample_data) { Gitlab::DataBuilder::Note.build(note, user, :create) }
 
       context "with commit comment" do
-        let_it_be(:note) do
+        let_it_be(:note, freeze: false) do
           create(
             :note_on_commit,
             author: user,
@@ -240,7 +240,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       end
 
       context "with merge request comment" do
-        let_it_be(:note) do
+        let_it_be(:note, freeze: false) do
           create(:note_on_merge_request, project: project, note: "merge request note")
         end
 
@@ -248,7 +248,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       end
 
       context "with issue comment" do
-        let_it_be(:note) do
+        let_it_be(:note, freeze: false) do
           create(:note_on_issue, project: project, note: "issue note")
         end
 
@@ -256,7 +256,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       end
 
       context "with snippet comment" do
-        let_it_be(:note) do
+        let_it_be(:note, freeze: false) do
           create(:note_on_project_snippet, project: project, note: "snippet note")
         end
 
@@ -268,7 +268,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       let(:sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context "with failed pipeline" do
-        let_it_be(:pipeline) do
+        let_it_be(:pipeline, freeze: false) do
           create(
             :ci_pipeline,
             project: project, status: "failed",
@@ -280,7 +280,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
       end
 
       context "with succeeded pipeline" do
-        let_it_be(:pipeline) do
+        let_it_be(:pipeline, freeze: false) do
           create(
             :ci_pipeline,
             project: project, status: "success",
@@ -381,7 +381,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
     end
 
     context 'deployment events' do
-      let_it_be(:deployment) { create(:deployment) }
+      let_it_be(:deployment, freeze: false) { create(:deployment) }
 
       let(:sample_data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
@@ -424,8 +424,8 @@ RSpec.shared_examples 'supports group mentions' do |integration_factory|
 
   describe '#supported_events' do
     context 'when used in a project' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:integration) { build(integration_factory, project: project) }
+      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be(:integration, freeze: false) { build(integration_factory, project: project) }
 
       it 'does not support group mentions', :aggregate_failures do
         expect(integration.supported_events).not_to include('group_mention')
@@ -434,8 +434,8 @@ RSpec.shared_examples 'supports group mentions' do |integration_factory|
     end
 
     context 'when used in a group' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:integration) { build(integration_factory, group: group) }
+      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be(:integration, freeze: false) { build(integration_factory, group: group) }
 
       it 'supports group mentions', :aggregate_failures do
         expect(integration.supported_events).to include('group_mention')

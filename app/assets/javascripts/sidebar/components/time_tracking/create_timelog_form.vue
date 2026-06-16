@@ -21,6 +21,7 @@ import createTimelogMutation from '../../queries/create_timelog.mutation.graphql
 import { CREATE_TIMELOG_MODAL_ID, SUMMARY_MAX_LENGTH } from './constants';
 
 export default {
+  name: 'CreateTimelogForm',
   components: {
     GlDatepicker,
     GlFormGroup,

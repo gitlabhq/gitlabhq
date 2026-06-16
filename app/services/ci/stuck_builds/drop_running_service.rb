@@ -5,7 +5,7 @@ module Ci
     class DropRunningService
       include DropHelpers
 
-      BUILD_RUNNING_OUTDATED_TIMEOUT = 1.hour
+      BUILD_RUNNING_OUTDATED_TIMEOUT = 30.minutes
 
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning running, timed-out builds"

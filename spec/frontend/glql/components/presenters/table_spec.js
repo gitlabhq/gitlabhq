@@ -3,12 +3,13 @@ import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
+import ProjectPresenter from '~/glql/components/presenters/project.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
+import { MOCK_FIELDS, MOCK_ISSUES, MOCK_PROJECT } from '../../mock_data';
 
 describe('TablePresenter', () => {
   let wrapper;
@@ -81,6 +82,19 @@ describe('TablePresenter', () => {
       'Closed',
       'This is another description',
     ]);
+  });
+
+  it('routes the title-aliased field of a Project row through ProjectPresenter', async () => {
+    await createWrapper(
+      {
+        data: { nodes: [{ ...MOCK_PROJECT, id: 'gid://gitlab/Project/1', name: 'Wget2' }] },
+        fields: [{ key: 'name', label: 'Name', name: 'name' }],
+      },
+      mountExtended,
+    );
+
+    const row = wrapper.findByTestId('table-row-0');
+    expect(row.findComponent(ProjectPresenter).exists()).toBe(true);
   });
 
   const order0 = [

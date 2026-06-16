@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { DOCS_URL } from '~/constants';
 
 export default {
+  name: 'RunnerKubernetesInstructions',
   components: {
     GlButton,
     GlIcon,

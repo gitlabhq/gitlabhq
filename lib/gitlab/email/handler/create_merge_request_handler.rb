@@ -35,6 +35,7 @@ module Gitlab
         def execute
           raise ProjectNotFound unless project
 
+          log_email_handler
           validate_permission!(:create_merge_request_in)
           validate_permission!(:create_merge_request_from)
 
@@ -59,6 +60,14 @@ module Gitlab
         end
 
         private
+
+        def parent_namespace
+          project.project_namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_PROJECT_ID => project.id }
+        end
 
         def build_merge_request
           ::MergeRequests::BuildService.new(project: project, current_user: author, params: merge_request_params).execute

@@ -80,7 +80,7 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
   end
 
   describe 'state transitions' do
-    let_it_be(:workload_for_aasm) { build(:ci_workload) }
+    let_it_be(:workload_for_aasm, freeze: false) { build(:ci_workload) }
 
     using RSpec::Parameterized::TableSyntax
     where(:status, :can_finish, :can_drop) do
@@ -102,7 +102,9 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let_it_be(:ref_path) { 'refs/workloads/7db' }
-      let_it_be(:workload) { create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path) }
+      let_it_be(:workload, freeze: false) do
+        create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path)
+      end
 
       before do
         project.repository.create_ref(project.commit.id, ref_path)

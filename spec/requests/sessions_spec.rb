@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Sessions', feature_category: :system_access do
   include SessionHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   it_behaves_like 'Base action controller' do
     subject(:request) { get new_user_session_path }
@@ -33,7 +33,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
   end
 
   context 'when using two-factor authentication via OTP' do
-    let_it_be(:user) { create(:user, :two_factor, :invalid) }
+    let_it_be(:user, freeze: false) { create(:user, :two_factor, :invalid) }
     let(:user_params) { { login: user.username, password: user.password } }
 
     context 'with an invalid user' do

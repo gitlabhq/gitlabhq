@@ -16,6 +16,7 @@ import { FILE_SYMLINK_MODE } from '../constants';
 
   */
 export default {
+  name: 'FileIcon',
   components: {
     GlLoadingIcon,
     GlIcon,

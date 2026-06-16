@@ -15,15 +15,15 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     )
   end
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
-  let_it_be(:commit) { project.commit(sample_commit.id) }
-  let_it_be(:diffs) { commit.raw_diffs }
-  let_it_be(:diff) { diffs.first }
-  let_it_be(:diff_refs) { commit.diff_refs }
-  let_it_be(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  let_it_be(:diff_files) { [diff_file] }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
+  let_it_be(:commit, freeze: false) { project.commit(sample_commit.id) }
+  let_it_be(:diffs, freeze: false) { commit.raw_diffs }
+  let_it_be(:diff, freeze: false) { diffs.first }
+  let_it_be(:diff_refs, freeze: false) { commit.diff_refs }
+  let_it_be(:diff_file, freeze: false) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
+  let_it_be(:diff_files, freeze: false) { [diff_file] }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
   let(:expected_button_classes) do
     "gl-button btn btn-md btn-default"

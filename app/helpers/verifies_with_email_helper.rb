@@ -7,7 +7,7 @@ module VerifiesWithEmailHelper
 
   # Used by frontend to decide if we should render the "skip for now" button
   def permitted_to_skip_email_otp_in_warning_period?(user)
-    Feature.enabled?(:email_based_mfa, user) &&
+    user.email_otp_available? &&
       !user.two_factor_enabled? &&
       trusted_ip_address?(user) &&
       !treat_as_locked?(user) &&

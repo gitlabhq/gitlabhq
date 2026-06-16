@@ -6,6 +6,7 @@ import Tracking from '~/tracking';
 import { PAGE_CONFIG } from '../constants';
 
 export default {
+  name: 'AlertStatus',
   i18n: {
     UPDATE_ALERT_STATUS_ERROR: s__(
       'AlertManagement|There was an error while updating the status of the alert.',

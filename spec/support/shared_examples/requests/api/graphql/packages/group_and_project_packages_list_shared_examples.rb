@@ -3,12 +3,12 @@
 RSpec.shared_examples 'group and project packages query' do
   include GraphqlHelpers
 
-  let_it_be(:versionless_package) { create(:maven_package, project: project1, version: nil) }
-  let_it_be(:maven_package) { create(:maven_package, project: project1, name: 'bab', version: '6.0.0', created_at: 1.day.ago) }
-  let_it_be(:npm_package) { create(:npm_package, project: project1, name: 'cab', version: '7.0.0', created_at: 4.days.ago) }
-  let_it_be(:composer_package) { create(:composer_package_sti, project: project2, name: 'dab', version: '4.0.0', created_at: 3.days.ago) }
-  let_it_be(:debian_package) { create(:debian_package, project: project2, name: 'aab', version: '5.0.0', created_at: 2.days.ago) }
-  let_it_be(:composer_metadatum) do
+  let_it_be(:versionless_package, freeze: false) { create(:maven_package, project: project1, version: nil) }
+  let_it_be(:maven_package, freeze: false) { create(:maven_package, project: project1, name: 'bab', version: '6.0.0', created_at: 1.day.ago) }
+  let_it_be(:npm_package, freeze: false) { create(:npm_package, project: project1, name: 'cab', version: '7.0.0', created_at: 4.days.ago) }
+  let_it_be(:composer_package, freeze: false) { create(:composer_package_sti, project: project2, name: 'dab', version: '4.0.0', created_at: 3.days.ago) }
+  let_it_be(:debian_package, freeze: false) { create(:debian_package, project: project2, name: 'aab', version: '5.0.0', created_at: 2.days.ago) }
+  let_it_be(:composer_metadatum, freeze: false) do
     create(:composer_metadatum,
       package: composer_package,
       target_sha: 'afdeh',
@@ -64,7 +64,7 @@ RSpec.shared_examples 'group and project packages query' do
     end
 
     context '_links' do
-      let_it_be(:errored_package) { create(:maven_package, :error, project: project1) }
+      let_it_be(:errored_package, freeze: false) { create(:maven_package, :error, project: project1) }
 
       let(:package_web_paths) { graphql_data_at(resource_type, :packages, :nodes, :_links, :web_path) }
 
@@ -96,7 +96,7 @@ RSpec.shared_examples 'group and project packages query' do
   end
 
   describe 'sorting and pagination' do
-    let_it_be(:packages_order_map) do
+    let_it_be(:packages_order_map, freeze: false) do
       {
         TYPE_ASC: [maven_package, npm_package, composer_package, debian_package],
         TYPE_DESC: [debian_package, composer_package, npm_package, maven_package],
@@ -186,7 +186,7 @@ RSpec.shared_examples 'group and project packages query' do
     end
 
     context 'status' do
-      let_it_be(:errored_package) { create(:maven_package, project: project1, status: 'error') }
+      let_it_be(:errored_package, freeze: false) { create(:maven_package, project: project1, status: 'error') }
 
       let(:params) { { status: :ERROR } }
 

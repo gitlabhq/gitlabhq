@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be_with_reload(:import_state) { create(factory, :started, project: project, jid: '123') }
   let(:worker) { described_class.new }
   let(:next_stage) { 'finish' }

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Unleash, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
-  let_it_be(:project, refind: true) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
 
   let(:project_id) { project.id }
   let(:params) {}

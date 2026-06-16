@@ -4,6 +4,8 @@ module Import
   module Offline
     module Imports
       class CreateService
+        include Gitlab::Utils::StrongMemoize
+
         # @param storage_configuration [Hash]
         #   {
         #     bucket: 'my-bucket',
@@ -28,6 +30,7 @@ module Import
         def execute
           return feature_flag_disabled_error unless Feature.enabled?(:offline_transfer_imports, current_user)
           return destination_validation_error unless destinations_valid?
+          return cross_organization_error(cross_organization_destination) if cross_organization_destination
 
           bulk_import = BulkImport.transaction do
             create_bulk_import.tap do |bulk_import|
@@ -80,6 +83,33 @@ module Import
 
         def destination_validation_error
           service_error(s_('OfflineTransfer|One or more destination paths is invalid.'))
+        end
+
+        # Mirrors BulkImports::CreateService#validate_destination_organizations!.
+        def cross_organization_destination
+          entities = Array.wrap(params[:entities])
+          namespaces = entities.filter_map { |entity_params| entity_params[:destination_namespace].presence }
+          groups_by_path = Group.where_full_path_in(namespaces)
+            .includes(:organization) # rubocop:disable CodeReuse/ActiveRecord -- eager-load org to avoid N+1 when resolving destinations
+            .index_by { |group| group.full_path.downcase }
+
+          entities.each do |entity_params|
+            destination_namespace = entity_params[:destination_namespace]
+            destination_group = groups_by_path[destination_namespace&.downcase]
+            resolved_organization = destination_group&.organization || fallback_organization
+
+            next if resolved_organization == fallback_organization
+            next unless resolved_organization.isolated? || fallback_organization.isolated?
+
+            return destination_namespace
+          end
+
+          nil
+        end
+        strong_memoize_attr :cross_organization_destination
+
+        def cross_organization_error(destination_namespace)
+          service_error(::BulkImports::Error.cross_organization_destination(destination_namespace).message)
         end
 
         def feature_flag_disabled_error

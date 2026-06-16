@@ -11,7 +11,7 @@ GitLab Duo uses generative AI to help increase your velocity and make you more p
 GitLab uses the right large language models (LLMs) for specific tasks.
 These LLMs are [Anthropic Claude](https://claude.com/product/overview),
 [Fireworks AI-hosted Codestral](https://mistral.ai/news/codestral),
-[Google Vertex AI models](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/overview),
+[Gemini Enterprise Agent Platform models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/beginners-guide),
 and [OpenAI models](https://platform.openai.com/docs/models).
 
 ## Progressive enhancement
@@ -34,14 +34,12 @@ The below reflects the current retention periods of GitLab AI model
 [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
 For GitLab Duo requests, GitLab has a zero data retention policy
-with Anthropic, AWS, Fireworks AI, and Google.
+with Fireworks AI. Fireworks AI discards model input and output data immediately after the output is
+provided and does not store input and output data for abuse monitoring. The exception
+to this policy is when prompt caching is enabled for
+Code Suggestions and GitLab Duo Agentic Chat. For OpenAI models, you cannot turn off prompt caching.
 
-These vendors discard model input and output data immediately after the output is
-provided and do not store input and output data for abuse monitoring. The exception
-to this policy is when Fireworks AI and Vertex AI prompt caching is enabled for
-Code Suggestions and GitLab Duo Agentic Chat.
-
-For OpenAI models, you cannot turn off prompt caching. Certain OpenAI models, including GPT-5.5 and GPT-5.5 Pro, are subject to [limited vendor-side data retention](https://developers.openai.com/api/docs/guides/your-data#safety-retention). Models subject to this limited vendor-side data retention are designated in the [GitLab Duo supported models documentation](model_selection.md#supported-models).
+Certain Anthropic and OpenAI models, including when hosted on Amazon Bedrock and Gemini Enterprise Agent Platform (formerly Vertex AI Platform), are subject to limited vendor-side data retention. Models subject to this limited vendor-side data retention are designated in the [GitLab Duo supported models documentation](../duo_agent_platform/model_selection.md#supported-models).
 
 All GitLab AI model sub-processors are restricted from using model input and
 output to train models and are under data protection agreements with GitLab that
@@ -66,7 +64,7 @@ GitLab does not train generative AI models.
 
 For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
-- Google Vertex AI models API [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance), [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai), [details about foundation model training](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance#foundation_model_training), Google [Secure AI Framework (SAIF)](https://safety.google/cybersecurity-advancements/saif/), and [release notes](https://cloud.google.com/vertex-ai/docs/release-notes).
+- Gemini Enterprise Agent Platform models API [data governance](https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention), [responsible AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/responsible-ai), and Google [Secure AI Framework (SAIF)](https://safety.google/safety/saif/).
 - Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution), training data [FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training), [models overview](https://docs.anthropic.com/en/docs/about-claude/models), and [data recency article](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data).
 
 ## Telemetry
@@ -192,3 +190,49 @@ The following information is not included in logs, unless users include it in th
 - Project or namespace identifiers.
 
 GitLab does not remove identifiers that users have included in their prompt.
+
+## Prompt caching
+
+Prompt caching improves latency by avoiding the reprocessing of cached prompt and input data.
+When you turn on prompt caching, the model vendor temporarily stores prompt data in memory.
+The cached data is never logged to any persistent storage.
+
+For both Agent Platform features that use the prompt registry and Code Suggestions,
+token caching is automatically turned on for supported models.
+
+### Turn off prompt caching
+
+By default, prompt caching is turned on.
+You can turn prompt caching off for a top-level group or an instance.
+
+{{< tabs >}}
+
+{{< tab title="For a top-level group" >}}
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="For an instance" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}

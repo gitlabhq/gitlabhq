@@ -1,0 +1,11 @@
+# @feature_category: custom_dashboards_foundation
+query getSystemDashboard($slug: String!) {
+  customSystemDashboard(slug: $slug) {
+    id
+    name
+    description
+    config
+    system
+    slug
+  }
+}

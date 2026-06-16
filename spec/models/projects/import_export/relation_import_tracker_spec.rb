@@ -13,7 +13,7 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
     it { is_expected.to validate_presence_of(:relation) }
 
     describe '#cannot_be_created_for_importing_project' do
-      let_it_be(:project) do
+      let_it_be(:project, freeze: false) do
         create(:project, import_state: create(:import_state))
       end
 
@@ -42,7 +42,7 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
 
   describe '#stale?' do
     context 'when older than 24 hours' do
-      let_it_be(:status) { build(:relation_import_tracker, created_at: 2.days.ago) }
+      let_it_be(:status, freeze: false) { build(:relation_import_tracker, created_at: 2.days.ago) }
 
       it 'is stale if created' do
         status.status = 0
@@ -66,7 +66,7 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
     end
 
     context 'when younger than 24 hours' do
-      let_it_be(:status) { build(:relation_import_tracker, created_at: (23.hours + 59.minutes).ago) }
+      let_it_be(:status, freeze: false) { build(:relation_import_tracker, created_at: (23.hours + 59.minutes).ago) }
 
       it 'is not stale' do
         expect(status.stale?).to be false

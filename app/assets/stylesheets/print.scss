@@ -122,4 +122,40 @@
   .page-with-panels .layout-page {
     height: auto !important;
   }
+
+  /* stylelint-disable gitlab/no-js-class */
+  .js-file-title,
+  .js-signature-container,
+  .js-fork-suggestion-label {
+    display: none !important;
+  }
+  /* stylelint-enable gitlab/no-js-class */
+
+  // Hide the file browser sidebar and reset its flex container so #tree-holder fills the page
+  .navigation-root {
+    display: block !important;
+  }
+
+  .navigation-root > *:not(#tree-holder) {
+    display: none !important;
+  }
+
+  #tree-holder > *:not(#blob-content-holder) {
+    display: none !important;
+  }
+
+  #tree-holder {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .blob-content-holder .file-actions,
+  .blob-content-holder .file-blame-legend {
+    display: none !important;
+  }
+
+  .blob-content-holder .file-holder {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
 }

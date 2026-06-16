@@ -763,6 +763,114 @@ New scopes must create a new query builder class that inherits from `Search::Ela
 The query builder framework provides a collection of pre-built filters to handle common search scenarios. These filters
 simplify the process of constructing complex query conditions without having to write raw Elasticsearch query DSL.
 
+### Composing a query builder with `QUERY_COMPONENTS`
+
+A query builder declares its pipeline as a `QUERY_COMPONENTS` hash. The base class
+walks the hash and applies each method to the running `query_hash`, so subclasses
+do not override `build`.
+
+Hash keys are modules (`Filters`, `Formats`, `Sorts`, `Aggregations`). Values are
+an array of methods on that module. Each method receives the running `query_hash:`
+and the builder's `options:`, and returns the next `query_hash`.
+
+`skip_if_size_zero` skips query components when the size is set to zero. For example, sorting
+does not need to be applied when running a count only query.
+
+A minimal example from `Search::Elastic::UserQueryBuilder`:
+
+```ruby
+QUERY_COMPONENTS = {
+  ::Search::Elastic::Filters => %i[by_forbidden_states by_user_accessible_namespaces],
+  ::Search::Elastic::Formats => %i[size source_fields],
+  ::Search::Elastic::Sorts::Base => %i[sort_by]
+}.freeze
+```
+
+An more complex example from `Search::Elastic::WorkItemQueryBuilder`:
+
+```ruby
+QUERY_COMPONENTS = {
+  ::Search::Elastic::Filters => %i[
+    by_combined_search_level_and_membership
+    by_combined_confidentiality
+    by_state
+    by_not_hidden
+    by_label_ids
+    by_archived
+    by_work_item_type_ids
+    by_author
+    by_assignees
+    by_milestone
+    by_milestone_state
+    by_label_names
+    by_weight
+    by_health_status
+    by_closed_at
+    by_created_at
+    by_updated_at
+    by_due_date
+    by_iids
+  ],
+  ::Search::Elastic::Aggregations => %i[by_label_ids by_work_item_type_ids],
+  ::Search::Elastic::Formats => [
+    { method: :source_fields, skip_if_size_zero: true },
+    { method: :page, skip_if_size_zero: true },
+    { method: :size, skip_if_size_zero: true }
+  ],
+  ::Search::Elastic::Sorts::WorkItem => [
+    { method: :sort_by, skip_if_size_zero: true }
+  ]
+}.freeze
+```
+
+#### Subclass hooks
+
+Override these methods on the subclass to plug into the pipeline.
+
+| Method | When it runs | Purpose |
+|---|---|---|
+| `extra_options` | At initialization. | Return option defaults to merge into `options`. |
+| `prepare_options` | Before `build_initial_query_hash`. | Mutate `options` (set defaults, transform inputs). |
+| `build_initial_query_hash` | After `prepare_options`. | Return the starting `query_hash` (full-text query, IID query, or empty bool). |
+
+#### Per-method flags
+
+To express conditional behavior, replace the bare symbol with a hash that names the
+method and the flag.
+
+| Flag | Apply the method when... |
+|---|---|
+| `migration:` | The given migration has finished. |
+| `unless_migration:` | The given migration has not finished. |
+| `skip_if_size_zero:` | At the end of the pipeline, `query_hash[:size]` is greater than `0`. Use for `Formats` and `Sorts` methods in builders that also run aggregation queries, because aggregations set `size: 0`. |
+
+Pair `migration:` and `unless_migration:` to swap one filter for another during a
+gradual rollout. After the migration completes, remove the legacy entry and the
+`migration:` flag.
+
+```ruby
+QUERY_COMPONENTS = {
+  ::Search::Elastic::Filters => [
+    :by_type,
+    { method: :by_search_level_and_membership, migration: :migration_name },
+    { method: :by_project_authorization, unless_migration: :migration_name },
+    :by_archived
+  ],
+  ::Search::Elastic::Formats => [
+    { method: :source_fields, skip_if_size_zero: true },
+    { method: :size, skip_if_size_zero: true }
+  ]
+}.freeze
+```
+
+#### Filter and aggregation contract
+
+Every method named in `QUERY_COMPONENTS` must accept `query_hash:` and `options:`
+and return the updated `query_hash`. Methods that only act when a specific option
+is set (for example, `Aggregations.by_label_ids` when `options[:aggregation]` is
+`true`) must return `query_hash` unchanged in the other case, so they can sit
+unconditionally in the pipeline.
+
 ### Creating a filter
 
 Filters are essential components in building effective Elasticsearch queries. They help narrow down search results

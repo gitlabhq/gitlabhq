@@ -92,6 +92,86 @@ RSpec.describe 'getting organizations information', feature_category: :organizat
     end
   end
 
+  describe 'exclude_default' do
+    let(:current_user) { user }
+
+    before do
+      stub_const("Organizations::Organization::DEFAULT_ORGANIZATION_ID", user_organization.id)
+    end
+
+    context 'when exclude_default is true' do
+      let(:params) { { excludeDefault: true } }
+
+      it 'excludes the default organization from results' do
+        request_organization
+
+        expect(organizations).not_to include(a_graphql_entity_for(user_organization))
+      end
+    end
+
+    context 'when exclude_default is false' do
+      let(:params) { { excludeDefault: false } }
+
+      it 'includes the default organization in results' do
+        request_organization
+
+        expect(organizations).to include(a_graphql_entity_for(user_organization))
+      end
+    end
+
+    context 'when exclude_default is not set' do
+      let(:params) { {} }
+
+      it 'does not exclude any organizations' do
+        request_organization
+
+        expect(organizations).to include(a_graphql_entity_for(user_organization))
+      end
+    end
+  end
+
+  describe 'state' do
+    let(:current_user) { user }
+
+    let_it_be(:unconfirmed_organization) do
+      create(:organization, :public, name: 'Unconfirmed Org', state: :unconfirmed)
+    end
+
+    context 'when filtering by state' do
+      let(:query) do
+        <<~QUERY
+          {
+            organizations(state: ACTIVE) {
+              nodes {
+                id
+                path
+              }
+            }
+          }
+        QUERY
+      end
+
+      it 'returns only organizations matching the given state' do
+        request_organization
+
+        expect(organizations).not_to include(a_graphql_entity_for(unconfirmed_organization))
+        expect(organizations).to include(a_graphql_entity_for(user_organization))
+      end
+    end
+
+    context 'when state is not provided' do
+      let(:params) { {} }
+
+      it 'returns organizations regardless of state' do
+        request_organization
+
+        expected_ids = [user_organization, unconfirmed_organization, current_organization]
+          .map { |o| global_id_of(o).to_s }
+        expect(organizations.pluck('id')).to match_array(expected_ids)
+      end
+    end
+  end
+
   describe 'search' do
     let(:current_user) { user }
     let(:params) { { search: user_organization.name } }

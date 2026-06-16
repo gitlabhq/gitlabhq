@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_category: :importers do
   describe '#run', :clean_gitlab_redis_shared_state do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
     let(:entity) do
       create(

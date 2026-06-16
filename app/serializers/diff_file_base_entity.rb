@@ -117,6 +117,7 @@ class DiffFileBaseEntity < Grape::Entity
   def memoized_submodule_links(diff_file, options)
     strong_memoize(:submodule_links) do
       next unless diff_file.submodule?
+      next unless diff_file.blob
 
       options[:submodule_links]&.for(diff_file.blob, diff_file.content_sha, diff_file)
     end

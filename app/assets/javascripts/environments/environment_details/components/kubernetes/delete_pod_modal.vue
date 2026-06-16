@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import deleteKubernetesPodMutation from '../../../graphql/mutations/delete_kubernetes_pod.mutation.graphql';
 
 export default {
+  name: 'DeletePodModal',
   components: {
     GlModal,
     GlSprintf,

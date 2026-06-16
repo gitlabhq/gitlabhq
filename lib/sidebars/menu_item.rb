@@ -6,7 +6,7 @@ module Sidebars
 
     attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon,
       :sprite_icon_html_options, :has_pill, :pill_count, :pill_count_field, :pill_count_dynamic, :super_sidebar_parent,
-      :avatar, :entity_id
+      :avatar, :entity_id, :description, :tier, :library_icon
     attr_accessor :render
     alias_method :has_pill?, :has_pill
 
@@ -14,7 +14,8 @@ module Sidebars
     def initialize(
       title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil,
       sprite_icon_html_options: {}, has_pill: false, pill_count_dynamic: false, pill_count: nil,
-      pill_count_field: nil, super_sidebar_parent: nil, avatar: nil, entity_id: nil
+      pill_count_field: nil, super_sidebar_parent: nil, avatar: nil, entity_id: nil,
+      description: nil, tier: nil, library_icon: nil
     )
       @title = title
       @link = link
@@ -30,6 +31,9 @@ module Sidebars
       @pill_count_field = pill_count_field
       @pill_count_dynamic = pill_count_dynamic
       @super_sidebar_parent = super_sidebar_parent
+      @description = description
+      @tier = tier
+      @library_icon = library_icon
     end
     # rubocop: enable Metrics/ParameterLists
 
@@ -54,7 +58,7 @@ module Sidebars
         # https://gitlab.com/gitlab-org/gitlab/-/issues/391864
         #
         # container_html_options
-      }.merge(pill_attributes).compact
+      }.merge(pill_attributes).merge(feature_library_attributes).compact
     end
 
     def pill_attributes
@@ -64,6 +68,17 @@ module Sidebars
         pill_count: pill_count,
         pill_count_field: pill_count_field,
         pill_count_dynamic: pill_count_dynamic
+      }
+    end
+
+    # Feature Library metadata. Serialized under dedicated keys (not `icon`/`subtitle`) so the
+    # current super sidebar (nav_item.vue) ignores them and rendering is unchanged. Consumed by
+    # the upcoming Feature Library modal. See gitlab-org/gitlab#601393.
+    def feature_library_attributes
+      {
+        description: description,
+        tier: tier,
+        library_icon: library_icon
       }
     end
   end

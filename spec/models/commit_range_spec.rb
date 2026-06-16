@@ -9,9 +9,9 @@ RSpec.describe CommitRange do
   let(:full_sha_from) { commit1.id }
   let(:sha_to)   { commit2.short_id }
   let(:sha_from) { commit1.short_id }
-  let!(:commit2) { project.commit }
-  let!(:commit1) { project.commit("HEAD~2") }
-  let!(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:commit2) { project.commit }
+  let_it_be(:commit1) { project.commit("HEAD~2") }
 
   describe 'modules' do
     subject { described_class }

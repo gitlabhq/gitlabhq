@@ -22,7 +22,7 @@ To create event and/or metric definitions, use the [gitlab_internal_events_cli g
 
 ```shell
 > gem install gitlab_internal_events_cli
-> gem exec gitlab-internal-events-cli
+> gem exec gitlab_internal_events_cli
 ```
 
 This CLI gem will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.

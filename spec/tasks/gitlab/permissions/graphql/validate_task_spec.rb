@@ -5,16 +5,12 @@ require 'spec_helper'
 RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
-  # Helper to create a mock directive
   def mock_directive(permissions:, boundary_type:)
-    instance_double(
-      Directives::Authz::GranularScope,
-      arguments: {
+    Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
+      allow(d).to receive(:arguments).and_return(
         permissions: Array(permissions).map(&:to_s).map(&:upcase),
         boundary_type: boundary_type.to_s
-      }
-    ).tap do |d|
-      allow(d).to receive(:is_a?) { |klass| klass == Directives::Authz::GranularScope }
+      )
     end
   end
 
@@ -210,6 +206,195 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
     end
   end
 
+  describe '#format_missing_authorization_errors' do
+    it 'returns empty string when there are no violations' do
+      expect(task.send(:format_missing_authorization_errors)).to eq('')
+    end
+  end
+
+  describe '#load_todo_entries' do
+    context 'when the todo file does not exist' do
+      before do
+        allow(described_class::TODO_FILE).to receive(:exist?).and_return(false)
+      end
+
+      it 'returns an empty set' do
+        expect(task.load_todo_entries).to eq(Set.new)
+      end
+    end
+
+    context 'when the todo file exists' do
+      before do
+        allow(described_class::TODO_FILE).to receive_messages(exist?: true,
+          readlines: ["# a comment\n", "\n", "mutation:SomeMutation\n", "mutation:AnotherMutation\n"])
+      end
+
+      it 'returns a set of non-comment, non-blank entries' do
+        expect(task.load_todo_entries).to eq(Set['mutation:SomeMutation', 'mutation:AnotherMutation'])
+      end
+    end
+  end
+
+  describe '#current_todo_entries' do
+    context 'when a mutation has no GranularScope directive' do
+      let(:resolver) { mock_resolver(graphql_name: 'NoDirectiveMutation') }
+      let(:mutation_field) { mock_mutation_field(resolver: resolver) }
+      let(:mutation_type) do
+        fields = { 'noDirectiveMutation' => mutation_field }
+        type = Object.new
+        type.define_singleton_method(:respond_to?) { |method, *| %i[kind fields].include?(method) }
+        type.define_singleton_method(:kind) { type }
+        type.define_singleton_method(:object?) { true }
+        type.define_singleton_method(:directives) { [] }
+        type.define_singleton_method(:fields) { fields }
+        type
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
+      end
+
+      it 'includes the mutation entry' do
+        expect(task.send(:current_todo_entries)).to include('mutation:NoDirectiveMutation')
+      end
+    end
+
+    context 'when a mutation has a GranularScope directive' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
+      let(:resolver) { mock_resolver(graphql_name: 'DirectiveMutation', directive: directive) }
+      let(:mutation_field) { mock_mutation_field(resolver: resolver) }
+      let(:mutation_type) do
+        fields = { 'directiveMutation' => mutation_field }
+        type = Object.new
+        type.define_singleton_method(:respond_to?) { |method, *| %i[kind fields].include?(method) }
+        type.define_singleton_method(:kind) { type }
+        type.define_singleton_method(:object?) { true }
+        type.define_singleton_method(:directives) { [] }
+        type.define_singleton_method(:fields) { fields }
+        type
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
+      end
+
+      it 'does not include the mutation entry' do
+        expect(task.send(:current_todo_entries)).not_to include('mutation:DirectiveMutation')
+      end
+    end
+
+    context 'when a type has no GranularScope directive' do
+      let(:type) do
+        mock_type('AuthorizedType')
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'AuthorizedType' => type,
+'Mutation' => empty_mutation_type })
+      end
+
+      it 'includes the type entry' do
+        expect(task.send(:current_todo_entries)).to include('type:AuthorizedType')
+      end
+    end
+
+    context 'when a type has a GranularScope directive' do
+      let(:directive) { mock_directive(permissions: :read_something, boundary_type: :project) }
+      let(:type) do
+        mock_type('AuthorizedType', directive: directive)
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'AuthorizedType' => type,
+'Mutation' => empty_mutation_type })
+      end
+
+      it 'does not include the type entry' do
+        expect(task.send(:current_todo_entries)).not_to include('type:AuthorizedType')
+      end
+    end
+  end
+
+  describe '#sync_todo' do
+    let(:resolver) { mock_resolver(graphql_name: 'NoDirectiveMutation') }
+    let(:mutation_field) { mock_mutation_field(resolver: resolver) }
+    let(:mutation_type) do
+      fields = { 'noDirectiveMutation' => mutation_field }
+      type = Object.new
+      type.define_singleton_method(:respond_to?) { |method, *| %i[kind fields].include?(method) }
+      type.define_singleton_method(:kind) { type }
+      type.define_singleton_method(:object?) { true }
+      type.define_singleton_method(:directives) { [] }
+      type.define_singleton_method(:fields) { fields }
+      type
+    end
+
+    before do
+      allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
+      allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions).and_return([])
+      allow(task).to receive(:class_source_path).and_return('app/graphql/mutations/no_directive_mutation.rb')
+    end
+
+    context 'when the todo file is up to date' do
+      before do
+        allow(described_class::TODO_FILE).to receive_messages(
+          exist?: true,
+          readlines: ["mutation:NoDirectiveMutation\n"]
+        )
+      end
+
+      it 'returns without output' do
+        expect { task.sync_todo }.not_to output.to_stdout
+      end
+    end
+
+    context 'when the todo file has a stale entry' do
+      before do
+        allow(described_class::TODO_FILE).to receive_messages(
+          exist?: true,
+          readlines: ["mutation:OldMutation\n"]
+        )
+        allow(described_class::TODO_FILE).to receive(:write)
+      end
+
+      it 'auto-updates the file and aborts with a commit reminder' do
+        expect { task.sync_todo }
+          .to raise_error(SystemExit)
+          .and output(/had stale entries and has been updated.*Please commit/m).to_stdout
+      end
+    end
+  end
+
+  describe '#update_todo' do
+    let(:resolver) { mock_resolver(graphql_name: 'NoDirectiveMutation') }
+    let(:mutation_field) { mock_mutation_field(resolver: resolver) }
+    let(:mutation_type) do
+      fields = { 'noDirectiveMutation' => mutation_field }
+      type = Object.new
+      type.define_singleton_method(:respond_to?) { |method, *| %i[kind fields].include?(method) }
+      type.define_singleton_method(:kind) { type }
+      type.define_singleton_method(:object?) { true }
+      type.define_singleton_method(:directives) { [] }
+      type.define_singleton_method(:fields) { fields }
+      type
+    end
+
+    before do
+      allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
+      allow(described_class::TODO_FILE).to receive_messages(
+        exist?: true,
+        readlines: ["# GraphQL header\n"],
+        write: nil
+      )
+    end
+
+    it 'writes the header and sorted entries to the todo file and outputs an updated message' do
+      expect { task.update_todo }.to output(/updated/).to_stdout
+      expect(described_class::TODO_FILE).to have_received(:write)
+        .with("# GraphQL header\nmutation:NoDirectiveMutation\n")
+    end
+  end
+
   describe '#run', :unlimited_max_formatted_output_length do
     subject(:run) { task.run }
 
@@ -218,6 +403,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
         .and_return([:read_project, :update_project, :create_issue, :read_something])
       allow(task).to receive(:class_source_path).and_return('app/graphql/types/test_type.rb')
+      allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
     end
 
     context 'when there are no directives' do
@@ -392,9 +578,88 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
       before do
         allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => mutation_type })
+        allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
       end
 
-      it 'skips the mutation and completes successfully' do
+      it 'reports a missing_authorization violation' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL mutations and/or types are missing granular token authorization.
+          #  Add `authorize_granular_token` with permissions and boundary_type to the mutation or type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/graphql_implementation_guide
+          #
+          #    - [mutation] NoDirectiveMutation (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
+      end
+
+      context 'when the mutation is listed in the todo file' do
+        before do
+          allow(task).to receive(:load_todo_entries).and_return(Set['mutation:NoDirectiveMutation'])
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+        end
+      end
+    end
+
+    context 'when a type has no GranularScope directive' do
+      let(:type) do
+        mock_type('CustomEmojiType')
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'CustomEmojiType' => type, 'Mutation' => empty_mutation_type
+        )
+        allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
+      end
+
+      it 'reports a missing_authorization violation' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL mutations and/or types are missing granular token authorization.
+          #  Add `authorize_granular_token` with permissions and boundary_type to the mutation or type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/graphql_implementation_guide
+          #
+          #    - [type] CustomEmojiType (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
+      end
+
+      context 'when the type is listed in the todo file' do
+        before do
+          allow(task).to receive(:load_todo_entries).and_return(Set['type:CustomEmojiType'])
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+        end
+      end
+    end
+
+    context 'when a type has a GranularScope directive' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
+      let(:type) do
+        mock_type('CustomEmojiType', directive: directive)
+      end
+
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'CustomEmojiType' => type, 'Mutation' => empty_mutation_type
+        )
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'completes successfully' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
       end
     end
@@ -479,6 +744,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
 
       before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["type:QueryType\n"])
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
         allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
@@ -494,6 +760,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       let(:type) { mock_type('QueryType', fields: { 'project' => field_without_granular_scope }) }
 
       before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["type:QueryType\n"])
         allow(GitlabSchema).to receive(:types).and_return(
           'QueryType' => type, 'Mutation' => empty_mutation_type
         )
@@ -522,6 +789,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
 
       before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["type:QueryType\n"])
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
         allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
@@ -534,14 +802,11 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
 
     context 'when a type directive has nil boundary_type' do
       let(:directive) do
-        instance_double(
-          Directives::Authz::GranularScope,
-          arguments: {
+        Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
+          allow(d).to receive(:arguments).and_return(
             permissions: ['READ_PROJECT'],
             boundary_type: nil
-          }
-        ).tap do |d|
-          allow(d).to receive(:is_a?) { |klass| klass == Directives::Authz::GranularScope }
+          )
         end
       end
 
@@ -593,6 +858,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       let(:type) { mock_type('SomeType', fields: { 'someField' => field_without_directives }) }
 
       before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["type:SomeType\n"])
         allow(GitlabSchema).to receive(:types).and_return(
           'SomeType' => type, 'Mutation' => empty_mutation_type
         )
@@ -701,6 +967,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project group]) }
 
       before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["type:QueryType\n"])
         allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
         allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])

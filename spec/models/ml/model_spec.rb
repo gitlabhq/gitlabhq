@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Model, feature_category: :mlops do
-  let_it_be(:project1) { create(:project) }
-  let_it_be(:project2) { create(:project) }
-  let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: project1) }
-  let_it_be(:another_existing_model) { create(:ml_models, name: 'an_existing_model', project: project2) }
-  let_it_be(:valid_name) { 'a_valid_name' }
-  let_it_be(:valid_description) { 'Valid description' }
-  let_it_be(:default_experiment) { create(:ml_experiments, name: "[model]#{valid_name}", project: project1) }
+  let_it_be(:project1, freeze: false) { create(:project) }
+  let_it_be(:project2, freeze: false) { create(:project) }
+  let_it_be(:existing_model, freeze: false) { create(:ml_models, name: 'an_existing_model', project: project1) }
+  let_it_be(:another_existing_model, freeze: false) { create(:ml_models, name: 'an_existing_model', project: project2) }
+  let_it_be(:valid_name, freeze: false) { 'a_valid_name' }
+  let_it_be(:valid_description, freeze: false) { 'Valid description' }
+  let_it_be(:default_experiment, freeze: false) do
+    create(:ml_experiments, name: "[model]#{valid_name}", project: project1)
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -82,12 +84,12 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     end
 
     describe 'candidates' do
-      let_it_be(:candidate1) { create(:ml_model_versions, model: existing_model).candidate }
-      let_it_be(:candidate2) do
+      let_it_be(:candidate1, freeze: false) { create(:ml_model_versions, model: existing_model).candidate }
+      let_it_be(:candidate2, freeze: false) do
         create(:ml_candidates, experiment: existing_model.default_experiment, project: project1)
       end
 
-      let_it_be(:candidate3) { create(:ml_candidates, project: project1) }
+      let_it_be(:candidate3, freeze: false) { create(:ml_candidates, project: project1) }
 
       it 'returns only the candidates for default experiment that do not belong to a model version' do
         expect(existing_model.candidates).to match_array([candidate2])

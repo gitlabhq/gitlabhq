@@ -17,12 +17,14 @@ module Types
 
       field :rate, GraphQL::Types::Float,
         null: true,
-        description: 'Percentage of jobs, optionally filtered by status.' do
-          argument :status,
-            type: ::Types::Ci::AnalyticsJobStatusEnum,
-            required: false,
-            description: 'Filter job rate by status. If not specified, returns 100.0 (representing all jobs).'
-        end
+        description: 'Percentage of jobs, optionally filtered by status. ' \
+          'SUCCESS and FAILED rates use (success + failed) as the denominator; ' \
+          'OTHER (canceled or skipped) uses the total job count.' do
+        argument :status,
+          type: ::Types::Ci::AnalyticsJobStatusEnum,
+          required: false,
+          description: 'Filter job rate by status. If not specified, returns 100.0 (representing all jobs).'
+      end
 
       field :duration_statistics, Types::Ci::DurationStatisticsType,
         null: true,

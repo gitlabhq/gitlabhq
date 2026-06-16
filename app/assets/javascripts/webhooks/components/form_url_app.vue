@@ -8,6 +8,7 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import FormUrlMaskItem from './form_url_mask_item.vue';
 
 export default {
+  name: 'FormUrlApp',
   components: {
     FormUrlMaskItem,
     GlAlert,

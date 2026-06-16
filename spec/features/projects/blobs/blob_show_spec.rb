@@ -278,8 +278,8 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
           # does not show a copy button
           expect(page).not_to have_selector('.js-copy-blob-source-btn')
 
-          # shows a download button
-          expect(page).to have_link('Download')
+          # shows a download dropdown
+          expect(page).to have_css('[data-testid="download-dropdown"]')
         end
       end
     end
@@ -990,7 +990,7 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
 
         aggregate_failures do
           expect(page).to have_link 'Open raw', href: raw_uri
-          expect(page).to have_link 'Download', href: download_uri
+          expect(page).to have_link 'Download as Markdown', href: download_uri, visible: :all
         end
       end
     end
@@ -1007,7 +1007,7 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
 
         aggregate_failures do
           expect(page).to have_link 'Open raw', href: raw_uri
-          expect(page).to have_link 'Download', href: download_uri
+          expect(page).to have_link 'Download as Markdown', href: download_uri, visible: :all
         end
       end
     end

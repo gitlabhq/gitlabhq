@@ -307,7 +307,7 @@ set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
 > [!warning]
 > If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
-> enabled, GitLab strongly advises **not**
+> enabled, GitLab strongly advises not
 > to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
 > actively attacks the target, which can take down your application and lead to
 > data loss or corruption.

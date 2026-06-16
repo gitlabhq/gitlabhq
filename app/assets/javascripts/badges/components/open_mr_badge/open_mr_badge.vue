@@ -21,6 +21,7 @@ const STALE_TAB_ERROR_MESSAGE = 'createdAfter must be within the last 30 days';
 const SENTRY_OPTIONS = { tags: { feature_category: 'source_code_management' } };
 
 export default {
+  name: 'OpenMrBadge',
   components: {
     GlBadge,
     GlDisclosureDropdown,
@@ -117,7 +118,7 @@ export default {
         data?.project?.mergeRequests?.nodes?.map((node) => ({
           ...node,
           text: node.title,
-          href: node.webUrl,
+          href: node.webPath,
         })) || [],
       error(error) {
         logError(

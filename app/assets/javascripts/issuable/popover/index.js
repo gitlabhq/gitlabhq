@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import IterationPopover from 'ee_component/issuable/popover/components/iteration_popover.vue';
 import createDefaultClient from '~/lib/graphql';
+import { dispose as disposeTooltip } from '~/tooltips';
+import CommitPopover from './components/commit_popover.vue';
 import WorkItemPopover from './components/work_item_popover.vue';
 import MRPopover from './components/mr_popover.vue';
 import MilestonePopover from './components/milestone_popover.vue';
@@ -14,6 +16,7 @@ export const componentsByReferenceTypeMap = {
   merge_request: MRPopover,
   milestone: MilestonePopover,
   iteration: IterationPopover,
+  commit: CommitPopover,
 };
 
 let renderFn;
@@ -77,17 +80,26 @@ export const handleIssuablePopoverMount = ({
     } else {
       const PopoverComponent = Vue.extend(componentsByReferenceType[referenceType]);
 
+      const isCommit = referenceType === 'commit';
+
       new PopoverComponent({
         propsData: {
           target,
-          namespacePath,
-          iid,
-          placement,
-          milestoneId: milestone,
-          iterationId: iteration,
-          cachedTitle: title || innerText,
-          cachedTitleHtml: titleHtml,
-          show: true,
+          ...(isCommit
+            ? {
+                commitSha: target.dataset.commit,
+                projectPath: target.dataset.projectPath,
+              }
+            : {
+                namespacePath,
+                iid,
+                placement,
+                milestoneId: milestone,
+                iterationId: iteration,
+                cachedTitle: title || innerText,
+                cachedTitleHtml: titleHtml,
+                show: true,
+              }),
         },
         apolloProvider,
       }).$mount();
@@ -117,14 +129,18 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
       const isIssuable = Boolean(namespacePath && title && iid);
       const isMilestone = Boolean(milestone);
       const isIteration = Boolean(iteration);
+      const isCommit = referenceType === 'commit' && Boolean(el.dataset.commit && projectPath);
 
       if (
         !el.getAttribute(listenerAddedAttr) &&
         referenceType &&
-        (isIssuable || isMilestone || isIteration)
+        (isIssuable || isMilestone || isIteration || isCommit)
       ) {
         el.addEventListener('mouseenter', ({ target }) => {
           if (!el.getAttribute(popoverMountedAttr)) {
+            target.removeAttribute('title');
+            target.classList.remove('has-tooltip');
+            disposeTooltip(target);
             issuablePopoverMount({
               apolloProvider,
               namespacePath,

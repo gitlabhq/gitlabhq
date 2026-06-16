@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループレベルの保護環境API
 ---
 
@@ -14,23 +14,20 @@ title: グループレベルの保護環境API
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) GitLab 14.0。[`group_level_protected_environments`フラグの背後にデプロイされました](../administration/feature_flags/_index.md)。デフォルトでは無効になっています。
-- GitLab 14.3で[機能フラグ`group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085)は削除されました。
-- [一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/331085)はGitLab 14.3で行われました。
+- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/215888)されたGitLab 14.0。[`group_level_protected_environments`機能フラグの背後でデプロイされ、デフォルトでは無効になっています。](../administration/feature_flags/_index.md)
+- [機能フラグ`group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085)はGitLab 14.3で削除されました。
+- [一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/331085)がGitLab 14.3で開始されました。
 
 {{< /history >}}
 
-このAPIを使用して、[グループレベルの保護環境](../ci/environments/protected_environments.md#group-level-protected-environments)とやり取りします。
+このAPIを使用して、[グループレベルの保護環境](../ci/environments/protected_environments.md#group-level-protected-environments)を操作します。
 
-{{< alert type="note" >}}
-
-保護環境については、[保護環境API](protected_environments.md)を参照してください
-
-{{< /alert >}}
+> [!note]
+> 保護環境については、[保護環境API](protected_environments.md)を参照してください。
 
 ## 有効なアクセスレベル {#valid-access-levels}
 
-アクセスレベルは、`ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS`メソッドで定義されています。現在、これらのレベルが認識されています:
+アクセスレベルは、`ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS`メソッドで定義されています。現在、これらのレベルが認識されます:
 
 ```plaintext
 30 => Developer access
@@ -38,9 +35,9 @@ title: グループレベルの保護環境API
 60 => Admin access
 ```
 
-## グループレベルの保護環境の一覧 {#list-group-level-protected-environments}
+## すべてのグループレベルの保護環境をリスト表示 {#list-all-group-level-protected-environments}
 
-グループから保護環境のリストを取得します。
+指定されたグループのすべての保護環境をリスト表示します。
 
 ```plaintext
 GET /groups/:id/protected_environments
@@ -48,7 +45,7 @@ GET /groups/:id/protected_environments
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーが管理するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id` | 整数または文字列 | はい | 認証済みユーザーによってメンテナーされているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ```shell
 curl --request GET \
@@ -56,7 +53,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -76,9 +73,9 @@ curl --request GET \
 ]
 ```
 
-## 単一の保護環境を取得します {#get-a-single-protected-environment}
+## 単一の保護環境を取得 {#retrieve-a-single-protected-environment}
 
-単一の保護環境を取得します。
+グループから指定された保護環境を取得します。
 
 ```plaintext
 GET /groups/:id/protected_environments/:name
@@ -86,8 +83,8 @@ GET /groups/:id/protected_environments/:name
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーが管理するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `name`    | 文字列 | はい    | 保護環境のデプロイ階層。`production`、`staging`、`testing`、`development`、`other`のいずれか[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)の詳細についてお読みください。|
+| `id` | 整数または文字列 | はい | 認証済みユーザーによってメンテナーされているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `name`    | 文字列 | はい    | 保護環境の[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)。指定可能な値: `production`、`staging`、`testing`、`development`、または`other`。|
 
 ```shell
 curl --request GET \
@@ -95,7 +92,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -123,12 +120,12 @@ POST /groups/:id/protected_environments
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | 認証済みユーザーが管理するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `name`    | 文字列 | はい    | 保護環境のデプロイ階層。`production`、`staging`、`testing`、`development`、`other`のいずれか[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)の詳細についてお読みください。|
-| `deploy_access_levels`          | 配列          | はい | 各ハッシュで記述された、デプロイを許可されたアクセスレベルの配列。`user_id`、`group_id`、または`access_level`のいずれか。それらは、`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式をとります。 |
-| `approval_rules`                | 配列          | いいえ  | 各ハッシュで記述された、承認を許可されたアクセスレベルの配列。`user_id`、`group_id`、または`access_level`のいずれか。それらは、`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式をとります。指定されたエンティティからの必要な承認の数を`required_approvals`フィールドで指定することもできます。詳しくは、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)をご覧ください。 |
+| `id`      | 整数または文字列 | はい | 認証済みユーザーによってメンテナーされているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `name`    | 文字列 | はい    | 保護環境の[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)。指定可能な値: `production`、`staging`、`testing`、`development`、または`other`。|
+| `deploy_access_levels`          | 配列          | はい | デプロイを許可するアクセスレベルの配列。ハッシュでそれぞれ記述されます。指定可能な値: `user_id`、`group_id`、または`access_level`。これらは`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式を取ります。 |
+| `approval_rules`                | 配列          | いいえ  | 承認を許可するアクセスレベルの配列。ハッシュでそれぞれ記述されます。指定可能な値: `user_id`、`group_id`、または`access_level`。これらは`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式を取ります。指定されたエンティティからの必要な承認の数を`required_approvals`フィールドで指定することもできます。詳細については、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
 
-割り当て可能な`user_id`は、メンテナーロール以上の権限を持つ、特定のグループに所属するユーザーです。割り当て可能な`group_id`は、特定のグループのサブグループです。
+割り当て可能な`user_id`は、メンテナーロール（またはそれ以上）で指定されたグループに属するユーザーです。割り当て可能な`group_id`は、指定されたグループの下にあるサブグループです。
 
 ```shell
 curl --request POST \
@@ -138,7 +135,7 @@ curl --request POST \
   --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -173,7 +170,7 @@ curl --request POST \
   }'
 ```
 
-この構成では、オペレーターグループ`"group_id": 138`は、品質保証グループ`"group_id": 134`とセキュリティグループ`"group_id": 135`がデプロイを承認した後にのみ、`production`へのデプロイメントジョブを実行できます。
+この設定では、オペレーターグループ`"group_id": 138`は、QAグループ`"group_id": 134`とセキュリティグループ`"group_id": 135`がデプロイを承認した後にのみ、`production`へのデプロイジョブを実行できます。
 
 ## 保護環境を更新する {#update-a-protected-environment}
 
@@ -191,20 +188,20 @@ PUT /groups/:id/protected_environments/:name
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | 認証済みユーザーが管理するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `name`    | 文字列 | はい    | 保護環境のデプロイ階層。`production`、`staging`、`testing`、`development`、`other`のいずれか[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)の詳細についてお読みください。|
-| `deploy_access_levels`          | 配列          | いいえ | 各ハッシュで記述された、デプロイを許可されたアクセスレベルの配列。`user_id`、`group_id`、または`access_level`のいずれか。それらは、`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式をとります。 |
+| `id`      | 整数または文字列 | はい | 認証済みユーザーによってメンテナーされているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `name`    | 文字列 | はい    | 保護環境の[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)。指定可能な値: `production`、`staging`、`testing`、`development`、または`other`。|
+| `deploy_access_levels`          | 配列          | いいえ | デプロイを許可するアクセスレベルの配列。ハッシュでそれぞれ記述されます。指定可能な値: `user_id`、`group_id`、または`access_level`。これらは`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式を取ります。 |
 | `required_approval_count` | 整数        | いいえ       | この環境にデプロイするために必要な承認の数。 |
-| `approval_rules`                | 配列          | いいえ  | 各ハッシュで記述された、承認を許可されたアクセスレベルの配列。`user_id`、`group_id`、または`access_level`のいずれか。それらは、`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式をとります。指定されたエンティティからの必要な承認の数を`required_approvals`フィールドで指定することもできます。詳しくは、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)をご覧ください。 |
+| `approval_rules`                | 配列          | いいえ  | 承認を許可するアクセスレベルの配列。ハッシュでそれぞれ記述されます。指定可能な値: `user_id`、`group_id`、または`access_level`。これらは`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式を取ります。指定されたエンティティからの必要な承認の数を`required_approvals`フィールドで指定することもできます。詳細については、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
 
-更新するには:
+更新する場合:
 
-- **`user_id`**: 更新されたユーザーが、メンテナーロール以上の権限を持つ、特定のグループに所属していることを確認してください。それぞれのハッシュで、`deploy_access_level`または`approval_rule`の`id`も渡す必要があります。
-- **`group_id`**: 更新されたグループが、この保護環境が所属するグループのサブグループであることを確認します。それぞれのハッシュで、`deploy_access_level`または`approval_rule`の`id`も渡す必要があります。
+- **`user_id`**: 更新されたユーザーが、メンテナーロール（またはそれ以上）で指定されたグループに属していることを確認してください。また、それぞれのハッシュで`deploy_access_level`または`approval_rule`の`id`を渡す必要があります。
+- **`group_id`**: 更新されたグループが、この保護環境が属するグループのサブグループであることを確認してください。また、それぞれのハッシュで`deploy_access_level`または`approval_rule`の`id`を渡す必要があります。
 
-削除するには:
+削除する場合:
 
-- `_destroy``true`に設定して渡す必要があります。次の例を参照してください。
+- `_destroy`を`true`に設定して渡す必要があります。次の例を参照してください。
 
 ### 例: `deploy_access_level`レコードを作成する {#example-create-a-deploy_access_level-record}
 
@@ -216,7 +213,7 @@ curl --request PUT \
   --data '{"deploy_access_levels": [{"group_id": 9899829, "access_level": 40}]}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -272,7 +269,7 @@ curl --request PUT \
   --data '{"deploy_access_levels": [{"id": 12, "_destroy": true}]}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -292,7 +289,7 @@ curl --request PUT \
   --data '{"approval_rules": [{"group_id": 134, "required_approvals": 1}]}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -348,7 +345,7 @@ curl --request PUT \
   --data '{"approval_rules": [{"id": 38, "_destroy": true}]}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -359,7 +356,7 @@ curl --request PUT \
 
 ## 単一の環境の保護を解除する {#unprotect-a-single-environment}
 
-特定の保護環境の保護を解除します。
+指定された保護環境の保護を解除します。
 
 ```plaintext
 DELETE /groups/:id/protected_environments/:name
@@ -367,8 +364,8 @@ DELETE /groups/:id/protected_environments/:name
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーが管理するグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `name`    | 文字列 | はい    | 保護環境のデプロイ階層。`production`、`staging`、`testing`、`development`、`other`のいずれか[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)の詳細についてお読みください。|
+| `id` | 整数または文字列 | はい | 認証済みユーザーによってメンテナーされているグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `name`    | 文字列 | はい    | 保護環境の[デプロイ階層](../ci/environments/_index.md#deployment-tier-of-environments)。指定可能な値: `production`、`staging`、`testing`、`development`、または`other`。|
 
 ```shell
 curl --request DELETE \
@@ -376,4 +373,4 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/staging"
 ```
 
-応答は200コードを返す必要があります。
+レスポンスは200コードを返すはずです。

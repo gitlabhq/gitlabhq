@@ -5,6 +5,7 @@ import { humanize } from '~/lib/utils/text_utility';
 import EmojiGroup from './emoji_group.vue';
 
 export default {
+  name: 'EmojiCategory',
   components: {
     GlIntersectionObserver,
     EmojiGroup,

@@ -31,6 +31,10 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
     it 'unsubscribes from issue' do
       click_button('More actions', match: :first)
+
+      within_testid('notifications-toggle') do
+        expect(page).to have_selector('.gl-toggle.is-checked')
+      end
       click_button('Notifications')
 
       expect(page).to have_css('.b-toaster', text: 'Notifications turned off.')

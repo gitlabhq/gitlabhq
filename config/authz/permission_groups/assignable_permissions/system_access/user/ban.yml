@@ -1,0 +1,9 @@
+---
+name: ban_user
+description: Grants the ability to ban users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - ban_user

@@ -25,6 +25,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel', 'mergeWithFailedPipeline'],
   methods: {
     hide() {
       this.$refs.modal.hide();

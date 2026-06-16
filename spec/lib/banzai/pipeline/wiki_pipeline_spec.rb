@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project)   { create(:project, :public, namespace: namespace) }
-  let_it_be(:wiki)      { ProjectWiki.new(project, nil) }
-  let_it_be(:page)      { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
+  let_it_be(:wiki, freeze: false) { ProjectWiki.new(project, nil) }
+  let_it_be(:page) { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
 
   it_behaves_like 'sanitize pipeline'
 

@@ -66,7 +66,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
         expect { described_class.new.perform(*job_args) }
           .to change { described_class.jobs.size }.by(1)
 
-        expect(started_relation_export.reload.started?).to eq(true)
+        expect(started_relation_export.reload.started?).to be(true)
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
         expect { described_class.new.perform(*job_args) }
           .to change { described_class.jobs.size }.by(1)
 
-        expect(started_relation_export.reload.failed?).to eq(true)
+        expect(started_relation_export.reload.failed?).to be(true)
       end
     end
   end

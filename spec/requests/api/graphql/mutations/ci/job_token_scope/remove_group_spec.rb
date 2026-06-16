@@ -81,6 +81,17 @@ RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integ
       end.to change { Ci::JobToken::GroupScopeLink.count }.by(-1)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_job_token_scope_allowlist do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:ci_job_token_scope_remove_group,
+          { project_path: project.full_path, target_group_path: target_group.full_path }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when invalid target group is provided' do
       before do
         variables[:target_group_path] = 'unknown/project'

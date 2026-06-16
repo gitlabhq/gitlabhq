@@ -39,6 +39,11 @@ export default {
       containerScanningForRegistryEnabled: computed(
         () => this.graphqlData?.containerScanningForRegistryEnabled ?? false,
       ),
+      // Defaults to true to preserve the existing CycloneDX license scanning behavior
+      // when the GraphQL field is unavailable (e.g., on instances without the setting).
+      licenseScanningForCyclonedxEnabled: computed(
+        () => this.graphqlData?.licenseScanningForCyclonedxEnabled ?? true,
+      ),
       vulnerabilityArchiveExportPath: computed(
         () => this.graphqlData?.vulnerabilityArchiveExportPath || '',
       ),
@@ -99,6 +104,7 @@ export default {
           autoDevopsPath: config.autoDevopsPath,
           helpPagePath: config.helpPagePath,
           containerScanningForRegistryEnabled: config.containerScanningForRegistryEnabled,
+          licenseScanningForCyclonedxEnabled: config.licenseScanningForCyclonedxEnabled,
           secretPushProtectionAvailable: config.secretPushProtectionAvailable,
           secretPushProtectionEnforced: config.secretPushProtectionEnforced,
           secretPushProtectionEnabled: config.secretPushProtectionEnabled,

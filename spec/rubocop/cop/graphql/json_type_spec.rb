@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/json_type'
 
-RSpec.describe RuboCop::Cop::Graphql::JSONType do
+RSpec.describe RuboCop::Cop::Graphql::JSONType, feature_category: :api do
   let(:msg) do
     'Avoid using GraphQL::Types::JSON. See: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
   end

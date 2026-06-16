@@ -3,7 +3,7 @@
 RSpec.shared_examples 'value stream related stage items query' do |group_or_project|
   let(:resource_path) { group_or_project.to_sym }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let_it_be(:current_time) do
     Time.zone.parse('2024-07-15')
@@ -49,27 +49,27 @@ RSpec.shared_examples 'value stream related stage items query' do |group_or_proj
     GRAPHQL
   end
 
-  let_it_be(:merge_request1) do
+  let_it_be(:merge_request1, freeze: false) do
     create(:merge_request, :unique_branches, source_project: project, created_at: current_time - 1.day).tap do |mr|
       mr.metrics.update!(latest_build_started_at: current_time - 10.hours,
         latest_build_finished_at: current_time - 3.hours)
     end
   end
 
-  let_it_be(:merge_request2) do
+  let_it_be(:merge_request2, freeze: false) do
     create(:merge_request, :unique_branches, source_project: project, created_at: current_time - 1.day).tap do |mr|
       mr.metrics.update!(latest_build_started_at: current_time - 12.hours,
         latest_build_finished_at: current_time - 4.hours)
     end
   end
 
-  let_it_be(:issue1) do
+  let_it_be(:issue1, freeze: false) do
     create(:issue, project: project, created_at: current_time - 4.days).tap do |i|
       i.metrics.update!(first_associated_with_milestone_at: current_time - 2.days)
     end
   end
 
-  let_it_be(:issue2) do
+  let_it_be(:issue2, freeze: false) do
     create(:issue, project: project, created_at: current_time - 1.hour).tap do |i|
       i.metrics.update!(first_associated_with_milestone_at: current_time - 30.minutes)
     end

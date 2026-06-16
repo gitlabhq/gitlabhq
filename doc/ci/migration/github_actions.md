@@ -690,7 +690,7 @@ Before doing any migration work, you should first:
      to automate mass imports from external SCM providers.
    - You can [import repositories by URL](../../user/import/third_party_systems/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` in each project.
-1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests. This can be automated using the [provided Agent Skill](https://gitlab.com/gitlab-org/ci-cd/github-actions-to-gitlab-ci). 
+1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests. This can be automated using the [provided Agent Skill](https://gitlab.com/gitlab-org/ci-cd/github-actions-to-gitlab-ci).
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create

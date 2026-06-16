@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe WorkItems::ReorderService, feature_category: :team_planning do
   let_it_be(:user)    { create_default(:user) }
   let_it_be(:group)   { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, namespace: group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
 
   describe '#execute' do
-    let_it_be(:item1, reload: true) { create(:work_item, :issue, project: project, relative_position: 10) }
-    let_it_be(:item2, reload: true) { create(:work_item, :issue, project: project, relative_position: 20) }
-    let_it_be(:item3, reload: true) { create(:work_item, :issue, project: project, relative_position: 30) }
+    let_it_be_with_reload(:item1) { create(:work_item, :issue, project: project, relative_position: 10) }
+    let_it_be_with_reload(:item2) { create(:work_item, :issue, project: project, relative_position: 20) }
+    let_it_be_with_reload(:item3) { create(:work_item, :issue, project: project, relative_position: 30) }
 
     let(:work_item) { item1 }
     let(:params) { {} }

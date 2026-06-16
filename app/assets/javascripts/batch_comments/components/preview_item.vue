@@ -12,6 +12,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
+  name: 'PreviewItem',
   components: {
     GlBadge,
     GlIcon,

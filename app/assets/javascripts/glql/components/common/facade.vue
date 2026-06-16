@@ -201,7 +201,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="glql-facade">
+  <div data-testid="glql-facade" class="gl-min-w-0 gl-grow">
     <template v-if="hasError">
       <gl-alert
         :variant="error.variant"

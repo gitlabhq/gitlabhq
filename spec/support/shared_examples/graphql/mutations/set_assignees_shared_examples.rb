@@ -5,15 +5,15 @@ require 'spec_helper'
 RSpec.shared_examples 'an assignable resource' do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
   let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   describe '#resolve' do
-    let_it_be(:assignee) { create(:user) }
-    let_it_be(:assignee2) { create(:user) }
+    let_it_be(:assignee, freeze: false) { create(:user) }
+    let_it_be(:assignee2, freeze: false) { create(:user) }
 
     let(:assignee_usernames) { [assignee.username] }
     let(:mutated_resource) { subject[resource.class.name.underscore.to_sym] }

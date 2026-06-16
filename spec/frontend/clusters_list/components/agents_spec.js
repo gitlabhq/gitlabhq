@@ -375,6 +375,38 @@ describe('Agents', () => {
     });
   });
 
+  describe('when the agent list is empty but there are available configurations', () => {
+    beforeEach(() => {
+      return createWrapper({
+        agentQueryResponse: jest.fn().mockResolvedValue(emptyAgentsResponse),
+        treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData),
+      });
+    });
+
+    it('should not render empty state', () => {
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('should render the Available configurations tab', () => {
+      expect(findAgentTabs().exists()).toBe(true);
+      expect(getAllTabTitles()).toContain('Available configurations');
+    });
+  });
+
+  describe('when there are no available configurations', () => {
+    beforeEach(() => {
+      return createWrapper();
+    });
+
+    it('should not render empty state', () => {
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('should not render the Available configurations tab', () => {
+      expect(getAllTabTitles()).not.toContain('Available configurations');
+    });
+  });
+
   describe('when agents query has errored', () => {
     it('displays an alert message', async () => {
       await createWrapper({

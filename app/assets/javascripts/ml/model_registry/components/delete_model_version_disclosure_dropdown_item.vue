@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-model-version'],
   computed: {
     versionName() {
       return this.modelVersion.version;

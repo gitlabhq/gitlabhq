@@ -90,14 +90,6 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Name, descending')
   end
 
-  def sort_title_version_desc
-    s_('SortOptions|Latest version')
-  end
-
-  def sort_title_version_asc
-    s_('SortOptions|Oldest version')
-  end
-
   def sort_title_oldest_activity
     s_('SortOptions|Oldest updated')
   end
@@ -164,10 +156,6 @@ module SortingTitlesValuesHelper
 
   def sort_title_most_stars
     s_('SortOptions|Most stars')
-  end
-
-  def sort_title_stars
-    s_('SortOptions|Stars')
   end
 
   def sort_title_oldest_last_activity
@@ -289,14 +277,6 @@ module SortingTitlesValuesHelper
 
   def sort_value_oldest_updated
     'updated_asc'
-  end
-
-  def sort_value_version_asc
-    'version_asc'
-  end
-
-  def sort_value_version_desc
-    'version_desc'
   end
 
   def sort_value_popularity

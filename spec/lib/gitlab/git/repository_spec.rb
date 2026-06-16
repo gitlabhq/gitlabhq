@@ -28,8 +28,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   let(:mutable_project) { create(:project, :repository) }
   let(:mutable_repository) { mutable_project.repository.raw }
@@ -198,8 +198,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'when references are ambiguous' do
-      let_it_be(:ambiguous_project) { create(:project, :repository) }
-      let_it_be(:repository) { ambiguous_project.repository.raw }
+      let_it_be(:ambiguous_project, freeze: false) { create(:project, :repository) }
+      let_it_be(:repository, freeze: false) { ambiguous_project.repository.raw }
       let_it_be(:branch_merged_commit_id) { ambiguous_project.repository.find_branch('branch-merged').dereferenced_target.id }
       let_it_be(:branch_master_commit_id) { ambiguous_project.repository.find_branch('master').dereferenced_target.id }
       let_it_be(:tag_1_0_0_commit_id) { ambiguous_project.repository.find_tag('v1.0.0').dereferenced_target.id }
@@ -2179,7 +2179,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject(:license) { repository.license }
 
     context 'when no license file can be found' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
       let(:repository) { project.repository.raw_repository }
 
       before do
@@ -2194,7 +2194,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'when license is not recognized' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
       let(:repository) { project.repository.raw_repository }
 
       before do
@@ -2263,7 +2263,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#add_branch' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:repository) { project.repository.raw }
     let(:branch_name) { "branch-to-create" }
 
@@ -2819,7 +2819,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#import_repository' do
-    let_it_be(:repository) { create(:project).repository }
+    let_it_be(:repository, freeze: false) { create(:project).repository }
 
     let(:url) { 'http://invalid.invalid' }
 

@@ -39,6 +39,7 @@ const keyToken = {
 };
 
 export default {
+  name: 'DeployKeysApp',
   components: {
     ConfirmModal,
     KeysPanel,
@@ -272,7 +273,7 @@ export default {
     <div class="gl-mt-4 gl-px-4">
       <gl-filtered-search
         v-model="searchValue"
-        :placeholder="__('Search deploy keys')"
+        :placeholder="s__('DeployKeys|Search deploy keys')"
         :available-tokens="availableTokens"
         :view-only="loading"
         @clear="handleSearch"

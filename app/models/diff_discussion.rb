@@ -58,6 +58,7 @@ class DiffDiscussion < Discussion
 
   def get_params
     return {} if active?
+    return {} unless position
 
     noteable.version_params_for(position.diff_refs)
   end

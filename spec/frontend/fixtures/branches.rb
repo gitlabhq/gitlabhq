@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Branches (JavaScript fixtures)', feature_category: :source_code_management do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
-  let_it_be(:user) { project.first_owner }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
+  let_it_be(:user, freeze: false) { project.first_owner }
 
   after(:all) do
     remove_repository(project)

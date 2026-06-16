@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'lib/gitlab/ci/badge/shared/metadata'
 
-RSpec.describe Gitlab::Ci::Badge::Release::Metadata do
+RSpec.describe Gitlab::Ci::Badge::Release::Metadata, feature_category: :release_orchestration do
   let(:project) { create(:project) }
   let(:ref) { 'feature' }
   let!(:release) { create(:release, tag: ref, project: project) }

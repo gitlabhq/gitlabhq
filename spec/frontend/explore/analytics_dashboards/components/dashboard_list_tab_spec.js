@@ -162,8 +162,21 @@ describe('DashboardListTab', () => {
 
     it('passes the correct dashboards to the list component', () => {
       const dashboards = findDashboardsList().props('dashboards');
-      expect(dashboards).toHaveLength(1);
+      expect(dashboards).toHaveLength(2);
       expect(dashboards[0].name).toBe('Fake trends');
+    });
+
+    it('builds the dashboard URL from the numeric ID for custom dashboards', () => {
+      const [customDashboard] = findDashboardsList().props('dashboards');
+
+      expect(customDashboard.dashboardUrl).toBe('/explore/analytics_dashboards/3');
+    });
+
+    it('builds the dashboard URL from the slug for system dashboards', () => {
+      const dashboards = findDashboardsList().props('dashboards');
+      const systemDashboard = dashboards.find((dashboard) => dashboard.system);
+
+      expect(systemDashboard.dashboardUrl).toBe('/explore/analytics_dashboards/merge_requests');
     });
   });
 
@@ -179,7 +192,7 @@ describe('DashboardListTab', () => {
     });
 
     it('renders the tab with the correct tab count', () => {
-      expect(findTab().props('tabCount')).toBe(1);
+      expect(findTab().props('tabCount')).toBe(2);
     });
 
     it('renders the tab with the correct sr text', () => {
@@ -254,6 +267,54 @@ describe('DashboardListTab', () => {
       expect(mockQueryHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           scope: undefined,
+        }),
+      );
+    });
+  });
+
+  describe('userId prop is reflected in the dashboards request', () => {
+    let mockQueryHandler;
+
+    beforeEach(async () => {
+      mockQueryHandler = jest.fn().mockResolvedValue({ data: mockDashboardsListResponse });
+      const apolloProvider = createMockApollo([[getDashboardsQuery, mockQueryHandler]]);
+
+      createComponent({
+        requestHandlers: apolloProvider,
+        props: { userId: 'gid://gitlab/User/1' },
+      });
+
+      await waitForPromises();
+    });
+
+    it('passes the userId as createdById in the query variables', () => {
+      expect(mockQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          createdById: 'gid://gitlab/User/1',
+        }),
+      );
+    });
+  });
+
+  describe('when userId is not provided', () => {
+    let mockQueryHandler;
+
+    beforeEach(async () => {
+      mockQueryHandler = jest.fn().mockResolvedValue({ data: mockDashboardsListResponse });
+      const apolloProvider = createMockApollo([[getDashboardsQuery, mockQueryHandler]]);
+
+      createComponent({
+        requestHandlers: apolloProvider,
+        props: { userId: null },
+      });
+
+      await waitForPromises();
+    });
+
+    it('passes undefined for createdById in the query variables', () => {
+      expect(mockQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          createdById: undefined,
         }),
       );
     });

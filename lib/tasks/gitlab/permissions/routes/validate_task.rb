@@ -78,19 +78,20 @@ module Tasks
             validate_skip_reason(route, authorization)
           end
 
+          def current_todo_entries
+            routes.each_with_object(Set.new) do |route, set|
+              set << route_id(route) unless has_authorization?(route.settings[:authorization])
+            end
+          end
+
+          def todo_file_label
+            'REST'
+          end
+
           def has_authorization?(authorization)
             return false unless authorization
 
             Array(authorization[:permissions]).any? || authorization[:skip_granular_token_authorization]
-          end
-
-          def load_todo_entries
-            return Set.new unless TODO_FILE.exist?
-
-            TODO_FILE.readlines.each_with_object(Set.new) do |line, set|
-              stripped = line.strip
-              set << stripped unless stripped.empty? || stripped.start_with?('#')
-            end
           end
 
           def route_id(route)
@@ -287,7 +288,7 @@ module Tasks
           end
 
           def print_success_message
-            puts "API route permissions are valid"
+            puts "REST permissions are valid"
           end
 
           def json_schema_file

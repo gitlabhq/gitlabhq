@@ -45,14 +45,20 @@ RSpec.shared_examples 'vulnerability location' do
       allow(location_1).to receive(:fingerprint).and_return('fingerprint')
       allow(location_2).to receive(:fingerprint).and_return('fingerprint')
 
-      expect(subject).to eq(true)
+      expect(subject).to be(true)
     end
 
     it "returns false when fingerprints are different" do
       allow(location_1).to receive(:fingerprint).and_return('fingerprint')
       allow(location_2).to receive(:fingerprint).and_return('another_fingerprint')
 
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
+    end
+
+    context 'when the other object is not a location' do
+      it 'is not equal instead of raising' do
+        expect(location_1).not_to eq('not a location')
+      end
     end
   end
 end

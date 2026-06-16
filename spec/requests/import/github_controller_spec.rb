@@ -6,7 +6,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
   describe 'GET details' do
     subject(:request) { get details_import_github_path }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before do
       stub_application_setting(import_sources: ['github'])

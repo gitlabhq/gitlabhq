@@ -37,7 +37,7 @@ module Gitlab
           end
 
           def ==(other)
-            other.external_id == external_id
+            other.is_a?(self.class) && other.external_id == external_id
           end
 
           def <=>(other)

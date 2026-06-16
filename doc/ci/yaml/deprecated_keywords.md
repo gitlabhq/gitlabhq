@@ -40,7 +40,7 @@ default:
 You can use `only` and `except` to control when to add jobs to pipelines.
 
 - Use `only` to define when a job runs.
-- Use `except` to define when a job **does not** run.
+- Use `except` to define when a job does not run.
 
 ### `only:refs` / `except:refs`
 

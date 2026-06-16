@@ -23,7 +23,7 @@ RSpec.shared_examples 'update board list mutation' do
 
         reloaded_list = list.reload
         expect(reloaded_list.position).to eq(1)
-        expect(reloaded_list.collapsed?(current_user)).to eq(true)
+        expect(reloaded_list.collapsed?(current_user)).to be(true)
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.shared_examples 'update board list mutation' do
 
         reloaded_list = list.reload
         expect(reloaded_list.position).to eq(0)
-        expect(reloaded_list.collapsed?(current_user)).to eq(true)
+        expect(reloaded_list.collapsed?(current_user)).to be(true)
       end
     end
 

@@ -47,6 +47,11 @@ class SystemHook < WebHook
   def validate_public_url?
     false
   end
+
+  override :application_context
+  def application_context
+    super.merge(organization: organization)
+  end
 end
 
 SystemHook.prepend_mod_with('SystemHook')

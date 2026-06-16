@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:release) { create(:release) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:release, freeze: false) { create(:release) }
 
   let_it_be_with_reload(:exportable) do
     create(:project,
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       approvals_before_merge: 1)
   end
 
-  let_it_be(:issue) { create(:issue, assignees: [user], project: exportable) }
+  let_it_be(:issue, freeze: false) { create(:issue, assignees: [user], project: exportable) }
 
   let(:exportable_path) { 'project' }
   let(:logger) { Gitlab::Export::Logger.build }
@@ -408,12 +408,12 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
     end
 
     describe 'with inaccessible associations' do
-      let_it_be(:milestone) { create(:milestone, project: exportable) }
-      let_it_be(:issue) { create(:issue, assignees: [user], project: exportable, milestone: milestone) }
-      let_it_be(:label1) { create(:label, project: exportable) }
-      let_it_be(:label2) { create(:label, project: exportable) }
-      let_it_be(:link1) { create(:label_link, label: label1, target: issue) }
-      let_it_be(:link2) { create(:label_link, label: label2, target: issue) }
+      let_it_be(:milestone, freeze: false) { create(:milestone, project: exportable) }
+      let_it_be(:issue, freeze: false) { create(:issue, assignees: [user], project: exportable, milestone: milestone) }
+      let_it_be(:label1, freeze: false) { create(:label, project: exportable) }
+      let_it_be(:label2, freeze: false) { create(:label, project: exportable) }
+      let_it_be(:link1, freeze: false) { create(:label_link, label: label1, target: issue) }
+      let_it_be(:link2, freeze: false) { create(:label_link, label: label2, target: issue) }
 
       let(:options) { { include: [{ label_links: { include: [:label] } }, { milestone: { include: [] } }] } }
 
@@ -704,7 +704,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
     end
 
     context 'when excluded_relations is empty' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: exportable, target_project: exportable) }
+      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: exportable, target_project: exportable) }
 
       it 'does not skip any relations' do
         serializer.execute

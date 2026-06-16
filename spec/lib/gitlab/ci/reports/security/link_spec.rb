@@ -28,4 +28,30 @@ RSpec.describe Gitlab::Ci::Reports::Security::Link do
       end
     end
   end
+
+  describe '#==' do
+    let(:link) { described_class.new(name: 'CVE-2020-0202', url: 'https://example.com') }
+
+    context 'when name and url match' do
+      let(:other) { described_class.new(name: 'CVE-2020-0202', url: 'https://example.com') }
+
+      it 'is equal' do
+        expect(link).to eq(other)
+      end
+    end
+
+    context 'when name or url differs' do
+      let(:other) { described_class.new(name: 'CVE-2020-0202', url: 'https://different.example.com') }
+
+      it 'is not equal' do
+        expect(link).not_to eq(other)
+      end
+    end
+
+    context 'when the other object is not a link' do
+      it 'is not equal instead of raising' do
+        expect(link).not_to eq('not a link')
+      end
+    end
+  end
 end

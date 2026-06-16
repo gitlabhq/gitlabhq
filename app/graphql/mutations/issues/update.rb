@@ -8,6 +8,9 @@ module Mutations
       include CommonMutationArguments
       include ValidateTimeEstimate
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :title, GraphQL::Types::String,
         required: false,
         description: copy_field_description(Types::IssueType, :title)

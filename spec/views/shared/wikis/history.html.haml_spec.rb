@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/wikis/history.html.haml', feature_category: :wiki do
-  let_it_be(:project) { build_stubbed(:project) }
-  let_it_be(:wiki) { build_stubbed(:project_wiki, project: project) }
-  let_it_be(:wiki_page) { build_stubbed(:wiki_page, container: project) }
+  let_it_be(:project, freeze: false) { build_stubbed(:project) }
+  let_it_be(:wiki, freeze: false) { build_stubbed(:project_wiki, project: project) }
+  let_it_be(:wiki_page, freeze: false) { build_stubbed(:wiki_page, container: project) }
   let(:commits_count) { 25 }
 
   before do

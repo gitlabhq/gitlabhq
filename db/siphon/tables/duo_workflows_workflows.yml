@@ -1,6 +1,8 @@
 ---
 table: duo_workflows_workflows
 database: main
+ignored_columns:
+  - model_metadata_json
 replication_targets:
   - name: clickhouse_main
     target: siphon_duo_workflows_workflows

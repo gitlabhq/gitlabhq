@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BranchRules::DestroyService, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:protected_branch) { create(:protected_branch) }
+  let_it_be(:protected_branch, freeze: false) { create(:protected_branch) }
 
   describe '#execute' do
     let(:branch_rule) { Projects::BranchRule.new(project, protected_branch) }
@@ -13,7 +13,7 @@ RSpec.describe BranchRules::DestroyService, feature_category: :source_code_manag
     let(:destroy_service) { ProtectedBranches::DestroyService }
     let(:destroy_service_instance) { instance_double(destroy_service) }
 
-    subject(:execute) { described_class.new(branch_rule, user).execute }
+    subject(:execute) { described_class.new(branch_rule, user: user).execute }
 
     before do
       # We need to stub the call inside the nested services first
@@ -26,8 +26,11 @@ RSpec.describe BranchRules::DestroyService, feature_category: :source_code_manag
     context 'when the current_user cannot destroy the branch rule' do
       let(:action_allowed) { false }
 
-      it 'raises an access denied error' do
-        expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      it 'returns an access denied error response', :aggregate_failures do
+        expect(execute).to be_error
+        expect(execute.reason).to eq(:access_denied)
+        expect(execute.message).to eq('Failed to delete branch rule')
+        expect(execute.payload[:errors]).to contain_exactly('Not allowed')
       end
     end
 
@@ -48,6 +51,17 @@ RSpec.describe BranchRules::DestroyService, feature_category: :source_code_manag
           expect(response[:message]).to eq('Failed to delete branch rule.')
           expect(response[:status]).to eq(:error)
         end
+      end
+    end
+
+    context 'when branch_rule is a Projects::AllBranchesRule' do
+      let(:branch_rule) { Projects::AllBranchesRule.new(project) }
+
+      # The behaviour differs between CE and EE so we only assert the
+      # service responds gracefully. EE behaviour is covered in
+      # ee/spec/services/ee/branch_rules/destroy_service_spec.rb.
+      it 'returns a service response' do
+        expect(execute).to be_a(ServiceResponse)
       end
     end
 

@@ -14,104 +14,71 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be(:wiki_page_meta) { create(:wiki_page_meta) }
 
-    let(:issue_service) { instance_double(Gitlab::Search::RecentIssues) }
+    let(:work_item_service) { instance_double(Gitlab::Search::RecentWorkItems) }
     let(:mr_service) { instance_double(Gitlab::Search::RecentMergeRequests) }
     let(:wiki_service) { instance_double(Gitlab::Search::RecentWikiPages) }
 
     before do
-      allow(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
+      stub_feature_flags(work_items_autocomplete: true)
+      allow(Gitlab::Search::RecentWorkItems).to receive(:new).with(user: user).and_return(work_item_service)
       allow(Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(mr_service)
       allow(Gitlab::Search::RecentWikiPages).to receive(:new).with(user: user).and_return(wiki_service)
+      allow(Ability).to receive(:allowed?).with(user, :read_work_item, anything).and_return(true)
       allow(Ability).to receive(:allowed?).with(user, :read_issue, anything).and_return(true)
       allow(Ability).to receive(:allowed?).with(user, :read_merge_request, anything).and_return(true)
       allow(Ability).to receive(:allowed?).with(user, :read_wiki, anything).and_return(true)
     end
 
-    context 'when recently_viewed_wiki_pages feature flag is enabled' do
-      before do
-        stub_feature_flags(recently_viewed_wiki_pages: true)
-      end
+    it 'combines results from all available service types', :aggregate_failures do
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
+        issue => 2.hours.ago
+      })
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({
+        merge_request => 1.hour.ago
+      })
+      allow(wiki_service).to receive(:latest_with_timestamps).and_return({
+        wiki_page_meta => 30.minutes.ago
+      })
 
-      it 'combines results from all available service types' do
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({
-          issue => 2.hours.ago
-        })
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({
-          merge_request => 1.hour.ago
-        })
-        allow(wiki_service).to receive(:latest_with_timestamps).and_return({
-          wiki_page_meta => 30.minutes.ago
-        })
+      results = resolve_recent_items(current_user: user)
 
-        results = resolve_recent_items(current_user: user)
-
-        expect(results).to have_attributes(size: 3)
-        expect(results.map(&:item)).to contain_exactly(issue, merge_request, wiki_page_meta)
-      end
-
-      it 'sorts items by timestamp across all types (most recent first)' do
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({
-          issue => 3.hours.ago
-        })
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({
-          merge_request => 1.hour.ago
-        })
-        allow(wiki_service).to receive(:latest_with_timestamps).and_return({
-          wiki_page_meta => 30.minutes.ago
-        })
-
-        results = resolve_recent_items(current_user: user)
-
-        expect(results.map(&:item)).to match_array([wiki_page_meta, merge_request, issue])
-      end
-
-      it 'filters out wiki pages the user cannot read' do
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({})
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({})
-        allow(wiki_service).to receive(:latest_with_timestamps).and_return({
-          wiki_page_meta => 30.minutes.ago
-        })
-
-        allow(Ability).to receive(:allowed?).with(user, :read_wiki, wiki_page_meta).and_return(false)
-
-        results = resolve_recent_items(current_user: user)
-
-        expect(results).to be_empty
-      end
+      expect(results).to have_attributes(size: 3)
+      expect(results.map(&:item)).to contain_exactly(issue, merge_request, wiki_page_meta)
     end
 
-    context 'when recently_viewed_wiki_pages feature flag is disabled' do
-      before do
-        stub_feature_flags(recently_viewed_wiki_pages: false)
-      end
+    it 'sorts items by timestamp across all types (most recent first)' do
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
+        issue => 3.hours.ago
+      })
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({
+        merge_request => 1.hour.ago
+      })
+      allow(wiki_service).to receive(:latest_with_timestamps).and_return({
+        wiki_page_meta => 30.minutes.ago
+      })
 
-      it 'excludes wiki pages from results' do
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({
-          issue => 2.hours.ago
-        })
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({
-          merge_request => 1.hour.ago
-        })
+      results = resolve_recent_items(current_user: user)
 
-        results = resolve_recent_items(current_user: user)
+      expect(results.map(&:item)).to eq([wiki_page_meta, merge_request, issue])
+    end
 
-        expect(results).to have_attributes(size: 2)
-        expect(results.map(&:item)).to contain_exactly(issue, merge_request)
-      end
+    it 'filters out wiki pages the user cannot read' do
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({})
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({})
+      allow(wiki_service).to receive(:latest_with_timestamps).and_return({
+        wiki_page_meta => 30.minutes.ago
+      })
 
-      it 'does not instantiate RecentWikiPages' do
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({})
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({})
+      allow(Ability).to receive(:allowed?).with(user, :read_wiki, wiki_page_meta).and_return(false)
 
-        resolve_recent_items(current_user: user)
+      results = resolve_recent_items(current_user: user)
 
-        expect(Gitlab::Search::RecentWikiPages).not_to have_received(:new)
-      end
+      expect(results).to be_empty
     end
 
     it 'returns RecentlyViewedItem structs with correct data' do
       timestamp = 1.hour.ago
-      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
         issue => timestamp
       })
       allow(mr_service).to receive(:latest_with_timestamps).and_return({})
@@ -126,7 +93,7 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
     end
 
     it 'returns empty array when no services return items' do
-      allow(issue_service).to receive(:latest_with_timestamps).and_return({})
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({})
       allow(mr_service).to receive(:latest_with_timestamps).and_return({})
       allow(wiki_service).to receive(:latest_with_timestamps).and_return({})
 
@@ -135,10 +102,8 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
       expect(results).to be_empty
     end
 
-    it 'filters out items the user cannot read (e.g., SAML authorization failure)' do
-      stub_feature_flags(recently_viewed_wiki_pages: true)
-
-      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+    it 'filters out items the user cannot read (e.g., SAML authorization failure)', :aggregate_failures do
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
         issue => 2.hours.ago
       })
       allow(mr_service).to receive(:latest_with_timestamps).and_return({
@@ -148,22 +113,21 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
         wiki_page_meta => 30.minutes.ago
       })
 
-      # Simulate SAML authorization failure: user can no longer read the issue
+      # Simulate SAML authorization failure: user can no longer read the work item
+      allow(Ability).to receive(:allowed?).with(user, :read_work_item, issue).and_return(false)
       allow(Ability).to receive(:allowed?).with(user, :read_issue, issue).and_return(false)
       allow(Ability).to receive(:allowed?).with(user, :read_merge_request, merge_request).and_return(true)
       allow(Ability).to receive(:allowed?).with(user, :read_wiki, wiki_page_meta).and_return(true)
 
       results = resolve_recent_items(current_user: user)
 
-      # Should return merge request and wiki page, issue should be filtered out
+      # Should return merge request and wiki page, work item should be filtered out
       expect(results).to have_attributes(size: 2)
       expect(results.map(&:item)).to contain_exactly(merge_request, wiki_page_meta)
     end
 
     it 'returns empty array when user cannot read any items' do
-      stub_feature_flags(recently_viewed_wiki_pages: true)
-
-      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
         issue => 2.hours.ago
       })
       allow(mr_service).to receive(:latest_with_timestamps).and_return({
@@ -174,6 +138,7 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
       })
 
       # Simulate SAML authorization failure: user can no longer read any items
+      allow(Ability).to receive(:allowed?).with(user, :read_work_item, issue).and_return(false)
       allow(Ability).to receive(:allowed?).with(user, :read_issue, issue).and_return(false)
       allow(Ability).to receive(:allowed?).with(user, :read_merge_request, merge_request).and_return(false)
       allow(Ability).to receive(:allowed?).with(user, :read_wiki, wiki_page_meta).and_return(false)
@@ -184,10 +149,10 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
     end
 
     it 'filters out unknown item types' do
-      # Use a real class that's not Issue, MergeRequest, or WikiPage::Meta to test the else clause
+      # Use a real class that's not WorkItem, MergeRequest, or WikiPage::Meta to test the else clause
       unknown_item = create(:todo)
 
-      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+      allow(work_item_service).to receive(:latest_with_timestamps).and_return({
         unknown_item => 1.hour.ago
       })
       allow(mr_service).to receive(:latest_with_timestamps).and_return({})
@@ -197,6 +162,27 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
 
       # Unknown item type should be filtered out (returns false in else clause)
       expect(results).to be_empty
+    end
+
+    context 'when work_items_autocomplete is disabled' do
+      let(:issue_service) { instance_double(Gitlab::Search::RecentIssues) }
+
+      before do
+        stub_feature_flags(work_items_autocomplete: false)
+        allow(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
+        allow(Ability).to receive(:allowed?).with(user, :read_issue, anything).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :read_merge_request, anything).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :read_wiki, anything).and_return(true)
+        allow(issue_service).to receive(:latest_with_timestamps).and_return({})
+        allow(mr_service).to receive(:latest_with_timestamps).and_return({})
+        allow(wiki_service).to receive(:latest_with_timestamps).and_return({})
+      end
+
+      it 'uses RecentIssues instead of RecentWorkItems', :aggregate_failures do
+        expect(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
+        expect(Gitlab::Search::RecentWorkItems).not_to receive(:new)
+        resolve_recent_items(current_user: user)
+      end
     end
   end
 

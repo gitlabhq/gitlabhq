@@ -216,13 +216,13 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     end
   end
 
-  let_it_be(:context) do
+  let_it_be(:context, freeze: false) do
     # Ensure CI contention doesn't cause Banzai timeouts in this relatively heavy test case.
     { disable_banzai_timeout: true }
   end
 
-  let_it_be(:feat) { MarkdownFeature.new }
-  let_it_be(:html) do
+  let_it_be(:feat, freeze: false) { MarkdownFeature.new }
+  let_it_be(:html, freeze: false) do
     # `markdown` helper expects a `@project` and `@group` variable
     @project = feat.project
     @group = feat.group
@@ -230,6 +230,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     RSpec::Mocks.with_temporary_scope do
       stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
       stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
+      stub_feature_flags(use_css_language_classes: false)
 
       markdown(feat.raw_markdown, context)
     end
@@ -325,10 +326,10 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
   end
 
   context 'wiki pipeline' do
-    let_it_be(:wiki) { feat.wiki }
-    let_it_be(:wiki_page) { feat.wiki_page }
+    let_it_be(:wiki, freeze: false) { feat.wiki }
+    let_it_be(:wiki_page, freeze: false) { feat.wiki_page }
 
-    let_it_be(:html) do
+    let_it_be(:html, freeze: false) do
       RSpec::Mocks.with_temporary_scope do
         stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
         stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')

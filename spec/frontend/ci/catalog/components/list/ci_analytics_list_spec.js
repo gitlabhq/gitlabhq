@@ -36,6 +36,11 @@ describe('CiAnalyticsList', () => {
       {
         name: resource.name,
         detailsPath: { name: 'ci_resources_details', params: { id: resource.fullPath } },
+        usagePath: {
+          name: 'ci_resources_details',
+          params: { id: resource.fullPath },
+          query: { tab: 'usage' },
+        },
         latestVersion: 'Unreleased',
         usageStatistics: `${resource.last30DayUsageCount} projects`,
         components: '',

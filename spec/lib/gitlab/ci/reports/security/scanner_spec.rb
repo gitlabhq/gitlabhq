@@ -91,6 +91,14 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scanner do
         expect(scanner_1 == scanner_2).to eq(equal)
       end
     end
+
+    context 'when the other object is not a scanner' do
+      let(:scanner) { create(:ci_reports_security_scanner) }
+
+      it 'is not equal instead of raising' do
+        expect(scanner).not_to eq('not a scanner')
+      end
+    end
   end
 
   describe '#<=>' do

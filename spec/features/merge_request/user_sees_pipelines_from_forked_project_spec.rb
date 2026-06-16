@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
   feature_category: :continuous_integration do
   include ProjectForksHelper
+  using RSpec::Parameterized::TableSyntax
 
   let(:target_project) { create(:project, :public, :repository) }
   let(:user) { target_project.creator }
@@ -27,15 +28,17 @@ RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
     )
   end
 
-  before do
-    create(:ci_build, pipeline: pipeline, name: 'rspec')
-    create(:ci_build, pipeline: pipeline, name: 'spinach')
-    sign_in(user)
+  where(:mr_pipelines_graphql) do
+    [true, false]
   end
 
-  context 'with feature flag `mr_pipelines_graphql` turned off' do
+  with_them do
     before do
-      stub_feature_flags(mr_pipelines_graphql: false)
+      create(:ci_build, pipeline: pipeline, name: 'rspec')
+      create(:ci_build, pipeline: pipeline, name: 'spinach')
+      sign_in(user)
+
+      stub_feature_flags(mr_pipelines_graphql: mr_pipelines_graphql)
       visit project_merge_request_path(target_project, merge_request)
     end
 
@@ -45,21 +48,6 @@ RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
       page.within('.ci-table') do
         expect(page).to have_content(pipeline.id)
       end
-    end
-  end
-
-  context 'with feature flag `mr_pipelines_graphql` turned on' do
-    before do
-      stub_feature_flags(mr_pipelines_graphql: true)
-      visit project_merge_request_path(target_project, merge_request)
-    end
-
-    it 'user visits a pipelines page',
-      :sidekiq_might_not_need_inline,
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24864' do
-      page.within('.merge-request-tabs') { click_link 'Pipelines' }
-
-      expect(page).to have_content(pipeline.id)
     end
   end
 end

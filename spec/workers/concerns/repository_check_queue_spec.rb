@@ -15,6 +15,6 @@ RSpec.describe RepositoryCheckQueue, feature_category: :source_code_management d
   end
 
   it 'disables retrying of failed jobs' do
-    expect(worker.sidekiq_options['retry']).to eq(false)
+    expect(worker.sidekiq_options['retry']).to be(false)
   end
 end

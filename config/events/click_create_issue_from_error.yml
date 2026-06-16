@@ -3,6 +3,8 @@ description: Tracks clicks on the "Create Issue" button from an error message.
 internal_events: true
 action: click_create_issue_from_error
 product_group: platform_insights
+product_categories:
+- observability
 milestone: '16.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121259
 tiers:

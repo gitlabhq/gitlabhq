@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.shared_examples 'board lists create request' do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:dev_label) do
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:dev_label, freeze: false) do
     create(:group_label, title: 'Development', color: '#FFAABB', group: group)
   end
 

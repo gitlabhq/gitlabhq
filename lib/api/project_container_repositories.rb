@@ -11,7 +11,10 @@ module API
       tag_name: API::NO_SLASH_URL_PART_REGEX)
     DEFAULT_PAGE_COUNT = 20
 
-    before { authorize_read_container_images! }
+    before do
+      authorize_read_container_images!
+      set_current_organization
+    end
 
     feature_category :container_registry
     urgency :low

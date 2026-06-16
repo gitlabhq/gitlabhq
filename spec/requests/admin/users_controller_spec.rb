@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :user_management do
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     sign_in(admin)

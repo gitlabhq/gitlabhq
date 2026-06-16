@@ -76,6 +76,7 @@ export default {
       default: '',
     },
   },
+  emits: ['delete-note', 'error'],
   data() {
     return {
       isEditing: false,

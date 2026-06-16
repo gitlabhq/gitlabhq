@@ -33,7 +33,7 @@ module RuboCop
 
         # @!method matching_let_it_be(node)
         def_node_matcher :matching_let_it_be, <<~PATTERN
-          (block (send nil? $/^let_it_be/ (sym %name)) ...)
+          (block (send nil? $/^let_it_be/ (sym %name) ...) ...)
         PATTERN
 
         # @!method before_block?(node)

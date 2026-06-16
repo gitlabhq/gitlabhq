@@ -257,6 +257,84 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
+    context 'when bulk_perform_async raises a non-transient error' do
+      let(:poison_error) do
+        Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError.new('DummyWorker', 2_000_000, 1_000_000)
+      end
+
+      context 'with a mixed batch containing one poison job' do
+        before do
+          allow(worker_class).to receive(:bulk_perform_async).with([[1], [2]]).and_raise(poison_error)
+          allow(worker_class).to receive(:bulk_perform_async).with([[1]]).and_return(nil)
+          allow(worker_class).to receive(:bulk_perform_async).with([[2]]).and_raise(poison_error)
+          allow(worker_class).to receive(:bulk_perform_async).with([[3]]).and_return(nil)
+        end
+
+        it 'enqueues good jobs, drops the poison job, and advances the queue', :aggregate_failures do
+          expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+            expect(el).to receive(:try_obtain).and_call_original
+          end
+
+          expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
+            .to receive(:dropped_poison_job_log)
+            .with(worker_class_name, kind_of(String), poison_error)
+            .at_least(:once)
+
+          service.resume_processing!
+
+          expect(service.queue_size).to eq(0)
+        end
+
+        it 'increments the dropped_jobs metric for poison jobs', :aggregate_failures do
+          expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+            expect(el).to receive(:try_obtain).and_call_original
+          end
+
+          counter = service.send(:dropped_job_counter)
+
+          expect(counter).to receive(:increment).with({ worker: worker_class_name }).at_least(:once)
+
+          service.resume_processing!
+        end
+      end
+
+      context 'when all jobs in a batch are poison jobs' do
+        let(:jobs) do
+          [
+            { 'args' => [1], 'jid' => 'jid1', 'wal_locations' => wal_locations },
+            { 'args' => [2], 'jid' => 'jid2', 'wal_locations' => wal_locations }
+          ]
+        end
+
+        it 'drops all jobs and advances the queue' do
+          expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+            expect(el).to receive(:try_obtain).and_call_original
+          end
+
+          allow(worker_class).to receive(:bulk_perform_async).and_raise(poison_error)
+
+          service.resume_processing!
+
+          expect(service.queue_size).to eq(0)
+        end
+      end
+    end
+
+    context 'when bulk_perform_async raises a transient error' do
+      it 're-raises the error without advancing the queue' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+
+        allow(worker_class).to receive(:bulk_perform_async)
+          .and_raise(Redis::ConnectionError, 'Connection refused')
+
+        expect { service.resume_processing! }.to raise_error(Redis::ConnectionError)
+
+        expect(service.queue_size).to eq(3)
+      end
+    end
+
     context 'when lease needs to be renewed during processing' do
       before do
         stub_feature_flags(concurrency_limit_eager_resume_processing: true)

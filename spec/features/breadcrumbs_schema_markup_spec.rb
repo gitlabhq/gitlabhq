@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_category: :shared do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, namespace: user.namespace) }
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:subgroup) { create(:group, :public, parent: group) }
-  let_it_be(:group_project) { create(:project, :public, namespace: subgroup) }
-  let_it_be(:wiki_home_page) { create(:wiki_page, project: project, title: 'home') }
-  let_it_be(:wiki_sub_page) { create(:wiki_page, project: project, title: 'home/subpage') }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public, namespace: user.namespace) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
+  let_it_be(:subgroup, freeze: false) { create(:group, :public, parent: group) }
+  let_it_be(:group_project, freeze: false) { create(:project, :public, namespace: subgroup) }
+  let_it_be(:wiki_home_page, freeze: false) { create(:wiki_page, project: project, title: 'home') }
+  let_it_be(:wiki_sub_page, freeze: false) { create(:wiki_page, project: project, title: 'home/subpage') }
 
   it 'generates the breadcrumb schema for user projects' do
     visit project_url(project)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_category: :importers do
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(:project, :import_started,
       import_url: 'https://bitbucket.org',
       import_source: 'my-workspace/my-repo',
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
 
   it 'executes the importer' do
     allow_next_instance_of(Bitbucket::Client) do |client|
-      allow(client).to receive_messages(last_pull_request: nil, last_issue: nil)
+      allow(client).to receive_messages(last_pull_request: nil, last_issue: nil, issues_available?: true)
     end
 
     expect(importer_double).to receive(:execute)
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
       exception = StandardError.new('Error')
 
       allow_next_instance_of(Bitbucket::Client) do |client|
-        allow(client).to receive_messages(last_pull_request: nil, last_issue: nil)
+        allow(client).to receive_messages(last_pull_request: nil, last_issue: nil, issues_available?: true)
       end
 
       allow(importer_double).to receive(:execute).and_raise(exception)
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
 
   it 'enqueues ImportUsersWorker' do
     allow_next_instance_of(Bitbucket::Client) do |client|
-      allow(client).to receive_messages(last_pull_request: nil, last_issue: nil)
+      allow(client).to receive_messages(last_pull_request: nil, last_issue: nil, issues_available?: true)
     end
 
     expect(Gitlab::BitbucketImport::Stage::ImportUsersWorker).to receive(:perform_async).with(project.id)
@@ -80,6 +80,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         preallocator = instance_double(Gitlab::Import::IidPreallocator)
@@ -97,6 +98,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(nil)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         preallocator = instance_double(Gitlab::Import::IidPreallocator)
@@ -114,6 +116,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(nil)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         preallocator = instance_double(Gitlab::Import::IidPreallocator)
@@ -131,6 +134,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(nil)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(nil)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
@@ -147,6 +151,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
       it 'does not fetch the last pull request from the API' do
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(nil)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
           expect(client).not_to receive(:last_pull_request)
         end
 
@@ -162,6 +167,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
       it 'does not fetch the last issue from the API' do
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(nil)
+          expect(client).not_to receive(:issues_available?)
           expect(client).not_to receive(:last_issue)
         end
 
@@ -188,6 +194,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
           allow_next_instance_of(Bitbucket::Client) do |client|
             allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
             allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(nil)
+            allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
           end
 
           expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
@@ -216,12 +223,31 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
           allow_next_instance_of(Bitbucket::Client) do |client|
             allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(nil)
             allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+            allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
           end
 
           expect(Gitlab::Import::IidPreallocator).not_to receive(:new)
 
           worker.perform(project.id)
         end
+      end
+    end
+
+    context 'when the Bitbucket Issues API is unavailable' do
+      it 'skips issue IID pre-allocation but still pre-allocates merge request IIDs', :aggregate_failures do
+        allow_next_instance_of(Bitbucket::Client) do |client|
+          allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(false)
+          expect(client).not_to receive(:last_issue)
+        end
+
+        preallocator = instance_double(Gitlab::Import::IidPreallocator)
+        expect(Gitlab::Import::IidPreallocator).to receive(:new)
+          .with(project, { merge_requests: 42 })
+          .and_return(preallocator)
+        expect(preallocator).to receive(:execute)
+
+        worker.perform(project.id)
       end
     end
 
@@ -238,10 +264,16 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
 
       let(:oauth2_error) { OAuth2::Error.new(OAuth2::Response.new(oauth_response)) }
 
+      # With the issues_available? guard, a 404/410 from the issues endpoint
+      # will not reach last_issue in practice. Kept to exercise the
+      # fetch_last_iid rescue path, which still applies to pull requests.
+      # All issues code is slated for removal after the Atlassian API
+      # shutdown in August 2026.
       it 'logs a warning and continues the import when issue fetch fails' do
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_raise(oauth2_error)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         expect(Gitlab::BitbucketImport::Logger).to receive(:warn).with(
@@ -266,6 +298,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_raise(oauth2_error)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         expect(Gitlab::BitbucketImport::Logger).to receive(:warn).with(
@@ -290,6 +323,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_raise(oauth2_error)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_raise(oauth2_error)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         expect(Gitlab::BitbucketImport::Logger).to receive(:warn).twice
@@ -310,6 +344,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
         allow_next_instance_of(Bitbucket::Client) do |client|
           allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_raise(rate_limit_error)
           allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+          allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
         end
 
         expect(Gitlab::BitbucketImport::Logger).to receive(:warn).with(
@@ -334,6 +369,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
       allow_next_instance_of(Bitbucket::Client) do |client|
         allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(pull_request)
         allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(issue)
+        allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
       end
       allow_next_instance_of(Gitlab::Import::IidPreallocator) do |preallocator|
         allow(preallocator).to receive(:execute)
@@ -353,6 +389,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
       allow_next_instance_of(Bitbucket::Client) do |client|
         allow(client).to receive(:last_pull_request).with('my-workspace/my-repo').and_return(nil)
         allow(client).to receive(:last_issue).with('my-workspace/my-repo').and_return(nil)
+        allow(client).to receive(:issues_available?).with('my-workspace/my-repo').and_return(true)
       end
 
       expect(Gitlab::Cache::Import::Caching).not_to receive(:write)

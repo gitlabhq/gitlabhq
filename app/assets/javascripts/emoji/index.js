@@ -46,6 +46,7 @@ async function loadEmoji() {
   // because it can't be loaded from a CDN due to
   // cross domain problems with JSON
   const { data } = await axios.get(
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- asset path defined in lib/gitlab/emoji.rb, not a Rails route
     `${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`,
   );
 
@@ -294,6 +295,7 @@ export function emojiFallbackImageSrc(inputName) {
   const { name, src } = getEmojiInfo(inputName);
   return (
     src ||
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- no path helper exists for emoji image assets; uses gon.asset_host for CDN support
     `${gon.asset_host || ''}${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/${name}.png`
   );
 }

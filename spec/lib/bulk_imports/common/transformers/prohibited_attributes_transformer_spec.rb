@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Transformers::ProhibitedAttributesTransformer do
+RSpec.describe BulkImports::Common::Transformers::ProhibitedAttributesTransformer, feature_category: :importers do
   describe '#transform' do
     let_it_be(:hash) do
       {

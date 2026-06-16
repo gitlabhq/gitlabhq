@@ -4,6 +4,7 @@ description: Grants the ability to trigger webhooks
 boundaries:
   - group
   - project
+  - instance
 available_for:
   - granular_access_token
 permissions:

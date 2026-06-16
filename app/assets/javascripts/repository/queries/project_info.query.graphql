@@ -7,5 +7,8 @@ query getProjectInfo($projectPath: ID!) {
       createMergeRequestIn
       forkProject
     }
+    repository {
+      rootRef
+    }
   }
 }

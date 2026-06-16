@@ -14,7 +14,7 @@ module Notes
         discussion = find_discussion(in_reply_to_discussion_id)
 
         return discussion_not_found unless discussion && can?(executing_user, :create_note, discussion.noteable)
-        return system_note_reply_error if discussion.first_note.system?
+        return system_note_reply_error unless discussion.can_reply_to_system_note?
 
         discussion = discussion.convert_to_discussion! if discussion.can_convert_to_discussion?
 

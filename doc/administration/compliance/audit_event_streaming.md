@@ -332,6 +332,78 @@ To reactivate a previously deactivated streaming destination:
 
 The destination resumes receiving audit events immediately.
 
+## AI audit event streaming
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/591588) in GitLab 19.1 as a beta.
+
+{{< /history >}}
+
+> [!warning]
+> Enabling AI audit event streaming may impact instance performance. Enable this
+> setting only after evaluating the load on your instance.
+
+GitLab Duo Agent Platform records AI audit events for activity such as:
+
+- Agent sessions.
+- LLM requests.
+- Tool invocations.
+- User inputs.
+
+GitLab always saves these events to the database.
+
+You can also use a separate setting to control whether GitLab streams AI audit events
+to external destinations. This setting is off by default.
+
+When AI audit event streaming:
+
+- Is turned on, GitLab streams AI audit events to all active instance streaming
+  destinations. Event type filters, custom HTTP headers, and verification tokens
+  apply to AI audit events the same way they apply to other audit events.
+- Is turned off, GitLab still saves AI audit events to the database but does not send them to
+  any external destination. Other audit event types continue to stream according to each
+  destination's configuration.
+
+### Turn on AI audit event streaming
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To turn on AI audit event streaming:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Select the **Enable AI audit event streaming** checkbox.
+1. Select **Save changes**.
+
+### Turn off AI audit event streaming
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To turn off AI audit event streaming:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Clear the **Enable AI audit event streaming** checkbox.
+1. Select **Save changes**.
+
+AI audit events stop streaming immediately. GitLab continues to save them to the
+database.
+
 ## Delete streaming destinations
 
 Delete streaming destinations for an entire instance. When the last destination is successfully deleted, streaming is

@@ -28,7 +28,8 @@
   .system-note-image,
   .system-note-image-inline {
     &.opened-icon,
-    &.created-icon {
+    &.created-icon,
+    &.transferred-icon {
       svg {
         @apply gl-fill-status-success;
       }

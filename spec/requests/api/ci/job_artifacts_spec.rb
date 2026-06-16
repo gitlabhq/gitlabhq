@@ -9,15 +9,15 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
   include HttpIOHelpers
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :repository, public_builds: false)
   end
 
-  let_it_be(:other_project, reload: true) do
+  let_it_be_with_reload(:other_project) do
     create(:project, :repository)
   end
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
@@ -32,7 +32,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   end
 
   before do
-    project.add_developer(developer)
+    project.add_developer(developer) # -- Does not work in before_all because developer uses let, not let_it_be
   end
 
   shared_examples 'returns unauthorized' do
@@ -208,13 +208,20 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         let(:api_user) { nil }
 
         context 'when project is public' do
-          it 'allows to access artifacts' do
+          it 'allows to access artifacts and sends the artifact entry via Workhorse', :aggregate_failures do
             project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
             project.update_column(:public_builds, true)
 
             get_artifact_file(artifact)
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers.to_h).to include(
+              'Content-Type' => 'application/json',
+              'Gitlab-Workhorse-Send-Data' => /artifacts-entry/
+            )
+            expect(response.headers.to_h)
+              .not_to include('Gitlab-Workhorse-Detect-Content-Type' => 'true')
+            expect(response.parsed_body).to be_empty
           end
         end
 
@@ -1205,6 +1212,141 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
       it 'responds with not found' do
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'ETag caching' do
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: developer) }
+    let(:archive_sha256) { job.job_artifacts_archive.file_sha256 }
+    let(:artifact_path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
+    let(:archive_etag) { %("#{archive_sha256}") }
+
+    def etag_for(sha256, path)
+      %("#{Digest::SHA256.hexdigest("#{sha256}:#{path}")}")
+    end
+
+    before do
+      stub_artifacts_object_storage
+      job.success
+      pipeline.update!(status: :success)
+    end
+
+    context 'when workhorse_download_etag_caching is disabled' do
+      let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts" }
+
+      before do
+        stub_feature_flags(workhorse_download_etag_caching: false)
+      end
+
+      # Production Rack middleware would emit the bogus W/"12ae32cb..." here;
+      # the test environment does not run it. We assert only that our helper
+      # did not act: neither ETag nor Last-Modified is set by our code.
+      it 'does not set our content-derived ETag or Last-Modified suppression header' do
+        get api(url, developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to be_nil
+        expect(response.headers['Last-Modified']).to be_nil
+      end
+    end
+
+    context 'GET /projects/:id/jobs/:job_id/artifacts' do
+      let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts" }
+
+      it 'returns the archive sha256 as the ETag' do
+        get api(url, developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to eq(archive_etag)
+      end
+
+      it 'returns 304 when the If-None-Match matches the artifact sha256' do
+        get api(url, developer), headers: { 'If-None-Match' => archive_etag }
+
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+
+      it 'returns 200 when the If-None-Match does not match' do
+        get api(url, developer), headers: { 'If-None-Match' => %("stale") }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to eq(archive_etag)
+      end
+    end
+
+    context 'GET /projects/:id/jobs/:job_id/artifacts/*artifact_path' do
+      let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts/#{artifact_path}" }
+      let(:expected_etag) { etag_for(archive_sha256, artifact_path) }
+
+      it 'returns an ETag derived from the archive sha256 and the path' do
+        get api(url, developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to eq(expected_etag)
+      end
+
+      it 'returns 304 when the If-None-Match matches' do
+        get api(url, developer), headers: { 'If-None-Match' => expected_etag }
+
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+
+      it 'returns a distinct ETag for a different artifact_path within the same archive' do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/other/path.txt", developer)
+
+        expect(response.headers['ETag']).not_to eq(expected_etag)
+      end
+    end
+
+    context 'GET /projects/:id/jobs/artifacts/:ref_name/download' do
+      let(:url) { "/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/download" }
+      let(:params) { { job: job.name } }
+
+      it 'returns the archive sha256 as the ETag' do
+        get api(url, developer), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to eq(archive_etag)
+      end
+
+      it 'returns 304 when the If-None-Match matches' do
+        get api(url, developer), params: params, headers: { 'If-None-Match' => archive_etag }
+
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
+
+    context 'GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path' do
+      let(:url) { "/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact_path}" }
+      let(:params) { { job: job.name } }
+      let(:expected_etag) { etag_for(archive_sha256, artifact_path) }
+
+      it 'returns an ETag derived from the archive sha256 and the path' do
+        get api(url, developer), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to eq(expected_etag)
+      end
+
+      it 'returns 304 when the If-None-Match matches' do
+        get api(url, developer), params: params, headers: { 'If-None-Match' => expected_etag }
+
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
+
+    context 'when the artifact has no sha256' do
+      before do
+        job.job_artifacts_archive.update_column(:file_sha256, nil)
+      end
+
+      it 'suppresses Rack::ETag instead of emitting a bogus ETag' do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).to be_nil
+        expect(response.headers['Last-Modified']).to eq('0')
       end
     end
   end

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerExpirationPolicies::UpdateService, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:params) { { cadence: '3month', keep_n: 100, older_than: '14d', extra_key: 'will_not_be_processed' } }
 
@@ -79,7 +79,7 @@ RSpec.describe ContainerExpirationPolicies::UpdateService, feature_category: :co
     end
 
     context 'without existing container expiration policy' do
-      let_it_be(:project, reload: true) { create(:project, :without_container_expiration_policy) }
+      let_it_be_with_reload(:project) { create(:project, :without_container_expiration_policy) }
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the container expiration policy'

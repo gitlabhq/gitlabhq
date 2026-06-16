@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
   let_it_be(:project) { create(:project, :repository, name: 'Shop') }
   let_it_be(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
-  let_it_be(:project3) do
+  let_it_be(:project3, freeze: false) do
     create(:project, :repository, name: 'Test project with protected branch', path: 'protected-branch')
   end
 

@@ -8,28 +8,35 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, :public) }
-  let_it_be(:project_2) { create(:project, :repository, :public) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+  let_it_be(:project_2, freeze: false) { create(:project, :repository, :public) }
 
-  let_it_be(:runner) { create(:ci_runner, :instance, :unregistered, description: 'My Runner', creator: admin) }
+  let_it_be(:runner, freeze: false) do
+    create(:ci_runner, :instance, :unregistered, description: 'My Runner', creator: admin)
+  end
 
-  let_it_be(:runner_mach_1) { create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current) }
-  let_it_be(:runner_mach_2) { create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current) }
+  let_it_be(:runner_mach_1, freeze: false) do
+    create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current)
+  end
 
-  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group]) }
+  let_it_be(:runner_mach_2, freeze: false) do
+    create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current)
+  end
 
-  let_it_be(:project_runner) do
+  let_it_be(:group_runner, freeze: false) { create(:ci_runner, :group, groups: [group]) }
+  let_it_be(:group_runner_2, freeze: false) { create(:ci_runner, :group, groups: [group]) }
+
+  let_it_be(:project_runner, freeze: false) do
     create(:ci_runner, :project, :unregistered, projects: [project, project_2])
   end
 
-  let_it_be(:project_runner_2) do
+  let_it_be(:project_runner_2, freeze: false) do
     create(:ci_runner, :project, :unregistered, projects: [project_2])
   end
 
-  let_it_be(:build) { create(:ci_build, runner: runner) }
+  let_it_be(:build, freeze: false) { create(:ci_build, runner: runner) }
 
   query_path = 'ci/runner/graphql/'
   fixtures_path = 'graphql/ci/runner/'
@@ -54,7 +61,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'all_runners.query.graphql', type: :request do
       all_runners_query = 'list/all_runners.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{all_runners_query}")
       end
 
@@ -81,7 +88,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'all_runners_count.query.graphql', type: :request do
       all_runners_count_query = 'list/all_runners_count.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{all_runners_count_query}")
       end
 
@@ -95,7 +102,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner.query.graphql', type: :request do
       runner_query = 'show/runner.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_query}")
       end
 
@@ -119,7 +126,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner_projects.query.graphql', type: :request do
       runner_projects_query = 'show/runner_projects.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_projects_query}")
       end
 
@@ -135,7 +142,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner_jobs.query.graphql', type: :request do
       runner_jobs_query = 'show/runner_jobs.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_jobs_query}")
       end
 
@@ -151,7 +158,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner_form.query.graphql', type: :request do
       runner_jobs_query = 'edit/runner_form.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_jobs_query}")
       end
 
@@ -167,7 +174,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner_for_registration.query.graphql', :freeze_time, type: :request do
       runner_for_registration_query = 'register/runner_for_registration.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_for_registration_query}")
       end
 
@@ -183,7 +190,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'runner_create.mutation.graphql', type: :request do
       runner_create_mutation = 'new/runner_create.mutation.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{runner_create_mutation}")
       end
 
@@ -203,7 +210,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
   end
 
   describe 'as group owner', GraphQL::Query do
-    let_it_be(:group_owner) { create(:user) }
+    let_it_be(:group_owner, freeze: false) { create(:user) }
 
     before do
       group.add_owner(group_owner)
@@ -212,7 +219,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'group_runners.query.graphql', type: :request do
       group_runners_query = 'list/group_runners.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{group_runners_query}")
       end
 
@@ -237,7 +244,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'group_runners_count.query.graphql', type: :request do
       group_runners_count_query = 'list/group_runners_count.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{group_runners_count_query}")
       end
 
@@ -252,7 +259,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
   end
 
   describe 'as project maintainer', GraphQL::Query do
-    let_it_be(:project_maintainer) { create(:user) }
+    let_it_be(:project_maintainer, freeze: false) { create(:user) }
 
     before_all do
       project.add_maintainer(project_maintainer)
@@ -262,7 +269,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'project_runners.query.graphql', type: :request do
       project_runners_query = 'list/project_runners.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{project_runners_query}")
       end
 
@@ -278,7 +285,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
     describe 'project_assignable_runners.query.graphql', type: :request do
       project_assignable_runners_query = 'list/project_assignable_runners.query.graphql'
 
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{project_assignable_runners_query}")
       end
 

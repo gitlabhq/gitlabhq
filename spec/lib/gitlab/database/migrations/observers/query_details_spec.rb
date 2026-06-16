@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::Observers::QueryDetails do
+RSpec.describe Gitlab::Database::Migrations::Observers::QueryDetails, feature_category: :database do
   subject { described_class.new(observation, directory_path, connection) }
 
   let(:connection) { ActiveRecord::Migration.connection }

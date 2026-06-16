@@ -19,6 +19,8 @@ additional_properties:
   helm_chart_version:
     description: Helm Chart version used to install the agent
 product_group: environments
+product_categories:
+- environment_management
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154883
 tiers:

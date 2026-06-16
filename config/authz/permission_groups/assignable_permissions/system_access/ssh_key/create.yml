@@ -2,6 +2,7 @@
 name: create_ssh_key
 description: Grants the ability to create SSH keys
 boundaries:
+  - instance
   - user
 available_for:
   - granular_access_token

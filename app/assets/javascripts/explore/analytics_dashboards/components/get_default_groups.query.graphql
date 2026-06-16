@@ -1,0 +1,11 @@
+# @feature_category: product_analytics
+query getDefaultGroups($ids: [ID!]) {
+  groups(ids: $ids) {
+    nodes {
+      id
+      name
+      avatarUrl
+      fullPath
+    }
+  }
+}

@@ -1,0 +1,10 @@
+---
+name: async_mirror_branch_creation
+description: Enable async branch creation during mirror sync
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/387717
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225968
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600900
+milestone: '19.1'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

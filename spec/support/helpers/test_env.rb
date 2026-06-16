@@ -255,6 +255,7 @@ module TestEnv
     FileUtils.mkdir_p(packages_path)
     FileUtils.mkdir_p(ci_secure_files_path)
     FileUtils.mkdir_p(external_diffs_path)
+    FileUtils.mkdir_p(agent_plan_content_path)
   end
 
   def setup_gitlab_shell
@@ -434,6 +435,10 @@ module TestEnv
 
   def external_diffs_path
     Gitlab.config.external_diffs.storage_path
+  end
+
+  def agent_plan_content_path
+    Gitlab.config.agent_plan_content.storage_path
   end
 
   # When no cached assets exist, manually hit the root path to create them

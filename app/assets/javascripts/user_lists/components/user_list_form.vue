@@ -28,6 +28,7 @@ export default {
       required: true,
     },
   },
+  emits: ['submit'],
   classes: {
     actionContainer: [
       'gl-py-5',

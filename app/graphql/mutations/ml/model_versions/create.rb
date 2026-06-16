@@ -6,6 +6,8 @@ module Mutations
       class Create < BaseMutation
         graphql_name 'MlModelVersionCreate'
         authorize :write_model_registry
+        authorize_granular_token permissions: :create_model_version,
+          boundary_argument: :project_path, boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

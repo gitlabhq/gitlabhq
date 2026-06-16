@@ -1,0 +1,63 @@
+-# Mirrors app/views/doorkeeper/authorizations/new.html.haml:
+= javascript_tag nonce: content_security_policy_nonce do
+  :plain
+    const enablePointerEvents = () =>{
+      setTimeout(()=>{
+        document.getElementById('container').classList.remove('gl-pointer-events-none');
+      },500)
+    }
+
+    window.addEventListener('focus', enablePointerEvents, {once: true});
+    window.addEventListener('mousemove', enablePointerEvents, {once: true});
+
+- client_name = @consent_data[:client_name]
+
+#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
+  .gl-items-center
+    .gl-text-size-h1
+      = safe_format(_('%{strong_start}%{client_name}%{strong_end} is requesting access to your account on %{title}.'),
+        { client_name: client_name, title: brand_title },
+        tag_pair(tag.strong, :strong_start, :strong_end))
+    .gl-flex.gl-items-center.gl-gap-2.gl-py-5
+      = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })
+      .gl-pl-1
+        %strong= current_user.name
+      &middot;
+      .gl-text-subtle
+        %span= current_user.to_reference
+  - if current_user.admin?
+    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
+      - c.with_body do
+        = safe_format(_('You are an administrator, which means authorizing access to %{strong_start}%{client_name}%{strong_end} will allow it to interact with GitLab as an administrator as well.'),
+          { client_name: client_name },
+          tag_pair(tag.strong, :strong_start, :strong_end))
+  - if @consent_data[:requested_scopes].present?
+    - @consent_data[:requested_scopes].each do |scope|
+      .js-experimental-setting-accordion.gl-mb-5
+        - title = t(scope, scope: [:doorkeeper, :scopes], default: scope)
+        - description = t(scope, scope: [:doorkeeper, :scope_desc], default: '')
+        = render Pajamas::AccordionItemComponent.new(title: title, state: :closed, button_options: { class: '!gl-text-default gl-font-bold' }) do
+          .gl-text-subtle.gl-text-sm
+            = description
+  .info-well
+    .well-segment
+      %p.gl-text-warning
+        = sprite_icon('warning-solid')
+        = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
+          { client_name: client_name },
+          tag_pair(tag.strong, :strong_start, :strong_end))
+      %p
+        = safe_format(_('%{owner} added this OAuth application %{created_date} ago.'),
+          { owner: @consent_data[:client_owner],
+            created_date: time_ago_in_words(@consent_data[:client_created_at]) })
+  %div
+    = form_tag accept_iam_consent_path, method: :post, class: 'gl-inline-block gl-pr-3' do
+      = hidden_field_tag 'consent_challenge', @consent_challenge
+      = render Pajamas::ButtonComponent.new(type: :submit,
+        variant: :confirm,
+        button_options: { data: { testid: 'authorization-button' }}) do
+        = _('Authorize')
+    = form_tag reject_iam_consent_path, method: :post, class: 'gl-inline-block' do
+      = hidden_field_tag 'consent_challenge', @consent_challenge
+      = render Pajamas::ButtonComponent.new(type: :submit) do
+        = _('Cancel')

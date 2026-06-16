@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:nested_group, freeze: false) { create(:group, parent: group) }
-  let_it_be(:project, reload: true) { create(:project, namespace: nested_group) }
-  let_it_be(:user1) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, namespace: nested_group) }
+  let_it_be(:user1, freeze: false) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:user4) { create(:user) }

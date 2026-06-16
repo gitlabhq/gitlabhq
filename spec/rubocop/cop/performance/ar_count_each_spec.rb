@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/ar_count_each'
 
-RSpec.describe RuboCop::Cop::Performance::ARCountEach do
+RSpec.describe RuboCop::Cop::Performance::ARCountEach, feature_category: :database do
   context 'when it is not haml file' do
     it 'does not flag it as an offense' do
       expect(cop).to receive(:in_haml_file?).with(anything).at_least(:once).and_return(false)

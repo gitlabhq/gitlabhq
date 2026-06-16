@@ -39,36 +39,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
 
-    context 'when coordinating webhook execution with worker', :request_store do
-      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
-      let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
-      let(:ci_build) { build(:ci_build, pipeline: pipeline, ci_stage: stage, project: project, user: user) }
-
-      before do
-        pipeline.stages = [stage]
-        stage.statuses = [ci_build]
-      end
-
-      it 'sets request store flag to prevent build callbacks from executing hooks' do
-        expect(ci_build).not_to receive(:execute_hooks)
-
-        step.perform!
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_trigger_build_hooks_in_chain: false)
-          stub_feature_flags(ci_bulk_insert_pipeline_records: false)
-        end
-
-        it 'does not set request store flag' do
-          step.perform!
-
-          expect(Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain]).to be_nil
-        end
-      end
-    end
-
     context 'when pipeline has validation errors' do
       let(:pipeline) do
         build(:ci_pipeline, project: project, ref: nil)
@@ -381,23 +351,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
   end
 
-  # shared_examples 'pipeline creation'
-
-  context 'with bulk insert disabled' do
-    before do
-      stub_feature_flags(ci_bulk_insert_pipeline_records: false)
-    end
-
-    it_behaves_like 'pipeline creation'
-  end
-
-  context 'with bulk insert enabled' do
-    before do
-      stub_feature_flags(ci_bulk_insert_pipeline_records: true)
-    end
-
-    it_behaves_like 'pipeline creation'
-  end
+  it_behaves_like 'pipeline creation'
 
   describe 'bulk insert path' do
     let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
@@ -425,8 +379,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     before do
-      stub_feature_flags(ci_bulk_insert_pipeline_records: true)
-
       pipeline.stages = [stage]
       stage.statuses = [job1, job2]
 
@@ -558,18 +510,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         expect(test_pipeline.reload.builds.count).to eq(550)
         expect(query_count).to be < 100
       end
-
-      # TODO: Remove this test once ci_bulk_insert_pipeline_records FF is removed
-      it 'executes many queries without bulk insert', :allowed_to_be_slow do
-        stub_feature_flags(ci_bulk_insert_pipeline_records: false)
-        test_pipeline, test_command = create_large_pipeline
-
-        query_count = ActiveRecord::QueryRecorder.new do
-          described_class.new(test_pipeline, test_command).perform!
-        end.count
-
-        expect(query_count).to be > 500
-      end
     end
 
     context 'with complex pipeline including needs and build sources' do
@@ -579,8 +519,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       let(:stage3) { build(:ci_stage, pipeline: pipeline, project: project, name: 'deploy', position: 2) }
 
       before do
-        stub_feature_flags(ci_bulk_insert_pipeline_records: true)
-
         build_jobs = Array.new(50) do |i|
           build(:ci_build,
             :without_job_definition,
@@ -867,7 +805,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
 
       before do
-        stub_feature_flags(ci_bulk_insert_pipeline_records: true)
         pipeline.stages = [stage]
         stage.statuses = [deploy_job]
         Gitlab::Ci::Pipeline::Chain::EnsureEnvironments.new(pipeline, command).perform!

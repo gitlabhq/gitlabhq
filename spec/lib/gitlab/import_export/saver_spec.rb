@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-RSpec.describe Gitlab::ImportExport::Saver do
+RSpec.describe Gitlab::ImportExport::Saver, feature_category: :importers do
   let!(:project) { create(:project, :public, name: 'project') }
   let(:base_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:archive_path) { "#{base_path}/archive" }
@@ -56,7 +56,11 @@ RSpec.describe Gitlab::ImportExport::Saver do
         compress_duration_s: anything,
         assign_duration_s: anything,
         upload_duration_s: anything,
-        upload_bytes: anything
+        upload_bytes: anything,
+        upload_id: kind_of(Integer),
+        export_file_saved: anything,
+        export_file_exists: anything,
+        export_archive_exists: anything
       )).and_call_original
 
     subject.save # rubocop:disable Rails/SaveBang
@@ -70,6 +74,46 @@ RSpec.describe Gitlab::ImportExport::Saver do
     expect(FileUtils).not_to have_received(:rm_rf).with(base_path)
     expect(FileUtils).to have_received(:rm_rf).with(archive_path)
     expect(Dir.exist?(archive_path)).to eq(false)
+  end
+
+  context 'when the export_file column saved but CarrierWave reports no file' do
+    it 'logs a warning so the divergence is visible before the after-export strategy runs' do
+      stub_uploads_object_storage(ImportExportUploader)
+      allow_next_instance_of(ImportExportUpload) do |upload|
+        allow(upload).to receive(:export_file_exists?).and_return(false)
+      end
+
+      allow(Gitlab::Export::Logger).to receive(:info).and_call_original
+
+      expect(Gitlab::Export::Logger).to receive(:warn).with(
+        hash_including(
+          message: 'Export file column saved but CarrierWave reports no file',
+          upload_id: kind_of(Integer)
+        )
+      )
+
+      subject.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+    end
+  end
+
+  context 'when export_archive_exists? raises an error' do
+    it 'logs a warning, records export_archive_exists as false, and does not propagate the error' do
+      stub_uploads_object_storage(ImportExportUploader)
+      allow_next_instance_of(ImportExportUpload) do |upload|
+        allow(upload).to receive(:export_archive_exists?).and_raise(StandardError, 'network error')
+      end
+
+      allow(Gitlab::Export::Logger).to receive(:info).and_call_original
+
+      expect(Gitlab::Export::Logger).to receive(:warn).with(
+        hash_including(message: 'Export archive existence check failed')
+      )
+      expect(Gitlab::Export::Logger).to receive(:info)
+        .with(hash_including(message: 'Export archive uploaded', export_archive_exists: false))
+        .and_call_original
+
+      subject.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+    end
   end
 
   context 'when save throws an exception' do

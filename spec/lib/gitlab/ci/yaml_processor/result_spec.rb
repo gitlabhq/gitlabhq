@@ -8,7 +8,7 @@ module Gitlab
       RSpec.describe Result, feature_category: :pipeline_composition do
         include StubRequests
 
-        let(:user) { create(:user) }
+        let(:user) { build_stubbed(:user) }
         let(:ci_config) { Gitlab::Ci::Config.new(config_content, user: user) }
         let(:result) { described_class.new(ci_config: ci_config, warnings: ci_config&.warnings) }
 

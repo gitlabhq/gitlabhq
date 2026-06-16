@@ -5,6 +5,7 @@ import AssigneeAvatar from './assignee_avatar.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
 
 export default {
+  name: 'CollapsedAssignee',
   components: {
     GlButton,
     AssigneeAvatar,

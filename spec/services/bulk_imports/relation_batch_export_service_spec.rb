@@ -7,7 +7,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:export) { create(:bulk_import_export, :batched, project: project) }
-  let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
+  let_it_be(:batch, freeze: false) { create(:bulk_import_export_batch, export: export) }
   let_it_be(:cache_key) { BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id) }
 
   subject(:service) { described_class.new(user, batch) }

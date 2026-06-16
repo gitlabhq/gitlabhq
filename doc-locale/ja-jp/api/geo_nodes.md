@@ -1,8 +1,8 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GeoノードAPI（非推奨）
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GeoノードAPI (非推奨)
 ---
 
 {{< details >}}
@@ -12,21 +12,18 @@ title: GeoノードAPI（非推奨）
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> GeoノードAPIは、GitLab 16.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/369140)となり、APIのv5で削除される予定です。代わりに[GeoサイトAPI](geo_sites.md)を使用してください。これは破壊的な変更です。
 
-GeoノードAPIはGitLab 16.0で[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140)になり、APIのv5で削除される予定です。代わりに[Geo Sites API](geo_sites.md)を使用してください。これは破壊的な変更です。
+このAPIを使用して、[Geoノード](../administration/geo/_index.md)を管理します。
 
-{{< /alert >}}
-
-このAPIを使用して[Geoノード](../administration/geo/_index.md)を管理します。
-
-前提要件: 
+前提条件: 
 
 - 管理者である必要があります。
 
-## 新しいGeoノードを作成 {#create-a-new-geo-node}
+## Geoノードを作成する {#create-a-geo-node}
 
-新しいGeoノードを作成します。
+Geoノードを作成します。
 
 ```plaintext
 POST /geo_nodes
@@ -42,22 +39,23 @@ curl --request POST \
 
 | 属性                   | 型    | 必須 | 説明                                                      |
 | ----------------------------| ------- | -------- | -----------------------------------------------------------------|
-| `primary`                   | ブール値 | いいえ       | このノードをプライマリにするかどうかを指定します。デフォルトはfalseです。 |
+| `primary`                   | ブール値 | いいえ       | このノードがプライマリであるべきかどうかを指定します。デフォルトはfalseです。 |
 | `enabled`                   | ブール値 | いいえ       | Geoノードが有効になっているかどうかを示すフラグ。デフォルトはtrueです。    |
-| `name`                      | 文字列  | はい      | Geoノードの固有識別子。`geo_node_name`が`gitlab.rb`で設定されている場合はそれに一致する必要があります。それ以外の場合は、`external_url`に一致する必要があります |
+| `name`                      | 文字列  | はい      | Geoノードの固有識別子。`gitlab.rb`で設定されている場合は`geo_node_name`と一致し、そうでない場合は`external_url`と一致する必要があります。 |
 | `url`                       | 文字列  | はい      | Geoノードのユーザー向けURL。 |
-| `internal_url`              | 文字列  | いいえ       | プライマリで定義された、セカンダリノードで接続に使用するURL。設定されていない場合は、`url`を返します。 |
-| `files_max_capacity`        | 整数 | いいえ       | このセカンダリノードのLFS/添付ファイルのバックフィルの最大並行処理を制御します。デフォルトは10です。 |
-| `repos_max_capacity`        | 整数 | いいえ       | このセカンダリノードのリポジトリバックフィルの最大並行処理を制御します。デフォルトは25です。 |
-| `verification_max_capacity` | 整数 | いいえ       | このノードのリポジトリ検証の最大並行処理を制御します。デフォルトは100です。 |
-| `container_repositories_max_capacity` | 整数  | いいえ | このノードのコンテナリポジトリの同期の最大並行処理を制御します。デフォルトは10です。 |
-| `sync_object_storage`       | ブール値 | いいえ       | セカンダリGeoノードがオブジェクトストレージ内のblobをレプリケートする必要があるかどうかを示すフラグ。デフォルトはfalseです。 |
-| `selective_sync_type`       | 文字列  | いいえ       | 同期を特定のグループまたはシャードのみに制限します。有効な値: `"namespaces"`、`"shards"`、または`null`。 |
-| `selective_sync_shards`     | 配列   | いいえ       | `selective_sync_type` == `shards`の場合、同期されるプロジェクトのリポジトリストレージ。 |
-| `selective_sync_namespace_ids` | 配列 | いいえ      | `selective_sync_type` == `namespaces`の場合、同期する必要があるグループのID。 |
-| `minimum_reverification_interval` | 整数 | いいえ | リポジトリの検証が有効な間隔（日数）。期限が切れると、再検証されます。これは、セカンダリノードに設定しても効果はありません。 |
+| `internal_url`              | 文字列  | いいえ       | セカンダリノードがプライマリノードに接続するために使用する、プライマリノードで定義されたURL。設定されていない場合は`url`を返します。 |
+| `files_max_capacity`        | 整数 | いいえ       | このセカンダリノードにおけるLFS/アタッチメントバックフィルの最大並行処理を制御します。デフォルトは10です。 |
+| `repos_max_capacity`        | 整数 | いいえ       | このセカンダリノードにおけるリポジトリバックフィルの最大並行処理を制御します。デフォルトは25です。 |
+| `verification_max_capacity` | 整数 | いいえ       | このノードにおけるリポジトリ検証の最大並行処理を制御します。デフォルトは100です。 |
+| `container_repositories_max_capacity` | 整数  | いいえ | このノードにおけるコンテナリポジトリ同期の最大並行処理を制御します。デフォルトは10です。 |
+| `sync_object_storage`       | ブール値 | いいえ       | セカンダリGeoノードがオブジェクトストレージ内のblobをレプリケートするかどうかを示すフラグ。デフォルトはfalseです。 |
+| `selective_sync_type`       | 文字列  | いいえ       | 特定のグループまたはシャードへの同期に限定します。有効な値: `"namespaces"`、`"shards"`、または`null`。 |
+| `selective_sync_shards`     | 配列   | いいえ       | `selective_sync_type` == `shards`の場合に同期されるプロジェクトのリポジトリストレージ。 |
+| `selective_sync_namespace_ids` | 配列 | いいえ      | `selective_sync_type` == `namespaces`の場合に同期されるグループのID。 |
+| `minimum_reverification_interval` | 整数 | いいえ | リポジトリ検証が有効である間隔（日数）。期限が切れると再検証されます。セカンダリノードに設定されている場合、これは効果がありません。 |
+| `blob_download_timeout`           | 整数 | いいえ       | blobレプリケーションのタイムアウト（秒）。デフォルトは28800です。最大は86400です。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -77,6 +75,7 @@ curl --request POST \
   "minimum_reverification_interval": 7,
   "container_repositories_max_capacity": 10,
   "sync_object_storage": false,
+  "blob_download_timeout": 28800,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/3/edit",
   "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/3/replication/lfs_objects",
@@ -88,7 +87,9 @@ curl --request POST \
 }
 ```
 
-## すべてのGeoノードに関する設定を取得 {#retrieve-configuration-about-all-geo-nodes}
+## すべてのGeoノードを一覧表示する {#list-all-geo-nodes}
+
+すべてのGeoノードを一覧表示します。
 
 ```plaintext
 GET /geo_nodes
@@ -100,7 +101,7 @@ curl \
   --url "https://primary.example.com/api/v4/geo_nodes"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -120,6 +121,7 @@ curl \
     "selective_sync_shards": [],
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
+    "blob_download_timeout": 28800,
     "clone_protocol": "http",
     "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
     "_links": {
@@ -145,6 +147,7 @@ curl \
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
     "sync_object_storage": true,
+    "blob_download_timeout": 28800,
     "clone_protocol": "http",
     "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
     "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
@@ -157,11 +160,9 @@ curl \
 ]
 ```
 
-## 特定のGeoノードに関する設定を取得 {#retrieve-configuration-about-a-specific-geo-node}
+## Geoノードを取得する {#retrieve-a-geo-node}
 
-```plaintext
-GET /geo_nodes/:id
-```
+指定されたGeoノードを取得します。
 
 ```shell
 curl \
@@ -169,7 +170,7 @@ curl \
   --url "https://primary.example.com/api/v4/geo_nodes/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -188,6 +189,7 @@ curl \
   "selective_sync_shards": [],
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
+  "blob_download_timeout": 28800,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
@@ -198,9 +200,9 @@ curl \
 }
 ```
 
-## Geoノードを編集 {#edit-a-geo-node}
+## Geoノードを更新する {#update-a-geo-node}
 
-既存のGeoノードの設定を更新します。
+指定されたGeoノードを更新します。
 
 ```plaintext
 PUT /geo_nodes/:id
@@ -210,20 +212,21 @@ PUT /geo_nodes/:id
 |-----------------------------|---------|---------|---------------------------------------------------------------------------|
 | `id`                        | 整数 | はい     | GeoノードのID。                                                   |
 | `enabled`                   | ブール値 | いいえ      | Geoノードが有効になっているかどうかを示すフラグ。                               |
-| `name`                      | 文字列  | いいえ      | Geoノードの固有識別子。`geo_node_name`が`gitlab.rb`で設定されている場合はそれに一致する必要があり、そうでない場合は`external_url`に一致する必要があります。 |
+| `name`                      | 文字列  | いいえ      | Geoノードの固有識別子。`gitlab.rb`で設定されている場合は`geo_node_name`と一致し、そうでない場合は`external_url`と一致する必要があります。 |
 | `url`                       | 文字列  | いいえ      | Geoノードのユーザー向けURL。 |
-| `internal_url`              | 文字列  | いいえ      | プライマリで定義された、セカンダリノードで接続に使用するURL。設定されていない場合は、`url`を返します。|
-| `files_max_capacity`        | 整数 | いいえ      | このセカンダリノードのLFS/添付ファイルのバックフィルの最大並行処理を制御します。 |
-| `repos_max_capacity`        | 整数 | いいえ      | このセカンダリノードのリポジトリバックフィルの最大並行処理を制御します。     |
-| `verification_max_capacity` | 整数 | いいえ      | このノードの検証の最大並行処理を制御します。 |
-| `container_repositories_max_capacity` | 整数 | いいえ      | このノードのコンテナリポジトリの同期の最大並行処理を制御します。 |
-| `sync_object_storage`       | ブール値 | いいえ      | セカンダリGeoノードがオブジェクトストレージ内のblobをレプリケートする必要があるかどうかを示すフラグ。 |
-| `selective_sync_type`       | 文字列  | いいえ      | 同期を特定のグループまたはシャードのみに制限します。有効な値: `"namespaces"`、`"shards"`、または`null`。 |
-| `selective_sync_shards`     | 配列   | いいえ      | `selective_sync_type` == `shards`の場合、同期されるプロジェクトのリポジトリストレージ。 |
-| `selective_sync_namespace_ids` | 配列 | いいえ      | `selective_sync_type` == `namespaces`の場合、同期する必要があるグループのID。 |
-| `minimum_reverification_interval` | 整数 | いいえ      | リポジトリの検証が有効な間隔（日数）。期限が切れると、再検証されます。これは、セカンダリノードに設定しても効果はありません。 |
+| `internal_url`              | 文字列  | いいえ      | セカンダリノードがプライマリノードに接続するために使用する、プライマリノードで定義されたURL。設定されていない場合は`url`を返します。|
+| `files_max_capacity`        | 整数 | いいえ      | このセカンダリノードにおけるLFS/アタッチメントバックフィルの最大並行処理を制御します。 |
+| `repos_max_capacity`        | 整数 | いいえ      | このセカンダリノードにおけるリポジトリバックフィルの最大並行処理を制御します。     |
+| `verification_max_capacity` | 整数 | いいえ      | このノードにおける検証の最大並行処理を制御します。 |
+| `container_repositories_max_capacity` | 整数 | いいえ      | このノードにおけるコンテナリポジトリ同期の最大並行処理を制御します。 |
+| `sync_object_storage`       | ブール値 | いいえ      | セカンダリGeoノードがオブジェクトストレージ内のblobをレプリケートするかどうかを示すフラグ。 |
+| `selective_sync_type`       | 文字列  | いいえ      | 特定のグループまたはシャードへの同期に限定します。有効な値: `"namespaces"`、`"shards"`、または`null`。 |
+| `selective_sync_shards`     | 配列   | いいえ      | `selective_sync_type` == `shards`の場合に同期されるプロジェクトのリポジトリストレージ。 |
+| `selective_sync_namespace_ids` | 配列 | いいえ      | `selective_sync_type` == `namespaces`の場合に同期されるグループのID。 |
+| `minimum_reverification_interval` | 整数 | いいえ      | リポジトリ検証が有効である間隔（日数）。期限が切れると再検証されます。セカンダリノードに設定されている場合、これは効果がありません。 |
+| `blob_download_timeout`           | 整数 | いいえ      | blobレプリケーションのタイムアウト（秒）。デフォルトは28800です。最大は86400です。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -243,6 +246,7 @@ PUT /geo_nodes/:id
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
   "sync_object_storage": true,
+  "blob_download_timeout": 28800,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
   "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
@@ -254,7 +258,7 @@ PUT /geo_nodes/:id
 }
 ```
 
-## Geoノードを削除 {#delete-a-geo-node}
+## Geoノードを削除する {#delete-a-geo-node}
 
 Geoノードを削除します。
 
@@ -266,17 +270,17 @@ DELETE /geo_nodes/:id
 |-----------|---------|----------|-------------------------|
 | `id`      | 整数 | はい      | GeoノードのID。 |
 
-## Geoノードを修復 {#repair-a-geo-node}
+## Geoノードを修復する {#repair-a-geo-node}
 
-GeoノードのOAuth認証を修復するには。
+GeoノードのOAuth認証を修復します。
 
-_これは、プライマリGeoノードに対してのみ実行できます。_
+_これはプライマリGeoノードに対してのみ実行できます。_
 
 ```plaintext
 POST /geo_nodes/:id/repair
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -291,6 +295,7 @@ POST /geo_nodes/:id/repair
   "repos_max_capacity": 25,
   "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
+  "blob_download_timeout": 28800,
   "clone_protocol": "http",
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
@@ -301,7 +306,9 @@ POST /geo_nodes/:id/repair
 }
 ```
 
-## すべてのGeoノードに関するステータスを取得 {#retrieve-status-about-all-geo-nodes}
+## すべてのGeoノードステータスを一覧表示する {#list-all-geo-node-statuses}
+
+すべてのGeoノードステータスを一覧表示します。
 
 ```plaintext
 GET /geo_nodes/status
@@ -313,7 +320,7 @@ curl \
   --url "https://primary.example.com/api/v4/geo_nodes/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -349,6 +356,146 @@ curl \
     "repositories_checked_count": 20,
     "repositories_checked_failed_count": 20,
     "repositories_checked_in_percentage": "100.00%",
+    "achievement_uploads_count": 0,
+    "achievement_uploads_checksum_total_count": 0,
+    "achievement_uploads_checksummed_count": 0,
+    "achievement_uploads_checksum_failed_count": 0,
+    "achievement_uploads_synced_count": null,
+    "achievement_uploads_failed_count": null,
+    "achievement_uploads_registry_count": null,
+    "achievement_uploads_verification_total_count": null,
+    "achievement_uploads_verified_count": null,
+    "achievement_uploads_verification_failed_count": null,
+    "achievement_uploads_synced_in_percentage": "0.00%",
+    "achievement_uploads_verified_in_percentage": "0.00%",
+    "bulk_import_export_upload_uploads_count": 0,
+    "bulk_import_export_upload_uploads_checksum_total_count": 0,
+    "bulk_import_export_upload_uploads_checksummed_count": 0,
+    "bulk_import_export_upload_uploads_checksum_failed_count": 0,
+    "bulk_import_export_upload_uploads_synced_count": null,
+    "bulk_import_export_upload_uploads_failed_count": null,
+    "bulk_import_export_upload_uploads_registry_count": null,
+    "bulk_import_export_upload_uploads_verification_total_count": null,
+    "bulk_import_export_upload_uploads_verified_count": null,
+    "bulk_import_export_upload_uploads_verification_failed_count": null,
+    "bulk_import_export_upload_uploads_synced_in_percentage": "0.00%",
+    "bulk_import_export_upload_uploads_verified_in_percentage": "0.00%",
+    "ai_vectorizable_file_uploads_count": 0,
+    "ai_vectorizable_file_uploads_checksum_total_count": 0,
+    "ai_vectorizable_file_uploads_checksummed_count": 0,
+    "ai_vectorizable_file_uploads_checksum_failed_count": 0,
+    "ai_vectorizable_file_uploads_synced_count": null,
+    "ai_vectorizable_file_uploads_failed_count": null,
+    "ai_vectorizable_file_uploads_registry_count": null,
+    "ai_vectorizable_file_uploads_verification_total_count": null,
+    "ai_vectorizable_file_uploads_verified_count": null,
+    "ai_vectorizable_file_uploads_verification_failed_count": null,
+    "ai_vectorizable_file_uploads_synced_in_percentage": "0.00%",
+    "ai_vectorizable_file_uploads_verified_in_percentage": "0.00%",
+    "import_export_upload_uploads_count": 0,
+    "import_export_upload_uploads_checksum_total_count": 0,
+    "import_export_upload_uploads_checksummed_count": 0,
+    "import_export_upload_uploads_checksum_failed_count": 0,
+    "import_export_upload_uploads_synced_count": null,
+    "import_export_upload_uploads_failed_count": null,
+    "import_export_upload_uploads_registry_count": null,
+    "import_export_upload_uploads_verification_total_count": null,
+    "import_export_upload_uploads_verified_count": null,
+    "import_export_upload_uploads_verification_failed_count": null,
+    "import_export_upload_uploads_synced_in_percentage": "0.00%",
+    "import_export_upload_uploads_verified_in_percentage": "0.00%",
+    "vulnerability_archive_export_uploads_count": 0,
+    "vulnerability_archive_export_uploads_checksum_total_count": 0,
+    "vulnerability_archive_export_uploads_checksummed_count": 0,
+    "vulnerability_archive_export_uploads_checksum_failed_count": 0,
+    "vulnerability_archive_export_uploads_synced_count": null,
+    "vulnerability_archive_export_uploads_failed_count": null,
+    "vulnerability_archive_export_uploads_registry_count": null,
+    "vulnerability_archive_export_uploads_verification_total_count": null,
+    "vulnerability_archive_export_uploads_verified_count": null,
+    "vulnerability_archive_export_uploads_verification_failed_count": null,
+    "vulnerability_archive_export_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_archive_export_uploads_verified_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksum_total_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksummed_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksum_failed_count": 0,
+    "project_import_export_relation_export_upload_uploads_synced_count": null,
+    "project_import_export_relation_export_upload_uploads_failed_count": null,
+    "project_import_export_relation_export_upload_uploads_registry_count": null,
+    "project_import_export_relation_export_upload_uploads_verification_total_count": null,
+    "project_import_export_relation_export_upload_uploads_verified_count": null,
+    "project_import_export_relation_export_upload_uploads_verification_failed_count": null,
+    "project_import_export_relation_export_upload_uploads_synced_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_verified_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_oldest_unsynced_time": null,
+    "vulnerability_export_part_uploads_count": 0,
+    "vulnerability_export_part_uploads_checksum_total_count": 0,
+    "vulnerability_export_part_uploads_checksummed_count": 0,
+    "vulnerability_export_part_uploads_checksum_failed_count": 0,
+    "vulnerability_export_part_uploads_synced_count": null,
+    "vulnerability_export_part_uploads_failed_count": null,
+    "vulnerability_export_part_uploads_registry_count": null,
+    "vulnerability_export_part_uploads_verification_total_count": null,
+    "vulnerability_export_part_uploads_verified_count": null,
+    "vulnerability_export_part_uploads_verification_failed_count": null,
+    "vulnerability_export_part_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_export_part_uploads_verified_in_percentage": "0.00%",
+    "vulnerability_export_part_uploads_oldest_unsynced_time": null,
+    "vulnerability_export_uploads_count": 0,
+    "vulnerability_export_uploads_checksum_total_count": 0,
+    "vulnerability_export_uploads_checksummed_count": 0,
+    "vulnerability_export_uploads_checksum_failed_count": 0,
+    "vulnerability_export_uploads_synced_count": null,
+    "vulnerability_export_uploads_failed_count": null,
+    "vulnerability_export_uploads_registry_count": null,
+    "vulnerability_export_uploads_verification_total_count": null,
+    "vulnerability_export_uploads_verified_count": null,
+    "vulnerability_export_uploads_verification_failed_count": null,
+    "vulnerability_export_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_export_uploads_verified_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_count": 0,
+    "user_permission_export_upload_uploads_checksum_total_count": 0,
+    "user_permission_export_upload_uploads_checksummed_count": 0,
+    "user_permission_export_upload_uploads_checksum_failed_count": 0,
+    "user_permission_export_upload_uploads_synced_count": null,
+    "user_permission_export_upload_uploads_failed_count": null,
+    "user_permission_export_upload_uploads_registry_count": null,
+    "user_permission_export_upload_uploads_verification_total_count": null,
+    "user_permission_export_upload_uploads_verified_count": null,
+    "user_permission_export_upload_uploads_verification_failed_count": null,
+    "user_permission_export_upload_uploads_synced_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_verified_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_oldest_unsynced_time": null,
+    "issuable_metric_image_uploads_count": 0,
+    "issuable_metric_image_uploads_checksum_total_count": 0,
+    "issuable_metric_image_uploads_checksummed_count": 0,
+    "issuable_metric_image_uploads_checksum_failed_count": 0,
+    "issuable_metric_image_uploads_synced_count": null,
+    "issuable_metric_image_uploads_failed_count": null,
+    "issuable_metric_image_uploads_registry_count": null,
+    "issuable_metric_image_uploads_verification_total_count": null,
+    "issuable_metric_image_uploads_verified_count": null,
+    "issuable_metric_image_uploads_verification_failed_count": null,
+    "issuable_metric_image_uploads_synced_in_percentage": "0.00%",
+    "issuable_metric_image_uploads_verified_in_percentage": "0.00%",
+    "issuable_metric_image_uploads_oldest_unsynced_time": null,
+    "packages_debian_project_component_files_count": 0,
+    "packages_debian_project_component_files_checksum_total_count": 0,
+    "packages_debian_project_component_files_checksummed_count": 0,
+    "packages_debian_project_component_files_checksum_failed_count": 0,
+    "packages_debian_project_component_files_synced_count": null,
+    "packages_debian_project_component_files_failed_count": null,
+    "packages_debian_project_component_files_registry_count": null,
+    "packages_debian_project_component_files_verification_total_count": null,
+    "packages_debian_project_component_files_verified_count": null,
+    "packages_debian_project_component_files_verification_failed_count": null,
+    "packages_debian_project_component_files_synced_in_percentage": "0.00%",
+    "packages_debian_project_component_files_verified_in_percentage": "0.00%",
+    "git_fetch_event_count_weekly": 0,
+    "git_push_event_count_weekly": 0,
+    "proxy_remote_requests_event_count_weekly": 0,
+    "proxy_local_requests_event_count_weekly": 0,
     "last_event_id": 23,
     "last_event_timestamp": 1509681166,
     "cursor_last_event_id": null,
@@ -547,7 +694,76 @@ curl \
     "project_repositories_verified_count": 5,
     "project_repositories_verification_failed_count": 0,
     "project_repositories_synced_in_percentage": "100.00%",
-    "project_repositories_verified_in_percentage": "100.00%"
+    "project_repositories_verified_in_percentage": "100.00%",
+    "container_repositories_replication_enabled": null,
+    "abuse_report_uploads_count": 0,
+    "abuse_report_uploads_checksum_total_count": 0,
+    "abuse_report_uploads_checksummed_count": 0,
+    "abuse_report_uploads_checksum_failed_count": 0,
+    "abuse_report_uploads_synced_count": null,
+    "abuse_report_uploads_failed_count": null,
+    "abuse_report_uploads_registry_count": null,
+    "abuse_report_uploads_verification_total_count": null,
+    "abuse_report_uploads_verified_count": null,
+    "abuse_report_uploads_verification_failed_count": null,
+    "abuse_report_uploads_synced_in_percentage": "0.00%",
+    "abuse_report_uploads_verified_in_percentage": "0.00%",
+    "project_uploads_count": 0,
+    "project_uploads_checksum_total_count": 0,
+    "project_uploads_checksummed_count": 0,
+    "project_uploads_checksum_failed_count": 0,
+    "project_uploads_synced_count": null,
+    "project_uploads_failed_count": null,
+    "project_uploads_registry_count": null,
+    "project_uploads_verification_total_count": null,
+    "project_uploads_verified_count": null,
+    "project_uploads_verification_failed_count": null,
+    "project_uploads_synced_in_percentage": "0.00%",
+    "project_uploads_verified_in_percentage": "0.00%",
+    "group_uploads_count": 0,
+    "group_uploads_checksum_total_count": 0,
+    "group_uploads_checksummed_count": 0,
+    "group_uploads_checksum_failed_count": 0,
+    "group_uploads_synced_count": null,
+    "group_uploads_failed_count": null,
+    "group_uploads_registry_count": null,
+    "group_uploads_verification_total_count": null,
+    "group_uploads_verified_count": null,
+    "group_uploads_verification_failed_count": null,
+    "group_uploads_synced_in_percentage": "0.00%",
+    "group_uploads_verified_in_percentage": "0.00%",
+    "user_uploads_count": 0,
+    "user_uploads_checksum_total_count": 0,
+    "user_uploads_checksummed_count": 0,
+    "user_uploads_checksum_failed_count": 0,
+    "user_uploads_synced_count": null,
+    "user_uploads_failed_count": null,
+    "user_uploads_registry_count": null,
+    "user_uploads_verification_total_count": null,
+    "user_uploads_verified_count": null,
+    "user_uploads_verification_failed_count": null,
+    "user_uploads_synced_in_percentage": "0.00%",
+    "user_uploads_verified_in_percentage": "0.00%",
+    "design_management_action_uploads_count": 0,
+    "design_management_action_uploads_checksum_total_count": 0,
+    "design_management_action_uploads_checksummed_count": 0,
+    "design_management_action_uploads_checksum_failed_count": 0,
+    "design_management_action_uploads_synced_count": null,
+    "design_management_action_uploads_failed_count": null,
+    "design_management_action_uploads_registry_count": null,
+    "design_management_action_uploads_verification_total_count": null,
+    "design_management_action_uploads_verified_count": null,
+    "design_management_action_uploads_verification_failed_count": null,
+    "design_management_action_uploads_synced_in_percentage": "0.00%",
+    "design_management_action_uploads_verified_in_percentage": "0.00%",
+    "selective_sync_type": null,
+    "namespaces": [],
+    "updated_at": "2024-04-01T00:00:00.000Z",
+    "storage_shards_match": true,
+    "_links": {
+       "self": "https://primary.example.com/api/v4/geo_nodes/1/status",
+       "node": "https://primary.example.com/api/v4/geo_nodes/1"
+    }
   },
   {
     "geo_node_id": 2,
@@ -590,6 +806,146 @@ curl \
     "replication_slots_used_count": null,
     "replication_slots_used_in_percentage": "0.00%",
     "replication_slots_max_retained_wal_bytes": null,
+    "achievement_uploads_count": 0,
+    "achievement_uploads_checksum_total_count": 0,
+    "achievement_uploads_checksummed_count": 0,
+    "achievement_uploads_checksum_failed_count": 0,
+    "achievement_uploads_synced_count": null,
+    "achievement_uploads_failed_count": null,
+    "achievement_uploads_registry_count": null,
+    "achievement_uploads_verification_total_count": null,
+    "achievement_uploads_verified_count": null,
+    "achievement_uploads_verification_failed_count": null,
+    "achievement_uploads_synced_in_percentage": "0.00%",
+    "achievement_uploads_verified_in_percentage": "0.00%",
+    "bulk_import_export_upload_uploads_count": 0,
+    "bulk_import_export_upload_uploads_checksum_total_count": 0,
+    "bulk_import_export_upload_uploads_checksummed_count": 0,
+    "bulk_import_export_upload_uploads_checksum_failed_count": 0,
+    "bulk_import_export_upload_uploads_synced_count": null,
+    "bulk_import_export_upload_uploads_failed_count": null,
+    "bulk_import_export_upload_uploads_registry_count": null,
+    "bulk_import_export_upload_uploads_verification_total_count": null,
+    "bulk_import_export_upload_uploads_verified_count": null,
+    "bulk_import_export_upload_uploads_verification_failed_count": null,
+    "bulk_import_export_upload_uploads_synced_in_percentage": "0.00%",
+    "bulk_import_export_upload_uploads_verified_in_percentage": "0.00%",
+    "ai_vectorizable_file_uploads_count": 0,
+    "ai_vectorizable_file_uploads_checksum_total_count": 0,
+    "ai_vectorizable_file_uploads_checksummed_count": 0,
+    "ai_vectorizable_file_uploads_checksum_failed_count": 0,
+    "ai_vectorizable_file_uploads_synced_count": null,
+    "ai_vectorizable_file_uploads_failed_count": null,
+    "ai_vectorizable_file_uploads_registry_count": null,
+    "ai_vectorizable_file_uploads_verification_total_count": null,
+    "ai_vectorizable_file_uploads_verified_count": null,
+    "ai_vectorizable_file_uploads_verification_failed_count": null,
+    "ai_vectorizable_file_uploads_synced_in_percentage": "0.00%",
+    "ai_vectorizable_file_uploads_verified_in_percentage": "0.00%",
+    "import_export_upload_uploads_count": 0,
+    "import_export_upload_uploads_checksum_total_count": 0,
+    "import_export_upload_uploads_checksummed_count": 0,
+    "import_export_upload_uploads_checksum_failed_count": 0,
+    "import_export_upload_uploads_synced_count": null,
+    "import_export_upload_uploads_failed_count": null,
+    "import_export_upload_uploads_registry_count": null,
+    "import_export_upload_uploads_verification_total_count": null,
+    "import_export_upload_uploads_verified_count": null,
+    "import_export_upload_uploads_verification_failed_count": null,
+    "import_export_upload_uploads_synced_in_percentage": "0.00%",
+    "import_export_upload_uploads_verified_in_percentage": "0.00%",
+    "vulnerability_archive_export_uploads_count": 0,
+    "vulnerability_archive_export_uploads_checksum_total_count": 0,
+    "vulnerability_archive_export_uploads_checksummed_count": 0,
+    "vulnerability_archive_export_uploads_checksum_failed_count": 0,
+    "vulnerability_archive_export_uploads_synced_count": null,
+    "vulnerability_archive_export_uploads_failed_count": null,
+    "vulnerability_archive_export_uploads_registry_count": null,
+    "vulnerability_archive_export_uploads_verification_total_count": null,
+    "vulnerability_archive_export_uploads_verified_count": null,
+    "vulnerability_archive_export_uploads_verification_failed_count": null,
+    "vulnerability_archive_export_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_archive_export_uploads_verified_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksum_total_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksummed_count": 0,
+    "project_import_export_relation_export_upload_uploads_checksum_failed_count": 0,
+    "project_import_export_relation_export_upload_uploads_synced_count": null,
+    "project_import_export_relation_export_upload_uploads_failed_count": null,
+    "project_import_export_relation_export_upload_uploads_registry_count": null,
+    "project_import_export_relation_export_upload_uploads_verification_total_count": null,
+    "project_import_export_relation_export_upload_uploads_verified_count": null,
+    "project_import_export_relation_export_upload_uploads_verification_failed_count": null,
+    "project_import_export_relation_export_upload_uploads_synced_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_verified_in_percentage": "0.00%",
+    "project_import_export_relation_export_upload_uploads_oldest_unsynced_time": null,
+    "vulnerability_export_part_uploads_count": 0,
+    "vulnerability_export_part_uploads_checksum_total_count": 0,
+    "vulnerability_export_part_uploads_checksummed_count": 0,
+    "vulnerability_export_part_uploads_checksum_failed_count": 0,
+    "vulnerability_export_part_uploads_synced_count": null,
+    "vulnerability_export_part_uploads_failed_count": null,
+    "vulnerability_export_part_uploads_registry_count": null,
+    "vulnerability_export_part_uploads_verification_total_count": null,
+    "vulnerability_export_part_uploads_verified_count": null,
+    "vulnerability_export_part_uploads_verification_failed_count": null,
+    "vulnerability_export_part_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_export_part_uploads_verified_in_percentage": "0.00%",
+    "vulnerability_export_part_uploads_oldest_unsynced_time": null,
+    "vulnerability_export_uploads_count": 0,
+    "vulnerability_export_uploads_checksum_total_count": 0,
+    "vulnerability_export_uploads_checksummed_count": 0,
+    "vulnerability_export_uploads_checksum_failed_count": 0,
+    "vulnerability_export_uploads_synced_count": null,
+    "vulnerability_export_uploads_failed_count": null,
+    "vulnerability_export_uploads_registry_count": null,
+    "vulnerability_export_uploads_verification_total_count": null,
+    "vulnerability_export_uploads_verified_count": null,
+    "vulnerability_export_uploads_verification_failed_count": null,
+    "vulnerability_export_uploads_synced_in_percentage": "0.00%",
+    "vulnerability_export_uploads_verified_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_count": 0,
+    "user_permission_export_upload_uploads_checksum_total_count": 0,
+    "user_permission_export_upload_uploads_checksummed_count": 0,
+    "user_permission_export_upload_uploads_checksum_failed_count": 0,
+    "user_permission_export_upload_uploads_synced_count": null,
+    "user_permission_export_upload_uploads_failed_count": null,
+    "user_permission_export_upload_uploads_registry_count": null,
+    "user_permission_export_upload_uploads_verification_total_count": null,
+    "user_permission_export_upload_uploads_verified_count": null,
+    "user_permission_export_upload_uploads_verification_failed_count": null,
+    "user_permission_export_upload_uploads_synced_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_verified_in_percentage": "0.00%",
+    "user_permission_export_upload_uploads_oldest_unsynced_time": null,
+    "issuable_metric_image_uploads_count": 0,
+    "issuable_metric_image_uploads_checksum_total_count": 0,
+    "issuable_metric_image_uploads_checksummed_count": 0,
+    "issuable_metric_image_uploads_checksum_failed_count": 0,
+    "issuable_metric_image_uploads_synced_count": null,
+    "issuable_metric_image_uploads_failed_count": null,
+    "issuable_metric_image_uploads_registry_count": null,
+    "issuable_metric_image_uploads_verification_total_count": null,
+    "issuable_metric_image_uploads_verified_count": null,
+    "issuable_metric_image_uploads_verification_failed_count": null,
+    "issuable_metric_image_uploads_synced_in_percentage": "0.00%",
+    "issuable_metric_image_uploads_verified_in_percentage": "0.00%",
+    "issuable_metric_image_uploads_oldest_unsynced_time": null,
+    "packages_debian_project_component_files_count": 0,
+    "packages_debian_project_component_files_checksum_total_count": 0,
+    "packages_debian_project_component_files_checksummed_count": 0,
+    "packages_debian_project_component_files_checksum_failed_count": 0,
+    "packages_debian_project_component_files_synced_count": null,
+    "packages_debian_project_component_files_failed_count": null,
+    "packages_debian_project_component_files_registry_count": null,
+    "packages_debian_project_component_files_verification_total_count": null,
+    "packages_debian_project_component_files_verified_count": null,
+    "packages_debian_project_component_files_verification_failed_count": null,
+    "packages_debian_project_component_files_synced_in_percentage": "0.00%",
+    "packages_debian_project_component_files_verified_in_percentage": "0.00%",
+    "git_fetch_event_count_weekly": 0,
+    "git_push_event_count_weekly": 0,
+    "proxy_remote_requests_event_count_weekly": 0,
+    "proxy_local_requests_event_count_weekly": 0,
     "repositories_checked_count": 5,
     "repositories_checked_failed_count": 1,
     "repositories_checked_in_percentage": "12.20%",
@@ -755,16 +1111,119 @@ curl \
     "project_repositories_verified_count": 5,
     "project_repositories_verification_failed_count": 0,
     "project_repositories_synced_in_percentage": "100.00%",
-    "project_repositories_verified_in_percentage": "100.00%"
+    "project_repositories_verified_in_percentage": "100.00%",
+    "ci_secure_files_count": 5,
+    "ci_secure_files_checksum_total_count": 5,
+    "ci_secure_files_checksummed_count": 5,
+    "ci_secure_files_checksum_failed_count": 0,
+    "ci_secure_files_synced_count": 5,
+    "ci_secure_files_failed_count": 0,
+    "ci_secure_files_registry_count": 5,
+    "ci_secure_files_verification_total_count": 5,
+    "ci_secure_files_verified_count": 5,
+    "ci_secure_files_verification_failed_count": 0,
+    "ci_secure_files_synced_in_percentage": "100.00%",
+    "ci_secure_files_verified_in_percentage": "100.00%",
+    "pages_deployments_count": 5,
+    "pages_deployments_checksum_total_count": 5,
+    "pages_deployments_checksummed_count": 5,
+    "pages_deployments_checksum_failed_count": 0,
+    "pages_deployments_synced_count": 5,
+    "pages_deployments_failed_count": 0,
+    "pages_deployments_registry_count": 5,
+    "pages_deployments_verification_total_count": 5,
+    "pages_deployments_verified_count": 5,
+    "pages_deployments_verification_failed_count": 0,
+    "pages_deployments_synced_in_percentage": "100.00%",
+    "pages_deployments_verified_in_percentage": "100.00%",
+    "project_wiki_repositories_count": 5,
+    "project_wiki_repositories_checksum_total_count": 5,
+    "project_wiki_repositories_checksummed_count": 5,
+    "project_wiki_repositories_checksum_failed_count": 0,
+    "project_wiki_repositories_synced_count": 5,
+    "project_wiki_repositories_failed_count": 0,
+    "project_wiki_repositories_registry_count": 5,
+    "project_wiki_repositories_verification_total_count": 5,
+    "project_wiki_repositories_verified_count": 5,
+    "project_wiki_repositories_verification_failed_count": 0,
+    "project_wiki_repositories_synced_in_percentage": "100.00%",
+    "project_wiki_repositories_verified_in_percentage": "100.00%",
+    "container_repositories_replication_enabled": true,
+    "abuse_report_uploads_count": 0,
+    "abuse_report_uploads_checksum_total_count": 0,
+    "abuse_report_uploads_checksummed_count": 0,
+    "abuse_report_uploads_checksum_failed_count": 0,
+    "abuse_report_uploads_synced_count": null,
+    "abuse_report_uploads_failed_count": null,
+    "abuse_report_uploads_registry_count": null,
+    "abuse_report_uploads_verification_total_count": null,
+    "abuse_report_uploads_verified_count": null,
+    "abuse_report_uploads_verification_failed_count": null,
+    "abuse_report_uploads_synced_in_percentage": "0.00%",
+    "abuse_report_uploads_verified_in_percentage": "0.00%",
+    "project_uploads_count": 0,
+    "project_uploads_checksum_total_count": 0,
+    "project_uploads_checksummed_count": 0,
+    "project_uploads_checksum_failed_count": 0,
+    "project_uploads_synced_count": null,
+    "project_uploads_failed_count": null,
+    "project_uploads_registry_count": null,
+    "project_uploads_verification_total_count": null,
+    "project_uploads_verified_count": null,
+    "project_uploads_verification_failed_count": null,
+    "project_uploads_synced_in_percentage": "0.00%",
+    "project_uploads_verified_in_percentage": "0.00%",
+    "group_uploads_count": 0,
+    "group_uploads_checksum_total_count": 0,
+    "group_uploads_checksummed_count": 0,
+    "group_uploads_checksum_failed_count": 0,
+    "group_uploads_synced_count": null,
+    "group_uploads_failed_count": null,
+    "group_uploads_registry_count": null,
+    "group_uploads_verification_total_count": null,
+    "group_uploads_verified_count": null,
+    "group_uploads_verification_failed_count": null,
+    "group_uploads_synced_in_percentage": "0.00%",
+    "group_uploads_verified_in_percentage": "0.00%",
+    "user_uploads_count": 0,
+    "user_uploads_checksum_total_count": 0,
+    "user_uploads_checksummed_count": 0,
+    "user_uploads_checksum_failed_count": 0,
+    "user_uploads_synced_count": null,
+    "user_uploads_failed_count": null,
+    "user_uploads_registry_count": null,
+    "user_uploads_verification_total_count": null,
+    "user_uploads_verified_count": null,
+    "user_uploads_verification_failed_count": null,
+    "user_uploads_synced_in_percentage": "0.00%",
+    "user_uploads_verified_in_percentage": "0.00%",
+    "design_management_action_uploads_count": 0,
+    "design_management_action_uploads_checksum_total_count": 0,
+    "design_management_action_uploads_checksummed_count": 0,
+    "design_management_action_uploads_checksum_failed_count": 0,
+    "design_management_action_uploads_synced_count": null,
+    "design_management_action_uploads_failed_count": null,
+    "design_management_action_uploads_registry_count": null,
+    "design_management_action_uploads_verification_total_count": null,
+    "design_management_action_uploads_verified_count": null,
+    "design_management_action_uploads_verification_failed_count": null,
+    "design_management_action_uploads_synced_in_percentage": "0.00%",
+    "design_management_action_uploads_verified_in_percentage": "0.00%",
+    "selective_sync_type": null,
+    "namespaces": [],
+    "updated_at": "2024-04-01T00:00:00.000Z",
+    "storage_shards_match": true,
+    "_links": {
+       "self": "https://primary.example.com/api/v4/geo_nodes/2/status",
+       "node": "https://primary.example.com/api/v4/geo_nodes/2"
+    }
   }
 ]
 ```
 
-## 特定のGeoノードに関するステータスを取得 {#retrieve-status-about-a-specific-geo-node}
+## Geoノードステータスを取得する {#retrieve-a-geo-node-status}
 
-```plaintext
-GET /geo_nodes/:id/status
-```
+指定されたGeoノードステータスを取得します。
 
 ```shell
 curl \
@@ -772,7 +1231,7 @@ curl \
   --url "https://primary.example.com/api/v4/geo_nodes/2/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -978,12 +1437,242 @@ curl \
   "project_repositories_verified_count": 5,
   "project_repositories_verification_failed_count": 0,
   "project_repositories_synced_in_percentage": "100.00%",
-  "project_repositories_verified_in_percentage": "100.00%"
+  "project_repositories_verified_in_percentage": "100.00%",
+  "achievement_uploads_count": 0,
+  "achievement_uploads_checksum_total_count": 0,
+  "achievement_uploads_checksummed_count": 0,
+  "achievement_uploads_checksum_failed_count": 0,
+  "achievement_uploads_synced_count": null,
+  "achievement_uploads_failed_count": null,
+  "achievement_uploads_registry_count": null,
+  "achievement_uploads_verification_total_count": null,
+  "achievement_uploads_verified_count": null,
+  "achievement_uploads_verification_failed_count": null,
+  "achievement_uploads_synced_in_percentage": "0.00%",
+  "achievement_uploads_verified_in_percentage": "0.00%",
+  "bulk_import_export_upload_uploads_count": 0,
+  "bulk_import_export_upload_uploads_checksum_total_count": 0,
+  "bulk_import_export_upload_uploads_checksummed_count": 0,
+  "bulk_import_export_upload_uploads_checksum_failed_count": 0,
+  "bulk_import_export_upload_uploads_synced_count": null,
+  "bulk_import_export_upload_uploads_failed_count": null,
+  "bulk_import_export_upload_uploads_registry_count": null,
+  "bulk_import_export_upload_uploads_verification_total_count": null,
+  "bulk_import_export_upload_uploads_verified_count": null,
+  "bulk_import_export_upload_uploads_verification_failed_count": null,
+  "bulk_import_export_upload_uploads_synced_in_percentage": "0.00%",
+  "bulk_import_export_upload_uploads_verified_in_percentage": "0.00%",
+  "ai_vectorizable_file_uploads_count": 0,
+  "ai_vectorizable_file_uploads_checksum_total_count": 0,
+  "ai_vectorizable_file_uploads_checksummed_count": 0,
+  "ai_vectorizable_file_uploads_checksum_failed_count": 0,
+  "ai_vectorizable_file_uploads_synced_count": null,
+  "ai_vectorizable_file_uploads_failed_count": null,
+  "ai_vectorizable_file_uploads_registry_count": null,
+  "ai_vectorizable_file_uploads_verification_total_count": null,
+  "ai_vectorizable_file_uploads_verified_count": null,
+  "ai_vectorizable_file_uploads_verification_failed_count": null,
+  "ai_vectorizable_file_uploads_synced_in_percentage": "0.00%",
+  "ai_vectorizable_file_uploads_verified_in_percentage": "0.00%",
+  "import_export_upload_uploads_count": 0,
+  "import_export_upload_uploads_checksum_total_count": 0,
+  "import_export_upload_uploads_checksummed_count": 0,
+  "import_export_upload_uploads_checksum_failed_count": 0,
+  "import_export_upload_uploads_synced_count": null,
+  "import_export_upload_uploads_failed_count": null,
+  "import_export_upload_uploads_registry_count": null,
+  "import_export_upload_uploads_verification_total_count": null,
+  "import_export_upload_uploads_verified_count": null,
+  "import_export_upload_uploads_verification_failed_count": null,
+  "import_export_upload_uploads_synced_in_percentage": "0.00%",
+  "import_export_upload_uploads_verified_in_percentage": "0.00%",
+  "vulnerability_archive_export_uploads_count": 0,
+  "vulnerability_archive_export_uploads_checksum_total_count": 0,
+  "vulnerability_archive_export_uploads_checksummed_count": 0,
+  "vulnerability_archive_export_uploads_checksum_failed_count": 0,
+  "vulnerability_archive_export_uploads_synced_count": null,
+  "vulnerability_archive_export_uploads_failed_count": null,
+  "vulnerability_archive_export_uploads_registry_count": null,
+  "vulnerability_archive_export_uploads_verification_total_count": null,
+  "vulnerability_archive_export_uploads_verified_count": null,
+  "vulnerability_archive_export_uploads_verification_failed_count": null,
+  "vulnerability_archive_export_uploads_synced_in_percentage": "0.00%",
+  "vulnerability_archive_export_uploads_verified_in_percentage": "0.00%",
+  "project_import_export_relation_export_upload_uploads_count": 0,
+  "project_import_export_relation_export_upload_uploads_checksum_total_count": 0,
+  "project_import_export_relation_export_upload_uploads_checksummed_count": 0,
+  "project_import_export_relation_export_upload_uploads_checksum_failed_count": 0,
+  "project_import_export_relation_export_upload_uploads_synced_count": null,
+  "project_import_export_relation_export_upload_uploads_failed_count": null,
+  "project_import_export_relation_export_upload_uploads_registry_count": null,
+  "project_import_export_relation_export_upload_uploads_verification_total_count": null,
+  "project_import_export_relation_export_upload_uploads_verified_count": null,
+  "project_import_export_relation_export_upload_uploads_verification_failed_count": null,
+  "project_import_export_relation_export_upload_uploads_synced_in_percentage": "0.00%",
+  "project_import_export_relation_export_upload_uploads_verified_in_percentage": "0.00%",
+  "project_import_export_relation_export_upload_uploads_oldest_unsynced_time": null,
+  "vulnerability_export_part_uploads_count": 0,
+  "vulnerability_export_part_uploads_checksum_total_count": 0,
+  "vulnerability_export_part_uploads_checksummed_count": 0,
+  "vulnerability_export_part_uploads_checksum_failed_count": 0,
+  "vulnerability_export_part_uploads_synced_count": null,
+  "vulnerability_export_part_uploads_failed_count": null,
+  "vulnerability_export_part_uploads_registry_count": null,
+  "vulnerability_export_part_uploads_verification_total_count": null,
+  "vulnerability_export_part_uploads_verified_count": null,
+  "vulnerability_export_part_uploads_verification_failed_count": null,
+  "vulnerability_export_part_uploads_synced_in_percentage": "0.00%",
+  "vulnerability_export_part_uploads_verified_in_percentage": "0.00%",
+  "vulnerability_export_part_uploads_oldest_unsynced_time": null,
+  "vulnerability_export_uploads_count": 0,
+  "vulnerability_export_uploads_checksum_total_count": 0,
+  "vulnerability_export_uploads_checksummed_count": 0,
+  "vulnerability_export_uploads_checksum_failed_count": 0,
+  "vulnerability_export_uploads_synced_count": null,
+  "vulnerability_export_uploads_failed_count": null,
+  "vulnerability_export_uploads_registry_count": null,
+  "vulnerability_export_uploads_verification_total_count": null,
+  "vulnerability_export_uploads_verified_count": null,
+  "vulnerability_export_uploads_verification_failed_count": null,
+  "vulnerability_export_uploads_synced_in_percentage": "0.00%",
+  "vulnerability_export_uploads_verified_in_percentage": "0.00%",
+  "user_permission_export_upload_uploads_count": 0,
+  "user_permission_export_upload_uploads_checksum_total_count": 0,
+  "user_permission_export_upload_uploads_checksummed_count": 0,
+  "user_permission_export_upload_uploads_checksum_failed_count": 0,
+  "user_permission_export_upload_uploads_synced_count": null,
+  "user_permission_export_upload_uploads_failed_count": null,
+  "user_permission_export_upload_uploads_registry_count": null,
+  "user_permission_export_upload_uploads_verification_total_count": null,
+  "user_permission_export_upload_uploads_verified_count": null,
+  "user_permission_export_upload_uploads_verification_failed_count": null,
+  "user_permission_export_upload_uploads_synced_in_percentage": "0.00%",
+  "user_permission_export_upload_uploads_verified_in_percentage": "0.00%",
+  "user_permission_export_upload_uploads_oldest_unsynced_time": null,
+  "issuable_metric_image_uploads_count": 0,
+  "issuable_metric_image_uploads_checksum_total_count": 0,
+  "issuable_metric_image_uploads_checksummed_count": 0,
+  "issuable_metric_image_uploads_checksum_failed_count": 0,
+  "issuable_metric_image_uploads_synced_count": null,
+  "issuable_metric_image_uploads_failed_count": null,
+  "issuable_metric_image_uploads_registry_count": null,
+  "issuable_metric_image_uploads_verification_total_count": null,
+  "issuable_metric_image_uploads_verified_count": null,
+  "issuable_metric_image_uploads_verification_failed_count": null,
+  "issuable_metric_image_uploads_synced_in_percentage": "0.00%",
+  "issuable_metric_image_uploads_verified_in_percentage": "0.00%",
+  "issuable_metric_image_uploads_oldest_unsynced_time": null,
+  "packages_debian_project_component_files_count": 0,
+  "packages_debian_project_component_files_checksum_total_count": 0,
+  "packages_debian_project_component_files_checksummed_count": 0,
+  "packages_debian_project_component_files_checksum_failed_count": 0,
+  "packages_debian_project_component_files_synced_count": null,
+  "packages_debian_project_component_files_failed_count": null,
+  "packages_debian_project_component_files_registry_count": null,
+  "packages_debian_project_component_files_verification_total_count": null,
+  "packages_debian_project_component_files_verified_count": null,
+  "packages_debian_project_component_files_verification_failed_count": null,
+  "packages_debian_project_component_files_synced_in_percentage": "0.00%",
+  "packages_debian_project_component_files_verified_in_percentage": "0.00%",
+  "git_fetch_event_count_weekly": 0,
+  "git_push_event_count_weekly": 0,
+  "proxy_remote_requests_event_count_weekly": 0,
+  "proxy_local_requests_event_count_weekly": 0,
+  "pages_deployments_count": 5,
+  "pages_deployments_checksum_total_count": 5,
+  "pages_deployments_checksummed_count": 5,
+  "pages_deployments_checksum_failed_count": 0,
+  "pages_deployments_synced_count": null,
+  "pages_deployments_failed_count": null,
+  "pages_deployments_registry_count": null,
+  "pages_deployments_verification_total_count": null,
+  "pages_deployments_verified_count": null,
+  "pages_deployments_verification_failed_count": null,
+  "pages_deployments_synced_in_percentage": "0.00%",
+  "pages_deployments_verified_in_percentage": "0.00%",
+  "project_wiki_repositories_count": 3,
+  "project_wiki_repositories_checksum_total_count": 3,
+  "project_wiki_repositories_checksummed_count": 3,
+  "project_wiki_repositories_checksum_failed_count": 0,
+  "project_wiki_repositories_synced_count": null,
+  "project_wiki_repositories_failed_count": null,
+  "project_wiki_repositories_registry_count": null,
+  "project_wiki_repositories_verification_total_count": null,
+  "project_wiki_repositories_verified_count": null,
+  "project_wiki_repositories_verification_failed_count": null,
+  "project_wiki_repositories_synced_in_percentage": "0.00%",
+  "project_wiki_repositories_verified_in_percentage": "0.00%",
+  "container_repositories_replication_enabled": true,
+  "abuse_report_uploads_count": 0,
+  "abuse_report_uploads_checksum_total_count": 0,
+  "abuse_report_uploads_checksummed_count": 0,
+  "abuse_report_uploads_checksum_failed_count": 0,
+  "abuse_report_uploads_synced_count": null,
+  "abuse_report_uploads_failed_count": null,
+  "abuse_report_uploads_registry_count": null,
+  "abuse_report_uploads_verification_total_count": null,
+  "abuse_report_uploads_verified_count": null,
+  "abuse_report_uploads_verification_failed_count": null,
+  "abuse_report_uploads_synced_in_percentage": "0.00%",
+  "abuse_report_uploads_verified_in_percentage": "0.00%",
+  "project_uploads_count": 0,
+  "project_uploads_checksum_total_count": 0,
+  "project_uploads_checksummed_count": 0,
+  "project_uploads_checksum_failed_count": 0,
+  "project_uploads_synced_count": null,
+  "project_uploads_failed_count": null,
+  "project_uploads_registry_count": null,
+  "project_uploads_verification_total_count": null,
+  "project_uploads_verified_count": null,
+  "project_uploads_verification_failed_count": null,
+  "project_uploads_synced_in_percentage": "0.00%",
+  "project_uploads_verified_in_percentage": "0.00%",
+  "group_uploads_count": 0,
+  "group_uploads_checksum_total_count": 0,
+  "group_uploads_checksummed_count": 0,
+  "group_uploads_checksum_failed_count": 0,
+  "group_uploads_synced_count": null,
+  "group_uploads_failed_count": null,
+  "group_uploads_registry_count": null,
+  "group_uploads_verification_total_count": null,
+  "group_uploads_verified_count": null,
+  "group_uploads_verification_failed_count": null,
+  "group_uploads_synced_in_percentage": "0.00%",
+  "group_uploads_verified_in_percentage": "0.00%",
+  "user_uploads_count": 0,
+  "user_uploads_checksum_total_count": 0,
+  "user_uploads_checksummed_count": 0,
+  "user_uploads_checksum_failed_count": 0,
+  "user_uploads_synced_count": null,
+  "user_uploads_failed_count": null,
+  "user_uploads_registry_count": null,
+  "user_uploads_verification_total_count": null,
+  "user_uploads_verified_count": null,
+  "user_uploads_verification_failed_count": null,
+  "user_uploads_synced_in_percentage": "0.00%",
+  "user_uploads_verified_in_percentage": "0.00%",
+  "design_management_action_uploads_count": 0,
+  "design_management_action_uploads_checksum_total_count": 0,
+  "design_management_action_uploads_checksummed_count": 0,
+  "design_management_action_uploads_checksum_failed_count": 0,
+  "design_management_action_uploads_synced_count": null,
+  "design_management_action_uploads_failed_count": null,
+  "design_management_action_uploads_registry_count": null,
+  "design_management_action_uploads_verification_total_count": null,
+  "design_management_action_uploads_verified_count": null,
+  "design_management_action_uploads_verification_failed_count": null,
+  "design_management_action_uploads_synced_in_percentage": "0.00%",
+  "design_management_action_uploads_verified_in_percentage": "0.00%",
+  "selective_sync_type": null,
+  "namespaces": [],
+  "updated_at": "2024-04-01T00:00:00.000Z",
+  "storage_shards_match": true,
+  "_links": {
+     "self": "https://primary.example.com/api/v4/geo_nodes/2/status",
+     "node": "https://primary.example.com/api/v4/geo_nodes/2"
+  }
 }
 ```
 
-{{< alert type="note" >}}
-
-`health_status`パラメータは「Healthy」または「Unhealthy」の状態でのみ指定できますが、`health`パラメータは空、「Healthy」、または実際のエラーメッセージを含むことができます。
-
-{{< /alert >}}
+> [!note]
+> `health_status`パラメータは「Healthy」または「Unhealthy」状態のみですが、`health`パラメータは空、「Healthy」、または実際のエラーメッセージを含むことができます。

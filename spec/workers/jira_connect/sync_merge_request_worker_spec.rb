@@ -11,7 +11,7 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
     let_it_be(:subscription) { create(:jira_connect_subscription, installation: create(:jira_connect_installation), namespace: group) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
     let(:merge_request_id) { merge_request.id }
     let(:update_sequence_id) { 1 }

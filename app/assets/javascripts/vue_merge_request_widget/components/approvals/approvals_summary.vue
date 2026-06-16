@@ -14,6 +14,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getApprovalRuleNamesLeft } from 'ee_else_ce/vue_merge_request_widget/mappers';
 
 export default {
+  name: 'ApprovalsSummary',
   components: {
     GlLink,
     GlPopover,

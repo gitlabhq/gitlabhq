@@ -137,9 +137,8 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
-      finder_params = { search: query, target_type: type, project: project }
-      finder_params[:organization_id] = organization_id if organization_id
-      note_finder = NotesFinder.new(current_user, finder_params)
+      note_finder = NotesFinder.new(current_user, search: query, target_type: type, project: project,
+        organization_id: project.organization_id)
       note_finder.execute.user.order(updated_at: :desc)
     end
     # rubocop: enable CodeReuse/ActiveRecord

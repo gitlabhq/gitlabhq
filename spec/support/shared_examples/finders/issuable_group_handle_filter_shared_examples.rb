@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'filterable by group handle for' do |issuable_attribute|
-  let_it_be(:search_user) { create(:user) }
-  let_it_be(:search_group) { create(:group, :private) }
-  let_it_be(:group_member_1) { create(:group_member, group: search_group).user }
-  let_it_be(:group_member_2) { create(:group_member, group: search_group).user }
+  let_it_be(:search_user, freeze: false) { create(:user) }
+  let_it_be(:search_group, freeze: false) { create(:group, :private) }
+  let_it_be(:group_member_1, freeze: false) { create(:group_member, group: search_group).user }
+  let_it_be(:group_member_2, freeze: false) { create(:group_member, group: search_group).user }
 
-  let_it_be(:issuable_1) do
+  let_it_be(:issuable_1, freeze: false) do
     param = issuable_attribute == :assignees ? [group_member_1] : group_member_1
 
     send(:create, issuable_factory, *factory_params, **issuable_attributes.merge(issuable_attribute => param))
   end
 
-  let_it_be(:issuable_2) do
+  let_it_be(:issuable_2, freeze: false) do
     param = issuable_attribute == :assignees ? [group_member_2] : group_member_2
 
     send(:create, issuable_factory, *factory_params, **issuable_attributes.merge(issuable_attribute => param))
   end
 
   # Does not match the filter
-  let_it_be(:issuable_3) { send(:create, issuable_factory, *factory_params, **issuable_attributes) }
+  let_it_be(:issuable_3, freeze: false) { send(:create, issuable_factory, *factory_params, **issuable_attributes) }
 
   let(:finder_params) do
     params = search_params

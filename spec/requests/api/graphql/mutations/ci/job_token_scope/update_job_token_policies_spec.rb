@@ -95,6 +95,18 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
           expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'jobTokenPolicies')).to eq(policies)
         end
 
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :update_job_token_scope do
+          let(:user) { current_user }
+          let(:boundary_object) { project }
+          let(:mutation) do
+            graphql_mutation(:ci_job_token_scope_update_policies,
+              { project_path: project.full_path, target_path: target_path,
+                default_permissions: true, job_token_policies: policies }, 'errors')
+          end
+
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
+
         context 'when target path is invalid' do
           before do
             variables[:target_path] = 'unknown/project'

@@ -1,0 +1,10 @@
+---
+name: software_development_flow_registry
+description: When enabled, the software_development workflow uses the software_development/v1 flow registry definition instead of the legacy pre-registry implementation.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600848
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237526
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600944
+milestone: '19.1'
+group: group::agent foundations
+type: ops
+default_enabled: false

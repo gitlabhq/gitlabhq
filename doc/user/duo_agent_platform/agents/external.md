@@ -27,12 +27,16 @@ title: External agents
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 - **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
+- **Merge request code conflict** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592455) in GitLab 19.1.
+- **Merge request approved** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592456) in GitLab 19.1.
+- **Work item created** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599985) in GitLab 19.1.
+- **Merge request ready** trigger event type [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598421) in GitLab 19.1. Feature flag `merge_request_ready_flow_trigger` removed.
 
 {{< /history >}}
 
 > [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
+> The availability of this feature is controlled by a feature flag and enabled for verified customers.
+> In order to enable external agents for your customer namespace or GitLab instance, contact GitLab support.
 
 GitLab Duo agents work in parallel to help you create code, research results,
 and perform tasks simultaneously.
@@ -312,6 +316,9 @@ To enable an external agent:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -333,6 +340,9 @@ To enable an external agent:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -368,6 +378,9 @@ To enable an external agent in a project:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 The external agent appears in the project's **AI** > **Agents** list.
@@ -585,7 +598,7 @@ Prerequisites:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Custom agents and flows**, select or clear the
+1. Under **Custom and external agents and flows**, select or clear the
    **Allow external agents** checkbox.
 1. Select **Save changes**.
 
@@ -602,7 +615,7 @@ Prerequisites:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Custom agents and flows**, select or clear the
+1. Under **Custom and external agents and flows**, select or clear the
    **Allow external agents** checkbox.
 1. Select **Save changes**.
 

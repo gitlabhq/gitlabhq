@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_category: :code_review_workflow do
-  let_it_be(:diff_file) { build(:diff_file) }
+  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
   let(:header) { page.find('[data-testid="rd-diff-file-header"]') }
 
   it "renders file path with tooltip" do

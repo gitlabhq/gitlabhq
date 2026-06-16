@@ -4,12 +4,17 @@ require 'spec_helper'
 
 RSpec.describe Ml::CandidatePresenter, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
-  let_it_be(:regular_candidate) { build_stubbed(:ml_candidates, :with_artifact, internal_id: 1, project: project) }
+  let_it_be(:regular_candidate, freeze: false) do
+    build_stubbed(:ml_candidates, :with_artifact, internal_id: 1, project: project)
+  end
+
   let_it_be(:model_version) { build_stubbed(:ml_model_versions, :with_package, project: project) }
   let_it_be(:model_version_candidate) { model_version.candidate }
   let_it_be(:user) { project.owner }
-  let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
-  let_it_be(:build) { regular_candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
+  let_it_be(:pipeline, freeze: false) { build_stubbed(:ci_pipeline, project: project, user: user) }
+  let_it_be(:build, freeze: false) do
+    regular_candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user)
+  end
 
   let(:candidate) { regular_candidate }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'RedisCommand matchers', :use_clean_rails_repository_cache_store_caching, feature_category: :source_code_management do
-  let_it_be(:cache) { Gitlab::Redis::RepositoryCache.cache_store }
+  let(:cache) { Gitlab::Redis::RepositoryCache.cache_store }
 
   let(:control) do
     RedisCommands::Recorder.new do

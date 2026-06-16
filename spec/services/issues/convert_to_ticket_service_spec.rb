@@ -101,6 +101,31 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
           it_behaves_like 'a successful service execution'
         end
 
+        context 'when email participant already exists for the email' do
+          before do
+            create(:issue_email_participant, issue: work_item, email: email)
+          end
+
+          it_behaves_like 'a successful service execution'
+
+          it 'does not create a duplicate participant' do
+            expect { service.execute }.not_to change { work_item.issue_email_participants.count }
+          end
+        end
+
+        context 'when email participant exists with different casing' do
+          before do
+            create(:issue_email_participant, issue: work_item, email: 'User@Example.com')
+          end
+
+          it 'converts the issue to a ticket without creating a duplicate participant', :aggregate_failures do
+            expect { service.execute }.not_to change { work_item.issue_email_participants.count }
+
+            work_item.reset
+            expect(work_item.work_item_type.base_type).to eq('ticket')
+          end
+        end
+
         context 'with legacy issue' do
           let_it_be_with_reload(:work_item) { create(:issue, project: project) }
 

@@ -303,7 +303,7 @@ You might get an error that states
 
 This error occurs when an unknown error occurs in ReAct agent. Try your request again.
 
-If the problem persists, [report the issue to the GitLab support team](https://about.gitlab.com/support/).
+If the problem persists, [report the issue to the GitLab support team](https://support.gitlab.com/).
 
 ## `Error G3001`
 

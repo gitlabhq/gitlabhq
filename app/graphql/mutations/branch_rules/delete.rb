@@ -19,11 +19,13 @@ module Mutations
       def resolve(id:)
         branch_rule = authorized_find!(id: id)
 
-        response = ::BranchRules::DestroyService.new(branch_rule, current_user).execute
+        response = ::BranchRules::DestroyService.new(branch_rule, user: current_user).execute
+
+        if response.error? && (response.cause.access_denied? || response.cause.not_found?)
+          raise_resource_not_available_error!
+        end
 
         { branch_rule: (branch_rule if response.error?), errors: response.errors }
-      rescue Gitlab::Access::AccessDeniedError
-        raise_resource_not_available_error!
       end
     end
   end

@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
       {
         params: params,
         user_id: 'test',
+        user_is_bot: false,
         cf_request_id: SecureRandom.hex,
         metadata: { 'meta.user' => 'jane.doe' },
         request_urgency: :default,
@@ -56,6 +57,10 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
 
     it 'adds the user id' do
       expect(subject[:user_id]).to eq('test')
+    end
+
+    it 'adds the user_is_bot flag' do
+      expect(subject[:user_is_bot]).to be(false)
     end
 
     it 'adds Cloudflare headers' do
@@ -119,6 +124,22 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
 
       it 'sets the overridden value' do
         expect(subject[correlation_id_key]).to eq('123456')
+      end
+    end
+
+    context 'when duo_workflow_id is set in SafeRequestStore', :request_store do
+      before do
+        Gitlab::SafeRequestStore[Gitlab::Middleware::DuoWorkflowId::STORE_KEY] = 'duo-abc-123'
+      end
+
+      it 'includes duo_workflow_id in the payload' do
+        expect(subject[Labkit::Fields::DUO_WORKFLOW_ID]).to eq('duo-abc-123')
+      end
+    end
+
+    context 'when duo_workflow_id is not set in SafeRequestStore', :request_store do
+      it 'does not include duo_workflow_id in the payload' do
+        expect(subject).not_to have_key(Labkit::Fields::DUO_WORKFLOW_ID)
       end
     end
 

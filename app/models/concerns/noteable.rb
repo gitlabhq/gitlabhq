@@ -60,6 +60,10 @@ module Noteable
     supports_discussions? && self.class.replyable_types.include?(base_class_name)
   end
 
+  def supports_replying_to_system_notes?
+    false
+  end
+
   def supports_creating_notes_by_email?
     self.class.email_creatable_types.include?(base_class_name)
   end

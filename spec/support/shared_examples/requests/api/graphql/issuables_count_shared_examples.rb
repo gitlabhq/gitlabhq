@@ -2,7 +2,7 @@
 
 # Requires `issuables`, `field_name`, container_name`, and `container` bindings
 RSpec.shared_examples 'issuables pagination and count' do
-  let_it_be(:now) { Time.now.change(usec: 0) }
+  let_it_be(:now, freeze: false) { Time.now.change(usec: 0) }
   let(:count_path) { ['data', container_name, field_name, 'count'] }
   let(:per_page) { nil }
   let(:page_size) { 3 }

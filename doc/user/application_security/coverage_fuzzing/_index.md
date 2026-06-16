@@ -215,8 +215,8 @@ Example coverage-guided fuzzing report:
 ### Interacting with the vulnerabilities
 
 After a vulnerability is found, you can [address it](../vulnerabilities/_index.md).
-The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
-artifacts. By selecting one of the detected vulnerabilities, you can see its details.
+The merge request **Reports** tab lists the vulnerability and contains a button for downloading
+the fuzzing artifacts. By selecting one of the detected vulnerabilities, you can see its details.
 
 You can also view the vulnerability from the [Security Dashboard](../security_dashboard/_index.md),
 which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.

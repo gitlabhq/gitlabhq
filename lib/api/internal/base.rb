@@ -346,6 +346,13 @@ module API
         post '/post_receive', feature_category: :source_code_management do
           status 200
 
+          # Pin the request to the in-flight MVCC manifest sha forwarded by
+          # Gitaly's post-receive hook so synchronous outbound Gitaly calls
+          # during /post_receive AND the async PostReceive Sidekiq job
+          # (auto-propagated via Labkit's Sidekiq context middleware) both
+          # resolve reads against the just-uploaded state.
+          Gitlab::Git::HookEnv.pin_mvcc_manifest(params[:mvcc_manifest])
+
           response = PostReceiveService.new(actor.user, repository, project, params).execute
 
           present response, with: Entities::InternalPostReceive::Response

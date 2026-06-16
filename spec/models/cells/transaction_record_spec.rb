@@ -203,18 +203,22 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           end
         end
 
-        it "raises Error after exhausting retries on transient errors" do
+        it "raises generic Error (not AlreadyClaimedError) after exhausting retries on transient errors" do
           allow(Cells::OutstandingLease).to receive(:create_from_request!)
             .and_raise(GRPC::Unavailable.new("unavailable"))
 
-          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+          expect { record.before_committed! }
+            .to raise_error(described_class::Error, /Failed to create lease/) do |error|
+              expect(error).not_to be_a(described_class::AlreadyClaimedError)
+            end
         end
 
-        it "does not retry non-transient GRPC errors" do
+        it "raises AlreadyClaimedError without retrying on ALREADY_EXISTS" do
           allow(Cells::OutstandingLease).to receive(:create_from_request!)
             .and_raise(GRPC::AlreadyExists.new("claim conflict"))
 
-          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+          expect { record.before_committed! }
+            .to raise_error(described_class::AlreadyClaimedError, /Failed to create lease/)
           expect(Cells::OutstandingLease).to have_received(:create_from_request!).once
         end
       end
@@ -236,8 +240,9 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           allow(Cells::OutstandingLease).to receive(:create_from_request!).and_raise(grpc_error)
         end
 
-        it "adds error to created records and raises Error" do
-          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+        it "adds error to created records and raises AlreadyClaimedError" do
+          expect { record.before_committed! }
+            .to raise_error(described_class::AlreadyClaimedError, /Failed to create lease/)
           expect(model.errors[:base]).to include("path has already been taken")
         end
       end

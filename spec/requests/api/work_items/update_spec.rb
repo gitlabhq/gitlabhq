@@ -246,6 +246,17 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
         expect(response).to have_gitlab_http_status(:ok)
         expect(work_item.subscribed?(user, project)).to be(true)
       end
+
+      it 'returns the underlying error without raising when the update fails via a callback error' do
+        patch api(api_request_path, user), params: {
+          features: {
+            notifications: { subscribed: true },
+            time_tracking: { time_estimate: 'not a duration' }
+          }
+        }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
     end
 
     context 'with current_user_todos feature' do
@@ -330,6 +341,18 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
       end
     end
 
+    context 'when only the index feature flag is enabled' do
+      before do
+        stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: true)
+      end
+
+      it 'returns 403' do
+        patch api(api_request_path, user), params: { title: 'Updated title' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when unauthenticated' do
       it 'returns 401' do
         patch api(api_request_path), params: { title: 'Updated title' }
@@ -363,7 +386,7 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
     context 'when feature is not supported by the work item type' do
       it 'returns 400' do
         allow_any_instance_of(WorkItems::TypesFramework::SystemDefined::Type) # rubocop:disable RSpec/AnyInstanceOf -- type instances are recreated per-namespace
-          .to receive(:widget_classes).and_return([])
+          .to receive_messages(widget_classes: [], widget_definitions: [])
 
         patch api(api_request_path, user), params: { features: { description: { description: 'Some text' } } }
 

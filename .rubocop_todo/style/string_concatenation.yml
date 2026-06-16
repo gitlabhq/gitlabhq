@@ -18,7 +18,6 @@ Style/StringConcatenation:
     - 'app/uploaders/gitlab_uploader.rb'
     - 'app/uploaders/object_storage.rb'
     - 'config/initializers/1_settings.rb'
-    - 'config/settings.rb'
     - 'ee/app/finders/ee/issuables/label_filter.rb'
     - 'ee/app/helpers/ee/geo_helper.rb'
     - 'ee/app/helpers/ee/gitlab_routing_helper.rb'

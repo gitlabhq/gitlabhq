@@ -10,11 +10,14 @@ module API
           TestHooks::ProjectService.new(hook, current_user, params[:trigger])
         end
       end
-      desc 'Triggers a hook test' do
-        detail 'Triggers a hook test'
+      desc 'Trigger a test webhook' do
+        detail 'Triggers a test webhook. This endpoint has a rate limit of five requests per minute for each ' \
+          'webhook and authenticated user. To disable this limit on GitLab Self-Managed and GitLab Dedicated, an ' \
+          'administrator can disable the feature flag named web_hook_test_api_endpoint_rate_limit.'
         success code: 201
         failure [
           { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not found' },
           { code: 422, message: 'Unprocessable entity' },
           { code: 429, message: 'Too many requests' }
@@ -42,6 +45,8 @@ module API
 
         if success
           created!
+        elsif result.reason == :forbidden
+          forbidden!(result.message)
         else
           render_api_error!(result.message, 422)
         end

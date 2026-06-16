@@ -695,6 +695,12 @@ GET /groups/:id/integrations/external-wiki
 
 {{< /details >}}
 
+{{< history >}}
+
+- `api_url` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599742) in GitLab 19.1.
+
+{{< /history >}}
+
 > [!flag]
 > On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`.
 > On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
@@ -721,6 +727,7 @@ Parameters:
 | Parameter | Type | Required | Description                                   |
 | --------- | ---- | -------- |-----------------------------------------------|
 | `token` | string | yes | GitGuardian API token with `scan` scope. |
+| `api_url` | string | no | GitGuardian API base URL. Defaults to `https://api.gitguardian.com`. Use `https://api.eu1.gitguardian.com` for the EU region, or the URL of your self-hosted GitGuardian instance. Must use HTTPS. |
 | `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
 
 ### Disable GitGuardian

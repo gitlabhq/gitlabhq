@@ -23,6 +23,8 @@ project:
   - admin_requirement
   - admin_value_stream
   - admin_work_item
+  - build_download_code
+  - build_read_container_image
   - create_design
   - create_epic
   - create_incident
@@ -75,6 +77,7 @@ project:
   - read_licenses
   - read_manual_variables
   - read_merge_request
+  - read_merge_request_iid
   - read_observability
   - read_package
   - read_pipeline
@@ -94,7 +97,6 @@ project:
   - update_issue
   - update_project_secrets
   - update_requirement
-  - write_ai_agents
 group:
   permissions: []
   raw_permissions:

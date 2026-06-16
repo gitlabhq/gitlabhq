@@ -18,6 +18,10 @@ module BranchRules
       ServiceResponse.error(message: protected_branch.errors.full_messages)
     end
 
+    def execute_on_all_branches_rule
+      ServiceResponse.error(message: 'All branches rules cannot be updated.')
+    end
+
     def update_params
       transformed_params = params.dup
 
@@ -52,9 +56,6 @@ module BranchRules
     end
 
     def skip_empty_access_levels?(access_levels_params)
-      return true if access_levels_params.nil?
-      return false unless Feature.enabled?(:skip_empty_access_levels_in_branch_rules, project)
-
       access_levels_params.blank?
     end
 
@@ -111,21 +112,6 @@ module BranchRules
           params[foreign_key] == access_level.public_send(foreign_key) # rubocop:disable GitlabSecurity/PublicSend -- "#{access_level.type}_id" is used to fetch the correct foreign_key attribute.
         end
       end
-    end
-
-    def permitted_params
-      [
-        :name,
-        {
-          branch_protection: [
-            :allow_force_push,
-            {
-              push_access_levels: %i[access_level deploy_key_id],
-              merge_access_levels: %i[access_level]
-            }
-          ]
-        }
-      ]
     end
   end
 end

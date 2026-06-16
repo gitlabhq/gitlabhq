@@ -36,5 +36,9 @@ FactoryBot.define do
     trait :failed do
       status { 4 }
     end
+
+    trait :stopped do
+      status { 5 }
+    end
   end
 end

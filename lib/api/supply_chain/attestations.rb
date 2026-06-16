@@ -17,8 +17,9 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Fetch the list of all attestations for a specific project and artifact hash' do
-          detail 'This feature was introduced in GitLab 18.7' # TODO: update when FF is removed
+        desc 'List all attestations for a project' do
+          detail 'Lists all attestations for a specified project and artifact hash. This feature was introduced in ' \
+            'GitLab 18.7.'
           success ::API::Entities::SupplyChain::Attestation
           failure [
             { code: 404, message: 'Artifact SHA-256 not found' }
@@ -37,7 +38,8 @@ module API
           present paginate(attestations), with: ::API::Entities::SupplyChain::Attestation
         end
 
-        desc 'Fetch a specific bundle by iid' do
+        desc 'Retrieve an attestation bundle' do
+          detail 'Retrieves a specified attestation provenance bundle. This feature was introduced in GitLab 18.7.'
           success code: 200
           failure [
             { code: 404, message: 'Artifact SHA-256 not found' }

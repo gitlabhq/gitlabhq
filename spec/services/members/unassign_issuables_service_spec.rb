@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Members::UnassignIssuablesService, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:requesting_user) { create(:user) }
-  let_it_be(:assigned_issue1, reload: true) { create(:issue, project: project, assignees: [user]) }
-  let_it_be(:assigned_issue2, reload: true) { create(:issue, project: project, assignees: [user]) }
+  let_it_be_with_reload(:assigned_issue1) { create(:issue, project: project, assignees: [user]) }
+  let_it_be_with_reload(:assigned_issue2) { create(:issue, project: project, assignees: [user]) }
 
   let!(:assigned_merge_request1) { create(:merge_request, :simple, :closed, target_project: project, source_project: project, assignees: [user], title: 'Test1') }
   let!(:assigned_merge_request2) { create(:merge_request, :simple, :opened, target_project: project, source_project: project, assignees: [user], title: 'Test2') }
@@ -95,8 +95,8 @@ RSpec.describe Members::UnassignIssuablesService, feature_category: :groups_and_
     context 'when a user leaves a group' do
       let_it_be(:project2) { create(:project, group: group) }
 
-      let_it_be(:assigned_issue3, reload: true) { create(:issue, project: project2, assignees: [user]) }
-      let_it_be(:assigned_issue4, reload: true) { create(:issue, project: project2, assignees: [user]) }
+      let_it_be_with_reload(:assigned_issue3) { create(:issue, project: project2, assignees: [user]) }
+      let_it_be_with_reload(:assigned_issue4) { create(:issue, project: project2, assignees: [user]) }
 
       let!(:assigned_merge_request3) { create(:merge_request, :simple, :closed, target_project: project2, source_project: project2, assignees: [user], title: 'Test1') }
       let!(:assigned_merge_request4) { create(:merge_request, :simple, :opened, target_project: project2, source_project: project2, assignees: [user], title: 'Test2') }

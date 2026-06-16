@@ -22,6 +22,7 @@ export default {
       required: true,
     },
   },
+  emits: ['confirm-deletion'],
   data() {
     return {
       modal: {

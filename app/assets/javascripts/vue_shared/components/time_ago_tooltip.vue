@@ -9,6 +9,7 @@ import timeagoMixin from '../mixins/timeago';
  */
 
 export default {
+  name: 'TimeAgoTooltip',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

@@ -25,11 +25,17 @@ title: Custom flows
 - Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/569060) in GitLab 18.8.
+- Feature flag `ai_catalog_flows` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216969) in GitLab 18.8.
 - Pipeline events trigger [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 - **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
+- **Merge request code conflict** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592455) in GitLab 19.1.
+- **Merge request approved** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592456) in GitLab 19.1.
+- Feature flag `ai_flow_trigger_pipeline_hooks` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/587272) in GitLab 19.1.
+- **Work item created** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599985) in GitLab 19.1.
+- **Merge request ready** trigger event type [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598421) in GitLab 19.1. Feature flag `merge_request_ready_flow_trigger` removed.
 
 {{< /history >}}
 
@@ -146,7 +152,12 @@ The flow appears in the AI Catalog.
 
 Enable a flow to trigger it from an issue, merge request, or discussion.
 
-When you enable a flow in a project, it is enabled in the top-level group for that project at the same time.
+When you enable a flow in a project:
+
+- The flow is enabled in the top-level group for that project at the same time.
+- You add a [trigger](../triggers/_index.md) to specify which events trigger the
+  flow. Some of the trigger events involve the service account user. For more
+  information, see [composite identity](../composite_identity.md).
 
 Prerequisites:
 
@@ -173,6 +184,9 @@ To enable a flow:
    - **Pipeline events**: When a pipeline changes state.
      The possible states are `created`, `started`, `succeeded`, and `failed`.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -194,6 +208,9 @@ To enable a flow:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -229,6 +246,9 @@ To enable a flow in a project:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
    - **Merge request ready**: When a draft merge request is marked as ready for review.
+   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
+   - **Merge request approved**: When a merge request receives all required approvals.
+   - **Work item created**: When a work item is created in the project.
 1. Select **Enable**.
 
 The flow appears in the project's **AI** > **Flows** list.
@@ -251,15 +271,6 @@ To disable a flow:
 1. On the confirmation dialog, select **Disable**.
 
 The flow no longer appears in the project or group, and can't be run. Any service accounts or triggers associated with the flow are also removed.
-
-## Create a trigger
-
-You must now [create a trigger](../triggers/_index.md), which determines when the flow runs.
-
-For example, you can specify the flow to be triggered when you mention the flow service account user in a discussion,
-or when you assign the service account as a reviewer.
-
-When you enable a flow in a project, you also create triggers.
 
 ## Use a flow
 
@@ -368,11 +379,11 @@ You can turn them on or off for a top-level group or for an instance.
 
 When custom flows are turned off:
 
-- Users cannot create, enable, disable, modify, or execute custom flows.
+- Users cannot create, enable, disable, or execute custom flows.
 - Existing custom flows are no longer visible
   in the project under **AI** > **Flows** > **Enabled**.
 - Custom flows created in the project appear
-  under **AI** > **Flows** > **Managed**, but cannot be modified or executed.
+  under **AI** > **Flows** > **Managed**, but cannot be executed.
 - [Foundational flows](foundational_flows/_index.md) remain available.
 
 {{< tabs >}}
@@ -386,7 +397,7 @@ Prerequisites:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Custom agents and flows**, select or clear the
+1. Under **Custom and external agents and flows**, select or clear the
    **Allow custom flows** checkbox.
 1. Select **Save changes**.
 
@@ -403,7 +414,7 @@ Prerequisites:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Custom agents and flows**, select or clear the
+1. Under **Custom and external agents and flows**, select or clear the
    **Allow custom flows** checkbox.
 1. Select **Save changes**.
 

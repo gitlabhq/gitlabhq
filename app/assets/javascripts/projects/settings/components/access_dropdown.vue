@@ -107,6 +107,7 @@ export default {
       default: '',
     },
   },
+  emits: ['hidden', 'select', 'shown'],
   data() {
     return {
       loading: false,

@@ -8,8 +8,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include Ci::DownstreamPipelineHelpers
 
-    DuplicateDownstreamPipelineError = Class.new(StandardError)
-
     MAX_NESTED_CHILDREN = 2
 
     def execute(bridge)
@@ -17,14 +15,7 @@ module Ci
 
       return ServiceResponse.error(message: 'Can not run a failed bridge') if @bridge.failed?
 
-      if @bridge.has_downstream_pipeline?
-        Gitlab::ErrorTracking.track_exception(
-          DuplicateDownstreamPipelineError.new,
-          bridge_id: @bridge.id, project_id: @bridge.project_id
-        )
-
-        return ServiceResponse.error(message: 'Already has a downstream pipeline')
-      end
+      return ServiceResponse.error(message: 'Already has a downstream pipeline') if @bridge.has_downstream_pipeline?
 
       pipeline_params = @bridge.downstream_pipeline_params
       target_ref = pipeline_params.dig(:target_revision, :ref)

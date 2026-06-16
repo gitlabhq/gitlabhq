@@ -198,8 +198,8 @@ module API
           present_package_file!(package_file, supports_direct_download: true)
         end
 
-        desc 'The PyPi Simple Group Index Endpoint' do
-          detail 'This feature was introduced in GitLab 15.1'
+        desc 'List all packages for a group' do
+          detail 'Lists all packages for a specified group in an HTML file.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -282,8 +282,8 @@ module API
           present_package_file!(package_file, supports_direct_download: true)
         end
 
-        desc 'The PyPi Simple Project Index Endpoint' do
-          detail 'This feature was introduced in GitLab 15.1'
+        desc 'List all packages for a project' do
+          detail 'Lists all packages for a specified project in an HTML file.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -333,8 +333,8 @@ module API
           present_simple_package(project)
         end
 
-        desc 'The PyPi Package upload endpoint' do
-          detail 'This feature was introduced in GitLab 12.10'
+        desc 'Upload a package' do
+          detail 'Uploads a PyPI package for a specified project.'
           success code: 201
           failure [
             { code: 400, message: 'Bad Request' },

@@ -278,7 +278,7 @@ RSpec.shared_examples 'handling helm chart index requests' do
       end
 
       with_them do
-        let_it_be(:ci_build) { create(:ci_build, project: project, user: user, status: :running) }
+        let_it_be(:ci_build, freeze: false) { create(:ci_build, project: project, user: user, status: :running) }
 
         let(:headers) { user_role == :anonymous ? {} : job_basic_auth_header(ci_build) }
 

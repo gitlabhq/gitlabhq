@@ -8,7 +8,7 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   let_it_be(:commit_sha) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
   let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
   let_it_be(:user) { create(:user) }
-  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be(:commit, freeze: false) { create(:commit, project: project, sha: commit_sha) }
   let_it_be(:ssh_key) { create(:ed25519_key_256, user: user) }
   let_it_be(:key_fingerprint) { ssh_key.fingerprint_sha256 }
 
@@ -110,16 +110,6 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
         it 'returns unverified_author_email' do
           expect(signature.verification_status).to eq('unverified_author_email')
         end
-
-        context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
-          before do
-            stub_feature_flags(check_for_mailmapped_commit_emails: false)
-          end
-
-          it 'verification status is unmodified' do
-            expect(signature.verification_status).to eq('verified')
-          end
-        end
       end
 
       context 'when committer email has different case than verified email' do
@@ -177,16 +167,6 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
 
         it 'returns unverified_author_email' do
           expect(signature.verification_status).to eq('unverified_author_email')
-        end
-      end
-
-      context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
-        before do
-          stub_feature_flags(check_for_mailmapped_commit_emails: false)
-        end
-
-        it 'verification status is unmodified' do
-          expect(signature.verification_status).to eq('verified_system')
         end
       end
     end

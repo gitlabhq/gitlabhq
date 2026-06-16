@@ -49,7 +49,9 @@ const ITERATION_REFERENCE_PREFIX = '*iteration:';
 
 export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 export const CONTACT_STATE_ACTIVE = 'active';
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- quick action command strings, not navigational URLs
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- quick action command strings, not navigational URLs
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
 
 const busyBadge = memoize(
@@ -100,7 +102,7 @@ export { sortCommandsAlphaSafe } from '~/editor/quick_action_suggestions';
  * @return {string} escaped user input
  */
 export function escape(string) {
-  // To prevent double (or multiple) enconding attack
+  // To prevent double (or multiple) encoding attack
   // Decode the user input repeatedly prior to escaping the final decoded string.
   let encodedString = string;
   let decodedString = decodeURIComponent(encodedString);
@@ -120,6 +122,19 @@ export function showAndHideHelper($input, alias = '') {
   $input.on(`shown${alias ? '-' : ''}${alias}.atwho`, () => {
     $input.addClass(AT_WHO_ACTIVE_CLASS);
   });
+}
+
+// Keep at.js's dropdown container in the same scroll context as the textarea
+// So the dropdown doesn't drift when an ancestor scrolls (issue #598653).
+function attachAtWhoContainerToInputParent($input) {
+  const app = $input.data('atwho');
+  const container = app?.$el?.[0];
+  const parentNode = $input[0]?.parentNode;
+  const isAlreadyAttached = container?.parentNode === parentNode;
+
+  if (container && parentNode && !isAlreadyAttached) {
+    app.$el.appendTo(parentNode);
+  }
 }
 
 // This should be kept in sync with the backend filtering in
@@ -461,6 +476,8 @@ class GfmAutoComplete {
     };
     $input.off('keyup.frequentCommands', frequentCommandsHandler);
     $input.on('keyup.frequentCommands', frequentCommandsHandler);
+
+    attachAtWhoContainerToInputParent($input);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -536,6 +553,7 @@ class GfmAutoComplete {
   setupMembers($input) {
     const instance = this;
     const fetchData = this.fetchData.bind(this);
+    /* eslint-disable @gitlab/no-hardcoded-urls -- quick action command strings, not navigational URLs */
     const MEMBER_COMMAND = {
       ASSIGN: '/assign',
       UNASSIGN: '/unassign',
@@ -544,6 +562,7 @@ class GfmAutoComplete {
       REASSIGN: '/reassign',
       REQUEST_REVIEW: '/request_review',
     };
+    /* eslint-enable @gitlab/no-hardcoded-urls */
     let assignees = [];
     let reviewers = [];
     let command = '';
@@ -689,6 +708,7 @@ class GfmAutoComplete {
     const instance = this;
     const fetchData = this.fetchData.bind(this);
     const MEMBER_COMMAND = {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- quick action command string, not a navigational URL
       UNLINK: '/unlink',
     };
     let command = '';
@@ -943,12 +963,14 @@ class GfmAutoComplete {
   setupLabels($input) {
     const instance = this;
     const fetchData = this.fetchData.bind(this);
+    /* eslint-disable @gitlab/no-hardcoded-urls -- quick action command strings, not navigational URLs */
     const LABEL_COMMAND = {
       LABEL: '/label',
       LABELS: '/labels',
       UNLABEL: '/unlabel',
       RELABEL: '/relabel',
     };
+    /* eslint-enable @gitlab/no-hardcoded-urls */
     let command = '';
 
     $input.atwho({
@@ -1524,6 +1546,7 @@ class GfmAutoComplete {
   }
 }
 
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- not a navigational URL
 setupQuotedCompletion('/type', {
   enableMapKey: 'types',
   templateFunction({ id, name, iconName }) {

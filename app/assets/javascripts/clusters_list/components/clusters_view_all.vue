@@ -7,6 +7,7 @@ import Clusters from './clusters.vue';
 import Agents from './agents.vue';
 
 export default {
+  name: 'ClustersViewAll',
   components: {
     GlCard,
     GlSprintf,

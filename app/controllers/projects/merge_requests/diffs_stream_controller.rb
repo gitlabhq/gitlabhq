@@ -26,6 +26,13 @@ module Projects
 
         rapid_diff_options.merge(only_context_commits: show_only_context_commits?)
       end
+
+      def empty_state_component
+        ::RapidDiffs::MergeRequestEmptyStateComponent.new(
+          merge_request: @merge_request,
+          type: rapid_diffs_presenter.empty_state_type
+        )
+      end
     end
   end
 end

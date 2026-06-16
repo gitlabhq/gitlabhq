@@ -17,6 +17,7 @@ module Ci
 
         next_ci_partition.switch_writes!
         update_range_id_boundaries(next_ci_partition)
+        Gitlab::Ci::Pipeline::PartitionCache.invalidate
       end
 
       private

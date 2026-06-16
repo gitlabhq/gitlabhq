@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Todos::Destroy::UnauthorizedFeaturesService, feature_category: :team_planning do
-  let_it_be(:project, reload: true) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:issue)          { create(:issue, project: project) }
   let_it_be(:mr)             { create(:merge_request, source_project: project) }
   let_it_be(:user)           { create(:user) }

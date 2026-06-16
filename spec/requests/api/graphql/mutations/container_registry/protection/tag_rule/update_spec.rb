@@ -80,6 +80,17 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
 
   it_behaves_like 'a successful response'
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    :update_container_registry_protection_tag_rule do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:update_container_protection_tag_rule, input, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'with other existing container registry protection rule with same tag_name_pattern' do
     let_it_be_with_reload(:other_existing_container_protection_tag_rule) do
       create(:container_registry_protection_tag_rule, project: project,

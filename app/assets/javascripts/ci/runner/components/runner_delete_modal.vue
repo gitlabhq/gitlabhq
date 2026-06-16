@@ -7,6 +7,7 @@ const I18N_TITLE_PLURAL = s__('Runners|Delete %{count} runners?');
 const I18N_CANCEL = __('Cancel');
 
 export default {
+  name: 'RunnerDeleteModal',
   components: {
     GlModal,
   },

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
   using RSpec::Parameterized::TableSyntax
 
   describe '#normalize_value' do
-    subject { described_class.normalize_value(given) }
+    subject(:normalize_value) { described_class.normalize_value(given) }
 
     it_behaves_like 'normalizes a DN attribute value'
 
@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'John Smith,' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '#aa aa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the end of an attribute value, but got \"a\"")
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the end of an attribute value, but got \"a\"")
         end
       end
 
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '#aaXaaa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the first character of a hex pair, but got \"X\"")
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the first character of a hex pair, but got \"X\"")
         end
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '#aaaYaa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair, but got \"Y\"")
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair, but got \"Y\"")
         end
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '"Sebasti\\cX\\a1n"' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
         end
       end
 
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '"James' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'J\ames' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Invalid escaped hex code "\am"')
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Invalid escaped hex code "\am"')
         end
       end
 
@@ -71,14 +71,14 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'foo\\' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { normalize_value }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
     end
   end
 
   describe '#to_normalized_s' do
-    subject { described_class.new(given).to_normalized_s }
+    subject(:to_normalized_s) { described_class.new(given).to_normalized_s }
 
     it_behaves_like 'normalizes a DN'
 
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
           let(:given) { 'uid=john smith+telephonenumber=+1 555-555-5555,ou=people,dc=example,dc=com' }
 
           it 'raises UnsupportedError' do
-            expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
+            expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
           end
         end
 
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
             let(:given) { 'uid = John Smith  + telephoneNumber  = + 1 555-555-5555 , ou = People,dc=example,dc=com' }
 
             it 'raises UnsupportedError' do
-              expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
+              expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
             end
           end
 
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
             let(:given) { 'uid = John Smith  + telephoneNumber  = +1 555-555-5555 , ou = People,dc=example,dc=com' }
 
             it 'raises UnsupportedError' do
-              expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
+              expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::UnsupportedError)
             end
           end
         end
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'uid=John Smith,' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aa aa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the end of an attribute value, but got \"a\"")
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the end of an attribute value, but got \"a\"")
         end
       end
 
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaXaaa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the first character of a hex pair, but got \"X\"")
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the first character of a hex pair, but got \"X\"")
         end
       end
 
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaaYaa' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair, but got \"Y\"")
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair, but got \"Y\"")
         end
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'uid="Sebasti\\cX\\a1n"' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
         end
       end
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'John' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'cn="James' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'cn=J\ames' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Invalid escaped hex code "\am"')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Invalid escaped hex code "\am"')
         end
       end
 
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'cn=\\' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'DN string ended unexpectedly')
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { '1.2.d=Value' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN OID attribute type name character "d"')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN OID attribute type name character "d"')
         end
       end
 
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'd1.2=Value' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN attribute type name character "."')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN attribute type name character "."')
         end
       end
 
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { ' -uid=John Smith' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized first character of an RDN attribute type name "-"')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized first character of an RDN attribute type name "-"')
         end
       end
 
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Auth::Ldap::DN do
         let(:given) { 'uid\\=john' }
 
         it 'raises MalformedError' do
-          expect { subject }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN attribute type name character "\\"')
+          expect { to_normalized_s }.to raise_error(Gitlab::Auth::Ldap::DN::MalformedError, 'Unrecognized RDN attribute type name character "\\"')
         end
       end
     end

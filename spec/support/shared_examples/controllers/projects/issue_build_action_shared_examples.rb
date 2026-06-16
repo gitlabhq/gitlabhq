@@ -10,7 +10,7 @@ RSpec.shared_examples 'issue building actions' do |assigned_name: :issue|
   end
 
   context 'when user is logged in' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before_all do
       project.add_developer(user)

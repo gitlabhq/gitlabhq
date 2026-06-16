@@ -7,7 +7,7 @@ RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
 
   let(:env) do
     {
-      'rack.input' => '',
+      'rack.input' => StringIO.new(''),
       'rack.session' => {
         _csrf_token: csrf_token
       }

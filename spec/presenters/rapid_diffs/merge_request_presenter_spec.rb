@@ -18,9 +18,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:request_params) { {} }
   let(:current_user) { build_stubbed(:user) }
   let(:resource) { presenter.resource }
+  let(:versioned_merge_request) do
+    ::MergeRequests::VersionedMergeRequest.from_diff_options(merge_request, diff_options)
+  end
 
   subject(:presenter) do
-    described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+    described_class.new(versioned_merge_request, diff_view: diff_view, diff_options: diff_options,
       request_params: request_params, current_user: current_user)
   end
 
@@ -144,7 +147,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
     context 'when request_params is nil' do
       subject(:result) do
-        described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        described_class.new(versioned_merge_request, diff_view: diff_view, diff_options: diff_options,
           request_params: nil).only_context_commits?
       end
 
@@ -184,6 +187,14 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       let(:merge_request_diff) { nil }
 
       it { is_expected.not_to include('diff_id') }
+    end
+
+    context 'when resolved diff is an empty (changeless) diff' do
+      # An empty diff is a real version, so its ID is pinned like any other; the
+      # DiffResolver resolves it back to the empty diff rather than 404ing.
+      let(:merge_request_diff) { build_stubbed(:merge_request_diff, state: :empty) }
+
+      it { is_expected.to include("diff_id=#{resolved_diff_id}") }
     end
 
     context 'when only_context_commits is set' do
@@ -322,11 +333,51 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to eq("#{base_path}/discussions") }
   end
 
+  describe '#coverage_endpoint' do
+    subject(:url) { presenter.coverage_endpoint }
+
+    context 'when the versioned merge request has coverage reports' do
+      before do
+        allow(presenter.resource).to receive(:has_coverage_reports?).and_return(true)
+      end
+
+      it { is_expected.to eq("#{base_path}/coverage_reports.json") }
+    end
+
+    context 'when the versioned merge request has no coverage reports' do
+      before do
+        allow(presenter.resource).to receive(:has_coverage_reports?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#codequality_endpoint' do
+    subject(:url) { presenter.codequality_endpoint }
+
+    context 'when the versioned merge request has codequality reports' do
+      before do
+        allow(presenter.resource).to receive(:has_codequality_reports?).and_return(true)
+      end
+
+      it { is_expected.to eq("#{base_path}/codequality_reports.json") }
+    end
+
+    context 'when the versioned merge request has no codequality reports' do
+      before do
+        allow(presenter.resource).to receive(:has_codequality_reports?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#user_permissions' do
     let(:current_user) { build_stubbed(:user) }
     let(:can_create_note) { false }
     let(:presenter_with_user) do
-      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+      described_class.new(versioned_merge_request, diff_view: diff_view, diff_options: diff_options,
         request_params: request_params, current_user: current_user)
     end
 
@@ -423,7 +474,8 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         resource,
         diff_id: '10',
         start_sha: 'abc123',
-        commit_id: nil
+        commit_id: nil,
+        only_context_commits: nil
       ).and_return(entity)
       expect(entity).to receive(:as_json).and_return({ 'source_versions' => [], 'target_versions' => [] })
 
@@ -438,6 +490,21 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
           resource,
           hash_including(commit_id: 'abc123')
+        ).and_return(entity)
+        allow(entity).to receive(:as_json).and_return({})
+
+        presenter.versions
+      end
+    end
+
+    context 'when only_context_commits is present' do
+      let(:request_params) { { only_context_commits: 'true' } }
+
+      it 'passes only_context_commits to the entity' do
+        entity = instance_double(RapidDiffs::DiffCompareVersionsEntity)
+        expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
+          resource,
+          hash_including(only_context_commits: 'true')
         ).and_return(entity)
         allow(entity).to receive(:as_json).and_return({})
 
@@ -501,11 +568,17 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to eq(project.full_path) }
   end
 
+  describe '#project_name' do
+    subject(:method) { presenter.project_name }
+
+    it { is_expected.to eq(project.name_with_namespace) }
+  end
+
   describe '#current_user' do
     let(:user) { build_stubbed(:user) }
 
     subject(:presenter) do
-      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+      described_class.new(versioned_merge_request, diff_view: diff_view, diff_options: diff_options,
         request_params: request_params, current_user: user)
     end
 
@@ -537,7 +610,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     end
 
     subject(:presenter) do
-      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+      described_class.new(versioned_merge_request, diff_view: diff_view, diff_options: diff_options,
         request_params: request_params, conflicts: conflicts)
     end
 
@@ -663,6 +736,45 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
           expect(presenter.reload_stream_url).to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}")
         end
       end
+    end
+  end
+
+  describe '#empty_state_type' do
+    subject(:type) { presenter.empty_state_type }
+
+    before do
+      allow(merge_request).to receive(:initial_preparation?).and_return(false)
+      allow(resource).to receive(:changes_already_in_target?).and_return(false)
+    end
+
+    context 'when the merge request is in initial preparation' do
+      before do
+        allow(merge_request).to receive(:initial_preparation?).and_return(true)
+      end
+
+      it { is_expected.to eq(:initial_preparation) }
+    end
+
+    context 'when the changes are already in the target branch' do
+      before do
+        allow(resource).to receive(:changes_already_in_target?).and_return(true)
+      end
+
+      it { is_expected.to eq(:already_merged) }
+    end
+
+    context 'when the diff is empty and the presenter is not lazy' do
+      let(:diffs_count) { 0 }
+
+      before do
+        presenter.offset = 0
+      end
+
+      it { is_expected.to eq(:no_changes) }
+    end
+
+    context 'when there is no empty state and the presenter is lazy' do
+      it { is_expected.to be_nil }
     end
   end
 

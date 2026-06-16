@@ -13,6 +13,7 @@ import getRefMixin from '../mixins/get_ref';
 const trackingMixin = InternalEvents.mixin();
 
 export default {
+  name: 'CollapsibleCommitInfo',
   components: {
     UserAvatarLink,
     TimeagoTooltip,

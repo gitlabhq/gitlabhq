@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationsController, feature_category: :organization do
-  let_it_be(:organization) { create(:organization, :private) }
+  let_it_be(:organization, freeze: false) { create(:organization, :private) }
 
   shared_examples 'when the user is signed in' do
     context 'when the user is signed in' do
@@ -12,14 +12,14 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'as as admin', :enable_admin_mode do
-        let_it_be(:user) { create(:admin) }
+        let_it_be(:user, freeze: false) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an organization owner' do
-        let_it_be(:user) { create :user }
+        let_it_be(:user, freeze: false) { create :user }
 
         before do
           create :organization_owner, organization: organization, user: user
@@ -56,7 +56,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'with no association to an organization' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         it_behaves_like 'organization - not found response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -73,7 +73,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'with no association to an organization' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         it_behaves_like 'organization - successful response'
         it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -102,7 +102,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     it_behaves_like 'controller action that does not require authentication'
 
     context 'when requested in json format' do
-      let_it_be(:user) { create(:organization_user, organization: organization).user }
+      let_it_be(:user, freeze: false) { create(:organization_user, organization: organization).user }
 
       context 'without activities' do
         before do
@@ -121,7 +121,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'with less activities than limit' do
-        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:project, freeze: false) { create(:project, organization: organization) }
 
         before_all do
           project.add_developer(user)
@@ -140,8 +140,8 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'with more activities than passed in limit' do
-        let_it_be(:project) { create(:project, organization: organization) }
-        let_it_be(:events) { create_list(:event, 3, project: project) }
+        let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+        let_it_be(:events, freeze: false) { create_list(:event, 3, project: project) }
 
         before_all do
           project.add_developer(user)
@@ -160,9 +160,9 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'with passed in limit greater than allowed' do
-        let_it_be(:mock_max_event_limit) { 3 }
-        let_it_be(:project) { create(:project, organization: organization) }
-        let_it_be(:events) { create_list(:event, mock_max_event_limit + 1, project: project) }
+        let_it_be(:mock_max_event_limit, freeze: false) { 3 }
+        let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+        let_it_be(:events, freeze: false) { create_list(:event, mock_max_event_limit + 1, project: project) }
 
         before_all do
           project.add_developer(user)
@@ -185,13 +185,13 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'when most recent activities are from projects inaccessible to user' do
-        let_it_be(:limit) { 5 }
+        let_it_be(:limit, freeze: false) { 5 }
 
-        let_it_be(:project) { create(:project, organization: organization) }
-        let_it_be(:events) { create_list(:event, limit, project: project) }
+        let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+        let_it_be(:events, freeze: false) { create_list(:event, limit, project: project) }
 
-        let_it_be(:private_projects) { create(:project, :private, organization: organization) }
-        let_it_be(:private_events) { create_list(:event, limit, project: private_projects) }
+        let_it_be(:private_projects, freeze: false) { create(:project, :private, organization: organization) }
+        let_it_be(:private_events, freeze: false) { create_list(:event, limit, project: private_projects) }
 
         before_all do
           project.add_developer(user)
@@ -209,8 +209,10 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'when organization has multiple projects' do
-        let_it_be(:stale_project) { create(:project, organization: organization, developers: [user]) }
-        let_it_be(:recently_updated_project) { create(:project, organization: organization, developers: [user]) }
+        let_it_be(:stale_project, freeze: false) { create(:project, organization: organization, developers: [user]) }
+        let_it_be(:recently_updated_project, freeze: false) do
+          create(:project, organization: organization, developers: [user])
+        end
 
         before_all do
           stale_project.update!(last_activity_at: 3.days.ago)
@@ -231,15 +233,15 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
       end
 
       context 'when most recent activities are from groups inaccessible to user' do
-        let_it_be(:limit) { 5 }
+        let_it_be(:limit, freeze: false) { 5 }
 
-        let_it_be(:group) { create(:group, :private, organization: organization) }
-        let_it_be(:events) do
+        let_it_be(:group, freeze: false) { create(:group, :private, organization: organization) }
+        let_it_be(:events, freeze: false) do
           create_list(:event, limit, :created, target: create(:milestone, group: group), group: group)
         end
 
-        let_it_be(:private_group) { create(:group, :private, organization: organization) }
-        let_it_be(:private_events) do
+        let_it_be(:private_group, freeze: false) { create(:group, :private, organization: organization) }
+        let_it_be(:private_events, freeze: false) do
           create_list(
             :event,
             limit,
@@ -281,17 +283,43 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
   describe 'GET #new' do
     subject(:gitlab_request) { get new_organization_path }
 
-    it_behaves_like 'controller action that requires authentication by any user'
+    context 'when on GitLab.com', :saas do
+      it_behaves_like 'controller action that requires authentication by any user'
 
-    context 'when user is signed in and `organization_switching` feature flag is disabled' do
-      let_it_be(:user) { create(:user) }
+      context 'when user is signed in and `organization_switching` feature flag is disabled' do
+        let_it_be(:user, freeze: false) { create(:user) }
 
-      before do
-        stub_feature_flags(organization_switching: false)
-        sign_in(user)
+        before do
+          stub_feature_flags(organization_switching: false)
+          sign_in(user)
+        end
+
+        it_behaves_like 'organization - not found response'
+      end
+    end
+
+    context 'when on self-managed' do
+      context 'when the user is not signed in' do
+        it_behaves_like 'organization - redirects to sign in page'
+
+        context 'when `ui_for_organizations` feature flag is disabled' do
+          before do
+            stub_feature_flags(ui_for_organizations: false)
+          end
+
+          it_behaves_like 'organization - redirects to sign in page'
+        end
       end
 
-      it_behaves_like 'organization - not found response'
+      context 'when the user is signed in' do
+        let_it_be(:user, freeze: false) { create(:user) }
+
+        before do
+          sign_in(user)
+        end
+
+        it_behaves_like 'organization - not found response'
+      end
     end
   end
 
@@ -307,7 +335,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     it_behaves_like 'controller action that requires authentication by any user'
 
     context 'when the user is signed in' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         sign_in(user)

@@ -430,7 +430,7 @@ RSpec.shared_examples "redis_shared_examples" do
     context 'when sentinels are not defined' do
       let(:config_file_name) { config_old_format_host }
 
-      it { expect(subject).to eq(nil) }
+      it { expect(subject).to be_nil }
     end
 
     context 'when cluster is defined' do
@@ -656,7 +656,7 @@ RSpec.shared_examples "redis_shared_examples" do
       subject { described_class.new('test').send(:fetch_config) }
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       context 'when resque.yml exists' do

@@ -2,6 +2,8 @@
 description: Tracks when a user open the help drawer in the pipeline editor.
 action: open_help_drawer
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 milestone: '15.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88258
 tiers:

@@ -85,7 +85,7 @@ RSpec.describe 'Test coverage of the Project Import', feature_category: :importe
   end
 
   def tested_relations
-    project_tree_fixtures.flat_map(&method(:relations_from_tree)).to_set
+    project_tree_fixtures.flat_map { |tree| relations_from_tree(tree) }.to_set
   end
 
   def relations_from_tree(json_tree_path)

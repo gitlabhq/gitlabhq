@@ -32,8 +32,14 @@ module Ci
       can?(:_read_maintainer_job_artifact, @subject.job.project)
     end
 
+    condition(:can_read_security_report_job_artifacts) do
+      Enums::Ci::JobArtifact.all_security_report_file_types.include?(@subject.file_type) &&
+        can?(:_read_security_report_job_artifact, @subject.job.project)
+    end
+
     rule { can_read_project_build & ~none_access }.enable :read_job_artifacts
-    rule { ~public_access & ~can_read_developer_artifacts }.prevent :read_job_artifacts
+    rule { ~public_access & ~can_read_developer_artifacts & ~can_read_security_report_job_artifacts }
+      .prevent :read_job_artifacts
     rule { maintainer_only_access & ~can_read_maintainer_artifacts }.prevent :read_job_artifacts
   end
 end

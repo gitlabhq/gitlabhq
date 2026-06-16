@@ -807,49 +807,18 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     let(:current_user) { instance_double('User', flipper_id: '1') }
 
     let(:oidc_setting_with_admin_mode_step_up) do
-      GitlabSettings::Options.new(
-        name: "openid_connect",
-        step_up_auth: {
-          admin_mode: {
-            params: {
-              claims: { acr_values: 'gold' },
-              prompt: 'login'
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config,
+        step_up_auth_params: { claims: { acr_values: 'gold' }, prompt: 'login' })
     end
 
     let(:oidc_setting_with_namespace_step_up) do
-      GitlabSettings::Options.new(
-        name: "openid_connect",
-        step_up_auth: {
-          namespace: {
-            params: {
-              claims: { acr_values: 'silver' },
-              prompt: 'login'
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, :with_namespace_scope,
+        step_up_auth_params: { claims: { acr_values: 'silver' }, prompt: 'login' })
     end
 
-    let(:oidc_setting_without_step_up_params) do
-      GitlabSettings::Options.new(
-        name: "openid_connect",
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: { acr: 'gold' }
-            }
-          }
-        }
-      )
-    end
+    let(:oidc_setting_without_step_up_params) { build(:omniauth_provider_config, step_up_auth_params: nil) }
 
-    let(:oidc_setting_without_step_up) do
-      GitlabSettings::Options.new(name: "openid_connect")
-    end
+    let(:oidc_setting_without_step_up) { build(:omniauth_provider_config, :no_step_up_auth) }
 
     subject { helper.step_up_auth_params(provider_name, scope) }
 
@@ -966,5 +935,32 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     return {} if provider_config_for_scope&.dig('enabled').blank?
 
     provider_config_for_scope&.dig('params')&.transform_values { |v| v.is_a?(Hash) ? v.to_json : v }
+  end
+
+  describe 'service account token expiry helpers', unless: Gitlab.ee? do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:setting, :expected) do
+      true  | true
+      false | false
+    end
+
+    with_them do
+      before do
+        stub_application_setting(require_personal_access_token_expiry: setting)
+      end
+
+      it '#admin_sa_token_expiry_enforced? delegates to require_personal_access_token_expiry?' do
+        expect(helper.admin_sa_token_expiry_enforced?).to eq(expected)
+      end
+
+      it '#group_sa_token_expiry_enforced? delegates to require_personal_access_token_expiry?' do
+        expect(helper.group_sa_token_expiry_enforced?(nil)).to eq(expected)
+      end
+
+      it '#project_sa_token_expiry_enforced? delegates to require_personal_access_token_expiry?' do
+        expect(helper.project_sa_token_expiry_enforced?(nil)).to eq(expected)
+      end
+    end
   end
 end

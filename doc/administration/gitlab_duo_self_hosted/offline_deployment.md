@@ -372,6 +372,12 @@ For offline flow execution, use a custom executor image with
    curl --silent "http://<ai-gateway-host>:5052/monitoring/healthz"
    ```
 
+1. [Select a self-hosted model for each GitLab Duo feature you want to use](configure_duo_features.md#select-a-self-hosted-model-for-a-feature),
+   including the GitLab Duo Agent Platform features.
+
+   The health check does not pass until you
+   assign a self-hosted model to GitLab Duo Agent Platform features.
+
 1. Run the GitLab Duo health check:
    1. In the upper-right corner, select **Admin**.
    1. In the left sidebar, select **GitLab Duo**.
@@ -379,7 +385,7 @@ For offline flow execution, use a custom executor image with
 
    The health check validates AI Gateway connectivity and license
    status.
-   It does not test model inference.
+   It does not test model inference for GitLab Duo Chat or Code Suggestions.
 
 1. To verify model inference, send a test request through GitLab Duo Chat
    or Code Suggestions in the GitLab UI or an IDE.

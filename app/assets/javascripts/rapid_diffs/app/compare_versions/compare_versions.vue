@@ -19,16 +19,38 @@ export default {
       type: Array,
       required: true,
     },
+    contextCommits: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     formattedSourceVersions() {
-      return this.sourceVersions.map((v) => ({
+      const versions = this.sourceVersions.map((v) => ({
         ...v,
         versionName: this.sourceVersionName(v),
         commitsText: this.formatCommitsText(v.commits_count),
       }));
+
+      if (this.contextCommits) {
+        versions.push({
+          id: 'context-commits',
+          href: this.contextCommits.href,
+          versionName: this.$options.i18n.previouslyMergedCommits,
+          commitsText: this.formatContextCommitsText(this.contextCommits.commits_count),
+          selected: this.contextCommits.selected,
+          addDivider: this.sourceVersions.length > 0,
+        });
+      }
+
+      return versions;
+    },
+    isViewingContextCommits() {
+      return Boolean(this.contextCommits?.selected);
     },
     selectedSourceVersion() {
+      if (this.isViewingContextCommits) return this.contextCommits;
       return this.sourceVersions.find((v) => v.selected);
     },
     selectedTargetVersion() {
@@ -55,6 +77,7 @@ export default {
       });
     },
     isViewingNonLatest() {
+      if (this.isViewingContextCommits) return true;
       const sourceIsNonLatest = this.selectedSourceVersion && !this.selectedSourceVersion.latest;
       const targetIsNonLatest = this.selectedTargetVersion?.version_index != null;
       return sourceIsNonLatest || targetIsNonLatest;
@@ -79,12 +102,16 @@ export default {
     formatCommitsText(count) {
       return n__('%d commit,', '%d commits,', count);
     },
+    formatContextCommitsText(count) {
+      return n__('%d commit', '%d commits', count);
+    },
   },
   i18n: {
     compareMessage: s__(
       'MergeRequest|%{targetStart}Compare%{targetEnd} %{sourceStart}and%{sourceEnd}',
     ),
     showLatestVersion: __('Show latest version'),
+    previouslyMergedCommits: __('previously merged commits'),
   },
 };
 </script>

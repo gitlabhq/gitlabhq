@@ -5,6 +5,7 @@ module Ci
     extend Gitlab::ProcessMemoryCache::Helper
     include Ci::NewHasVariable
     include Ci::Maskable
+    include Ci::HidableVariable
     include Ci::RawVariable
     include Limitable
 

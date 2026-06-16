@@ -22,6 +22,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
  */
 
 export default {
+  name: 'CommitItem',
   components: {
     UserAvatarLink,
     SimpleCopyButton,
@@ -70,7 +71,7 @@ export default {
       return this.author.id ? this.author.id : '';
     },
     authorUrl() {
-      return this.author.web_url || `mailto:${this.commit.author_email}`;
+      return this.author.path || `mailto:${this.commit.author_email}`;
     },
     authorAvatar() {
       return this.author.avatar_url || this.commit.author_gravatar_url;

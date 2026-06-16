@@ -7,6 +7,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'RunnerMembershipToggle',
   components: {
     GlToggle,
   },

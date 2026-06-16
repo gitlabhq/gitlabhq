@@ -19,6 +19,7 @@ title: GitLab Duoへのレビューの指示をカスタマイズする
 - GitLab 18.2で`duo_code_review_custom_instructions`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/545136)されました。デフォルトでは無効になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.3で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802)になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.4で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262)されました。
+- `fileFilters`におけるユニオンパターン（例: `{rb,ts}`）は、GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952)されました。
 
 {{< /history >}}
 
@@ -28,9 +29,9 @@ title: GitLab Duoへのレビューの指示をカスタマイズする
 
 GitLab Duoは、標準のレビュー基準を置き換えるのではなく、カスタムレビュー指示を追加する形で適用します。
 
-GitLab Duoコードレビューは、カスタムレビュー指示をサポートしています。
+GitLab Duoコードレビューは、特定のプロジェクトまたはグループ内のすべてのプロジェクトに対して設定されたカスタムレビュー指示をサポートします。
 
-## カスタムレビュー指示を設定する {#configure-custom-review-instructions}
+## プロジェクトのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-a-project}
 
 カスタムマージリクエストレビュー指示を設定するには:
 
@@ -49,7 +50,7 @@ GitLab Duoコードレビューは、カスタムレビュー指示をサポー�
          <your_custom_review_instructions>
    ```
 
-   `fileFilters`セクションは必須です。このセクションでは、カスタムレビューのルールに対して特定のファイルをターゲットとするために、globパターンを使用します。
+   `fileFilters`セクションは必須です。このセクションでglobパターンを使用して、カスタムレビュールールの対象となる特定のファイルを指定します。
 
    例: 
 
@@ -122,10 +123,34 @@ GitLab Duoコードレビューは、カスタムレビュー指示をサポー�
 
      `instruction_name`の値は、`.gitlab/duo/mr-review-instructions.yaml`ファイルの`name`プロパティに対応しています。標準のGitLab Duoコメントでは、この形式は使用されません。
      <br><br>
-     GitLab Duoがイシューを検出しない場合、レビューサマリ―コメントを残します。カスタム指示は、このサマリ―コメントには適用されません。
+     GitLab Duoが問題を検出しない場合、レビューサマリ―コメントを残します。カスタム指示は、このサマリ―コメントには適用されません。
 1. オプション: 
    - フィードバックをレビューし、必要に応じて指示を調整します。
    - パターンをテストして、意図したファイルと一致することを確認します。
+
+## グループのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-a-group}
+
+{{< history >}}
+
+- GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230090)。
+
+{{< /history >}}
+
+テンプレートとして使用するプロジェクトを指定することで、グループのカスタムレビュー指示を定義できます。テンプレートプロジェクトには、グループとそのサブグループ内のすべてのプロジェクトに適用されるレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルが必要です。
+
+GitLab Duoがコードレビューを実行すると、トップレベルグループからの指示と個々のプロジェクトで定義された指示が組み合わされます。
+
+前提条件: 
+
+- トップレベルグループのオーナーロール。
+- グループ内のプロジェクトには、テンプレートとして使用するカスタムレビュー指示が含まれています。
+
+グループのカスタムレビュー指示を設定するには:
+
+1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
+1. 左サイドバーで、**設定** > **GitLab Duo**を選択します。
+1. **グループ向けのカスタムレビュー指示**の下で、グループのレビュー指示が記述されている`.gitlab/duo/mr-review-instructions.yaml`ファイルを含むプロジェクトを選択します。
+1. **変更を保存**を選択します。
 
 ## ベストプラクティス {#best-practices}
 
@@ -164,7 +189,7 @@ instructions: |
 | `!**/*.test.rb` | すべてのRubyテストファイルを除外する |
 | `!spec/**/*.rb` | `spec`ディレクトリとそのサブディレクトリ内のすべてのRubyファイルを除外する |
 | `!tests/**/*`   | `tests`ディレクトリとそのサブディレクトリ内のすべてのファイルを除外する |
-| `**/*.{js,jsx}` | すべてのディレクトリ内のJavaScriptファイルおよびJSXファイル |
+| `**/*.{js,jsx}` | 全てのディレクトリ内のJavaScriptおよびJSXファイル（GitLab 19.1以降） |
 
 次の例は、`**/*.rb`と`*.rb`の違いを示しています:
 

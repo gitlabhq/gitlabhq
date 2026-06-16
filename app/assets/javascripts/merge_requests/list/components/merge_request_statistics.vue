@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { i18n } from '../constants';
 
 export default {
+  name: 'MergeRequestStatistics',
   i18n,
   components: {
     GlIcon,

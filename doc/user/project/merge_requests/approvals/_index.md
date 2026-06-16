@@ -73,7 +73,7 @@ Use cases include:
 - Specify reviewers and a minimum number of approvals.
 - Specify categories of reviewers, such as backend, frontend, quality assurance, database, or documentation.
 - Use the [`CODEOWNERS` file](../../codeowners/_index.md#codeowners-file) to determine reviewers.
-- Require approval for [declining test coverage](../../../../ci/testing/code_coverage/_index.md#add-a-coverage-check-approval-rule).
+- Require approval for [declining test coverage](../../../../ci/testing/code_coverage/coverage_reporting.md#add-a-coverage-check-approval-rule).
 - GitLab Ultimate: [Require security team approval](../../../application_security/policies/merge_request_approval_policies.md) for potential vulnerabilities.
 
 ## View approval status

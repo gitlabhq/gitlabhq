@@ -17,6 +17,7 @@ import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 import { checkRepositoryConnection } from './utils';
 
 export default {
+  name: 'ImportByUrlForm',
   components: {
     SharedProjectCreationFields,
     GlButton,
@@ -45,8 +46,7 @@ export default {
   props: {
     namespace: {
       type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
   },
 
@@ -58,11 +58,12 @@ export default {
       repositoryMirror: false,
       isCheckingConnection: false,
       urlValidationState: null,
+      isProjectPathValid: false,
     };
   },
   computed: {
     isSubmitDisabled() {
-      return this.urlValidationState !== true;
+      return this.urlValidationState !== true || !this.isProjectPathValid;
     },
   },
   methods: {
@@ -88,9 +89,6 @@ export default {
       this.$toast.show(message);
       this.isCheckingConnection = false;
     },
-    onSelectNamespace(newNamespace) {
-      this.$emit('onSelectNamespace', newNamespace);
-    },
     onBack() {
       visitUrl(this.newProjectPath);
     },
@@ -100,6 +98,9 @@ export default {
     },
     onInput() {
       this.urlValidationState = null;
+    },
+    onProjectFieldsValidate(val) {
+      this.isProjectPathValid = val;
     },
   },
   csrf,
@@ -197,7 +198,7 @@ export default {
 
         <shared-project-creation-fields
           :namespace="namespace"
-          @onSelectNamespace="onSelectNamespace"
+          @on-validate-project-fields="onProjectFieldsValidate"
         />
       </template>
 

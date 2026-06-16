@@ -14,6 +14,7 @@
 }
 
 .system-note {
+  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific note-body element
   .note-body:has(.note-text p:first-child:last-child) {
     display: none;
   }

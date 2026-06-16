@@ -9,7 +9,7 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    NO_SLASH_URL_PART_REGEX = ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
     NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
@@ -47,7 +47,8 @@ module API
         Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
         Gitlab::GrapeLogging::Loggers::ContextLogger.new,
         Gitlab::GrapeLogging::Loggers::ContentLogger.new,
-        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new
+        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
+        Gitlab::GrapeLogging::Loggers::FeatureFlagStatesLogger.new
       ]
 
     allow_access_with_scope :api
@@ -128,26 +129,26 @@ module API
     after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
-      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
+      error!({ 'message' => '403 Forbidden' }, 403)
     end
 
     rescue_from ActiveRecord::RecordNotFound do
-      rack_response({ 'message' => '404 Not found' }.to_json, 404)
+      error!({ 'message' => '404 Not found' }, 404)
     end
 
     rescue_from(
       ::ActiveRecord::StaleObjectError,
       ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     ) do
-      rack_response({ 'message' => '409 Conflict: Resource lock' }.to_json, 409)
+      error!({ 'message' => '409 Conflict: Resource lock' }, 409)
     end
 
     rescue_from UploadedFile::InvalidPathError do |e|
-      rack_response({ 'message' => e.message }.to_json, 400)
+      error!({ 'message' => e.message }, 400)
     end
 
     rescue_from ObjectStorage::RemoteStoreError do |e|
-      rack_response({ 'message' => e.message }.to_json, 500)
+      error!({ 'message' => e.message }, 500)
     end
 
     # Retain 405 error rather than a 500 error for Grape 0.15.0+.
@@ -164,12 +165,12 @@ module API
       rack_response(e.message, 301, { 'Location' => e.location_url })
     end
 
-    rescue_from Gitlab::Auth::TooManyIps do |e|
-      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
+    rescue_from Gitlab::Auth::TooManyIps do
+      error!({ 'message' => '403 Forbidden' }, 403)
     end
 
     rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
-      rack_response({ 'message' => exception.message }.to_json, 503, exception.headers)
+      error!({ 'message' => exception.message }, 503, exception.headers)
     end
 
     rescue_from :all do |exception|
@@ -187,7 +188,7 @@ module API
 
     rescue_from RateLimitedService::RateLimitedError do |exception|
       exception.log_request(context.request, context.current_user)
-      rack_response({ 'message' => { 'error' => exception.message } }.to_json, 429, exception.headers)
+      error!({ 'message' => { 'error' => exception.message } }, 429, exception.headers)
     end
 
     format :json
@@ -212,6 +213,7 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Admin::BatchedBackgroundMigrations
+        mount ::API::Admin::BatchedBackgroundOperations
         mount ::API::Admin::BroadcastMessages
         mount ::API::Admin::Ci::Variables
         mount ::API::Admin::Dictionary
@@ -243,7 +245,6 @@ module API
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
         mount ::API::CargoProjectPackages
-        mount ::API::Chaos
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ComposerPackages
@@ -376,6 +377,12 @@ module API
         mount ::API::WorkItems::Update
         mount ::API::WorkItems::List
         mount ::API::WorkItems::Show
+        mount ::API::WorkItems::Children
+        mount ::API::WorkItems::LinkedItems
+        mount ::API::WorkItems::LinkedResources
+        mount ::API::WorkItems::AwardEmoji
+        mount ::API::WorkItems::Notes
+        mount ::API::WorkItems::EmailParticipants
         mount ::API::Wikis
 
         add_open_api_documentation!
@@ -416,13 +423,13 @@ module API
       mount ::API::UsageDataServicePing
       mount ::API::UsageDataTrack
       mount ::API::UsageDataNonSqlMetrics
+      mount ::API::UserApplications
       mount ::API::Users
       mount ::API::VsCode::Settings::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint
       mount ::API::Ml::MlflowArtifacts::Entrypoint
     end
 
-    mount ::API::Internal::AutoFlow
     mount ::API::Internal::Base
     mount ::API::Internal::Coverage if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
     mount ::API::Internal::Ci::JobRouter

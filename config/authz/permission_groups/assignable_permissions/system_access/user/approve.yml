@@ -1,0 +1,9 @@
+---
+name: approve_user
+description: Grants the ability to approve users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - approve_user

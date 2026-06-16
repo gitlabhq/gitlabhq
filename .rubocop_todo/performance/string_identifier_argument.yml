@@ -63,7 +63,6 @@ Performance/StringIdentifierArgument:
     - 'ee/spec/requests/api/dependency_proxy/packages/maven_spec.rb'
     - 'ee/spec/requests/api/graphql/google_cloud/artifact_registry/docker_image_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dependency_proxy/packages/settings/update_spec.rb'
-    - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/ee/omniauth_callbacks_controller_spec.rb'
     - 'ee/spec/services/dependency_proxy/packages/settings/update_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'

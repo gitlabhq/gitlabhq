@@ -7,11 +7,11 @@ RSpec.describe 'Query.project(fullPath).commitReferences(commitSha)', feature_ca
   include Presentable
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
   let_it_be(:current_user) { project.first_owner }
   let_it_be(:branches_names) { %w[master not-merged-branch v1.1.0] }
   let_it_be(:tag_name) { 'v1.0.0' }
-  let_it_be(:commit_sha) { repository.commit.id }
+  let_it_be(:commit_sha, freeze: false) { repository.commit.id }
 
   let(:post_query) { post_graphql(query, current_user: current_user) }
   let(:data) { graphql_data.dig(*path) }
@@ -100,7 +100,7 @@ RSpec.describe 'Query.project(fullPath).commitReferences(commitSha)', feature_ca
     end
 
     context 'with path Query.project(fullPath).commitReferences(commitSha).containingTags' do
-      let_it_be(:commit_sha) { repository.find_tag(tag_name).target_commit.sha }
+      let_it_be(:commit_sha, freeze: false) { repository.find_tag(tag_name).target_commit.sha }
       let_it_be(:path) { %w[project commitReferences containingTags names] }
       let(:query) do
         graphql_query_for(

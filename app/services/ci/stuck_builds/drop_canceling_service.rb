@@ -5,7 +5,7 @@ module Ci
     class DropCancelingService
       include DropHelpers
 
-      TIMEOUT = 1.hour
+      TIMEOUT = 30.minutes
 
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning canceling, timed-out builds"

@@ -186,7 +186,7 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
   end
 
   context 'when the resource is a group' do
-    let_it_be(:resource) { create(:group) }
+    let_it_be(:resource, freeze: false) { create(:group) }
     let_it_be(:namespace) { resource }
     let_it_be(:current_user) { create(:user, :project_bot, bot_namespace: namespace) }
     let_it_be(:other_user) { create(:user, :project_bot, bot_namespace: namespace) }

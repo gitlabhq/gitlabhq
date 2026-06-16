@@ -330,7 +330,7 @@ export default {
             data-testid="achievement-actions-dropdown"
           />
         </template>
-        <div class="mb-2 gl-text-sm gl-text-subtle">
+        <div class="!gl-mb-3 gl-text-sm gl-text-subtle">
           {{ awardedUsers(achievement.uniqueUsers.count) }}
         </div>
         <user-avatar-list

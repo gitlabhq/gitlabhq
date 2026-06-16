@@ -6,17 +6,17 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :portfolio_m
   include Features::SortingHelpers
   include FilteredSearchHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
-  let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user, assignees: [user]) }
   let_it_be(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
-  let_it_be(:label) { create(:label, project: project, title: 'bug') }
+  let_it_be(:label, freeze: false) { create(:label, project: project, title: 'bug') }
   let_it_be(:label_link) { create(:label_link, label: label, target: issue) }
 
-  let_it_be(:project2) { create(:project, namespace: user.namespace) }
-  let_it_be(:label2) { create(:label, title: 'bug') }
+  let_it_be(:project2, freeze: false) { create(:project, namespace: user.namespace) }
+  let_it_be(:label2, freeze: false) { create(:label, title: 'bug') }
 
   before do
     project.labels << label

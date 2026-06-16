@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ResourceStateEvents do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: user.namespace) }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: user.namespace) }
 
   before do
     parent.add_developer(user)

@@ -77,6 +77,36 @@ RSpec.describe WorkItems::DataSync::Handlers::Notes::CopyService, feature_catego
       expect(notes_details).not_to match_array(expected_notes_details)
     end
 
+    context 'when target is project-scoped' do
+      it 'sets only project_id sharding key on copied notes', :aggregate_failures do
+        execute_service
+
+        copied_notes = target_work_item.reload.notes
+
+        expect(copied_notes).to be_present
+        copied_notes.each do |note|
+          expect(note.project_id).to eq(target_work_item.project_id)
+          expect(note.namespace_id).to be_nil
+        end
+      end
+    end
+
+    context 'when target is group-level' do
+      let_it_be_with_reload(:target_work_item) { create(:work_item, :group_level) }
+
+      it 'sets only namespace_id sharding key on copied notes', :aggregate_failures do
+        execute_service
+
+        copied_notes = target_work_item.reload.notes
+
+        expect(copied_notes).to be_present
+        copied_notes.each do |note|
+          expect(note.namespace_id).to eq(target_work_item.namespace_id)
+          expect(note.project_id).to be_nil
+        end
+      end
+    end
+
     it 'sets correct attributes from target on copied description versions', :aggregate_failures do
       expect { execute_service }.to change { ::DescriptionVersion.count }.by(1)
 

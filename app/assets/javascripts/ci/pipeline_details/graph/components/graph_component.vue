@@ -1,9 +1,6 @@
 <script>
 import { GlResizeObserverDirective } from '@gitlab/ui';
-import {
-  generateColumnsFromLayersListMemoized,
-  keepLatestDownstreamPipelines,
-} from '~/ci/pipeline_details/utils/parsing_utils';
+import { generateColumnsFromLayersListMemoized } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksLayer from '../../../common/private/job_links_layer.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH, STAGE_VIEW } from '../constants';
 import { validateConfigPaths } from '../utils';
@@ -94,9 +91,7 @@ export default {
       return `${this.$options.BASE_CONTAINER_ID}-${this.pipeline.id}`;
     },
     downstreamPipelines() {
-      return this.hasDownstreamPipelines
-        ? keepLatestDownstreamPipelines(this.pipeline.downstream)
-        : [];
+      return this.hasDownstreamPipelines ? this.pipeline.downstream : [];
     },
     layout() {
       return this.isStageView

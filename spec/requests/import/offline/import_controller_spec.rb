@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::Offline::ImportController, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     login_as(user)

@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
-if ::ActiveRecord::VERSION::STRING >= "7.3"
+# This patch provides a GitLab-specific override of `query_constraints` for
+# partitioned models. Rails 7.3+ ships a native `query_constraints` in:
+# https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/persistence.rb#L212
+#
+# The GitLab version intentionally omits setting `@has_query_constraints` so
+# that the standard ActiveRecord `_query_constraints_hash` is not used; instead
+# the partitioning layer manages composite-key lookups itself.
+
+if ::ActiveRecord::VERSION::STRING >= "8.1"
   raise 'New version of active-record detected, please remove or update this patch'
 end
 

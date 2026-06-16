@@ -29,9 +29,9 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
       outdated2.reload
       outdated3.reload
 
-      expect(outdated1.outdated_at).to eq(nil)
-      expect(outdated2.outdated_at).to eq(nil)
-      expect(outdated3.outdated_at).to eq(nil)
+      expect(outdated1.outdated_at).to be_nil
+      expect(outdated2.outdated_at).to be_nil
+      expect(outdated3.outdated_at).to be_nil
     end
 
     context 'when namespace was skipped due to locking' do
@@ -60,9 +60,9 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
         outdated2.reload
         outdated3.reload
 
-        expect(outdated1.outdated_at).to eq(nil)
-        expect(outdated2.outdated_at).not_to eq(nil)
-        expect(outdated3.outdated_at).to eq(nil)
+        expect(outdated1.outdated_at).to be_nil
+        expect(outdated2.outdated_at).not_to be_nil
+        expect(outdated3.outdated_at).to be_nil
       end
     end
 

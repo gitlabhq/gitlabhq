@@ -40,7 +40,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     end
 
     context 'when the project has GitLab for Jira Cloud app, and service keys configured' do
-      let_it_be(:integration) { create(:jira_cloud_app_integration, project: project) }
+      let_it_be(:integration, freeze: false) { create(:jira_cloud_app_integration, project: project) }
 
       let(:associations) { Gitlab::Json.parse(subject.to_json)['associations'] }
 

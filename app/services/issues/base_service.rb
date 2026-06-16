@@ -129,10 +129,10 @@ module Issues
       return unless issue.instance_of?(Issue)
 
       args = {
-        mentionable_type: 'Issue',
-        mentionable_id: issue.id,
-        hook_data: issue_data,
-        is_confidential: issue.confidential?
+        'mentionable_type' => 'Issue',
+        'mentionable_id' => issue.id,
+        'hook_data' => issue_data,
+        'is_confidential' => issue.confidential?
       }
 
       issue.run_after_commit_or_now do

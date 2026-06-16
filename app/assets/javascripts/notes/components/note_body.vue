@@ -71,6 +71,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancelForm', 'handleFormUpdate'],
   computed: {
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
     ...mapState(useMrNotes, ['failedToLoadMetadata']),

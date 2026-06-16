@@ -23,21 +23,21 @@ RSpec.describe Gitlab::Auth::Atlassian::IdentityLinker do
     }
   end
 
-  subject { described_class.new(user, oauth) }
+  subject(:identity_linker) { described_class.new(user, oauth) }
 
   context 'linked identity exists' do
     let!(:identity) { create(:atlassian_identity, user: user, extern_uid: extern_uid) }
 
     before do
-      subject.link
+      identity_linker.link
     end
 
     it 'sets #changed? to false' do
-      expect(subject).not_to be_changed
+      expect(identity_linker).not_to be_changed
     end
 
     it 'does not mark as failed' do
-      expect(subject).not_to be_failed
+      expect(identity_linker).not_to be_failed
     end
   end
 
@@ -45,13 +45,13 @@ RSpec.describe Gitlab::Auth::Atlassian::IdentityLinker do
     let!(:identity) { create(:atlassian_identity, extern_uid: extern_uid) }
 
     it 'sets #changed? to false' do
-      subject.link
+      identity_linker.link
 
-      expect(subject).not_to be_changed
+      expect(identity_linker).not_to be_changed
     end
 
     it 'exposes error message' do
-      expect(subject.error_message).to eq 'Extern uid has already been taken'
+      expect(identity_linker.error_message).to eq 'Extern uid has already been taken'
     end
   end
 
@@ -59,13 +59,13 @@ RSpec.describe Gitlab::Auth::Atlassian::IdentityLinker do
     let(:identity) { user.atlassian_identity }
 
     before do
-      subject.link
+      identity_linker.link
     end
 
     it_behaves_like 'an atlassian identity'
 
     it 'sets #changed? to true' do
-      expect(subject).to be_changed
+      expect(identity_linker).to be_changed
     end
   end
 end

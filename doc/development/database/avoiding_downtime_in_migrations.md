@@ -563,11 +563,58 @@ This operation is safe as there's no code using the table just yet.
 
 Dropping tables requires a multi-release process to avoid downtime:
 
-1. **Release M**: Remove all application code that uses the table
-1. **Release M+1**: Drop the table using a post-deployment migration
+1. **Release M**: Remove all application code that uses the table.
+1. **Release M+1**: In seperate post-deployment migrations for each, remove the foreign keys, then drop the table.
 
 Add the table to [`db/docs/deleted_tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs/deleted_tables) using the process described in [database dictionary](database_dictionary.md#dropping-tables).
 Even though the table is deleted, it is still referenced in database migrations.
+
+### Remove foreign keys before dropping the table
+
+If the table has foreign keys, remove each foreign key in its own post-deployment
+migration before the migration that drops the table. Dropping a table that still
+references another table also locks that referenced table. A foreign key to a
+high-traffic table can then make the `DROP TABLE` time out.
+
+When a foreign key references a [high-traffic table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml)
+(for example `users`, `projects`, or `namespaces`), removing it takes an
+`ACCESS EXCLUSIVE` lock on that table. Without lock retries, this lock can time
+out and require a manual retry. Wrap the removal in `with_lock_retries`. The
+migration then locks the referenced table first, with retries, before it removes
+the foreign key:
+
+```ruby
+class RemoveUploadsArchivedToUsersForeignKey < Gitlab::Database::Migration[2.3]
+  disable_ddl_transaction!
+
+  milestone '19.1'
+
+  SOURCE_TABLE_NAME = :uploads_archived
+  COLUMN = :uploaded_by_user_id
+  FOREIGN_KEY_NAME = :fk_b94f059d73
+
+  def up
+    with_lock_retries do
+      remove_foreign_key_if_exists SOURCE_TABLE_NAME, column: COLUMN, name: FOREIGN_KEY_NAME
+    end
+  end
+
+  def down
+    add_concurrent_foreign_key SOURCE_TABLE_NAME, :users,
+      column: COLUMN, on_delete: :nullify, name: FOREIGN_KEY_NAME
+  end
+end
+```
+
+`with_lock_retries` runs the removal in a transaction with a short `lock_timeout`
+and retries when it cannot acquire the lock, instead of blocking until a timeout.
+`remove_foreign_key_if_exists` defaults to `reverse_lock_order: true`, which locks
+the referenced table before the source table to prevent deadlocks with concurrent
+application transactions. For more information, see
+[`reverse_lock_order`](foreign_keys.md#reverse_lock_order).
+
+After all foreign keys are removed, drop the table in a separate post-deployment
+migration.
 
 ## Renaming tables
 

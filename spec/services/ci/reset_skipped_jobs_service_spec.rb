@@ -448,6 +448,25 @@ RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :
         expect { service.execute(input_processables) }.not_to raise_error
       end
     end
+
+    context 'when the bridge has already been advanced past :created by another process' do
+      before do
+        allow(pipeline).to receive(:reset_source_bridge!)
+          .and_raise(StateMachines::InvalidTransition.new(pipeline.source_bridge,
+            pipeline.source_bridge.class.state_machine, :enqueue))
+      end
+
+      it 'logs an error without raising', :aggregate_failures do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          class: described_class.name,
+          message: 'Skipping reset of stale source bridge',
+          pipeline_id: pipeline.id,
+          project_id: project.id
+        )
+
+        expect { service.execute(input_processables) }.not_to raise_error
+      end
+    end
   end
 
   private

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/duplicate_spec_location'
 
-RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
+RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation, feature_category: :tooling do
   let(:rails_root) { '../../../../' }
 
   def full_path(path)

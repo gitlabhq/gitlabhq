@@ -10,9 +10,9 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     let_it_be(type_sym) { create(:user, type_sym) }
   end
 
-  let_it_be(:admin_user) { create(:admin) }
+  let_it_be(:admin_user, freeze: false) { create(:admin) }
   let_it_be_with_reload(:current_user) { create(:user) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   subject { described_class.new(current_user, [user]) }
 
@@ -782,13 +782,19 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'with regular user' do
       let(:current_user) { user }
 
-      it { is_expected.to be_allowed(:create_organization) }
+      context 'when on GitLab.com', :saas do
+        it { is_expected.to be_allowed(:create_organization) }
 
-      context 'when disallowed by admin' do
-        before do
-          stub_application_setting(can_create_organization: false)
+        context 'when disallowed by admin' do
+          before do
+            stub_application_setting(can_create_organization: false)
+          end
+
+          it { is_expected.to be_disallowed(:create_organization) }
         end
+      end
 
+      context 'when not on GitLab.com' do
         it { is_expected.to be_disallowed(:create_organization) }
       end
     end
@@ -796,7 +802,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_disallowed(:create_organizatinon) }
+      it { is_expected.to be_disallowed(:create_organization) }
     end
   end
 

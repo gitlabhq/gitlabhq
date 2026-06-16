@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::Identity::Restore, :request_store, feature_category: :system_access do
-  let_it_be(:primary_user) { create(:user, :service_account) }
+  let_it_be(:primary_user, freeze: false) { create(:user, :service_account) }
   let_it_be(:scoped_user) { create(:user) }
 
   let(:job) { { 'jid' => 123 } }

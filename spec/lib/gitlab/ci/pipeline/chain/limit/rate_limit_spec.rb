@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :clean_gitlab_redis_rate_limiting, feature_category: :ci_pipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:project, reload: true) { create(:project, namespace: namespace) }
+  let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
 
   let(:save_incompleted) { false }
   let(:throttle_message) do

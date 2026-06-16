@@ -57,6 +57,11 @@ describe('PipelineMiniGraph', () => {
         findStages().vm.$emit('mini-graph-stage-click');
         expect(wrapper.emitted('mini-graph-stage-click')).toHaveLength(1);
       });
+
+      it('emits job-action-executed from stages', () => {
+        findStages().vm.$emit('job-action-executed');
+        expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
+      });
     });
 
     describe('upstream', () => {
@@ -87,16 +92,17 @@ describe('PipelineMiniGraph', () => {
         });
       });
 
-      it('keeps the latest downstream pipelines', () => {
-        createComponent();
-        expect(findDownstream().props('pipelines')).toHaveLength(2);
-      });
-
       it('does not render downstream if not available', () => {
         createComponent({
           props: { downstreamPipelines: [] },
         });
         expect(findDownstream().exists()).toBe(false);
+      });
+
+      it('emits job-action-executed from downstream pipelines', () => {
+        createComponent();
+        findDownstream().vm.$emit('job-action-executed');
+        expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
       });
     });
   });

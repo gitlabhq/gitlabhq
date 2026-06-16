@@ -7,3 +7,5 @@ class Packages::Debian::ProjectComponentFile < ApplicationRecord
 
   include Packages::Debian::ComponentFile
 end
+
+Packages::Debian::ProjectComponentFile.prepend_mod

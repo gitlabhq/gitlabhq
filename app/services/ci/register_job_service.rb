@@ -437,8 +437,24 @@ module Ci
         archived_failure: ->(build, _) { build.archived? },
         project_deleted: ->(build, _) { build.project.pending_delete? },
         builds_disabled: ->(build, _) { !build.project.builds_enabled? },
-        user_blocked: ->(build, _) { build.user&.blocked? }
+        user_blocked: ->(build, _) { build.user&.blocked? },
+        id_token_burned_project_path: ->(build, _) { id_token_burned_project_path?(build) }
       }
+    end
+
+    def id_token_burned_project_path?(build)
+      return false unless build.id_tokens?
+      return false unless build.project.ci_id_token_sub_claim_components.include?('project_path')
+
+      burned_project_path?(build)
+    end
+
+    def burned_project_path?(build)
+      ::Authn::BurnedProjectRoute.blocked_for?(
+        organization_id: build.project.organization_id,
+        path: build.project.full_path,
+        except_project_id: build.project.id
+      )
     end
   end
 end

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
-RSpec.describe RuboCop::Cop::Graphql::Descriptions do
+RSpec.describe RuboCop::Cop::Graphql::Descriptions, feature_category: :api do
   context 'with fields' do
     it 'adds an offense when there is no description' do
       expect_offense(<<~RUBY)

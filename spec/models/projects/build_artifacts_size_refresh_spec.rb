@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
+RSpec.describe Projects::BuildArtifactsSizeRefresh, feature_category: :job_artifacts do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end
@@ -55,7 +55,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
     let(:now) { Time.zone.now }
 
     describe 'initial state' do
-      let(:refresh) { create(:project_build_artifacts_size_refresh) }
+      let(:refresh) { build(:project_build_artifacts_size_refresh) }
 
       it 'defaults to created' do
         expect(refresh).to be_created
@@ -67,11 +67,12 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
-            :created
+            :created,
+            updated_at: 2.days.ago
           )
         end
 
-        let!(:last_job_artifact_id_on_refresh_start) { create(:ci_job_artifact, project: refresh.project) }
+        let_it_be(:last_job_artifact_id_on_refresh_start) { create(:ci_job_artifact, project: refresh.project) }
 
         let(:statistics) { refresh.project.statistics }
 
@@ -89,11 +90,13 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         end
 
         it 'sets last_job_artifact_id_on_refresh_start' do
-          expect { refresh.process! }.to change { refresh.last_job_artifact_id_on_refresh_start.to_i }.to(last_job_artifact_id_on_refresh_start.id)
+          expect { refresh.process! }.to change {
+            refresh.last_job_artifact_id_on_refresh_start.to_i
+          }.to(last_job_artifact_id_on_refresh_start.id)
         end
 
         it 'bumps the updated_at' do
-          expect { refresh.process! }.to change { refresh.updated_at.to_i }.to(now.to_i)
+          expect { refresh.process! }.to change { refresh.reload.updated_at.to_i }.to(now.to_i)
         end
 
         it 'resets the build artifacts size stats' do
@@ -101,12 +104,14 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         end
 
         it 'resets the buffered counter value to zero' do
-          expect { refresh.process! }.to change { Gitlab::Counters::BufferedCounter.new(statistics, :build_artifacts_size).get }.to(0)
+          expect { refresh.process! }.to change {
+            Gitlab::Counters::BufferedCounter.new(statistics, :build_artifacts_size).get
+          }.to(0)
         end
       end
 
       context 'when refresh state is pending' do
-        let!(:refresh) do
+        let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
             :pending,
@@ -114,7 +119,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
           )
         end
 
-        before do
+        before_all do
           create(:project_statistics, project: refresh.project)
         end
 
@@ -128,7 +133,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
       end
 
       context 'when refresh state is running' do
-        let!(:refresh) do
+        let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
             :running,
@@ -136,7 +141,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
           )
         end
 
-        before do
+        before_all do
           create(:project_statistics, project: refresh.project)
         end
 
@@ -153,7 +158,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
     end
 
     describe '#requeue!' do
-      let!(:refresh) do
+      let_it_be_with_reload(:refresh) do
         create(
           :project_build_artifacts_size_refresh,
           :running,
@@ -165,7 +170,9 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
       let(:last_job_artifact_id) { 123 }
 
       it 'transitions refresh state from running to pending' do
-        expect { refresh.requeue!(last_job_artifact_id) }.to change { refresh.reload.state }.to(described_class::STATES[:pending])
+        expect { refresh.requeue!(last_job_artifact_id) }.to change {
+          refresh.reload.state
+        }.to(described_class::STATES[:pending])
       end
 
       it 'bumps updated_at' do
@@ -173,15 +180,19 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
       end
 
       it 'updates last_job_artifact_id' do
-        expect { refresh.requeue!(last_job_artifact_id) }.to change { refresh.reload.last_job_artifact_id.to_i }.to(last_job_artifact_id)
+        expect { refresh.requeue!(last_job_artifact_id) }.to change {
+          refresh.reload.last_job_artifact_id.to_i
+        }.to(last_job_artifact_id)
       end
     end
 
     describe '#schedule_finalize!' do
-      let!(:refresh) { create(:project_build_artifacts_size_refresh, :running) }
+      let_it_be_with_reload(:refresh) { create(:project_build_artifacts_size_refresh, :running) }
 
       it 'transitions refresh state from running to finalizing' do
-        expect { refresh.schedule_finalize! }.to change { refresh.reload.state }.to(described_class::STATES[:finalizing])
+        expect { refresh.schedule_finalize! }.to change {
+          refresh.reload.state
+        }.to(described_class::STATES[:finalizing])
       end
 
       it 'schedules Projects::FinalizeProjectStatisticsRefreshWorker' do
@@ -195,8 +206,8 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe '.process_next_refresh!' do
-    let!(:refresh_created) { create(:project_build_artifacts_size_refresh, :created) }
-    let!(:refresh_pending) { create(:project_build_artifacts_size_refresh, :pending) }
+    let_it_be(:refresh_created) { create(:project_build_artifacts_size_refresh, :created) }
+    let_it_be_with_reload(:refresh_pending) { create(:project_build_artifacts_size_refresh, :pending) }
 
     subject(:processed_refresh) { described_class.process_next_refresh! }
 
@@ -233,7 +244,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe '#finalize!' do
-    let!(:refresh) { create(:project_build_artifacts_size_refresh, :finalizing) }
+    let(:refresh) { create(:project_build_artifacts_size_refresh, :finalizing) }
 
     let(:statistics) { refresh.project.statistics }
 
@@ -253,15 +264,12 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe '#next_batch' do
-    let!(:project) { create(:project) }
-    let!(:artifact_1) { create(:ci_job_artifact, project: project, created_at: 14.days.ago) }
-    let!(:artifact_2) { create(:ci_job_artifact, project: project, created_at: 13.days.ago) }
-    let!(:artifact_3) { create(:ci_job_artifact, project: project, created_at: 12.days.ago) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:artifact_1) { create(:ci_job_artifact, project: project, created_at: 14.days.ago) }
+    let_it_be(:artifact_2) { create(:ci_job_artifact, project: project, created_at: 13.days.ago) }
+    let_it_be_with_reload(:artifact_3) { create(:ci_job_artifact, project: project, created_at: 12.days.ago) }
 
-    # This should not be included in the recalculation as it is created later than the refresh start time
-    let!(:future_artifact) { create(:ci_job_artifact, project: project, size: 8, created_at: refresh.refresh_started_at + 1.second) }
-
-    let!(:refresh) do
+    let_it_be(:refresh) do
       create(
         :project_build_artifacts_size_refresh,
         :pending,
@@ -271,6 +279,11 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         last_job_artifact_id: artifact_1.id,
         last_job_artifact_id_on_refresh_start: artifact_3.id
       )
+    end
+
+    # This should not be included in the recalculation as it is created later than the refresh start time
+    let_it_be(:future_artifact) do
+      create(:ci_job_artifact, project: project, size: 8, created_at: refresh.refresh_started_at + 1.second)
     end
 
     subject(:batch) { refresh.next_batch(limit: 3) }

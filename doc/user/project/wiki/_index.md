@@ -22,6 +22,7 @@ Wiki pages:
 - Support custom navigation and organization through sidebar customization.
 - Export content as PDF files for offline access and sharing.
 - Maintain your content separately from your codebase while keeping them in the same project.
+- Support emoji reactions on pages for feedback and engagement.
 
 Each wiki is a separate Git repository.
 You can create and edit wiki pages through the GitLab web interface or
@@ -56,8 +57,13 @@ To rename your wiki's default branch, [update the default branch name in your re
 
 - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
 - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the immersive editor is controlled by a feature flag.
+> For more information, see the history.
 
 When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
@@ -69,12 +75,16 @@ to be used as your wiki's home page. To create it:
 1. Optional. Change the **Title** of the home page.
 1. GitLab requires this first page to have path `home`. The page on this
    path serves as the front page for your wiki.
-1. Select a **Format** for styling your text.
-1. Add a welcome message for your home page in the **Content** section. You can
+1. Optional. Select **Edit page options** ({{< icon name="chevron-down" >}}) to:
+   - Change the **Path** of the page. By default, the path is generated from the title.
+     Page paths use [special characters](#special-characters-in-page-paths) for subdirectories and formatting,
+     and have [length restrictions](#length-restrictions-for-file-and-directory-names).
+   - Change the content **Format**.
+   - Select a **Template**. For more information, see [from a template](#from-a-template).
+1. Add a welcome message for your home page in the content area. You can
    always edit it later.
-1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
-   if you don't enter one yourself.
-1. Select **Create page**.
+1. Select **Create page**. To add a commit message before saving, select the arrow next to
+   **Create page** and select **Save changes with message**.
 
 ## Create a new wiki page
 
@@ -82,9 +92,14 @@ to be used as your wiki's home page. To create it:
 
 - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
 - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
-+- Create a wiki page from the top bar [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/591976) in GitLab 18.10.
+- Create a wiki page from the top bar [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/591976) in GitLab 18.10.
+- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the immersive editor is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -103,16 +118,17 @@ Alternatively:
 
 After opening the new page form, complete the following steps:
 
-1. Select a content format.
-1. Add a **Title** for your new page.
-1. Optional. Uncheck **Generate page path from title** and change the **Path** of the page.
-   Page paths use [special characters](#special-characters-in-page-paths) for subdirectories and formatting,
-   and have [length restrictions](#length-restrictions-for-file-and-directory-names).
+1. Add a **Title** for your new page in the editor header.
+1. Optional. Select **Edit page options** ({{< icon name="chevron-down" >}}) to:
+   - Change the **Path** of the page. By default, the path is generated from the title.
+     Page paths use [special characters](#special-characters-in-page-paths) for subdirectories and formatting,
+     and have [length restrictions](#length-restrictions-for-file-and-directory-names).
+   - Change the content **Format**.
+   - Select a **Template**. For more information, see [from a template](#from-a-template).
 1. Optional. Add content to your wiki page.
 1. Optional. Attach a file, and GitLab stores it in the wiki's Git repository.
-1. Add a **Commit message**. Git requires a commit message, so GitLab creates one
-   if you don't enter one yourself.
-1. Select **Create page**.
+1. Select **Create page**. To add a commit message before saving, select the arrow next to
+   **Create page** and select **Save changes with message**.
 
 ### From a template
 
@@ -244,12 +260,26 @@ may not be able to check out the wiki locally afterward.
 {{< history >}}
 
 - Sticky **Edit** in preview mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590255) in GitLab 18.11.
+- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of the immersive editor is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role.
+
+The wiki editor opens with a sticky header that contains:
+
+- The page title. You can edit this inline.
+- **Edit page options** ({{< icon name="chevron-down" >}}) to change the page path, format, or select a template.
+- A sidebar toggle ({{< icon name="sidebar" >}}) to show or hide the wiki sidebar.
+- **Save changes** and **Cancel** to save or discard your changes.
+
+To edit a wiki page:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Plan** > **Wiki**.
@@ -257,10 +287,11 @@ Prerequisites:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
    - Select **Edit**.
 1. Edit the content.
-1. Select **Save changes**.
+1. Select **Save changes**. To add a commit message before saving, select the arrow next to
+   **Save changes** and select **Save changes with message**.
 
 When you preview a page and scroll, a sticky bar at the top of the page keeps
-the **Edit** button and other actions accessible.
+**Edit** and other actions accessible.
 
 Unsaved changes to a wiki page are preserved in local browser storage to prevent accidental data loss.
 
@@ -278,6 +309,29 @@ section in the sidebar.
 You can also choose to optionally display a separate table of contents section on the page
 itself. To generate a table of contents from a wiki page's subheadings, use the
 `[[_TOC_]]` tag. For an example, see [table of contents](../../markdown.md#table-of-contents).
+
+## React to a wiki page
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510116) in GitLab 19.1.
+
+{{< /history >}}
+
+You can add emoji reactions directly to a wiki page. Reactions appear below the page content,
+above the comments section.
+
+To react to a wiki page:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Plan** > **Wiki**.
+1. Go to the page you want to react to.
+1. Below the page content, select an existing emoji to add your reaction, or select
+   **Add reaction** ({{< icon name="slight-smile" >}}) to choose a different emoji.
+
+To remove a reaction, select the emoji again. Each user can add only one reaction of each type per page.
+
+When you add your first reaction to a page, GitLab subscribes you to notifications for that page.
 
 ## Delete a wiki page
 
@@ -313,7 +367,8 @@ Prerequisites:
 1. In the left sidebar, select **Plan** > **Wiki**.
 1. Go to the page you want to move or rename.
 1. Select **Edit**.
-1. To move the page, add the new path to the **Path** field. For example,
+1. In the editor header, select **Edit page options** ({{< icon name="chevron-down" >}}).
+1. To move the page, change the **Path** field. For example,
    if you have a wiki page called `About` under `Company` and you want to
    move it to the wiki's root, change the **Path** from `About` to `/About`.
 1. To rename the page, change the **Path**.
@@ -375,7 +430,12 @@ Prerequisites:
 1. In the left sidebar, select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select **New Template**.
-1. Enter template title, format and content, as if creating a regular wiki page.
+1. Enter the template title, format, and content.
+
+The template path is generated from the title and cannot be edited. To rename a template,
+change its title. The title is stored only as part of the path, so applying the template
+to a page does not insert any title metadata into the page content. To create nested
+templates, use "/" as a path separator in the title.
 
 Templates of a particular format can only be applied to pages of the same format.
 For example, Markdown templates only apply to Markdown pages.
@@ -641,9 +701,20 @@ Support includes:
 
 ### Use the rich text editor
 
+{{< history >}}
+
+- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the immersive editor is controlled by a feature flag.
+> For more information, see the history.
+
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
-1. Select **Markdown** as your format.
-1. Under **Content**, in the lower-left corner, select **Switch to rich text editing**.
+1. Select **Markdown** as your format. In the immersive editor, select **Edit page options**
+   ({{< icon name="chevron-down" >}}) in the editor header to change the format.
+1. In the editor's header, select **Switch to rich text editing**.
 1. Customize your page's content using the various formatting options available in the rich text editor.
 1. Select **Create page** for a new page, or **Save changes** for an existing page.
 

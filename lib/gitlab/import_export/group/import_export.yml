@@ -23,6 +23,7 @@ included_attributes:
     - :public_email
     - :username
   user_contributions:
+    - :id
     - :public_email
     - :username
     - :name

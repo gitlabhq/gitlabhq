@@ -64,6 +64,11 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
     context 'with valid requests' do
       let(:params) { { glql_yaml: "query: group = \"test-group\" AND state = opened" } }
 
+      it_behaves_like 'authorizing granular token permissions', :read_glql do
+        let(:boundary_object) { :user }
+        let(:request) { post api(endpoint, personal_access_token: pat), params: params }
+      end
+
       it 'returns successful response with opened issues', :aggregate_failures do
         glql_request
 
@@ -218,7 +223,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
     end
 
     context 'with query execution errors' do
-      it 'returns 400 when GraphQL query execution fails' do
+      it 'returns 400 when an invalid field is requested' do
         yaml = <<~YAML
           fields: nonExistentField
           query: group = "test-group" AND state = opened
@@ -227,7 +232,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         post api(endpoint, user), params: { glql_yaml: yaml }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include("Field 'nonExistentField' doesn't exist")
+        expect(json_response['error']).to include('nonExistentField')
       end
     end
 
@@ -373,6 +378,61 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
       end
     end
 
+    context 'with user-defined aliases' do
+      it 'uses the user-defined alias as the label in fields metadata and returns correct data',
+        :aggregate_failures do
+        yaml = <<~YAML
+          fields: title as "Name", description as "Details"
+          query: group = "test-group" AND state = opened
+        YAML
+        post api(endpoint, user), params: { glql_yaml: yaml }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['fields'].pluck('key')).to eq(%w[title description])
+        expect(json_response['fields'].pluck('label')).to eq(%w[Name Details])
+
+        node = json_response['data']['nodes'].find { |n| n['title'] == 'Opened Issue' }
+        expect(node['title']).to eq('Opened Issue')
+        expect(node['description']).to include('This is opened')
+      end
+    end
+
+    context 'with labels() field function' do
+      let_it_be(:label_backend) { create(:label, project: project, name: 'backend') }
+      let_it_be(:label_frontend) { create(:label, project: project, name: 'frontend') }
+      let_it_be(:label_bug) { create(:label, project: project, name: 'bug') }
+
+      let_it_be(:labeled_issue) do
+        create(:issue, :opened, project: project, title: 'Labeled Issue',
+          labels: [label_backend, label_frontend, label_bug])
+      end
+
+      it 'extracts matching labels into their own field and removes them from the remaining labels column',
+        :aggregate_failures do
+        yaml = <<~YAML
+          fields: title, labels("backend", "frontend"), labels
+          query: project = "test-group/test-project" and label = ~backend
+        YAML
+        post api(endpoint, user), params: { glql_yaml: yaml }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['success']).to be(true)
+
+        node = json_response['data']['nodes'].find { |n| n['title'] == 'Labeled Issue' }
+
+        # The field function key uses parseable syntax
+        extracted_key = json_response['fields'].find { |f| f['name'] == 'labels' && f['key'] != 'labels' }
+        expect(extracted_key).to be_present
+
+        extracted_labels = node[extracted_key['key']]['nodes'].pluck('title')
+        expect(extracted_labels).to contain_exactly('backend', 'frontend')
+
+        remaining_labels = node['labels']['nodes'].pluck('title')
+        expect(remaining_labels).to include('bug')
+        expect(remaining_labels).not_to include('backend', 'frontend')
+      end
+    end
+
     context 'with analytics mode for code suggestions' do
       let(:params) do
         { glql_yaml: <<~YAML }
@@ -384,30 +444,10 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         YAML
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(glql_code_suggestion_analytics_aggregation: false)
-        end
+      it 'returns an error because the analytics schema is not available in FOSS' do
+        glql_request
 
-        it 'returns an error' do
-          glql_request
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['error'])
-            .to include('code suggestions` requires the `glqlCodeSuggestions` feature flag to be enabled')
-        end
-      end
-
-      context 'when the feature flag is enabled' do
-        before do
-          stub_feature_flags(glql_code_suggestion_analytics_aggregation: project)
-        end
-
-        it 'returns an error because the analytics schema is not available in FOSS' do
-          glql_request
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end

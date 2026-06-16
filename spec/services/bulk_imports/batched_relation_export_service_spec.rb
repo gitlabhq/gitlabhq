@@ -20,7 +20,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
 
         export = portable.bulk_import_exports.first
 
-        expect(export.reload.started?).to eq(true)
+        expect(export.reload.started?).to be(true)
       end
 
       it 'removes existing batches' do
@@ -109,6 +109,32 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           service.execute
         end
 
+        context 'when the export is for an offline transfer' do
+          let_it_be(:offline_export_record) { create(:offline_export) }
+          let_it_be_with_reload(:offline_bulk_export) do
+            create(:bulk_import_export, group: portable, batched: true,
+              offline_export_id: offline_export_record.id)
+          end
+
+          let_it_be_with_reload(:offline_export_batch) do
+            create(:bulk_import_export_batch, export: offline_bulk_export)
+          end
+
+          subject(:service) do
+            described_class.new(user, portable, relation, jid, offline_export_id: offline_export_record.id)
+          end
+
+          it 'logs with offline transfer importer' do
+            expect(Gitlab::Export::Logger).to receive(:warn).with(
+              hash_including(
+                importer: Import::SOURCE_OFFLINE_TRANSFER
+              )
+            )
+
+            service.execute
+          end
+        end
+
         context 'and the export is finished' do
           before do
             export.finish!
@@ -143,7 +169,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
 
         export = portable.bulk_import_exports.first
 
-        expect(export.finished?).to eq(true)
+        expect(export.finished?).to be(true)
         expect(export.batches.count).to eq(0)
       end
     end

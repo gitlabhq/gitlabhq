@@ -194,7 +194,7 @@ variables:
     # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
     # 1.1. When a custom file pattern is configured, run the job
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN)'
+          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN || "$[[ inputs.pip_manifest_file_name_pattern ]]" != "" || "$[[ inputs.pipcompile_lockfile_file_name_pattern ]]" != "")'
     # 1.2 When $DS_SKIP_IF_NO_SUPPORTED_FILES is set, only run the job when a compatible file is found
     - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES == "true" && ($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
       exists: *ds_supported_files
@@ -207,7 +207,7 @@ variables:
 
     # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     # 3.1. When a custom file pattern is configured, run the job
-    - if: $CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN)
+    - if: '$CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || $DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN || "$[[ inputs.pip_manifest_file_name_pattern ]]" != "" || "$[[ inputs.pipcompile_lockfile_file_name_pattern ]]" != "")'
     # 3.2 When $DS_SKIP_IF_NO_SUPPORTED_FILES is set, only run the job when a compatible file is found
     - if: '$DS_SKIP_IF_NO_SUPPORTED_FILES == "true" && $CI_COMMIT_BRANCH'
       exists: *ds_supported_files
@@ -373,7 +373,7 @@ variables:
     # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
     # 1.1. When a custom file pattern is configured, run the job
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE)'
+          ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || "$[[ inputs.pip_manifest_file_name_pattern ]]" != "")'
     # 1.2 Otherwise, only run the job when a compatible file is found
     - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
       exists:
@@ -385,7 +385,7 @@ variables:
 
     # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     # 3.1. When a custom file pattern is configured, run the job
-    - if: $CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE)
+    - if: '$CI_COMMIT_BRANCH && ($DS_PIP_MANIFEST_FILE_NAME_PATTERN || $PIP_REQUIREMENTS_FILE || "$[[ inputs.pip_manifest_file_name_pattern ]]" != "")'
     # 3.2 Otherwise, only run the job when a compatible file is found
     - if: $CI_COMMIT_BRANCH
       exists:

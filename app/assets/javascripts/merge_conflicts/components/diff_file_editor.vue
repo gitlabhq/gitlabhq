@@ -9,6 +9,7 @@ import { INTERACTIVE_RESOLVE_MODE } from '../constants';
 import { useMergeConflicts } from '../store';
 
 export default {
+  name: 'DiffFileEditor',
   components: {
     GlButton,
   },

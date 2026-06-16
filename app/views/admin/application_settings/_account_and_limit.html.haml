@@ -66,6 +66,11 @@
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
 
     .form-group
+      = f.label :oauth_access_token_expires_in, s_('AdminSettings|Maximum allowable lifetime for OAuth access tokens'), class: 'label-bold'
+      = f.number_field :oauth_access_token_expires_in, class: 'form-control gl-form-input', min: 300, max: 7200, placeholder: 7200
+      .form-text.gl-text-subtle
+        = s_('AdminSettings|Maximum lifetime of OAuth access tokens in seconds. Minimum 300 (5 minutes). If blank, defaults to 7200 (2 hours). Does not change the lifetime of any existing tokens.')
+    .form-group
       = f.label :user_oauth_applications, _('User OAuth applications'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :user_oauth_applications, _('Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.')
 

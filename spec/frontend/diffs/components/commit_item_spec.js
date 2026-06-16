@@ -77,7 +77,7 @@ describe('diffs/components/commit_item', () => {
 
     it('renders author avatar', () => {
       expect(findUserAvatar().props()).toMatchObject({
-        linkHref: commit.author.web_url,
+        linkHref: commit.author.path,
         imgSrc: commit.author.avatar_url,
         imgAlt: commit.author.name,
         imgSize: 32,
@@ -92,7 +92,7 @@ describe('diffs/components/commit_item', () => {
       const expectedText = `${commit.author.name} authored ${expectTimeText}`;
 
       expect(trimText(committerElement.text())).toEqual(expectedText);
-      expect(nameElement.attributes('href')).toBe(commit.author.web_url);
+      expect(nameElement.attributes('href')).toBe(commit.author.path);
       expect(nameElement.text()).toBe(commit.author.name);
       expect(nameElement.classes()).toContain('js-user-link');
       expect(nameElement.attributes('data-user-id')).toEqual(commit.author.id.toString());

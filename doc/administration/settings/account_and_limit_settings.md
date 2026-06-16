@@ -570,6 +570,35 @@ To turn the **User OAuth applications** setting on or off:
 1. Select or clear the **User OAuth applications** checkbox.
 1. Select **Save changes**.
 
+### Limit the lifetime of OAuth access tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237354) in GitLab 19.1.
+
+{{< /history >}}
+
+By default, OAuth access tokens expire after two hours (7200 seconds). Instance administrators
+can configure a custom lifetime for OAuth access tokens.
+
+The minimum value is 300 seconds (5 minutes). When unset, the default of 7200 seconds (2 hours)
+applies. This setting applies to all new OAuth access tokens issued by the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To set a lifetime for OAuth access tokens:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **OAuth access token lifetime (seconds)** field.
+1. Select **Save changes**.
+
+You can also configure this setting by using the
+[application settings API](../../api/settings.md) with the `oauth_access_token_expires_in` attribute.
+
 ## Disable user profile name changes
 
 {{< details >}}

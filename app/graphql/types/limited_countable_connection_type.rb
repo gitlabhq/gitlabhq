@@ -6,7 +6,8 @@ module Types
     include CountableConnectionHelper
 
     COUNT_LIMIT = 1000
-    COUNT_DESCRIPTION = "Limited count of collection. Returns limit + 1 for counts greater than the limit."
+    COUNT_DESCRIPTION = "Returns the number of items in the connection up to a limit. " \
+      "If the number is greater than the limit, returns `limit + 1`."
 
     field :count, GraphQL::Types::Int, null: false, description: COUNT_DESCRIPTION do
       argument :limit, GraphQL::Types::Int,

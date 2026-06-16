@@ -19,6 +19,14 @@ module Gitlab
           new(table, from, to, partition_name: partition_name)
         end
 
+        def self.from_export_definition(table, partition_name, definition)
+          definition = definition.with_indifferent_access
+          from = definition[:from] ? Date.parse(definition[:from].to_s) : nil
+          to = Date.parse(definition[:to].to_s)
+
+          new(table, from, to, partition_name: partition_name)
+        end
+
         attr_reader :table, :from, :to, :partition_name
 
         def initialize(table, from, to, partition_name:)
@@ -72,6 +80,14 @@ module Gitlab
 
         def holds_data?
           conn.execute("SELECT 1 FROM #{fully_qualified_partition} LIMIT 1").ntuples > 0
+        end
+
+        def export_definition
+          { partition_name: partition_name, from: from&.iso8601, to: to&.iso8601 }
+        end
+
+        def covers?(other)
+          (from.nil? || (other.from.present? && from <= other.from)) && to >= other.to
         end
 
         private

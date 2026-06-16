@@ -21,7 +21,7 @@ module Keeps
   class MarkOldAdvancedSearchMigrationsAsObsolete < ::Gitlab::Housekeeper::Keep
     MIGRATIONS_PATH = 'ee/elastic/migrate'
     MIGRATION_REGEXP = /\A([0-9]+)_([_a-z0-9]*)\.rb\z/
-    MIGRATIONS_SPECS_PATH = 'ee/spec/elastic/migrate/'
+    MIGRATIONS_SPECS_PATH = 'ee/spec/elastic/migrate'
     MIGRATION_DOCS_PATH = 'ee/elastic/docs'
     MAX_FILES_LIMIT = 50
     GREP_IGNORE = [
@@ -50,14 +50,29 @@ module Keeps
         change.title = "Mark #{version} as obsolete"
         change.identifiers = ['mark_obsolete', version, migration_name]
         group_label = migration_data[:yaml_content]['group'] || DEFAULT_GROUP_LABEL
+
+        unless groups_helper.group_for_group_label(group_label)
+          @logger&.puts "Skipping #{version}: group label #{group_label.inspect} not found in " \
+            "groups.json (check #{migration_data[:yaml_filename]})"
+          next
+        end
+
         change.labels = [
           'maintenance::refactor',
           group_label
         ]
         group_team_map = get_group_team_map(group_label)
-        assignee = group_team_map.min_by { |_k, v| v }.first
-        change.assignees = assignee
-        group_team_map[assignee] += 1
+        group_team_map = get_group_team_map(DEFAULT_GROUP_LABEL) if group_team_map.empty?
+
+        if group_team_map.any?
+          assignee = group_team_map.min_by { |_k, v| v }.first
+          change.assignees = assignee
+          group_team_map[assignee] += 1
+        else
+          @logger&.puts "No available reviewers for #{version} in #{group_label} or fallback " \
+            "#{DEFAULT_GROUP_LABEL}; the MR will be unassigned"
+        end
+
         change.changelog_ee = true
 
         # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
@@ -252,7 +267,7 @@ module Keeps
         yaml_file = "#{MIGRATION_DOCS_PATH}/#{version}_#{filename}.yml"
         spec_file = "#{MIGRATIONS_SPECS_PATH}/#{version}_#{filename}_spec.rb"
 
-        yield(f, spec_file, yaml_file, YAML.load_file(yaml_file))
+        yield(f, spec_file, yaml_file, YAML.safe_load_file(yaml_file))
       end
     end
 
@@ -278,8 +293,9 @@ module Keeps
       source = RuboCop::ProcessedSource.new(File.read(file), RuboCop::ConfigStore.new.for_file('.').target_ruby_version)
       rewriter = Parser::Source::TreeRewriter.new(source.buffer)
       describe_block = source.ast.each_node(:block).first
+      feature_category = existing_feature_category_source(describe_block) || ':global_search'
       content = <<~RUBY.strip
-        RSpec.describe #{name}, feature_category: :global_search do
+        RSpec.describe #{name}, feature_category: #{feature_category} do
           it_behaves_like 'a deprecated Advanced Search migration', #{version}
         end
       RUBY
@@ -288,6 +304,17 @@ module Keeps
       process = rewriter.process.lstrip.gsub(/\n{3,}/, "\n\n")
 
       File.write(file, process)
+    end
+
+    def existing_feature_category_source(describe_block)
+      send_node = describe_block&.send_node
+      return unless send_node
+
+      hash_arg = send_node.arguments.find(&:hash_type?)
+      return unless hash_arg
+
+      pair = hash_arg.pairs.find { |p| p.key.sym_type? && p.key.value == :feature_category }
+      pair&.value&.source
     end
 
     def migration_marked_as_obsolete_milestone

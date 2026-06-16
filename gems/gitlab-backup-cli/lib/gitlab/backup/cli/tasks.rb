@@ -4,6 +4,7 @@ module Gitlab
   module Backup
     module Cli
       module Tasks
+        autoload :AgentPlanContent, 'gitlab/backup/cli/tasks/agent_plan_content'
         autoload :Artifacts, 'gitlab/backup/cli/tasks/artifacts'
         autoload :Builds, 'gitlab/backup/cli/tasks/builds'
         autoload :CiSecureFiles, 'gitlab/backup/cli/tasks/ci_secure_files'
@@ -28,7 +29,8 @@ module Gitlab
           Gitlab::Backup::Cli::Tasks::TerraformState.id => Gitlab::Backup::Cli::Tasks::TerraformState,
           Gitlab::Backup::Cli::Tasks::Registry.id => Gitlab::Backup::Cli::Tasks::Registry,
           Gitlab::Backup::Cli::Tasks::Packages.id => Gitlab::Backup::Cli::Tasks::Packages,
-          Gitlab::Backup::Cli::Tasks::CiSecureFiles.id => Gitlab::Backup::Cli::Tasks::CiSecureFiles
+          Gitlab::Backup::Cli::Tasks::CiSecureFiles.id => Gitlab::Backup::Cli::Tasks::CiSecureFiles,
+          Gitlab::Backup::Cli::Tasks::AgentPlanContent.id => Gitlab::Backup::Cli::Tasks::AgentPlanContent
         }.freeze
 
         def self.all

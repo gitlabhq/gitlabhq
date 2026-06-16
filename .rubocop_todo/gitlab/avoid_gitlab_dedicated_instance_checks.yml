@@ -1,0 +1,24 @@
+---
+Gitlab/AvoidGitlabDedicatedInstanceChecks:
+  Details: grace period
+  Exclude:
+    - 'app/controllers/admin/registrations/groups_controller.rb'
+    - 'app/controllers/admin/registrations/profiles_controller.rb'
+    - 'app/controllers/event_forward/event_forward_controller.rb'
+    - 'app/controllers/sessions_controller.rb'
+    - 'app/policies/base_policy.rb'
+    - 'ee/app/helpers/admin/ai/self_hosted_models_helper.rb'
+    - 'ee/app/models/ee/ci/runner.rb'
+    - 'ee/app/policies/ee/global_policy.rb'
+    - 'ee/app/services/ci/minutes/update_gitlab_hosted_runner_monthly_usage_service.rb'
+    - 'ee/app/services/ee/ci/runners/create_runner_service.rb'
+    - 'ee/app/services/ee/groups/create_service.rb'
+    - 'ee/app/services/security/v_a_c.rb'
+    - 'ee/app/views/admin/application_settings/security_and_compliance.html.haml'
+    - 'ee/lib/ai/active_context/embeddings/model_selector.rb'
+    - 'ee/lib/cloud_connector.rb'
+    - 'ee/lib/ee/sidebars/admin/menus/admin_settings_menu.rb'
+    - 'ee/lib/elastic/migration.rb'
+    - 'ee/lib/search/elastic/vulnerability_index_helper.rb'
+    - 'lib/gitlab/auth/editor_extensions/language_server_client_verifier.rb'
+    - 'lib/gitlab/tracking/destinations/snowplow.rb'

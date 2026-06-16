@@ -9,6 +9,7 @@ import RunnerTypeBadge from './runner_type_badge.vue';
 import RunnerStatusBadge from './runner_status_badge.vue';
 
 export default {
+  name: 'RunnerHeader',
   components: {
     GlIcon,
     RunnerCreatedAt,

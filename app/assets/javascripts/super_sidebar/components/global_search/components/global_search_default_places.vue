@@ -36,6 +36,7 @@ export default {
   },
   mixins: [trackingMixin],
   inject: ['contextSwitcherLinks'],
+  emits: ['nothing-to-render'],
   computed: {
     shouldRender() {
       return this.contextSwitcherLinks.length > 0;

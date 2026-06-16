@@ -89,6 +89,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-note-error', 'open-form', 'resolve-discussion-error', 'update-active-discussion'],
   apollo: {
     activeDesignDiscussion: {
       query: activeDiscussionQuery,

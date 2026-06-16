@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 export default {
+  name: 'MetadataMaven',
   i18n: {
     appGroup: s__('PackageRegistry|App group: %{group}'),
     appName: s__('PackageRegistry|App name: %{name}'),

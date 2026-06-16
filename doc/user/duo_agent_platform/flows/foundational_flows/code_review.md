@@ -14,7 +14,8 @@ title: Code Review Flow
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4 Vertex](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- LLM: Anthropic Claude Sonnet 4.6 Vertex
+- [Select a different model](../../model_selection.md) using the **Agentic Code Review** setting.
 - Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -24,6 +25,7 @@ title: Code Review Flow
 - Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a flag](../../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209).
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Vertex in GitLab 19.1.
 
 {{< /history >}}
 
@@ -47,15 +49,15 @@ This flow:
 
 This flow is available in the GitLab UI only.
 
+## Prerequisites
+
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
+- Turn on **Allow foundational flows** and **Code Review** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
+- Have the Developer, Maintainer, or Owner role for the project.
+- If you belong to multiple GitLab Duo namespaces, [set a default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- [Configure your own runners](../execution.md#configure-runners) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+
 ## Use the flow
-
-Prerequisites:
-
-- Ensure you meet the [Agent Platform prerequisites](../../_index.md#prerequisites).
-- Ensure **Allow foundational flows** and **Code Review** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
-- Ensure you have the Developer, Maintainer, or Owner [role](../../../permissions.md) for the project.
-- Ensure [a runner](../execution.md#configure-runners) is available and configured for the project. 
-- If you belong to multiple GitLab Duo namespaces, ensure you have [a default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace) set in your preferences.
 
 To use the Code Review Flow on a merge request:
 
@@ -63,23 +65,29 @@ To use the Code Review Flow on a merge request:
 1. Use one of these methods to request a review:
    - Assign `@GitLabDuo` as a reviewer.
    - In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`.
+   - In a comment box, mention `@GitLabDuo` and ask for a review.
 
 After you request a review, Code Review Flow starts a [session](../../sessions/_index.md) that you
 can monitor until the review is complete.
 
 ## Interact with GitLab Duo in reviews
 
+{{< history >}}
+
+- Comment interactions [updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601102) to use GitLab Duo Agent Platform in GitLab 19.1.
+
+{{< /history >}}
+
 In addition to assigning GitLab Duo as a reviewer, you can interact with GitLab Duo
 by:
 
-- Replying to its review comments to ask for clarification or alternative approaches.
+- Replying to review comments to ask for clarification or alternative approaches.
 - Mentioning `@GitLabDuo` in any discussion thread to ask follow-up questions.
 
-Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve
-your merge request.
+Discussions with GitLab Duo in comments count as Agentic Chat requests and [consume credits](../../../../subscriptions/gitlab_credits.md).
 
 Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
-There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
+Adding this functionality is proposed in [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
 
 ## Contextual awareness
 
@@ -169,10 +177,14 @@ For information on how credit usage is attributed for automatic reviews, see
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../../../policy/development_stages_support.md#beta) [with a flag](../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
 - Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
+- [Turned on by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822) for new GitLab Duo trials on GitLab.com in GitLab 19.1.
 
 {{< /history >}}
 
 Use group or application settings to enable automatic reviews for multiple projects.
+
+For new GitLab Duo trials on GitLab.com in GitLab 19.1 and later, automatic reviews for groups are turned on by
+default.
 
 Prerequisites:
 
@@ -318,8 +330,7 @@ To improve the review:
 - [Exclude context](../../context.md#exclude-context-from-gitlab-duo) for files that are not
   relevant to the review.
 - Ask a Maintainer or Owner to
-  [select Claude Sonnet 4.6 Vertex](../../../gitlab_duo/model_selection.md#select-a-model-for-a-feature)
-  for Code Review. Sonnet 4.6 Vertex has a larger context window than the default model.
+  [select a different model](../../model_selection.md) using the **Agentic Code Review** setting.
 
 ### Configuration diagnostic script
 

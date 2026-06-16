@@ -50,4 +50,16 @@ RSpec.describe Bitbucket::ApiConnection, feature_category: :importers do
       it_behaves_like 'bitbucket api connection', 'user@example.com', 'token123'
     end
   end
+
+  describe '#get_response_code' do
+    subject(:connection) { described_class.new(email: 'user@example.com', api_token: 'token123') }
+
+    it 'returns the HTTP status code as an integer' do
+      expect(Gitlab::HTTP)
+        .to receive(:get)
+        .and_return(instance_double(HTTParty::Response, code: 404, success?: false, parsed_response: {}))
+
+      expect(connection.get_response_code('/repositories/workspace/repo/issues')).to eq(404)
+    end
+  end
 end

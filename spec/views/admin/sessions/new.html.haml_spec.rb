@@ -59,21 +59,10 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
     end
 
     context 'when step-up auth config is set' do
-      let(:oidc_step_up_auth_options) do
-        GitlabSettings::Options.new(
-          name: "openid_connect",
-          step_up_auth: {
-            admin_mode: {
-              params: {
-                claims: { acr_values: 'gold' }
-              }
-            }
-          }
-        )
-      end
+      let(:oidc_step_up_auth_options) { build(:omniauth_provider_config) }
 
       let(:oidc_step_up_auth_options_without_params) do
-        GitlabSettings::Options.new(name: "openid_connect", step_up_auth: { admin_mode: {} })
+        build(:omniauth_provider_config, step_up_auth_params: nil)
       end
 
       before do

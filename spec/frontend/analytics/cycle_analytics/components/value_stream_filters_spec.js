@@ -133,6 +133,12 @@ describe('ValueStreamFilters', () => {
               it('should not emit `set-date-range`', () => {
                 expect(wrapper.emitted('set-date-range')).toBeUndefined();
               });
+
+              it('renders the date range picker when parent propagates predefinedDateRange as custom', async () => {
+                await wrapper.setProps({ predefinedDateRange: DATE_RANGE_CUSTOM_VALUE });
+
+                expect(findDateRangePicker().exists()).toBe(true);
+              });
             });
           });
 

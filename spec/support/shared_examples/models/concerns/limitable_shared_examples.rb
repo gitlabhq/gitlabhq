@@ -5,7 +5,7 @@ RSpec.shared_examples 'includes Limitable concern' do
     let_it_be_with_reload(:plan_limits) { create(:plan_limits, :default_plan) }
 
     context 'without plan limits configured' do
-      it { expect(subject.exceeds_limits?).to eq false }
+      it { expect(subject.exceeds_limits?).to be false }
     end
 
     context 'without plan limits configured' do
@@ -13,14 +13,14 @@ RSpec.shared_examples 'includes Limitable concern' do
         plan_limits.update!(subject.class.limit_name => 1)
       end
 
-      it { expect(subject.exceeds_limits?).to eq false }
+      it { expect(subject.exceeds_limits?).to be false }
 
       context 'with an existing model' do
         before do
           subject.clone.save!
         end
 
-        it { expect(subject.exceeds_limits?).to eq true }
+        it { expect(subject.exceeds_limits?).to be true }
       end
     end
   end

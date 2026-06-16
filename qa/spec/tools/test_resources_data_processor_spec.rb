@@ -120,4 +120,102 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
       end
     end
   end
+
+  describe '.load_prior_resources' do
+    let(:resource_dir) { File.join('root', 'tmp') }
+    let(:prior_data) do
+      {
+        'QA::Resource::Project' => [{
+          'info' => 'prior project',
+          'api_path' => '/projects/99',
+          'fabrication_method' => 'api',
+          'fabrication_time' => 1,
+          'http_method' => 'post',
+          'timestamp' => '2024-01-01 00:00:00 +0000'
+        }]
+      }
+    end
+
+    before do
+      allow(QA::Runtime::Path).to receive(:qa_root).and_return('root')
+    end
+
+    context 'when not running in CI' do
+      before do
+        allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(false)
+      end
+
+      it 'does not load any resources' do
+        processor.load_prior_resources
+
+        expect(processor.resources).to eq(result)
+      end
+    end
+
+    context 'when running in CI' do
+      before do
+        allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(true)
+        allow(Dir).to receive(:exist?).with(resource_dir).and_return(true)
+      end
+
+      context 'when prior resource files exist' do
+        let(:prior_file) { File.join(resource_dir, 'test-resources-abc123.json') }
+
+        before do
+          allow(Dir).to receive(:glob).with(File.join(resource_dir, '*test-resources-*.json')).and_return([prior_file])
+          allow(File).to receive(:read).with(prior_file).and_return(JSON.generate(prior_data))
+        end
+
+        it 'loads prior resources into the Singleton' do
+          processor.load_prior_resources
+
+          projects = processor.resources['QA::Resource::Project']
+          expect(projects.size).to eq(2)
+          expect(projects.last[:info]).to eq('prior project')
+          expect(projects.last[:api_path]).to eq('/projects/99')
+        end
+      end
+
+      context 'when no prior resource files exist' do
+        before do
+          allow(Dir).to receive(:glob).with(File.join(resource_dir, '*test-resources-*.json')).and_return([])
+        end
+
+        it 'does not modify resources' do
+          processor.load_prior_resources
+
+          expect(processor.resources).to eq(result)
+        end
+      end
+
+      context 'when resource dir does not exist' do
+        before do
+          allow(Dir).to receive(:exist?).with(resource_dir).and_return(false)
+        end
+
+        it 'does not modify resources' do
+          processor.load_prior_resources
+
+          expect(processor.resources).to eq(result)
+        end
+      end
+
+      context 'when prior resource file has invalid JSON' do
+        let(:prior_file) { File.join(resource_dir, 'test-resources-abc123.json') }
+
+        before do
+          allow(Dir).to receive(:glob).with(File.join(resource_dir, '*test-resources-*.json')).and_return([prior_file])
+          allow(File).to receive(:read).with(prior_file).and_return('invalid json')
+        end
+
+        it 'logs warning and continues without crashing' do
+          expect(QA::Runtime::Logger).to receive(:warn).with(/Failed to parse/)
+
+          processor.load_prior_resources
+
+          expect(processor.resources).to eq(result)
+        end
+      end
+    end
+  end
 end

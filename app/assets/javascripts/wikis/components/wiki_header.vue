@@ -21,6 +21,7 @@ import RestoreVersionModal from './restore_version_modal.vue';
 import WikiStickyHeader from './wiki_sticky_header.vue';
 
 export default {
+  name: 'WikiHeader',
   components: {
     WikiSidebarToggle,
     GlButton,
@@ -54,6 +55,7 @@ export default {
     pagePersisted: { default: null },
     queryVariables: { default: null },
   },
+  emits: ['is-editing'],
   apollo: {
     wikiPage: {
       query: wikiPageQuery,
@@ -102,7 +104,7 @@ export default {
     },
     subscribeItem() {
       return {
-        text: this.wikiPage?.subscribed ? __('Notifications On') : __('Notifications Off'),
+        text: this.wikiPage?.subscribed ? __('Notifications are on') : __('Notifications are off'),
         icon: this.wikiPage?.subscribed ? 'notifications' : 'notifications-off',
       };
     },

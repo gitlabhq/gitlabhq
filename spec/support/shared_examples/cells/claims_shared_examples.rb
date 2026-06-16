@@ -158,7 +158,7 @@ RSpec.shared_examples 'creating new claims' do
         expect_begin_update(:save, success: false)
 
         expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(subject.class.count).to eq(0)
+          .and not_change { subject.class.count }
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -170,7 +170,7 @@ RSpec.shared_examples 'creating new claims' do
         expect_rollback_update
 
         expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(subject.class.count).to eq(0)
+          .and not_change { subject.class.count }
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -180,8 +180,9 @@ RSpec.shared_examples 'creating new claims' do
         expect_begin_update(:save)
         expect_commit_update(success: false)
 
-        expect(subject.save).to be(true)
-        expect(subject.class.count).to eq(1)
+        expect { subject.save! }
+          .to change { subject.class.count }.by(1)
+          .and change { subject.persisted? }.from(false).to(true)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
     end
@@ -210,8 +211,8 @@ RSpec.shared_examples 'deleting existing claims' do
         expect_begin_update(:destroy, success: false)
 
         expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+          .and not_change { subject.class.count }
         expect(subject.destroyed?).to be(false)
-        expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -223,8 +224,8 @@ RSpec.shared_examples 'deleting existing claims' do
         expect_rollback_update
 
         expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+          .and not_change { subject.class.count }
         expect(subject.destroyed?).to be(false)
-        expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -234,9 +235,8 @@ RSpec.shared_examples 'deleting existing claims' do
         expect_begin_update(:destroy)
         expect_commit_update(success: false)
 
-        subject.destroy!
+        expect { subject.destroy! }.to change { subject.class.count }.by(-1)
         expect(subject.destroyed?).to be(true)
-        expect(subject.class.count).to eq(0)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
     end
@@ -325,8 +325,9 @@ RSpec.shared_examples 'not creating claims' do
       expect_no_commit_update
       expect_no_rollback_update
 
-      expect(subject.save).to be(true)
-      expect(subject.class.count).to eq(1)
+      expect { subject.save! }
+        .to change { subject.class.count }.by(1)
+        .and change { subject.persisted? }.from(false).to(true)
       expect(Cells::OutstandingLease.count).to eq(0)
     end
   end
@@ -343,9 +344,8 @@ RSpec.shared_examples 'not deleting claims' do
       expect_no_commit_update
       expect_no_rollback_update
 
-      subject.destroy!
+      expect { subject.destroy! }.to change { subject.class.count }.by(-1)
       expect(subject.destroyed?).to be(true)
-      expect(subject.class.count).to eq(0)
       expect(Cells::OutstandingLease.count).to eq(0)
     end
   end

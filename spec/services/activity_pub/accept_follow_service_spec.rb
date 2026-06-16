@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActivityPub::AcceptFollowService, feature_category: :integrations do
+RSpec.describe ActivityPub::AcceptFollowService, feature_category: :release_orchestration do
   let_it_be(:project) { create(:project, :public) }
   let_it_be_with_reload(:existing_subscription) do
     create(:activity_pub_releases_subscription, :inbox, project: project)

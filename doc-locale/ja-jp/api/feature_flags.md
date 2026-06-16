@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 機能フラグAPI
 ---
 
@@ -14,18 +14,18 @@ title: 機能フラグAPI
 
 {{< history >}}
 
-- GitLab Premium 12.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/9566)されました。
-- 13.5でGitLab Freeに[移行](https://gitlab.com/gitlab-org/gitlab/-/issues/212318)しました。
+- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/9566)はPremium 12.5です。
+- GitLab Free 13.5に[移行](https://gitlab.com/gitlab-org/gitlab/-/issues/212318)しました。
 
 {{< /history >}}
 
 このAPIを使用して、GitLabの[機能フラグ](../operations/feature_flags.md)を操作します。
 
-前提要件: 
+前提条件: 
 
-- デベロッパーロール以上が必要です。
+- デベロッパー、メンテナー、またはオーナーロールが必要です。
 
-## プロジェクトの機能フラグを一覧表示します {#list-feature-flags-for-a-project}
+## プロジェクトの機能フラグを一覧表示 {#list-feature-flags-for-a-project}
 
 リクエストされたプロジェクトのすべての機能フラグを取得します。
 
@@ -38,13 +38,14 @@ GET /projects/:id/feature_flags
 | 属性           | 型             | 必須   | 説明                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | 整数または文字列   | はい        | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                            |
-| `scope`             | 文字列           | いいえ         | 機能フラグの状態（`enabled`、`disabled`のいずれか）。                                                              |
+| `scope`             | 文字列           | いいえ         | 機能フラグの条件。`enabled`、`disabled`のいずれかです。                                                              |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -127,9 +128,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## 単一の機能フラグを取得します {#get-a-single-feature-flag}
+## 機能フラグを取得する {#retrieve-a-feature-flag}
 
-単一の機能フラグを取得します。
+指定された機能フラグを取得します。
 
 ```plaintext
 GET /projects/:id/feature_flags/:feature_flag_name
@@ -143,10 +144,11 @@ GET /projects/:id/feature_flags/:feature_flag_name
 | `feature_flag_name` | 文字列           | はい        | 機能フラグの名前。                                                          |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -176,7 +178,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## 機能フラグを作成する {#create-a-feature-flag}
 
-新しい機能フラグを作成します。
+指定されたプロジェクトの機能フラグを作成します。
 
 ```plaintext
 POST /projects/:id/feature_flags
@@ -186,11 +188,11 @@ POST /projects/:id/feature_flags
 | ------------------- | ---------------- | ---------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                | 整数または文字列   | はい        | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                                                                                                                                                                                     |
 | `name`              | 文字列           | はい        | 機能フラグの名前。                                                                                                                                                                                                                                                            |
-| `version`           | 文字列           | はい        | **非推奨**機能フラグのバージョン。`new_version_flag`である必要があります。レガシー機能フラグを作成するには、省略します。                                                                                                                                                                        |
+| `version`           | 文字列           | はい        | **非推奨**機能フラグのバージョン。`new_version_flag`である必要があります。レガシー機能フラグを作成するには省略します。                                                                                                                                                                        |
 | `description`       | 文字列           | いいえ         | 機能フラグの説明。                                                                                                                                                                                                                                                     |
-| `active`            | ブール値          | いいえ         | フラグのアクティブな状態。デフォルトはtrueです。                                                                                                                                                                                                                                          |
+| `active`            | ブール値          | いいえ         | フラグのアクティブ状態。デフォルトはtrueです。                                                                                                                                                                                                                                          |
 | `strategies`        | 戦略JSONオブジェクトの配列 | いいえ         | 機能フラグの[戦略](../operations/feature_flags.md#feature-flag-strategies)。                                                                                                                                                                                     |
-| `strategies:name`   | JSON             | いいえ         | 戦略名。`default`、`gradualRolloutUserId`、`userWithId`、または`gitlabUserList`を指定できます。[GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380)以降では、[`flexibleRollout`](https://docs.getunleash.io/user_guide/activation_strategy/#gradual-rollout)を指定できます。 |
+| `strategies:name`   | JSON             | いいえ         | 戦略名。`default`、`gradualRolloutUserId`、`userWithId`、または`gitlabUserList`のいずれかです。[GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380)以降では、[`flexibleRollout`](https://docs.getunleash.io/user_guide/activation_strategy/#gradual-rollout)も指定できます。 |
 | `strategies:parameters` | JSON         | いいえ         | 戦略パラメータ。                                                                                                                                                                                                                                                                 |
 | `strategies:scopes` | JSON             | いいえ         | 戦略のスコープ。                                                                                                                                                                                                                                                             |
 | `strategies:scopes:environment_scope` | 文字列 | いいえ | スコープの環境スコープ。                                                                                                                                                                                                                                                      |
@@ -209,7 +211,7 @@ curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \
 EOF
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -236,9 +238,9 @@ EOF
 }
 ```
 
-## 機能フラグを更新する {#update-a-feature-flag}
+## 機能フラグを更新 {#update-a-feature-flag}
 
-機能フラグを更新します。
+指定された機能フラグを更新します。
 
 ```plaintext
 PUT /projects/:id/feature_flags/:feature_flag_name
@@ -249,7 +251,7 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 | `id`                | 整数または文字列   | はい        | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。   |
 | `feature_flag_name` | 文字列           | はい        | 機能フラグの現在の名前。                                                  |
 | `description`       | 文字列           | いいえ         | 機能フラグの説明。                                                   |
-| `active`            | ブール値          | いいえ         | フラグのアクティブな状態。                                                          |
+| `active`            | ブール値          | いいえ         | フラグのアクティブ状態。                                                          |
 | `name`              | 文字列           | いいえ         | 機能フラグの新しい名前。                                                      |
 | `strategies`        | 戦略JSONオブジェクトの配列 | いいえ         | 機能フラグの[戦略](../operations/feature_flags.md#feature-flag-strategies)。 |
 | `strategies:id`     | JSON             | いいえ         | 機能フラグ戦略ID。                                                          |
@@ -273,7 +275,7 @@ curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
 EOF
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -314,9 +316,9 @@ EOF
 }
 ```
 
-## 機能フラグを削除する {#delete-a-feature-flag}
+## 機能フラグを削除 {#delete-a-feature-flag}
 
-機能フラグを削除します。
+指定された機能フラグを削除します。
 
 ```plaintext
 DELETE /projects/:id/feature_flags/:feature_flag_name
@@ -328,5 +330,7 @@ DELETE /projects/:id/feature_flags/:feature_flag_name
 | `feature_flag_name` | 文字列           | はい        | 機能フラグの名前。                                                          |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::AchievementsController, feature_category: :user_profile do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   shared_examples 'response with 404 status' do
     it 'returns 404' do

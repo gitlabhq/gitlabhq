@@ -78,6 +78,8 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
     end
 
     describe '#extract' do
+      let(:tar_file_path) { File.join(tmpdir, 'uploads.tar') }
+
       it 'downloads & extracts upload paths' do
         allow(Dir).to receive(:mktmpdir).and_return(tmpdir)
 
@@ -98,11 +100,14 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
 
         expect(download_service).to receive(:execute)
         expect(decompression_service).to receive(:execute)
-        expect(extraction_service).to receive(:execute)
+        expect(extraction_service).to receive(:execute) { FileUtils.touch(tar_file_path) }
 
         extracted_data = pipeline.extract(context)
 
-        expect(extracted_data.data).to contain_exactly(uploads_dir_path, upload_file_path)
+        expect(extracted_data.data).to contain_exactly(upload_file_path)
+        expect(extracted_data.data).not_to include(uploads_dir_path)
+        expect(extracted_data.data).not_to include(tar_file_path)
+        expect(File.exist?(tar_file_path)).to eq(false)
       end
     end
 

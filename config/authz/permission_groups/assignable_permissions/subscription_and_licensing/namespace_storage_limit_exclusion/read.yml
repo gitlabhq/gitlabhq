@@ -1,0 +1,9 @@
+---
+name: read_namespace_storage_limit_exclusion
+description: Grants the ability to read namespace storage limit exclusions
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_namespace_storage_limit_exclusion

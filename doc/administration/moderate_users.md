@@ -93,8 +93,8 @@ A user in a pending approval state requires action by an administrator. A user s
 pending approval state because an administrator has enabled any of the following options:
 
 - [Require administrator approval for new user account creation](settings/sign_up_restrictions.md#require-administrator-approval-for-new-user-accounts) setting.
-- [User cap](settings/sign_up_restrictions.md#user-cap).
-- [Restricted access](settings/sign_up_restrictions.md#restricted-access) with no licensed seats available, when a [dormant user](settings/sign_up_restrictions.md#dormant-user-reactivation) attempts to sign back in.
+- [User cap](../subscriptions/manage_seats.md#user-cap).
+- [Restricted access](../subscriptions/manage_seats.md#restricted-access) with no licensed seats available, when a [dormant user](../subscriptions/manage_seats.md#dormant-user-reactivation) attempts to sign back in.
 - [Block auto-created users (OmniAuth)](../integration/omniauth.md#configure-common-settings)
 - [Block auto-created users (LDAP)](auth/ldap/_index.md#basic-configuration-settings)
 
@@ -367,7 +367,7 @@ The user's state is set to active and they consume a
 > A deactivated user can also reactivate their account themselves by logging back in through the UI.
 > Users can also be reactivated using the [GitLab API](../api/user_moderation.md#reactivate-a-user).
 >
-> When [restricted access](settings/sign_up_restrictions.md#restricted-access) is active and no
+> When restricted access is active and no
 > licensed seats are available, dormant users who attempt to sign back in are set to
 > pending approval instead of being reactivated.
 

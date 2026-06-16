@@ -2,6 +2,8 @@
 description: Tracks when the user clicks to toggle the move card position option.
 action: click_toggle_button
 product_group: project_management
+product_categories:
+- team_planning
 milestone: '15.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93669
 tiers:

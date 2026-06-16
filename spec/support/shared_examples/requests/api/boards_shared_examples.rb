@@ -81,8 +81,8 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       put api(url, user), params: { hide_backlog_list: true, hide_closed_list: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['hide_backlog_list']).to eq(true)
-      expect(json_response['hide_closed_list']).to eq(true)
+      expect(json_response['hide_backlog_list']).to be(true)
+      expect(json_response['hide_closed_list']).to be(true)
     end
 
     it_behaves_like 'authorizing granular token permissions', :update_issue_board do
@@ -219,7 +219,7 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
     end
 
     context "when the user is parent owner" do
-      let_it_be(:owner, reload: true) { create(:user) }
+      let_it_be_with_reload(:owner) { create(:user) }
 
       before do
         if board_parent.try(:namespace)

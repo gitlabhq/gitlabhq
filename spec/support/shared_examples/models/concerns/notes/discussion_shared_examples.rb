@@ -12,7 +12,7 @@ RSpec.shared_examples 'Notes::Discussion' do
   end
 
   describe '.find_discussion' do
-    let_it_be(:noteable) { discussion_note.noteable }
+    let_it_be(:noteable, freeze: false) { discussion_note.noteable }
 
     it 'returns a discussion with multiple notes' do
       discussion = noteable.notes.find_discussion(discussion_note.discussion_id)

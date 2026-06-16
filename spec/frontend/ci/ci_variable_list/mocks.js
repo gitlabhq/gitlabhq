@@ -27,7 +27,6 @@ export const devName = 'dev';
 export const prodName = 'prod';
 
 export const mockVariables = (kind) => {
-  const withHidden = kind !== instanceString;
   return [
     {
       __typename: `Ci${kind}Variable`,
@@ -35,7 +34,7 @@ export const mockVariables = (kind) => {
       key: 'my-var',
       description: 'This variable has a description.',
       masked: false,
-      ...(withHidden && { hidden: false }),
+      hidden: false,
       protected: true,
       raw: false,
       value: 'variable_value',
@@ -47,7 +46,7 @@ export const mockVariables = (kind) => {
       key: 'secret',
       description: null,
       masked: true,
-      ...(withHidden && { hidden: false }),
+      hidden: false,
       protected: false,
       raw: true,
       value: 'another_value',
@@ -59,7 +58,7 @@ export const mockVariables = (kind) => {
       key: 'hidden',
       description: null,
       masked: true,
-      ...(withHidden && { hidden: true }),
+      hidden: true,
       protected: false,
       raw: true,
       value: 'a_third_value',
@@ -268,7 +267,7 @@ export const createGroupProps = () => {
 export const createInstanceProps = () => {
   return {
     componentName: 'InstanceVariable',
-    entity: '',
+    entity: 'instance',
     mutationData: {
       [ADD_MUTATION_ACTION]: addAdminVariable,
       [UPDATE_MUTATION_ACTION]: updateAdminVariable,

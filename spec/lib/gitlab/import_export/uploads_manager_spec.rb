@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  let_it_be_with_refind(:project) { create(:project) }
+
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
-  let(:project) { create(:project) }
   let(:upload) { create(:upload, :issuable_upload, :object_storage, model: project) }
   let(:exported_file_path) { "#{shared.export_path}/uploads/#{upload.secret}/#{File.basename(upload.path)}" }
 
@@ -31,7 +32,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_
       let(:upload) { create(:upload, :issuable_upload, :with_file, model: project) }
 
       it 'does not cause errors' do
-        manager.save # rubocop:disable Rails/SaveBang
+        manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
 
         expect(shared.errors).to be_empty
       end
@@ -40,6 +41,19 @@ RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_
         manager.save # rubocop:disable Rails/SaveBang
 
         expect(File).to exist(exported_file_path)
+      end
+
+      context 'when the project has an avatar' do
+        before do
+          project.update!(avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
+        end
+
+        it 'excludes the project avatar from the export' do
+          manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+
+          expect(File).to exist(exported_file_path)
+          expect(Dir["#{shared.export_path}/uploads/**/dk.png"]).to be_empty
+        end
       end
 
       context 'with orphaned project upload files' do
@@ -56,7 +70,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_
         end
 
         it 'excludes orphaned upload files' do
-          manager.save # rubocop:disable Rails/SaveBang
+          manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
 
           expect(File).not_to exist(exported_orphan_path)
         end
@@ -68,9 +82,35 @@ RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_
         end
 
         it 'does not cause errors' do
-          manager.save # rubocop:disable Rails/SaveBang
+          manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
 
           expect(shared.errors).to be_empty
+        end
+      end
+
+      # Delete this context when the export_uploads_via_project_uploads_index feature flag is removed.
+      context 'when the export_uploads_via_project_uploads_index feature flag is disabled' do
+        before do
+          stub_feature_flags(export_uploads_via_project_uploads_index: false)
+        end
+
+        it 'copies the file in the correct location when there is an upload' do
+          manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+
+          expect(File).to exist(exported_file_path)
+        end
+
+        context 'when the project has an avatar' do
+          before do
+            project.update!(avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
+          end
+
+          it 'excludes the project avatar from the export' do
+            manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+
+            expect(File).to exist(exported_file_path)
+            expect(Dir["#{shared.export_path}/uploads/**/dk.png"]).to be_empty
+          end
         end
       end
     end
@@ -85,7 +125,7 @@ RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_
           allow(manager).to receive(:download_or_copy_upload).and_raise(exception)
           expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(exception), project_id: project.id)
 
-          manager.save # rubocop:disable Rails/SaveBang
+          manager.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord
 
           expect(shared.errors).to be_empty
           expect(File).not_to exist(exported_file_path)

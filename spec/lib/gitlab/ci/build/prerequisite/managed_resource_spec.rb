@@ -4,17 +4,17 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_category: :continuous_delivery do
   describe '#unmet?' do
-    let_it_be(:organization) { create(:group) }
-    let_it_be(:agent_management_project) { create(:project, :private, :repository, group: organization) }
-    let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
+    let_it_be(:organization, freeze: false) { create(:group) }
+    let_it_be(:agent_management_project, freeze: false) { create(:project, :private, :repository, group: organization) }
+    let_it_be(:cluster_agent, freeze: false) { create(:cluster_agent, project: agent_management_project) }
 
-    let_it_be(:deployment_project) { create(:project, :private, :repository, group: organization) }
-    let_it_be(:environment) do
+    let_it_be(:deployment_project, freeze: false) { create(:project, :private, :repository, group: organization) }
+    let_it_be(:environment, freeze: false) do
       create(:environment, project: deployment_project, cluster_agent: cluster_agent)
     end
 
-    let_it_be(:user) { create(:user, developer_of: deployment_project) }
-    let_it_be(:deployment) { create(:deployment, environment: environment, user: user) }
+    let_it_be(:user, freeze: false) { create(:user, developer_of: deployment_project) }
+    let_it_be(:deployment, freeze: false) { create(:deployment, environment: environment, user: user) }
     let(:agent_path) { "#{agent_management_project.full_path}:#{cluster_agent.name}" }
     let(:options) do
       {
@@ -48,13 +48,13 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
     context 'when not valid for managed resources' do
       context 'when the build does not have a deployment' do
-        let_it_be(:build) { create(:ci_build, deployment: nil) }
+        let_it_be(:build, freeze: false) { create(:ci_build, deployment: nil) }
 
         it { is_expected.to be_falsey }
       end
 
       context 'when the build does not have an environment' do
-        let_it_be(:build) { create(:ci_build, environment: nil) }
+        let_it_be(:build, freeze: false) { create(:ci_build, environment: nil) }
 
         it { is_expected.to be_falsey }
       end
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
         context 'when authorization exists' do
           context 'when the resource_management is not enabled' do
-            let_it_be(:agent_ci_access_group_authorization) do
+            let_it_be(:agent_ci_access_group_authorization, freeze: false) do
               create(:agent_ci_access_group_authorization, agent: cluster_agent, group: organization)
             end
 
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
           end
 
           context 'when authorization exists with resource_management enabled' do
-            let_it_be(:agent_ci_access_group_authorization) do
+            let_it_be(:agent_ci_access_group_authorization, freeze: false) do
               create(:agent_ci_access_group_authorization, agent: cluster_agent, group: organization,
                 config: { resource_management: { enabled: true } })
             end
@@ -158,13 +158,16 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
   end
 
   describe '#complete!' do
-    let_it_be(:agent_management_project) { create(:project, :private, :repository) }
-    let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
+    let_it_be(:agent_management_project, freeze: false) { create(:project, :private, :repository) }
+    let_it_be(:cluster_agent, freeze: false) { create(:cluster_agent, project: agent_management_project) }
 
-    let_it_be(:deployment_project) { create(:project, :private, :repository) }
-    let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: cluster_agent) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:deployment) { create(:deployment, environment: environment, user: user) }
+    let_it_be(:deployment_project, freeze: false) { create(:project, :private, :repository) }
+    let_it_be(:environment, freeze: false) do
+      create(:environment, project: deployment_project, cluster_agent: cluster_agent)
+    end
+
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:deployment, freeze: false) { create(:deployment, environment: environment, user: user) }
     let!(:build) do
       create(:ci_build, environment: environment, user: user, deployment: deployment, project: deployment_project)
     end

@@ -36,6 +36,7 @@ const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 
 export default {
+  name: 'PipelineEditorApp',
   components: {
     ConfirmUnsavedChangesDialog,
     GlLoadingIcon,

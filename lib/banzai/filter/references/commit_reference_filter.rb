@@ -73,6 +73,12 @@ module Banzai
           extras
         end
 
+        def data_attributes_for(original, parent, object, **attrs)
+          return super if parent.nil?
+
+          super.merge(project_path: parent.full_path)
+        end
+
         def parent_records(parent, ids)
           return [] unless parent.respond_to?(:commits_by)
 

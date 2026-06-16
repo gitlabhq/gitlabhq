@@ -64,7 +64,7 @@ If a Secure job is failing and it's unclear why:
 ## Outdated security reports
 
 When a security report generated for a merge request becomes outdated, the merge request shows a
-warning message in the security widget and prompts you to take an appropriate action.
+warning message in the security scan report and prompts you to take an appropriate action.
 
 This can happen in two scenarios:
 
@@ -202,7 +202,7 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 In these circumstances, that the job succeeds is the default behavior. The job's status indicates
 success or failure of the analyzer itself. Analyzer results are displayed in the
 [job logs](../../ci/jobs/job_logs.md#expand-and-collapse-job-log-sections),
-[merge request widget](detect/security_scanning_results.md), or
+[merge request reports](../project/merge_requests/reports.md), or
 [security dashboard](security_dashboard/_index.md).
 
 ## Error: job `is used for configuration only, and its script should not be executed`

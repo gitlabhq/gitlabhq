@@ -9,6 +9,8 @@ module Mutations
         include FindsProject
 
         authorize :create_cluster
+        authorize_granular_token permissions: :create_cluster_agent, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

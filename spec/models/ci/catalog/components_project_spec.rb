@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project, :catalog_resource_with_components) }
-  let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :catalog_resource_with_components) }
+  let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
   let(:components_project) { described_class.new(project, project.commit.sha) }
 
@@ -93,7 +93,7 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
   end
 
   describe '#find_catalog_components' do
-    let_it_be(:version) do
+    let_it_be(:version, freeze: false) do
       release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)
       create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release, semver: release.tag)
     end

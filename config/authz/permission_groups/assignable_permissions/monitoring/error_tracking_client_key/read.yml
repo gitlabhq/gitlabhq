@@ -1,0 +1,9 @@
+---
+name: read_error_tracking_client_key
+description: Grants the ability to read error tracking client keys
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_error_tracking_client_key

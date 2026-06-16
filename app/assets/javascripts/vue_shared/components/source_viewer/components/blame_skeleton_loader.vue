@@ -33,7 +33,7 @@ export default {
     <div
       v-for="line in totalLines"
       :key="line"
-      style="height: var(--blame-line-height)"
+      style="height: var(--source-line-height)"
       class="gl-flex gl-items-center gl-gap-3"
       aria-hidden="true"
     >

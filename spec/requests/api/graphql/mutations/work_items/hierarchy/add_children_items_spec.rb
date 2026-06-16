@@ -10,7 +10,7 @@ RSpec.describe 'work item add children items', feature_category: :team_planning 
   let_it_be(:author) { create(:user, reporter_of: group) }
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:planner) { create(:user, planner_of: group) }
-  let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
+  let_it_be_with_refind(:work_item) { create(:work_item, project: project, author: author) }
 
   let_it_be(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
   let_it_be(:valid_child2) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }

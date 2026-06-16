@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe ::Types::Ci::JobTokenScope::PoliciesEnum, feature_category: :secrets_management do
   it 'exposes all policies' do
     expect(described_class.values.keys).to match_array(%w[
+      READ_BADGES
+      ADMIN_BADGES
       READ_DEPLOYMENTS
       ADMIN_DEPLOYMENTS
       READ_ENVIRONMENTS

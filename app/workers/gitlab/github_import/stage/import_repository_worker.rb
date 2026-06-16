@@ -13,7 +13,12 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          info(project.id, message: "starting importer", importer: 'Importer::RepositoryImporter')
+          info(
+            project.id,
+            message: "starting importer",
+            importer: 'Importer::RepositoryImporter',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
 
           # If a user creates a record while the import is in progress, this can lead to an import failure
           # due to IID conflicts. Pre-allocating IIDs for all relevant resources prevents this.

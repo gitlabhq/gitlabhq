@@ -19,7 +19,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   def rapid_diffs_presenter
     @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestPresenter.new(
-      @merge_request,
+      ::MergeRequests::VersionedMergeRequest.from_diff_options(@merge_request, rapid_diff_options),
       diff_view: diff_view,
       diff_options: rapid_diff_options,
       current_user: current_user,

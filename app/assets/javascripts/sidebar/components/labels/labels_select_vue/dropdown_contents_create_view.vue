@@ -7,6 +7,7 @@ import { mapState, mapActions } from 'vuex';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue` instead.
 export default {
+  name: 'DropdownContentsCreateView',
   components: {
     GlButton,
     GlFormInput,

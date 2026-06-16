@@ -14,7 +14,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
-import getWorkItemsRestQuery from '~/work_items/list/graphql/get_work_items_rest.query.graphql';
+import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -31,9 +31,12 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   workItemsQueryResponseCombined,
   workItemsWithSubChildQueryResponse,
+  workItemsWithSubChildQueryResponseRest,
   namespaceWorkItemTypesQueryResponse,
   workItemsQueryResponseNoLabels,
   workItemsQueryResponseNoAssignees,
+  workItemsRestQueryResponse,
+  workItemsRestQueryResponseWithNullFeatures,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -73,6 +76,7 @@ useLocalStorageSpy();
 const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 const workItemsFullQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
 const workItemsSlimQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
+const workItemsRestQueryHandler = jest.fn().mockResolvedValue(workItemsRestQueryResponse);
 const reorderMutationHandler = jest.fn().mockResolvedValue({
   data: {
     workItemsReorder: {
@@ -85,6 +89,7 @@ const reorderMutationHandler = jest.fn().mockResolvedValue({
 beforeEach(() => {
   workItemsFullQueryHandler.mockResolvedValue(workItemsQueryResponseCombined);
   workItemsSlimQueryHandler.mockResolvedValue(workItemsQueryResponseCombined);
+  workItemsRestQueryHandler.mockResolvedValue(workItemsRestQueryResponse);
 });
 
 const findBulkEditSidebarWrapper = () => wrapper.findComponent(IssuableBulkEditSidebar);
@@ -112,6 +117,10 @@ const defaultQueryVariables = {
 const mountComponent = ({
   provide = {},
   workItemFeaturesField = false,
+  useRestApi = false,
+  workItemRestApiFrontendUsers = useRestApi,
+  workItemRestApiIndex = useRestApi,
+  workItemRestApi = false,
   props = {},
   additionalHandlers = [],
   canReadCrmOrganization = true,
@@ -126,6 +135,9 @@ const mountComponent = ({
     ...window.gon,
     features: {
       workItemsClientSideBoards: false,
+      workItemRestApiFrontendUsers,
+      workItemRestApiIndex,
+      workItemRestApi,
     },
   };
 
@@ -143,6 +155,7 @@ const mountComponent = ({
     [namespaceWorkItemTypesQuery, namespaceQueryHandler],
     [getWorkItemsQuery, workItemsFullQueryHandler],
     [getWorkItemsSlimQuery, workItemsSlimQueryHandler],
+    [getWorkItemsRestQuery, workItemsRestQueryHandler],
     [workItemsReorderMutation, reorderMutationHandler],
     ...additionalHandlers,
   ]);
@@ -154,6 +167,9 @@ const mountComponent = ({
       glFeatures: {
         okrsMvc: true,
         workItemFeaturesField,
+        workItemRestApiFrontendUsers,
+        workItemRestApiIndex,
+        workItemRestApi,
       },
       canReadCrmOrganization,
       canReadCrmContact,
@@ -223,78 +239,103 @@ const mountComponent = ({
   });
 };
 
-it('renders loading icon while query is in flight', () => {
-  mountComponent();
-
-  // Before promises resolve, Apollo queries are loading
-  expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-});
-
-describe('when work items are fetched', () => {
-  beforeEach(async () => {
-    mountComponent();
-    await waitForPromises();
+describe.each`
+  description                                                         | useRestApi | workItemFeaturesField
+  ${'with GraphQL queries'}                                           | ${false}   | ${false}
+  ${'with REST API queries (work_item_features_field flag disabled)'} | ${true}    | ${false}
+  ${'with REST API queries (work_item_features_field flag enabled)'}  | ${true}    | ${true}
+`('$description', ({ useRestApi, workItemFeaturesField }) => {
+  beforeEach(() => {
+    if (useRestApi) {
+      workItemsRestQueryHandler.mockResolvedValue(
+        workItemFeaturesField
+          ? workItemsRestQueryResponse
+          : workItemsRestQueryResponseWithNullFeatures,
+      );
+    }
   });
 
-  it('renders IssueCardStatistics component', () => {
-    expect(findIssueCardStatistics().exists()).toBe(true);
+  it('renders loading icon while query is in flight', () => {
+    mountComponent({ useRestApi, workItemFeaturesField });
+
+    // Before promises resolve, Apollo queries are loading
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('renders IssueCardTimeInfo component', () => {
-    expect(findIssueCardTimeInfo().exists()).toBe(true);
-  });
-
-  it('renders IssueHealthStatus component', () => {
-    expect(findHealthStatus().exists()).toBe(true);
-  });
-
-  it('renders work items', () => {
-    expect(findIssuableItems()).toHaveLength(
-      workItemsQueryResponseCombined.data.namespace.workItems.nodes.length,
-    );
-  });
-
-  it('does not show tree icon if not searched parent', async () => {
-    workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
-    workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
-
-    mountComponent();
-    await waitForPromises();
-
-    expect(findSubChildIndicator(findChildItem1()).exists()).toBe(false);
-    expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
-  });
-
-  it('shows tree icon based on a sub child of the searched parent', async () => {
-    setWindowLocation('?parent_id=1');
-
-    workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
-    workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
-
-    mountComponent({
-      props: {
-        apiFilterParams: {
-          hierarchyFilters: {
-            parentIds: ['gid://gitlab/WorkItem/1'],
-          },
-        },
-      },
+  describe('when work items are fetched', () => {
+    beforeEach(async () => {
+      mountComponent({ useRestApi, workItemFeaturesField });
+      await waitForPromises();
     });
 
-    await waitForPromises();
+    it('renders IssueCardStatistics component', () => {
+      expect(findIssueCardStatistics().exists()).toBe(true);
+    });
 
-    expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
-    expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
-  });
+    it('renders IssueCardTimeInfo component', () => {
+      expect(findIssueCardTimeInfo().exists()).toBe(true);
+    });
 
-  it('does not display error alert when there is no error', async () => {
-    mountComponent();
-    await waitForPromises();
-    expect(findGlAlert().exists()).toBe(false);
+    it('renders IssueHealthStatus component', () => {
+      expect(findHealthStatus().exists()).toBe(true);
+    });
+
+    it('renders work items', () => {
+      expect(findIssuableItems()).toHaveLength(
+        workItemsQueryResponseCombined.data.namespace.workItems.nodes.length,
+      );
+    });
+
+    it('does not show tree icon if not searched parent', async () => {
+      workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+      workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+      workItemsRestQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponseRest);
+
+      mountComponent({ useRestApi, workItemFeaturesField });
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(false);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
+
+    it('shows tree icon based on a sub child of the searched parent', async () => {
+      setWindowLocation('?parent_id=1');
+
+      workItemsSlimQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+      workItemsFullQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponse);
+      workItemsRestQueryHandler.mockResolvedValue(workItemsWithSubChildQueryResponseRest);
+
+      mountComponent({
+        useRestApi,
+        workItemFeaturesField,
+        props: {
+          apiFilterParams: {
+            hierarchyFilters: {
+              parentIds: ['gid://gitlab/WorkItem/1'],
+            },
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
+
+    it('does not display error alert when there is no error', async () => {
+      mountComponent({ useRestApi, workItemFeaturesField });
+      await waitForPromises();
+      expect(findGlAlert().exists()).toBe(false);
+    });
   });
 });
 
-describe('pagination controls', () => {
+describe.each`
+  description                | useRestApi
+  ${'with GraphQL queries'}  | ${false}
+  ${'with REST API queries'} | ${true}
+`('pagination controls $description', ({ useRestApi }) => {
   describe.each`
     description                                                | pageInfo                                          | exists
     ${'when hasNextPage=true and hasPreviousPage=true'}        | ${{ hasNextPage: true, hasPreviousPage: true }}   | ${true}
@@ -303,7 +344,7 @@ describe('pagination controls', () => {
     ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
   `('$description', ({ pageInfo, exists }) => {
     it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-      workItemsSlimQueryHandler.mockResolvedValue({
+      const mockResponse = {
         data: {
           namespace: {
             ...workItemsQueryResponseCombined.data.namespace,
@@ -318,25 +359,13 @@ describe('pagination controls', () => {
             },
           },
         },
-      });
-      workItemsFullQueryHandler.mockResolvedValue({
-        data: {
-          namespace: {
-            ...workItemsQueryResponseCombined.data.namespace,
-            workItems: {
-              ...workItemsQueryResponseCombined.data.namespace.workItems,
-              pageInfo: {
-                ...pageInfo,
-                startCursor: 'start',
-                endCursor: 'end',
-                __typename: 'PageInfo',
-              },
-            },
-          },
-        },
-      });
+      };
 
-      mountComponent();
+      workItemsSlimQueryHandler.mockResolvedValue(mockResponse);
+      workItemsFullQueryHandler.mockResolvedValue(mockResponse);
+      workItemsRestQueryHandler.mockResolvedValue(mockResponse);
+
+      mountComponent({ useRestApi });
       await waitForPromises();
 
       expect(findPaginationControls().exists()).toBe(exists);
@@ -344,7 +373,11 @@ describe('pagination controls', () => {
   });
 });
 
-describe('events', () => {
+describe.each`
+  description                | useRestApi
+  ${'with GraphQL queries'}  | ${false}
+  ${'with REST API queries'} | ${true}
+`('events $description', ({ useRestApi }) => {
   describe.each`
     event     | params
     ${'next'} | ${{ afterCursor: 'endCursor', firstPageSize: 20 }}
@@ -354,7 +387,7 @@ describe('events', () => {
       getParameterByName.mockImplementation((args) =>
         jest.requireActual('~/lib/utils/url_utility').getParameterByName(args),
       );
-      mountComponent();
+      mountComponent({ useRestApi });
       await waitForPromises();
 
       findPaginationControls().vm.$emit(event);
@@ -372,7 +405,7 @@ describe('events', () => {
 
   describe('when "page-size-change" event is emitted by PageSizeSelector', () => {
     it('emits the set-page-size event', async () => {
-      mountComponent();
+      mountComponent({ useRestApi });
       await waitForPromises();
 
       findPageSizeSelector().vm.$emit('input', 50);
@@ -383,9 +416,14 @@ describe('events', () => {
   });
 });
 
-describe('display settings', () => {
+describe.each`
+  description                | useRestApi
+  ${'with GraphQL queries'}  | ${false}
+  ${'with REST API queries'} | ${true}
+`('display settings $description', ({ useRestApi }) => {
   it('passes hiddenMetadataKeys to IssuableItems', async () => {
     mountComponent({
+      useRestApi,
       props: {
         displaySettings: {
           commonPreferences: {
@@ -404,6 +442,7 @@ describe('display settings', () => {
 
   it('passes hiddenMetadataKeys to IssueCardTimeInfo', async () => {
     mountComponent({
+      useRestApi,
       props: {
         displaySettings: {
           commonPreferences: {
@@ -421,9 +460,13 @@ describe('display settings', () => {
   });
 });
 
-describe('when bulk editing', () => {
+describe.each`
+  description                | useRestApi
+  ${'with GraphQL queries'}  | ${false}
+  ${'with REST API queries'} | ${true}
+`('when bulk editing $description', ({ useRestApi }) => {
   it('closes the bulk edit sidebar when the "success" event is emitted', async () => {
-    mountComponent({ props: { showBulkEditSidebar: true } });
+    mountComponent({ useRestApi, props: { showBulkEditSidebar: true } });
     await waitForPromises();
 
     expect(findBulkEditSidebarWrapper().props('expanded')).toBe(true);
@@ -435,7 +478,7 @@ describe('when bulk editing', () => {
   });
 
   it('does not close the bulk edit sidebar when no "success" event is emitted', async () => {
-    mountComponent({ props: { showBulkEditSidebar: true } });
+    mountComponent({ useRestApi, props: { showBulkEditSidebar: true } });
     await waitForPromises();
 
     expect(findBulkEditSidebarWrapper().props('expanded')).toBe(true);
@@ -447,7 +490,7 @@ describe('when bulk editing', () => {
   });
 
   it('creates a toast when the success event includes a toast message', async () => {
-    mountComponent({ props: { showBulkEditSidebar: true } });
+    mountComponent({ useRestApi, props: { showBulkEditSidebar: true } });
     await waitForPromises();
 
     expect(findBulkEditSidebarWrapper().props('expanded')).toBe(true);
@@ -459,13 +502,17 @@ describe('when bulk editing', () => {
   });
 });
 
-describe('when "update" event is emitted by VueSortable', () => {
+describe.each`
+  description                | useRestApi
+  ${'with GraphQL queries'}  | ${false}
+  ${'with REST API queries'} | ${true}
+`('when "update" event is emitted by VueSortable $description', ({ useRestApi }) => {
   it.each`
     description                        | oldIndex | newIndex
     ${'first item to second position'} | ${0}     | ${1}
     ${'second item to first position'} | ${1}     | ${0}
   `('when moving $description, calls the reorder mutation', async ({ oldIndex, newIndex }) => {
-    mountComponent();
+    mountComponent({ useRestApi });
     await waitForPromises();
 
     await findWorkItemListWrapper().trigger('update', { oldIndex, newIndex });
@@ -491,84 +538,64 @@ describe('when service desk list', () => {
   });
 });
 
-describe('slim and full queries', () => {
-  beforeEach(() => {
-    mountComponent({ props: { queryVariables: exampleQueryParams } });
+describe('query handler selection', () => {
+  describe('REST API flag combinations', () => {
+    it.each([
+      { workItemRestApiFrontendUsers: true, workItemRestApiIndex: true, workItemRestApi: false },
+      { workItemRestApiFrontendUsers: true, workItemRestApiIndex: false, workItemRestApi: true },
+      { workItemRestApiFrontendUsers: true, workItemRestApiIndex: true, workItemRestApi: true },
+    ])('uses REST query when flags are %o', async (flags) => {
+      mountComponent({ ...flags, props: { queryVariables: exampleQueryParams } });
+      await waitForPromises();
 
-    return waitForPromises();
-  });
+      expect(workItemsRestQueryHandler).toHaveBeenCalled();
+      expect(workItemsSlimQueryHandler).not.toHaveBeenCalled();
+      expect(workItemsFullQueryHandler).not.toHaveBeenCalled();
+    });
 
-  it('calls the slim query as well as the full query', () => {
-    expect(workItemsSlimQueryHandler).toHaveBeenCalled();
-    expect(workItemsFullQueryHandler).toHaveBeenCalled();
+    it.each([
+      { workItemRestApiFrontendUsers: true, workItemRestApiIndex: false, workItemRestApi: false },
+      { workItemRestApiFrontendUsers: false, workItemRestApiIndex: true, workItemRestApi: true },
+      { workItemRestApiFrontendUsers: false, workItemRestApiIndex: true, workItemRestApi: false },
+      { workItemRestApiFrontendUsers: false, workItemRestApiIndex: false, workItemRestApi: true },
+      { workItemRestApiFrontendUsers: false, workItemRestApiIndex: false, workItemRestApi: false },
+    ])('uses GraphQL queries when flags are %o', async (flags) => {
+      mountComponent({ ...flags, props: { queryVariables: exampleQueryParams } });
+      await waitForPromises();
+
+      expect(workItemsSlimQueryHandler).toHaveBeenCalled();
+      expect(workItemsFullQueryHandler).toHaveBeenCalled();
+      expect(workItemsRestQueryHandler).not.toHaveBeenCalled();
+    });
   });
 });
 
-describe('when workItemRestApiFrontendUsers and workItemRestApi are enabled', () => {
-  let restQueryHandler;
-
-  beforeEach(async () => {
-    restQueryHandler = jest.fn().mockResolvedValue({
-      data: {
-        namespace: {
-          id: 'gid://gitlab/Group/3',
-          __typename: 'Namespace',
-          fullPath: 'full/path',
-          name: 'Test',
-          workItems: {
-            __typename: 'WorkItemConnection',
-            pageInfo: {
-              hasNextPage: false,
-              hasPreviousPage: false,
-              startCursor: null,
-              endCursor: null,
-              __typename: 'PageInfo',
-            },
-            nodes: [
-              {
-                __typename: 'WorkItem',
-                id: 'gid://gitlab/WorkItem/1',
-                iid: '1',
-                title: 'REST work item',
-                state: 'OPEN',
-              },
-            ],
-          },
-        },
-      },
-    });
-
-    mountComponent({
-      additionalHandlers: [[getWorkItemsRestQuery, restQueryHandler]],
-      provide: { glFeatures: { workItemRestApiFrontendUsers: true, workItemRestApi: true } },
-      props: { queryVariables: exampleQueryParams },
-    });
-
-    await waitForPromises();
-  });
-
-  it('calls getWorkItemsRestQuery instead of getWorkItemsSlimQuery', () => {
-    expect(restQueryHandler).toHaveBeenCalled();
-    expect(workItemsSlimQueryHandler).not.toHaveBeenCalled();
-  });
-
+describe('REST API specific behavior', () => {
   describe('filtering and sorting', () => {
-    it('applies filters', async () => {
+    it('applies filters with REST API', async () => {
+      mountComponent({ useRestApi: true, props: { queryVariables: exampleQueryParams } });
+      await waitForPromises();
+
       wrapper.setProps({
-        queryVariables: { authorUsername: 'homer' },
+        queryVariables: { ...exampleQueryParams, authorUsername: 'homer' },
       });
-      await nextTick();
-      expect(restQueryHandler).toHaveBeenCalledWith(
+      await waitForPromises();
+
+      expect(workItemsRestQueryHandler).toHaveBeenCalledWith(
         expect.objectContaining({ authorUsername: 'homer' }),
       );
     });
 
-    it('applies sort', async () => {
+    it('applies sort with REST API', async () => {
+      mountComponent({ useRestApi: true, props: { queryVariables: exampleQueryParams } });
+      await waitForPromises();
+
       wrapper.setProps({
-        queryVariables: { sort: UPDATED_DESC },
+        queryVariables: { ...exampleQueryParams, sort: UPDATED_DESC },
       });
       await waitForPromises();
-      expect(restQueryHandler).toHaveBeenCalledWith(
+
+      expect(workItemsRestQueryHandler).toHaveBeenCalledWith(
         expect.objectContaining({ sort: UPDATED_DESC }),
       );
     });

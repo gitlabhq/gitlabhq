@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_management do
   include RenderedHtml
 
-  let_it_be(:project)  { create(:project, :repository) }
-  let_it_be(:git_tag)  { project.repository.tags.last }
-  let_it_be(:release)  do
+  let_it_be(:project, freeze: false)  { create(:project, :repository) }
+  let_it_be(:git_tag, freeze: false)  { project.repository.tags.last }
+  let_it_be(:release, freeze: false) do
     create(:release, project: project, sha: git_tag.target_commit.sha, tag: 'v1.1.0')
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'projects/tags/index.html.haml', feature_category: :source_code_m
     end
 
     context 'when name contains backslash' do
-      let_it_be(:release) { create(:release, project: project, tag: 'test/v1') }
+      let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'test/v1') }
 
       before_all do
         project.repository.add_tag(project.owner, 'test/v1', project.default_branch_or_main)

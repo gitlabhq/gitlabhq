@@ -39,7 +39,7 @@ module API
     end
 
     desc 'Retrieve metadata information for this GitLab instance' do
-      detail 'This feature was introduced in GitLab 15.2.'
+      detail 'Retrieves metadata information for the GitLab instance.'
       success Entities::Metadata
       failure [
         { code: 401, message: 'Unauthorized' }

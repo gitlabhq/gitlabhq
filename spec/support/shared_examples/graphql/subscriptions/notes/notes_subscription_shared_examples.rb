@@ -2,11 +2,11 @@
 
 RSpec.shared_examples 'graphql notes subscriptions' do
   describe '#resolve' do
-    let_it_be(:unauthorized_user) { create(:user) }
-    let_it_be(:work_item) { create(:work_item, :task) }
-    let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
-    let_it_be(:current_user) { work_item.author }
-    let_it_be(:noteable_id) { work_item.to_gid }
+    let_it_be(:unauthorized_user, freeze: false) { create(:user) }
+    let_it_be(:work_item, freeze: false) { create(:work_item, :task) }
+    let_it_be(:note, freeze: false) { create(:note, noteable: work_item, project: work_item.project) }
+    let_it_be(:current_user, freeze: false) { work_item.author }
+    let_it_be(:noteable_id, freeze: false) { work_item.to_gid }
 
     subject { resolver.resolve_with_support(noteable_id: noteable_id) }
 
@@ -16,7 +16,7 @@ RSpec.shared_examples 'graphql notes subscriptions' do
       end
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
 
       context 'when user is unauthorized' do

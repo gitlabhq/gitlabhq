@@ -53,11 +53,9 @@ describe('getAbsolutePermalinkPath', () => {
   });
 
   describe('when page parameters are present', () => {
-    const searchString = '?plain=1';
-
     beforeEach(() => {
-      blobUtils.getPageParamValue.mockReturnValue('1');
-      blobUtils.getPageSearchString.mockReturnValue(searchString);
+      blobUtils.getPageParamValue.mockReturnValue('2');
+      blobUtils.getPageSearchString.mockReturnValue('?page=2');
     });
 
     it.each([
@@ -68,8 +66,35 @@ describe('getAbsolutePermalinkPath', () => {
       ['with undefined hash', undefined, ''],
     ])('includes search string when hash is %s', (_, hash, expectedHash) => {
       expect(getAbsolutePermalinkPath(permalinkPath, hash)).toBe(
-        `${absolutePath}${searchString}${expectedHash}`,
+        `${absolutePath}?page=2${expectedHash}`,
       );
+    });
+  });
+
+  describe('when additional query params are provided', () => {
+    it('includes blame=1 in the permalink URL', () => {
+      expect(getAbsolutePermalinkPath(permalinkPath, '#L6', { blame: '1' })).toBe(
+        `${absolutePath}?blame=1#L6`,
+      );
+    });
+
+    it('includes blame=1 alongside page parameter', () => {
+      blobUtils.getPageParamValue.mockReturnValue('2');
+      blobUtils.getPageSearchString.mockReturnValue('?page=2');
+
+      expect(getAbsolutePermalinkPath(permalinkPath, '#L50', { blame: '1' })).toBe(
+        `${absolutePath}?blame=1&page=2#L50`,
+      );
+    });
+
+    it('ignores empty or null query param values', () => {
+      expect(getAbsolutePermalinkPath(permalinkPath, '#L6', { blame: '' })).toBe(
+        `${absolutePath}#L6`,
+      );
+    });
+
+    it('does not include blame when queryParams is empty', () => {
+      expect(getAbsolutePermalinkPath(permalinkPath, '#L6', {})).toBe(`${absolutePath}#L6`);
     });
   });
 });

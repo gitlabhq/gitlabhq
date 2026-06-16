@@ -121,7 +121,7 @@ process, store and query your analytics data.
 On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
 
 If GitLab manages your product analytics provider, then your analytics data is retained for one year.
-You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
+You can request to delete your data at any time by [contacting support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support).
 
 {{< /tab >}}
 

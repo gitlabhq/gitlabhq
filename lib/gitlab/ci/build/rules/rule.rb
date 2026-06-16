@@ -7,7 +7,7 @@ module Gitlab
         attr_accessor :attributes
 
         def self.fabricate_list(list)
-          list.map(&method(:new)) if list
+          list.map { |item| new(item) } if list
         end
 
         def initialize(spec)

@@ -34,7 +34,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
           # Comment on line combination old: 19, new 20
           # This line combination does not exist when whitespace is shown
           click_diff_line(
-            find_in_page_or_panel_by_scrolling(
+            find_in_panel_by_scrolling(
               'div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="19"]')
               .find(:xpath, '../..'), 'left')
           page.within('.js-discussion-note-form') do
@@ -85,7 +85,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
           wait_for_requests
 
           click_diff_line(
-            find_in_page_or_panel_by_scrolling(
+            find_in_panel_by_scrolling(
               'div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="1"]')
               .find(:xpath, '../..'), 'left')
           page.within('.js-discussion-note-form') do
@@ -135,7 +135,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
           find_all('[aria-label="Expand all lines"]').first.click
 
           click_diff_line(
-            find_in_page_or_panel_by_scrolling(
+            find_in_panel_by_scrolling(
               'div[data-path="files/js/breadcrumbs.js"] .left-side a[data-linenumber="15"]')
               .find(:xpath, '../..'), 'left')
           page.within('.js-discussion-note-form') do
@@ -164,9 +164,5 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
     find('.js-show-diff-settings').click
     find_by_testid('show-whitespace').click
     wait_for_requests
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
   end
 end

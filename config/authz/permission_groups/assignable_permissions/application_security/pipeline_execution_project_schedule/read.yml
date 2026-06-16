@@ -1,0 +1,9 @@
+---
+name: read_pipeline_execution_project_schedule
+description: Grants the ability to read pipeline execution project schedules
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_pipeline_execution_project_schedule

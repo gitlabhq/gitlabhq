@@ -254,13 +254,15 @@ module Gitlab
 
       def added_lines
         strong_memoize(:added_lines) do
-          @stats&.additions || diff_lines.count(&:added?)
+          stats_additions = @stats&.additions unless renamed_file?
+          stats_additions || diff_lines.count(&:added?)
         end
       end
 
       def removed_lines
         strong_memoize(:removed_lines) do
-          @stats&.deletions || diff_lines.count(&:removed?)
+          stats_deletions = @stats&.deletions unless renamed_file?
+          stats_deletions || diff_lines.count(&:removed?)
         end
       end
 
@@ -273,13 +275,7 @@ module Gitlab
       end
 
       def code_review_id
-        id = if Feature.enabled?(:diff_blob_metadata_only_for_code_review_id, repository&.project)
-               blob_id
-             else
-               blob&.id
-             end
-
-        Digest::SHA1.hexdigest("#{file_identifier}-#{id}")
+        Digest::SHA1.hexdigest("#{file_identifier}-#{blob_id}")
       end
       strong_memoize_attr :code_review_id
 

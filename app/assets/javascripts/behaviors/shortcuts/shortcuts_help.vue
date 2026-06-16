@@ -1,11 +1,12 @@
 <script>
 import { GlModal, GlSearchBoxByType, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import { joinPaths } from '../../lib/utils/url_utility';
+import { profilePreferencesPath } from '~/lib/utils/path_helpers/profile';
 import { keybindingGroups } from './keybindings';
 import Shortcut from './shortcut.vue';
 
 export default {
+  name: 'ShortcutsHelp',
   components: {
     GlModal,
     GlSearchBoxByType,
@@ -41,7 +42,7 @@ export default {
       return mapped.filter((group) => group.keybindings.length);
     },
     absoluteUserPreferencesPath() {
-      return joinPaths(gon.relative_url_root || '/', '/-/profile/preferences');
+      return profilePreferencesPath();
     },
   },
   i18n: {

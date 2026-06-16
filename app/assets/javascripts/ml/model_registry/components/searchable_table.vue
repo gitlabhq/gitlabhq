@@ -52,6 +52,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['fetch-page'],
   data() {
     const query = queryToObject(window.location.search);
 

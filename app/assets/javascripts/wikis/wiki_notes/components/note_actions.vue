@@ -96,6 +96,7 @@ export default {
       default: null,
     },
   },
+  emits: ['award-emoji', 'delete', 'edit', 'reply'],
   data() {
     return {
       isReportAbuseDrawerOpen: false,

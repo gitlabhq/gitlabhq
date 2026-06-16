@@ -329,7 +329,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the group is allowed to be transferred' do
-        let_it_be(:new_parent_group, reload: true) { create(:group, :public) }
+        let_it_be_with_reload(:new_parent_group) { create(:group, :public) }
         let_it_be(:new_parent_group_integration) { create(:integrations_slack, :group, group: new_parent_group, webhook: 'http://new-group.slack.com') }
 
         before do
@@ -1099,6 +1099,12 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         transfer_service.execute(target)
       end
 
+      it 'creates a transferred activity event' do
+        expect { transfer_service.execute(target) }.to change {
+          Event.transferred_action.where(group: group, project: nil).count
+        }.by(1)
+      end
+
       it 'does not send notification when transfer fails' do
         expect(NotificationService).not_to receive(:new)
 
@@ -1107,7 +1113,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'with namespace_commit_emails concerns' do
-      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:target) { create(:group) }
 
       before do
@@ -1140,6 +1146,34 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
+  describe 'lock retries in proceed_to_transfer' do
+    let_it_be_with_reload(:group) { create(:group, :public, :nested) }
+    let_it_be(:target) { create(:group) }
+
+    before do
+      group.add_owner(user)
+      target.add_owner(user)
+    end
+
+    it 'uses WithLockRetries for the transaction' do
+      expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|
+        expect(retries).to receive(:run).with(raise_on_exhaustion: true).and_call_original
+      end
+
+      transfer_service.execute(target)
+    end
+
+    it 'raises AttemptsExhaustedError when lock retries are exhausted' do
+      lock_retries = instance_double(Gitlab::Database::WithLockRetries)
+      allow(Gitlab::Database::WithLockRetries).to receive(:new).and_return(lock_retries)
+      allow(lock_retries).to receive(:run)
+        .and_raise(Gitlab::Database::WithLockRetries::AttemptsExhaustedError)
+
+      expect { transfer_service.execute(target) }
+        .to raise_error(Gitlab::Database::WithLockRetries::AttemptsExhaustedError)
+    end
+  end
+
   describe '#schedule_async_transfer' do
     let_it_be(:current_parent_group) { create(:group) }
     let_it_be(:new_parent_group, freeze: false) { create(:group, :public) }
@@ -1149,7 +1183,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
     subject(:schedule) { transfer_service.schedule_async_transfer(new_parent_group) }
 
-    it 'returns success response and enqueues the worker' do
+    it 'returns success response and enqueues the worker', :aggregate_failures do
       expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
         group.id,
         new_parent_group.id,
@@ -1168,7 +1202,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       expect(group.reload.state).to eq('transfer_scheduled')
     end
 
-    it 'stores transfer_target_parent_id in state_metadata' do
+    it 'stores transfer_target_parent_id in state_metadata', :aggregate_failures do
       allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
 
       schedule
@@ -1182,7 +1216,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     context 'when transferring to root (nil parent)' do
       subject(:schedule) { transfer_service.schedule_async_transfer(nil) }
 
-      it 'enqueues the worker with nil new_parent_group_id' do
+      it 'enqueues the worker with nil new_parent_group_id', :aggregate_failures do
         expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
           group.id,
           nil,
@@ -1207,7 +1241,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         group.update_column(:state, Group.states[:creation_in_progress])
       end
 
-      it 'returns error response and does not enqueue the worker' do
+      it 'returns error response and does not enqueue the worker', :aggregate_failures do
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
         expect(schedule).to be_error
@@ -1215,12 +1249,55 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
     end
 
-    context 'when the group is already in transfer_scheduled state' do
+    context 'when group has stale transfer state with no active worker' do
+      before do
+        group.schedule_transfer!(transition_user: user)
+        group.start_transfer!(transition_user: user)
+      end
+
+      it 'cancels the stale state and proceeds with the transfer', :aggregate_failures do
+        allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+
+        expect(schedule).to be_success
+        expect(group.reload.state).to eq('transfer_scheduled')
+      end
+
+      it 'logs a warning about the stale state' do
+        allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+        allow(Gitlab::AppLogger).to receive(:warn)
+
+        schedule
+
+        expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
+          message: 'Cancelling stale transfer state - no active worker lease found',
+          group_id: group.id
+        ))
+      end
+    end
+
+    context 'when group has stale transfer_scheduled state with no active worker' do
       before do
         group.schedule_transfer!(transition_user: user)
       end
 
-      it 'returns error response and does not enqueue the worker' do
+      it 'cancels the stale state and proceeds with the transfer', :aggregate_failures do
+        allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+
+        expect(schedule).to be_success
+        expect(group.reload.state).to eq('transfer_scheduled')
+      end
+    end
+
+    context 'when group has transfer state with active worker lease' do
+      before do
+        group.schedule_transfer!(transition_user: user)
+        group.start_transfer!(transition_user: user)
+        Gitlab::ExclusiveLease.new(
+          Namespaces::Groups::TransferWorker.lease_key(group.id), timeout: 30.minutes
+        ).try_obtain
+      end
+
+      it 'does not cancel the state and returns error', :aggregate_failures do
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
         expect(schedule).to be_error

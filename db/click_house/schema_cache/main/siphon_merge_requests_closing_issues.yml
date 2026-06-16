@@ -53,3 +53,7 @@ columns:
   default_kind: DEFAULT
   default_expression: 'false'
   compression_codec: CODEC(ZSTD(1))
+- name: link_type
+  type: Int8
+  default_kind: DEFAULT
+  default_expression: '0'

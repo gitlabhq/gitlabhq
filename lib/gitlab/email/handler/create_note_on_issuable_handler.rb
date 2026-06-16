@@ -35,6 +35,7 @@ module Gitlab
         def execute
           raise ProjectNotFound unless project
 
+          log_email_handler
           validate_permission!(:create_note)
 
           raise NoteableNotFoundError unless noteable
@@ -57,6 +58,14 @@ module Gitlab
         end
 
         private
+
+        def parent_namespace
+          project.project_namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_PROJECT_ID => project.id }
+        end
 
         # rubocop: disable CodeReuse/ActiveRecord
         def author

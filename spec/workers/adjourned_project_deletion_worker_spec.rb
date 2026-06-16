@@ -8,7 +8,7 @@ RSpec.describe AdjournedProjectDeletionWorker, feature_category: :groups_and_pro
 
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) do
+    let_it_be(:project, freeze: false) do
       create(:project, :aimed_for_deletion, group: group, marked_for_deletion_at: 8.days.ago, deleting_user: user)
     end
 

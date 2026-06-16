@@ -11,7 +11,7 @@ RSpec.describe PagesDomainRemovalCronWorker, feature_category: :pages do
 
       it 'removes domain' do
         expect { worker.perform }.to change { PagesDomain.count }.by(-1)
-        expect(PagesDomain.exists?).to eq(false)
+        expect(PagesDomain.exists?).to be(false)
       end
     end
 

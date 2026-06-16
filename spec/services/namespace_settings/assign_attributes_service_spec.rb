@@ -177,6 +177,36 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
       end
     end
 
+    context 'when granular token enforcement params are assigned' do
+      let(:namespace_settings) { group.namespace_settings }
+
+      context 'for a root group' do
+        let(:settings) { { enforce_granular_tokens: true, granular_tokens_enforced_after: Date.tomorrow } }
+
+        it 'assigns both params' do
+          expect { service.execute }
+            .to change { namespace_settings.enforce_granular_tokens }.from(false).to(true)
+            .and change { namespace_settings.granular_tokens_enforced_after }.from(nil).to(Date.tomorrow)
+        end
+      end
+
+      context 'for a subgroup' do
+        let(:subgroup) { create(:group, parent: group) }
+        let(:settings) { { enforce_granular_tokens: true, granular_tokens_enforced_after: Date.tomorrow } }
+
+        subject(:service) { described_class.new(user, subgroup, settings) }
+
+        it 'does not assign the params and adds an error' do
+          expect { service.execute }
+            .to not_change { subgroup.namespace_settings.enforce_granular_tokens }
+            .and not_change { subgroup.namespace_settings.granular_tokens_enforced_after }
+
+          expect(subgroup.namespace_settings.errors.messages[:personal_access_token_settings])
+            .to include('can only be configured on a top-level group.')
+        end
+      end
+    end
+
     describe 'validating settings param for root group' do
       using RSpec::Parameterized::TableSyntax
 

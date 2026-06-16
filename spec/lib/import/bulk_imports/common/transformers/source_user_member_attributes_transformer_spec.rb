@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttributesTransformer,
   feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
 
   shared_examples 'import source user members attribute transformer' do
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-    let_it_be(:import_source_user) do
+    let_it_be(:import_source_user, freeze: false) do
       create(:import_source_user,
         namespace: context.portable.root_ancestor,
         source_hostname: bulk_import.configuration.url,
@@ -20,7 +20,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       )
     end
 
-    let_it_be(:reassigned_import_source_user) do
+    let_it_be(:reassigned_import_source_user, freeze: false) do
       create(:import_source_user, :completed,
         namespace: context.portable.root_ancestor,
         source_hostname: bulk_import.configuration.url,
@@ -29,7 +29,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       )
     end
 
-    let_it_be(:reassigned_project_bot_import_source_user) do
+    let_it_be(:reassigned_project_bot_import_source_user, freeze: false) do
       create(:import_source_user, :completed,
         namespace: context.portable.root_ancestor,
         source_hostname: bulk_import.configuration.url,
@@ -39,7 +39,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       )
     end
 
-    let_it_be(:reassigned_service_account_import_source_user) do
+    let_it_be(:reassigned_service_account_import_source_user, freeze: false) do
       create(:import_source_user, :completed,
         namespace: context.portable.root_ancestor,
         source_hostname: bulk_import.configuration.url,
@@ -212,15 +212,17 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
   end
 
   context 'with a project' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:entity) { create(:bulk_import_entity, :project_entity, bulk_import: bulk_import, project: project) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:entity, freeze: false) do
+      create(:bulk_import_entity, :project_entity, bulk_import: bulk_import, project: project)
+    end
 
     include_examples 'import source user members attribute transformer'
   end
 
   context 'with a group' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
 
     include_examples 'import source user members attribute transformer'
   end

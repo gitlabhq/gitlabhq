@@ -100,7 +100,7 @@ Validity checks support the following secret types:
 
 **External service tokens:**
 
-- AWS IAM secret access keys
+- AWS IAM access key IDs
 - GCP API keys
 - GCP OAuth client secrets
 - Postman API tokens

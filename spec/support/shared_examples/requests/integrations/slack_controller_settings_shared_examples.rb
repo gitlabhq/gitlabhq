@@ -37,7 +37,7 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
       end
 
       context 'when user is unauthorized' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         it 'returns not found response' do
           expect(service).not_to receive(:new)
@@ -94,7 +94,7 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
     end
 
     context 'when user is unauthorized' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       it 'returns not found response' do
         delete_destroy

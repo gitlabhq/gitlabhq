@@ -92,6 +92,8 @@ module Ci
     end
 
     scope :non_trace, -> { where.not(file_type: [:trace]) }
+    scope :expired_and_deletable, -> { expired_before(Time.current).non_trace.artifact_unlocked }
+    scope :for_mod_bucket, ->(bucket, modulus) { where('MOD(project_id + job_id, ?) = ?', modulus, bucket) }
 
     scope :downloadable, -> { where(file_type: Enums::Ci::JobArtifact.downloadable_types) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
@@ -114,6 +116,16 @@ module Ci
     # hashed_path ... The actual file is stored at a path consists of a SHA2 based on the project ID.
     #                 This is the default value.
     enum :file_location, Enums::Ci::JobArtifact.file_location
+
+    def self.partition_groups
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        Gitlab::Database::PostgresPartition
+          .for_parent_table(table_name)
+          .map(&:list_partition_ids)
+          .select(&:any?)
+          .sort_by(&:min)
+      end
+    end
 
     def self.of_report_type(report_type)
       file_types = file_types_for_report(report_type)

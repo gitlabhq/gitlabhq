@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'abort ff merge requests with auto merges' do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:source_project) { project }
-  let_it_be(:target_project) { project }
-  let_it_be(:author) { create_user_from_membership(target_project, :developer) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:source_project, freeze: false) { project }
+  let_it_be(:target_project, freeze: false) { project }
+  let_it_be(:author, freeze: false) { create_user_from_membership(target_project, :developer) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:forked_project) do
+  let_it_be(:forked_project, freeze: false) do
     fork_project(target_project, author, repository: true)
   end
 
@@ -25,13 +25,13 @@ RSpec.shared_examples 'abort ff merge requests with auto merges' do
     )
   end
 
-  let_it_be(:newrev) do
+  let_it_be(:newrev, freeze: false) do
     target_project.repository.create_file(
       user, 'test1.txt', 'Test data', message: 'Test commit', branch_name: 'master'
     )
   end
 
-  let_it_be(:oldrev) do
+  let_it_be(:oldrev, freeze: false) do
     target_project
       .repository
       .commit(newrev)

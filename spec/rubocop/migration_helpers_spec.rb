@@ -6,7 +6,7 @@ require 'rubocop/ast'
 
 require_relative '../../rubocop/migration_helpers'
 
-RSpec.describe RuboCop::MigrationHelpers do
+RSpec.describe RuboCop::MigrationHelpers, feature_category: :database do
   using RSpec::Parameterized::TableSyntax
 
   subject(:fake_cop) { Class.new { include RuboCop::MigrationHelpers }.new }

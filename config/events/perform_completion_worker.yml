@@ -9,6 +9,8 @@ extra_properties:
 identifiers:
   - user
 product_group: ai_framework
+product_categories:
+- ai_abstraction_layer
 milestone: '16.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137913
 tiers:

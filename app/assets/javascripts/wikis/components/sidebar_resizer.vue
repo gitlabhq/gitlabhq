@@ -3,6 +3,7 @@ import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
+  name: 'SidebarResizer',
   components: {
     PanelResizer,
     LocalStorageSync,

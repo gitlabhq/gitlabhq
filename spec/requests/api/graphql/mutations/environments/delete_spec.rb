@@ -17,6 +17,13 @@ RSpec.describe 'Delete Environment', feature_category: :deployment_management do
     graphql_mutation(:environment_delete, input)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_environment do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:input) { { id: environment_id } }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when delete is successful' do
     let(:input) do
       { id: environment_id }

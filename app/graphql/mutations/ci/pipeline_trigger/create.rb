@@ -9,6 +9,8 @@ module Mutations
         include FindsProject
 
         authorize :manage_trigger
+        authorize_granular_token permissions: :create_trigger, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

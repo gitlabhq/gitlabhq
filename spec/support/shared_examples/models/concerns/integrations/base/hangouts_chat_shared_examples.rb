@@ -35,8 +35,8 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
   end
 
   describe "#execute" do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, :wiki_repo) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -67,7 +67,7 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
     end
 
     context 'with issue events' do
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
       let(:issues_sample_data) { issue.to_hook_data(user) }
 
       it "adds thread key for issue events" do
@@ -83,7 +83,7 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
     end
 
     context 'with work item events' do
-      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
       let(:work_item_sample_data) { work_item.to_hook_data(user) }
 
       it "adds thread key for work item events" do
@@ -99,7 +99,7 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
     end
 
     context 'with merge events' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
       let(:merge_sample_data) { merge_request.to_hook_data(user) }
 
       it "adds thread key for merge events" do
@@ -154,8 +154,8 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
   end
 
   describe "Note events" do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(

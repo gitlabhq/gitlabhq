@@ -39,6 +39,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  emits: ['hidden'],
   data() {
     return {
       tooltips: [],

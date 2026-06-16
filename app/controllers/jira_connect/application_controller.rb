@@ -69,7 +69,7 @@ class JiraConnect::ApplicationController < ApplicationController
   end
 
   def auth_token
-    params[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
+    params.permit(:jwt)[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
   end
 end
 

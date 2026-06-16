@@ -3,15 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, feature_category: :database do
-  let_it_be(:migration) do
+  let_it_be(:migration, freeze: false) do
     ActiveRecord::Migration.new.extend(described_class)
   end
 
-  let_it_be(:table_name) { :_test_loose_fk_test_table }
+  # test tables must be prefixed with _test_gitlab_shared_cell_local_ to land on
+  # gitlab_shared_cell_local schema. loose_foreign_keys_deleted_records belongs to gitlab_shared_cell_local
+  let_it_be(:table_name) { :_test_gitlab_shared_cell_local_partitioned_loose_fk_table }
 
   let(:model) do
     Class.new(ApplicationRecord) do
-      self.table_name = :_test_loose_fk_test_table
+      self.table_name = :_test_gitlab_shared_cell_local_partitioned_loose_fk_table
     end
   end
 
@@ -75,9 +77,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
   context 'with partitioned tables' do
     let(:current_schema) { migration.connection.current_schema }
     let(:dynamic_partitions_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
-    let(:partitioned_table) { :_test_partitioned_loose_fk_test_table }
+    let(:partitioned_table) { :_test_gitlab_shared_cell_local_partitioned_loose_fk }
     let(:partitioned_table_identifier) { "#{current_schema}.#{partitioned_table}" }
-    let(:partition) { :_test_partition_01 }
+    let(:partition) { :_test_gitlab_shared_cell_local_partition_01 }
     let(:partition_identifier) { "#{dynamic_partitions_schema}.#{partition}" }
 
     before do
@@ -139,7 +141,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
   end
 
   context 'with custom column tracking' do
-    let_it_be(:table_name) { :_test_loose_fk_custom_column_table }
+    let_it_be(:table_name) { :_test_gitlab_shared_cell_local_lfk_custom_col }
     let(:table_identifier) { "public.#{table_name}" }
 
     before do
@@ -213,26 +215,26 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
 
       it 'accepts a column with a unique index' do
         migration.connection.execute(<<~SQL)
-          CREATE TABLE _test_lfk_unique_idx (
+          CREATE TABLE _test_gitlab_shared_cell_local_lfk_unique_idx (
             id serial PRIMARY KEY,
             external_id integer NOT NULL
           );
 
-          CREATE UNIQUE INDEX ON _test_lfk_unique_idx (external_id);
+          CREATE UNIQUE INDEX ON _test_gitlab_shared_cell_local_lfk_unique_idx (external_id);
 
-          INSERT INTO _test_lfk_unique_idx (external_id) VALUES (10), (20), (30);
+          INSERT INTO _test_gitlab_shared_cell_local_lfk_unique_idx (external_id) VALUES (10), (20), (30);
           DELETE FROM loose_foreign_keys_deleted_records;
         SQL
 
-        migration.track_record_deletions_with_custom_column(:_test_lfk_unique_idx, column: :external_id)
+        migration.track_record_deletions_with_custom_column(:_test_gitlab_shared_cell_local_lfk_unique_idx, column: :external_id)
 
         expect do
-          migration.connection.execute("DELETE FROM _test_lfk_unique_idx")
+          migration.connection.execute("DELETE FROM _test_gitlab_shared_cell_local_lfk_unique_idx")
         end.to change {
           LooseForeignKeys::DeletedRecord.count
         }.by(3)
       ensure
-        migration.connection.execute("DROP TABLE IF EXISTS _test_lfk_unique_idx CASCADE")
+        migration.connection.execute("DROP TABLE IF EXISTS _test_gitlab_shared_cell_local_lfk_unique_idx CASCADE")
       end
     end
 
@@ -252,9 +254,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
     context 'with partitioned tables' do
       let(:current_schema) { migration.connection.current_schema }
       let(:dynamic_partitions_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
-      let(:partitioned_table) { :_test_partitioned_lfk_custom_col }
+      let(:partitioned_table) { :_test_gitlab_shared_cell_local_p_lfk_custom_col }
       let(:partitioned_table_identifier) { "#{current_schema}.#{partitioned_table}" }
-      let(:partition) { :_test_partition_custom_col_01 }
+      let(:partition) { :_test_gitlab_shared_cell_local_partition_cust_col_01 }
       let(:partition_identifier) { "#{dynamic_partitions_schema}.#{partition}" }
 
       before do

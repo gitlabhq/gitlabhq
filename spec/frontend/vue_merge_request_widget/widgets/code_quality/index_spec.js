@@ -8,15 +8,12 @@ import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 
 import codeQualityWidget from '~/vue_merge_request_widget/widgets/code_quality/index.vue';
-import * as utils from '~/vue_merge_request_widget/widgets/code_quality/utils';
 import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import {
-  newFinding,
-  resolvedFinding,
   responseNewFindings,
   responseResolvedFindings,
   responseNewAndResolvedFindings,
@@ -44,10 +41,7 @@ describe('Code Quality widget', () => {
 
   const createComponent = ({ provide = {}, mrProps = {} } = {}) => {
     wrapper = mountExtended(codeQualityWidget, {
-      provide: {
-        glFeatures: { mrReportsTab: true },
-        ...provide,
-      },
+      provide,
       propsData: {
         mr: {
           ...DEFAULT_MR_PROPS,
@@ -210,40 +204,6 @@ describe('Code Quality widget', () => {
           { label: 'code_quality' },
           undefined,
         );
-      });
-    });
-  });
-
-  describe('when mrReportsTab feature flag is disabled', () => {
-    const createComponentWithFeatureFlagDisabled = () => {
-      createComponent({ provide: { glFeatures: { mrReportsTab: false } } });
-    };
-
-    describe('expanded data', () => {
-      it('calls transformNewCodeQualityFinding with each new finding', async () => {
-        jest.spyOn(utils, 'transformNewCodeQualityFinding');
-        mockApi(HTTP_STATUS_OK, responseNewFindings);
-
-        createComponentWithFeatureFlagDisabled();
-
-        await waitForPromises();
-
-        expect(utils.transformNewCodeQualityFinding).toHaveBeenCalledWith(newFinding, 0, [
-          newFinding,
-        ]);
-      });
-
-      it('calls transformResolvedCodeQualityFinding with each resolved finding', async () => {
-        jest.spyOn(utils, 'transformResolvedCodeQualityFinding');
-        mockApi(HTTP_STATUS_OK, responseResolvedFindings);
-
-        createComponentWithFeatureFlagDisabled();
-
-        await waitForPromises();
-
-        expect(utils.transformResolvedCodeQualityFinding).toHaveBeenCalledWith(resolvedFinding, 0, [
-          resolvedFinding,
-        ]);
       });
     });
   });

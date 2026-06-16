@@ -60,6 +60,12 @@ describe('Blob Header Viewer Switcher', () => {
       expect(findSimpleViewerButton().props('selected')).toBe(true);
       expect(findRichViewerButton().props('selected')).toBe(false);
     });
+
+    it('sets aria-pressed on the active viewer button', () => {
+      createComponent();
+      expect(findSimpleViewerButton().attributes('aria-pressed')).toBe('true');
+      expect(findRichViewerButton().attributes('aria-pressed')).toBe('false');
+    });
   });
 
   describe('rendering', () => {
@@ -154,6 +160,16 @@ describe('Blob Header Viewer Switcher', () => {
     await nextTick();
 
     expect(wrapper.emitted('blame')).toHaveLength(1);
+  });
+
+  it('sets aria-pressed on the Blame button based on viewer state', () => {
+    createComponent({ showBlameToggle: true });
+    expect(findBlameButton().attributes('aria-pressed')).toBe('false');
+  });
+
+  it('sets aria-pressed to true on the Blame button when blame is active', () => {
+    createComponent({ showBlameToggle: true, value: 'blame' });
+    expect(findBlameButton().attributes('aria-pressed')).toBe('true');
   });
 
   it('emits a tracking event when the Blame button is clicked', async () => {

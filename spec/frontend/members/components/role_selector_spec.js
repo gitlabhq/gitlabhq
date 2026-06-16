@@ -1,5 +1,7 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { ACCESS_LEVEL_SECURITY_MANAGER_STRING } from '~/access_level/constants';
+import SecurityManagerNewBadge from '~/access_level/components/security_manager_new_badge.vue';
 import { roleDropdownItems } from '~/members/utils';
 import RoleSelector from '~/members/components/role_selector.vue';
 import { member } from '../mock_data';
@@ -119,6 +121,35 @@ describe('Role selector', () => {
       const description = findRoleDescription('role-custom-100');
 
       expect(description.exists()).toBe(false);
+    });
+  });
+
+  describe('Security Manager role badge', () => {
+    const securityManagerRole = {
+      value: ACCESS_LEVEL_SECURITY_MANAGER_STRING,
+      text: 'Security Manager',
+      accessLevel: 25,
+    };
+    const guestRole = {
+      value: 'GUEST',
+      text: 'Guest',
+      accessLevel: 10,
+    };
+
+    const findBadge = () => wrapper.findComponent(SecurityManagerNewBadge);
+
+    it('renders the shared SecurityManagerNewBadge next to the Security Manager role', () => {
+      const roles = { flatten: [securityManagerRole], formatted: [securityManagerRole] };
+      createWrapper({ roles, value: securityManagerRole });
+
+      expect(findBadge().exists()).toBe(true);
+    });
+
+    it('does not render the badge for non-Security-Manager roles', () => {
+      const roles = { flatten: [guestRole], formatted: [guestRole] };
+      createWrapper({ roles, value: guestRole });
+
+      expect(findBadge().exists()).toBe(false);
     });
   });
 });

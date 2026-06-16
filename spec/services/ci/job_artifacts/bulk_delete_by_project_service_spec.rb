@@ -11,7 +11,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
   end
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:build, reload: true) do
+  let_it_be_with_reload(:build) do
     create(:ci_build, :artifacts, :trace_artifact, user: current_user)
   end
 
@@ -20,7 +20,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
 
   describe '#execute' do
     context 'when number of artifacts exceeds limits to delete' do
-      let_it_be(:second_build, reload: true) do
+      let_it_be_with_reload(:second_build) do
         create(:ci_build, :artifacts, :trace_artifact, user: current_user, project: project)
       end
 
@@ -40,7 +40,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
     end
 
     context 'when requested not existing artifacts do delete' do
-      let_it_be(:deleted_build, reload: true) do
+      let_it_be_with_reload(:deleted_build) do
         create(:ci_build, :artifacts, :trace_artifact, user: current_user, project: project)
       end
 
@@ -103,7 +103,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
         let_it_be(:different_project_artifact) { create(:ci_job_artifact, :archive) }
         let_it_be(:job_artifact_ids) { [different_project_artifact] }
 
-        let_it_be(:different_build, reload: true) do
+        let_it_be_with_reload(:different_build) do
           create(:ci_build, :artifacts, :trace_artifact, user: current_user)
         end
 

@@ -6,6 +6,7 @@ import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 
 export default {
+  name: 'TwoFactorActionConfirm',
   csrf,
   i18n: {
     currentPasswordInvalidFeedback: __('Please enter your current password.'),

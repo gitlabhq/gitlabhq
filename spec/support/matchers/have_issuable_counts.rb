@@ -1,16 +1,22 @@
 # frozen_string_literal: true
 
+require_relative '../helpers/capybara_node_helpers'
+
 RSpec::Matchers.define :have_issuable_counts do |opts|
+  include CapybaraNodeHelpers
+
   expected_counts = opts.map do |state, count|
     "#{state.to_s.humanize} #{count}"
   end
 
   match do |actual|
-    actual.within '.top-area' do
-      expected_counts.each do |expected_count|
-        expect(actual).to have_content(expected_count)
-      end
-    end
+    top_area = capybara_node_from(actual).find('.top-area')
+    expected_counts.all? { |count| top_area.has_content?(count) }
+  end
+
+  match_when_negated do |actual|
+    top_area = capybara_node_from(actual).find('.top-area')
+    expected_counts.all? { |count| top_area.has_no_content?(count) }
   end
 
   description do

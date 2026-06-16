@@ -43,7 +43,6 @@ Style/SuperArguments:
     - 'app/serializers/container_tags_serializer.rb'
     - 'app/serializers/feature_flag_serializer.rb'
     - 'app/serializers/member_serializer.rb'
-    - 'app/serializers/merge_request_serializer.rb'
     - 'app/serializers/pipeline_serializer.rb'
     - 'app/services/branches/create_service.rb'
     - 'app/services/ide/terminal_config_service.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ServiceDesk::Emails, feature_category: :service_desk do
-  let_it_be(:project, reload: true) { create(:project, :service_desk_enabled) }
+  let_it_be_with_reload(:project) { create(:project, :service_desk_enabled) }
   let(:emails) { described_class.new(project) }
 
   describe '#address' do

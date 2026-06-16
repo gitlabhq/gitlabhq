@@ -269,26 +269,6 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
           expect(created_object.work_item_type_id).to eq(build(:work_item_system_defined_type, :issue).id)
         end
       end
-
-      context 'when work_item_configurable_types feature flag is disabled' do
-        before do
-          stub_feature_flags(work_item_configurable_types: false)
-        end
-
-        it 'ignores the name and does not set a work_item_type, lets the model default to issue' do
-          expect(created_object.work_item_type_id).to be_nil
-        end
-
-        context 'when base_type is also provided alongside name' do
-          let(:additional_relation_attributes) do
-            { 'work_item_type' => { 'name' => incident_type.name, 'base_type' => 'incident' } }
-          end
-
-          it 'falls back to base_type' do
-            expect(created_object.work_item_type_id).to eq(incident_type.id)
-          end
-        end
-      end
     end
 
     context 'when work_item_type hash with name is provided as well as issue_type' do

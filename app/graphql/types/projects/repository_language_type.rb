@@ -6,6 +6,8 @@ module Types
     class RepositoryLanguageType < BaseObject
       graphql_name 'RepositoryLanguage'
 
+      authorize_granular_token permissions: :read_language, boundary: :project, boundary_type: :project
+
       def self.authorization_scopes
         super + [:ai_workflows]
       end

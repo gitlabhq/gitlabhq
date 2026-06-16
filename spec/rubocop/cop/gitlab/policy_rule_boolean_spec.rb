@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/policy_rule_boolean'
 
-RSpec.describe RuboCop::Cop::Gitlab::PolicyRuleBoolean do
+RSpec.describe RuboCop::Cop::Gitlab::PolicyRuleBoolean, feature_category: :tooling do
   it 'registers offense for &&' do
     expect_offense(<<~RUBY)
       rule { conducts_electricity && batteries }.enable :light_bulb

@@ -35,7 +35,7 @@ module API
             end
           }
 
-          Rack::Multipart.parse_multipart(env).deep_symbolize_keys!
+          Gitlab::Repositories::LargeMultipartParser.parse_multipart(env).deep_symbolize_keys!
         elsif media_type == 'application/x-www-form-urlencoded'
           begin
             Rack::Utils.parse_nested_query(File.read(file_path)).deep_symbolize_keys!

@@ -5,6 +5,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { s__, sprintf } from '~/locale';
 
 export default {
+  name: 'DropdownValueWidget',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

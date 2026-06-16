@@ -19,7 +19,7 @@ You can run scans and view [pipeline secret detection JSON report artifacts](../
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
 
-- See them in the [merge request widget](../../detect/security_scanning_results.md), [pipeline security report](../../detect/security_scanning_results.md), and [vulnerability report](../../vulnerability_report/_index.md).
+- See them in [merge request reports](../../../project/merge_requests/reports.md), the [pipeline security report](../../detect/security_scanning_results.md), and the [vulnerability report](../../vulnerability_report/_index.md).
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
@@ -40,7 +40,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 |:------------------------------------------------------------------------|:------------------|:------------|
 | [Customize analyzer behavior](configure.md#customize-analyzer-behavior) | {{< yes >}}       | {{< yes >}} |
 | Download [output](#secret-detection-results)                            | {{< yes >}}       | {{< yes >}} |
-| See new findings in the merge request widget                            | {{< no >}}        | {{< yes >}} |
+| See new findings in merge request reports                               | {{< no >}}        | {{< yes >}} |
 | View identified secrets in the pipelines' **Security** tab              | {{< no >}}        | {{< yes >}} |
 | [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< no >}}        | {{< yes >}} |
 | [Access the security dashboard](../../security_dashboard/_index.md)     | {{< no >}}        | {{< yes >}} |
@@ -123,9 +123,19 @@ By default, when you run a pipeline:
 - On a branch:
   - On the **default branch**, the Git working tree is scanned.
     This means the current repository state is scanned as though it were a typical directory.
-  - On a **new, non-default branch**, only the content of the latest commit is scanned. Earlier commits on the branch are not included in the scan.
-  - On an **existing, non-default branch**, the content of all commits after the last pushed commit to the latest commit are scanned.
-  - To scan all commits from the branch divergence point every time, enable [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+  - On a **feature branch**:
+    - In analyzer version `v7.35.0` and later, the content of all commits from the merge
+      base to the latest commit (all commits unique to the branch after it diverged) are scanned.
+      This behavior applies to all feature branch pipelines when the merge base is available.
+    - GitLab 19.1 and later exposes the merge base SHA through the [predefined CI variable](../../../../ci/variables/predefined_variables.md) `CI_COMMIT_DEFAULT_BRANCH_BASE_SHA`.
+    - On GitLab versions earlier than 19.1, or when the merge base is unavailable, the analyzer
+      falls back to the previous behavior:
+      - On new feature branches, only the latest commit is scanned. Earlier commits on the branch are not included in the scan.
+      - On existing feature branches, all commits after the last pushed commit to the latest commit are scanned.
+
+    > [!note]
+    > To scan all commits from the branch divergence point every time, enable
+    > [merge request pipelines](../../../../ci/pipelines/merge_request_pipelines.md).
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To scan all commits, you must enable
   [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
@@ -288,7 +298,7 @@ For more information, see the [report file schema](https://gitlab.com/gitlab-org
 
 Job results are also reported on the:
 
-- [Merge request widget](../../detect/security_scanning_results.md#merge-request-security-widget): shows new findings introduced in the merge request.
+- [Merge request reports](../../../project/merge_requests/reports.md): shows new findings introduced in the merge request.
 - [Pipeline security report](../../detect/security_scanning_results.md): displays all findings from the latest pipeline run.
 - [Vulnerability report](../../vulnerability_report/_index.md): provides centralized management of all security findings.
 - Security dashboard: offers organization-wide visibility into all vulnerabilities across projects and groups.

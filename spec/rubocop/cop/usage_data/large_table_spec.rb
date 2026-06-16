@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/large_table'
 
-RSpec.describe RuboCop::Cop::UsageData::LargeTable do
+RSpec.describe RuboCop::Cop::UsageData::LargeTable, feature_category: :service_ping do
   let(:large_tables) { %i[Rails Time] }
   let(:count_methods) { %i[count distinct_count] }
   let(:allowed_methods) { %i[minimum maximum] }

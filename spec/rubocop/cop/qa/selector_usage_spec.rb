@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/qa/selector_usage'
 
-RSpec.describe RuboCop::Cop::QA::SelectorUsage do
+RSpec.describe RuboCop::Cop::QA::SelectorUsage, feature_category: :test_platform do
   shared_examples 'non-qa file usage' do
     it 'reports an offense' do
       expect_offense(<<-RUBY)

@@ -18,8 +18,17 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
   end
 
   before_all do
-    public_projects_with_components.map do |current_project|
-      create(:ci_catalog_resource, :published, project: current_project)
+    # Set `latest_released_at` inverse to creation order so that sorting by
+    # `Released date` produces a different order than sorting by `Created
+    # date`. This proves the selected sort option is actually applied in the
+    # `Search and sorting` examples below.
+    public_projects_with_components.each_with_index do |current_project, index|
+      create(
+        :ci_catalog_resource,
+        :published,
+        project: current_project,
+        latest_released_at: (1 + (2 * index)).days.ago
+      )
     end
   end
 
@@ -150,6 +159,60 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
         expect(find_all('[data-testid="catalog-resource-item"]').length).to be(1)
         within_testid('catalog-resource-item', match: :first) do
           expect(page).to have_content(project_name)
+        end
+      end
+    end
+
+    context 'when sorting' do
+      def select_sort_option(option_text)
+        find_by_testid('catalog-sorting-option-button').click
+        within('.gl-new-dropdown-contents') do
+          find('li', text: option_text).click
+        end
+        wait_for_requests
+      end
+
+      def toggle_sort_direction
+        find('.sorting-direction-button').click
+        wait_for_requests
+      end
+
+      def listed_resource_names
+        expect(page).to have_css('[data-testid="catalog-resource-item"]', count: public_projects_with_components.size)
+        all_by_testid('catalog-resource-item').map do |item|
+          find_by_testid('ci-resource-link', context: item).text
+        end
+      end
+
+      context 'with Created date' do
+        before do
+          select_sort_option('Created date')
+        end
+
+        it 'lists resources from newest to oldest by default', :aggregate_failures do
+          expect(listed_resource_names).to eq(public_projects_with_components.reverse.map(&:name))
+        end
+
+        it 'lists resources from oldest to newest when direction is toggled', :aggregate_failures do
+          toggle_sort_direction
+
+          expect(listed_resource_names).to eq(public_projects_with_components.map(&:name))
+        end
+      end
+
+      context 'with Released date' do
+        before do
+          select_sort_option('Released date')
+        end
+
+        it 'lists resources from most to least recently released by default', :aggregate_failures do
+          expect(listed_resource_names).to eq(public_projects_with_components.map(&:name))
+        end
+
+        it 'lists resources from least to most recently released when direction is toggled', :aggregate_failures do
+          toggle_sort_direction
+
+          expect(listed_resource_names).to eq(public_projects_with_components.reverse.map(&:name))
         end
       end
     end

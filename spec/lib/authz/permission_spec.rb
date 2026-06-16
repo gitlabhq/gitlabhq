@@ -18,4 +18,37 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       expect(metadata_permissions).to be false
     end
   end
+
+  describe '#conditionally_enables' do
+    let(:source_file) { 'config/authz/permissions/resource/_foo.yml' }
+
+    it 'returns nil when not declared' do
+      permission = described_class.new({ name: '_foo', description: 'test' }, source_file)
+
+      expect(permission.conditionally_enables).to be_nil
+    end
+
+    it 'wraps a single declared permission in an array of symbols' do
+      permission = described_class.new(
+        { name: '_foo', description: 'test', conditionally_enables: 'broad_permission' },
+        source_file
+      )
+
+      expect(permission.conditionally_enables).to eq([:broad_permission])
+    end
+
+    it 'returns an array of symbols when several permissions are declared' do
+      permission = described_class.new(
+        {
+          name: '_foo', description: 'test',
+          conditionally_enables: %w[push_code create_merge_request_from create_merge_request_in]
+        },
+        source_file
+      )
+
+      expect(permission.conditionally_enables).to eq(
+        [:push_code, :create_merge_request_from, :create_merge_request_in]
+      )
+    end
+  end
 end

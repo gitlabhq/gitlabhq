@@ -21,7 +21,7 @@ module WorkItems
         current_user_todos: [:todos],
         description: [:description_versions],
         designs: [:designs, :design_versions], # DesignManagement::Action ???
-        development: [:merge_requests_closing_issues],
+        development: [:merge_request_issues, :merge_request_closing_issues],
         email_participants: [:issue_email_participants, :email],
         hierarchy: [
           :work_item_parent, :work_item_children, :work_item_children_by_relative_position, :parent_link, :child_links
@@ -43,7 +43,7 @@ module WorkItems
           :events, :assignment_events, :resource_state_events, :metrics,
           :incident_management_issuable_escalation_status, :incident_management_timeline_events, :issuable_severity,
           :sentry_issue, :alert_management_alert, :alert_management_alerts, :user_agent_detail, :zoom_meetings,
-          :search_data, :work_item_transition, :work_item_description
+          :search_data, :work_item_transition
         ]
       }.freeze
 

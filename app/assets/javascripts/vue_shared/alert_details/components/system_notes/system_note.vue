@@ -4,6 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteHeader from '~/notes/components/note_header.vue';
 
 export default {
+  name: 'AlertDetailSystemNote',
   components: {
     NoteHeader,
     GlIcon,

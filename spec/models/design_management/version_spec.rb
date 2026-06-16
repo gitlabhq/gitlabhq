@@ -165,7 +165,7 @@ RSpec.describe DesignManagement::Version do
       version = described_class.create_for_designs(actions, 'abc', author)
 
       expect(version.designs).to contain_exactly(*designs)
-      expect(designs.map(&method(:current_version_id))).to all(eq version.id)
+      expect(designs.map { |design| current_version_id(design) }).to all(eq version.id)
     end
 
     it 'creates designs if they are new to git' do

@@ -10,16 +10,16 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
   let_it_be_with_refind(:group) { package_settings.namespace }
-  let_it_be(:user) { create(:user, organization: group.organization) }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
-  let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
-  let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }
-  let_it_be(:package_file, reload: true) { package.package_files.with_file_name_like('%.xml').first }
+  let_it_be(:user, freeze: false) { create(:user, organization: group.organization) }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: group, developers: user) }
+  let_it_be_with_reload(:package) { create(:maven_package, project: project, name: project.full_path) }
+  let_it_be_with_reload(:maven_metadatum) { package.maven_metadatum }
+  let_it_be_with_reload(:package_file) { package.package_files.with_file_name_like('%.xml').first }
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
-  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true, groups: [group]) }
+  let_it_be_with_reload(:job) { create(:ci_build, user: user, status: :running, project: project) }
+  let_it_be(:deploy_token, freeze: false) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
+  let_it_be(:deploy_token_for_group, freeze: false) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true, groups: [group]) }
 
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
 
@@ -38,6 +38,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   before do
     Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    stub_feature_flags(maven_problem_details_errors: false)
   end
 
   shared_examples 'handling groups and subgroups for' do |shared_example_name, visibilities: { public: :redirect }|
@@ -763,11 +764,11 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       let_it_be(:project2) { create(:project, :private, group: sub_group2) }
       let_it_be(:project3) { create(:project, :private, group: sub_group1) }
       let_it_be(:package_name) { 'foo' }
-      let_it_be(:package1) { create(:maven_package, project: project1, name: package_name, version: nil) }
+      let_it_be(:package1, freeze: false) { create(:maven_package, project: project1, name: package_name, version: nil) }
       let_it_be(:package_file1) { create(:package_file, :xml, package: package1, file_name: 'maven-metadata.xml') }
-      let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
+      let_it_be(:package2, freeze: false) { create(:maven_package, project: project2, name: package_name, version: nil) }
       let_it_be(:package_file2) { create(:package_file, :xml, package: package2, file_name: 'maven-metadata.xml') }
-      let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
+      let_it_be(:package3, freeze: false) { create(:maven_package, project: project3, name: package_name, version: nil) }
       let_it_be(:package_file3) { create(:package_file, :xml, package: package3, file_name: 'maven-metadata.xml') }
 
       let(:maven_metadatum) { package3.maven_metadatum }
@@ -1564,6 +1565,66 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     def upload_file_with_token(params: {}, request_headers: headers_with_token, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
       upload_file(params: params, request_headers: request_headers, file_name: file_name, file_extension: file_extension)
+    end
+  end
+
+  describe 'RFC 9457 problem details' do
+    before do
+      stub_feature_flags(maven_problem_details_errors: true)
+    end
+
+    context 'with instance-level download and non-existing path' do
+      subject { get api("/packages/maven/non/existent/path/foo.jar"), headers: headers_with_token }
+
+      it_behaves_like 'returning RFC 9457 problem details', status: :forbidden, detail: '403 Forbidden'
+
+      context 'when maven_problem_details_errors is disabled' do
+        before do
+          stub_feature_flags(maven_problem_details_errors: false)
+        end
+
+        it_behaves_like 'not returning RFC 9457 problem details', status: :forbidden
+      end
+    end
+
+    context 'with project-level download and non-existing path' do
+      before do
+        # Disable request forwarding so the API raises `not_found!('Project')`
+        # instead of forwarding the request to Maven Central.
+        stub_feature_flags(maven_central_request_forwarding: false)
+      end
+
+      subject do
+        get api("/projects/#{project.id}/packages/maven/non/existent/path/foo.jar"), headers: headers_with_token
+      end
+
+      it_behaves_like 'returning RFC 9457 problem details', status: :not_found, detail: '404 Project Not Found'
+
+      context 'when maven_problem_details_errors is disabled' do
+        before do
+          stub_feature_flags(maven_problem_details_errors: false)
+        end
+
+        it_behaves_like 'not returning RFC 9457 problem details', status: :not_found
+      end
+    end
+
+    context 'with group-level download and non-existing path' do
+      before_all do
+        group.add_developer(user)
+      end
+
+      before do
+        # Disable request forwarding so the API raises `not_found!('Group')`
+        # instead of forwarding the request to Maven Central.
+        stub_feature_flags(maven_central_request_forwarding: false)
+      end
+
+      subject do
+        get api("/groups/#{group.id}/-/packages/maven/non/existent/path/foo.jar"), headers: headers_with_token
+      end
+
+      it_behaves_like 'returning RFC 9457 problem details', status: :not_found, detail: '404 Group Not Found'
     end
   end
 

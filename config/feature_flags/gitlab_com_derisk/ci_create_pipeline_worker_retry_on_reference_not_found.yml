@@ -1,0 +1,10 @@
+---
+name: ci_create_pipeline_worker_retry_on_reference_not_found
+description: Enables retry policy in CreatePipelineWorker when pipeline creation fails due to a reference not found error on Praefect-backed storage
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/504460
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235792
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600554
+milestone: '19.1'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

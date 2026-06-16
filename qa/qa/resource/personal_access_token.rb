@@ -41,11 +41,8 @@ module QA
 
         Flow::Login.sign_in(as: user) unless already_signed_in
 
-        Page::Main::Menu.perform(&:click_edit_profile_link)
-        Page::Profile::Menu.perform(&:click_personal_access_tokens)
-
         Page::Profile::PersonalAccessTokens.perform do |token_page|
-          token_page.click_add_new_token_button
+          token_page.go_to_new_token_form
           token_page.fill_token_name(name)
           token_page.check_api
           token_page.fill_expiry_date(expires_at)

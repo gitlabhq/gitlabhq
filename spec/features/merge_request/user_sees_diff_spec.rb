@@ -60,7 +60,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       visit diffs_project_merge_request_path(project, merge_request)
 
       page.within('.gl-alert') do
-        expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown. Download one of the files below to see all changes. Plain diff Patches")
+        expect(page).to have_text("Only the first 3 files are listed on this page To view all changes, download the diff. Plain diff Patches")
         expect(page).to have_link("Plain diff", href: merge_request_path(merge_request, format: :diff))
         expect(page).to have_link("Patches", href: merge_request_path(merge_request, format: :patch))
       end
@@ -90,7 +90,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_in_page_or_panel_by_scrolling("[id=\"#{changelog_id}\"]")
+        find_in_panel_by_scrolling("[id=\"#{changelog_id}\"]")
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
         find("[id=\"#{changelog_id}\"] .js-diff-more-actions").click
@@ -137,7 +137,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
 
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_in_page_or_panel_by_scrolling("[id='#{file_hash}']")
+        find_in_panel_by_scrolling("[id='#{file_hash}']")
 
         expect(page).to have_text("function foo<input> {")
         expect(page).to have_css(".line[data-lang=\"rust\"] .k")
@@ -205,10 +205,6 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       ).execute
 
       project.commit(branch_name)
-    end
-
-    def find_in_page_or_panel_by_scrolling(selector, **options)
-      find_in_panel_by_scrolling(selector, **options)
     end
   end
 end

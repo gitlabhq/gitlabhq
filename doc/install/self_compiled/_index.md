@@ -462,7 +462,7 @@ you must not make any changes:
 systemctl show --value --property=Type redis-server.service
 ```
 
-If the output is **not** `notify`, run:
+If the output is not `notify`, run:
 
 ```shell
 # Configure Redis to not daemonize, but be supervised by systemd instead and disable the pidfile

@@ -387,7 +387,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
   describe 'AccessToken' do
     describe '#access_token_created' do
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user) }
 
       subject(:notification_service) { notification.access_token_created(user, pat.name) }
@@ -414,8 +414,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:owner1) { create(:user, username: 'owner1') }
       let_it_be(:owner2) { create(:user, username: 'owner2') }
       let_it_be(:maintainer) { create(:user, username: 'maintainer') }
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be_with_reload(:parent_group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
 
       subject(:notification_service) do
         notification.bot_resource_access_token_about_to_expire(project_bot, expiring_token)
@@ -624,7 +624,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       context 'when the resource is a project' do
         let_it_be(:namespace) { create(:namespace, :with_namespace_settings) }
-        let_it_be(:project) { create(:project, namespace: namespace) }
+        let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
 
         before_all do
           project.add_maintainer(maintainer)
@@ -831,12 +831,12 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#deploy_token_about_to_expire' do
       let_it_be(:project) { create(:project) }
       let_it_be(:regular_user) { create(:user) }
-      let_it_be(:project_owner) { create(:user) }
+      let_it_be_with_reload(:project_owner) { create(:user) }
       let_it_be(:project_maintainer) { create(:user) }
       let_it_be(:deploy_token) { create(:deploy_token, expires_at: 5.days.from_now.iso8601) }
       let_it_be(:project_deploy_token) { create(:project_deploy_token, project: project, deploy_token: deploy_token) }
 
-      before do
+      before_all do
         project.add_owner(project_owner)
         project.add_maintainer(project_maintainer)
       end
@@ -885,7 +885,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       context 'when user is neither owner nor maintainer' do
-        let(:regular_user) { create(:user) }
+        let_it_be(:regular_user) { create(:user) }
 
         it 'does not send email to users without proper permissions' do
           expect do
@@ -901,7 +901,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe '#access_token_expired' do
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user) }
 
       subject { notification.access_token_expired(user, pat.name) }
@@ -922,7 +922,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe '#access_token_revoked' do
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user) }
 
       subject(:notification_service) { notification.access_token_revoked(user, pat.name) }
@@ -949,7 +949,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe '#access_token_rotated' do
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user) }
 
       subject(:notification_service) { notification.access_token_rotated(user, pat.name) }
@@ -1107,7 +1107,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe 'issue note' do
       let_it_be(:project) { create(:project, :private) }
       let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee]) }
-      let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
+      let_it_be_with_reload(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be_with_reload(:author) { create(:user) }
 
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
@@ -1123,7 +1123,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
         end
 
-        let_it_be(:project) { create(:project) }
+        let_it_be_with_reload(:project) { create(:project) }
         let_it_be(:support_bot) { create(:support_bot) }
         let(:mailer) { double(deliver_later: true) }
         let(:issue) { create(:issue, project: project, author: support_bot) }
@@ -1473,7 +1473,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     context 'issue note mention' do
       let_it_be(:issue) { create(:issue, project: project, assignees: [assignee]) }
-      let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
+      let_it_be_with_reload(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be(:user_to_exclude) { create(:user) }
       let_it_be(:author) { create(:user) }
 
@@ -1774,8 +1774,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     context 'commit note' do
-      let_it_be(:project) { create(:project, :public, :repository) }
-      let_it_be(:note) { create(:note_on_commit, project: project) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+      let_it_be_with_reload(:note) { create(:note_on_commit, project: project) }
 
       before_all do
         build_team(project)
@@ -1840,8 +1840,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     context "merge request diff note" do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [user], author: create(:user)) }
       let_it_be(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
 
@@ -1923,9 +1923,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   context 'wiki page note' do
-    let_it_be(:project) { create(:project, :public, :repository) }
-    let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
-    let_it_be(:note) { create(:note, noteable: wiki_page_meta, project: project) }
+    let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+    let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let_it_be_with_reload(:note) { create(:note, noteable: wiki_page_meta, project: project) }
 
     before_all do
       build_team(project)
@@ -2085,7 +2085,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     let(:issue) { create(:issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned') }
 
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :public, namespace: group) }
+    let_it_be_with_reload(:project) { create(:project, :public, namespace: group) }
 
     before_all do
       build_team(project)
@@ -2892,7 +2892,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     let_it_be_with_reload(:author) { create(:user) }
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :public, :repository, namespace: group) }
+    let_it_be_with_reload(:project) { create(:project, :public, :repository, namespace: group) }
 
     before_all do
       build_team(project)
@@ -2989,7 +2989,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       describe 'Approvals' do
         let(:notification_target)  { merge_request }
-        let(:maintainer) { create(:user) }
+        let_it_be(:maintainer) { create(:user) }
 
         describe '#approve_mr' do
           it 'notifies the author, subscribers, and assigned users' do
@@ -3129,7 +3129,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     describe '#reassigned_merge_request' do
       let(:mailer_method) { :reassigned_merge_request_email }
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       before do
         update_custom_notification(:reassign_merge_request, u_guest_custom, resource: project)
@@ -3181,7 +3181,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let(:mailer_method) { :changed_reviewer_of_merge_request_email }
 
       let_it_be(:current_user) { create(:user) }
-      let_it_be(:reviewer) { create(:user) }
+      let_it_be_with_reload(:reviewer) { create(:user) }
 
       before do
         update_custom_notification(:change_reviewer_merge_request, u_guest_custom, resource: project)
@@ -3190,7 +3190,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       it 'sends emails to relevant users only', :aggregate_failures do
         expect do
-          notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+          notification.changed_reviewer_of_merge_request(merge_request, current_user, [])
         end.to enqueue_mail_with(Notify, :changed_reviewer_of_merge_request_email, reviewer, any_args)
           .and(enqueue_mail_with(Notify, :changed_reviewer_of_merge_request_email, merge_request.author, any_args))
           .and(enqueue_mail_with(Notify, :changed_reviewer_of_merge_request_email, u_watcher, any_args))
@@ -3207,7 +3207,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       it 'adds "review requested" reason for new reviewer', :deliver_mails_inline do
-        notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+        notification.changed_reviewer_of_merge_request(merge_request, current_user, [])
 
         merge_request.reviewers.each do |assignee|
           email = find_email_for(assignee)
@@ -3219,7 +3219,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       context 'participating notifications with reviewers' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, []) }
 
         it_behaves_like 'participating by reviewer notification'
       end
@@ -3227,12 +3227,39 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, []) }
       end
 
       it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
         let(:notification_target)  { merge_request }
-        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, []) }
+      end
+
+      context 'when an existing reviewer has unsubscribed but is not in the affected reviewer list' do
+        let(:unsubscribed_reviewer) { create(:user) }
+        let(:merge_request) { create(:merge_request, author: author, source_project: project, reviewers: [reviewer, unsubscribed_reviewer]) }
+
+        it 'does not send email to the unsubscribed existing reviewer', :deliver_mails_inline do
+          merge_request.subscriptions.create!(user: unsubscribed_reviewer, subscribed: false)
+          # unsubscribed_reviewer was already a reviewer (unchanged); only reviewer is newly added.
+          notification.changed_reviewer_of_merge_request(merge_request, current_user, [unsubscribed_reviewer])
+
+          should_not_email(unsubscribed_reviewer)
+          should_email(reviewer)
+        end
+      end
+
+      context 'when a reviewer is removed' do
+        let(:removed_reviewer) { create(:user) }
+
+        it 'notifies the removed reviewer without the "review requested" reason', :deliver_mails_inline, :aggregate_failures do
+          notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer, removed_reviewer])
+
+          email = find_email_for(removed_reviewer)
+
+          expect(email).to be_present
+          expect(email).not_to have_header('X-GitLab-NotificationReason', NotificationReason::REVIEW_REQUESTED)
+        end
       end
     end
 
@@ -3286,9 +3313,17 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         ]
       end
 
+      # Watch-level user who participates in the merge request (here, by authoring a note) but
+      # has not explicitly subscribed. They should still receive the push email because
+      # participation trumps the Watch-level exclusion of push_to_merge_request.
+      # See gitlab-org/gitlab#599785.
+      let_it_be(:watcher_and_participant) { create(:user).tap { |user| create_global_setting_for(user, :watch) } }
+
       before do
         update_custom_notification(:push_to_merge_request, u_guest_custom, resource: project)
         update_custom_notification(:push_to_merge_request, u_custom_global)
+        project.add_maintainer(watcher_and_participant)
+        create(:note_on_merge_request, project: project, noteable: merge_request, author: watcher_and_participant)
         allow(::Notify).to receive(:push_to_merge_request_email).and_call_original
       end
 
@@ -3308,6 +3343,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           .and(enqueue_mail_with(Notify, :push_to_merge_request_email, u_participant_mentioned, any_args))
           .and(enqueue_mail_with(Notify, :push_to_merge_request_email, subscriber, any_args))
           .and(enqueue_mail_with(Notify, :push_to_merge_request_email, watcher_and_subscriber, any_args))
+          .and(enqueue_mail_with(Notify, :push_to_merge_request_email, watcher_and_participant, any_args))
           .and(not_enqueue_mail_with(Notify, :push_to_merge_request_email, u_watcher, any_args))
           .and(not_enqueue_mail_with(Notify, :push_to_merge_request_email, u_guest_watcher, any_args))
           .and(not_enqueue_mail_with(Notify, :push_to_merge_request_email, unsubscriber, any_args))
@@ -3331,6 +3367,25 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           new_commits: new_commits_data, total_new_commits_count: 2,
           existing_commits: existing_commits_data, total_existing_commits_count: 50
         )
+      end
+
+      it 'does not notify a custom-level participant who disabled push_to_merge_request' do
+        custom_participant = create(:user)
+        project.add_maintainer(custom_participant)
+        create_notification_setting(custom_participant, project, :custom)
+        update_custom_notification(:push_to_merge_request, custom_participant, resource: project, value: false)
+        merge_request.assignees << custom_participant
+
+        expect do
+          notification.push_to_merge_request_with_data(
+            merge_request,
+            merge_request.author,
+            new_commits_data: new_commits_data,
+            total_new_commits_count: 2,
+            existing_commits_data: existing_commits_data,
+            total_existing_commits_count: 50
+          )
+        end.to not_enqueue_mail_with(Notify, :push_to_merge_request_email, custom_participant, any_args)
       end
 
       it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
@@ -3672,7 +3727,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let(:mailer) { double }
 
       let_it_be(:current_user) { create(:user) }
-      let_it_be(:reviewer) { create(:user) }
+      let_it_be_with_reload(:reviewer) { create(:user) }
 
       it 'sends email to reviewer', :aggregate_failures do
         expect do
@@ -3713,6 +3768,15 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
         let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.review_requested_of_merge_request(merge_request, current_user, reviewer) }
+      end
+
+      context 'when the reviewer has unsubscribed from the merge request' do
+        it 'still sends email to the reviewer', :deliver_mails_inline do
+          merge_request.subscriptions.create!(user: reviewer, subscribed: false)
+          notification.review_requested_of_merge_request(merge_request, current_user, reviewer)
+
+          should_email(reviewer)
+        end
       end
     end
   end
@@ -3969,7 +4033,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'GroupMember' do
-    let(:added_user) { create(:user) }
+    let_it_be(:added_user) { create(:user) }
 
     describe '#new_access_request' do
       context 'recipients' do
@@ -4015,7 +4079,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'ProjectMember' do
-    let(:added_user) { create(:user) }
+    let_it_be(:added_user) { create(:user) }
 
     describe '#new_access_request' do
       context 'for a project in a user namespace' do
@@ -4136,18 +4200,20 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   context 'guest user in private project' do
-    let(:private_project) { create(:project, :private) }
-    let(:guest) { create(:user) }
-    let(:developer) { create(:user) }
+    let_it_be(:private_project) { create(:project, :private) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:developer) { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: private_project, assignees: [assignee]) }
     let(:merge_request1) { create(:merge_request, source_project: private_project, assignees: [assignee], description: "cc @#{guest.username}") }
     let(:note) { create(:note, noteable: merge_request, project: private_project) }
 
-    before do
+    before_all do
       private_project.add_developer(assignee)
       private_project.add_developer(developer)
       private_project.add_guest(guest)
+    end
 
+    before do
       reset_delivered_emails!
     end
 
@@ -4189,7 +4255,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
   describe 'Pipelines' do
     describe '#pipeline_finished' do
-      let_it_be(:project) { create(:project, :public, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
       let_it_be(:u_member) { create(:user) }
       let_it_be(:u_watcher) { create_user_with_notification(:watch, 'watcher') }
 
@@ -4457,12 +4523,200 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
         end
       end
+
+      context 'when pipeline is associated with a merge request' do
+        let_it_be(:mr_author) { create(:user) }
+        let_it_be(:merge_user) { create(:user) }
+        let_it_be(:third_party) { create(:user) }
+
+        before_all do
+          project.add_maintainer(mr_author)
+          project.add_maintainer(merge_user)
+          project.add_maintainer(third_party)
+        end
+
+        context 'with a failed pipeline created by someone other than the author or merger' do
+          let(:pipeline) { create_pipeline(third_party, :failed) }
+
+          context 'when pipeline is the head pipeline of an MR without auto merge' do
+            let!(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: 'master',
+                author: mr_author,
+                head_pipeline: pipeline)
+            end
+
+            it 'emails only the pipeline creator' do
+              expect do
+                notification.pipeline_finished(pipeline)
+              end.to have_only_enqueued_mail_with_args(
+                Notify, :pipeline_failed_email,
+                [a_kind_of(Ci::Pipeline), third_party.email]
+              )
+            end
+          end
+
+          context 'when pipeline is the head pipeline of an MR with auto merge enabled' do
+            let!(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: 'master',
+                author: mr_author,
+                auto_merge_enabled: true,
+                merge_user: merge_user,
+                head_pipeline: pipeline)
+            end
+
+            it 'emails the pipeline creator, MR author, and merge user' do
+              expect do
+                notification.pipeline_finished(pipeline)
+              end.to have_only_enqueued_mail_with_args(
+                Notify, :pipeline_failed_email,
+                [a_kind_of(Ci::Pipeline), third_party.email],
+                [a_kind_of(Ci::Pipeline), mr_author.email],
+                [a_kind_of(Ci::Pipeline), merge_user.email]
+              )
+            end
+
+            context 'when MR author is a bot' do
+              let_it_be(:bot_author) { create(:user, :project_bot) }
+              let!(:merge_request) do
+                create(:merge_request,
+                  source_project: project,
+                  source_branch: 'master',
+                  author: bot_author,
+                  auto_merge_enabled: true,
+                  merge_user: merge_user,
+                  head_pipeline: pipeline)
+              end
+
+              before_all do
+                project.add_maintainer(bot_author)
+              end
+
+              it 'skips the bot author' do
+                expect do
+                  notification.pipeline_finished(pipeline)
+                end.to have_only_enqueued_mail_with_args(
+                  Notify, :pipeline_failed_email,
+                  [a_kind_of(Ci::Pipeline), third_party.email],
+                  [a_kind_of(Ci::Pipeline), merge_user.email]
+                )
+              end
+            end
+
+            context 'when merge user is a bot' do
+              let_it_be(:bot_merge_user) { create(:user, :project_bot) }
+              let!(:merge_request) do
+                create(:merge_request,
+                  source_project: project,
+                  source_branch: 'master',
+                  author: mr_author,
+                  auto_merge_enabled: true,
+                  merge_user: bot_merge_user,
+                  head_pipeline: pipeline)
+              end
+
+              before_all do
+                project.add_maintainer(bot_merge_user)
+              end
+
+              it 'skips the bot merge user' do
+                expect do
+                  notification.pipeline_finished(pipeline)
+                end.to have_only_enqueued_mail_with_args(
+                  Notify, :pipeline_failed_email,
+                  [a_kind_of(Ci::Pipeline), third_party.email],
+                  [a_kind_of(Ci::Pipeline), mr_author.email]
+                )
+              end
+            end
+          end
+        end
+
+        context 'with a failed pipeline created by the MR author' do
+          let(:pipeline) { create_pipeline(mr_author, :failed) }
+          let!(:merge_request) do
+            create(:merge_request,
+              source_project: project,
+              source_branch: 'master',
+              author: mr_author,
+              auto_merge_enabled: true,
+              merge_user: merge_user,
+              head_pipeline: pipeline)
+          end
+
+          it 'emails only the MR author, not the merge user' do
+            expect do
+              notification.pipeline_finished(pipeline)
+            end.to have_only_enqueued_mail_with_args(
+              Notify, :pipeline_failed_email,
+              [a_kind_of(Ci::Pipeline), mr_author.email]
+            )
+          end
+        end
+
+        context 'with a failed pipeline created by the merge user' do
+          let(:pipeline) { create_pipeline(merge_user, :failed) }
+          let!(:merge_request) do
+            create(:merge_request,
+              source_project: project,
+              source_branch: 'master',
+              author: mr_author,
+              auto_merge_enabled: true,
+              merge_user: merge_user,
+              head_pipeline: pipeline)
+          end
+
+          it 'emails only the merge user, not the MR author' do
+            expect do
+              notification.pipeline_finished(pipeline)
+            end.to have_only_enqueued_mail_with_args(
+              Notify, :pipeline_failed_email,
+              [a_kind_of(Ci::Pipeline), merge_user.email]
+            )
+          end
+        end
+
+        context 'with a successful pipeline created by someone other than the author or merger' do
+          let(:pipeline) { create_pipeline(third_party, :success) }
+
+          context 'when pipeline is the head pipeline of an MR with auto merge enabled' do
+            let!(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: 'master',
+                author: mr_author,
+                auto_merge_enabled: true,
+                merge_user: merge_user,
+                head_pipeline: pipeline)
+            end
+
+            it 'does not email the MR author or merge user' do
+              create_notification_setting(mr_author, project, :custom)
+              create_notification_setting(merge_user, project, :custom)
+              update_custom_notification(:success_pipeline, mr_author, resource: project)
+              update_custom_notification(:success_pipeline, merge_user, resource: project)
+
+              expect do
+                notification.pipeline_finished(pipeline)
+              end.not_to have_enqueued_mail(Notify, :pipeline_success_email)
+                .with(a_kind_of(Ci::Pipeline), mr_author.email)
+              expect do
+                notification.pipeline_finished(pipeline)
+              end.not_to have_enqueued_mail(Notify, :pipeline_success_email)
+                .with(a_kind_of(Ci::Pipeline), merge_user.email)
+            end
+          end
+        end
+      end
     end
   end
 
   describe 'Pages domains' do
-    let_it_be(:project, reload: true) { create(:project) }
-    let_it_be(:domain, reload: true) { create(:pages_domain, project: project) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:domain) { create(:pages_domain, project: project) }
     let_it_be(:u_blocked) { blocked_user }
     let_it_be(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
     let_it_be(:u_owner) { project.first_owner }
@@ -4470,7 +4724,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     let_it_be(:u_maintainer2) { create(:user) }
     let_it_be(:u_developer) { create(:user) }
 
-    before do
+    before_all do
       project.add_maintainer(u_blocked)
       project.add_maintainer(u_silence)
       project.add_maintainer(u_maintainer1)
@@ -4541,7 +4795,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'Repository rewrite history' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     describe '#repository_rewrite_history_success' do
       it 'emails the specified user only' do
@@ -4571,7 +4825,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'Repository cleanup' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     describe '#repository_cleanup_success' do
       it 'emails the specified user only' do
@@ -4604,11 +4858,11 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#remote_mirror_update_failed' do
       let(:remote_mirror) { create(:remote_mirror, project: project) }
       let(:u_blocked) { blocked_user }
-      let(:u_silence) { create_user_with_notification(:disabled, 'silent-maintainer', project) }
-      let(:u_owner)   { project.first_owner }
-      let(:u_maintainer1) { create(:user) }
-      let(:u_maintainer2) { create(:user) }
-      let(:u_developer) { create(:user) }
+      let_it_be(:u_silence) { create_user_with_notification(:disabled, 'silent-maintainer', project) }
+      let(:u_owner) { project.first_owner }
+      let_it_be(:u_maintainer1) { create(:user) }
+      let_it_be(:u_maintainer2) { create(:user) }
+      let_it_be(:u_developer) { create(:user) }
 
       before do
         project.add_maintainer(u_blocked)
@@ -4685,7 +4939,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     let_it_be(:developer) { create(:user) }
     let_it_be(:alert) { create(:alert_management_alert, project: project) }
 
-    before do
+    before_all do
       project.add_maintainer(master)
     end
 
@@ -4782,7 +5036,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
   describe 'project scheduled for deletion' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     context 'when project emails are disabled' do
       before do
@@ -4851,7 +5105,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'group scheduled for deletion' do
-    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
     context 'when group emails are disabled' do

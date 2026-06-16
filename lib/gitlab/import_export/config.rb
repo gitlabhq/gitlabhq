@@ -39,7 +39,7 @@ module Gitlab
             hash.merge!(normalize_tree(subitem))
           end
         when Hash
-          item.transform_values(&method(:normalize_tree))
+          item.transform_values { |value| normalize_tree(value) }
         when Symbol
           { item => {} }
         else

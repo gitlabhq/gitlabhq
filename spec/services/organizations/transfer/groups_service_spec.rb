@@ -178,31 +178,6 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
             expect(private_project).to be_valid
           end
         end
-
-        context 'when new organization has same visibility as groups/projects' do
-          let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-          let_it_be_with_refind(:internal_subgroup) do
-            create(:group, :internal, parent: group, organization: old_organization)
-          end
-
-          let_it_be_with_refind(:internal_project) do
-            create(:project, :internal, namespace: group, organization: old_organization)
-          end
-
-          it 'does not update visibility for groups with equal visibility' do
-            service.execute
-
-            expect(internal_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
-            expect(internal_subgroup).to be_valid
-          end
-
-          it 'does not update visibility for projects with equal visibility' do
-            service.execute
-
-            expect(internal_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
-            expect(internal_project).to be_valid
-          end
-        end
       end
 
       it 'logs successful transfer with correct payload' do
@@ -513,7 +488,8 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         expect(result.message).to eq(
           format(
             s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
-            error_message: s_('TransferOrganization|Only root groups can be transferred to a different organization.')
+            error_message:
+              s_('TransferOrganization|Only top-level groups can be transferred to a different organization.')
           )
         )
       end
@@ -1067,7 +1043,8 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         expect(result.message).to eq(
           format(
             s_('TransferOrganization|Group organization transfer failed: %{error_message}'),
-            error_message: s_('TransferOrganization|Only root groups can be transferred to a different organization.')
+            error_message:
+              s_('TransferOrganization|Only top-level groups can be transferred to a different organization.')
           )
         )
       end

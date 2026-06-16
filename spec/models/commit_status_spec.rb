@@ -86,7 +86,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   end
 
   describe 'status state machine' do
-    let!(:commit_status) { create(:commit_status, :running, project: project) }
+    let(:commit_status) { create(:commit_status, :running, project: project) }
 
     it 'invalidates the cache after a transition' do
       expect(commit_status).to receive(:expire_etag_cache!)
@@ -858,13 +858,13 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   describe '#all_met_to_become_pending?' do
     subject { commit_status.all_met_to_become_pending? }
 
-    let(:commit_status) { create(:commit_status) }
+    let(:commit_status) { build_stubbed(:commit_status) }
 
     it { is_expected.to eq(true) }
   end
 
   describe '#enqueue' do
-    let!(:current_time) { Time.zone.local(2018, 4, 5, 14, 0, 0) }
+    let(:current_time) { Time.zone.local(2018, 4, 5, 14, 0, 0) }
 
     before do
       allow(Time).to receive(:now).and_return(current_time)

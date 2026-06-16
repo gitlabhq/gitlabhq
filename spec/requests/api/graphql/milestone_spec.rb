@@ -6,14 +6,14 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:inherited_guest) { create(:user) }
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:release_a) { create(:release, project: project) }
-  let_it_be(:release_b) { create(:release, project: project) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be(:release_a, freeze: false) { create(:release, project: project) }
+  let_it_be(:release_b, freeze: false) { create(:release, project: project) }
 
   let(:expected_release_nodes) do
     contain_exactly(a_graphql_entity_for(release_a), a_graphql_entity_for(release_b))

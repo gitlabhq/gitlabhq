@@ -59,7 +59,6 @@ export default {
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_list_item.vue',
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_mcp_server_list_item.vue',
     'ee/app/assets/javascripts/ai/components/ai_panel.vue',
-    'ee/app/assets/javascripts/ai/components/ai_panel_empty_state.vue',
     'ee/app/assets/javascripts/ai/components/content_container.vue',
     'ee/app/assets/javascripts/ai/components/navigation_rail.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat_view.vue',

@@ -9,29 +9,17 @@ class Import::BitbucketServerController < Import::BaseController
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
   before_action :normalize_import_params, only: [:create]
-  before_action :validate_import_params, only: [:create]
   before_action -> { check_rate_limit!(:bitbucket_server_import, scope: current_user) },
     only: :status, if: -> { request.format.json? }
 
   rescue_from BitbucketServer::Connection::ConnectionError, with: :bitbucket_connection_error
 
-  # As a basic sanity check to prevent URL injection, restrict project
-  # repository input and repository slugs to allowed characters. For Bitbucket:
-  #
-  # Project keys must start with a letter and may only consist of ASCII letters,
-  # numbers and underscores (A-Z, a-z, 0-9, _).
-  #
-  # Repository names are limited to 128 characters. They must start with a
-  # letter or number and may contain spaces, hyphens, underscores, and periods.
-  # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
-  #
-  # Bitbucket Server starts personal project names with a tilde.
-  VALID_BITBUCKET_PROJECT_CHARS = /\A~?[\w\-\.\s]+\z/
-  VALID_BITBUCKET_CHARS = /\A[\w\-\.\s]+\z/
-
   def new; end
 
   def create
+    @project_key = params[:bitbucket_server_project]
+    @repo_slug = params[:bitbucket_server_repo]
+
     repo = client.repo(@project_key, @repo_slug)
 
     unless repo
@@ -111,21 +99,6 @@ class Import::BitbucketServerController < Import::BaseController
     project_key, repo_slug = params[:repo_id].split('/')
     params[:bitbucket_server_project] = project_key
     params[:bitbucket_server_repo] = repo_slug
-  end
-
-  def validate_import_params
-    @project_key = params[:bitbucket_server_project]
-    @repo_slug = params[:bitbucket_server_repo]
-
-    return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
-    return render_validation_error('Missing repository slug') unless @repo_slug.present?
-    return render_validation_error('Invalid project key') unless VALID_BITBUCKET_PROJECT_CHARS.match?(@project_key)
-
-    render_validation_error('Invalid repository slug') unless VALID_BITBUCKET_CHARS.match?(@repo_slug)
-  end
-
-  def render_validation_error(message)
-    render json: { errors: message }, status: :unprocessable_entity
   end
 
   def bitbucket_auth

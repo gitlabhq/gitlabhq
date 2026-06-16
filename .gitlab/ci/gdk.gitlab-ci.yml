@@ -7,8 +7,8 @@
 gdk-update:
   extends:
     - .default-retry
-    - .gdk:rules:gdk-update
-  allow_failure: true
+  rules:
+    - when: never
   needs: []
   variables:
     GIT_STRATEGY: none

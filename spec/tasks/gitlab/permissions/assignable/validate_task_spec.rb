@@ -72,7 +72,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
 
     context 'when all permissions are valid' do
       it 'completes successfully' do
-        expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+        expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
       end
 
       it 'skips boundary and action validations' do
-        expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+        expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
       end
     end
 
@@ -350,7 +350,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'does not flag the shared raw permissions as duplicates' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
     end
@@ -404,7 +404,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+        expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
       end
     end
 
@@ -529,7 +529,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
     end
@@ -578,7 +578,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
     end
@@ -634,7 +634,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
     end
@@ -646,7 +646,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
 
@@ -656,7 +656,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
 
@@ -688,7 +688,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
 
@@ -717,7 +717,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
 
@@ -730,7 +730,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
         end
       end
     end

@@ -4,6 +4,7 @@ import { GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { mapState } from 'vuex';
 
 export default {
+  name: 'AncestorNotice',
   components: {
     GlLink,
     GlSprintf,

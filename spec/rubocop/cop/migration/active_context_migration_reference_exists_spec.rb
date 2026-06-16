@@ -160,6 +160,12 @@ RSpec.describe RuboCop::Cop::Migration::ActiveContextMigrationReferenceExists, f
     end
   end
 
+  describe '#external_dependency_checksum' do
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
+
   context 'with real-world code examples' do
     before do
       allow(Dir).to receive(:glob).and_call_original

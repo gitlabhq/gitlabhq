@@ -30,31 +30,45 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
   describe '.stages_array' do
     let(:expected_list) do
-      stages = described_class::OPTIONAL_STAGES
       [
         {
           name: 'single_endpoint_notes_import',
-          label: stages[:single_endpoint_notes_import][:label],
+          label: s_('GitHubImporter|Use alternative comments import method'),
           selected: false,
-          details: stages[:single_endpoint_notes_import][:details]
+          details: s_('GitHubImporter|The default method can skip some comments in large ' \
+            'projects because of limitations of the GitHub API.')
         },
         {
           name: 'attachments_import',
-          label: stages[:attachments_import][:label].strip,
+          label: s_('GitHubImporter|Import Markdown attachments (links)'),
           selected: false,
-          details: stages[:attachments_import][:details]
+          details: s_('GitHubImporter|Import Markdown attachments (links) from repository ' \
+            'comments, release posts, issue descriptions, and pull request ' \
+            'descriptions. These can include images, text, or binary attachments. ' \
+            'If not imported, links in Markdown to attachments break after you ' \
+            'remove the attachments from GitHub.')
         },
         {
           name: 'collaborators_import',
-          label: stages[:collaborators_import][:label].strip,
+          label: s_('GitHubImporter|Import collaborators'),
           selected: true,
-          details: stages[:collaborators_import][:details]
+          details: s_('GitHubImporter|Import direct repository collaborators who are not ' \
+            'outside collaborators. Imported collaborators who aren\'t members ' \
+            'of the group you imported the project into consume seats on your ' \
+            'GitLab instance.')
         }
       ]
     end
 
     it 'returns stages list as array' do
       expect(described_class.stages_array(project.owner)).to match_array(expected_list)
+    end
+
+    it 'returns non-nil label and details for every stage' do
+      described_class.stages_array(project.owner).each do |stage|
+        expect(stage[:label]).not_to be_nil, "expected label for #{stage[:name]}"
+        expect(stage[:details]).not_to be_nil, "expected details for #{stage[:name]}"
+      end
     end
   end
 

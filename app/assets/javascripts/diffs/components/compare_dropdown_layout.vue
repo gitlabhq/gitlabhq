@@ -3,6 +3,7 @@ import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
+  name: 'CompareDropdownLayout',
   components: {
     GlDropdown,
     GlDropdownItem,

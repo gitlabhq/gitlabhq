@@ -4,10 +4,10 @@ require 'spec_helper'
 RSpec.describe Packages::Rubygems::CreateGemspecService, feature_category: :package_registry do
   include RubygemsHelpers
 
-  let_it_be(:package_file) { create(:package_file, :gem) }
-  let_it_be(:gem) { gem_from_file(package_file.file) }
-  let_it_be(:gemspec) { gem.spec }
-  let_it_be(:package) { package_file.package }
+  let_it_be(:package_file, freeze: false) { create(:package_file, :gem) }
+  let_it_be(:gem, freeze: false) { gem_from_file(package_file.file) }
+  let_it_be(:gemspec, freeze: false) { gem.spec }
+  let_it_be(:package, freeze: false) { package_file.package }
 
   let(:service) { described_class.new(package, gemspec) }
 

@@ -199,6 +199,19 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
           expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: "note_#{discussion.first_note.id}"))
         end
       end
+
+      context 'when the commit is no longer reachable in the repository' do
+        let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
+
+        before do
+          allow(discussion).to receive(:noteable).and_return(nil)
+        end
+
+        it 'returns nil instead of raising an error' do
+          expect { helper.discussion_path(discussion) }.not_to raise_error
+          expect(helper.discussion_path(discussion)).to be_nil
+        end
+      end
     end
   end
 

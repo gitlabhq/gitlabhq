@@ -15,8 +15,7 @@ title: CI/CD inputs
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
-- [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+- [Generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -215,12 +214,6 @@ test_job:
 ```
 
 #### Array type
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
-
-{{< /history >}}
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
 like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. When using the value of an array
@@ -542,12 +535,6 @@ you can output the value in a job log for future reference, or save it in an art
 
 ### For configuration added with `include`
 
-{{< history >}}
-
-- `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
-
-{{< /history >}}
-
 Use [`include:inputs`](../yaml/_index.md#includeinputs) to set the values for inputs
 when the included configuration is added to the pipeline, including for:
 
@@ -755,12 +742,6 @@ file or in the inline `inputs:` section, but not both.
 
 ## Specify functions to manipulate input values
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
-
-{{< /history >}}
-
 You can specify predefined functions in the interpolation block to manipulate the input value.
 The format supported is the following:
 
@@ -795,16 +776,10 @@ In this example, assuming the input uses the default value and `$MY_VAR` is an u
 
 #### `expand_vars`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
-
-{{< /history >}}
-
 Use `expand_vars` to expand [CI/CD variables](../variables/_index.md) in the input value.
 
 Only variables you can [use with the `include` keyword](../yaml/includes.md#use-variables-with-include) and which are
-**not** [masked](../variables/_index.md#mask-a-cicd-variable) can be expanded.
+not [masked](../variables/_index.md#mask-a-cicd-variable) can be expanded.
 [Nested variable expansion](../variables/where_variables_can_be_used.md#nested-variable-expansion) is not supported.
 
 Example:
@@ -824,12 +799,6 @@ In this example, if `$MY_VAR` is unmasked (exposed in job logs) with a value of 
 would expand to `test my value`.
 
 #### `truncate`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
-
-{{< /history >}}
 
 Use `truncate` to shorten the interpolated value. For example:
 

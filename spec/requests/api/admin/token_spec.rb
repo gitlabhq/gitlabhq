@@ -53,15 +53,15 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   let_it_be(:admin) { create(:admin, :with_namespace) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:url) { '/admin/token' }
   let(:api_user) { admin }
   let_it_be(:user) { create(:user, :with_namespace) }
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
-  let_it_be(:group_bot) { create(:user, :project_bot) }
+  let_it_be(:group_bot, freeze: false) { create(:user, :project_bot) }
   let_it_be(:project_member) { create(:project_member, source: project, user: project_bot) }
-  let_it_be(:group_member) { create(:group_member, source: group, user: group_bot) }
+  let_it_be(:group_member, freeze: false) { create(:group_member, source: group, user: group_bot) }
 
   let(:personal_access_token) { create(:personal_access_token, user: user) }
   let(:project_access_token) { create(:personal_access_token, user: project_bot) }
@@ -81,6 +81,12 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   describe 'POST /admin/token' do
     subject(:post_token) { post(api(url, api_user, admin_mode: true), params: params) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_any_token do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api(url, personal_access_token: pat), params: { token: personal_access_token.token } }
+    end
 
     context 'when the user is an admin' do
       context 'with a valid token' do
@@ -169,6 +175,12 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   describe 'DELETE /admin/token' do
     subject(:delete_token) { delete(api(url, api_user, admin_mode: true), params: params) }
+
+    it_behaves_like 'authorizing granular token permissions', :revoke_any_token do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api(url, personal_access_token: pat), params: { token: personal_access_token.token } }
+    end
 
     context 'when the user is an admin' do
       context 'when the token is valid' do

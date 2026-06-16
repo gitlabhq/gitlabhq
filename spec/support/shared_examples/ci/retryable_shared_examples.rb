@@ -3,7 +3,7 @@
 RSpec.shared_examples 'a retryable job' do
   describe '#enqueue_immediately?' do
     it 'defaults to false' do
-      expect(subject.enqueue_immediately?).to eq(false)
+      expect(subject.enqueue_immediately?).to be(false)
     end
   end
 

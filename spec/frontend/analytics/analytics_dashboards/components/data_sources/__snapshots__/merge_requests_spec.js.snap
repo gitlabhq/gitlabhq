@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Merge requests data source with data available returns data and pagination information 1`] = `
+{
+  "nodes": [
+    {
+      "assignees": {
+        "nodes": [
+          {
+            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+            "id": "1",
+            "name": "Administrator",
+            "webUrl": "http://127.0.0.1:3001/root",
+          },
+        ],
+      },
+      "commitCount": 1,
+      "dateMerged": {
+        "timestamp": "2020-08-06T16:57:53Z",
+      },
+      "diffStatsSummary": {
+        "additions": 2,
+        "deletions": 1,
+      },
+      "link": {
+        "approvalCount": 2,
+        "iid": "1",
+        "labelsCount": 0,
+        "pipelineStatus": {
+          "icon": "status_success",
+          "id": "1",
+          "label": "success",
+          "name": "SUCCESS",
+        },
+        "title": "Update README.md",
+        "userNotesCount": 0,
+        "webUrl": "http://127.0.0.1:3001/gitlab-org/gitlab-shell/-/merge_requests/11",
+      },
+      "milestone": {
+        "id": "1",
+        "title": "133.7",
+        "webPath": "fake/path",
+      },
+      "pipelinesCount": 1,
+      "timeToMerge": {
+        "endTimestamp": "2020-08-06T16:57:53Z",
+        "startTimestamp": "2020-08-06T16:53:50Z",
+      },
+    },
+  ],
+  "pageInfo": {
+    "__typename": "PageInfo",
+    "endCursor": "this-is-an-end-cursor",
+    "first": 20,
+    "hasNextPage": false,
+    "hasPreviousPage": false,
+    "startCursor": "this-is-a-start-cursor",
+  },
+}
+`;

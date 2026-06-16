@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registry do
-  let_it_be(:helper) { Class.new.include(API::Helpers).include(described_class).new }
+  let_it_be(:helper, freeze: false) { Class.new.include(API::Helpers).include(described_class).new }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
   let_it_be(:package) { create(:generic_package) }

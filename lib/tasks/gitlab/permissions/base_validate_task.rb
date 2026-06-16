@@ -12,8 +12,39 @@ module Tasks
 
         def run
           validate!
+          sync_todo if self.class.const_defined?(:TODO_FILE, false)
 
           print_success_message
+        end
+
+        def load_todo_entries
+          @todo_entries ||= begin
+            todo_file = self.class::TODO_FILE
+            if todo_file.exist?
+              todo_file.readlines.each_with_object(Set.new) do |line, set|
+                stripped = line.strip
+                set << stripped unless stripped.empty? || stripped.start_with?('#')
+              end
+            else
+              Set.new
+            end
+          end
+        end
+
+        def sync_todo
+          stale = load_todo_entries - current_todo_entries
+          return if stale.empty?
+
+          update_todo
+          print_errors(format_stale_todo_entries(stale))
+          abort
+        end
+
+        def update_todo
+          entries = current_todo_entries
+          header = extract_todo_header
+          self.class::TODO_FILE.write("#{header}#{entries.sort.join("\n")}\n")
+          puts "The #{todo_file_label} todo file updated (#{entries.size} entries)."
         end
 
         private
@@ -33,13 +64,20 @@ module Tasks
         end
 
         def print_success_message
-          puts "Permission definitions are up-to-date"
+          puts "Permission definitions are valid"
         end
 
         def print_errors(formatted_errors)
           puts "#######################################################################\n#"
           puts formatted_errors.gsub(/^/, '#  ').gsub(/\s+$/, '')
           puts "#######################################################################"
+        end
+
+        def format_stale_todo_entries(stale)
+          out = "The #{todo_file_label} todo file had stale entries and has been updated.\n"
+          out += "Please commit #{relative_path(self.class::TODO_FILE)}.\n\n"
+          stale.sort.each { |entry| out += "  - #{entry}\n" }
+          "#{out}\n"
         end
 
         def format_error_list(kind)
@@ -130,6 +168,22 @@ module Tasks
           "#{out}\n"
         end
 
+        def current_todo_entries
+          raise NotImplementedError
+        end
+
+        def todo_file_label
+          raise NotImplementedError
+        end
+
+        def extract_todo_header
+          return '' unless self.class::TODO_FILE.exist?
+
+          self.class::TODO_FILE.readlines
+            .take_while { |line| line.start_with?('#') || line.chomp.empty? }
+            .join
+        end
+
         def permission_source_paths(_permission_name)
           raise NotImplementedError
         end
@@ -173,6 +227,10 @@ module Tasks
 
         def implementation_guide_link(anchor: nil)
           build_doc_link('development/permissions/granular_access/rest_api_implementation_guide', anchor: anchor)
+        end
+
+        def graphql_implementation_guide_link(anchor: nil)
+          build_doc_link('development/permissions/granular_access/graphql_implementation_guide', anchor: anchor)
         end
 
         def conventions_link(anchor: nil)

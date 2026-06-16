@@ -189,7 +189,8 @@ they cannot access their primary email address.
 
 **Application setting:**
 
-- [`require_minimum_email_based_otp_for_users_with_passwords`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb#L765) - Makes Email OTP mandatory for users without other 2FA, and enrolls new users with passwords
+- `email_otp_enabled` - Global toggle for Email OTP enforcement availability.
+- `require_minimum_email_based_otp_for_users_with_passwords` - Makes Email OTP mandatory for users without other 2FA, and enrolls new users with passwords. Requires `email_otp_enabled` to be enabled.
 
 ## Testing
 

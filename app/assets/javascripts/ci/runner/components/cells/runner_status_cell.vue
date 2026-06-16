@@ -6,6 +6,7 @@ import RunnerPausedBadge from '../runner_paused_badge.vue';
 import RunnerJobStatusBadge from '../runner_job_status_badge.vue';
 
 export default {
+  name: 'RunnerStatusCell',
   components: {
     RunnerStatusBadge,
     RunnerPausedBadge,

@@ -45,8 +45,9 @@ module Users
       # 34 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234015
       # 35 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234015
       # 36 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219097
-      end_of_trial_modal: 37 # EE-only
+      end_of_trial_modal: 37, # EE-only
       # 38 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221172
+      duo_code_review_enabled_by_default: 39 # EE-only
     }
 
     validates :group, presence: true

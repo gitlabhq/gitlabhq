@@ -199,6 +199,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
             click_button 'Create new issue'
           end
 
+          expect(project_select_dropdown).to have_no_css('.disabled')
           project_select_dropdown.click
 
           wait_for_requests

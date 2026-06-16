@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Admin::ProjectsController, :enable_admin_mode, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :public, :allow_runner_registration_token, name: 'test', description: 'test') }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
 
   describe 'PUT #update' do
     let(:project_params) { {} }

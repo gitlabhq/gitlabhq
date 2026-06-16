@@ -3,6 +3,15 @@
 $design-pin-diameter: 28px;
 $design-pin-diameter-sm: 24px;
 
+// Fix design management fullscreen display in panels
+.design-detail-layout .panel-content {
+  @apply gl-fixed;
+  @apply gl-inset-0;
+  @apply gl-z-1;
+  @apply gl-max-w-none;
+  @apply gl-h-screen;
+}
+
 .layout-page.design-detail-layout {
   max-height: 100vh;
 

@@ -22,6 +22,7 @@ export default {
     store: { type: Object },
     userPermissions: { type: Object },
     filePaths: { type: Object },
+    showWhitespace: { default: undefined },
   },
   emits: ['empty'],
   computed: {
@@ -81,10 +82,18 @@ export default {
       this.store.removeNewFileDiscussionForm(this.formDiscussion);
     }),
     async saveNote(noteBody) {
-      await this.store.createFileDiscussion(this.formDiscussion, noteBody);
+      await this.store.createFileDiscussion({
+        discussion: this.formDiscussion,
+        noteBody,
+        showWhitespace: this.showWhitespace,
+      });
     },
     async saveDraft(noteBody) {
-      await this.store.createDraftFileDiscussion(this.formDiscussion, noteBody);
+      await this.store.createDraftFileDiscussion({
+        discussion: this.formDiscussion,
+        noteBody,
+        showWhitespace: this.showWhitespace,
+      });
     },
   },
 };

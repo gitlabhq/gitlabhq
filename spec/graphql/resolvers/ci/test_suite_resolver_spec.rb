@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Ci::TestSuiteResolver do
     subject(:test_suite) { resolve(described_class, obj: pipeline, args: { build_ids: build_ids }) }
 
     context 'when pipeline has builds with test reports' do
-      let_it_be(:main_pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project) }
+      let_it_be(:main_pipeline, freeze: false) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project) }
       let_it_be(:pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project, ref: 'new-feature') }
 
       let(:suite_name) { 'test' }

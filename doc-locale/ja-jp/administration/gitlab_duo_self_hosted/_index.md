@@ -40,18 +40,6 @@ title: セルフホストモデル
 
 オンラインライセンスをお持ちのお客様の場合、請求は[使用量課金](../../subscriptions/gitlab_credits.md)です。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
 
-### データ送信 {#data-transmission}
-
-次の請求メタデータがGitLabに使用量課金のために送信されます:
-
-- 匿名化されたインスタンスID
-- 呼び出し回数
-- ユーザーID
-
-推論データ（codeコード入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワークから外に出ることはありません。
-
-GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
-
 ### GitLab Duo {#gitlab-duo}
 
 GitLab Duo Self-Hostedは、GitLab Duo Enterpriseを利用し、GitLab Duo機能を使用している顧客向けです。使用できるモデルは次のとおりです:
@@ -75,7 +63,7 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 | [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8以降   | 一般提供 |
 | **GitLab Duo** | | |
 | [コード提案](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9以降   | 一般提供 |
-| [GitLab Duo非エージェンティックチャット](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
+| [GitLab Duo Non-Agentic Chat](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
 | [コード説明](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9以降   | 一般提供 |
 | [テスト生成](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
 | [コードのリファクタリング](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
@@ -91,6 +79,18 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 | [GitLab DuoとSDLCのトレンドダッシュボード](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9以降   | ベータ版                |
 | [コードレビューサマリー](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2以降 | 実験的機能          |
 
+## データ転送 {#data-transmission}
+
+次の請求メタデータがGitLabに使用量課金のために送信されます:
+
+- 匿名化されたインスタンスID
+- 呼び出し回数
+- ユーザーID
+
+推論データ（codeコード入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワークから外に出ることはありません。
+
+GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
+
 ## AIゲートウェイ構成 {#ai-gateway-configurations}
 
 デプロイオプションを選択したら、次にAIゲートウェイのLLM接続を構成します:
@@ -102,16 +102,16 @@ GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Ente
 | 構成               | セルフホストAIゲートウェイ                                                                    | ハイブリッドAIゲートウェイとモデル構成                                                                                                        | GitLab.com AIゲートウェイ                    |
 |-----------------------------|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
 | インフラストラクチャ要件 | 独自のAIゲートウェイとモデルのホスティングが必要                                           | 独自のAIゲートウェイとモデルのホスティングが必要                                                                                                  | 追加のインフラストラクチャは不要      |
-| モデルオプション               | [サポート対象のセルフホストモデル](supported_models_and_hardware_requirements.md)から選択 | 各GitLab Duo機能について、[サポートされているセルフホストモデル](supported_models_and_hardware_requirements.md)またはGitLab管理のモデルから選択します。 | デフォルトのGitLab管理モデルを使用します。 |
-| ネットワーク要件        | 完全に隔離されたネットワークで動作可能                                                    | GitLab管理のモデルを使用するGitLab Duo機能にはインターネット接続が必要です。                                                          | インターネット接続が必要           |
-| 責任            | インフラストラクチャのセットアップと独自のメンテナンスを実施                               | インフラストラクチャをセットアップし、独自のメンテナンスを行い、どの機能でGitLab管理モデルとAIゲートウェイを使用するかを選択します。                    | GitLabがセットアップとメンテナンスを実施   |
+| モデルオプション               | [サポート対象のセルフホストモデル](supported_models_and_hardware_requirements.md)から選択 | [サポートされているセルフホストモデル](supported_models_and_hardware_requirements.md)またはGitLab管理モデルを、各GitLab Duo機能に選択します。 | デフォルトのGitLab管理モデルを使用します。 |
+| ネットワーク要件        | 完全に隔離されたネットワークで動作可能                                                    | GitLab管理モデルを使用するGitLab Duo機能には、インターネット接続が必要です。                                                          | インターネット接続が必要           |
+| 責任            | インフラストラクチャのセットアップと独自のメンテナンスを実施                               | インフラストラクチャを設定し、独自のメンテナンスを行い、どの機能がGitLab管理モデルとAIゲートウェイを使用するかを選択します。                    | GitLabがセットアップとメンテナンスを実施   |
 
 ### セルフホストAIゲートウェイとLLM {#self-hosted-ai-gateway-and-llms}
 
 完全なセルフホスト設定では、独自のAIゲートウェイをデプロイし、GitLabインフラストラクチャやAIベンダーモデルを使用せずに、自社のインフラストラクチャで[サポートされているLLM](supported_models_and_hardware_requirements.md)のみを使用します。これにより、データとセキュリティを完全に制御できます。
 
 > [!note]
-> この設定には、セルフホストAIゲートウェイを介して設定されたモデルのみが含まれます。いずれかの機能で[GitLab管理モデル](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature)を使用する場合、それらの機能はセルフホストゲートウェイではなくGitLabホストのAIゲートウェイに接続されるため、完全にセルフホストではなくハイブリッド設定となります。
+> この設定には、セルフホストAIゲートウェイを介して設定されたモデルのみが含まれます。いずれかの機能で[GitLab管理モデル](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature)を使用する場合、それらの機能はセルフホストAIゲートウェイではなく、GitLabホストのAIゲートウェイに接続されるため、完全にセルフホストされるのではなく、ハイブリッド設定になります。
 
 独自のAIゲートウェイをデプロイしている間も、[AWS Bedrock](https://aws.amazon.com/bedrock/)や[Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)のようなクラウドベースのLLMサービスをモデルバックエンドとして使用でき、セルフホストAIゲートウェイを介して接続し続けることができます。
 
@@ -153,7 +153,7 @@ AIネイティブ機能で使用するデフォルトのGitLabモデルを選択
 
 特定のGitLab管理モデルを選択すると、その機能のすべてのリクエストはそのモデルのみを使用します。モデルが利用できなくなった場合、AIゲートウェイへのリクエストは失敗し、別のモデルが選択されるまで、ユーザーはその機能を使用できません。
 
-> [!note] 
+> [!note]
 > GitLab管理モデルを使用するように機能を設定する場合:
 >
 > - これらの機能への呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。

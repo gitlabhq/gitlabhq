@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
-  let_it_be(:finder_class) do
+  let_it_be(:finder_class, freeze: false) do
     Class.new do
       include ::Packages::FinderHelper
 
@@ -21,14 +21,14 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
   end
 
-  let_it_be(:finder) { finder_class.new }
+  let_it_be(:finder, freeze: false) { finder_class.new }
 
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
-    let_it_be(:package1) { create(:generic_package, project: project1) }
-    let_it_be(:package2) { create(:generic_package, :error, project: project1) }
-    let_it_be(:project2) { create(:project) }
-    let_it_be(:package3) { create(:generic_package, project: project2) }
+    let_it_be(:package1, freeze: false) { create(:generic_package, project: project1) }
+    let_it_be(:package2, freeze: false) { create(:generic_package, :error, project: project1) }
+    let_it_be(:project2, freeze: false) { create(:project) }
+    let_it_be(:package3, freeze: false) { create(:generic_package, project: project2) }
 
     subject { finder.packages_for_project(project1) }
 
@@ -40,11 +40,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:project1) { create(:project, namespace: group) }
-    let_it_be(:package1) { create(:generic_package, project: project1) }
+    let_it_be(:package1, freeze: false) { create(:generic_package, project: project1) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
-    let_it_be(:package2) { create(:generic_package, project: project2) }
-    let_it_be(:package3) { create(:generic_package, :error, project: project2) }
+    let_it_be(:package2, freeze: false) { create(:generic_package, project: project2) }
+    let_it_be(:package3, freeze: false) { create(:generic_package, :error, project: project2) }
 
     shared_examples 'returning both packages' do
       it { is_expected.to contain_exactly(package1, package2) }
@@ -66,7 +66,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       subject { finder.packages_visible_to_user(user, within_group: group) }
 
       context 'with a user' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :maintainer | 'returning both packages'
@@ -152,7 +152,9 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       end
 
       context 'with a group deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
+        let_it_be(:user, freeze: false) do
+          create(:deploy_token, :group, read_package_registry: true, groups: [group.reload])
+        end
 
         where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
@@ -207,7 +209,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
   context 'for projects visible to user' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:project1) { create(:project, namespace: group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
@@ -230,7 +232,9 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
 
     shared_examples 'handles a group deploy token' do
-      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
+      let_it_be(:user, freeze: false) do
+        create(:deploy_token, :group, read_package_registry: true, groups: [group.reload])
+      end
 
       before do
         project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
@@ -332,7 +336,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it_behaves_like 'returning project1'
 
       context 'when within_public_package_registry set to true' do
-        let_it_be(:project_with_public_package_registry) { create(:project, group: group) }
+        let_it_be(:project_with_public_package_registry, freeze: false) { create(:project, group: group) }
 
         let(:within_public_package_registry) { true }
 

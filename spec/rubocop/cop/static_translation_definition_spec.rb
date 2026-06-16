@@ -6,7 +6,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../rubocop/cop/static_translation_definition'
 
-RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
+RSpec.describe RuboCop::Cop::StaticTranslationDefinition, feature_category: :internationalization do
   using RSpec::Parameterized::TableSyntax
 
   let(:msg) { described_class::MSG }

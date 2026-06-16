@@ -42,6 +42,25 @@ RSpec.describe Authn::TokenField::Finders::BaseEncryptedPartitioned, feature_cat
           expect(recorder.log.first).to match(/"ci_runners"."token_encrypted" IN/)
           expect(recorder.log.first).to match(/"ci_runners"."runner_type" =/)
         end
+
+        context 'when fast-path misses (partition_scope returns nothing)' do
+          before do
+            allow(finder).to receive(:partition_scope).and_return(Ci::Runner.none)
+          end
+
+          it 'falls back to base_scope query and logs' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              hash_including(
+                Labkit::Fields::CLASS_NAME => described_class.name,
+                Labkit::Fields::LOG_MESSAGE => "Partition pruning missed, falling back to all partitions query",
+                has_prefix: "Authn::Tokens::RunnerAuthenticationToken",
+                partition_key: 1
+              )
+            )
+
+            expect(finder.execute).to eq(runner)
+          end
+        end
       end
     end
   end

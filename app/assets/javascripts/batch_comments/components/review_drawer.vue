@@ -233,7 +233,7 @@ export default {
 
         if (NOTIFY_EVENTS[reviewerState]) {
           diffsEventHub.$emit(NOTIFY_EVENTS[reviewerState], {
-            summary: Boolean(note),
+            summary: note ? 1 : 0,
             comments: this.draftsCount,
           });
         }

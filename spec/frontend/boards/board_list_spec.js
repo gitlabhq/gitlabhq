@@ -5,8 +5,10 @@ import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { TYPE_ISSUE, NAMESPACE_PROJECT } from '~/issues/constants';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
+import toast from '~/vue_shared/plugins/global_toast';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
+import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
@@ -24,6 +26,7 @@ import { namespaceWorkItemTypesQueryResponse } from 'ee_else_ce_jest/work_items/
 import { mockIssues, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Board list component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
@@ -37,6 +40,7 @@ describe('Board list component', () => {
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findBoardListCount = () => wrapper.find('.board-list-count');
   const findBoardCardButtons = () => wrapper.findAll('a.board-card-button');
+  const findBoardListCardsArea = () => findByTestId('board-list-cards-area');
   const queryHandlerFailure = jest.fn().mockRejectedValue(new Error('error'));
   const namespaceWorkItemTypesQueryHandler = jest
     .fn()
@@ -79,7 +83,7 @@ describe('Board list component', () => {
     });
 
     it('renders component', () => {
-      expect(wrapper.find('.board-list-component').exists()).toBe(true);
+      expect(findBoardListCardsArea().exists()).toBe(true);
     });
 
     it('renders loading icon', () => {
@@ -391,6 +395,88 @@ describe('Board list component', () => {
     });
   });
 
+  describe('moveToPosition', () => {
+    const listId = 'gid://gitlab/List/1';
+    const movedItem = mockIssuesMore[1];
+    let hideToastMock;
+    let moveMutationHandler;
+
+    beforeEach(async () => {
+      hideToastMock = jest.fn();
+      toast.mockReturnValue({ hide: hideToastMock });
+
+      moveMutationHandler = jest.fn().mockResolvedValue({
+        data: { issuableMoveList: { issuable: movedItem, errors: [] } },
+      });
+
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+        apolloQueryHandlers: [
+          [
+            listIssuesQuery,
+            jest.fn().mockResolvedValue(mockGroupIssuesResponse(listId, mockIssuesMore)),
+          ],
+          [issueMoveListMutation, moveMutationHandler],
+        ],
+      }));
+
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
+    });
+
+    const moveToPosition = (positionInList) =>
+      wrapper.vm.moveToPosition(positionInList, 1, movedItem);
+
+    it.each([
+      [0, 'Item moved to start of list.'],
+      [-1, 'Item moved to end of list.'],
+    ])('shows a toast for position %s', async (positionInList, message) => {
+      moveToPosition(positionInList);
+
+      await resolveMutation(issueMoveListMutation);
+
+      expect(toast).toHaveBeenCalledWith(
+        message,
+        expect.objectContaining({
+          action: expect.objectContaining({
+            text: 'Undo',
+            onClick: expect.any(Function),
+          }),
+        }),
+      );
+    });
+
+    it('clicking undo on the toast dismisses the toast', async () => {
+      moveToPosition(-1);
+      await resolveMutation(issueMoveListMutation);
+
+      const undoAction = toast.mock.calls[0][1].action.onClick;
+      undoAction();
+
+      expect(hideToastMock).toHaveBeenCalled();
+    });
+
+    it('clears pending move toast when drag and drop ends', async () => {
+      moveToPosition(-1);
+      await resolveMutation(issueMoveListMutation);
+
+      endDrag({
+        newIndex: 1,
+        oldIndex: 1,
+        from: { dataset: { listId } },
+        to: { dataset: { listId }, children: [] },
+        item: {
+          dataset: {
+            draggableItemType: DraggableItemTypes.card,
+            itemId: movedItem.id,
+            itemIid: movedItem.iid,
+          },
+        },
+      });
+
+      expect(hideToastMock).toHaveBeenCalled();
+    });
+  });
+
   describe('when using keyboard', () => {
     beforeEach(async () => {
       ({ wrapper, resolveQuery, resolveMutation } = createComponent({
@@ -548,6 +634,71 @@ describe('Board list component', () => {
       }));
 
       expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 3 items');
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    const findListWrapper = () => findByTestId('tree-root-wrapper');
+
+    beforeEach(async () => {
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+        apolloQueryHandlers: [[listIssuesQuery, () => mockGroupIssuesResponse()]],
+      }));
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
+    });
+
+    it('has tabindex="0" when focused prop is true', () => {
+      ({ wrapper } = createComponent({ componentProps: { focused: true } }));
+      expect(findBoardListCardsArea().attributes('tabindex')).toBe('0');
+    });
+
+    it('has tabindex="-1" when focused prop is false', () => {
+      ({ wrapper } = createComponent({ componentProps: { focused: false } }));
+      expect(findBoardListCardsArea().attributes('tabindex')).toBe('-1');
+    });
+
+    it('has role="group" on the board list cards area', () => {
+      expect(findBoardListCardsArea().attributes('role')).toBe('group');
+    });
+
+    it('has aria-labelledby referencing the list title id', () => {
+      const labelledBy = findBoardListCardsArea().attributes('aria-labelledby');
+      expect(labelledBy).toMatch(/^board-list-title-/);
+    });
+
+    it('does not have tabindex on the inner list wrapper', () => {
+      expect(findListWrapper().attributes('tabindex')).toBeUndefined();
+    });
+
+    describe('keyboard events', () => {
+      it('emits focus-adjacent with -1 on left arrow keydown', async () => {
+        await findBoardListCardsArea().trigger('keydown.left');
+        expect(wrapper.emitted('focus-adjacent')).toEqual([[-1]]);
+      });
+
+      it('emits focus-adjacent with 1 on right arrow keydown', async () => {
+        await findBoardListCardsArea().trigger('keydown.right');
+        expect(wrapper.emitted('focus-adjacent')).toEqual([[1]]);
+      });
+    });
+
+    describe('focused prop watcher', () => {
+      it('calls $el.focus() when focused changes to true', async () => {
+        jest.spyOn(findBoardListCardsArea().element, 'focus');
+        await wrapper.setProps({ focused: true });
+        await nextTick();
+        expect(findBoardListCardsArea().element.focus).toHaveBeenCalled();
+      });
+
+      it('does not call $el.focus() when focused changes to false', async () => {
+        await wrapper.setProps({ focused: true });
+        await nextTick();
+        jest.spyOn(findBoardListCardsArea().element, 'focus');
+        await wrapper.setProps({ focused: false });
+        await nextTick();
+        expect(findBoardListCardsArea().element.focus).not.toHaveBeenCalled();
+      });
     });
   });
 });

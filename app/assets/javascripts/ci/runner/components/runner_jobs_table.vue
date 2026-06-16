@@ -10,6 +10,7 @@ import { tableField } from '../utils';
 import LinkCell from './cells/link_cell.vue';
 
 export default {
+  name: 'RunnerJobsTable',
   components: {
     CiIcon,
     GlTableLite,

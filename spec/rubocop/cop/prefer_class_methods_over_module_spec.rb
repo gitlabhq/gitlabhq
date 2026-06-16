@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/prefer_class_methods_over_module'
 
-RSpec.describe RuboCop::Cop::PreferClassMethodsOverModule do
+RSpec.describe RuboCop::Cop::PreferClassMethodsOverModule, feature_category: :tooling do
   it 'flags violation when using module ClassMethods and corrects', :aggregate_failures do
     expect_offense(<<~RUBY)
       module Foo

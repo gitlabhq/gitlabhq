@@ -7,6 +7,10 @@ RSpec.describe 'Project Commits RSS', feature_category: :source_code_management 
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_commits_path(project, :master) }
 
+  before do
+    stub_feature_flags(project_commits_refactor: false)
+  end
+
   context 'when signed in' do
     before do
       project.add_developer(user)

@@ -18,6 +18,18 @@ RSpec.describe DiffDiscussion do
       expect(attributes[:original_position]).to eq(Gitlab::Json.dump(diff_note.original_position.to_h))
       expect(attributes[:line_code]).to eq(subject.line_code)
     end
+
+    context 'when the underlying position columns contain malformed YAML' do
+      before do
+        allow(diff_note).to receive_messages(position: nil, original_position: nil)
+      end
+
+      it 'falls back to an empty JSON object instead of raising' do
+        attributes = subject.reply_attributes
+        expect(attributes[:position]).to eq(Gitlab::Json.dump({}))
+        expect(attributes[:original_position]).to eq(Gitlab::Json.dump({}))
+      end
+    end
   end
 
   describe '#merge_request_version_params' do
@@ -145,6 +157,18 @@ RSpec.describe DiffDiscussion do
 
       it 'includes sha of diff_note_positions position' do
         expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}::#{position_sha}:#{positions_sha}")
+      end
+    end
+
+    context 'when the position column contains malformed YAML' do
+      before do
+        allow(diff_note).to receive(:position).and_return(nil)
+      end
+
+      it 'returns a stable cache key with a nil-position digest', :aggregate_failures do
+        nil_position_sha = Digest::SHA1.hexdigest(Gitlab::Json.dump(nil))
+        expect { subject.cache_key }.not_to raise_error
+        expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}::#{nil_position_sha}:")
       end
     end
   end

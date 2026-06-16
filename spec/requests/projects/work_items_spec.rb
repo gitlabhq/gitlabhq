@@ -8,7 +8,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
   include_context 'workhorse headers'
 
   let_it_be(:work_item) { create(:work_item) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
   let_it_be(:project) { create(:project) }
 
   let(:file) { fixture_file_upload("spec/fixtures/#{filename}") }
@@ -252,7 +252,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     shared_examples 'handles authorisation' do
       context 'when unauthorized' do
         context 'with non-member' do
-          let_it_be(:current_user) { create(:user) }
+          let_it_be(:current_user, freeze: false) { create(:user) }
 
           before do
             sign_in(current_user)

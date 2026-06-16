@@ -106,6 +106,15 @@ module Gitlab
             type: 'cvs_for_dependency_scanning',
             required_permission_to_configure: :update_cvs_for_dependency_scanning
           },
+          license_scanning_for_cyclonedx: {
+            name: _('License Scanning for CycloneDX'),
+            description: _('Enable license detection within CycloneDX SBOM files. When disabled, ' \
+                           'licenses are reported as unknown.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/compliance/license_scanning_of_cyclonedx_files/_index.md'),
+            type: 'license_scanning_for_cyclonedx',
+            required_permission_to_configure: :toggle_license_scanning_for_cyclonedx
+          },
           license_information_source: {
             name: _('License information source'),
             description: _('Define the preferred source for license information.'),

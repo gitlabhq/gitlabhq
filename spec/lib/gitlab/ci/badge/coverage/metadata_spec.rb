@@ -3,9 +3,9 @@
 require 'spec_helper'
 require 'lib/gitlab/ci/badge/shared/metadata'
 
-RSpec.describe Gitlab::Ci::Badge::Coverage::Metadata do
+RSpec.describe Gitlab::Ci::Badge::Coverage::Metadata, feature_category: :pipeline_reports do
   let(:badge) do
-    double(project: create(:project), ref: 'feature', job: 'test')
+    double(project: build_stubbed(:project), ref: 'feature', job: 'test')
   end
 
   let(:metadata) { described_class.new(badge) }

@@ -10,26 +10,35 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionValidation,
 
   describe '#ensure_transition_user' do
     describe 'events requiring transition_user' do
-      it 'blocks schedule_deletion when transition_user is not provided' do
-        expect { organization.schedule_deletion }.not_to change { organization.reload.state_name }
-        expect(organization.errors[:state]).to include('schedule_deletion transition needs transition_user')
+      where(:event, :from_state, :to_state) do
+        :soft_delete         | :active                | :soft_deleted
+        :hard_delete         | :soft_deleted          | :deletion_in_progress
+        :abort_hard_deletion | :deletion_in_progress  | :soft_deleted
       end
 
-      it 'allows schedule_deletion when transition_user is provided' do
-        expect { organization.schedule_deletion(transition_user: user) }
-          .to change { organization.reload.state_name }
-          .from(:active)
-          .to(:deletion_scheduled)
-        expect(organization.errors).to be_empty
+      with_them do
+        before do
+          organization.update_column(:state, Organizations::Organization.states[from_state.to_s])
+        end
+
+        it "blocks #{params[:event]} when transition_user is not provided" do
+          expect { organization.public_send(event) }.not_to change { organization.reload.state_name }
+          expect(organization.errors[:state]).to include("#{event} transition needs transition_user")
+        end
+
+        it "allows #{params[:event]} when transition_user is provided" do
+          expect { organization.public_send(event, transition_user: user) }
+            .to change { organization.reload.state_name }
+            .from(from_state)
+            .to(to_state)
+          expect(organization.errors).to be_empty
+        end
       end
     end
 
     describe 'events not requiring transition_user' do
       where(:event, :from_state, :to_state) do
-        :start_deletion      | :deletion_scheduled   | :deletion_in_progress
-        :reschedule_deletion | :deletion_in_progress | :deletion_scheduled
-        :cancel_deletion     | :deletion_scheduled   | :active
-        :cancel_deletion     | :deletion_in_progress | :active
+        :restore | :soft_deleted | :active
       end
 
       with_them do

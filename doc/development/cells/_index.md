@@ -29,9 +29,21 @@ cases remain.
 Web/API requests and Sidekiq workers should be run under a single organization.
 Convert cross-organization compute to be organization-scoped where possible.
 
+### Requests must be routable to the correct cell
+
+Any cell-local service that accepts requests from outside the cell must be
+routable to the correct cell based on the organization the request is for.
+The cell-local service in the target cell then handles the request.
+
+This applies to all request types and protocols, including Web, API, Git, and
+service-specific protocols (for example, KAS or the container registry).
+
 ### Keep organization data ownership clear
 
-Organization data must be migratable to another cell. For this to be possible,
+Organization data must be migratable to another cell.
+This applies to all cell-local services that are stateful.
+
+For the GitLab Rails monolith databases,
 data ownership must be clear from the schema. Every customer-data table must have
 a traceable path to an organization through its
 [sharding key](../organization/sharding/_index.md#choosing-the-right-sharding-key).

@@ -17,11 +17,7 @@ module Projects
     feature_category :source_code_management
 
     def show
-      if Feature.enabled?(:legacy_archive_not_found, :instance, type: :gitlab_com_derisk)
-        render_404
-      else
-        route_not_found
-      end
+      render_404
     end
   end
 end

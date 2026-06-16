@@ -4,6 +4,7 @@ module Gitlab
   module Observability
     class PipelineToLogs
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::Observability::CicdSemconv
 
       def initialize(integration, pipeline_data)
         @integration = integration
@@ -52,7 +53,10 @@ module Gitlab
 
             { key: 'gitlab.project.name', value: { stringValue: pipeline_data.dig(:project, :name) } },
             (pipeline[:id] ? { key: 'gitlab.pipeline.id', value: { intValue: pipeline[:id] } } : nil),
-            { key: 'gitlab.pipeline.ref', value: { stringValue: pipeline[:ref] } }
+            { key: 'gitlab.pipeline.ref', value: { stringValue: pipeline[:ref] } },
+
+            (pipeline[:id] ? { key: 'cicd.pipeline.run.id', value: { stringValue: pipeline[:id].to_s } } : nil),
+            { key: 'vcs.ref.head.name', value: { stringValue: pipeline[:ref] } }
           ].compact
         }
       end
@@ -84,25 +88,44 @@ module Gitlab
           body: {
             stringValue: "Pipeline #{pipeline[:status]}: #{pipeline[:name] || pipeline[:ref]}"
           },
-          attributes: [
-            { key: 'log.level', value: { stringValue: map_severity_text(pipeline[:status]) } },
-            { key: 'log.source', value: { stringValue: 'pipeline' } },
-            (pipeline[:id] ? { key: 'pipeline.id', value: { intValue: pipeline[:id] } } : nil),
-            (pipeline[:iid] ? { key: 'pipeline.iid', value: { intValue: pipeline[:iid] } } : nil),
-            { key: 'pipeline.name', value: { stringValue: pipeline[:name] || '' } },
-            { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } },
-            { key: 'pipeline.sha', value: { stringValue: pipeline[:sha] } },
-            { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
-            { key: 'pipeline.detailed_status', value: { stringValue: pipeline[:detailed_status] } },
-            { key: 'pipeline.duration', value: { intValue: (pipeline[:duration] || 0).to_i } },
-            { key: 'pipeline.queued_duration', value: { intValue: (pipeline[:queued_duration] || 0).to_i } },
-            { key: 'pipeline.protected_ref', value: { boolValue: pipeline[:protected_ref] || false } },
-            { key: 'pipeline.url', value: { stringValue: pipeline[:url] } },
-            { key: 'pipeline.stages', value: { arrayValue: { values: pipeline[:stages]&.map do |stage|
-              { stringValue: stage }
-            end || [] } } }
-          ].compact
+          attributes: (pipeline_log_attributes + pipeline_semconv_attributes).compact
         }
+      end
+
+      def pipeline_log_attributes
+        [
+          { key: 'log.level', value: { stringValue: map_severity_text(pipeline[:status]) } },
+          { key: 'log.source', value: { stringValue: 'pipeline' } },
+          (pipeline[:id] ? { key: 'pipeline.id', value: { intValue: pipeline[:id] } } : nil),
+          (pipeline[:iid] ? { key: 'pipeline.iid', value: { intValue: pipeline[:iid] } } : nil),
+          { key: 'pipeline.name', value: { stringValue: pipeline[:name] || '' } },
+          { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } },
+          { key: 'pipeline.sha', value: { stringValue: pipeline[:sha] } },
+          { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
+          { key: 'pipeline.detailed_status', value: { stringValue: pipeline[:detailed_status] } },
+          { key: 'pipeline.duration', value: { intValue: (pipeline[:duration] || 0).to_i } },
+          { key: 'pipeline.queued_duration', value: { intValue: (pipeline[:queued_duration] || 0).to_i } },
+          { key: 'pipeline.protected_ref', value: { boolValue: pipeline[:protected_ref] || false } },
+          { key: 'pipeline.url', value: { stringValue: pipeline[:url] } },
+          { key: 'pipeline.stages', value: { arrayValue: { values: pipeline[:stages]&.map do |stage|
+            { stringValue: stage }
+          end || [] } } }
+        ]
+      end
+
+      def pipeline_semconv_attributes
+        compact_attributes([
+          { key: 'cicd.pipeline.name', value: { stringValue: pipeline[:name] || '' } },
+          pipeline_result_attribute,
+          pipeline_run_state_attribute,
+          { key: 'cicd.pipeline.run.url.full', value: { stringValue: pipeline[:url] || '' } },
+          { key: 'cicd.pipeline.run.duration', value: { intValue: (pipeline[:duration] || 0).to_i } },
+          { key: 'cicd.pipeline.run.queued_duration',
+            value: { intValue: (pipeline[:queued_duration] || 0).to_i } },
+          { key: 'cicd.pipeline.trigger.type',
+            value: { stringValue: map_pipeline_trigger_type(pipeline[:source]) || '' } },
+          { key: 'vcs.ref.head.protected', value: { boolValue: pipeline[:protected_ref] || false } }
+        ])
       end
 
       def build_job_log(build)
@@ -133,9 +156,30 @@ module Gitlab
         ]
 
         base_attributes +
+          job_semconv_attributes(build) +
           build_runner_attributes(build) +
           build_environment_attributes(build) +
           build_artifacts_attributes(build)
+      end
+
+      def job_semconv_attributes(build)
+        compact_attributes([
+          { key: 'cicd.pipeline.task.name', value: { stringValue: build[:name] } },
+          (build[:id] ? { key: 'cicd.pipeline.task.run.id', value: { stringValue: build[:id].to_s } } : nil),
+          { key: 'cicd.pipeline.task.type',
+            value: { stringValue: map_pipeline_task_type(build[:stage]) || build[:stage] } },
+          task_run_result_attribute(build[:status]),
+          task_run_state_attribute(build[:status]),
+          { key: 'cicd.pipeline.task.trigger.type',
+            value: { stringValue: build[:manual] ? 'manual' : 'automatic' } },
+          { key: 'cicd.pipeline.task.run.duration', value: { intValue: (build[:duration] || 0).to_i } },
+          { key: 'cicd.pipeline.task.run.queue_duration',
+            value: { intValue: (build[:queued_duration] || 0).to_i } },
+          { key: 'cicd.pipeline.task.run.allow_failure',
+            value: { boolValue: build[:allow_failure] || false } },
+          { key: 'cicd.pipeline.task.run.failure_reason',
+            value: { stringValue: build[:failure_reason] || '' } }
+        ])
       end
 
       def build_runner_attributes(build)
@@ -145,6 +189,12 @@ module Gitlab
           (build.dig(:runner, :id) ? { key: 'job.runner.id', value: { intValue: build.dig(:runner, :id) } } : nil),
           { key: 'job.runner.description', value: { stringValue: build.dig(:runner, :description) || '' } },
           { key: 'job.runner.tags', value: { arrayValue: { values: build.dig(:runner, :tags)&.map do |tag|
+            { stringValue: tag }
+          end || [] } } },
+
+          ({ key: 'cicd.worker.id', value: { stringValue: build.dig(:runner, :id).to_s } } if build.dig(:runner, :id)),
+
+          { key: 'cicd.worker.tags', value: { arrayValue: { values: build.dig(:runner, :tags)&.map do |tag|
             { stringValue: tag }
           end || [] } } }
         ].compact
@@ -166,6 +216,34 @@ module Gitlab
           { key: 'job.artifacts.filename', value: { stringValue: build.dig(:artifacts_file, :filename) || '' } },
           { key: 'job.artifacts.size', value: { intValue: build.dig(:artifacts_file, :size) || 0 } }
         ]
+      end
+
+      def pipeline_result_attribute
+        result = map_pipeline_result(pipeline[:status])
+        return unless result
+
+        { key: 'cicd.pipeline.result', value: { stringValue: result } }
+      end
+
+      def pipeline_run_state_attribute
+        state = map_pipeline_run_state(pipeline[:status])
+        return unless state
+
+        { key: 'cicd.pipeline.run.state', value: { stringValue: state } }
+      end
+
+      def task_run_result_attribute(status)
+        result = map_task_run_result(status)
+        return unless result
+
+        { key: 'cicd.pipeline.task.run.result', value: { stringValue: result } }
+      end
+
+      def task_run_state_attribute(status)
+        state = map_task_run_state(status)
+        return unless state
+
+        { key: 'cicd.pipeline.task.run.state', value: { stringValue: state } }
       end
 
       def map_severity(status)

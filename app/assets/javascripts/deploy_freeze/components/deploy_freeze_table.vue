@@ -6,6 +6,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'DeployFreezeTable',
   fields: [
     {
       key: 'freezeStart',

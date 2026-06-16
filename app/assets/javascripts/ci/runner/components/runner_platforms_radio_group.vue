@@ -15,6 +15,7 @@ import {
 import RunnerPlatformsRadio from './runner_platforms_radio.vue';
 
 export default {
+  name: 'RunnerPlatformsRadioGroup',
   components: {
     GlFormRadioGroup,
     GlLink,

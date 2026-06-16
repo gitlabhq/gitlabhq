@@ -10,6 +10,8 @@ module Mutations
       include Types::ReleaseAssetLinkSharedInputArguments
 
       authorize :create_release
+      authorize_granular_token permissions: :create_release,
+        boundary_argument: :project_path, boundary_type: :project
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

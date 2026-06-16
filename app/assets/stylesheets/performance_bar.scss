@@ -3,11 +3,7 @@
 
 // stylelint-disable-next-line gitlab/no-js-class
 #js-peek {
-  position: fixed;
-  left: 0;
-  top: 0;
   width: 100%;
-  z-index: #{$zindex-modal-backdrop - 1};
 
   height: $performance-bar-height;
   font-size: $gl-font-size-small;

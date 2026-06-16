@@ -6,6 +6,7 @@ import LinksLayer from '~/ci/common/private/job_links_layer.vue';
 import JobRow from './job_row.vue';
 
 export default {
+  name: 'PipelineGraph',
   components: {
     GlAlert,
     JobRow,

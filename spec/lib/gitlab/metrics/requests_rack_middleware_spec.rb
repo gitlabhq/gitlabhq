@@ -44,6 +44,12 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         subject.call(env)
       end
 
+      it 'sets request_start_monotonic_time on the request context', :request_store do
+        subject.call(env)
+
+        expect(Gitlab::RequestContext.instance.request_start_monotonic_time).to be_a(Float)
+      end
+
       it 'guarantees SLI metrics are incremented with all the required labels' do
         described_class.initialize_slis!
 

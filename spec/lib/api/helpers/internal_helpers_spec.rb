@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Helpers::InternalHelpers, feature_category: :api do
   describe 'log user git operation activity' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let(:user) { project.first_owner }
     let(:internal_helper) do
       Class.new { include API::Helpers::InternalHelpers }.new

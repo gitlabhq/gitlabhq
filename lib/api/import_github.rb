@@ -12,8 +12,8 @@ module API
 
     helpers ::API::Helpers::ImportGithubHelpers
 
-    desc 'Import a GitHub project' do
-      detail 'This feature was introduced in GitLab 11.3.4.'
+    desc 'Import a repository from GitHub' do
+      detail 'Imports a repository from GitHub to GitLab.'
       success code: 201, model: ::ProjectEntity
       failure [
         { code: 400, message: 'Bad request' },
@@ -49,8 +49,8 @@ module API
       end
     end
 
-    desc 'Cancel GitHub project import' do
-      detail 'This feature was introduced in GitLab 15.5'
+    desc 'Cancel a GitHub project import' do
+      detail 'Cancels an in-progress import of a GitHub project to GitLab.'
       success code: 200, model: ProjectImportEntity
       failure [
         { code: 400, message: 'Bad request' },
@@ -77,8 +77,10 @@ module API
       end
     end
 
-    desc 'Import User Gists' do
-      detail 'This feature was introduced in GitLab 15.8'
+    desc 'Import GitHub gists into GitLab snippets' do
+      detail 'Imports personal GitHub gists into GitLab snippets. You can import gists with up to 10 files. ' \
+        'GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists. ' \
+        'If any gists cannot be imported, an email is sent with a list of gists that were not imported.'
       success code: 202
       failure [
         { code: 401, message: 'Unauthorized' },

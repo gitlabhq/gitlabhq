@@ -143,7 +143,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_project!' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
     shared_examples 'private project without access' do
@@ -327,7 +327,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           end
 
           context 'when the project feature is publicly accessible' do
-            let_it_be(:project) { create(:project, :public, :builds_enabled) }
+            let_it_be(:project, freeze: false) { create(:project, :public, :builds_enabled) }
 
             before do
               allow(helper).to receive(:route_setting).with(:authorization).and_return(allow_public_access_for_enabled_project_features: :builds)
@@ -379,7 +379,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       let(:user) { project.first_owner }
 
@@ -478,7 +478,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_pipeline!' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:user) { create(:user) }
 
@@ -548,7 +548,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       let(:user) { project.first_owner }
@@ -658,7 +658,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_group!' do
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
 
     shared_examples 'private group without access' do
@@ -709,7 +709,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'with support for IDs and paths as arguments' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group, freeze: false) { create(:group) }
 
       let(:user) { group.first_owner }
 
@@ -757,7 +757,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   context 'with support for organization as an argument' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be(:organization) { create(:organization) }
 
     before do
@@ -785,7 +785,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_group_by_full_path!' do
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
 
     shared_examples 'private group without access' do
@@ -886,7 +886,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is a project namespace' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       it 'returns nil by id by default' do
         expect(helper.find_namespace(project.project_namespace.id)).to be_nil
@@ -917,7 +917,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path' do
     context 'when project namespaces are allowed' do
-      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project, freeze: false) { create(:project, :private) }
 
       it 'falls back to the project namespace when not found via namespace lookup' do
         expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
@@ -995,7 +995,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     it_behaves_like 'user namespace finder'
 
     context 'when namespace is a project namespace' do
-      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project, freeze: false) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1056,7 +1056,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path!' do
     context 'when namespace is a project namespace' do
-      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project, freeze: false) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1116,7 +1116,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#authorized_project_scope?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:other_project) { create(:project) }
     let_it_be(:job) { create(:ci_build) }
 
@@ -1220,7 +1220,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   describe '#track_event' do
     let_it_be(:user) { create(:user) }
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let(:event_name) { 'i_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
@@ -1403,7 +1403,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         allow(helper).to receive(:body).with(false)
         expect(project).to receive(:destroy).and_call_original
 
-        expect { helper.destroy_conditionally!(project) }.to change(Project, :count).by(-1)
+        expect { helper.destroy_conditionally!(project) }.to change { Project.count }.by(-1)
       end
     end
 
@@ -1477,7 +1477,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#present_disk_file!' do
-    let_it_be(:dummy_class) do
+    let_it_be(:dummy_class, freeze: false) do
       Class.new do
         attr_reader :headers
         alias_method :header, :headers
@@ -1534,12 +1534,73 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#apply_etag_or_suppress_rack_etag!' do
+    let(:response_headers) { {} }
+
+    before do
+      allow(helper).to receive(:headers).and_return(response_headers)
+      allow(helper).to receive(:header) { |key, value| response_headers[key] = value }
+    end
+
+    context 'when workhorse_download_etag_caching is enabled' do
+      context 'when an etag is provided' do
+        it 'sets the ETag header to the provided value' do
+          helper.apply_etag_or_suppress_rack_etag!(%("digest"))
+
+          expect(response_headers).to eq('ETag' => %("digest"))
+        end
+      end
+
+      context 'when no etag is provided and Last-Modified is not set' do
+        it 'sets Last-Modified to 0 to suppress Rack::ETag' do
+          helper.apply_etag_or_suppress_rack_etag!(nil)
+
+          expect(response_headers).to eq('Last-Modified' => '0')
+        end
+      end
+
+      context 'when no etag is provided and Last-Modified is already set' do
+        let(:response_headers) { { 'Last-Modified' => 'Wed, 21 Oct 2015 07:28:00 GMT' } }
+
+        it 'leaves Last-Modified unchanged' do
+          helper.apply_etag_or_suppress_rack_etag!(nil)
+
+          expect(response_headers).to eq('Last-Modified' => 'Wed, 21 Oct 2015 07:28:00 GMT')
+        end
+      end
+    end
+
+    context 'when workhorse_download_etag_caching is disabled' do
+      before do
+        stub_feature_flags(workhorse_download_etag_caching: false)
+      end
+
+      it 'does not set ETag even when one is provided' do
+        helper.apply_etag_or_suppress_rack_etag!(%("digest"))
+
+        expect(response_headers).to be_empty
+      end
+
+      it 'does not set Last-Modified when no etag is provided' do
+        helper.apply_etag_or_suppress_rack_etag!(nil)
+
+        expect(response_headers).to be_empty
+      end
+    end
+  end
+
   describe '#present_carrierwave_file!' do
     let(:supports_direct_download) { false }
     let(:content_type) { nil }
     let(:content_disposition) { nil }
     let(:extra_response_headers) { {} }
     let(:extra_send_url_params) { {} }
+    let(:etag) { nil }
+
+    before do
+      allow(helper).to receive(:headers).and_return({})
+      allow(helper).to receive(:header)
+    end
 
     subject do
       helper.present_carrierwave_file!(
@@ -1548,7 +1609,8 @@ RSpec.describe API::Helpers, feature_category: :api do
         content_disposition:,
         content_type:,
         extra_response_headers:,
-        extra_send_url_params:
+        extra_send_url_params:,
+        etag:
       )
     end
 
@@ -1645,8 +1707,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           it 'sends a workhorse header with the correct content type' do
             expect(helper).to receive(:status).with(:ok)
             expect(helper).to receive(:body).with('')
-            expect(helper).to receive(:header) do |name, value|
-              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, anything) do |_name, value|
               command, encoded_params = value.split(":")
               params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
 
@@ -1664,8 +1725,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           it 'sends a workhorse header with the response headers' do
             expect(helper).to receive(:status).with(:ok)
             expect(helper).to receive(:body).with('')
-            expect(helper).to receive(:header) do |name, value|
-              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, anything) do |_name, value|
               command, encoded_params = value.split(":")
               params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
 
@@ -1683,8 +1743,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           it 'sends a workhorse header with checksum headers' do
             expect(helper).to receive(:status).with(:ok)
             expect(helper).to receive(:body).with('')
-            expect(helper).to receive(:header) do |name, value|
-              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, anything) do |_name, value|
               command, encoded_params = value.split(':')
               params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
 
@@ -1702,8 +1761,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           it 'sends a workhorse header with the response headers' do
             expect(helper).to receive(:status).with(:ok)
             expect(helper).to receive(:body).with('')
-            expect(helper).to receive(:header) do |name, value|
-              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, anything) do |_name, value|
               command, encoded_params = value.split(":")
               params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
 
@@ -1712,6 +1770,28 @@ RSpec.describe API::Helpers, feature_category: :api do
               expect(restrict_forwarded_response_headers_params['Enabled']).to be_truthy
               expect(restrict_forwarded_response_headers_params['AllowList']).to contain_exactly('x-optional-header')
             end
+
+            subject
+          end
+        end
+
+        context 'when an etag is provided' do
+          let(:etag) { %("digest-abc") }
+
+          it 'sets the ETag header before delegating to Workhorse' do
+            allow(helper).to receive(:status)
+            allow(helper).to receive(:body)
+            expect(helper).to receive(:header).with('ETag', %("digest-abc"))
+
+            subject
+          end
+        end
+
+        context 'when no etag is provided' do
+          it 'sets Last-Modified: 0 to suppress Rack::ETag default' do
+            allow(helper).to receive(:status)
+            allow(helper).to receive(:body)
+            expect(helper).to receive(:header).with('Last-Modified', '0')
 
             subject
           end
@@ -1730,6 +1810,8 @@ RSpec.describe API::Helpers, feature_category: :api do
       before do
         allow(helper).to receive(:env).and_return({})
         allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: is_head_request))
+        allow(helper).to receive(:headers).and_return({})
+        allow(helper).to receive(:header)
         stub_artifacts_object_storage(enabled: true)
       end
 
@@ -2018,8 +2100,8 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#boundaries_for_endpoint' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:group) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
 
     before do

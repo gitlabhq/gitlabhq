@@ -141,7 +141,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
       end
 
       it 'adds avatar when commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5899' do
-        find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
+        find_in_panel_by_scrolling('[data-discussion-id]', match: :first)
         find_field('Reply…', match: :first).click
 
         page.within '.js-discussion-note-form' do
@@ -162,7 +162,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
       it 'adds multiple comments',
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5874' do
         3.times do
-          find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
+          find_in_panel_by_scrolling('[data-discussion-id]', match: :first)
           find_field('Reply…', match: :first).click
 
           page.within '.js-discussion-note-form' do
@@ -202,12 +202,8 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   def find_line(line_code)
-    line = find_in_page_or_panel_by_scrolling("[id='#{line_code}']")
+    line = find_in_panel_by_scrolling("[id='#{line_code}']")
     line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
     line
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
   end
 end

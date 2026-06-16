@@ -6,9 +6,9 @@ RSpec.describe 'Updating an image DiffNote', feature_category: :code_review_work
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:noteable) { create(:merge_request) }
-  let_it_be(:original_body) { 'Original body' }
-  let_it_be(:original_position) do
+  let_it_be(:noteable, freeze: false) { create(:merge_request) }
+  let_it_be(:original_body, freeze: false) { 'Original body' }
+  let_it_be(:original_position, freeze: false) do
     Gitlab::Diff::Position.new(
       old_path: 'files/images/any_image.png',
       new_path: 'files/images/any_image.png',
@@ -21,11 +21,11 @@ RSpec.describe 'Updating an image DiffNote', feature_category: :code_review_work
     )
   end
 
-  let_it_be(:updated_body) { 'Updated body' }
-  let_it_be(:updated_width) { 50 }
-  let_it_be(:updated_height) { 100 }
-  let_it_be(:updated_x) { 5 }
-  let_it_be(:updated_y) { 10 }
+  let_it_be(:updated_body, freeze: false) { 'Updated body' }
+  let_it_be(:updated_width, freeze: false) { 50 }
+  let_it_be(:updated_height, freeze: false) { 100 }
+  let_it_be(:updated_x, freeze: false) { 5 }
+  let_it_be(:updated_y, freeze: false) { 10 }
 
   let(:updated_position) do
     {
@@ -62,7 +62,7 @@ RSpec.describe 'Updating an image DiffNote', feature_category: :code_review_work
   end
 
   context 'when the user does not have permission' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user, freeze: false) { create(:user) }
 
     it_behaves_like 'a mutation that returns a top-level access error'
 

@@ -2,11 +2,11 @@
 
 RSpec.shared_examples 'raw snippet files' do
   let(:snippet_id) { snippet.id }
-  let_it_be(:user) { snippet.author }
+  let_it_be(:user, freeze: false) { snippet.author }
   let(:file_path)  { '%2Egitattributes' }
   let(:ref)        { 'master' }
 
-  let_it_be(:user_token) do
+  let_it_be(:user_token, freeze: false) do
     if user.admin?
       create(:personal_access_token, :admin_mode, user: user)
     else
@@ -337,7 +337,7 @@ RSpec.shared_examples 'member project snippet access' do
 end
 
 RSpec.shared_examples 'project snippet access levels' do
-  let_it_be(:user_token) { create(:personal_access_token, user: user) }
+  let_it_be(:user_token, freeze: false) { create(:personal_access_token, user: user) }
 
   let(:project) { create(:project, project_visibility) }
   let(:snippet) { create(:project_snippet, :repository, snippet_visibility, project: project) }

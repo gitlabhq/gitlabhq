@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/gitlab/avoid_feature_get'
 
-RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureGet do
+RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureGet, feature_category: :scalability do
   let(:msg) { described_class::MSG }
 
   it 'bans use of Feature.ban' do

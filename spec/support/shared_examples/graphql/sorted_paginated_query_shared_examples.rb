@@ -16,7 +16,7 @@
 #
 # Example:
 #   describe 'sorting and pagination' do
-#     let_it_be(:sort_project) { create(:project, :public) }
+#     let_it_be(:sort_project, freeze: false) { create(:project, :public) }
 #     let(:data_path)    { [:project, :issues] }
 #
 #     def pagination_query(arguments)
@@ -32,7 +32,7 @@
 #     end
 #
 #     context 'when sorting by weight' do
-#       let_it_be(:issues) { make_some_issues_with_weights }
+#       let_it_be(:issues, freeze: false) { make_some_issues_with_weights }
 #
 #       context 'when ascending' do
 #         let(:ordered_issues) { issues.sort_by(&:weight) }

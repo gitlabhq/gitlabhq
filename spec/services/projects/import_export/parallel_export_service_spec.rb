@@ -35,6 +35,7 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
 
     it 'logs export progress' do
       allow(Gitlab::ImportExport::Saver).to receive(:save).and_return(true)
+      allow(after_export_strategy).to receive(:execute).and_return(true)
 
       logger = service.instance_variable_get(:@logger)
       messages = [

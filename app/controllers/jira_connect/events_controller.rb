@@ -81,7 +81,9 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   end
 
   def transformed_params
-    @transformed_params ||= params.transform_keys(&:underscore)
+    @transformed_params ||= params
+      .permit(:clientKey, :sharedSecret, :baseUrl, :displayUrl)
+      .transform_keys(&:underscore)
   end
 
   def verify_asymmetric_atlassian_jwt!

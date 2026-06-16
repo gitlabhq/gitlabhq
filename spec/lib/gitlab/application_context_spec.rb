@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
   describe '.allowed_job_keys' do
     it 'includes known keys but omits Web-specific keys' do
-      expect(described_class.allowed_job_keys).to include(:user, :user_id, :project, :root_namespace, :client_id)
+      expect(described_class.allowed_job_keys).to include(
+        :user, :user_id, :project, :root_namespace, :client_id, :mvcc_manifest
+      )
       expect(described_class.allowed_job_keys).not_to include(
         :auth_fail_reason,
         :auth_fail_token_id,
@@ -287,6 +289,21 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
           auth_fail_token_type: 'CiJobToken',
           auth_fail_auth_header_type: 'private_token_header'
         )
+      end
+    end
+
+    context 'when using the MVCC manifest context' do
+      it 'sets the mvcc_manifest value' do
+        manifest_sha = '1234567890abcdef1234567890abcdef12345678'
+        context = described_class.new(mvcc_manifest: manifest_sha)
+
+        expect(result(context)).to include(mvcc_manifest: manifest_sha)
+      end
+
+      it 'does not set the mvcc_manifest value when absent' do
+        context = described_class.new(project: project)
+
+        expect(result(context)).not_to have_key(:mvcc_manifest)
       end
     end
   end

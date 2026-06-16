@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 RSpec.shared_examples 'search recent items' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:recent_items) { described_class.new(user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:recent_items, freeze: false) { described_class.new(user: user) }
   let(:item) { create_item(content: 'hello world 1', parent: parent) }
   let(:parent) { create(parent_type, :public) }
 
@@ -93,6 +93,32 @@ RSpec.shared_examples 'search recent items' do
       results = recent_items.search('item')
 
       expect(results.count).to eq(Gitlab::Search::RecentItems::SEARCH_LIMIT)
+    end
+
+    it 'returns all viewed items when search term is blank' do
+      expect(recent_items.search(nil)).to contain_exactly(item1, item2, item3, non_matching_item)
+      expect(recent_items.search('')).to contain_exactly(item1, item2, item3, non_matching_item)
+    end
+
+    it 'requires all whitespace-separated tokens to appear in the title' do
+      all_tokens = create_item(content: 'foo bar baz', parent: parent)
+      one_token  = create_item(content: 'foo only', parent: parent)
+      recent_items.log_view(all_tokens)
+      recent_items.log_view(one_token)
+
+      expect(recent_items.search('foo bar')).to contain_exactly(all_tokens)
+    end
+
+    it 'treats LIKE wildcards in the search term as literals' do
+      underscore_item = create_item(content: 'wildcard_test', parent: parent)
+      percent_item    = create_item(content: 'wildcard%test', parent: parent)
+      decoy_item      = create_item(content: 'wildcardXtest', parent: parent)
+      recent_items.log_view(underscore_item)
+      recent_items.log_view(percent_item)
+      recent_items.log_view(decoy_item)
+
+      expect(recent_items.search('wildcard_test')).to contain_exactly(underscore_item)
+      expect(recent_items.search('wildcard%test')).to contain_exactly(percent_item)
     end
   end
 

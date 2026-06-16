@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Todo, feature_category: :notifications do
-  let_it_be(:issue) { create(:issue) }
+  let_it_be(:issue, freeze: false) { create(:issue) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:group) { create(:group, developers: user) }
-  let_it_be(:project) { create(:project, :repository, developers: user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, developers: user) }
   let_it_be(:project2) { create(:project) }
 
   describe 'relationships' do
@@ -323,40 +323,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
   end
 
-  describe '#for_alert?' do
-    it 'returns true when target is a Alert' do
-      subject.target_type = 'AlertManagement::Alert'
-
-      expect(subject.for_alert?).to eq(true)
-    end
-
-    it 'returns false when target is not a Alert' do
-      subject.target_type = 'Issue'
-
-      expect(subject.for_alert?).to eq(false)
-    end
-  end
-
-  describe '#for_issue_or_work_item?' do
-    it 'returns true when target is an Issue' do
-      subject.target_type = 'Issue'
-
-      expect(subject.for_issue_or_work_item?).to be_truthy
-    end
-
-    it 'returns true when target is a WorkItem' do
-      subject.target_type = 'WorkItem'
-
-      expect(subject.for_issue_or_work_item?).to be_truthy
-    end
-
-    it 'returns false when target is not an Issue' do
-      subject.target_type = 'DesignManagement::Design'
-
-      expect(subject.for_issue_or_work_item?).to be_falsey
-    end
-  end
-
   describe '#target' do
     context 'for commits' do
       let(:commit) { project.commit }
@@ -434,7 +400,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when the todo is coming from an issue' do
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
       let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       context 'when coming from the issue itself' do
@@ -515,7 +481,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when the todo is coming from a wiki page' do
-      let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, project: project) }
+      let_it_be(:wiki_page_meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, project: project) }
 
       context 'when coming from the wiki page itself' do
         let_it_be(:todo) { create(:todo, project: project, user: user, target: wiki_page_meta) }
@@ -567,26 +533,6 @@ RSpec.describe Todo, feature_category: :notifications do
       let_it_be(:todo) { build(:todo, target: key, project: nil, group: nil, user: user) }
 
       it { is_expected.to eq("http://localhost/-/user_settings/ssh_keys/#{key.id}") }
-    end
-  end
-
-  describe '#self_added?' do
-    let(:user_1) { build(:user) }
-
-    before do
-      subject.user = user_1
-    end
-
-    it 'is true when the user is the author' do
-      subject.author = user_1
-
-      expect(subject).to be_self_added
-    end
-
-    it 'is false when the user is not the author' do
-      subject.author = build(:user)
-
-      expect(subject).not_to be_self_added
     end
   end
 
@@ -920,46 +866,6 @@ RSpec.describe Todo, feature_category: :notifications do
     describe '.not_snoozed' do
       it 'returns todos that are not snoozed anymore or never were snoozed' do
         expect(described_class.not_snoozed).to contain_exactly(unsnoozed_todo, never_snoozed_todo)
-      end
-    end
-  end
-
-  describe '#access_request_url' do
-    shared_examples 'returns member access requests tab url/path' do
-      it 'returns group access requests tab url/path if target is group' do
-        subject.target = group
-
-        expect(subject.access_request_url(only_path: only_path)).to eq(Gitlab::Routing.url_helpers.group_group_members_url(group, tab: 'access_requests', only_path: only_path))
-      end
-
-      it 'returns project access requests tab url/path if target is project' do
-        subject.target = project
-
-        expect(subject.access_request_url(only_path: only_path)).to eq(Gitlab::Routing.url_helpers.project_project_members_url(project, tab: 'access_requests', only_path: only_path))
-      end
-
-      it 'returns empty string if target is neither group nor project' do
-        subject.target = issue
-
-        expect(subject.access_request_url(only_path: only_path)).to eq("")
-      end
-    end
-
-    context 'when only_path param is false' do
-      it_behaves_like 'returns member access requests tab url/path' do
-        let_it_be(:only_path) { false }
-      end
-    end
-
-    context 'when only_path param is nil' do
-      it_behaves_like 'returns member access requests tab url/path' do
-        let_it_be(:only_path) { nil }
-      end
-    end
-
-    context 'when only_path param is true' do
-      it_behaves_like 'returns member access requests tab url/path' do
-        let_it_be(:only_path) { true }
       end
     end
   end

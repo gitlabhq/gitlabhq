@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'WidgetApp',
   components: {
     MrSecurityWidget: () =>
       import('~/vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue'),

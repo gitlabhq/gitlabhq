@@ -17,13 +17,13 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
     let_it_be(:from_project) { create(:project, :public, group: group) }
     let_it_be(:to_project) { create(:project, :public, group: group) }
     let_it_be(:from_noteable) { create(:issue, project: from_project) }
-    let_it_be(:to_noteable) { create(:issue, project: to_project) }
+    let_it_be(:to_noteable, freeze: false) { create(:issue, project: to_project) }
 
     subject(:execute_service) { described_class.new(user, from_noteable, to_noteable).execute }
 
     context 'rewriting the note body' do
       context 'simple notes' do
-        let!(:notes) do
+        let_it_be(:notes, freeze: false) do
           [
             create(
               :note, noteable: from_noteable, project: from_noteable.project,
@@ -108,8 +108,8 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       end
 
       context 'notes with mentions' do
-        let!(:note_with_mention) { create(:note, noteable: from_noteable, author: from_noteable.author, project: from_noteable.project, note: "note with mention #{user.to_reference}") }
-        let!(:note_with_no_mention) { create(:note, noteable: from_noteable, author: from_noteable.author, project: from_noteable.project, note: "note without mention") }
+        let_it_be(:note_with_mention) { create(:note, noteable: from_noteable, author: from_noteable.author, project: from_noteable.project, note: "note with mention #{user.to_reference}") }
+        let_it_be(:note_with_no_mention) { create(:note, noteable: from_noteable, author: from_noteable.author, project: from_noteable.project, note: "note without mention") }
 
         it 'saves user mentions with actual mentions for new issue' do
           execute_service
@@ -122,10 +122,9 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       end
 
       context 'notes with reference' do
-        let(:other_issue) { create(:issue, project: from_noteable.project) }
-        let(:merge_request) { create(:merge_request) }
-        let(:text) { "See ##{other_issue.iid} and #{merge_request.project.full_path}!#{merge_request.iid}" }
-        let!(:note) { create(:note, noteable: from_noteable, note: text, project: from_noteable.project) }
+        let_it_be(:other_issue) { create(:issue, project: from_noteable.project) }
+        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be(:note) { create(:note, noteable: from_noteable, note: "See ##{other_issue.iid} and #{merge_request.project.full_path}!#{merge_request.iid}", project: from_noteable.project) }
 
         it 'rewrites the references correctly' do
           execute_service
@@ -149,9 +148,7 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       end
 
       context 'notes with upload' do
-        let(:uploader) { build(:file_uploader, container: from_noteable.project) }
-        let(:text) { "Simple text with image: #{uploader.markdown_link} " }
-        let!(:note) { create(:note, noteable: from_noteable, note: text, project: from_noteable.project) }
+        let!(:note) { create(:note, noteable: from_noteable, note: "Simple text with image: #{build(:file_uploader, container: from_noteable.project).markdown_link} ", project: from_noteable.project) }
 
         it 'rewrites note content correctly' do
           execute_service
@@ -176,8 +173,8 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       end
 
       context 'discussion notes' do
-        let(:note) { create(:note, noteable: from_noteable, note: 'sample note', project: from_noteable.project) }
-        let!(:discussion) { create(:discussion_note_on_issue, in_reply_to: note, note: 'reply to sample note') }
+        let_it_be(:note) { create(:note, noteable: from_noteable, note: 'sample note', project: from_noteable.project) }
+        let_it_be(:discussion) { create(:discussion_note_on_issue, in_reply_to: note, note: 'reply to sample note') }
 
         it 'rewrites discussion correctly' do
           execute_service

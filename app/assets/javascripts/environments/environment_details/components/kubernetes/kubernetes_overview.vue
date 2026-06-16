@@ -33,6 +33,7 @@ import DeletePodModal from './delete_pod_modal.vue';
 const trackingMixin = InternalEvents.mixin();
 
 export default {
+  name: 'KubernetesOverview',
   components: {
     GlEmptyState,
     KubernetesStatusBar,

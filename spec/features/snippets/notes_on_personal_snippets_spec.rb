@@ -6,7 +6,7 @@ RSpec.describe 'Comments on personal snippets', :js, feature_category: :source_c
   include NoteInteractionHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:snippet) { create(:personal_snippet, :public) }
+  let_it_be(:snippet, freeze: false) { create(:personal_snippet, :public) }
   let_it_be(:other_note) { create(:note_on_personal_snippet) }
 
   let(:user_name) { 'Test User' }

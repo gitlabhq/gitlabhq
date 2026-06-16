@@ -164,6 +164,14 @@ describe('RunnersTab', () => {
           expect.objectContaining({ ...mockAssignableRunners[0].node }),
         ]);
       });
+
+      it('shows link to runner', async () => {
+        await createComponent({ props: { useAssignableQuery: true }, mountFn: mountExtended });
+
+        expect(wrapper.findByTestId('runner-link').attributes('href')).toBe(
+          mockAssignableRunners[0].webUrl,
+        );
+      });
     });
   });
 

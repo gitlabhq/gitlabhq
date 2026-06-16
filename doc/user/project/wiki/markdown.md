@@ -24,7 +24,7 @@ For example, a page titled "How to Use GitLab" has the slug `How-to-Use-GitLab`.
 ### Wiki-style links
 
 In addition to standard [Markdown links](../../markdown.md#links), wikis support special wiki-style
-link syntax that provides a more convenient way to link between wiki pages.
+link syntax that simplifies linking between wiki pages.
 
 #### Double bracket syntax
 

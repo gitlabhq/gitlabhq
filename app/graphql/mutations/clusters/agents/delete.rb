@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'ClusterAgentDelete'
 
         authorize :admin_cluster
+        authorize_granular_token permissions: :delete_cluster_agent, boundary_argument: :id,
+          boundary_type: :project
 
         AgentID = ::Types::GlobalIDType[::Clusters::Agent]
 

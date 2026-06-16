@@ -37,13 +37,20 @@ export default {
       query: RecentlyViewedItemsQuery,
       update({ currentUser: { recentlyViewedItems = [] } = {} }) {
         return recentlyViewedItems
-          .map((entry) => ({
-            ...entry.item,
-            viewedAt: entry.viewedAt,
-            itemType: entry.itemType,
+          .map((entry) => {
             // eslint-disable-next-line no-underscore-dangle
-            icon: ICON_MAP[entry.item.__typename] || 'question',
-          }))
+            const typename = entry.item.__typename;
+            // For WorkItems, use workItemType.name (Issue, Epic, Task, etc.)
+            // For other types (MergeRequest, WikiPage), use __typename
+            const itemType = typename === 'WorkItem' ? entry.item.workItemType?.name : typename;
+
+            return {
+              ...entry.item,
+              viewedAt: entry.viewedAt,
+              itemType,
+              icon: ICON_MAP[itemType] || 'question',
+            };
+          })
           .slice(0, MAX_ITEMS);
       },
       error(error) {
@@ -65,8 +72,7 @@ export default {
     handleItemClick(item) {
       this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
         label: TRACKING_LABEL_RECENTLY_VIEWED,
-        // eslint-disable-next-line no-underscore-dangle
-        property: item.__typename,
+        property: item.itemType,
       });
     },
   },
@@ -98,7 +104,7 @@ export default {
     <p v-else-if="!items.length" class="gl-my-0 gl-mb-3">
       {{
         s__(
-          'HomePageRecentlyViewedWidget|Issues, merge requests, and wiki pages you visit will appear here.',
+          'HomePageRecentlyViewedWidget|Work items, merge requests, and wiki pages you visit will appear here.',
         )
       }}
     </p>

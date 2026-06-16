@@ -14,7 +14,7 @@ RSpec.shared_examples 'creating a new HTTP integration' do |type = 'HTTP'|
     expect(integration_response['active']).to eq(new_integration.active)
     expect(integration_response['token']).to eq(new_integration.token)
     expect(integration_response['url']).to eq(new_integration.url)
-    expect(integration_response['apiUrl']).to eq(nil)
+    expect(integration_response['apiUrl']).to be_nil
   end
 end
 

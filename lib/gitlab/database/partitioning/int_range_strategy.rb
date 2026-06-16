@@ -63,14 +63,21 @@ module Gitlab
 
         private
 
+        def local_partitions
+          current_partitions.select do |partition|
+            partition.from >= min_id && (max_value.nil? || partition.to <= max_value)
+          end
+        end
+
         def are_last_partitions_empty?(number_of_partitions)
-          partitions = current_partitions.last(number_of_partitions)
+          partitions = local_partitions.last(number_of_partitions)
 
           partitions.none?(&:holds_data?)
         end
 
         def desired_partitions
           end_id = are_partitions_syncronized? ? max_id : max_id + (HEADROOM * partition_size) # Adds 6 new partitions
+          end_id = [end_id, max_value].min if max_value
 
           create_int_range_partitions(min_id, end_id)
         end
@@ -100,12 +107,24 @@ module Gitlab
         end
         strong_memoize_attr :min_id
 
+        def max_value
+          return unless sequence_name
+
+          seq_name = sequence_name.split('.').last
+
+          model.connection
+            .select_value(
+              "SELECT max_value FROM pg_sequences WHERE sequencename = $1", :select_seq_start, [seq_name]
+            )
+        end
+        strong_memoize_attr :max_value
+
         def max_id
           last_partition&.to || min_id
         end
 
         def are_partitions_syncronized?
-          last_partition && current_partitions.size >= HEADROOM && are_last_partitions_empty?(HEADROOM)
+          last_partition && local_partitions.size >= HEADROOM && are_last_partitions_empty?(HEADROOM)
         end
 
         def partition_name(lower_bound)
@@ -113,7 +132,7 @@ module Gitlab
         end
 
         def last_partition
-          current_partitions.last
+          local_partitions.last
         end
 
         def partition_for(upper_bound:, lower_bound:, partition_name:)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe AwardEmojis::AddService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:awardable) { create(:note, project: project) }
+  let_it_be(:awardable, freeze: false) { create(:note, project: project) }
 
   let(:name) { AwardEmoji::THUMBS_UP }
 

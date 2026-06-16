@@ -38,7 +38,7 @@ module Resolvers
     argument :trending, GraphQL::Types::Boolean,
       required: false,
       description: "Return only projects that are trending.",
-      deprecated: { reason: 'Removed in 19.0 due to low usage', milestone: '18.8' }
+      deprecated: { reason: 'No longer functional. Underlying feature was removed in 19.0', milestone: '18.8' }
 
     argument :aimed_for_deletion, GraphQL::Types::Boolean,
       required: false,
@@ -103,7 +103,7 @@ module Resolvers
     end
 
     def finder_params(args)
-      params = {
+      {
         **project_finder_params(args),
         with_issues_enabled: args[:with_issues_enabled],
         with_merge_requests_enabled: args[:with_merge_requests_enabled],
@@ -119,8 +119,6 @@ module Resolvers
         last_repository_check_failed: args[:last_repository_check_failed],
         organization: ::Current.organization
       }
-      params[:trending] = args[:trending] unless Feature.enabled?(:disable_trending_args, current_user)
-      params
     end
 
     def sanitize_params(params)

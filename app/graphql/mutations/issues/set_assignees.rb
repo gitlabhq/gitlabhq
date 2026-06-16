@@ -7,6 +7,9 @@ module Mutations
 
       include Assignable
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       def assign!(issue, users, mode)
         permitted, forbidden = users.partition { |u| u.can?(:read_issue, issue.resource_parent) }
 

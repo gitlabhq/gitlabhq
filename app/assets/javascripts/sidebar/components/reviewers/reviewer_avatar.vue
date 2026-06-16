@@ -4,6 +4,7 @@
 import { GlAvatar, GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'ReviewerAvatar',
   components: {
     GlAvatar,
     GlIcon,

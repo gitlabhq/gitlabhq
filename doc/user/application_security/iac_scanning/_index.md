@@ -136,7 +136,7 @@ For more details, see [Pipeline security report](../detect/security_scanning_res
 
 Additional ways to see IaC scanning results:
 
-- [Merge request widget](../sast/_index.md#merge-request-widget): Shows newly introduced or resolved findings.
+- [Merge request reports](../../project/merge_requests/reports.md): Shows newly introduced or resolved findings.
 - [Merge request changes view](../sast/_index.md#merge-request-changes-view): Shows inline annotations for changed lines.
 - [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
 

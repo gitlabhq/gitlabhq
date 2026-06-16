@@ -3,6 +3,7 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'ImportedBadge',
   tooltip: s__('BulkImport|This item was imported from another instance.'),
   components: {
     GlBadge,

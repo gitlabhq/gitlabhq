@@ -3112,6 +3112,21 @@ For example:
 
 See also [resolution](#resolution-resolve).
 
+## workspace
+
+Use **workspace** only when referring to [GitLab workspaces](../../../user/workspace/_index.md),
+virtual sandbox environments for development. To avoid confusion with the GitLab feature, do not
+use **workspace** on its own to refer to other concepts.
+
+Instead, use:
+
+- **project** when you mean a GitLab project. For example, **project-level skills** instead of
+  **workspace-level skills**.
+- **IDE workspace** or **IDE workspace folder** when referring to IDE workspaces.
+- **current working directory** when referring to directories and folders in the terminal.
+- **workspace configuration** when referring to the MCP client configuration file that applies to an
+  IDE workspace folder or your current working directory.
+
 ## yet
 
 Do not use **yet** when talking about the product or its features. The documentation describes the product as it is today.

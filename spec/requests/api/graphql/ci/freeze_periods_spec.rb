@@ -31,7 +31,8 @@ RSpec.describe 'Query.project.environment.deployFreezes', feature_category: :rel
     project.add_maintainer(user)
   end
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_freeze_period] do
+  it_behaves_like 'authorizing granular token permissions for GraphQL',
+    [:read_project, :read_environment, :read_freeze_period] do
     let(:boundary_object) { project }
     let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
   end

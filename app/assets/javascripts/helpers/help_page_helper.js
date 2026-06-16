@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/no-hardcoded-urls -- Low level URL helpers to link to our user docs */
 import { joinPaths, setUrlFragment } from '~/lib/utils/url_utility';
 
 const HELP_PAGE_URL_ROOT = '/help';

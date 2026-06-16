@@ -2,13 +2,16 @@
 description: Tracks the number of CI Builds created
 internal_events: true
 action: create_ci_build
+identifiers:
+  - namespace
+  - project
+  - user
 additional_properties:
-  project:
-  namespace:
-  user:
   property:
     description: the name of the build
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141421
 tiers:

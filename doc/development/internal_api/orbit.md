@@ -30,6 +30,13 @@ To authenticate using the JWT, clients:
 
 All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
 
+> [!note]
+> When the knowledge graph service calls these endpoints, the request executes
+> in an authenticated user context. As a result, project [audit events](../../user/compliance/audit_events.md)
+> can show an authenticated user performing repository operations (for example,
+> `repository_download_operation`) that were triggered by indexer activity rather
+> than by a direct user action.
+
 ## Internal Endpoints
 
 ### Project
@@ -85,6 +92,11 @@ Example response:
 ```
 
 The response body is a binary tar.gz archive streamed via Workhorse.
+
+> [!note]
+> Calls to this endpoint trigger a `repository_download_operation`
+> [audit event](../../user/compliance/audit_events.md) attributed to the
+> authenticated user the indexer is acting as, not to a direct user action.
 
 #### Stream changed file paths
 

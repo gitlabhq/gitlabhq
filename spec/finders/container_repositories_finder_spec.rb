@@ -7,7 +7,7 @@ RSpec.describe ContainerRepositoriesFinder do
   let_it_be(:guest) { create(:user) }
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
   let_it_be(:project_repository) { create(:container_repository, name: 'my_image', project: project) }
 
   let(:params) { {} }
@@ -37,7 +37,7 @@ RSpec.describe ContainerRepositoriesFinder do
 
   shared_examples 'with sorting' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
     let_it_be(:sort_repository) do
       create(:container_repository, name: 'bar', project: project, created_at: 1.day.ago)
     end

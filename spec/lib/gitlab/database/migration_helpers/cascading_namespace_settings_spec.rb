@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings do
+RSpec.describe Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings, feature_category: :database do
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)
   end

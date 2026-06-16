@@ -41,6 +41,7 @@ export default {
       default: '',
     },
   },
+  emits: ['input'],
   data() {
     return {
       checkboxValue: toCheckboxValue(this.value),

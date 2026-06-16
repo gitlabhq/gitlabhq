@@ -165,9 +165,25 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
   let selectionIncrement = 0;
   getLimitedMediaDimensions(file)
     .then(({ width, height } = {}) => {
-      if (width && height) {
-        chain(editor).updateAttributes(type, { width, height }).run();
-      }
+      if (!width || !height) return;
+
+      // Target the node by its fileId rather than the current selection, which
+      // may have moved to a subsequently dropped media before this resolves.
+      const { node: uploadedNode, position: uploadedPosition } = findUploadedFilePosition(
+        editor,
+        fileId,
+      );
+      if (!uploadedNode) return;
+
+      editor.view.dispatch(
+        editor.state.tr
+          .setMeta('preventAutolink', true)
+          .setNodeMarkup(uploadedPosition, undefined, {
+            ...uploadedNode.attrs,
+            width,
+            height,
+          }),
+      );
     })
     .catch(() => {});
 

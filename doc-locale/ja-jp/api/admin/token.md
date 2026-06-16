@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: トークン情報を公開するREST APIのドキュメント。
 title: トークン情報API
 ---
@@ -14,35 +14,35 @@ title: トークン情報API
 
 {{< /details >}}
 
-このAPIを使用すると、任意のトークンに関する詳細を取得し、それらを失効することができます。他のトークン情報を公開するAPIとは異なり、このAPIを使用すると、トークンの特定のタイプを知らなくても、詳細を取得したり、トークンを失効することができます。
+このAPIを使用して、任意のトークンに関する詳細を取得し、それらを失効させます。トークン情報を公開する他のAPIとは異なり、このAPIを使用すると、特定のトークンのタイプを知らなくても、詳細を取得したり、トークンを失効させたりできます。
 
 ## トークンのプレフィックス {#token-prefixes}
 
-リクエストを行う場合、`personal`、`project`、または`group access`トークンは、`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。トークンが以前のカスタムプレフィックスで始まる場合、操作は失敗します。以前のカスタムプレフィックスのサポートへの関心は、[issue 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663)で追跡されます。
+リクエストを行う際、`personal`、`project`、または`group access`トークンは`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。トークンが以前のカスタムプレフィックスで始まる場合、操作は失敗します。以前のカスタムプレフィックスのサポートに関する関心は、[イシュー165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663)で追跡されています。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
-## トークンに関する情報を取得します {#get-information-on-a-token}
+## トークン情報取得 {#retrieve-token-information}
 
 {{< history >}}
 
 - GitLab 17.5で`admin_agnostic_token_finder`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157)されました。デフォルトでは無効になっています。
 - GitLab 17.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/490572)になりました。機能フラグ`admin_agnostic_token_finder`は削除されました。
-- [フィードトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821)されました（GitLab 17.6）。
-- [OAuthアプリケーションシークレットが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985)されました（GitLab 17.7）。
-- [クラスターエージェントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932)されました（GitLab 17.7）。
-- [Runner認証トークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987)されました（GitLab 17.7）。
-- [パイプライントリガートークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030)されました（GitLab 17.7）。
-- [CI/CDジョブトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234)されました（GitLab 17.9）。
-- [機能フラグクライアントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431)されました（GitLab 17.9）。
-- [GitLabセッションクッキーが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022)されました（GitLab 17.9）。
-- [受信メールトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077)されました（GitLab 17.9）。
+- [フィードトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821)されました (GitLab 17.6)。
+- [OAuthアプリケーションシークレットが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985)されました (GitLab 17.7)。
+- [クラスターエージェントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932)されました (GitLab 17.7)。
+- [Runner認証トークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987)されました (GitLab 17.7)。
+- [パイプライントリガートークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030)されました (GitLab 17.7)。
+- [CI/CDジョブトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234)されました (GitLab 17.9)。
+- [機能フラグクライアントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431)されました (GitLab 17.9)。
+- [GitLabセッションクッキーが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022)されました (GitLab 17.9)。
+- [受信メールトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077)されました (GitLab 17.9)。
 
 {{< /history >}}
 
-指定されたトークンの情報を取得します。このエンドポイントは、次のトークンをサポートしています:
+指定されたトークンの情報を取得します。このエンドポイントは、以下のトークンをサポートしています:
 
 - [パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)
 - [代理トークン](../rest/authentication.md#impersonation-tokens)
@@ -52,7 +52,7 @@ title: トークン情報API
 - [クラスターエージェントトークン](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
 - [Runner認証トークン](../../security/tokens/_index.md#runner-authentication-tokens)
 - [パイプライントリガートークン](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
-- [CI/CDジョブトークン](../../security/tokens/_index.md#cicd-job-tokens)。
+- [CI/CDジョブトークン](../../security/tokens/_index.md#cicd-job-tokens)
 - [機能フラグクライアントトークン](../../operations/feature_flags.md#get-access-credentials)
 - [GitLabセッションクッキー](../../user/profile/active_sessions.md)
 - [受信メールトークン](../../security/tokens/_index.md#incoming-email-token)
@@ -61,15 +61,15 @@ title: トークン情報API
 POST /api/v4/admin/token
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型    | 必須 | 説明                |
 |--------------|---------|----------|----------------------------|
-| `token`      | 文字列  | はい      | 識別する既存のトークン。`Personal`、`project`、または`group access`トークンは、`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。 |
+| `token`      | 文字列  | はい      | 識別する既存のトークン。`Personal`、`project`、または`group access`トークンは`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。 |
 
 成功した場合、[`200`](../rest/troubleshooting.md#status-codes)とトークンに関する情報を返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
 - `200 OK`: トークンに関する情報。
 - `401 Unauthorized`: ユーザーは認証されていません。
@@ -77,7 +77,7 @@ POST /api/v4/admin/token
 - `404 Not Found`: トークンが見つかりませんでした。
 - `422 Unprocessable`: トークンタイプはサポートされていません。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -87,7 +87,7 @@ curl --request POST \
   --data '{"token": "glpat-<example-token>"}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -116,25 +116,22 @@ curl --request POST \
 
 {{< history >}}
 
-- [クラスターエージェントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211)されました（GitLab 17.9）。
-- [Runner認証トークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066)されました（GitLab 17.9）。
-- [OAuthアプリケーションシークレットが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035)されました（GitLab 17.9）。
-- [受信メールトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763)されました（GitLab 17.9）。
-- [機能フラグクライアントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096)されました（GitLab 17.9）。
-- [パイプライントリガートークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598)されました（GitLab 17.10、`token_api_expire_pipeline_triggers`という名前の[フラグ付き](../../administration/feature_flags/_index.md)）。デフォルトでは無効になっています。
-- [GitLabセッションが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047)されました（GitLab 17.11）。
+- [クラスターエージェントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211)されました (GitLab 17.9)。
+- [Runner認証トークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066)されました (GitLab 17.9)。
+- [OAuthアプリケーションシークレットが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035)されました (GitLab 17.9)。
+- [受信メールトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763)されました (GitLab 17.9)。
+- [機能フラグクライアントトークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096)されました (GitLab 17.9)。
+- [パイプライントリガートークンが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598)されました (GitLab 17.10)。`token_api_expire_pipeline_triggers`という名前の[フラグ付き](../../administration/feature_flags/_index.md)で。デフォルトでは無効になっています。
+- [GitLabセッションが追加](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047)されました (GitLab 17.11)。
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+トークンタイプに基づいて、指定されたトークンを失効、リセット、または削除します。このエンドポイントは、以下のトークンタイプをサポートしています:
 
-{{< /alert >}}
-
-トークンのタイプに基づいて、特定のトークンを失効、リセット、または削除します。このエンドポイントは、次のトークンタイプをサポートしています:
-
-| トークンの種類                                                                                   | サポートされているアクション   |
+| トークンの種類                                                                                   | サポートされるアクション   |
 |----------------------------------------------------------------------------------------------|--------------------|
 | [パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)                       | 失効             |
 | [代理トークン](../../user/profile/personal_access_tokens.md)                         | 失効             |
@@ -154,15 +151,15 @@ curl --request POST \
 DELETE /api/v4/admin/token
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型    | 必須 | 説明              |
 |--------------|---------|----------|--------------------------|
-| `token`      | 文字列  | はい      | 失効する既存のトークン。`Personal`、`project`、または`group access`トークンは、`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。 |
+| `token`      | 文字列  | はい      | 失効する既存のトークン。`Personal`、`project`、または`group access`トークンは`glpat`または現在の[カスタムプレフィックス](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)で始まる必要があります。 |
 
-成功した場合、コンテンツなしで[`204`](../rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`204`](../rest/troubleshooting.md#status-codes)をコンテンツなしで返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
 - `204 No content`: トークンは失効されました。
 - `401 Unauthorized`: ユーザーは認証されていません。
@@ -170,7 +167,7 @@ DELETE /api/v4/admin/token
 - `404 Not Found`: トークンが見つかりませんでした。
 - `422 Unprocessable`: トークンタイプはサポートされていません。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

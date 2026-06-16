@@ -8,7 +8,7 @@ describe('LinkPresenter', () => {
     ${MOCK_ISSUE}     | ${'https://gitlab.com/gitlab-org/gitlab-test/-/issues/1'} | ${'Issue 1'}
     ${MOCK_USER}      | ${'https://gitlab.com/foobar'}                            | ${'foobar'}
     ${MOCK_MILESTONE} | ${'/gitlab-org/gitlab-test/-/milestones/1'}               | ${'Milestone 1'}
-    ${MOCK_PROJECT}   | ${'https://gitlab.com/gitlab-org/gitlab-test'}            | ${'GitLab Org / GitLab Test'}
+    ${MOCK_PROJECT}   | ${'/gitlab-org/gitlab-test'}                              | ${'GitLab Org / GitLab Test'}
     ${MOCK_GROUP}     | ${'https://gitlab.com/gitlab-org'}                        | ${'GitLab Org'}
   `('for data $data, it renders a link', ({ data, linkHref, linkText }) => {
     const wrapper = shallowMountExtended(LinkPresenter, { propsData: { data } });

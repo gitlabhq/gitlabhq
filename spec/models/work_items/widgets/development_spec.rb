@@ -28,18 +28,18 @@ RSpec.describe WorkItems::Widgets::Development, feature_category: :team_planning
 
     it { is_expected.to be_a(ActiveRecord::Relation) }
 
-    it 'returns calls the correct scope' do
-      expect(work_item).to receive(:merge_requests_closing_issues)
-
-      closing_merge_requests
+    it 'scopes the relation to link_type closes' do
+      expect(closing_merge_requests.to_sql).to include('"link_type"')
     end
   end
 
   describe '#will_auto_close_by_merge_request' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, group: group) }
-    let_it_be(:open_merge_request) { create(:merge_request, :opened, source_project: project) }
-    let_it_be(:closed_merge_request) { create(:merge_request, :closed, source_project: project, target_branch: 'f2') }
+    let_it_be(:open_merge_request, freeze: false) { create(:merge_request, :opened, source_project: project) }
+    let_it_be(:closed_merge_request, freeze: false) do
+      create(:merge_request, :closed, source_project: project, target_branch: 'f2')
+    end
 
     subject { described_class.new(work_item).will_auto_close_by_merge_request }
 

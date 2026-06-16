@@ -384,7 +384,6 @@ For example:
 - `personal_access_tokens_expired_notification_worker`
 - `ssh_keys_expiring_soon_notification_worker`
 - `ssh_keys_expired_notification_worker`
-- `send_recurring_notifications_worker`
 - `deploy_tokens_expiring_worker`
 - `members_expiring_worker`
 

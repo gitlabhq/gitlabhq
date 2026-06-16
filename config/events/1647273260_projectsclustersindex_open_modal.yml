@@ -3,6 +3,8 @@ description: Create token modal opened from the agent's page
 category: default
 action: open_modal
 product_group: environments
+product_categories:
+- environment_management
 milestone: "14.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
 tiers:

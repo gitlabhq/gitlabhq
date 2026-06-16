@@ -42,7 +42,7 @@ Only OAuth tokens are supported.
    1. Refresh the token through the standard `https://gitlab.example.com/oauth/token>` endpoint using `grant_type=refresh_token`.
 1. The returned access token belongs to the service account but carries `user:$ID` in its scopes. It refreshes like a standard OAuth access token.
 
-### Minimal, copy‑pasteable examples (Rails console and curl)
+### Minimal examples
 
 - Create an OAuth application (note this step is only needed if you want a bespoke OAuth app. The GitLab Duo Workflow default OAuth application and service account are created by calling `ee/app/services/ai/duo_workflows/onboarding_service.rb`):
 

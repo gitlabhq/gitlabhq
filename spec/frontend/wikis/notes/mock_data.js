@@ -106,8 +106,12 @@ export const wikiPageQueryMockData = {
   title: 'home',
   id: 'gid://gitlab/WikiPage/1',
   subscribed: false,
+  awardEmoji: {
+    nodes: [],
+  },
   userPermissions: {
     markNoteAsInternal: false,
+    awardEmoji: false,
   },
 };
 

@@ -109,7 +109,7 @@ RSpec.describe 'Adding a LatestDiffNote', feature_category: :code_review_workflo
     end
 
     context 'with /label quick action' do
-      let_it_be(:label) { create(:label, title: 'bug') }
+      let_it_be(:label, freeze: false) { create(:label, title: 'bug') }
 
       let(:body) { "Body text\n/label ~bug" }
 

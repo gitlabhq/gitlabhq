@@ -25,7 +25,7 @@ Some [known issues](../_index.md#known-issues) exist.
 
 ## Secondary sites with selective synchronization enabled
 
-Promoting a **secondary** site with selective synchronization enabled results in **permanent data loss**
+Promoting a secondary site with selective synchronization enabled results in **permanent data loss**
 for all data that was not replicated to that secondary site. For more information, see
 [Promoting a secondary site with selective synchronization enabled](../replication/selective_synchronization.md#promoting-a-secondary-site-with-selective-synchronization-enabled).
 
@@ -111,31 +111,31 @@ reconfigure process, see the
 While you can't automatically promote a Geo replica and do a failover,
 you can promote it manually if you have `root` access to the machine.
 
-This process promotes a **secondary** Geo site to a **primary** site. To regain
-geographic redundancy as quickly as possible, you should add a new **secondary** site
+This process promotes a secondary Geo site to a primary site. To regain
+geographic redundancy as quickly as possible, you should add a new secondary site
 immediately after following these instructions.
 
 ### Allow replication to finish if possible
 
-If the **secondary** site is still replicating data from the **primary** site, follow
+If the secondary site is still replicating data from the primary site, follow
 [the planned failover docs](planned_failover.md) as closely as possible in
 order to avoid unnecessary data loss.
 
-### Step 1. Permanently disable the **primary** site
+### Step 1. Permanently disable the primary site
 
 > [!warning]
-> If the **primary** site goes offline, there may be data saved on the **primary** site
-> that have not been replicated to the **secondary** site. This data should be treated
+> If the primary site goes offline, there may be data saved on the primary site
+> that have not been replicated to the secondary site. This data should be treated
 > as lost if you proceed.
 
-If an outage on the **primary** site happens, you should do everything possible to
+If an outage on the primary site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
 instances, complicating recovery efforts. So to prepare for the failover, we
-must disable the **primary** site.
+must disable the primary site.
 
 - If you have SSH access:
 
-  1. SSH into the **primary** site to stop and disable GitLab:
+  1. SSH into the primary site to stop and disable GitLab:
 
      ```shell
      sudo gitlab-ctl stop
@@ -147,16 +147,16 @@ must disable the **primary** site.
      sudo systemctl disable gitlab-runsvdir
      ```
 
-- If you do not have SSH access to the **primary** site, take the machine offline and
+- If you do not have SSH access to the primary site, take the machine offline and
   prevent it from rebooting by any means at your disposal.
   You might need to:
 
   - Reconfigure the load balancers.
   - Change DNS records (for example, point the primary DNS record to the
-    **secondary** site to stop usage of the **primary** site).
+    secondary site to stop usage of the primary site).
   - Stop the virtual servers.
   - Block traffic through a firewall.
-  - Revoke object storage permissions from the **primary** site.
+  - Revoke object storage permissions from the primary site.
   - Physically disconnect a machine.
 
   If you plan to [update the primary domain DNS record](#optional-updating-the-primary-domain-dns-record),
@@ -165,7 +165,7 @@ must disable the **primary** site.
   > [!note]
   > The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
 
-### Step 2. Promoting a **secondary** site
+### Step 2. Promoting a secondary site
 
 Note the following when promoting a secondary:
 
@@ -173,9 +173,9 @@ Note the following when promoting a secondary:
   performs a point-in-time recovery to the last known state.
   Data that was created on the primary while the secondary was paused is lost.
 - If the secondary site [has been paused](../replication/pause_resume_replication.md) and you encounter an `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute DELETE in a read-only transaction` error message during this process, see this knowledge base article: [Geo promotion fails with read-only transaction error or timeout after unexpected primary shutdown](https://support.gitlab.com/hc/en-us/articles/21019042667804-Geo-promotion-fails-with-read-only-transaction-error-or-timeout-after-unexpected-primary-shutdown).
-- A new **secondary** should not be added at this time. If you want to add a new
-  **secondary**, do this after you have completed the entire process of promoting
-  the **secondary** to the **primary**.
+- A new secondary should not be added at this time. If you want to add a new
+  secondary, do this after you have completed the entire process of promoting
+  the secondary to the primary.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
@@ -188,9 +188,9 @@ Note the following when promoting a secondary:
     1. Select **CI/CD** > **Runners** and remove them.
   - Using the [Runners API](../../../api/runners.md).
 
-#### Promoting a **secondary** site running on a single node
+#### Promoting a secondary site running on a single node
 
-1. SSH in to your **secondary** site and execute:
+1. SSH in to your secondary site and execute:
 
    - To promote the secondary site to primary:
 
@@ -204,9 +204,9 @@ Note the following when promoting a secondary:
      sudo gitlab-ctl geo promote --force
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used
-   previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
+1. Verify you can connect to the newly-promoted primary site using the URL used
+   previously for the secondary site.
+1. If successful, the secondary site is now promoted to the primary site.
 
 When you run `gitlab-ctl geo promote`, a [`gitlab-cluster.json`](#the-gitlab-clusterjson-file)
 file is created on the node. The file overrides Geo role settings in `gitlab.rb`
@@ -220,9 +220,9 @@ for the changes to take effect.
 
 At this point, your promoted site is the new primary GitLab site. Optionally, if you wish to set up Geo again as a new secondary site, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
 
-### Promoting a **secondary** site with multiple nodes and a **single-secondary** site
+### Promoting a secondary site with multiple nodes and a single-secondary site
 
-1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the secondary site and run one of the following commands:
 
    - To promote the node on the secondary site to primary:
 
@@ -236,7 +236,7 @@ At this point, your promoted site is the new primary GitLab site. Optionally, if
      sudo gitlab-ctl geo promote --force
      ```
 
-1. SSH into each Rails node on your **secondary** site and run one of the following commands:
+1. SSH into each Rails node on your secondary site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -250,31 +250,17 @@ At this point, your promoted site is the new primary GitLab site. Optionally, if
      sudo gitlab-ctl geo promote --force
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used
-   previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
+1. Verify you can connect to the newly-promoted primary site using the URL used
+   previously for the secondary site.
+1. If successful, the secondary site is now promoted to the primary site.
 
 When you run `gitlab-ctl geo promote`, a [`gitlab-cluster.json`](#the-gitlab-clusterjson-file)
 file is created on the node. The file overrides Geo role settings in `gitlab.rb`
 when you reconfigure.
 
-#### Promoting a **secondary** site with a Patroni standby cluster
+#### Promoting a secondary site with a Patroni standby cluster
 
-1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
-
-   - To promote the secondary site to primary:
-
-     ```shell
-     sudo gitlab-ctl geo promote
-     ```
-
-   - To promote the secondary site to primary **without any further confirmation**:
-
-     ```shell
-     sudo gitlab-ctl geo promote --force
-     ```
-
-1. SSH into each Rails node on your **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the secondary site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -288,17 +274,31 @@ when you reconfigure.
      sudo gitlab-ctl geo promote --force
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used
-   previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
+1. SSH into each Rails node on your secondary site and run one of the following commands:
 
-#### Promoting a **secondary** site with an external PostgreSQL database
+   - To promote the secondary site to primary:
+
+     ```shell
+     sudo gitlab-ctl geo promote
+     ```
+
+   - To promote the secondary site to primary **without any further confirmation**:
+
+     ```shell
+     sudo gitlab-ctl geo promote --force
+     ```
+
+1. Verify you can connect to the newly-promoted primary site using the URL used
+   previously for the secondary site.
+1. If successful, the secondary site is now promoted to the primary site.
+
+#### Promoting a secondary site with an external PostgreSQL database
 
 The `gitlab-ctl geo promote` command can be used in conjunction with an external PostgreSQL database.
 In this case, you must first manually promote the replica database associated
-with the **secondary** site:
+with the secondary site:
 
-1. Promote the replica database associated with the **secondary** site. This
+1. Promote the replica database associated with the secondary site. This
    sets the database to read-write. The instructions vary depending on where your database is hosted:
    - [Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
    - [Azure PostgreSQL](https://learn.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal#stop-replication)
@@ -325,7 +325,7 @@ with the **secondary** site:
      sudo -u $PG_SUPERUSER $PG_CTL_BINARY -D $PG_DATA_DIRECTORY promote
      ```
 
-1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the secondary site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -339,7 +339,7 @@ with the **secondary** site:
      sudo gitlab-ctl geo promote --force
      ```
 
-1. SSH into each Rails node on your **secondary** site and run one of the following commands:
+1. SSH into each Rails node on your secondary site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -353,25 +353,25 @@ with the **secondary** site:
      sudo gitlab-ctl geo promote --force
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used
-   previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
+1. Verify you can connect to the newly-promoted primary site using the URL used
+   previously for the secondary site.
+1. If successful, the secondary site is now promoted to the primary site.
 
 ### (Optional) Updating the primary domain DNS record
 
-Update DNS records for the primary domain to point to the **secondary** site.
+Update DNS records for the primary domain to point to the secondary site.
 This removes the need to update all references to the primary domain, for example
 changing Git remotes and API URLs.
 
-1. SSH into the **secondary** site and login as root:
+1. SSH into the secondary site and login as root:
 
    ```shell
    sudo -i
    ```
 
 1. Update the primary domain's DNS record. After updating the primary domain's
-   DNS records to point to the **secondary** site, edit `/etc/gitlab/gitlab.rb` on the
-   **secondary** site to reflect the new URL:
+   DNS records to point to the secondary site, edit `/etc/gitlab/gitlab.rb` on the
+   secondary site to reflect the new URL:
 
    ```ruby
    # Change the existing external_url configuration
@@ -382,27 +382,27 @@ changing Git remotes and API URLs.
    > Changing `external_url` does not prevent access through the old secondary URL, as
    > long as the secondary DNS records are still intact.
 
-1. Update the **secondary**'s SSL certificate:
+1. Update the secondary's SSL certificate:
 
    - If you use the [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl/#enable-the-lets-encrypt-integration),
      the certificate updates automatically.
    - If you had [manually set up](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually),
-     the **secondary**'s certificate, copy the certificate from the **primary** to the **secondary**.
-     If you don't have access to the **primary**, issue a new certificate and make sure it contains
-     both the **primary** and **secondary** URLs in the subject alternative names. You can check with:
+     the secondary's certificate, copy the certificate from the primary to the secondary.
+     If you don't have access to the primary, issue a new certificate and make sure it contains
+     both the primary and secondary URLs in the subject alternative names. You can check with:
 
      ```shell
      /opt/gitlab/embedded/bin/openssl x509 -noout -dates -subject -issuer \
          -nameopt multiline -ext subjectAltName -in /etc/gitlab/ssl/new-gitlab.new-example.com.crt
      ```
 
-1. Reconfigure the **secondary** site for the change to take effect:
+1. Reconfigure the secondary site for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. Execute the command below to update the newly promoted **primary** site URL:
+1. Execute the command below to update the newly promoted primary site URL:
 
    ```shell
    gitlab-rake gitlab:geo:update_primary_node_url
@@ -411,23 +411,23 @@ changing Git remotes and API URLs.
    This command uses the changed `external_url` configuration defined
    in `/etc/gitlab/gitlab.rb`.
 
-1. Verify you can connect to the newly promoted **primary** using its URL.
+1. Verify you can connect to the newly promoted primary using its URL.
    If you updated the DNS records for the primary domain, these changes may
    not have yet propagated depending on the previous DNS records TTL.
 
-### (Optional) Add **secondary** Geo site to a promoted **primary** site
+### (Optional) Add secondary Geo site to a promoted primary site
 
-To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/_index.md).
+To bring a new secondary site online, follow the [Geo setup instructions](../setup/_index.md).
 
 ## Promoting secondary Geo replica in multi-secondary configurations
 
-If you have more than one **secondary** site and you need to promote one of them, we suggest you follow
-[Promoting a **secondary** Geo site in single-secondary configurations](#promoting-a-secondary-geo-site-in-single-secondary-configurations)
+If you have more than one secondary site and you need to promote one of them, we suggest you follow
+[Promoting a secondary Geo site in single-secondary configurations](#promoting-a-secondary-geo-site-in-single-secondary-configurations)
 and after that you also need two extra steps.
 
-### Step 1. Prepare the new **primary** site to serve one or more **secondary** sites
+### Step 1. Prepare the new primary site to serve one or more secondary sites
 
-1. SSH into the new **primary** site and login as root:
+1. SSH into the new primary site and login as root:
 
    ```shell
    sudo -i
@@ -487,9 +487,9 @@ and after that you also need two extra steps.
 
 ### Step 2. Initiate the replication process
 
-Now we need to make each **secondary** site listen to changes on the new **primary** site. To do that you need
+Now we need to make each secondary site listen to changes on the new primary site. To do that you need
 to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
-for another **primary** site. All the old replication settings are overwritten.
+for another primary site. All the old replication settings are overwritten.
 
 Existing secondary sites will all have populated databases so you may see a message like this:
 
@@ -508,54 +508,54 @@ When updating a cloud-native Geo deployment, the process for updating any node t
 
 The following sections assume you are using the `gitlab` namespace. If you used a different namespace when setting up your cluster, you should also replace `--namespace gitlab` with your namespace.
 
-### Step 1. Permanently disable the **primary** cluster
+### Step 1. Permanently disable the primary cluster
 
 > [!warning]
-> If the **primary** site goes offline, there may be data saved on the **primary** site
-> that has not been replicated to the **secondary** site. This data should be treated
+> If the primary site goes offline, there may be data saved on the primary site
+> that has not been replicated to the secondary site. This data should be treated
 > as lost if you proceed.
 
-If an outage on the **primary** site happens, you should do everything possible to
+If an outage on the primary site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
 instances, complicating recovery efforts. So to prepare for the failover, you
-must disable the **primary** site:
+must disable the primary site:
 
-- If you have access to the **primary** Kubernetes cluster, connect to it and disable the GitLab `webservice` and `Sidekiq` pods:
+- If you have access to the primary Kubernetes cluster, connect to it and disable the GitLab `webservice` and `Sidekiq` pods:
 
   ```shell
   kubectl --namespace gitlab scale deploy gitlab-geo-webservice-default --replicas=0
   kubectl --namespace gitlab scale deploy gitlab-geo-sidekiq-all-in-1-v1 --replicas=0
   ```
 
-- If you do not have access to the **primary** Kubernetes cluster, take the cluster offline and
+- If you do not have access to the primary Kubernetes cluster, take the cluster offline and
   prevent it from coming back online by any means at your disposal.
   You might need to:
 
   - Reconfigure the load balancers.
   - Change DNS records (for example, point the primary DNS record to the
-    **secondary** site to stop usage of the **primary** site).
+    secondary site to stop usage of the primary site).
   - Stop the virtual servers.
   - Block traffic through a firewall.
-  - Revoke object storage permissions from the **primary** site.
+  - Revoke object storage permissions from the primary site.
   - Physically disconnect a machine.
 
-### Step 2. Promote all **secondary** site nodes external to the cluster
+### Step 2. Promote all secondary site nodes external to the cluster
 
 > [!warning]
 > If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
 > a point-in-time recovery to the last known state.
 > Data that was created on the primary while the secondary was paused is lost.
 
-1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
+1. For each node (such as PostgreSQL or Gitaly) outside of the secondary Kubernetes cluster using the Linux
    package, SSH into the node and run one of the following commands:
 
-   - To promote the **secondary** site node external to the Kubernetes cluster to primary:
+   - To promote the secondary site node external to the Kubernetes cluster to primary:
 
      ```shell
      sudo gitlab-ctl geo promote
      ```
 
-   - To promote the **secondary** site node external to the Kubernetes cluster to primary **without any further confirmation**:
+   - To promote the secondary site node external to the Kubernetes cluster to primary **without any further confirmation**:
 
      ```shell
      sudo gitlab-ctl geo promote --force
@@ -580,7 +580,7 @@ must disable the **primary** site:
    | ---- | ------------- | ------- |
    | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/_index.md) before promotion (GitLab 16.4 and later) |
 
-### Step 3. Promote the **secondary** cluster
+### Step 3. Promote the secondary cluster
 
 1. Update the existing cluster configuration.
 
@@ -605,7 +605,7 @@ must disable the **primary** site:
             key: geo-postgresql-password
    ```
 
-   To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
+   To promote the secondary cluster to a primary cluster, update `role: secondary` to `role: primary`.
 
    If the cluster remains as a primary site, you must remove the entire `psql` section under `geo`; it refers to the tracking database. If left in place, the application identifies the node as a secondary at boot time, which causes route registration issues that break authentication when a new secondary is added with a unified URL.
 
@@ -632,17 +632,11 @@ reconnect to the database now that it's writable:
 kubectl --namespace gitlab rollout restart deployment -l app=openbao
 ```
 
-#### (Optional) Configure JWT authentication
+#### Configure JWT authentication
 
-Skip this step if you've updated DNS records for the primary domain to point to the secondary site.
-
-To reconfigure JWT authentication, you need a root token. Use the recovery key to generate one.
-For more information, see
-[Generate a root token from the recovery key](../../secrets_manager/recovery_key.md#generate-a-root-token-from-the-recovery-key).
-
-After you have a root token, reconfigure the JWT auth mount to point to the secondary domain.
-For configuration details, see
-[Geo configuration](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration).
+Update DNS records so the primary domain points to the promoted secondary site. OpenBao does not
+support failover to a secondary site that uses a different domain. For more information, see
+[Geo deployment](../../secrets_manager/_index.md#geo-deployment).
 
 #### Restore the unseal secret if needed
 

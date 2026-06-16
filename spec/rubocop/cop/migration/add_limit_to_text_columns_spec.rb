@@ -122,6 +122,33 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, feature_category:
           RUBY
         end
       end
+
+      context 'when the table creation is within a block' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            class TestTextLimits < ActiveRecord::Migration[6.0]
+              disable_ddl_transaction!
+
+              TABLES = [:table_one, :table_two, :table_three]
+              COLUMN = :name
+
+              def up
+                TABLES.each do |table_name|
+                  create_table table_name, id: false do |t|
+                    t.integer :test_id, null: false
+                    t.text COLUMN
+                      ^^^^ #{msg}
+                    t.text_limit :title, 100
+                  end
+
+                  add_column :test_text_limits, COLUMN, :text
+                  ^^^^^^^^^^ #{msg}
+                end
+              end
+            end
+          RUBY
+        end
+      end
     end
 
     context 'when text columns are defined with a limit' do
@@ -183,6 +210,33 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, feature_category:
                 add_text_limit TABLE_NAME, :email, 255
                 add_text_limit TABLE_NAME, :role, 255
                 add_text_limit TABLE_NAME, :test_id, 255
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when the table creation is within a block' do
+        it 'registers an offense' do
+          expect_no_offenses(<<~RUBY)
+            class TestTextLimits < ActiveRecord::Migration[6.0]
+              disable_ddl_transaction!
+
+              TABLES = [:table_one, :table_two, :table_three]
+              COLUMN = :name
+
+              def up
+                TABLES.each do |table_name|
+                  create_table table_name, id: false do |t|
+                    t.integer :test_id, null: false
+                    t.text COLUMN, limit: 100
+                    t.text_limit :title, limit: 100
+                  end
+
+                  add_column :test_text_limits, :new_column, :text, 100
+
+                  add_text_limit :test_text_limits, :new_column, 255
+                end
               end
             end
           RUBY

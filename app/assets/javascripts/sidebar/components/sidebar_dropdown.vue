@@ -32,6 +32,7 @@ import { PathIdSeparator } from '~/related_issues/constants';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 
 export default {
+  name: 'SidebarDropdown',
   noAttributeId,
   i18n: {
     expired: __('(expired)'),
@@ -94,6 +95,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change'],
   data() {
     return {
       attributesList: [],

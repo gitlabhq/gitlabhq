@@ -36,6 +36,7 @@ import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 const PAGE_SIZE_KEY = 'packages_page_size';
 
 export default {
+  name: 'PackageRegistryList',
   components: {
     GlButton,
     GlEmptyState,

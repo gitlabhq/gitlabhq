@@ -22,6 +22,8 @@ module Import
             return offline_export.finish!
           end
 
+          return re_enqueue if max_concurrent_exports_exceeded?
+
           process_offline_export
           re_enqueue
         end
@@ -105,6 +107,12 @@ module Import
           )
         end
         strong_memoize_attr :self_relation_exports
+
+        def max_concurrent_exports_exceeded?
+          ::BulkImports::Export
+            .for_offline_export_in_progress(offline_export)
+            .count >= ::BulkImports::Export::MAX_CONCURRENT_RELATION_EXPORTS
+        end
 
         def re_enqueue
           Import::Offline::ExportWorker.perform_in(PERFORM_DELAY, offline_export.id)

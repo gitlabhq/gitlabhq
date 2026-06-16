@@ -1,22 +1,25 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
-import { createStore } from '~/projects/commits/store';
+import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
 }));
+jest.mock('~/alert');
 
-Vue.use(Vuex);
-
+const path = '/-/autocomplete/users.json';
 const commitsPath = 'author/search/url';
+const projectId = '8';
 const currentAuthor = 'lorem';
 const authors = [
   {
@@ -34,8 +37,20 @@ const authors = [
 ];
 
 describe('Author Select', () => {
-  let store;
+  let axiosMock;
   let wrapper;
+
+  beforeAll(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.reset();
+  });
+
+  afterAll(() => {
+    axiosMock.restore();
+  });
 
   const createComponent = () => {
     setHTMLFixture(`
@@ -46,9 +61,12 @@ describe('Author Select', () => {
     `);
 
     wrapper = shallowMount(AuthorSelect, {
-      store: new Vuex.Store(store),
       propsData: {
         projectCommitsEl: document.querySelector('.js-project-commits-show'),
+      },
+      provide: {
+        commitsPath,
+        projectId,
       },
       stubs: {
         GlCollapsibleListbox,
@@ -58,9 +76,7 @@ describe('Author Select', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
-    store.actions.fetchAuthors = jest.fn();
-
+    axiosMock.onGet(path).reply(HTTP_STATUS_OK, []);
     createComponent();
   });
 
@@ -94,10 +110,6 @@ describe('Author Select', () => {
   });
 
   describe('listbox', () => {
-    beforeEach(() => {
-      store.state.commitsPath = commitsPath;
-    });
-
     it('displays correct default text', () => {
       expect(findListbox().props('toggleText')).toBe('Author');
     });
@@ -172,31 +184,47 @@ describe('Author Select', () => {
       expect(findListbox().props('searchPlaceholder')).toBe('Search');
     });
 
-    it('fetch authors on input change', () => {
-      const authorName = 'lorem';
-      findListbox().vm.$emit('search', authorName);
+    it('fetch authors on input change', async () => {
+      await waitForPromises();
+      axiosMock.resetHistory();
+      jest.useFakeTimers();
 
-      expect(store.actions.fetchAuthors).toHaveBeenCalledWith(expect.anything(), authorName);
+      findListbox().vm.$emit('search', 'lorem');
+      jest.runAllTimers();
+      jest.useRealTimers();
+      await waitForPromises();
+
+      expect(axiosMock.history.get).toContainEqual(
+        expect.objectContaining({
+          params: expect.objectContaining({ search: 'lorem' }),
+        }),
+      );
     });
   });
 
-  describe('listbox list', () => {
-    beforeEach(() => {
-      store.state.commitsAuthors = authors;
-
+  describe('fetchAuthors', () => {
+    it('populates the listbox with authors on success', async () => {
+      axiosMock.reset();
+      axiosMock.onGet(path).reply(HTTP_STATUS_OK, authors);
       createComponent();
-    });
 
-    it('has a "Any Author" as the first list item', () => {
-      expect(findListboxItems().at(0).text()).toBe('Any Author');
-    });
+      await waitForPromises();
 
-    it('displays the project authors', () => {
       expect(findListboxItems()).toHaveLength(authors.length + 1);
+      expect(findListboxItems().at(0).text()).toBe('Any Author');
+      expect(findListboxItems().at(1).text()).toContain(currentAuthor);
     });
 
-    it("display the author's name", () => {
-      expect(findListboxItems().at(1).text()).toContain(currentAuthor);
+    it('creates an alert on error', async () => {
+      axiosMock.reset();
+      axiosMock.onGet(path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred fetching the project authors.',
+      });
     });
   });
 });

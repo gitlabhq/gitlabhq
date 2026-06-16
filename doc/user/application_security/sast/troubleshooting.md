@@ -14,7 +14,7 @@ title: Troubleshooting SAST
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, see the
-[GitLab Support](https://about.gitlab.com/support/) page for ways to get help.
+[GitLab Support](https://support.gitlab.com/) page for ways to get help.
 
 ## Debug-level logging
 
@@ -177,7 +177,7 @@ To try to resolve this issue you can:
 
 ### Exception analyzing
 
-If your job log contains a message of the form "Exception analyzing ... using detector ..." followed by a Java stack trace, this is **not** a failure of the SAST pipeline. SpotBugs has determined that the exception is [recoverable](https://github.com/spotbugs/spotbugs/blob/5ebd4439f6f8f2c11246b79f58c44324718d39d8/spotbugs/src/main/java/edu/umd/cs/findbugs/FindBugs2.java#L1200), logged it, and resumed analysis.
+If your job log contains a message of the form "Exception analyzing ... using detector ..." followed by a Java stack trace, this is not a failure of the SAST pipeline. SpotBugs has determined that the exception is [recoverable](https://github.com/spotbugs/spotbugs/blob/5ebd4439f6f8f2c11246b79f58c44324718d39d8/spotbugs/src/main/java/edu/umd/cs/findbugs/FindBugs2.java#L1200), logged it, and resumed analysis.
 
 The first "..." part of the message is the class being analyzed - if it's not part of your project, you can likely ignore the message and the stack trace that follows.
 

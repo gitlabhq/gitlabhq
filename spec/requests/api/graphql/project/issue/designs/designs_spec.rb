@@ -165,7 +165,7 @@ RSpec.describe 'Getting designs related to an issue', feature_category: :design_
 
     describe 'viewing a design board at a particular version' do
       let_it_be(:issue) { design.issue }
-      let_it_be(:second_design, reload: true) { create(:design, :with_smaller_image_versions, issue: issue, versions_count: 1) }
+      let_it_be_with_reload(:second_design) { create(:design, :with_smaller_image_versions, issue: issue, versions_count: 1) }
       let_it_be(:deleted_design) { create(:design, :with_versions, issue: issue, deleted: true, versions_count: 1) }
 
       let(:all_versions) { issue.design_versions.ordered.reverse }

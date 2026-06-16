@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :package_registry do
-  let_it_be(:package_file) { build(:package_file, :nuget) }
+  let_it_be(:package_file, freeze: false) { build(:package_file, :nuget) }
   let(:package_zip_file) { Zip::File.new(package_file.file) }
   let(:service) { described_class.new(package_zip_file) }
 

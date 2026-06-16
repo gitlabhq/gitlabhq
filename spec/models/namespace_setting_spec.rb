@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
   let(:namespace_settings) { group.namespace_settings }
 
@@ -37,8 +37,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     describe '.for_namespaces' do
       let(:setting_1) { create(:namespace_settings, namespace: namespace_1) }
       let(:setting_2) { create(:namespace_settings, namespace: namespace_2) }
-      let_it_be(:namespace_1) { create(:namespace) }
-      let_it_be(:namespace_2) { create(:namespace) }
+      let_it_be(:namespace_1, freeze: false) { create(:namespace) }
+      let_it_be(:namespace_2, freeze: false) { create(:namespace) }
 
       it 'returns namespace setting for the given projects' do
         expect(described_class.for_namespaces(namespace_1)).to contain_exactly(setting_1)
@@ -137,10 +137,10 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
       end
 
       context 'with separate namespace hierarchies' do
-        let_it_be(:other_root) { create(:group) }
-        let_it_be(:other_child) { create(:group, parent: other_root) }
-        let_it_be(:other_root_settings) { other_root.namespace_settings }
-        let_it_be(:other_child_settings) { other_child.namespace_settings }
+        let_it_be(:other_root, freeze: false) { create(:group) }
+        let_it_be(:other_child, freeze: false) { create(:group, parent: other_root) }
+        let_it_be(:other_root_settings, freeze: false) { other_root.namespace_settings }
+        let_it_be(:other_child_settings, freeze: false) { other_child.namespace_settings }
 
         before do
           root_settings.update!(archived: true)
@@ -161,9 +161,9 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     describe '.next_namespace_ids' do
-      let_it_be(:namespace_1) { create(:namespace, :with_namespace_settings) }
-      let_it_be(:namespace_2) { create(:namespace, :with_namespace_settings) }
-      let_it_be(:namespace_3) { create(:namespace, :with_namespace_settings) }
+      let_it_be(:namespace_1, freeze: false) { create(:namespace, :with_namespace_settings) }
+      let_it_be(:namespace_2, freeze: false) { create(:namespace, :with_namespace_settings) }
+      let_it_be(:namespace_3, freeze: false) { create(:namespace, :with_namespace_settings) }
 
       let(:namespace_ids) { [namespace_1.id, namespace_2.id, namespace_3.id].sort }
 
@@ -440,8 +440,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     context 'when a group has parent groups' do
-      let_it_be(:grandparent) { create(:group) }
-      let_it_be(:parent) { create(:group, parent: grandparent) }
+      let_it_be(:grandparent, freeze: false) { create(:group) }
+      let_it_be(:parent, freeze: false) { create(:group, parent: grandparent) }
       let_it_be_with_refind(:group) { create(:group, parent: parent) }
 
       it 'returns true when no parent has disabled emails' do
@@ -481,9 +481,9 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
       end
 
       context 'when there are parents' do
-        let_it_be(:grandparent) { create(:group) }
-        let_it_be(:parent)      { create(:group, parent: grandparent) }
-        let_it_be(:group)       { create(:group, parent: parent) }
+        let_it_be(:grandparent, freeze: false) { create(:group) }
+        let_it_be(:parent, freeze: false)      { create(:group, parent: grandparent) }
+        let_it_be(:group, freeze: false)       { create(:group, parent: parent) }
 
         before do
           grandparent.update!(runner_registration_enabled: grandparent_runner_registration_enabled)
@@ -506,8 +506,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     describe '#runner_registration_enabled?' do
       subject(:group_setting) { group.runner_registration_enabled? }
 
-      let_it_be(:settings) { create(:namespace_settings) }
-      let_it_be(:group) { create(:group, namespace_settings: settings) }
+      let_it_be(:settings, freeze: false) { create(:namespace_settings) }
+      let_it_be(:group, freeze: false) { create(:group, namespace_settings: settings) }
 
       before do
         group.update!(runner_registration_enabled: group_runner_registration_enabled)
@@ -551,8 +551,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     subject(:group_setting) { group.allow_runner_registration_token? }
 
     context 'when a top-level group' do
-      let_it_be(:settings) { create(:namespace_settings) }
-      let_it_be(:group) { create(:group, namespace_settings: settings) }
+      let_it_be(:settings, freeze: false) { create(:namespace_settings) }
+      let_it_be(:group, freeze: false) { create(:group, namespace_settings: settings) }
 
       before do
         group.update!(allow_runner_registration_token: allow_runner_registration_token)
@@ -927,7 +927,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
   end
 
   describe '#granular_tokens_enforced?' do
-    let_it_be(:namespace_settings) { build(:namespace_settings) }
+    let_it_be(:namespace_settings, freeze: false) { build(:namespace_settings) }
     let(:enforced_after) { Date.current }
 
     subject(:granular_tokens_enforced?) { namespace_settings.granular_tokens_enforced? }
@@ -982,6 +982,26 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
         let(:enforced_after) { 1.day.ago.to_date }
 
         it { is_expected.to be true }
+      end
+    end
+  end
+
+  describe '#clear_granular_tokens_enforced_after' do
+    before do
+      namespace_settings.update!(
+        enforce_granular_tokens: true,
+        granular_tokens_enforced_after: Date.current
+      )
+    end
+
+    context 'when enforce_granular_tokens is set to `false`' do
+      before do
+        namespace_settings.enforce_granular_tokens = false
+      end
+
+      it 'clears the `granular_tokens_enforced_after` date' do
+        expect { namespace_settings.save! }
+          .to change { namespace_settings.granular_tokens_enforced_after }.to(nil)
       end
     end
   end

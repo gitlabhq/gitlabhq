@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:doc) { Nokogiri::HTML.fragment('') }
-  let_it_be(:filter_instance) { described_class.new(doc, project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:doc, freeze: false) { Nokogiri::HTML.fragment('') }
+  let_it_be(:filter_instance, freeze: false) { described_class.new(doc, project: project) }
 
   describe '#data_attributes_for' do
     it 'is not an XSS vector' do

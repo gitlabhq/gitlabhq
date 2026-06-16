@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workflow do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
 
   let(:merge_request) { create(:merge_request, :simple, author: user2, assignees: [user2]) }
   let(:project) { merge_request.project }

@@ -7,7 +7,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
 
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:username) { personal_access_token.user.username }
-  let_it_be(:helper) { Class.new.include(described_class).new }
+  let_it_be(:helper, freeze: false) { Class.new.include(described_class).new }
 
   let(:password) { personal_access_token.token }
 

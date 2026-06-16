@@ -40,7 +40,12 @@ class Compare
     [@project, :compare, diff_refs.hash]
   end
 
-  def commits
+  def commits(limit: nil)
+    if limit
+      decorated_commits = Commit.decorate(@compare.commits(limit: limit), project)
+      return CommitCollection.new(project, decorated_commits)
+    end
+
     @commits ||= begin
       decorated_commits = Commit.decorate(@compare.commits, project)
       CommitCollection.new(project, decorated_commits)

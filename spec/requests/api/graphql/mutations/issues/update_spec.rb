@@ -197,5 +197,19 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
       let(:resource) { issue }
       let(:mutation_name) { 'updateIssue' }
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :update_issue,
+          { project_path: project.full_path, iid: issue.iid.to_s, title: 'new title' },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

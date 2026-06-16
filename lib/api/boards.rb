@@ -23,8 +23,8 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
-        desc 'Get all project boards' do
-          detail 'This feature was introduced in 8.13'
+        desc 'List all project issue boards' do
+          detail 'Lists all issue boards in a specified project.'
           success Entities::Board
           tags ['boards']
         end
@@ -37,8 +37,8 @@ module API
           present paginate(board_parent.boards.with_associations), with: Entities::Board
         end
 
-        desc 'Find a project board' do
-          detail 'This feature was introduced in 10.4'
+        desc 'Retrieve an issue board' do
+          detail 'Retrieves a specified issue board in a project.'
           success Entities::Board
           tags ['boards']
         end
@@ -48,8 +48,8 @@ module API
           present board, with: Entities::Board
         end
 
-        desc 'Create a project board' do
-          detail 'This feature was introduced in 10.4'
+        desc 'Create an issue board' do
+          detail 'Creates an issue board in a specified project.'
           success Entities::Board
           tags ['boards']
         end
@@ -63,8 +63,8 @@ module API
           create_board
         end
 
-        desc 'Update a project board' do
-          detail 'This feature was introduced in 11.0'
+        desc 'Update an issue board' do
+          detail 'Updates a specified issue board in a project.'
           success Entities::Board
           tags ['boards']
         end
@@ -78,8 +78,8 @@ module API
           update_board
         end
 
-        desc 'Delete a project board' do
-          detail 'This feature was introduced in 10.4'
+        desc 'Delete an issue board' do
+          detail 'Deletes a specified issue board in a project.'
           success Entities::Board
           tags ['boards']
         end
@@ -95,8 +95,8 @@ module API
         requires :board_id, type: Integer, desc: 'The ID of a board'
       end
       segment ':id/boards/:board_id' do
-        desc 'Get the lists of a project board' do
-          detail 'Does not include `done` list. This feature was introduced in 8.13'
+        desc 'List all board lists in an issue board' do
+          detail 'Lists all lists in a specified issue board. Does not include `open` and `closed` lists.'
           success Entities::List
           tags ['boards']
         end
@@ -109,8 +109,8 @@ module API
           present paginate(board_lists), with: Entities::List
         end
 
-        desc 'Get a list of a project board' do
-          detail 'This feature was introduced in 8.13'
+        desc 'Retrieve a board list' do
+          detail 'Retrieves a specified list from an issue board.'
           success Entities::List
           tags ['boards']
         end
@@ -123,8 +123,8 @@ module API
           present board_lists.find(params[:list_id]), with: Entities::List
         end
 
-        desc 'Create a new board list' do
-          detail 'This feature was introduced in 8.13'
+        desc 'Create an issue board list' do
+          detail 'Creates an issue board list.'
           success Entities::List
           tags ['boards']
         end
@@ -138,8 +138,8 @@ module API
           create_list
         end
 
-        desc 'Moves a board list to a new position' do
-          detail 'This feature was introduced in 8.13'
+        desc 'Update position of a board list' do
+          detail 'Updates the position of a specified list from an issue board.'
           success Entities::List
           tags ['boards']
         end
@@ -156,8 +156,8 @@ module API
           move_list(list)
         end
 
-        desc 'Delete a board list' do
-          detail 'This feature was introduced in 8.13'
+        desc 'Delete a list from an issue board' do
+          detail 'Deletes a specified list from an issue board.'
           success Entities::List
           tags ['boards']
         end

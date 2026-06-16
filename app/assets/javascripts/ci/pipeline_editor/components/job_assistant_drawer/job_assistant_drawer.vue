@@ -16,6 +16,7 @@ import ArtifactsAndCacheItem from './accordion_items/artifacts_and_cache_item.vu
 import RulesItem from './accordion_items/rules_item.vue';
 
 export default {
+  name: 'JobAssistantDrawer',
   i18n,
   components: {
     GlDrawer,

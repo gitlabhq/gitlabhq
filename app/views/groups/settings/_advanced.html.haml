@@ -27,7 +27,7 @@
               title: group_url_error_message,
               maxlength: ::Namespace::URL_MAX_LENGTH,
               "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-        = f.submit s_('GroupSettings|Change group URL'), class: 'btn-danger', pajamas_button: true
+        = f.submit s_('GroupSettings|Change group URL'), class: 'btn-danger-secondary', pajamas_button: true
 
   = render 'groups/settings/transfer', group: @group
   = render 'shared/groups_projects/settings/restore', context: @group, tracking_event: 'trigger_restore_on_group'

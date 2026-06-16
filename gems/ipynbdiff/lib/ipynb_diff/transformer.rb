@@ -26,7 +26,7 @@ module IpynbDiff
     def validate_notebook(notebook)
       notebook_json = Oj::Parser.usual.parse(notebook)
 
-      return notebook_json if notebook_json&.key?('cells')
+      return repair_string_encoding(notebook_json) if notebook_json&.key?('cells')
 
       raise InvalidNotebookError
     rescue EncodingError, Oj::ParseError, JSON::ParserError
@@ -108,6 +108,27 @@ module IpynbDiff
       }.to_yaml
 
       as_yaml.split("\n").map { |l| ___(nil, l) }.append(___(nil, '---'), ___)
+    end
+
+    private
+
+    # Oj decodes JSON surrogate-pair escapes into 6 bytes of CESU-8 tagged as
+    # UTF-8, which crashes downstream String#rstrip etc. with
+    # Encoding::CompatibilityError. Transcode invalid strings from CESU-8 to
+    # UTF-8 so supplementary-plane characters (emoji, ...) are preserved.
+    def repair_string_encoding(value)
+      case value
+      when String
+        return value if value.valid_encoding?
+
+        value.dup.force_encoding(Encoding::CESU_8).encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
+      when Array
+        value.map { |v| repair_string_encoding(v) }
+      when Hash
+        value.transform_values { |v| repair_string_encoding(v) }
+      else
+        value
+      end
     end
   end
 end

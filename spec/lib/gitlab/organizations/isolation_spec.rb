@@ -60,5 +60,13 @@ RSpec.describe Gitlab::Organizations::Isolation, feature_category: :organization
         end
       end
     end
+
+    context 'when checking data_isolation feature flag raises an error' do
+      before do
+        allow(Feature).to receive(:enabled?).and_raise(Exception)
+      end
+
+      it { is_expected.to be false }
+    end
   end
 end

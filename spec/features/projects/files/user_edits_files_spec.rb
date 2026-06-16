@@ -239,7 +239,10 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       visit(project2_tree_path_root_ref)
 
       click_link('.gitignore')
+
       click_button 'Edit'
+      expect(page).to have_content 'Edit single file'
+
       click_link_or_button 'Web IDE'
 
       expect_fork_prompt
@@ -249,6 +252,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       expect_fork_status
 
       click_button 'Edit'
+      expect(page).to have_content 'Edit single file'
 
       new_tab = window_opened_by { click_link_or_button 'Web IDE' }
 

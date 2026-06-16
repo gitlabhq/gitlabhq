@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Commits::CreateService, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, refind: true) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
   let(:params) { {} }
 
   before do

@@ -9,8 +9,6 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
-  let_it_be(:guest) { create_user(:guest) }
-  let_it_be(:reporter) { create_user(:reporter) }
   let_it_be(:developer) { create_user(:developer) }
   let_it_be_with_reload(:plan_limits) { create(:plan_limits, :default_plan) }
 
@@ -34,6 +32,18 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
       expect(response).to be_error
       expect(response.reason).to eq(:conflict)
       expect(response.message).to eq('Another update to this commit status is in progress')
+    end
+  end
+
+  context 'when the ref is ambiguous' do
+    before do
+      allow(project).to receive(:protected_for?).and_raise(Repository::AmbiguousRefError)
+    end
+
+    it 'returns a bad_request ServiceResponse without raising', :aggregate_failures do
+      expect(response).to be_error
+      expect(response.http_status).to eq(:bad_request)
+      expect(response.message).to include('Ref is ambiguous')
     end
   end
 
@@ -89,6 +99,17 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
             expect(job.ref).not_to be_empty
             expect(job.pipeline_id).to be_present
             expect(job.pipeline_id).not_to eq(pipeline.id)
+          end
+
+          context 'when ci_pipeline_archival_setting feature flag is disabled for the project' do
+            before do
+              stub_feature_flags(ci_pipeline_archival_setting: false)
+            end
+
+            it 'reuses the existing archived pipeline' do
+              expect(response).to be_success
+              expect(job.pipeline_id).to eq(pipeline.id)
+            end
           end
         end
 
@@ -571,7 +592,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
   context 'when updating a protected ref' do
     let(:params) { { state: 'running', ref: 'master' } }
 
-    before do
+    before_all do
       create(:protected_branch, project: project, name: 'master')
     end
 

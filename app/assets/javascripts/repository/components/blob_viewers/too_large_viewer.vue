@@ -3,6 +3,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'TooLargeViewer',
   components: { GlSprintf, GlLink },
   props: {
     blob: {

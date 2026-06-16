@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlAlert } from '@gitlab/ui';
 import { createWrapper, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -1146,6 +1146,33 @@ describe('diffs/components/app', () => {
       await nextTick();
       Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
       expect(quoteReplyHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('error display', () => {
+    const findErrorAlert = () => wrapper.findComponent(GlAlert);
+
+    it('displays Gitaly error message when gitalyErrorMessage is set', async () => {
+      const gitalyErrorMessage = 'The git server, Gitaly, is not available at this time.';
+      createComponent();
+      store.batchLoadingState = 'error';
+      store.gitalyErrorMessage = gitalyErrorMessage;
+      await nextTick();
+
+      const alert = findErrorAlert();
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toContain(gitalyErrorMessage);
+    });
+
+    it('displays generic error message when gitalyErrorMessage is not set', async () => {
+      createComponent();
+      store.batchLoadingState = 'error';
+      store.gitalyErrorMessage = null;
+      await nextTick();
+
+      const alert = findErrorAlert();
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toContain("Couldn't load some or all of the changes");
     });
   });
 });

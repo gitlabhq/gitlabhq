@@ -1,0 +1,6 @@
+---
+event: Mcp::ServerSettingsChangedEvent
+description: Published when a group's MCP server namespace settings (e.g. `mcp_server_enabled`)
+  change, so consumers such as the MCP server cache can be refreshed.
+feature_category: mcp_server
+ee_only: true

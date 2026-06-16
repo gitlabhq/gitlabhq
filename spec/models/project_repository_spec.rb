@@ -14,7 +14,7 @@ RSpec.describe ProjectRepository, feature_category: :source_code_management do
 
   it_behaves_like 'shardable scopes' do
     let_it_be(:record_1) { create(:project_repository) }
-    let_it_be(:record_2, reload: true) { create(:project_repository) }
+    let_it_be_with_reload(:record_2) { create(:project_repository) }
   end
 
   describe '.find_project' do

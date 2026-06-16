@@ -22,6 +22,7 @@ RSpec.describe "GitLab Flavored Markdown", feature_category: :markdown do
     let(:commit) { project.commit }
 
     before do
+      stub_feature_flags(project_commits_refactor: false)
       project.repository.commit_files(
         user,
         branch_name: 'master',

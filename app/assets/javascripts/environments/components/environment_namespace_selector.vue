@@ -12,6 +12,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import getNamespacesQuery from '../graphql/queries/k8s_namespaces.query.graphql';
 
 export default {
+  name: 'EnvironmentNamespaceSelector',
   components: {
     GlFormGroup,
     GlCollapsibleListbox,

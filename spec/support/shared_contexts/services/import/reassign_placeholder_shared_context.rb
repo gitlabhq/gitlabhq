@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with reassign placeholder user records' do
-  let_it_be(:namespace) { create(:group) }
+  let_it_be(:namespace, freeze: false) { create(:group) }
   let_it_be_with_reload(:import_user) { create(:user, :import_user) }
 
-  let_it_be(:reassigned_by_user) { create(:user, email: "user1@gitlab.com") }
-  let_it_be(:reassign_to_user) { create(:user, email: "user2@gitlab.com") }
+  let_it_be(:reassigned_by_user, freeze: false) { create(:user, email: "user1@gitlab.com") }
+  let_it_be(:reassign_to_user, freeze: false) { create(:user, email: "user2@gitlab.com") }
   let_it_be_with_reload(:source_user) do
     create(:import_source_user,
       :reassignment_in_progress,
@@ -24,8 +24,8 @@ RSpec.shared_context 'with reassign placeholder user records' do
     )
   end
 
-  let_it_be(:placeholder_user_id) { source_user.placeholder_user_id }
-  let_it_be(:other_placeholder_user_id) { other_source_user.placeholder_user_id }
+  let_it_be(:placeholder_user_id, freeze: false) { source_user.placeholder_user_id }
+  let_it_be(:other_placeholder_user_id, freeze: false) { other_source_user.placeholder_user_id }
 
   # MergeRequests
   let_it_be_with_reload(:merge_requests) { create_list(:merge_request, 3, author_id: placeholder_user_id) }
@@ -67,9 +67,9 @@ RSpec.shared_context 'with reassign placeholder user records' do
   # Ci::Builds - schema is gitlab_ci
   let_it_be_with_reload(:ci_build) { create(:ci_build, user_id: placeholder_user_id) }
 
-  let_it_be(:today) { Date.current }
+  let_it_be(:today, freeze: false) { Date.current }
 
-  let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: project.namespace) }
+  let_it_be(:project_bot, freeze: false) { create(:user, :project_bot, bot_namespace: project.namespace) }
 
   subject(:service) { described_class.new(source_user) }
 

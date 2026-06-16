@@ -20,7 +20,7 @@ For advanced searching and filtering of this deprecation information, try
 [REST API deprecations](../api/rest/deprecations.md) are documented separately.
 
 {{< icon name="rss" >}} **To be notified of upcoming breaking changes**,
-add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+add this URL to your RSS feed reader: `https://docs.gitlab.com/releases/breaking-changes.xml`
 
 <!-- vale off -->
 <!--
@@ -70,6 +70,16 @@ For more information, see the relevant:
 - [Migration guide](https://docs.gitlab.com/user/compliance/compliance_pipelines/#pipeline-execution-policies-migration).
 - [Blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
 
+### Dependency Proxy for packages is deprecated
+
+- Announced in GitLab 19.1
+- Removal in GitLab 20.0
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/601255).
+
+The Dependency Proxy for packages is deprecated and will be removed in a future release. This feature has been replaced by the **Maven virtual registry**, which provides improved performance, better upstream proxying and caching capabilities, and deeper integration with GitLab's package management workflows.
+
+**Action required:** Migrate your package manager configuration from the Dependency Proxy for packages endpoints to the Maven virtual registry. See the [Maven virtual registry documentation](https://docs.gitlab.com/user/packages/virtual_registry/maven/) for setup instructions.
+
 ### Design Management deprecated
 
 - Announced in GitLab 18.6
@@ -86,6 +96,35 @@ In GitLab 20.0, GitLab will begin deprecation of Design Management. Design Manag
 
 The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 20.0
 we will enforce keyset pagination on these APIs.
+
+### Go module proxy (experimental) is deprecated
+
+- Announced in GitLab 19.1
+- Removal in GitLab 20.0
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/592132).
+
+The experimental Go module proxy in the GitLab package registry is deprecated and will be removed in GitLab 20.0. This feature never progressed beyond experimental status.
+
+It will be replaced by a **Go virtual registry**, which will provide a more complete and reliable experience for resolving Go modules through GitLab.
+
+**Action required:** If you are using GitLab as a Go module proxy, plan to migrate to the Go virtual registry once it becomes available. In the interim, you may configure an alternative proxy (such as `proxy.golang.org` or a self-hosted solution) by updating your `GOPROXY` environment variable.
+
+### Legacy `retry:when` failure reasons `stuck_or_timeout_failure` and `job_execution_timeout` are deprecated
+
+- Announced in GitLab 19.1
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/602133).
+
+In GitLab 19.0, the generic `stuck_or_timeout_failure` and `job_execution_timeout` job failure reasons were split into a set of more specific reasons (for example, `stuck_pending_no_matching_runners`, `no_updates_running`, and `server_timeout_running`). New builds are no longer recorded with the old reasons.
+
+These old reasons remain valid values for [`retry:when`](https://docs.gitlab.com/ci/yaml/#retrywhen) in `.gitlab-ci.yml`. To avoid silently breaking existing configuration, when you list `stuck_or_timeout_failure` or `job_execution_timeout` under `retry:when`, GitLab treats them as aliases that match the full set of specific reasons that replaced them. GitLab also shows a non-blocking warning in CI lint output and the pipeline editor when these values are used.
+
+Both values are deprecated and scheduled for removal in GitLab 20.0.
+
+**Action required:** Update `retry:when` to use the specific failure reasons instead:
+
+- Replace `stuck_or_timeout_failure` with the relevant subset of `stuck_pending_with_matching_runners`, `stuck_pending_no_matching_runners`, `no_updates_running`, and `no_updates_canceling`.
+- Replace `job_execution_timeout` with `server_timeout_running` and/or `server_timeout_canceling`.
 
 ### Legacy group-level audit event streaming destination GraphQL APIs
 
@@ -173,6 +212,28 @@ We recommend to migrate to the bundled Envoy Gateway and Gateway API.
 Alternatively, you can deploy and configure an
 [external Ingress controller and class](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings).
 
+## GitLab 19.5
+
+### Bitbucket Cloud issue and wiki import
+
+- Announced in GitLab 19.1
+- Removal in GitLab 19.5 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/601061).
+
+Atlassian is [sunsetting Bitbucket Cloud Issues and Wikis](https://community.atlassian.com/forums/Bitbucket-articles/Announcing-sunset-of-Bitbucket-Issues-and-Wikis/ba-p/3193882)
+on August 20, 2026. After that date, the underlying API endpoints are removed
+and GitLab can no longer import issues or wikis from Bitbucket Cloud.
+
+In GitLab 19.3, the Bitbucket Cloud importer is planned to handle the API
+removal gracefully and skip issues and wikis. In GitLab 19.5, the import
+code for issues and wikis is planned to be removed.
+
+Users who need their Bitbucket issue data should complete imports before the
+August 20, 2026 due date, or use the
+[CSV import](https://docs.gitlab.com/user/project/issues/csv_import/)
+after exporting from Bitbucket. For wikis, clone the Bitbucket wiki repository
+locally before the due date.
+
 ## GitLab 19.3
 
 ### The `glab duo ask` command
@@ -186,6 +247,33 @@ and will be removed in GitLab 19.3. The command generates Git commands from
 natural language descriptions.
 
 Use [`glab duo cli`](https://docs.gitlab.com/cli/duo/cli/) instead for AI-powered assistance in the CLI.
+
+## GitLab 19.2
+
+### Advanced Search is Required for Self Managed Ultimate Tier
+
+- Announced in GitLab 18.11
+- Removal in GitLab 19.2
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/582417).
+
+We now **_require_** that Self Managed Ultimate Tier customers use
+[Advanced Search](https://docs.gitlab.com/integration/advanced_search/elasticsearch/)
+to get full access to the full suite of Ultimate Tier functionality. GitLab will not break without
+Advanced Search, however not all Ultimate Tier functionality will be available unless
+it is enabled.
+
+We previously **_recommended_** enabling Advanced Search as a way to improve query
+performance for certain features. We have now established that building full functionality
+that requires Advanced Search is fundamental to meeting the pace and quality of delivery
+that we require.
+
+No existing functionality will break or degrade by not using Advanced Search. This is a
+forward-looking change only: new functionality may not be supported without Advanced
+Search. Ultimate Tier GA features may now have a hard requirement on Advanced Search
+for full or partial functionality.
+
+Guidance for enabling Advanced Search can be
+[found in our documentation](https://docs.gitlab.com/user/search/advanced_search/).
 
 ## GitLab 19.1
 
@@ -473,8 +561,9 @@ Only GitLab Self-Managed instances using an external Redis 6 deployment must mig
 
 See the following resources for migrating an external Redis 6 deployment:
 
-- **AWS ElastiCache**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
-  [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
+- **AWS ElastiCache**: ElastiCache for Redis 7.2 is not available on AWS. Migrate to
+  [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/).
+  For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
 - **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
   [GCP Memorystore documentation](https://cloud.google.com/memorystore/docs/redis/supported-versions).
 - **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can
@@ -622,7 +711,7 @@ Prometheus 2.x that is bundled with the Linux package is deprecated and will be 
 the latest Prometheus 3.x release in GitLab 18.6.
 
 Prometheus 3 contains some potentially breaking changes such as a new log format and stricter
-header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/3.0/migration).
+header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/latest/migration/).
 
 This change does not impact GitLab Helm chart installations.
 
@@ -2563,7 +2652,7 @@ Any API calls to change the rate limits for `user_email_lookup_limit` must use `
 - Removal in GitLab 16.6 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420678).
 
-Starting in 16.6, projects that are **public** or **internal** will no longer authorize job token requests from projects that are **not** on the project's allowlist when [**Limit access to this project**](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist) is enabled.
+Starting in 16.6, projects that are **public** or **internal** will no longer authorize job token requests from projects that are not on the project's allowlist when [**Limit access to this project**](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist) is enabled.
 
 If you have [public or internal](https://docs.gitlab.com/user/public_access/#change-project-visibility) projects with the **Limit access to this project** setting enabled, you must add any projects which make job token requests to your project's allowlist for continued authorization.
 
@@ -2999,7 +3088,6 @@ GitLab self-monitoring gives instance administrators the tools to monitor the he
 
 - Announced in GitLab 15.8
 - Removal in GitLab 16.0
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/4895).
 
 The GitLab.com importer was deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
 
@@ -3250,7 +3338,6 @@ We are deprecating the `operations_access_level` field in the Projects API. This
 
 - Announced in GitLab 15.8
 - Removal in GitLab 16.0
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/5255).
 
 The Rake task for importing bare repositories (`gitlab:import:repos`) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
 
@@ -3478,7 +3565,6 @@ This change affects the following REST and GraphQL API endpoints:
 
 - Announced in GitLab 15.7
 - Removal in GitLab 16.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/4894).
 
 The Phabricator task importer is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
 

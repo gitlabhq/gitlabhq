@@ -9,7 +9,7 @@ RSpec.describe DisallowTwoFactorForGroupWorker, feature_category: :groups_and_pr
   it "updates group" do
     described_class.new.perform(group.id)
 
-    expect(group.reload.require_two_factor_authentication).to eq(false)
+    expect(group.reload.require_two_factor_authentication).to be(false)
   end
 
   it "updates group members", :sidekiq_inline do
@@ -17,6 +17,6 @@ RSpec.describe DisallowTwoFactorForGroupWorker, feature_category: :groups_and_pr
 
     described_class.new.perform(group.id)
 
-    expect(user.reload.require_two_factor_authentication_from_group).to eq(false)
+    expect(user.reload.require_two_factor_authentication_from_group).to be(false)
   end
 end

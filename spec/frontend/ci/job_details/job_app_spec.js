@@ -539,7 +539,7 @@ describe('Job App', () => {
   describe('archived job', () => {
     beforeEach(() => setupAndMount({ jobData: { archived: true } }));
 
-    it('renders warning about job being archived', () => {
+    it('renders notice about job being archived', () => {
       expect(findArchivedJob().exists()).toBe(true);
     });
   });
@@ -547,7 +547,7 @@ describe('Job App', () => {
   describe('non-archived job', () => {
     beforeEach(() => setupAndMount());
 
-    it('does not warning about job being archived', () => {
+    it('does not render notice about job being archived', () => {
       expect(findArchivedJob().exists()).toBe(false);
     });
   });

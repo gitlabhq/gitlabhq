@@ -10,7 +10,10 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_3) { create(:user) }
   let_it_be(:closed_by_user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
+  let_it_be(:identity, freeze: false) do
+    create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket)
+  end
+
   let_it_be(:identity_2) { create(:identity, user: user_2, extern_uid: 'user_2', provider: :bitbucket) }
   let_it_be(:closed_by_identity) { create(:identity, user: closed_by_user, extern_uid: '{345}', provider: :bitbucket) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }

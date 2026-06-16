@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Issuable::Clone::AttributesRewriter do
   let_it_be(:group) { create(:group, parent: parent_group) }
   let_it_be(:project1) { create(:project, :public, group: group) }
   let_it_be(:project2) { create(:project, :public, group: group) }
-  let_it_be(:original_issue) { create(:issue, project: project1) }
+  let_it_be(:original_issue, freeze: false) { create(:issue, project: project1) }
 
   let(:new_attributes) { described_class.new(user, original_issue, project2).execute }
 

@@ -1,7 +1,5 @@
 <script>
 import {
-  GlButton,
-  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
@@ -11,9 +9,8 @@ import { __ } from '~/locale';
 import CsvImportExportButtons from './csv_import_export_buttons.vue';
 
 export default {
+  name: 'MoreActionsDropdown',
   components: {
-    GlButton,
-    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
@@ -77,30 +74,14 @@ export default {
     v-gl-tooltip.top.viewport="moreActionsTooltip"
     block
     placement="bottom-end"
+    no-caret
+    icon="ellipsis_v"
+    text-sr-only
+    category="tertiary"
+    :toggle-text="$options.i18n.toggleText"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >
-    <template #toggle>
-      <div class="gl-min-h-7">
-        <gl-button
-          class="gl-w-full @md/panel:!gl-hidden"
-          button-text-classes="gl-flex gl-justify-between gl-w-full"
-          category="secondary"
-          :aria-label="$options.i18n.toggleText"
-        >
-          <span>{{ $options.i18n.toggleText }}</span>
-          <gl-icon class="dropdown-chevron" name="chevron-down" />
-        </gl-button>
-        <gl-button
-          class="!gl-hidden @md/panel:!gl-flex"
-          category="tertiary"
-          icon="ellipsis_v"
-          :aria-label="$options.i18n.toggleText"
-          :title="$options.i18n.toggleText"
-        />
-      </div>
-    </template>
-
     <template v-if="exportCsvPath">
       <csv-import-export-buttons
         v-if="isSignedIn"

@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::BaseFormatter, feature_category: :importers do
-  let_it_be(:project) { create(:project, import_type: 'gitea', namespace: create(:namespace, path: 'octocat')) }
+  let_it_be(:project, freeze: false) do
+    create(:project, import_type: 'gitea', namespace: create(:namespace, path: 'octocat'))
+  end
+
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }

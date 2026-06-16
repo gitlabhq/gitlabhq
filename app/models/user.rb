@@ -143,6 +143,9 @@ class User < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def update_tracked_fields!(request)
     return if Gitlab::Database.read_only?
+    # No-op on frozen records: production records are never frozen,
+    # so this only guards frozen shared test fixtures from a lazy write.
+    return if frozen?
 
     update_tracked_fields(request)
 
@@ -259,6 +262,7 @@ class User < ApplicationRecord
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy
+  has_many :oauth_consents, class_name: 'Authn::OauthConsent', inverse_of: :user, dependent: :destroy
   has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
@@ -1531,11 +1535,18 @@ class User < ApplicationRecord
     otp_secret_expires_at.past?
   end
 
+  # Centralised location while transitioning from Feature Flag to
+  # Application Setting.
+  # TODO: Remove after https://gitlab.com/gitlab-org/gitlab/-/work_items/599948
+  def email_otp_available?
+    ::Feature.enabled?(:email_based_mfa, self) || ::Gitlab::CurrentSettings.email_otp_enabled?
+  end
+
   def email_based_otp_required?
     # Ensure that `email_otp_required_after` is set to a valid state.
     set_email_otp_required_after_based_on_restrictions(save: true)
 
-    Feature.enabled?(:email_based_mfa, self) &&
+    email_otp_available? &&
       email_otp_required_after.present? && email_otp_required_after <= Time.zone.now
   end
 
@@ -2638,10 +2649,14 @@ class User < ApplicationRecord
   end
 
   def can_admin_organization?(organization)
-    can?(:admin_organization, organization)
+    can?(:update_organization, organization)
   end
 
   def update_two_factor_requirement
+    # No-op on frozen records: production records are never frozen,
+    # so this only guards frozen shared test fixtures from a lazy write.
+    return if frozen?
+
     periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 
     self.require_two_factor_authentication_from_group = periods.any?
@@ -2762,10 +2777,6 @@ class User < ApplicationRecord
   # Avoid migrations only building user preference object when needed.
   def user_preference
     super.presence || build_user_preference
-  end
-
-  def pending_todo_for(target)
-    todos.find_by(target: target, state: :pending)
   end
 
   def password_expired?
@@ -2982,6 +2993,15 @@ class User < ApplicationRecord
 
   def composite_identity_enforced!
     @composite_identity_enforced_override = true
+  end
+
+  def authorization_user
+    return self unless service_account? && composite_identity_enforced?
+
+    identity = ::Gitlab::Auth::Identity.currently_linked
+    return self unless identity&.linked?
+
+    identity.scoped_user
   end
 
   def immutable_username_with_enforced_composite_identity

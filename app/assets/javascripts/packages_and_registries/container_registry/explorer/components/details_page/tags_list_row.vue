@@ -17,6 +17,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
@@ -31,13 +32,15 @@ import {
   MORE_ACTIONS_TEXT,
   COPY_IMAGE_PATH_TITLE,
   SIGNATURE_BADGE_TOOLTIP,
-  DOCKER_MEDIA_TYPE,
-  OCI_MEDIA_TYPE,
+  DOCKER_LIST_MEDIA_TYPE,
+  OCI_INDEX_MEDIA_TYPE,
   MinimumAccessLevelText,
 } from '../../constants/index';
+import PlatformBadgesRow from './platform_badges_row.vue';
 import SignatureDetailsModal from './signature_details_modal.vue';
 
 export default {
+  name: 'TagsListRow',
   components: {
     GlSprintf,
     GlFormCheckbox,
@@ -52,10 +55,12 @@ export default {
     SignatureDetailsModal,
     GlPopover,
     ImmutableBadge,
+    PlatformBadgesRow,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -154,6 +159,13 @@ export default {
     showManifestMediaType() {
       return !this.isInvalidTag && this.tag.mediaType;
     },
+    showManifestPlatforms() {
+      return (
+        !this.isInvalidTag &&
+        this.isMultiPlatformImage &&
+        this.glFeatures.containerRegistryDisplaySupportedPlatforms
+      );
+    },
     signatures() {
       const referrers = this.tag.referrers || [];
       // All referrers should be signatures, but we'll filter by signature artifact types as a sanity check.
@@ -161,8 +173,10 @@ export default {
         ({ artifactType }) => artifactType === 'application/vnd.dev.cosign.artifact.sig.v1+json',
       );
     },
-    isDockerOrOciMediaType() {
-      return this.tag.mediaType === DOCKER_MEDIA_TYPE || this.tag.mediaType === OCI_MEDIA_TYPE;
+    isMultiPlatformImage() {
+      return (
+        this.tag.mediaType === DOCKER_LIST_MEDIA_TYPE || this.tag.mediaType === OCI_INDEX_MEDIA_TYPE
+      );
     },
     isProtected() {
       return (
@@ -264,7 +278,7 @@ export default {
     </template>
 
     <template #left-secondary>
-      <gl-badge v-if="isDockerOrOciMediaType" data-testid="index-badge">
+      <gl-badge v-if="isMultiPlatformImage" data-testid="index-badge">
         {{ s__('ContainerRegistry|index') }}
       </gl-badge>
 
@@ -342,6 +356,9 @@ export default {
           </template>
         </gl-sprintf>
       </details-row>
+    </template>
+    <template v-if="showManifestPlatforms" #details-supported-platforms>
+      <platform-badges-row :tag="tag" data-testid="manifest-platforms-row" />
     </template>
     <template v-if="showConfigDigest" #details-configuration-digest>
       <details-row icon="cloud-gear" data-testid="configuration-detail">

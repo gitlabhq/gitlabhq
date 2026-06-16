@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeline, feature_category: :importers do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity, pipeline_name: described_class) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, :project_entity, project: project) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity, pipeline_name: described_class) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let_it_be(:policy) do
+  let_it_be(:policy, freeze: false) do
     {
       'created_at' => '2019-12-13 13:45:04 UTC',
       'updated_at' => '2019-12-14 13:45:04 UTC',

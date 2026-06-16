@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
-  let_it_be(:entity) do
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       :project_entity,
@@ -17,21 +17,23 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
     )
   end
 
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:issue_note) { create(:note, noteable: issue, project: project) }
-  let_it_be(:merge_request_note) { create(:note, noteable: merge_request, project: project) }
-  let_it_be(:system_note) { create(:note, project: project, system: true, noteable: issue) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+  let_it_be(:issue_note, freeze: false) { create(:note, noteable: issue, project: project) }
+  let_it_be(:merge_request_note, freeze: false) { create(:note, noteable: merge_request, project: project) }
+  let_it_be(:system_note, freeze: false) { create(:note, project: project, system: true, noteable: issue) }
 
-  let_it_be(:random_project) { create(:project) }
-  let_it_be(:random_issue) { create(:issue, project: random_project) }
-  let_it_be(:random_merge_request) { create(:merge_request, source_project: random_project) }
-  let_it_be(:random_issue_note) { create(:note, noteable: random_issue, project: random_project) }
-  let_it_be(:random_mr_note) { create(:note, noteable: random_merge_request, project: random_project) }
-  let_it_be(:random_system_note) { create(:note, system: true, noteable: random_issue, project: random_project) }
+  let_it_be(:random_project, freeze: false) { create(:project) }
+  let_it_be(:random_issue, freeze: false) { create(:issue, project: random_project) }
+  let_it_be(:random_merge_request, freeze: false) { create(:merge_request, source_project: random_project) }
+  let_it_be(:random_issue_note, freeze: false) { create(:note, noteable: random_issue, project: random_project) }
+  let_it_be(:random_mr_note, freeze: false) { create(:note, noteable: random_merge_request, project: random_project) }
+  let_it_be(:random_system_note, freeze: false) do
+    create(:note, system: true, noteable: random_issue, project: random_project)
+  end
 
   let(:delay) { described_class::DELAY }
 

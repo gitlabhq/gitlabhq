@@ -84,6 +84,15 @@ export default {
       const defaultGutterWidth = 96;
       return { marginLeft: `${this.$refs.lineNumbers?.offsetWidth || defaultGutterWidth}px` };
     },
+    // Pin the raw `<code>` to `totalLines` × line-height so the in-flow layer
+    // matches the overlay and the overlay's trailing box can't overhang
+    // into `.file-content` (which would spawn a spurious second scrollbar).
+    rawCodeStyling() {
+      return {
+        ...this.codeStyling,
+        minHeight: `calc(${this.totalLines} * var(--source-line-height))`,
+      };
+    },
   },
   watch: {
     shouldHighlight: {
@@ -112,6 +121,17 @@ export default {
     handleChunkAppear() {
       this.hasAppeared = true;
       this.$emit('appear');
+    },
+    // Forward a raw-layer pointer event to the hljs span at the same coords.
+    forwardEventToHighlight({ type, clientX, clientY }) {
+      const overlay = this.$refs.highlightOverlay;
+      if (!overlay) return;
+      overlay.removeAttribute('inert');
+      const target = document
+        .elementsFromPoint(clientX, clientY)
+        .find((el) => overlay.contains(el));
+      if (target) target.dispatchEvent(new MouseEvent(type, { bubbles: true, clientX, clientY }));
+      overlay.setAttribute('inert', '');
     },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
@@ -178,8 +198,8 @@ export default {
       @disappear="() => $emit('disappear')"
     >
       <pre
-        class="code highlight gl-m-0 gl-w-full !gl-overflow-visible !gl-border-none !gl-p-0 gl-leading-0"
-      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line !gl-whitespace-pre-wrap gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+        class="code highlight gl-relative gl-m-0 gl-w-full !gl-overflow-visible !gl-border-none !gl-p-0 gl-leading-0"
+      ><code v-once class="line gl-relative gl-z-1 !gl-whitespace-pre !gl-bg-transparent !gl-text-transparent" :style="rawCodeStyling" data-testid="content" @click="forwardEventToHighlight" @mouseover="forwardEventToHighlight" @mouseout="forwardEventToHighlight" v-text="rawContent"></code><code v-if="shouldHighlight" ref="highlightOverlay" v-safe-html="highlightedContent" :style="codeStyling" class="gl-absolute gl-left-0" inert></code></pre>
     </gl-intersection-observer>
   </div>
 </template>

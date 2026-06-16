@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { joinPaths, buildURLwithRefType } from '~/lib/utils/url_utility';
 
 export default {
+  name: 'ParentRow',
   components: {
     GlLoadingIcon,
   },

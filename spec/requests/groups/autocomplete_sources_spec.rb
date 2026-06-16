@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'groups autocomplete', feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be_with_reload(:group) { create(:group, :private, developers: user) }
 
   before do

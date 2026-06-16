@@ -22,15 +22,19 @@ export default {
       default: null,
     },
   },
+  emits: ['clickFile'],
   data() {
     return {
       currentFileHash: '',
     };
   },
   computed: {
-    ...mapState(useDiffsView, ['totalFilesCount']),
+    ...mapState(useDiffsView, ['totalFilesCount', 'singleFileMode']),
     ...mapState(useDiffsList, ['loadedFiles']),
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    treeLoadedFiles() {
+      return this.singleFileMode ? null : this.loadedFiles;
+    },
   },
   methods: {
     clickFile(file) {
@@ -48,7 +52,7 @@ export default {
   <diffs-file-tree
     v-if="fileBrowserVisible"
     floating-resize
-    :loaded-files="loadedFiles"
+    :loaded-files="treeLoadedFiles"
     :total-files-count="totalFilesCount"
     :group-blobs-list-items="groupBlobsListItems"
     :current-diff-file-id="currentFileHash"

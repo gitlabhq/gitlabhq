@@ -22,11 +22,12 @@ import (
 // for active workflow runners. It tracks all active runners to ensure they can be
 // properly terminated during server shutdown.
 type Handler struct {
-	rails    *api.API
-	rdb      *redis.Client
-	backend  http.Handler
-	upgrader websocket.Upgrader
-	runners  sync.Map // map[*runner]bool
+	rails               *api.API
+	rdb                 *redis.Client
+	backend             http.Handler
+	upgrader            websocket.Upgrader
+	runners             sync.Map // map[*runner]bool
+	stopWorkflowTimeout time.Duration
 }
 
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
@@ -92,7 +93,12 @@ func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
-	return newRunner(conn, h.rails, h.backend, r, duoWorkflowConfig, h.rdb)
+	runner, err := newRunner(conn, h.rails, h.backend, r, duoWorkflowConfig, h.rdb)
+	if err != nil {
+		return nil, err
+	}
+	runner.stopWorkflowTimeout = h.stopWorkflowTimeout
+	return runner, nil
 }
 
 func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, err error) {

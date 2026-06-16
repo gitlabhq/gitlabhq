@@ -7,11 +7,33 @@ module Gitlab
         module Cleanup
           class Kind < Base
             def run
+              uninstall_external_services
               remove_password_secret
               remove_hook_configmap
             end
 
             private
+
+            def helm
+              @helm ||= Helm::Client.new
+            end
+
+            def uninstall_external_services
+              Services::Garage.new(
+                kubeclient: kubeclient, helm: helm, namespace: namespace,
+                release_name: Configurations::Kind::GARAGE_RELEASE_SUFFIX
+              ).uninstall
+
+              Services::CloudNativePG.new(
+                kubeclient: kubeclient, helm: helm, namespace: namespace,
+                cluster_name: Configurations::Kind::CNPG_CLUSTER_SUFFIX
+              ).uninstall
+
+              Services::Valkey.new(
+                kubeclient: kubeclient, helm: helm, namespace: namespace,
+                release_name: Configurations::Kind::VALKEY_RELEASE_SUFFIX
+              ).uninstall
+            end
 
             # Remove admin password secret
             #

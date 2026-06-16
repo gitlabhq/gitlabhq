@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
   let(:is_super_sidebar) { false }
@@ -147,6 +147,21 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
           _('Graph'),
           _('Repository graph')
       end
+    end
+  end
+
+  describe 'Feature Library metadata' do
+    before do
+      project.project_feature.update!(analytics_access_level: ProjectFeature::ENABLED)
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      items = subject.renderable_items
+      serialized = items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
     end
   end
 end

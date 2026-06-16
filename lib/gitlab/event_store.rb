@@ -18,7 +18,8 @@ module Gitlab
       Subscriptions::NamespacesSubscriptions,
       Subscriptions::MlSubscriptions,
       Subscriptions::PagesSubscriptions,
-      Subscriptions::WorkItemsSubscriptions
+      Subscriptions::WorkItemsSubscriptions,
+      Subscriptions::FeatureSubscriptions
     ].freeze
 
     class << self

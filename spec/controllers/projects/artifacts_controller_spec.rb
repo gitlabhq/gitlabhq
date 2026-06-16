@@ -8,7 +8,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
   let(:user) { project.first_owner }
   let_it_be(:project) { create(:project, :repository, :public) }
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create(
       :ci_pipeline,
       project: project,

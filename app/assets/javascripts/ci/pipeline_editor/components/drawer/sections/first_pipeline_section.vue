@@ -7,6 +7,7 @@ import { pipelineEditorTrackingOptions } from '../../../constants';
 import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
+  name: 'FirstPipelineSection',
   i18n: {
     title: s__('PipelineEditorTutorial|Run your first pipeline'),
     firstParagraph: s__(

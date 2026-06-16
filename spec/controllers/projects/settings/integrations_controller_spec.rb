@@ -38,6 +38,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
+      expect(assigns(:hide_search_settings)).to be(true)
     end
 
     it 'does not show the GitLab for Slack app' do

@@ -29,7 +29,7 @@ module QA
         end
 
         def double_click_code_token(text)
-          within_element('content') do
+          within_element('blob-viewer-file-content') do
             find('span', text: text, match: :first).double_click
           end
         end

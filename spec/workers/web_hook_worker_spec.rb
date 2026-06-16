@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe WebHookWorker, feature_category: :integrations do
   include AfterNextHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project_hook) { create(:project_hook, project: project) }
-  let_it_be(:data) { { foo: 'bar' } }
-  let_it_be(:hook_name) { 'push_hooks' }
-  let_it_be(:response) { ServiceResponse.success }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project_hook, freeze: false) { create(:project_hook, project: project) }
+  let_it_be(:data, freeze: false) { { foo: 'bar' } }
+  let_it_be(:hook_name, freeze: false) { 'push_hooks' }
+  let_it_be(:response, freeze: false) { ServiceResponse.success }
 
   describe '#perform' do
     it 'delegates to WebHookService' do
@@ -24,7 +24,7 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
     end
 
     context 'when the hook has a signing token' do
-      let_it_be(:project_hook) { create(:project_hook, :signing_token, project: project) }
+      let_it_be(:project_hook, freeze: false) { create(:project_hook, :signing_token, project: project) }
 
       it 'logs signing_token_present as true' do
         expect_next(WebHookService, project_hook, data.with_indifferent_access, hook_name, anything,
@@ -60,10 +60,10 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
     it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
     context 'when object is wiki_page' do
-      let_it_be(:container) { project }
-      let_it_be(:wiki) { container.wiki }
-      let_it_be(:content) { 'test content' }
-      let_it_be(:wiki_page) { create(:wiki_page, container: container, content: content) }
+      let_it_be(:container, freeze: false) { project }
+      let_it_be(:wiki, freeze: false) { container.wiki }
+      let_it_be(:content, freeze: false) { 'test content' }
+      let_it_be(:wiki_page, freeze: false) { create(:wiki_page, container: container, content: content) }
 
       let(:object_kind) { 'wiki_page' }
       let(:slug) { wiki_page.slug }

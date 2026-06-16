@@ -10,7 +10,7 @@ RSpec.describe Environments::Job, feature_category: :environment_management do
   it { is_expected.to belong_to(:deployment).optional }
 
   describe 'validations' do
-    let_it_be(:job_environment) { create(:job_environment) }
+    let_it_be(:job_environment, freeze: false) { create(:job_environment) }
 
     subject { job_environment }
 
@@ -24,5 +24,12 @@ RSpec.describe Environments::Job, feature_category: :environment_management do
     it { is_expected.to validate_length_of(:expanded_environment_name).is_at_most(255) }
     it { is_expected.to allow_value('valid-environment-name').for(:expanded_environment_name) }
     it { is_expected.not_to allow_value('/invalid/environment/name').for(:expanded_environment_name) }
+  end
+
+  describe '#pipeline' do
+    it_behaves_like 'a partition-pruned pipeline association' do
+      # .reload resets the :pipeline association preloaded by the factory's default block
+      let(:related_resource) { create(:job_environment, pipeline: pipeline).reload }
+    end
   end
 end

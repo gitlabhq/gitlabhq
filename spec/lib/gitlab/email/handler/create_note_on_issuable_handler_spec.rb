@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
 
   let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo', incoming_email_token: 'auth_token') }
   let_it_be(:namespace) { create(:namespace, path: 'gitlabhq') }
-  let_it_be(:project)   { create(:project, :public, namespace: namespace, path: 'gitlabhq') }
+  let_it_be(:project, freeze: false) { create(:project, :public, namespace: namespace, path: 'gitlabhq') }
 
   let!(:noteable) { create(:issue, project: project) }
   let(:email_raw) { email_fixture('emails/valid_note_on_issuable.eml') }
@@ -43,6 +43,17 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
     end
 
     it_behaves_like 'checks permissions on noteable examples'
+  end
+
+  context 'when everything is fine' do
+    before do
+      setup_attachment
+    end
+
+    it_behaves_like 'an incoming email handler that logs its execution' do
+      let(:expected_log_namespace) { project.project_namespace }
+      let(:expected_additional_log_data) { { Labkit::Fields::GL_PROJECT_ID => project.id } }
+    end
   end
 
   def email_fixture(path)

@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { TREE_ITEM_KIND_ICONS, TREE_ITEM_STATUS_ICONS } from '~/environments/constants';
 
 export default {
+  name: 'KubernetesTreeItem',
   components: {
     GlIcon,
   },

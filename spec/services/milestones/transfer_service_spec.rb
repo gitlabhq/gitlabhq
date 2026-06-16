@@ -7,21 +7,19 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
     subject(:service) { described_class.new(user, old_group, project) }
 
     context 'when old_group is present' do
-      let(:user) { create(:admin) }
-      let(:new_group) { create(:group) }
-      let(:old_group) { create(:group) }
-      let(:project) { create(:project, namespace: old_group) }
-      let(:group_milestone) { create(:milestone, :closed, group: old_group) }
-      let(:group_milestone2) { create(:milestone, group: old_group) }
-      let(:project_milestone) { create(:milestone, project: project) }
-      let!(:issue_with_group_milestone) { create(:issue, project: project, milestone: group_milestone) }
-      let!(:issue_with_project_milestone) { create(:issue, project: project, milestone: project_milestone) }
-      let!(:mr_with_group_milestone) { create(:merge_request, source_project: project, source_branch: 'branch-1', milestone: group_milestone) }
-      let!(:mr_with_project_milestone) { create(:merge_request, source_project: project, source_branch: 'branch-2', milestone: project_milestone) }
+      let_it_be(:user) { create(:admin) }
+      let_it_be(:new_group) { create(:group, maintainers: user) }
+      let_it_be(:old_group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, namespace: old_group, maintainers: user) }
+      let_it_be(:group_milestone) { create(:milestone, :closed, group: old_group) }
+      let_it_be(:group_milestone2) { create(:milestone, group: old_group) }
+      let_it_be(:project_milestone) { create(:milestone, project: project) }
+      let_it_be_with_reload(:issue_with_group_milestone) { create(:issue, project: project, milestone: group_milestone) }
+      let_it_be_with_reload(:issue_with_project_milestone) { create(:issue, project: project, milestone: project_milestone) }
+      let_it_be_with_reload(:mr_with_group_milestone) { create(:merge_request, source_project: project, source_branch: 'branch-1', milestone: group_milestone) }
+      let_it_be_with_reload(:mr_with_project_milestone) { create(:merge_request, source_project: project, source_branch: 'branch-2', milestone: project_milestone) }
 
       before do
-        new_group.add_maintainer(user)
-        project.add_maintainer(user)
         # simulate project transfer
         project.update!(group: new_group)
       end
@@ -42,9 +40,12 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
         end
 
         context 'when milestone is from an ancestor group' do
-          let(:old_group_ancestor) { create(:group) }
-          let(:old_group) { create(:group, parent: old_group_ancestor) }
-          let(:group_milestone) { create(:milestone, group: old_group_ancestor) }
+          let_it_be(:old_group_ancestor) { create(:group) }
+          let_it_be(:old_group) { create(:group, parent: old_group_ancestor) }
+          let_it_be(:group_milestone) { create(:milestone, group: old_group_ancestor) }
+          let_it_be_with_reload(:project) { create(:project, namespace: old_group, maintainers: user) }
+          let_it_be_with_reload(:issue_with_group_milestone) { create(:issue, project: project, milestone: group_milestone) }
+          let_it_be_with_reload(:mr_with_group_milestone) { create(:merge_request, source_project: project, source_branch: 'branch-3', milestone: group_milestone) }
 
           it 'recreates the missing group milestones at project level' do
             expect { service.execute }.to change { project.milestones.count }.by(1)
@@ -128,7 +129,7 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
       end
 
       context 'with existing milestone at the new group level' do
-        let!(:existing_milestone) { create(:milestone, group: new_group, title: group_milestone.title) }
+        let_it_be(:existing_milestone) { create(:milestone, group: new_group, title: group_milestone.title) }
 
         it 'does not create a new milestone' do
           expect { service.execute }.not_to change { project.milestones.count }
@@ -150,9 +151,9 @@ RSpec.describe Milestones::TransferService, feature_category: :team_planning do
   end
 
   context 'when old_group is not present' do
-    let(:user)        { create(:admin) }
-    let(:old_group)   { project.group }
-    let(:project)     { create(:project, namespace: user.namespace) }
+    let_it_be(:user)    { create(:admin) }
+    let_it_be(:project) { create(:project, namespace: user.namespace) }
+    let(:old_group)     { project.group }
 
     it 'returns nil' do
       expect(described_class.new(user, old_group, project).execute).to be_nil

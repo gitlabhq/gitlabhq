@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::ReferenceParser::CommitParser, feature_category: :source_code_management do
   include ReferenceParserHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
   let(:link) { empty_html_link }
 

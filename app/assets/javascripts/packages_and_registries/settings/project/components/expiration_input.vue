@@ -6,6 +6,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 
 export default {
+  name: 'ExpirationInput',
   components: {
     GlFormGroup,
     GlFormInputGroup,

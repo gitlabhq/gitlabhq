@@ -100,6 +100,21 @@ module RapidDiffs
       offset.nil?
     end
 
+    def empty_state_type
+      :no_changes if !lazy? && diffs_count == 0
+    end
+
+    def diff_collection
+      return [linked_file] if linked_file
+
+      result = diffs_slice || []
+      file_by_file_mode? ? result.first(1) : result
+    end
+
+    def file_by_file_mode?
+      !!@current_user&.view_diffs_file_by_file
+    end
+
     attr_accessor :offset
 
     protected

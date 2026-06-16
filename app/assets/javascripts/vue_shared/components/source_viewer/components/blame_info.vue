@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { calculateBlameOffset } from '../utils';
 import BlameCommitInfo from './blame_commit_info.vue';
 
 export default {
@@ -73,20 +74,22 @@ export default {
     this.updateContainerHeight();
   },
   methods: {
-    calculateLastItemHeight(currentOffset) {
-      return this.containerHeight - currentOffset;
-    },
     calculateCommitHeight(commitInfo, nextCommitInfo) {
       const currentOffset = parseInt(commitInfo.blameOffset, 10) || 0;
+      const { lineno, span } = commitInfo;
 
-      if (!nextCommitInfo) {
-        return this.calculateLastItemHeight(currentOffset);
+      // Bound the indicator to this group's range. If its end line is in an
+      // unloaded chunk, render nothing rather than spanning across the gap.
+      if (span) {
+        const groupEndOffset = calculateBlameOffset(lineno + span);
+        if (groupEndOffset === null) return 0;
+        return Math.max(parseInt(groupEndOffset, 10) - currentOffset, 0);
       }
 
-      const nextOffset = parseInt(nextCommitInfo.blameOffset, 10) || 0;
-      const calculatedHeight = nextOffset - currentOffset;
+      if (!nextCommitInfo) return this.containerHeight - currentOffset;
 
-      return calculatedHeight > 0 ? calculatedHeight : 0;
+      const nextOffset = parseInt(nextCommitInfo.blameOffset, 10) || 0;
+      return Math.max(nextOffset - currentOffset, 0);
     },
     updateContainerHeight() {
       if (this.$el) {

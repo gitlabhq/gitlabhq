@@ -17,6 +17,7 @@ import { formatAncestors } from '~/work_items/utils';
 import { workItemTask } from '../../mock_data';
 import {
   workItemAncestorsQueryResponse,
+  workItemAncestorsFeaturesQueryResponse,
   workItemEmptyAncestorsQueryResponse,
   workItemThreeAncestorsQueryResponse,
   workItemInaccessibleAncestorsQueryResponse,
@@ -107,6 +108,7 @@ describe('WorkItemAncestors', () => {
   it('calls the work item updated subscription', () => {
     expect(workItemAncestorsUpdatedSubscriptionHandler).toHaveBeenCalledWith({
       id: workItemTask.id,
+      useWorkItemFeatures: false,
     });
   });
 
@@ -185,4 +187,45 @@ describe('WorkItemAncestors', () => {
       });
     });
   });
+
+  describe.each`
+    state         | flagEnabled | response                                  | provide
+    ${'disabled'} | ${false}    | ${workItemAncestorsQueryResponse}         | ${{}}
+    ${'enabled'}  | ${true}     | ${workItemAncestorsFeaturesQueryResponse} | ${{ glFeatures: { workItemFeaturesField: true } }}
+  `(
+    'when the workItemFeaturesField feature flag is $state',
+    ({ flagEnabled, response, provide }) => {
+      let queryHandler;
+
+      beforeEach(async () => {
+        queryHandler = jest.fn().mockResolvedValue(response);
+        wrapper = createComponent({
+          ancestorsQueryHandler: queryHandler,
+          options: { provide },
+        });
+        await waitForPromises();
+      });
+
+      it('passes useWorkItemFeatures to the query', () => {
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: workItemTask.id,
+          useWorkItemFeatures: flagEnabled,
+        });
+      });
+
+      it('passes useWorkItemFeatures to the subscription', () => {
+        expect(workItemAncestorsUpdatedSubscriptionHandler).toHaveBeenCalledWith({
+          id: workItemTask.id,
+          useWorkItemFeatures: flagEnabled,
+        });
+      });
+
+      it('renders ancestors', () => {
+        expect(findDisclosureHierarchy().exists()).toBe(true);
+        expect(findDisclosureHierarchy().props('items')).toEqual(
+          expect.objectContaining(formatAncestors(response.data.workItem)),
+        );
+      });
+    },
+  );
 });

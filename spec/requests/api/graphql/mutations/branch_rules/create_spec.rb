@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
   include GraphqlHelpers
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:current_user, reload: true) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:current_user) { create(:user) }
 
   let(:params) do
     {
@@ -37,6 +37,14 @@ RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
   context 'when the user can create a branch rules' do
     before_all do
       project.add_maintainer(current_user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_branch_rule do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:branch_rule_create, params, 'errors') }
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
 
     it 'creates the protected branch' do

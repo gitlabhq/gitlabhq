@@ -96,7 +96,7 @@ export default {
       return this.triggerer?.username;
     },
     triggererUrl() {
-      return this.triggerer?.webUrl;
+      return this.triggerer?.webPath;
     },
     timeagoText() {
       return this.isFinished(this.deployment)

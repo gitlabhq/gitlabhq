@@ -104,7 +104,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
 
       describe '#build!' do
         subject(:context) do
-          snippets.each(&builder.method(:with_snippet))
+          snippets.each { |snippet| builder.with_snippet(snippet) }
           builder.build!
         end
 

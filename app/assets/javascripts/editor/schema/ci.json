@@ -2147,8 +2147,36 @@
           "description": "Retry when the job got stuck or timed out."
         },
         {
+          "const": "stuck_pending_with_matching_runners",
+          "description": "Retry when the job is stuck pending with matching runners."
+        },
+        {
+          "const": "stuck_pending_no_matching_runners",
+          "description": "Retry when the job is stuck pending with no matching runners."
+        },
+        {
+          "const": "no_updates_running",
+          "description": "Retry when the running job stopped sending status updates to the server."
+        },
+        {
+          "const": "no_updates_canceling",
+          "description": "Retry when the canceling job stopped sending status updates to the server."
+        },
+        {
           "const": "runner_system_failure",
           "description": "Retry if there is a runner system failure (for example, job setup failed)."
+        },
+        {
+          "const": "runner_configuration_error",
+          "description": "Retry if the job failed because of a CI or runner configuration error, such as an invalid image or tag, an incompatible pull policy, or a misconfigured runner."
+        },
+        {
+          "const": "runner_external_dependency_failure",
+          "description": "Retry if the runner could not reach an external dependency, such as an image registry, because of a network or DNS problem."
+        },
+        {
+          "const": "runner_interrupted",
+          "description": "Retry if the runner was interrupted while the job was running, for example by a restart, shutdown, or host reclamation."
         },
         {
           "const": "runner_unsupported",
@@ -2161,6 +2189,14 @@
         {
           "const": "job_execution_timeout",
           "description": "Retry if the script exceeded the maximum execution time set for the job."
+        },
+        {
+          "const": "server_timeout_running",
+          "description": "Retry if the running job timed out on the server."
+        },
+        {
+          "const": "server_timeout_canceling",
+          "description": "Retry if the canceling job timed out on the server."
         },
         {
           "const": "archived_failure",
@@ -3040,12 +3076,24 @@
           ],
           "oneOf": [
             {
-              "required": ["step"],
-              "not": {"required": ["func"]}
+              "required": [
+                "step"
+              ],
+              "not": {
+                "required": [
+                  "func"
+                ]
+              }
             },
             {
-                "required": ["func"],
-                "not": {"required": ["step"]}
+              "required": [
+                "func"
+              ],
+              "not": {
+                "required": [
+                  "step"
+                ]
+              }
             }
           ],
           "properties": {
@@ -3170,27 +3218,40 @@
             "registry": {
               "type": "string",
               "description": "The <host>[:<port>] of the container registry server.",
-                            "examples": ["registry.gitlab.com"]
+              "examples": [
+                "registry.gitlab.com"
+              ]
             },
             "repository": {
               "type": "string",
               "description": "A path within the registry containing related OCI images. Typically the namespace, project, and image name.",
-              "examples": ["my_group/my_project/image"]
+              "examples": [
+                "my_group/my_project/image"
+              ]
             },
             "tag": {
               "type": "string",
               "description": "A pointer to the image manifest hosted in the OCI repository.",
-              "examples": ["latest", "1", "1.5", "1.5.0"]
+              "examples": [
+                "latest",
+                "1",
+                "1.5",
+                "1.5.0"
+              ]
             },
             "dir": {
               "type": "string",
               "description": "A directory inside the OCI image where the function can be found.",
-              "examples": ["/my_steps/hello_world"]
+              "examples": [
+                "/my_steps/hello_world"
+              ]
             },
             "file": {
               "type": "string",
               "description": "The name of the file that defines the function, defaults to func.yml.",
-              "examples": ["func.yml"]
+              "examples": [
+                "func.yml"
+              ]
             }
           }
         }

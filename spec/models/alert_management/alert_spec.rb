@@ -38,7 +38,7 @@ RSpec.describe AlertManagement::Alert, feature_category: :incident_management do
 
     describe 'fingerprint' do
       let_it_be(:fingerprint) { 'fingerprint' }
-      let_it_be(:project3, refind: true) { create(:project) }
+      let_it_be_with_refind(:project3) { create(:project) }
 
       let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
@@ -48,7 +48,7 @@ RSpec.describe AlertManagement::Alert, feature_category: :incident_management do
         context 'same project, various states' do
           using RSpec::Parameterized::TableSyntax
 
-          let_it_be(:existing_alert, refind: true) { create(:alert_management_alert, fingerprint: fingerprint, project: project3) }
+          let_it_be_with_refind(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
           # We are only validating uniqueness for non-resolved alerts
           where(:existing_status_event, :new_status, :valid) do

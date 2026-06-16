@@ -7,6 +7,9 @@ module Mutations
 
       include Mutations::SpamProtection
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :confidential,
         GraphQL::Types::Boolean,
         required: true,

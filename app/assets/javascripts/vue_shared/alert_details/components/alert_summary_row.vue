@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'AlertSummaryRow',
   props: {
     label: {
       type: String,

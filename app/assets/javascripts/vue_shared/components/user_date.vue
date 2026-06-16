@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { SHORT_DATE_FORMAT, DATE_FORMATS } from '../constants';
 
 export default {
+  name: 'UserDate',
   props: {
     date: {
       type: String,

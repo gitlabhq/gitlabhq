@@ -5,6 +5,9 @@ module Mutations
     class SetDueDate < Base
       graphql_name 'IssueSetDueDate'
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :due_date,
         Types::TimeType,
         required: :nullable,

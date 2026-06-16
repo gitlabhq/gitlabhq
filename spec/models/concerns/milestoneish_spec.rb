@@ -3,32 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
-  let_it_be(:author) { create(:user) }
-  let_it_be(:assignee) { create(:user) }
-  let_it_be(:non_member) { create(:user) }
-  let_it_be(:member) { create(:user) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:project, reload: true) { create_default(:project, :public, :empty_repo).freeze }
-  let_it_be(:milestone, refind: true) { create_default(:milestone, project: project) }
-  let_it_be(:label1) { create(:label) }
-  let_it_be(:label2) { create(:label) }
-  let_it_be(:issue, reload: true) { create(:work_item, milestone: milestone, assignees: [member], labels: [label1]) }
-  let_it_be(:security_issue_1, reload: true) { create(:work_item, :confidential, author: author, milestone: milestone, labels: [label2]) }
-  let_it_be(:security_issue_2, reload: true) { create(:work_item, :confidential, assignees: [assignee], milestone: milestone) }
-  let_it_be(:closed_issue_1, reload: true) { create(:work_item, :task, :closed, milestone: milestone) }
-  let_it_be(:closed_issue_2, reload: true) { create(:work_item, :closed, milestone: milestone) }
-  let_it_be(:closed_incident, reload: true) { create(:work_item, :incident, :closed, milestone: milestone) }
-  let_it_be(:closed_security_issue_1, reload: true) { create(:work_item, :confidential, :closed, author: author, milestone: milestone) }
-  let_it_be(:closed_security_issue_2, reload: true) { create(:work_item, :confidential, :closed, assignees: [assignee], milestone: milestone) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
-  let_it_be(:label_1) { create(:label, title: 'label_1', priority: 1) }
-  let_it_be(:label_2) { create(:label, title: 'label_2', priority: 2) }
-  let_it_be(:label_3) { create(:label, title: 'label_3') }
+  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be(:assignee, freeze: false) { create(:user) }
+  let_it_be(:non_member, freeze: false) { create(:user) }
+  let_it_be(:member, freeze: false) { create(:user) }
+  let_it_be(:guest, freeze: false) { create(:user) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be_with_reload(:project) { create_default(:project, :public, :empty_repo).freeze }
+  let_it_be_with_refind(:milestone) { create_default(:milestone, project: project) }
+  let_it_be(:label1, freeze: false) { create(:label) }
+  let_it_be(:label2, freeze: false) { create(:label) }
+  let_it_be_with_reload(:issue) { create(:work_item, milestone: milestone, assignees: [member], labels: [label1]) }
+  let_it_be_with_reload(:security_issue_1) { create(:work_item, :confidential, author: author, milestone: milestone, labels: [label2]) }
+  let_it_be_with_reload(:security_issue_2) { create(:work_item, :confidential, assignees: [assignee], milestone: milestone) }
+  let_it_be_with_reload(:closed_issue_1) { create(:work_item, :task, :closed, milestone: milestone) }
+  let_it_be_with_reload(:closed_issue_2) { create(:work_item, :closed, milestone: milestone) }
+  let_it_be_with_reload(:closed_incident) { create(:work_item, :incident, :closed, milestone: milestone) }
+  let_it_be_with_reload(:closed_security_issue_1) { create(:work_item, :confidential, :closed, author: author, milestone: milestone) }
+  let_it_be_with_reload(:closed_security_issue_2) { create(:work_item, :confidential, :closed, assignees: [assignee], milestone: milestone) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
+  let_it_be(:label_1, freeze: false) { create(:label, title: 'label_1', priority: 1) }
+  let_it_be(:label_2, freeze: false) { create(:label, title: 'label_2', priority: 2) }
+  let_it_be(:label_3, freeze: false) { create(:label, title: 'label_3') }
 
   before do
-    project.add_developer(member)
-    project.add_guest(guest)
+    project.add_developer(member) # -- Does not work in before_all
+    project.add_guest(guest) # -- Does not work in before_all
   end
 
   describe '#milestone_issues' do
@@ -186,11 +186,11 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     end
 
     context 'when milestone is at parent level group' do
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: parent_group) }
-      let_it_be(:project) { create(:project, :empty_repo, namespace: group) }
-      let_it_be(:milestone) { create(:milestone, group: parent_group) }
-      let_it_be(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
+      let_it_be(:parent_group, freeze: false) { create(:group) }
+      let_it_be(:group, freeze: false) { create(:group, parent: parent_group) }
+      let_it_be(:project, freeze: false) { create(:project, :empty_repo, namespace: group) }
+      let_it_be(:milestone, freeze: false) { create(:milestone, group: parent_group) }
+      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, milestone: milestone) }
 
       it 'does not return any merge request for a non member' do
         merge_requests = milestone.merge_requests_visible_to_user(non_member)

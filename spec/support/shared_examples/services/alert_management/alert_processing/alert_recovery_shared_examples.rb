@@ -28,10 +28,10 @@ RSpec.shared_examples 'processes recovery alert' do
   end
 
   context 'for an existing alert with the same fingerprint' do
-    let_it_be(:gitlab_fingerprint) { Digest::SHA1.hexdigest(fingerprint) }
+    let_it_be(:gitlab_fingerprint, freeze: false) { Digest::SHA1.hexdigest(fingerprint) }
 
     context 'which is triggered' do
-      let_it_be(:alert) { create(:alert_management_alert, :triggered, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :triggered, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
 
       it_behaves_like 'resolves an existing alert management alert'
       it_behaves_like 'creates expected system notes for alert', :recovery_alert, :resolve_alert
@@ -44,7 +44,7 @@ RSpec.shared_examples 'processes recovery alert' do
     end
 
     context 'which is ignored' do
-      let_it_be(:alert) { create(:alert_management_alert, :ignored, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :ignored, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
 
       it_behaves_like 'resolves an existing alert management alert'
       it_behaves_like 'creates expected system notes for alert', :recovery_alert, :resolve_alert
@@ -57,7 +57,7 @@ RSpec.shared_examples 'processes recovery alert' do
     end
 
     context 'which is acknowledged' do
-      let_it_be(:alert) { create(:alert_management_alert, :acknowledged, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :acknowledged, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
 
       it_behaves_like 'resolves an existing alert management alert'
       it_behaves_like 'creates expected system notes for alert', :recovery_alert, :resolve_alert
@@ -70,7 +70,7 @@ RSpec.shared_examples 'processes recovery alert' do
     end
 
     context 'which is resolved' do
-      let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :resolved, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
 
       it_behaves_like 'alerts service responds with an error and takes no actions', :bad_request
     end

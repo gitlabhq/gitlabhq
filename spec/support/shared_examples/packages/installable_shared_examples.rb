@@ -2,11 +2,11 @@
 
 RSpec.shared_examples 'installable packages' do |factory_name|
   context "for #{factory_name}", :aggregate_failures do
-    let_it_be(:default_package) { create(factory_name, :default) }
-    let_it_be(:hidden_package) { create(factory_name, :hidden) }
-    let_it_be(:processing_package) { create(factory_name, :processing) }
-    let_it_be(:error_package) { create(factory_name, :error) }
-    let_it_be(:deprecated_package) { create(factory_name, :deprecated) }
+    let_it_be(:default_package, freeze: false) { create(factory_name, :default) }
+    let_it_be(:hidden_package, freeze: false) { create(factory_name, :hidden) }
+    let_it_be(:processing_package, freeze: false) { create(factory_name, :processing) }
+    let_it_be(:error_package, freeze: false) { create(factory_name, :error) }
+    let_it_be(:deprecated_package, freeze: false) { create(factory_name, :deprecated) }
 
     subject { described_class.installable }
 

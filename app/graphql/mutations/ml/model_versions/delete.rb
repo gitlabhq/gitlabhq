@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'MlModelVersionDelete'
 
         authorize :write_model_registry
+        authorize_granular_token permissions: :delete_model_version,
+          boundary_argument: :id, boundary_type: :project
 
         argument :id, ::Types::GlobalIDType[::Ml::ModelVersion],
           required: true,

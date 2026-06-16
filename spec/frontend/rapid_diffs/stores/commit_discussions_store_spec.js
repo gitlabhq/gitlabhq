@@ -8,6 +8,7 @@ import {
 } from '~/lib/utils/http_status';
 import { useCommitDiffDiscussions } from '~/rapid_diffs/stores/commit_discussions_store';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { useDiscussions } from '~/notes/store/discussions';
 
 describe('commitDiffDiscussions store', () => {
@@ -113,9 +114,9 @@ describe('commitDiffDiscussions store', () => {
         mockAxios.onPost(endpoint).reply(HTTP_STATUS_OK, { discussion });
         useDiffDiscussions().discussionForms.push(formDiscussion);
 
-        await useCommitDiffDiscussions().createLineDiscussion(formDiscussion, {
-          position: { old_line: 1 },
-          note: 'test',
+        await useCommitDiffDiscussions().createLineDiscussion({
+          discussion: formDiscussion,
+          noteBody: { position: { old_line: 1 }, note: 'test' },
         });
 
         expect(useDiffDiscussions().discussionForms).not.toContainEqual(formDiscussion);
@@ -123,6 +124,49 @@ describe('commitDiffDiscussions store', () => {
           expect.arrayContaining([expect.objectContaining(discussion)]),
         );
       });
+
+      it.each([
+        [true, false],
+        [false, true],
+      ])(
+        'sets ignore_whitespace_change=%p on the position when showWhitespace=%p is provided',
+        async (showWhitespace, expectedIgnoreWhitespaceChange) => {
+          const formDiscussion = { id: 'form-1', isForm: true, position: { old_line: 1 } };
+          mockAxios.onPost(endpoint).reply(HTTP_STATUS_OK, { discussion: { id: 'd', notes: [] } });
+          useDiffDiscussions().discussionForms.push(formDiscussion);
+
+          await useCommitDiffDiscussions().createLineDiscussion({
+            discussion: formDiscussion,
+            noteBody: 'test',
+            showWhitespace,
+          });
+
+          expect(JSON.parse(mockAxios.history.post[0].data).note.position).toEqual({
+            old_line: 1,
+            ignore_whitespace_change: expectedIgnoreWhitespaceChange,
+          });
+        },
+      );
+
+      it.each([true, false])(
+        'falls back to the diffs view store showWhitespace=%p when none is provided',
+        async (globalShowWhitespace) => {
+          useDiffsView().showWhitespace = globalShowWhitespace;
+          const formDiscussion = { id: 'form-1', isForm: true, position: { old_line: 1 } };
+          mockAxios.onPost(endpoint).reply(HTTP_STATUS_OK, { discussion: { id: 'd', notes: [] } });
+          useDiffDiscussions().discussionForms.push(formDiscussion);
+
+          await useCommitDiffDiscussions().createLineDiscussion({
+            discussion: formDiscussion,
+            noteBody: 'test',
+          });
+
+          expect(JSON.parse(mockAxios.history.post[0].data).note.position).toEqual({
+            old_line: 1,
+            ignore_whitespace_change: !globalShowWhitespace,
+          });
+        },
+      );
     });
 
     describe('replyToDiscussion', () => {

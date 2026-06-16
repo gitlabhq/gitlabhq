@@ -203,17 +203,27 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
     let(:path) { 'some_invalid_namespace_path' }
 
     it_behaves_like 'a failed execution',
-      http_status: 401,
-      message: 'Cannot find namespace. Make sure you have sufficient permissions.'
+      http_status: 404,
+      message: 'Namespace not found. Check the group path and try again.'
   end
 
-  context 'when user does not have access' do
-    let_it_be(:other_group) { create(:group) }
+  context 'when user cannot read the namespace' do
+    let_it_be(:other_group) { create(:group, :private) }
 
     let(:path) { other_group.full_path }
 
     it_behaves_like 'a failed execution',
-      http_status: 401,
-      message: 'Cannot find namespace. Make sure you have sufficient permissions.'
+      http_status: 404,
+      message: 'Namespace not found. Check the group path and try again.'
+  end
+
+  context 'when user can read the namespace but does not have permission to link it' do
+    let_it_be(:other_group) { create(:group, developers: current_user) }
+
+    let(:path) { other_group.full_path }
+
+    it_behaves_like 'a failed execution',
+      http_status: 403,
+      message: 'You do not have permission to link this namespace. You must be a Maintainer or Owner of the group.'
   end
 end

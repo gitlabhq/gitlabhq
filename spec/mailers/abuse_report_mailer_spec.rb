@@ -10,7 +10,7 @@ RSpec.describe AbuseReportMailer do
       stub_application_setting(abuse_notification_email: 'admin@example.com')
     end
 
-    let(:report) { create(:abuse_report) }
+    let_it_be(:report) { create(:abuse_report) }
 
     subject { described_class.notify(report.id) }
 

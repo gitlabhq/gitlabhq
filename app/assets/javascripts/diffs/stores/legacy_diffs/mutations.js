@@ -391,4 +391,7 @@ export default {
       viewer.manuallyCollapsed = collapsed;
     });
   },
+  [types.SET_GITALY_ERROR_MESSAGE](gitalyErrorMessage) {
+    this.gitalyErrorMessage = gitalyErrorMessage;
+  },
 };

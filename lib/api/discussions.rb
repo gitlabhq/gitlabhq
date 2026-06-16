@@ -9,7 +9,7 @@ module API
     helpers ::RendersNotes
 
     allow_access_with_scope :ai_workflows, if: ->(request) do
-      request.get? || request.head? || request.post?
+      request.get? || request.head? || request.post? || request.put?
     end
 
     before do
@@ -186,9 +186,13 @@ module API
 
           break not_found!("Discussion") if notes.empty?
 
-          break bad_request!("Replies to system notes are not allowed.") if first_note.system?
+          discussion = first_note.to_discussion
 
-          unless first_note.part_of_discussion? || first_note.to_discussion.can_convert_to_discussion?
+          unless discussion.can_reply_to_system_note?
+            break bad_request!("Replies to system notes are not allowed.")
+          end
+
+          unless first_note.part_of_discussion? || discussion.can_convert_to_discussion?
             break bad_request!("Discussion can not be replied to.")
           end
 

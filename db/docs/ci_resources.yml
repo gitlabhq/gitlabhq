@@ -4,7 +4,8 @@ classes:
 - Ci::Resource
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores the individual slots that make up a CI/CD resource group, tracking
+  which build currently holds each slot to serialize concurrent jobs.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20950
 milestone: '12.7'
 gitlab_schema: gitlab_ci

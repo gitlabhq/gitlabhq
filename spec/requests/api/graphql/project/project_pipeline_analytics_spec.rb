@@ -58,6 +58,14 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
 
   it_behaves_like 'pipeline analytics graphql query', :project
 
+  context 'with pipeline_analytics_siphon flag disabled' do
+    before do
+      stub_feature_flags(pipeline_analytics_siphon: false)
+    end
+
+    it_behaves_like 'pipeline analytics graphql query', :project
+  end
+
   describe 'legacy statistics' do
     let_it_be(:pipelines) do
       pipelines_data.map { |data| create_pipeline(**data) }

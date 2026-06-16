@@ -11,7 +11,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
   end
 
   describe 'setting organization id' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:other_organization) { create(:organization) }
     let_it_be(:default_organization) { create(:organization, id: 1) }
     let_it_be(:shard) { create(:shard, name: "pool_repository_testing") }
@@ -114,15 +114,18 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
   end
 
   describe 'scopes' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:project1, freeze: false) { create(:project) }
+    let_it_be(:project2, freeze: false) { create(:project) }
     let_it_be(:new_shard) { create(:shard, name: 'new') }
-    let_it_be(:pool_repository1) { create(:pool_repository, source_project: project1, disk_path: 'disk_path') }
+    let_it_be(:pool_repository1, freeze: false) do
+      create(:pool_repository, source_project: project1, disk_path: 'disk_path')
+    end
+
     let_it_be(:pool_repository2) do
       create(:pool_repository, source_project: project1, disk_path: 'disk_path', shard: new_shard)
     end
 
-    let_it_be(:another_pool_repository) { create(:pool_repository, source_project: project2) }
+    let_it_be(:another_pool_repository, freeze: false) { create(:pool_repository, source_project: project2) }
 
     describe '.by_source_project' do
       subject { described_class.by_source_project(project1) }
@@ -229,8 +232,8 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
 
   context 'with loose foreign key on pool_repositories.source_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:project) }
-      let_it_be(:model) { create(:pool_repository, source_project: parent) }
+      let_it_be(:parent, freeze: false) { create(:project) }
+      let_it_be(:model, freeze: false) { create(:pool_repository, source_project: parent) }
     end
   end
 

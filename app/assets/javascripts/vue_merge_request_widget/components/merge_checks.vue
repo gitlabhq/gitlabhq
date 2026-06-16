@@ -9,6 +9,7 @@ import StateContainer from './state_container.vue';
 import BoldText from './bold_text.vue';
 
 export default {
+  name: 'MergeChecks',
   components: {
     GlSkeletonLoader,
     StateContainer,

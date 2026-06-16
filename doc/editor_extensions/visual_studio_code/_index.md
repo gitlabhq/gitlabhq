@@ -33,7 +33,7 @@ When you view a GitLab project in VS Code, the extension shows you information a
 
 ## GitLab extension panels
 
-After you install and set up the extension, you can access the following features:
+The extension includes the following features:
 
 - In the left sidebar, **GitLab** ({{< icon name="tanuki" >}}): Manage issues and merge
   requests, run CI/CD commands, view pipeline status, and perform security scanning.

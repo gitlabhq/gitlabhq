@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navigation do
-  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
+  let_it_be(:project, freeze: false) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
   let_it_be(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
@@ -19,7 +19,7 @@ RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navi
         ] },
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
-        has_pill: menu.has_pill?,
+        has_pill: true,
         super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::PlanMenu
       }
     end
@@ -28,7 +28,7 @@ RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navi
   describe '#render?' do
     context 'when user can read issues' do
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
     end
 
@@ -36,25 +36,7 @@ RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navi
       let(:user) { nil }
 
       it 'returns false' do
-        expect(subject.render?).to eq false
-      end
-    end
-  end
-
-  describe '#has_pill?' do
-    context 'when show_work_items_sidebar_count is enabled' do
-      it 'returns true' do
-        stub_feature_flags(show_work_items_sidebar_count: true)
-
-        expect(subject.has_pill?).to eq true
-      end
-    end
-
-    context 'when show_work_items_sidebar_count is disabled' do
-      it 'returns false' do
-        stub_feature_flags(show_work_items_sidebar_count: false)
-
-        expect(subject.has_pill?).to eq false
+        expect(subject.render?).to be false
       end
     end
   end

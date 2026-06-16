@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::DataSync::Widgets::Assignees, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:assignee1) { create(:user) }
-  let_it_be(:assignee2) { create(:user) }
+  let_it_be(:assignee1, freeze: false) { create(:user) }
+  let_it_be(:assignee2, freeze: false) { create(:user) }
   let_it_be_with_reload(:work_item) { create(:work_item, assignees: [assignee1, assignee2]) }
   let_it_be_with_reload(:target_work_item) { create(:work_item) }
   let(:params) { {} }

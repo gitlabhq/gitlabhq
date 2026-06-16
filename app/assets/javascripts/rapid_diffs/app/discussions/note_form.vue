@@ -114,6 +114,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancel', 'handleSuggestDismissed', 'input'],
   data() {
     return {
       editedNoteBody: this.noteBody,

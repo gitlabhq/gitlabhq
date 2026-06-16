@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455829' do
-  let_it_be(:user) { create(:user) }
+RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition do
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:group) }
   let_it_be_with_reload(:project_with_ci_components) do
     create(
@@ -13,6 +13,8 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
       namespace: namespace
     )
   end
+
+  let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource, project: project_with_ci_components) }
 
   context 'when user is not the owner' do
     before_all do
@@ -45,18 +47,20 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
     end
 
     context 'when a project is not a Catalog resource' do
+      let_it_be(:plain_project, freeze: false) { create(:project, namespace: namespace) }
+
       before do
-        visit project_path(project_with_ci_components)
+        visit project_path(plain_project)
       end
 
       it 'does not render the CI/CD resource badge' do
-        expect(page).to have_content(project_with_ci_components.name)
+        expect(page).to have_content(plain_project.name)
         expect(page).not_to have_content('CI/CD catalog resource')
       end
     end
 
     describe 'when listing a project as a Catalog resource' do
-      let_it_be(:tag_name) { 'v0.1' }
+      let_it_be(:tag_name) { 'v0.1.0' }
 
       before do
         visit edit_project_path(project_with_ci_components)
@@ -67,7 +71,7 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
       it 'marks the project as a CI/CD Catalog' do
         visit project_path(project_with_ci_components)
 
-        expect(page).to have_content('CI/CD Catalog project')
+        expect(page).to have_content('CI/CD Catalog (unpublished)')
       end
 
       context 'and there are no releases' do
@@ -83,10 +87,14 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
 
       context 'and there is a release' do
         before do
-          create(:release, :with_catalog_resource_version, tag: tag_name, author: user,
-            project: project_with_ci_components)
+          release = create(:release, tag: tag_name, author: user, project: project_with_ci_components)
+          create(:ci_catalog_resource_version,
+            catalog_resource: catalog_resource,
+            project: project_with_ci_components,
+            release: release,
+            semver: tag_name)
           # This call to `publish` is necessary to simulate what creating a release would really do
-          project_with_ci_components.catalog_resource.publish!
+          catalog_resource.publish!
           visit explore_catalog_index_path
         end
 
@@ -100,9 +108,13 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
 
     describe 'when unlisting a project from the CI/CD Catalog' do
       before do
-        create(:ci_catalog_resource, project: project_with_ci_components)
-        create(:release, :with_catalog_resource_version, tag: 'v0.1', author: user, project: project_with_ci_components)
-        project_with_ci_components.catalog_resource.publish!
+        release = create(:release, tag: 'v0.1.0', author: user, project: project_with_ci_components)
+        create(:ci_catalog_resource_version,
+          catalog_resource: catalog_resource,
+          project: project_with_ci_components,
+          release: release,
+          semver: 'v0.1.0')
+        catalog_resource.publish!
 
         visit edit_project_path(project_with_ci_components)
 

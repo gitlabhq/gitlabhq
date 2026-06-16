@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Observability::OtelExporter, feature_category: :integrations do
+RSpec.describe Gitlab::Observability::OtelExporter, feature_category: :observability do
   let(:base_url) { 'https://observe.gitlab.com' }
   let(:headers) { { 'Authorization' => 'Bearer test-token' } }
   let(:integration) { create_integration(base_url) }

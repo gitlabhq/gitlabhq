@@ -1,6 +1,6 @@
 ---
-source_checksum: 4148ec7d13baa0fa
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: dd6d88d81e3c3f04
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -35,6 +35,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `route_setting :lifecycle, :experiment` or `route_setting :lifecycle, :beta` for non-GA endpoints
 - Use `deprecated true` in the `desc` block when deprecating an endpoint; DO NOT use `route_setting :lifecycle` for deprecation
 - Assign at least one tag per endpoint; use plural entity names (for example, `audit_events`, `users`); DO NOT use singular or product-category-coupled names
+- Constrain every `String` parameter with `values:`, `limit:`, or `regexp:` to prevent unbounded payloads
 
 ### Endpoint Success Definition
 

@@ -8,6 +8,7 @@ import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone
 import { mapComputed } from '~/vuex_shared/bindings';
 
 export default {
+  name: 'DeployFreezeModal',
   components: {
     GlFormGroup,
     GlFormInput,

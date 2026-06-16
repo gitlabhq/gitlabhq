@@ -72,12 +72,6 @@ For more information, see [merge request pipelines](merge_request_pipelines.md).
 
 ## Merged results pipeline
 
-{{< history >}}
-
-- The `merged results` label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132975) in GitLab 16.5.
-
-{{< /history >}}
-
 A *merged results pipeline* runs on the result of the source and target branches merged together.
 It's a type of merge request pipeline.
 

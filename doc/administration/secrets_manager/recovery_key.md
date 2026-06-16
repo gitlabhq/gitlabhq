@@ -79,9 +79,7 @@ The task asks for confirmation before generating and displaying the key. The key
 ## Generate a root token from the recovery key
 
 Use the recovery key to generate a temporary root token when you need to perform privileged
-OpenBao operations such as reconfiguring JWT authentication or migrating the seal. For example,
-when you fail over to a Geo secondary site with a different domain. For more information, see
-[Configure JWT authentication](../geo/disaster_recovery/_index.md#optional-configure-jwt-authentication).
+OpenBao operations such as reconfiguring JWT authentication or migrating the seal.
 
 > [!warning]
 > Revoke the root token immediately after you complete the required operations.

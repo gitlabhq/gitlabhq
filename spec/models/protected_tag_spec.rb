@@ -45,8 +45,8 @@ RSpec.describe ProtectedTag, feature_category: :source_code_management do
     end
 
     context 'with caching', :request_store do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:protected_tag) { create(:protected_tag, project: project, name: 'foo') }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:protected_tag, freeze: false) { create(:protected_tag, project: project, name: 'foo') }
 
       it 'correctly invalidates a cache' do
         expect(described_class.protected?(project, 'foo')).to eq(true)

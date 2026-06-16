@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe ::API::Entities::Diff, feature_category: :source_code_management do
   subject(:json) { entity.as_json }
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
-  let_it_be(:diff) { repository.diff('HEAD~1', 'HEAD').first }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
+  let_it_be(:diff, freeze: false) { repository.diff('HEAD~1', 'HEAD').first }
 
   let(:entity) { described_class.new(diff, options) }
   let(:options) { {} }

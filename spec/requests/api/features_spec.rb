@@ -168,14 +168,14 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
     context 'when enabling for a repository by path' do
       it_behaves_like 'enables the flag for the actor', :repository do
-        let_it_be(:actor) { create(:project).repository }
+        let_it_be(:actor, freeze: false) { create(:project).repository }
         let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a runner by ID' do
       it_behaves_like 'enables the flag for the actor', :runner do
-        let_it_be(:actor) { create(:ci_runner) }
+        let_it_be(:actor, freeze: false) { create(:ci_runner) }
         let(:actor_value) { actor.id.to_s }
       end
 
@@ -318,6 +318,52 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
           delete api("/features/#{feature_name}", admin, admin_mode: true)
         end
       end
+    end
+  end
+end
+
+# Separate describe without `stub_feature_flags: false` so the granular-PAT
+# factory (which needs default feature-flag stubbing) builds correctly.
+RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, feature_category: :feature_flags do
+  let_it_be(:admin) { create(:admin) }
+
+  let(:known_feature_flag) { Feature::Definition.definitions.values.find(&:development?) }
+
+  before do
+    skip_default_enabled_yaml_check
+  end
+
+  describe 'GET /features' do
+    it_behaves_like 'authorizing granular token permissions', :read_feature do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api('/features', personal_access_token: pat) }
+    end
+  end
+
+  describe 'GET /features/definitions' do
+    it_behaves_like 'authorizing granular token permissions', :read_feature do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api('/features/definitions', personal_access_token: pat) }
+    end
+  end
+
+  describe 'POST /features/:name' do
+    it_behaves_like 'authorizing granular token permissions', :update_feature do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api("/features/#{known_feature_flag.name}", personal_access_token: pat), params: { value: 'true' }
+      end
+    end
+  end
+
+  describe 'DELETE /features/:name' do
+    it_behaves_like 'authorizing granular token permissions', :delete_feature do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api('/features/my_feature', personal_access_token: pat) }
     end
   end
 end

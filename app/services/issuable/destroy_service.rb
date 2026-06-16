@@ -13,6 +13,10 @@ module Issuable
       # load sync object before destroy otherwise we cannot access it for
       # deletion of label links in delete_label_links
       @synced_object_to_delete = issuable.try(:sync_object)
+      # Capture assignees before destroy: the issue_assignees table has an
+      # ON DELETE CASCADE FK, so after issuable.destroy the DB rows are gone
+      # and issuable.assignees returns empty, preventing cache invalidation.
+      @assignees_before_destroy = issuable.assignees.to_a
 
       before_destroy(issuable)
       destroy_ci_records(issuable)
@@ -34,7 +38,7 @@ module Issuable
     def after_destroy(issuable)
       delete_associated_records(issuable)
       issuable.invalidate_project_counter_caches
-      issuable.assignees.each(&:invalidate_cache_counts)
+      @assignees_before_destroy.each(&:invalidate_cache_counts)
     end
 
     def delete_associated_records(issuable)

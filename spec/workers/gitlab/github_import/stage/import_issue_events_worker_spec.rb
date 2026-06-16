@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   let!(:group) { create(:group, projects: [project]) }
   let(:settings) { ::Gitlab::GithubImport::Settings.new(project.reload) }

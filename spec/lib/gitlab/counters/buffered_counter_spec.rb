@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
   subject(:counter) { described_class.new(counter_record, attribute) }
 
-  let_it_be(:counter_record) { create(:project_statistics) }
+  let_it_be(:counter_record, freeze: false) { create(:project_statistics) }
 
   let(:attribute) { :build_artifacts_size }
 

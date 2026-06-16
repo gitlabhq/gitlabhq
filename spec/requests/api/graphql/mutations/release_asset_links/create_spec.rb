@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Creation of a new release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private, :repository) }
-  let_it_be(:release) { create(:release, project: project, tag: 'v13.10') }
+  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+  let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v13.10') }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }
@@ -53,5 +53,15 @@ RSpec.describe 'Creation of a new release asset link', feature_category: :releas
 
     expect(mutation_response[:link]).to include(expected_response)
     expect(mutation_response[:errors]).to eq([])
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_release do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:release_asset_link_create, mutation_arguments, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
   end
 end

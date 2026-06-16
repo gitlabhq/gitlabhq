@@ -284,7 +284,7 @@ When [automatic removal of dormant members](../group/moderate_users.md#automatic
 is active, dormant enterprise users are deactivated instead of being removed
 from the group. When these users sign back in, their accounts are reactivated.
 
-However, when [restricted access](../group/manage.md#restricted-access) is
+However, when [restricted access](../../subscriptions/manage_seats.md#restricted-access) is
 active on the enterprise group and no seats are available, the user is set to
 pending approval instead of being reactivated. Their existing group and project
 memberships are preserved.

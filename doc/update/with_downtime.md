@@ -85,8 +85,15 @@ For Gitaly servers that are not part of Gitaly Cluster (Praefect), upgrade the s
 by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 If you have multiple Gitaly shards, you can upgrade the Gitaly servers in any order.
 
-If you're running Gitaly Cluster (Praefect), follow the
-[zero-downtime upgrade process for Gitaly Cluster (Praefect)](zero_downtime.md#upgrade-gitaly-cluster-praefect-nodes).
+If you're running Gitaly Cluster (Praefect), the components must be upgraded
+in the following order:
+
+1. Praefect PostgreSQL database. If you use:
+   - The Linux package, this step requires downtime for Git operations.
+   - A third-party HA database solution, this step can be done without downtime.
+1. Gitaly nodes. Upgrade sequentially by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
+1. Praefect nodes. Follow the [Praefect upgrade steps](zero_downtime.md#upgrade-gitaly-cluster-praefect-nodes),
+   designating one node as the deploy node to run database migrations.
 
 ### When using Amazon Machine Images
 
@@ -108,6 +115,8 @@ To upgrade Gitaly Cluster (Praefect) nodes by using an AMI redeployment process:
 1. Redeploy your other Gitaly Cluster (Praefect) nodes.
 
 ## Upgrade the PostgreSQL nodes
+
+If you are using a Patroni (HA PostgreSQL) configuration, skip this section and follow the [Upgrade Patroni nodes](#upgrade-patroni-nodes) steps instead.
 
 For non-clustered PostgreSQL servers:
 

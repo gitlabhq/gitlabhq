@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
+  name: 'GettingStartedSection',
   i18n: {
     title: s__('PipelineEditorTutorial|Get started with GitLab CI/CD'),
     firstParagraph: s__(

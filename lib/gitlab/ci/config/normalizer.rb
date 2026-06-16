@@ -33,6 +33,16 @@ module Gitlab
           @errors.uniq
         end
 
+        # Returns a mapping of original job names to their normalized (expanded) names
+        # for jobs that use parallel:matrix or parallel:N
+        # Example: { build: ["build: [aws]", "build: [gcp]"], test: ["test 1/3", "test 2/3", "test 3/3"] }
+        def job_name_mappings
+          return {} unless @jobs_config
+
+          parallelized_jobs.transform_values { |jobs| jobs.map(&:name) }
+        end
+        strong_memoize_attr :job_name_mappings
+
         private
 
         attr_reader :project

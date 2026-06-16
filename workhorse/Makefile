@@ -188,7 +188,7 @@ check-formatting: install-goimports
 .PHONY: staticcheck
 staticcheck:
 	$(call message,Verify: $@)
-	go install honnef.co/go/tools/cmd/staticcheck@v0.6.1
+	go install honnef.co/go/tools/cmd/staticcheck@2026.1
 	@ $(GOBIN)/staticcheck ./...
 
 # In addition to fixing imports, goimports also formats your code in the same style as gofmt

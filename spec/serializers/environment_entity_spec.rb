@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentEntity do
+RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   include KubernetesHelpers
   include Gitlab::Routing.url_helpers
 
@@ -13,7 +13,7 @@ RSpec.describe EnvironmentEntity do
 
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project, :repository, developers: user) }
-  let_it_be(:environment, refind: true) { create(:environment, project: project) }
+  let_it_be_with_refind(:environment) { create(:environment, project: project) }
 
   before do
     allow(request).to receive(:current_user).and_return(user)
@@ -35,9 +35,11 @@ RSpec.describe EnvironmentEntity do
   end
 
   context 'when there is a successful deployment' do
-    let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
-    let!(:deployable) { create(:ci_build, :success, project: project, pipeline: pipeline) }
-    let!(:deployment) { create(:deployment, :success, project: project, environment: environment, deployable: deployable) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project) }
+    let_it_be(:deployable) { create(:ci_build, :success, project: project, pipeline: pipeline) }
+    let_it_be(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: deployable)
+    end
 
     it 'exposes it as the latest deployment' do
       expect(subject[:last_deployment][:sha]).to eq(deployment.sha)
@@ -48,7 +50,7 @@ RSpec.describe EnvironmentEntity do
     end
 
     context 'when the deployment pipeline has the other manual job' do
-      let!(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
+      let_it_be(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
 
       it 'exposes the manual job in the latest deployment' do
         expect(subject[:last_deployment][:manual_actions].first[:name])
@@ -58,9 +60,11 @@ RSpec.describe EnvironmentEntity do
   end
 
   context 'when there is a running deployment' do
-    let!(:pipeline) { create(:ci_pipeline, :running, project: project) }
-    let!(:deployable) { create(:ci_build, :running, project: project, pipeline: pipeline) }
-    let!(:deployment) { create(:deployment, :running, project: project, environment: environment, deployable: deployable) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :running, project: project) }
+    let_it_be(:deployable) { create(:ci_build, :running, project: project, pipeline: pipeline) }
+    let_it_be(:deployment) do
+      create(:deployment, :running, project: project, environment: environment, deployable: deployable)
+    end
 
     it 'does not expose it as the latest deployment' do
       expect(subject[:last_deployment]).to be_nil
@@ -71,7 +75,7 @@ RSpec.describe EnvironmentEntity do
     end
 
     context 'when the deployment pipeline has the other manual job' do
-      let!(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
+      let_it_be(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
 
       it 'does not expose the manual job in the latest deployment' do
         expect(subject[:upcoming_deployment][:manual_actions]).to be_nil

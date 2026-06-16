@@ -93,7 +93,7 @@ The following table lists the GitLab tiers in which each feature is available.
 | Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)                                                 | {{< yes >}}       | {{< yes >}} |
 | Downloadable [SAST JSON report](#download-a-sast-report)                                                                         | {{< yes >}}       | {{< yes >}} |
 | Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md)                                         | {{< no >}}        | {{< yes >}} |
-| New findings in [merge request widget](#merge-request-widget)                                                                    | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request reports](#merge-request-reports)                                                                  | {{< no >}}        | {{< yes >}} |
 | New findings in [merge request changes view](#merge-request-changes-view)                                                        | {{< no >}}        | {{< yes >}} |
 | [Vulnerability Management](../vulnerabilities/_index.md)                                                                         | {{< no >}}        | {{< yes >}} |
 | [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on)               | {{< no >}}        | {{< yes >}} |
@@ -307,23 +307,9 @@ for any reason, the security dashboard does not show SAST scanner output. For ex
 job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
 the analyzer outputs an exit code.
 
-### Merge request widget
+### Merge request reports
 
-{{< details >}}
-
-- Tier: Ultimate
-
-{{< /details >}}
-
-SAST results display in the merge request widget area if a report from the target branch is available for comparison.
-The merge request widget shows the following:
-
-- New SAST findings that are introduced by the MR.
-- Existing findings that are resolved by the MR.
-
-The results are compared using advanced vulnerability tracking whenever it is available.
-
-![Security Merge request widget](img/sast_mr_widget_v16_7.png)
+For SAST results in a merge request, see [merge request reports](../../project/merge_requests/reports.md).
 
 ### Merge request changes view
 

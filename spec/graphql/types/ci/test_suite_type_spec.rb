@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::TestSuiteType do
+RSpec.describe Types::Ci::TestSuiteType, feature_category: :code_testing do
   specify { expect(described_class.graphql_name).to eq('TestSuite') }
 
   it 'contains attributes related to a pipeline test suite' do

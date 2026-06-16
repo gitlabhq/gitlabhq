@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe API::Todos, feature_category: :source_code_management do
   include DesignManagementTestHelpers
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:group_2) { create(:group) }
-  let_it_be(:project_1) { create(:project, :repository, group: group) }
+  let_it_be(:project_1, freeze: false) { create(:project, :repository, group: group) }
   let_it_be(:project_2) { create(:project) }
   let_it_be(:author_1) { create(:user) }
   let_it_be(:author_2) { create(:user) }
@@ -20,7 +20,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
   let_it_be(:group_request_todo) { create(:todo, author: author_1, user: john_doe, project: nil, group: group_2, target: group_2, action: Todo::MEMBER_ACCESS_REQUESTED) }
   let_it_be(:alert_todo) { create(:todo, project: project_1, author: john_doe, user: john_doe, target: alert) }
   let_it_be(:merge_request_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
-  let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project_1) }
+  let_it_be(:wiki_page_meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, container: project_1) }
   let_it_be(:wiki_page_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: wiki_page_meta, action: Todo::MENTIONED) }
   let_it_be(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: issue) }
   let_it_be(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe, target: create(:issue, project: project_2)) }

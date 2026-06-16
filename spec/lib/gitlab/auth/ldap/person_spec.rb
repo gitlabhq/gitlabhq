@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
   end
 
   describe '.normalize_dn' do
-    subject { described_class.normalize_dn(given) }
+    subject(:normalize_dn) { described_class.normalize_dn(given) }
 
     it_behaves_like 'normalizes a DN'
 
@@ -30,13 +30,13 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
       let(:given) { 'John "Smith,' } # just something that will cause an exception
 
       it 'returns the given DN unmodified' do
-        expect(subject).to eq(given)
+        expect(normalize_dn).to eq(given)
       end
     end
   end
 
   describe '.normalize_uid' do
-    subject { described_class.normalize_uid(given) }
+    subject(:normalize_uid) { described_class.normalize_uid(given) }
 
     it_behaves_like 'normalizes a DN attribute value'
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
       let(:given) { 'John "Smith,' } # just something that will cause an exception
 
       it 'returns the given UID unmodified' do
-        expect(subject).to eq(given)
+        expect(normalize_uid).to eq(given)
       end
     end
   end

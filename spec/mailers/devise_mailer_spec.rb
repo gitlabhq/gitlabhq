@@ -97,7 +97,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   describe '#password_change_by_admin' do
     subject { described_class.password_change_by_admin(user, opts) }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -124,7 +124,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   describe '#user_admin_approval' do
     subject { described_class.user_admin_approval(user, opts) }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -153,7 +153,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#reset_password_instructions' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     subject do
       described_class.reset_password_instructions(user, 'faketoken', opts)
@@ -203,7 +203,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   describe '#email_changed' do
     let(:content_saas) { 'If you did not initiate this change, please contact your group owner immediately. If you have a Premium or Ultimate tier subscription, you can also contact GitLab support.' }
     let(:content_self_managed) { 'If you did not initiate this change, please contact your administrator immediately.' }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     subject { described_class.email_changed(user, opts) }
 
@@ -246,7 +246,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#unlock_instructions' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let(:unlock_text) do
       "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in 12 minutes or you can click the link below to unlock now."
     end

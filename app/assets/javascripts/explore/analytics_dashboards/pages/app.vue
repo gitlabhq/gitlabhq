@@ -1,9 +1,9 @@
 <script>
 export default {
   name: 'ExploreAnalyticsDashboards',
-  inject: {
+  props: {
     currentUserId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

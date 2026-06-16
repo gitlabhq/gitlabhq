@@ -695,3 +695,67 @@ func TestLoadConfigCommand(t *testing.T) {
 		})
 	}
 }
+
+func TestIAMServiceURLConfig(t *testing.T) {
+	const envVar = "IAM_SERVICE_URL"
+
+	flagURL := "http://iam-from-flag.example.com"
+	envURL := "http://iam-from-env.example.com"
+
+	for _, tc := range []struct {
+		desc        string
+		flag        string
+		env         string
+		expectedURL string
+	}{
+		{
+			desc:        "unset: IAMServiceURL is nil (OAuth proxy disabled)",
+			expectedURL: "",
+		},
+		{
+			desc:        "flag only: IAMServiceURL is parsed from the flag",
+			flag:        flagURL,
+			expectedURL: flagURL,
+		},
+		{
+			desc:        "env only: IAMServiceURL is parsed from the env var",
+			env:         envURL,
+			expectedURL: envURL,
+		},
+		{
+			desc:        "both set: flag wins",
+			flag:        flagURL,
+			env:         envURL,
+			expectedURL: flagURL,
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			t.Setenv(envVar, tc.env)
+
+			args := []string{"-config", "/dev/null"}
+			if tc.flag != "" {
+				args = append(args, "-iamServiceURL", tc.flag)
+			}
+
+			_, cfg, err := buildConfig("test", args)
+			require.NoError(t, err)
+
+			if tc.expectedURL == "" {
+				require.Nil(t, cfg.IAMServiceURL)
+				return
+			}
+
+			require.NotNil(t, cfg.IAMServiceURL)
+			require.Equal(t, tc.expectedURL, cfg.IAMServiceURL.String())
+		})
+	}
+}
+
+func TestIAMServiceURLEnvInvalid(t *testing.T) {
+	t.Setenv("IAM_SERVICE_URL", "not a valid url")
+
+	_, _, err := buildConfig("test", []string{"-config", "/dev/null"})
+
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "iamServiceURL")
+}

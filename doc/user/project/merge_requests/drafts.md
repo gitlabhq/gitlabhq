@@ -17,7 +17,7 @@ If a merge request isn't ready to merge, you can block it from merging until you
 [mark it as ready](#mark-merge-requests-as-ready). Merge requests marked as **Draft**
 cannot merge until you remove the **Draft** flag, even if they meet all other merge criteria:
 
-![merge blocked](img/merge_request_draft_blocked_v16_0.png)
+![A merge request showing the draft status with merge blocked until marked as ready.](img/merge_request_draft_blocked_v16_0.png)
 
 ## Mark merge requests as drafts
 
@@ -66,7 +66,7 @@ draft merge requests:
 1. Select **Yes** to include drafts, or **No** to exclude, and press **Return**
    to update the list of merge requests:
 
-   ![Filter draft merge requests](img/filter_draft_merge_requests_v16_0.png)
+   ![The merge request filter dropdown list showing draft filter options with selection options.](img/filter_draft_merge_requests_v16_0.png)
 
 ## Pipelines for drafts
 

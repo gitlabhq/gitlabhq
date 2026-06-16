@@ -24,7 +24,7 @@ The extension requires:
 - You are not using Visual Studio for Mac, as it is unsupported.
 
 No new additional data is collected to enable this feature. Private non-public GitLab customer data is not used as training data.
-Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance).
+Learn more about the [data governance of Gemini Enterprise Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention).
 
 ## Connect to GitLab
 

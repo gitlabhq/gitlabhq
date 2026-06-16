@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User unlock', :with_current_organization, feature_category: :system_access do
   include EmailHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   it 'sends unlock instructions with working link' do
     perform_enqueued_jobs do

@@ -1,0 +1,10 @@
+---
+name: ai_gateway_multi_default_models
+description: Allow the AI Gateway to select from multiple default models when load balancing across LLM providers.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/598607
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234631
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601113
+milestone: '19.1'
+group: group::ai framework
+type: gitlab_com_derisk
+default_enabled: false

@@ -340,6 +340,28 @@ describe('date_format_utility.js', () => {
       expect(utils.timeIntervalInWords(172800)).toEqual('2 days');
       expect(utils.timeIntervalInWords(183700)).toEqual('2 days 3 hours 1 minute 40 seconds');
     });
+
+    describe('with abbreviated: true', () => {
+      it.each`
+        intervalInSeconds | expected
+        ${0}              | ${'0s'}
+        ${1}              | ${'1s'}
+        ${9.54}           | ${'9s'}
+        ${-20}            | ${'20s'}
+        ${60}             | ${'1m'}
+        ${90}             | ${'1m 30s'}
+        ${200}            | ${'3m 20s'}
+        ${3600}           | ${'1h'}
+        ${3661}           | ${'1h 1m 1s'}
+        ${86400}          | ${'1d'}
+        ${90061}          | ${'1d 1h 1m 1s'}
+        ${183700}         | ${'2d 3h 1m 40s'}
+      `('returns "$expected" for $intervalInSeconds seconds', ({ intervalInSeconds, expected }) => {
+        expect(utils.timeIntervalInWords(intervalInSeconds, { abbreviated: true })).toEqual(
+          expected,
+        );
+      });
+    });
   });
 
   describe('humanizeTimeInterval', () => {

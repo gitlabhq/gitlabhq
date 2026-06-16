@@ -25,8 +25,8 @@ RSpec.shared_examples Integrations::Base::MicrosoftTeams do
   end
 
   describe "#execute" do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :wiki_repo) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -77,7 +77,7 @@ RSpec.shared_examples Integrations::Base::MicrosoftTeams do
     end
 
     context 'with work item events' do
-      let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+      let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project, author: user) }
       let(:work_item_sample_data) { work_item.to_hook_data(user) }
 
       it "calls Microsoft Teams API for work item events" do
@@ -136,8 +136,8 @@ RSpec.shared_examples Integrations::Base::MicrosoftTeams do
   end
 
   describe "Note events" do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(

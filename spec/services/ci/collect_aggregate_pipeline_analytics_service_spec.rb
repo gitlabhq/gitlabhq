@@ -9,6 +9,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
   include_context 'with pipelines executed on different projects'
 
   let(:project) { project1 }
+  let(:expected_one_second_before_count) { 9 }
   let(:status_groups) { [:any] }
   let(:duration_percentiles) { [] }
   let(:from_time) { starting_time }
@@ -78,10 +79,10 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       let(:from_time) { 1.second.before(starting_time) }
       let(:to_time) { 1.second.before(ending_time) }
 
-      it 'does not include job starting 1 second before start of week' do
+      it 'returns the count for the requested window' do
         expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.payload[:aggregate]).to eq(count: { any: 8 })
+        expect(result.payload[:aggregate]).to eq(count: { any: expected_one_second_before_count })
       end
     end
 
@@ -130,6 +131,25 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
     let_it_be(:current_user) { create(:admin) }
 
     it_behaves_like 'a service returning aggregate analytics'
+  end
+
+  context 'with pipeline_analytics_siphon flag disabled' do
+    before do
+      stub_feature_flags(pipeline_analytics_siphon: false)
+    end
+
+    # MV path is hour-bucketed; the pipeline that started 1s before the week
+    # falls into the previous hourly bucket and is excluded. Siphon reads raw
+    # started_at and includes it. Remove once the flag and the MV path are gone.
+    let(:expected_one_second_before_count) { 8 }
+
+    it_behaves_like 'a service returning aggregate analytics'
+
+    context 'when user is an admin' do
+      let_it_be(:current_user) { create(:admin) }
+
+      it_behaves_like 'a service returning aggregate analytics'
+    end
   end
 
   context 'when filtering by subgroups' do

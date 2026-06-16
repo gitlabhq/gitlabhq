@@ -11,6 +11,7 @@ import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
 
 export default {
+  name: 'KubernetesLogs',
   components: {
     LogsViewer,
     GlLoadingIcon,

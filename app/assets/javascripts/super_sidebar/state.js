@@ -25,4 +25,5 @@ export const duoChatGlobalState = observable('duo_chat_global_state', {
   lastRoutePerTab: {}, // Tracks the last visited route for each tab (e.g., { sessions: '/agent-sessions/123' })
   activeThread: undefined, // Persisted across component recreations when overlay closes/reopens
   multithreadedView: 'chat', // Persisted view state: 'chat' or 'list'
+  aiPanelDragWidth: null, // number (px) when user has dragged; null = use CSS clamp default. Session-only.
 });

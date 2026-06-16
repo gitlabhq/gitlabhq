@@ -227,7 +227,7 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
 
       context 'when a parent group member is present' do
-        before do
+        before_all do
           parent_group.add_developer(user)
         end
 
@@ -379,9 +379,9 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       let_it_be(:organization) { organization_user.organization }
       let_it_be(:other_organization) { create(:organization) }
       let_it_be(:user) { organization_user.user }
-      let_it_be(:public_group) { create(:group, name: 'public-group', organization: organization) }
-      let_it_be(:outside_organization_group) { create(:group, organization: other_organization) }
-      let_it_be(:private_group) { create(:group, :private, name: 'private-group', organization: organization) }
+      let_it_be(:public_group) { create(:group, name: 'public-group', organization: organization, developers: user) }
+      let_it_be(:outside_organization_group) { create(:group, organization: other_organization, developers: user) }
+      let_it_be(:private_group) { create(:group, :private, name: 'private-group', organization: organization, developers: user) }
       let_it_be(:no_access_group_in_org) { create(:group, :private, name: 'no-access', organization: organization) }
 
       let(:current_user) { user }
@@ -389,12 +389,6 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       let(:finder) { described_class.new(current_user, params) }
 
       subject(:result) { finder.execute.to_a }
-
-      before_all do
-        private_group.add_developer(user)
-        public_group.add_developer(user)
-        outside_organization_group.add_developer(user)
-      end
 
       context 'when user is only authorized to read the public group' do
         let(:current_user) { create(:user) }

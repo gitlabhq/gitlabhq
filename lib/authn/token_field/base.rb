@@ -60,7 +60,11 @@ module Authn
 
       # Returns a token, but only saves when the database is in read & write mode
       def ensure_token!(token_owner_record)
-        reset_token!(token_owner_record) unless token_set?(token_owner_record)
+        # Skip the lazy write when the record is frozen: production records
+        # are never frozen, so this only guards frozen shared test fixtures.
+        # The fixture already has a factory-generated token, so get_token
+        # returns it.
+        reset_token!(token_owner_record) unless token_set?(token_owner_record) || token_owner_record.frozen?
         get_token(token_owner_record)
       end
 

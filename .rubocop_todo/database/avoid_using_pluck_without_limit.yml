@@ -32,7 +32,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/integrations/slack_workspace/integration_api_scope.rb'
     - 'app/models/issue.rb'
     - 'app/models/label.rb'
-    - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/member.rb'
     - 'app/models/members/last_group_owner_assigner.rb'
     - 'app/models/merge_request.rb'

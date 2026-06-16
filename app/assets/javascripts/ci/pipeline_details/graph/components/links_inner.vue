@@ -33,7 +33,7 @@ export default {
     defaultLinkColor: {
       type: String,
       required: false,
-      default: 'gl-stroke-gray-200',
+      default: 'gl-stroke-gray-700',
     },
     highlightedJob: {
       type: String,

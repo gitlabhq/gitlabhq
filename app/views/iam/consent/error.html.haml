@@ -1,0 +1,12 @@
+#container.gl-ml-auto.gl-mr-auto{ class: '@sm/panel:gl-w-1/2' }
+  .gl-items-center
+    .gl-text-size-h1
+      = _('An error has occurred')
+    %p.gl-mt-5
+      = _('We could not complete your consent request. Please try again.')
+    - correlation_id = Labkit::Correlation::CorrelationId.current_id
+    - if correlation_id.present?
+      %p.gl-text-subtle.gl-text-sm
+        = safe_format(_('Reference: %{id}'), { id: correlation_id })
+    %p.gl-mt-5
+      = link_to _('Go to GitLab'), root_path

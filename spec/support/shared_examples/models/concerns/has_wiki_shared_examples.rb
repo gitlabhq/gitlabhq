@@ -27,11 +27,11 @@ RSpec.shared_examples 'model with wiki' do
 
   describe '#wiki_repository_exists?' do
     it 'returns true when the wiki repository exists' do
-      expect(container.wiki_repository_exists?).to eq(true)
+      expect(container.wiki_repository_exists?).to be(true)
     end
 
     it 'returns false when the wiki repository does not exist' do
-      expect(container_without_wiki.wiki_repository_exists?).to eq(false)
+      expect(container_without_wiki.wiki_repository_exists?).to be(false)
     end
   end
 

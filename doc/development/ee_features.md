@@ -78,7 +78,7 @@ flowchart TD
     E10 --> E11[Use stub_saas_features helper]
 
     F --> F1[Add to FEATURES in ee/lib/gitlab/dedicated.rb]
-    F1 --> F2[Create YAML definition in ee/config/dedicated_features/]
+    F1 --> F2[Create YAML definition with bin/dedicated-feature.rb]
     F2 --> F3{Extending CE feature?}
     F3 -->|Yes| F4[Create EE module that extends CE]
     F3 -->|No| F5[Create new EE-only code]
@@ -410,23 +410,36 @@ Each Dedicated feature is defined in a separate YAML file consisting of a number
 
 #### Create a new Dedicated feature file definition
 
+The GitLab codebase provides [`bin/dedicated-feature.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/dedicated-feature.rb),
+a tool to create new Dedicated feature definitions.
+The tool asks various questions about the new Dedicated feature, then creates
+a YAML definition in `ee/config/dedicated_features`.
+
+Only Dedicated features that have a YAML definition file can be used when running the development or testing
+environments.
+
 To create a new Dedicated feature definition:
 
 1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
    for help in naming the feature.
 1. Add the feature to `FEATURES` in `ee/lib/gitlab/dedicated.rb`.
-1. Create a YAML file in `ee/config/dedicated_features/` with the feature name:
+1. Run `bin/dedicated-feature.rb <feature-name>` to create the YAML definition in `ee/config/dedicated_features/`.
 
-```yaml
+Example invocation:
+
+```shell
+❯ bin/dedicated-feature.rb my_dedicated_feature
+You picked the group 'group::acquisition'
+
+>> URL of the MR introducing the Dedicated feature (enter to skip and let Danger provide a suggestion directly in the MR):
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456
+create ee/config/dedicated_features/my_dedicated_feature.yml
 ---
-name: skip_ultimate_trial_experience
+name: my_dedicated_feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456
-milestone: '18.6'
+milestone: '19.1'
 group: group::acquisition
 ```
-
-Only Dedicated features that have a YAML definition file can be used when running the development or testing
-environments.
 
 ### Why Dedicated code must be in `ee/`
 
@@ -439,6 +452,10 @@ All Dedicated-specific code must be placed in the `ee/` directory structure. Thi
 Just as with SaaS-only features, avoid using `Gitlab::CurrentSettings.gitlab_dedicated_instance?` directly in
 application code. Instead, use `Gitlab::Dedicated.feature_available?(:specific_feature)` to provide context about why
 the feature behaves differently for Dedicated.
+
+The `Gitlab/AvoidGitlabDedicatedInstanceChecks` RuboCop rule enforces this convention by flagging direct calls to
+`Gitlab::CurrentSettings.gitlab_dedicated_instance?` and `Gitlab::Dedicated.dedicated_instance?` except where
+explicitly excluded in RuboCop configuration.
 
 ### Exceptions for database migrations
 

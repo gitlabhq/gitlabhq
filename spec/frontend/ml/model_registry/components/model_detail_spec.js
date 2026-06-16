@@ -40,7 +40,7 @@ describe('ShowMlModel', () => {
     it('displays empty state description', () => {
       expect(findEmptyDescription().exists()).toBe(true);
       expect(findEmptyDescription().text()).toContain(
-        'No description available. To add a description, click "Edit model" above.',
+        'No description available. To add a description, click "Edit" above.',
       );
     });
   });

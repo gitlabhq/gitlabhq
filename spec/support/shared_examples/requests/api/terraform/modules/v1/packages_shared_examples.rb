@@ -461,7 +461,7 @@ RSpec.shared_examples 'handling project level terraform module download requests
 end
 
 RSpec.shared_examples 'accessing a public/internal project with another project\'s job token' do |status = :success|
-  let_it_be(:other_project) { create(:project, namespace: group) }
+  let_it_be(:other_project, freeze: false) { create(:project, namespace: group) }
   let(:token) { job.token }
   let(:headers) { { 'Authorization' => "Bearer #{token}" } }
 

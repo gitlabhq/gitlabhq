@@ -11,10 +11,13 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
     )
   end
 
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
   let_it_be(:merge_request_diff) { create(:merge_request_diff, :external, merge_request: merge_request) }
   let_it_be(:bitbucket_user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
+  let_it_be(:identity, freeze: false) do
+    create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket)
+  end
+
   let(:hash) { { iid: merge_request.iid } }
   let(:client) { Bitbucket::Client.new({}) }
   let(:ref_converter) { Gitlab::BitbucketImport::RefConverter.new(project) }

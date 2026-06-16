@@ -2,6 +2,7 @@
 import { mapState, mapActions } from 'pinia';
 import { GlButton } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
+import AccessorUtilities from '~/lib/utils/accessor';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
@@ -68,6 +69,7 @@ export default {
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, ['resetFileTreeBrowserAllStates']),
     restoreTreeWidthUserPreference() {
+      if (!AccessorUtilities.canUseLocalStorage()) return;
       const userPreference = localStorage.getItem(FILE_TREE_BROWSER_STORAGE_KEY);
       if (!userPreference) return;
       this.treeWidth = parseInt(userPreference, 10);
@@ -76,8 +78,9 @@ export default {
       this.treeWidth = value;
     },
     saveTreeWidthPreference(size) {
-      localStorage.setItem(FILE_TREE_BROWSER_STORAGE_KEY, size);
       this.treeWidth = size;
+      if (!AccessorUtilities.canUseLocalStorage()) return;
+      localStorage.setItem(FILE_TREE_BROWSER_STORAGE_KEY, size);
     },
     onOverlayClick() {
       this.resetFileTreeBrowserAllStates();
@@ -130,14 +133,16 @@ export default {
           :ref-type="refType"
           :is-animating="isAnimating"
         />
-        <gl-button
-          target="_blank"
-          icon="comment-dots"
-          rel="noopener noreferrer"
-          :href="$options.feedbackIssue"
-          >{{ __('Provide feedback') }}</gl-button
-        >
       </file-browser-height>
     </transition>
+    <gl-button
+      v-show="fileTreeBrowserIsVisible"
+      target="_blank"
+      icon="comment-dots"
+      rel="noopener noreferrer"
+      :href="$options.feedbackIssue"
+      class="gl-fixed gl-bottom-4 gl-z-9999"
+      >{{ __('Provide feedback') }}</gl-button
+    >
   </div>
 </template>

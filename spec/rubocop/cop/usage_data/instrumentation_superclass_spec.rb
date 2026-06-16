@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/usage_data/instrumentation_superclass'
 
-RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
+RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass, feature_category: :service_ping do
   let(:allowed_classes) { %i[GenericMetric DatabaseMetric RedisHllMetric] }
   let(:msg) { "Instrumentation classes should subclass one of the following: #{allowed_classes.join(', ')}." }
 

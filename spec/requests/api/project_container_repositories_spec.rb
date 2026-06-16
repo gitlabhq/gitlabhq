@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectContainerRepositories, feature_category: :container_registry do
+RSpec.describe API::ProjectContainerRepositories, :with_current_organization, feature_category: :container_registry do
   include ExclusiveLeaseHelpers
 
   include_context 'container registry client stubs'

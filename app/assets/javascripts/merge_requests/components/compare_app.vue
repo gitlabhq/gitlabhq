@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import CompareDropdown from '~/merge_requests/components/compare_dropdown.vue';
 
 export default {
+  name: 'CompareApp',
   components: {
     GlIcon,
     GlLoadingIcon,

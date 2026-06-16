@@ -12,7 +12,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Merge
     )
   end
 
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
   let_it_be(:merge_event) do
     {

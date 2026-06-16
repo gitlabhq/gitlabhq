@@ -171,7 +171,7 @@ export default {
 
       if (eventTriggers[trigger])
         this.trackEvent(eventTriggers[trigger], {
-          reviewer: isReviewer,
+          reviewer: isReviewer ? 1 : 0,
           drafts: payload.comments,
           summary: payload.summary,
         });

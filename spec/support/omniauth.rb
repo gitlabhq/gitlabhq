@@ -8,6 +8,6 @@ RSpec.configure do |config|
   config.after do |example|
     next unless example.metadata[:provider_routes_modified]
 
-    LoginHelpers.cleanup_provider_routes
+    cleanup_provider_routes
   end
 end

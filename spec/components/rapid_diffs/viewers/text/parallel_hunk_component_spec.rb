@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, feature_category: :code_review_workflow do
-  let_it_be(:diff_file) { build(:diff_file) }
+  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
   let(:lines) { diff_file.diff_lines_with_match_tail }
   let(:hunk) { diff_file.viewer_hunks.first }
 
@@ -161,6 +161,23 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, feature_categor
     render_component(diff_hunk)
     expect(page).to have_selector("td[data-position] span")
     expect(page).not_to have_selector("td[data-position] a")
+  end
+
+  describe 'line coverage slot' do
+    it 'renders a slot only on the new side for an added line' do
+      added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('td[data-position="new"] [data-line-coverage="5"]')
+      expect(page).not_to have_selector('td[data-position="old"] [data-line-coverage]')
+    end
+
+    it 'does not render a slot for a removed line' do
+      removed_line = Gitlab::Diff::Line.new("removed", 'old', 1, 5, nil)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [removed_line])
+      render_component(diff_hunk)
+      expect(page).not_to have_selector('[data-line-coverage]')
+    end
   end
 
   def render_component(diff_hunk = hunk)

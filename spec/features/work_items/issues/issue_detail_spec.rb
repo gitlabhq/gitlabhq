@@ -88,9 +88,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
 
     it 'shows the issue' do
-      within_testid('detail-wrapper') do
-        expect(page).to have_css('h1', text: issue.reload.title)
-      end
+      expect(page).to have_css('h1', text: issue.reload.title)
     end
   end
 

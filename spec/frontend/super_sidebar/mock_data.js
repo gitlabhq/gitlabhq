@@ -196,7 +196,6 @@ export const sidebarData = {
   gitlab_version: { major: 16, minor: 0 },
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
-  canary_toggle_com_url: 'https://next.gitlab.com',
   context_switcher_links: contextSwitcherLinks,
   search: {
     search_path: '/search',
@@ -285,8 +284,6 @@ export const userMenuMockData = {
   pipeline_minutes: userMenuMockPipelineMinutes,
   can_sign_out: false,
   sign_out_link: invalidUrl,
-  gitlab_com_but_not_canary: true,
-  canary_toggle_com_url: 'https://next.gitlab.com',
 };
 
 export const frecentGroupsMock = [

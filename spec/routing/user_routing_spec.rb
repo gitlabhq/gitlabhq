@@ -29,7 +29,7 @@ RSpec.describe 'user routing', :clean_gitlab_redis_sessions, feature_category: :
 end
 
 RSpec.describe "Users", "routing", feature_category: :user_management do
-  let!(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   describe 'GET /-/u/:id' do
     it 'routes to users/redirect#redirect_from_id' do

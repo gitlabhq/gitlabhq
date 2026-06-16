@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Gitlab OAuth2 Authorization Code Flow with PKCE', feature_category: :system_access do
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'https://example.com/oauth/callback', confidential: false) }
-  let_it_be(:user) { create(:user, :with_namespace, organizations: [create(:organization)]) }
+  let_it_be(:user, freeze: false) { create(:user, :with_namespace, organizations: [create(:organization)]) }
   let_it_be(:client_id) { application.uid }
   let_it_be(:client_secret) { application.secret }
 
@@ -77,6 +77,7 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow with PKCE', feature_catego
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
+        expect(json_response['expires_in']).to be(Gitlab::CurrentSettings.oauth_access_token_expires_in)
       end
     end
 

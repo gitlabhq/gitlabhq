@@ -7,8 +7,8 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, group: group) }
-  let_it_be(:issue_note) { create(:note, project: project) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be(:issue_note, freeze: false) { create(:note, project: project) }
 
   let(:awardable) { issue_note }
   let(:emoji_name) { AwardEmoji::THUMBS_UP }

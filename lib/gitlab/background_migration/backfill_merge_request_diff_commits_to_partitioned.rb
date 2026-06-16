@@ -37,13 +37,14 @@ module Gitlab
           cursor_columns.map { |col| model_class.arel_table[col] }
         )
         underlying_relation = model_class.where(
-          Arel::Nodes::And.new([
-            cursor_expression.gteq(arel_for_cursor(start_cursor, model_class.arel_table)),
-            cursor_expression.lteq(arel_for_cursor(end_cursor, model_class.arel_table))
-          ])
+          cursor_expression.lteq(arel_for_cursor(end_cursor, model_class.arel_table))
         )
 
-        Gitlab::Pagination::Keyset::Iterator.new(scope: underlying_relation.order(cursor_columns))
+        Gitlab::Database::Batch::InclusiveCursorIterator.new(
+          scope: underlying_relation.order(cursor_columns),
+          cursor_columns: cursor_columns,
+          start_cursor: start_cursor
+        )
       end
       # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
 

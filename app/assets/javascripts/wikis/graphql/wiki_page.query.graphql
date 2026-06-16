@@ -10,8 +10,18 @@ query wikiPageQuery(
     id
     title
     subscribed
+    awardEmoji {
+      nodes {
+        name
+        user {
+          id
+          name
+        }
+      }
+    }
     userPermissions {
       markNoteAsInternal
+      awardEmoji
     }
     discussions @skip(if: $skipDiscussions) {
       nodes {

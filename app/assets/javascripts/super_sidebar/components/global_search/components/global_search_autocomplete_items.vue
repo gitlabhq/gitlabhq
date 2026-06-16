@@ -98,7 +98,7 @@ export default {
       return this.autocompleteGroupedSearchOptions?.length > 0;
     },
     hasNoResults() {
-      return !this.hasResults && !this.autocompleteError;
+      return !this.loading && !this.hasResults && !this.autocompleteError;
     },
   },
   methods: {

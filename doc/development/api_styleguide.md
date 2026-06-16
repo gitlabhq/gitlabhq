@@ -438,6 +438,29 @@ The tags should describe the type of objects being acted upon in the API call, i
 
 If the correct name for a tag is not clear, speak to technical writers for guidance.
 
+### Constrain string parameters
+
+Constrain `String` parameters so clients cannot send unbounded payloads. Unbounded
+strings let callers submit large requests that consume server memory and
+processing time, and they widen the surface area for abuse.
+
+Where possible, use one of the following validators on every `String` parameter:
+
+- `values:` when the parameter accepts a fixed set of allowed values.
+- `limit:` to cap the maximum number of characters for free-form strings.
+- `regexp:` when the parameter must match a specific format.
+
+```ruby
+params do
+  optional :state, type: String, values: %w[opened closed], desc: 'Filter by state'
+  optional :name, type: String, limit: 255, desc: 'Name of the resource'
+end
+```
+
+The `limit:` validator is implemented in
+[`API::Validations::Validators::Limit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/limit.rb)
+and rejects values longer than the configured size.
+
 ## Breaking changes
 
 We must not make breaking changes to our REST API v4, even in major GitLab releases. See [what is a breaking change](#what-is-a-breaking-change) and [what is not a breaking change](#what-is-not-a-breaking-change).

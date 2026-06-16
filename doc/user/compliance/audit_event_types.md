@@ -64,6 +64,14 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`ai_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230001) | An AI setting is updated | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593015) | Instance |
 
+### AI agents
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`ai_tool_rule_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238788) | An AI tool rule is created | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/601301) | Group |
+| [`ai_tool_rule_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238788) | An AI tool rule is updated | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/601301) | Group |
+| [`ai_tool_rules_bulk_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239017) | AI tool rules are bulk updated | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/601473) | Group |
+
 ### AI framework
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -122,8 +130,12 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`oauth_application_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194557) | User creates an OAuth application | {{< yes >}} | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/550321) | User |
+| [`oauth_application_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227392) | User deletes an OAuth application | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/23054) | User |
+| [`oauth_application_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227392) | User updates an OAuth application | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/23054) | User |
 | [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Permissions are updated for a CI_JOB_TOKEN scope | {{< yes >}} | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
+| [`user_authorized_iam_oauth_application`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235073) | User authorized an IAM OAuth application | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/issues/589572) | User |
 | [`user_authorized_oauth_application`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179187) | User authorized an OAuth application | {{< yes >}} | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/514152) | User |
+| [`user_rejected_iam_oauth_application`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235073) | User rejected an IAM OAuth application | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/issues/589572) | User |
 
 ### Build artifacts
 
@@ -161,6 +173,7 @@ Audit event types belong to the following product categories.
 | [`project_merge_requests_disable_committers_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for disabling committers approval on merge requests is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369277) | Project |
 | [`project_merge_requests_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | A merge request template for a project is updated | {{< yes >}} | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 | [`project_only_allow_merge_if_all_discussions_are_resolved_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for allowing merge only when all discussions are resolved is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369286) | Project |
+| [`project_only_allow_merge_if_all_status_checks_passed_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239709) | A project's setting for only allowing a merge if all status checks have passed is updated | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/602263) | Project |
 | [`project_only_allow_merge_if_pipeline_succeeds_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's only allow merge if pipeline succeeds setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
 | [`project_remove_source_branch_after_merge_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project has its setting to remove branches after merges updated | {{< yes >}} | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 | [`project_require_password_to_approve_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for requiring a user's password for approval of merge request is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369280) | Project |
@@ -354,6 +367,7 @@ Audit event types belong to the following product categories.
 | [`ai_user_output_displayed`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/4713) | AI agent output was displayed to the user. | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/591588) | Project, Group |
 | [`composite_oauth_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231162) | A composite OAuth token was created for a Duo workflow | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593023) | Group, Project, User |
 | [`duo_agent_platform_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Duo Agent Platform enabled setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
+| [`duo_service_account_provisioned`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238584) | A service account was auto-provisioned for a Duo Agent Platform flow or third-party flow. | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/593021) | Group, Project, User |
 | [`duo_session_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is created | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Group, Project |
 | [`duo_session_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232456) | Duo session is deleted | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593027) | Group, Project |
 | [`duo_session_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session has failed | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
@@ -361,10 +375,12 @@ Audit event types belong to the following product categories.
 | [`duo_session_resumed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222303) | Duo session is resumed | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
 | [`duo_session_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is started | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
 | [`duo_session_stopped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is stopped | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`duo_tool_call_approved`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233230) | A tool call was approved in a Duo workflow session | {{< no >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593028) | Group, Project |
 | [`duo_workflow_mcp_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Duo Workflow MCP enabled setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
 | [`flow_trigger_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was created for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
 | [`flow_trigger_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was deleted from a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
 | [`flow_trigger_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was updated for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
+| [`foundational_agent_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235225) | A foundational agent status was updated for a namespace or organization | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/593030) | Group, Instance |
 | [`mcp_server_oauth_token_stored`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234028) | A user connected to an MCP server and an OAuth token was stored | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593029) | User |
 | [`prompt_injection_protection_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Prompt injection protection level setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
 | [`third_party_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227761) | A third-party agent access token was generated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/593031) | User |
@@ -524,7 +540,8 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`organization_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233210) | An organization is marked for deletion | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/594308) | Instance |
+| [`organization_hard_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238553) | An organization is hard-deleted (the database record is destroyed) | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/594310) | Instance |
+| [`organization_soft_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235915) | An organization is soft-deleted | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/594308) | Instance |
 
 ### Package registry
 
@@ -788,6 +805,7 @@ Audit event types belong to the following product categories.
 | [`login_failed_with_standard_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in to GitLab fails with standard authentication, such as password | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | Instance |
 | [`login_failed_with_webauthn_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in fails when using a WebAuthn device | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
 | [`new_user_signups_cap_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Number of users for user cap is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
+| [`personal_access_token_settings_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235703) | The namespace owner changes fine-grained personal access token settings | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593961) | Group |
 | [`project_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is created | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Creating a project access token fails | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is deleted | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
@@ -807,6 +825,7 @@ Audit event types belong to the following product categories.
 | [`authenticated_with_password`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with password | {{< yes >}} | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with two-factor authentication | {{< yes >}} | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_webauthn`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with WebAuthn device | {{< yes >}} | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
+| [`personal_access_token_used_from_unseen_ip`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233712) | A personal access token was used from a previously unseen IP address | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/588994) | User |
 | [`step_up_auth_required_oauth_provider_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199423) | Step-up authentication OAuth provider requirement is updated | {{< yes >}} | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) | Group |
 | [`user_signed_in_from_unseen_ip`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231250) | User signed in from a previously unseen IP address | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/588994) | User |
 
@@ -900,6 +919,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`duo_sast_vr_workflow_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238854) | GitLab Duo SAST Vulnerability Resolution Feature enabled setting on project changed | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/599650) | Project |
 | [`project_feature_infrastructure_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's infrastructure access level setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369305) | Project |
 | [`remove_vulnerability_false_positive_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213091) | A user removes a false positive flag from a vulnerability. | {{< yes >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/578903) | Project |
 
@@ -937,6 +957,7 @@ Audit event types belong to the following product categories.
 | [`enable_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user enables an AI Catalog agent in a project or group. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project, Group |
 | [`enable_ai_catalog_flow`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212539) | A user enables an AI Catalog flow in a project or group. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project, Group |
 | [`enable_ai_catalog_third_party_flow`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212625) | A user enables an AI Catalog external agent (formerly third-party flow) in a project or group. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project, Group |
+| [`restore_ai_catalog_item`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239425) | A user restores a previous AI Catalog item version as the new latest version. | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/issues/601095) | Project |
 | [`update_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user updates an AI Catalog agent. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project |
 | [`update_ai_catalog_flow`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212539) | A user updates an AI Catalog flow. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project |
 | [`update_ai_catalog_mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227051) | A user updates an AI Catalog MCP server. | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708) | Instance |

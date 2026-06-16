@@ -1,8 +1,8 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: PyPI 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: PyPI API
 ---
 
 {{< details >}}
@@ -12,27 +12,19 @@ title: PyPI
 
 {{< /details >}}
 
-このAPIを使用して、[PyPIパッケージマネージャークライアント](../../user/packages/pypi_repository/_index.md)を操作します。
+このAPIを使用して、[PyPIパッケージマネージャークライアント](../../user/packages/pypi_repository/_index.md)と対話します。
 
-{{< alert type="warning" >}}
+> [!warning]
+> このAPIは[PyPIパッケージマネージャークライアント](https://pypi.org/)によって使用されるものであり、通常は手動での利用を意図していません。
 
-このAPIは、[PyPIパッケージマネージャークライアント](https://pypi.org/)によって使用され、通常は通常は手動での使用を想定していません。
+これらのエンドポイントは、標準のAPI認証方法に準拠していません。[PyPIパッケージレジストリドキュメント](../../user/packages/pypi_repository/_index.md)で、どのヘッダーとトークンタイプがサポートされているかの詳細を確認してください。記載されていない認証方法は、将来削除される可能性があります。
 
-{{< /alert >}}
+> [!note]
+> [Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28)以降は、FIPSモードが有効な場合に推奨されます。
 
-{{< alert type="note" >}}
+## グループのパッケージファイルをダウンロード {#download-a-package-file-for-a-group}
 
-これらのエンドポイントは、標準の認証方式に準拠していません。どのヘッダーとトークンタイプがサポートされているかの詳細については、[PyPIパッケージレジストリドキュメント](../../user/packages/pypi_repository/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-連邦情報処理規格モードが有効になっている場合は、[Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28)以上を推奨します。{{< /alert >}}
-
-## グループからパッケージファイルをダウンロードする {#download-a-package-file-from-a-group}
-
-PyPIパッケージファイルをダウンロードします。[simple](#group-level-simple-api-entry-point)は通常、このURLを提供します。
+指定されたPyPIパッケージファイルをグループ用にダウンロードします。このURLは通常、[シンプルなAPI](#retrieve-package-descriptor-for-a-group)が提供します。
 
 ```plaintext
 GET groups/:id/-/packages/pypi/files/:sha256/:file_identifier
@@ -40,9 +32,9 @@ GET groups/:id/-/packages/pypi/files/:sha256/:file_identifier
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | グループのまたはフルパス。 |
+| `id`              | 文字列 | はい      | グループのIDまたは完全なパス。 |
 | `sha256`          | 文字列 | はい      | PyPIパッケージファイルのsha256チェックサム。 |
-| `file_identifier` | 文字列 | はい      | PyPIパッケージファイルの名前。 |
+| `file_identifier` | 文字列 | はい      | PyPIパッケージファイル名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
@@ -58,9 +50,9 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`my.pypi.package-0.0.1.tar.gz`に書き込まれます。
 
-## グループレベルのsimpleインデックス {#group-level-simple-api-index}
+## グループのすべてのパッケージを一覧表示 {#list-all-packages-for-a-group}
 
-グループ内のパッケージのリストをHTMLファイルとして返します:
+指定されたグループのすべてのパッケージをHTMLファイルで一覧表示します。
 
 ```plaintext
 GET groups/:id/-/packages/pypi/simple
@@ -68,14 +60,14 @@ GET groups/:id/-/packages/pypi/simple
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列 | はい | グループのまたはフルパス。 |
+| `id` | 文字列 | はい | グループのIDまたは完全なパス。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```html
 <!DOCTYPE html>
@@ -99,9 +91,9 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`simple_index.html`に書き込まれます。
 
-## グループレベルのsimpleエントリポイント {#group-level-simple-api-entry-point}
+## グループのパッケージディスクリプタを取得する {#retrieve-package-descriptor-for-a-group}
 
-パッケージ記述子をHTMLファイルとして返します:
+指定されたグループ内のパッケージのパッケージディスクリプタをHTMLファイルとして取得します。
 
 ```plaintext
 GET groups/:id/-/packages/pypi/simple/:package_name
@@ -109,15 +101,15 @@ GET groups/:id/-/packages/pypi/simple/:package_name
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `id`           | 文字列 | はい      | グループのまたはフルパス。 |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `id`           | 文字列 | はい      | グループのIDまたは完全なパス。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple/my.pypi.package"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```html
 <!DOCTYPE html>
@@ -141,9 +133,9 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`simple.html`に書き込まれます。
 
-## プロジェクトからパッケージファイルをダウンロードする {#download-a-package-file-from-a-project}
+## プロジェクト用のパッケージファイルをダウンロードする {#download-a-package-file-for-a-project}
 
-PyPIパッケージファイルをダウンロードします。[simple](#project-level-simple-api-entry-point)は通常、このURLを提供します。
+指定されたPyPIパッケージファイルをプロジェクト用にダウンロードします。このURLは通常、[シンプルなAPI](#retrieve-package-descriptor-for-a-project)が提供します。
 
 ```plaintext
 GET projects/:id/packages/pypi/files/:sha256/:file_identifier
@@ -151,8 +143,8 @@ GET projects/:id/packages/pypi/files/:sha256/:file_identifier
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`              | 文字列 | はい | プロジェクトのまたはフルパス。 |
-| `sha256`          | 文字列 | はい | PyPIパッケージファイルsha256チェックサム。 |
+| `id`              | 文字列 | はい | プロジェクトのIDまたは完全なパス。 |
+| `sha256`          | 文字列 | はい | PyPIパッケージファイルのsha256チェックサム。 |
 | `file_identifier` | 文字列 | はい | PyPIパッケージファイル名。 |
 
 ```shell
@@ -169,9 +161,9 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`my.pypi.package-0.0.1.tar.gz`に書き込まれます。
 
-## プロジェクトレベルのsimpleインデックス {#project-level-simple-api-index}
+## プロジェクトのすべてのパッケージを一覧表示 {#list-all-packages-for-a-project}
 
-プロジェクト内のパッケージのリストをHTMLファイルとして返します:
+指定されたプロジェクトのすべてのパッケージをHTMLファイルで一覧表示します。
 
 ```plaintext
 GET projects/:id/packages/pypi/simple
@@ -179,14 +171,14 @@ GET projects/:id/packages/pypi/simple
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列 | はい | プロジェクトのまたはフルパス。 |
+| `id` | 文字列 | はい | プロジェクトのIDまたは完全なパス。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```html
 <!DOCTYPE html>
@@ -210,9 +202,9 @@ curl --user <username>:<personal_access_token> \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`simple_index.html`に書き込まれます。
 
-## プロジェクトレベルのsimpleエントリポイント {#project-level-simple-api-entry-point}
+## プロジェクトのパッケージディスクリプタを取得する {#retrieve-package-descriptor-for-a-project}
 
-パッケージ記述子をHTMLファイルとして返します:
+指定されたプロジェクト内のパッケージのパッケージディスクリプタをHTMLファイルとして取得します。
 
 ```plaintext
 GET projects/:id/packages/pypi/simple/:package_name
@@ -220,15 +212,15 @@ GET projects/:id/packages/pypi/simple/:package_name
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`           | 文字列 | はい | プロジェクトのまたはフルパス。 |
-| `package_name` | 文字列 | はい | パッケージの名前。 |
+| `id`           | 文字列 | はい | プロジェクトのIDまたは完全なパス。 |
+| `package_name` | 文字列 | はい | パッケージ名。 |
 
 ```shell
 curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple/my.pypi.package"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```html
 <!DOCTYPE html>
@@ -254,7 +246,7 @@ curl --user <username>:<personal_access_token> \
 
 ## パッケージをアップロードする {#upload-a-package}
 
-PyPIパッケージをアップロードします:
+指定されたプロジェクトのPyPIパッケージをアップロードします。
 
 ```plaintext
 POST projects/:id/packages/pypi
@@ -262,12 +254,14 @@ POST projects/:id/packages/pypi
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 文字列 | はい | プロジェクトのまたはフルパス。 |
-| `requires_python` | 文字列 | いいえ | PyPIに必要なバージョン。 |
+| `id`      | 文字列 | はい | プロジェクトのIDまたは完全なパス。 |
+| `requires_python` | 文字列 | いいえ | PyPIの必須バージョン。 |
+| `sha256_digest` | 文字列 | いいえ | パッケージファイルのSHA256チェックサム。アップロードには不要ですが、この属性がないと、パッケージインデックスURLに必要なチェックサムがないため、`pip install`は失敗します。 |
 
 ```shell
 curl --request POST \
      --form 'content=@path/to/my.pypi.package-0.0.1.tar.gz' \
+     --form "sha256_digest=$(shasum -a 256 < path/to/my.pypi.package-0.0.1.tar.gz | cut -d' ' -f1)" \
      --form 'name=my.pypi.package' \
      --form 'version=1.3.7' \
      --user <username>:<personal_access_token> \

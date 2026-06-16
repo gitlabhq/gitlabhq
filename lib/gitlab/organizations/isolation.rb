@@ -5,7 +5,12 @@ module Gitlab
     class Isolation
       # rubocop:disable Gitlab/AvoidCurrentOrganization -- We check if Current.organization is assigned so it is safe
       def self.enabled?
-        return false unless Feature.enabled?(:data_isolation, Feature.current_request)
+        return false unless begin
+          Feature.enabled?(:data_isolation, Feature.current_request)
+        rescue Exception # rubocop:disable Lint/RescueException -- GitLab has Errors that have Exception as parent class
+          false
+        end
+
         return false unless ::Current.organization_assigned
 
         # Disable organization scoping because checking isolation state can raise a ThreadError

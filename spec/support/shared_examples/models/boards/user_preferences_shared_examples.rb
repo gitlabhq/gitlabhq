@@ -3,7 +3,7 @@
 RSpec.shared_examples 'list_preferences_for user' do |list_factory, list_id_attribute|
   subject { create(list_factory) } # rubocop:disable Rails/SaveBang
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#preferences_for' do
     context 'when user is nil' do
@@ -25,7 +25,7 @@ RSpec.shared_examples 'list_preferences_for user' do |list_factory, list_id_attr
         preferences = subject.preferences_for(user)
 
         expect(preferences).to be_persisted
-        expect(preferences.collapsed).to eq(true)
+        expect(preferences.collapsed).to be(true)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.shared_examples 'list_preferences_for user' do |list_factory, list_id_attr
       context 'when there are no preferences for user' do
         it 'creates new user preferences' do
           expect { subject.update_preferences_for(user, collapsed: true) }.to change { subject.preferences.count }.by(1)
-          expect(subject.preferences_for(user).collapsed).to eq(true)
+          expect(subject.preferences_for(user).collapsed).to be(true)
         end
       end
 
@@ -54,7 +54,7 @@ RSpec.shared_examples 'list_preferences_for user' do |list_factory, list_id_attr
           subject.update_preferences_for(user, collapsed: false)
 
           expect { subject.update_preferences_for(user, collapsed: true) }.not_to change { subject.preferences.count }
-          expect(subject.preferences_for(user).collapsed).to eq(true)
+          expect(subject.preferences_for(user).collapsed).to be(true)
         end
       end
 

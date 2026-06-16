@@ -176,12 +176,15 @@ export const formatTime = (milliseconds) => {
 };
 
 /**
- * Port of ruby helper time_interval_in_words.
+ * Converts an interval in human-readable format
  *
- * @param  {number} seconds
+ * @param  {number} intervalInSeconds
+ * @param  {Object} [params]
+ * @param  {boolean} [params.abbreviated] Use single-letter unit suffixes (e.g. `1h 2m 3s`)
+ *                                        instead of localized words (`1 hour 2 minutes 3 seconds`).
  * @return {string}
  */
-export const timeIntervalInWords = (intervalInSeconds) => {
+export const timeIntervalInWords = (intervalInSeconds, { abbreviated = false } = {}) => {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const absSeconds = Math.abs(secondsInteger);
 
@@ -193,16 +196,32 @@ export const timeIntervalInWords = (intervalInSeconds) => {
   const parts = [];
 
   if (days > 0) {
-    parts.push(n__('%d day', '%d days', days));
+    parts.push(
+      abbreviated
+        ? sprintf(s__('Duration|%{count}d'), { count: days })
+        : n__('%d day', '%d days', days),
+    );
   }
   if (hours > 0) {
-    parts.push(n__('%d hour', '%d hours', hours));
+    parts.push(
+      abbreviated
+        ? sprintf(s__('Duration|%{count}h'), { count: hours })
+        : n__('%d hour', '%d hours', hours),
+    );
   }
   if (minutes > 0) {
-    parts.push(n__('%d minute', '%d minutes', minutes));
+    parts.push(
+      abbreviated
+        ? sprintf(s__('Duration|%{count}m'), { count: minutes })
+        : n__('%d minute', '%d minutes', minutes),
+    );
   }
   if (seconds > 0 || parts.length === 0) {
-    parts.push(n__('%d second', '%d seconds', seconds));
+    parts.push(
+      abbreviated
+        ? sprintf(s__('Duration|%{count}s'), { count: seconds })
+        : n__('%d second', '%d seconds', seconds),
+    );
   }
 
   return parts.join(' ');

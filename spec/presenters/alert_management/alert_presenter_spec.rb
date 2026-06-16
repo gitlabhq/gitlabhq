@@ -19,14 +19,14 @@ RSpec.describe AlertManagement::AlertPresenter do
     }
   end
 
-  let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload) }
+  let_it_be(:alert, freeze: false) { create(:alert_management_alert, project: project, payload: payload) }
 
   let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }
 
   describe '#issue_description' do
-    let_it_be(:alert) { create(:alert_management_alert, project: project, payload: {}) }
+    let_it_be(:alert, freeze: false) { create(:alert_management_alert, project: project, payload: {}) }
 
     let(:markdown_line_break) { '  ' }
 
@@ -46,7 +46,7 @@ RSpec.describe AlertManagement::AlertPresenter do
     end
 
     context 'with optional alert attributes' do
-      let_it_be(:alert) do
+      let_it_be(:alert, freeze: false) do
         create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: payload)
       end
 

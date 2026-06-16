@@ -3,7 +3,9 @@ category: default
 action: confirm_delete
 extra_properties:
 identifiers:
-product_group: package_registry
+product_group: container_registry
+product_categories:
+- container_registry
 milestone: "12.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23154
 tiers:

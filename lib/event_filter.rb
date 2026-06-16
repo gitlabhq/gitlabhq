@@ -27,6 +27,10 @@ class EventFilter
     filter == key.to_s
   end
 
+  def include_transferred_events?
+    active?(EventFilter::ALL)
+  end
+
   def apply_filter(events)
     case filter
     when PUSH

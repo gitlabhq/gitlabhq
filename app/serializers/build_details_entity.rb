@@ -15,8 +15,9 @@ class BuildDetailsEntity < Ci::JobEntity
     expose :timeout_human_readable_source, as: :timeout_source
   end
 
-  expose :deployment_status, if: ->(*) { build.deployment_job? } do
+  expose :deployment_status, if: ->(*) { build.interacts_with_environment? } do
     expose :deployment_status, as: :status
+    expose :environment_action, as: :action
     expose :persisted_environment, as: :environment do |build, options|
       options.merge(deployment_details: false).then do |opts|
         EnvironmentEntity.represent(build.persisted_environment, opts)

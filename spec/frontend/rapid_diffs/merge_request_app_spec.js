@@ -1,4 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
+import { nextTick } from 'vue';
 import { createMergeRequestRapidDiffsApp } from '~/rapid_diffs/merge_request_app';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
@@ -12,6 +13,7 @@ import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 import { initLineRangeSelection } from '~/rapid_diffs/app/init_line_range_selection';
 import { globalAccessorPlugin } from '~/pinia/plugins';
+import { pinia } from '~/pinia/instance';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
@@ -126,7 +128,7 @@ describe('Merge Request Rapid Diffs app', () => {
   it('initializes compare versions on init', async () => {
     const versions = {
       source_versions: [{ id: 1, version_index: 1, selected: true }],
-      target_versions: [{ id: 'head', head: true, selected: true }],
+      target_versions: [{ id: 'head', is_merge_head: true, selected: true }],
     };
     buildApp({ versions });
     await app.init();
@@ -154,6 +156,57 @@ describe('Merge Request Rapid Diffs app', () => {
     buildApp();
     await app.init();
     expect(initLineRangeSelection).toHaveBeenCalledWith(app.root);
+  });
+
+  describe('changes tab count', () => {
+    const addTabCountBadge = (initial = '-') => {
+      const tabCount = document.createElement('span');
+      tabCount.className = 'js-changes-tab-count';
+      tabCount.textContent = initial;
+      document.body.appendChild(tabCount);
+      return tabCount;
+    };
+
+    it('updates the changes tab count with realSize when diffsStats becomes available', async () => {
+      buildApp();
+      const tabCount = addTabCountBadge();
+      await app.init();
+      useDiffsView(pinia).diffsStats = { diffsCount: 354, realSize: '354+' };
+      await nextTick();
+      expect(tabCount.textContent).toBe('354+');
+    });
+
+    it('uses the existing realSize on init if diffsStats is already loaded', async () => {
+      useDiffsView(pinia).diffsStats = { diffsCount: 5, realSize: '5' };
+      buildApp();
+      const tabCount = addTabCountBadge();
+      await app.init();
+      expect(tabCount.textContent).toBe('5');
+    });
+
+    it('falls back to diffsCount when realSize is missing', async () => {
+      buildApp();
+      const tabCount = addTabCountBadge();
+      await app.init();
+      useDiffsView(pinia).diffsStats = { diffsCount: 0, realSize: null };
+      await nextTick();
+      expect(tabCount.textContent).toBe('0');
+    });
+
+    it('does not touch the badge while diffsStats stays unset', async () => {
+      buildApp();
+      const tabCount = addTabCountBadge();
+      await app.init();
+      expect(tabCount.textContent).toBe('-');
+    });
+
+    it('does not throw when the badge is absent', async () => {
+      buildApp();
+      await app.init();
+      useDiffsView(pinia).diffsStats = { diffsCount: 5, realSize: '5' };
+      await nextTick();
+      expect(document.querySelector('.js-changes-tab-count')).toBeNull();
+    });
   });
 
   describe('scrollToDiffNote', () => {

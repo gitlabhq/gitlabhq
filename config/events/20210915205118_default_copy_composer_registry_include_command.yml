@@ -4,6 +4,8 @@ action: copy_composer_registry_include_command
 extra_properties:
 identifiers:
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: "13.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38779
 tiers:

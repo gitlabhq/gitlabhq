@@ -9,6 +9,7 @@ const EnvironmentApprovalComponent = import(
 );
 
 export default {
+  name: 'DeploymentActions',
   components: {
     GlButtonGroup,
     GlButton,

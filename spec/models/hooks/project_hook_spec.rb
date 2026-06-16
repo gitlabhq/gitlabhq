@@ -80,10 +80,11 @@ RSpec.describe ProjectHook, feature_category: :webhooks do
   describe '#application_context' do
     let_it_be(:hook) { build(:project_hook) }
 
-    it 'includes the type and project' do
+    it 'includes the type, project, and organization' do
       expect(hook.application_context).to include(
         related_class: 'ProjectHook',
-        project: hook.project
+        project: hook.project,
+        organization: hook.project.organization
       )
     end
   end

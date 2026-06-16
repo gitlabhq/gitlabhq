@@ -16,6 +16,7 @@ import ContainerExpirationPolicyEnabledText from '~/packages_and_registries/sett
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 export default {
+  name: 'ContainerExpirationPolicy',
   components: {
     ContainerExpirationPolicyEnabledText,
     GlAlert,

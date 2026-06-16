@@ -4,9 +4,12 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   presents ::Release, as: :release
 
   def commit_path
-    return unless release.commit && can_read_code?
+    return unless can_read_code?
 
-    project_commit_path(project, release.commit.id)
+    sha = release.sha.presence || release.commit&.id
+    return unless sha
+
+    project_commit_path(project, sha)
   end
 
   def tag_path

@@ -20,7 +20,14 @@ module Gitlab
 
           raise DataTooLargeError, "The provided YAML is too big" if content_too_large?
 
-          @config = YAML.safe_load(config,
+          # Strip the UTF-8 BOM only when the input is valid UTF-8. Non-UTF-8
+          # encodings (e.g. ASCII-8BIT from a remote include served as
+          # binary/octet-stream, Windows-1252, ISO-8859-1) cannot contain a
+          # UTF-8 BOM, and running the UTF-8 BOM regex against them would
+          # either raise Encoding::CompatibilityError or risk mojibake.
+          config_to_parse = utf8?(config) ? Gitlab::EncodingHelper.strip_bom(config) : config
+
+          @config = YAML.safe_load(config_to_parse,
             permitted_classes: [Symbol, *additional_permitted_classes],
             permitted_symbols: [],
             aliases: true,
@@ -71,6 +78,10 @@ module Gitlab
         def html_content?(content)
           prefix = content.to_s[0, 512].downcase
           prefix.include?('<!doctype html') || prefix.include?('<html')
+        end
+
+        def utf8?(content)
+          content.encoding == Encoding::UTF_8 && content.valid_encoding?
         end
 
         def content_too_large?

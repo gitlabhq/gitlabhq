@@ -7,7 +7,7 @@ RSpec.describe Ci::JobDefinitionInstance, feature_category: :continuous_integrat
   let_it_be(:job) { create(:ci_build, :without_job_definition, project: project) }
   let_it_be(:job_definition) { create(:ci_job_definition, project: project) }
 
-  let_it_be(:definition_instance) do
+  let_it_be(:definition_instance, freeze: false) do
     create(:ci_job_definition_instance,
       job: job, job_definition: job_definition, project: project)
   end

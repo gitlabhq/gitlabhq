@@ -133,6 +133,26 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
       end
     end
 
+    context 'when git blame emits consecutive hunks for the same commit' do
+      # git blame --porcelain can emit back-to-back hunks for the
+      # same commit. The merged group's :span must reflect the total line count,
+      # not just the first hunk's span.
+      it 'accumulates :span across all merged hunks' do
+        same_commit = project.commit('master')
+        # Tuples: (commit, line, previous_path, span). Only hunk leaders carry span.
+        tuples = [
+          [same_commit, 'a', nil, 1],   # hunk 1 leader: 1 line
+          [same_commit, 'b', nil, 3],   # hunk 2 leader: 3 lines
+          [same_commit, 'c', nil, 0],
+          [same_commit, 'd', nil, 0]
+        ]
+        allow(Gitlab::Git::Blame).to receive(:new)
+          .and_return(instance_double(Gitlab::Git::Blame, each: tuples.each))
+
+        expect(groups.first[:span]).to eq(4)
+      end
+    end
+
     describe 'wrapped_commit caching' do
       it 'clears the cache after building the groups' do
         expect(blame).to receive(:clear_memoization).with(:wrapped_commit)

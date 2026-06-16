@@ -1,6 +1,11 @@
+%h2.gl-heading-2.gl-mb-3.gl-mt-5
+  = s_('Observability|Application monitoring, built into GitLab')
+%p.gl-text-subtle.gl-mb-5
+  = s_("Observability|GitLab Observability is an application monitoring backend included with your project. It's an alternative to Datadog, New Relic, and Dynatrace. Instrument your application with OpenTelemetry to send traces, metrics, and logs, then explore them alongside your commits, pipelines, and issues.")
+
 - has_pipelines_since_setup = local_assigns.fetch(:has_pipelines_since_setup, false)
 - if has_pipelines_since_setup
-  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-feedback-success.gl-border-feedback-success.gl-border-1.gl-border-solid
+  .gl-rounded-lg.gl-p-5.gl-mb-8.gl-mt-7.gl-bg-feedback-success.gl-border-feedback-success.gl-border-1.gl-border-solid
     .gl-flex.gl-items-start.gl-gap-4
       .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
         = sprite_icon('check-circle-filled', css_class: 'gl-text-success', size: 24)
@@ -11,7 +16,7 @@
           = s_('Observability|Metrics, logs, and traces from your pipeline runs are being collected automatically.')
         = link_to s_('Observability|Explore your data'), group_observability_path(configuration_settings.group, 'dashboard'), class: 'gl-link'
 - elsif configuration_settings.gitlab_observability_export_variable.present?
-  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-feedback-info.gl-border-feedback-info.gl-border-1.gl-border-solid
+  .gl-rounded-lg.gl-p-5.gl-mb-8.gl-mt-7.gl-bg-feedback-info.gl-border-feedback-info.gl-border-1.gl-border-solid
     .gl-flex.gl-items-start.gl-gap-4
       .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
         = sprite_icon('clock', css_class: 'gl-fill-icon-info', size: 24)
@@ -22,7 +27,7 @@
           = s_('Observability|CI/CD observability is enabled. Run a pipeline and your metrics, logs, and traces will appear here automatically.')
         = link_to s_('Observability|View CI/CD settings'), group_settings_ci_cd_path(configuration_settings.group), class: 'gl-link'
 - else
-  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-subtle.gl-border
+  .gl-rounded-lg.gl-p-5.gl-mb-8.gl-mt-7.gl-bg-subtle.gl-border
     .gl-flex.gl-items-start.gl-gap-4
       .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
         = sprite_icon('information-o', css_class: 'gl-fill-icon-info', size: 24)

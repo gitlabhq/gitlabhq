@@ -8,7 +8,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let(:new_type) { build(:work_item_system_defined_type, :incident) }
-  let_it_be(:work_item, refind: true) do
+  let_it_be_with_refind(:work_item) do
     create(:work_item, :task, project: project, milestone: create(:milestone, project: project))
   end
 
@@ -61,6 +61,16 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
 
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::Convert }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:workItemConvert, input, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
   end
 end

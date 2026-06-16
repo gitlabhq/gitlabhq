@@ -8,6 +8,7 @@ export const PAGE_SIZES = [20, 50, 100].map((value) => ({
 }));
 
 export default {
+  name: 'PageSizeSelector',
   components: { GlCollapsibleListbox },
   props: {
     value: {

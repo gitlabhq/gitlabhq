@@ -12,7 +12,6 @@ import { InternalEvents } from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { i18n } from './constants';
 import {
   codeQualitySummary,
@@ -25,7 +24,7 @@ export default {
   components: {
     MrWidget,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin()],
   i18n,
   props: {
     mr: {
@@ -33,6 +32,7 @@ export default {
       required: true,
     },
   },
+  emits: ['loaded'],
   data() {
     return {
       pollingFinished: false,
@@ -79,7 +79,7 @@ export default {
       return true;
     },
     hasReportsTab() {
-      return this.glFeatures.mrReportsTab && Boolean(this.mr.reportsTabPath);
+      return Boolean(this.mr.reportsTabPath);
     },
     actionButtons() {
       if (this.hasReportsTab) {

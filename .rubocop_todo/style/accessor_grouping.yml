@@ -3,10 +3,8 @@
 Style/AccessorGrouping:
   Exclude:
     - 'app/finders/template_finder.rb'
-    - 'app/models/commit_range.rb'
     - 'app/models/concerns/importable.rb'
     - 'app/models/design_management/design_at_version.rb'
-    - 'app/models/draft_note.rb'
     - 'app/models/integrations/chat_message/alert_message.rb'
     - 'app/models/integrations/chat_message/base_message.rb'
     - 'app/models/integrations/chat_message/deployment_message.rb'

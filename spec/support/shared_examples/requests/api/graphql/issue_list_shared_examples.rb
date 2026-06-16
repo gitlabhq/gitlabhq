@@ -128,8 +128,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       end
 
       context 'when filtering by labels' do
-        let_it_be(:label_a) { create(:label, project: issue_a.project) }
-        let_it_be(:label_b) { create(:label, project: issue_b.project) }
+        let_it_be(:label_a, freeze: false) { create(:label, project: issue_a.project) }
+        let_it_be(:label_b, freeze: false) { create(:label, project: issue_b.project) }
 
         let(:issue_filter_params) { { or: { label_names: [label_a.title, label_b.title] } } }
 
@@ -165,7 +165,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     context 'when filtering by workItemTypeIds' do
-      let_it_be(:incident) { create(:incident, project: issue_a.project) }
+      let_it_be(:incident, freeze: false) { create(:incident, project: issue_a.project) }
 
       # Override base_params so the iids constraint in issues_spec.rb doesn't
       # interfere with type-based filtering (no-op for project/issues_spec.rb).
@@ -333,14 +333,14 @@ RSpec.shared_examples 'graphql issue list request spec' do
     # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/505024
     context 'when filtering by Service Desk issues/tickets' do
       # Use items only for this context because it's temporary. This way we don't need to modify other examples.
-      let_it_be(:service_desk_issue) { create(:issue, project: project, author: create(:support_bot)) }
+      let_it_be(:service_desk_issue, freeze: false) { create(:issue, project: project, author: create(:support_bot)) }
 
       # don't use support bot because this isn't a req for ticket WIT
-      let_it_be(:ticket) { create(:work_item, :ticket, project: project, author: current_user) }
+      let_it_be(:ticket, freeze: false) { create(:work_item, :ticket, project: project, author: current_user) }
       # Get work item as issue because this query only returns issues.
-      let_it_be(:service_desk_items) { [service_desk_issue, Issue.find(ticket.id)] }
+      let_it_be(:service_desk_items, freeze: false) { [service_desk_issue, Issue.find(ticket.id)] }
 
-      let_it_be(:base_params) { { iids: service_desk_items.map { |issue| issue.iid.to_s } } }
+      let_it_be(:base_params, freeze: false) { { iids: service_desk_items.map { |issue| issue.iid.to_s } } }
 
       let(:issue_filter_params) { { author_username: 'support-bot' } }
 
@@ -517,8 +517,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
     context 'when requesting `closed_as_duplicate_of`' do
       let(:requested_fields) { 'closedAsDuplicateOf { id }' }
-      let_it_be(:issue_a_dup) { create(:issue, project: issue_a.project) }
-      let_it_be(:issue_b_dup) { create(:issue, project: issue_b.project) }
+      let_it_be(:issue_a_dup, freeze: false) { create(:issue, project: issue_a.project) }
+      let_it_be(:issue_b_dup, freeze: false) { create(:issue, project: issue_b.project) }
 
       before do
         issue_a.update!(duplicated_to_id: issue_a_dup.id)
@@ -663,8 +663,11 @@ RSpec.shared_examples 'graphql issue list request spec' do
   end
 
   context 'when fetching escalation status' do
-    let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue_a) }
-    let_it_be(:incident_type) { build(:work_item_system_defined_type, :incident) }
+    let_it_be(:escalation_status, freeze: false) do
+      create(:incident_management_issuable_escalation_status, issue: issue_a)
+    end
+
+    let_it_be(:incident_type, freeze: false) { build(:work_item_system_defined_type, :incident) }
 
     let(:fields) do
       <<~QUERY

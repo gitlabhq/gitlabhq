@@ -28,6 +28,7 @@ module BulkImports
         bulk_import_id: entity.bulk_import_id,
         bulk_import_entity_id: entity.id,
         bulk_import_entity_type: entity.source_type,
+        Labkit::Fields::GL_ORGANIZATION_ID => entity.organization_id,
         source_full_path: entity.source_full_path,
         source_version: entity.source_version.to_s
       }

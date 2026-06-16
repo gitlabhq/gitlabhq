@@ -99,7 +99,7 @@ describe('RecentlyViewedItems', () => {
       'Your recently viewed items are not available. Please refresh the page to try again.',
     );
   const findEmptyState = () =>
-    wrapper.findByText('Issues, merge requests, and wiki pages you visit will appear here.');
+    wrapper.findByText('Work items, merge requests, and wiki pages you visit will appear here.');
   const findItemsList = () => wrapper.find('ul');
   const findListItems = () => findItemsList().findAll('li');
   const findItemsByIconName = (iconName) =>
@@ -248,6 +248,39 @@ describe('RecentlyViewedItems', () => {
       expect(mrItems.at(0).text()).toBe('Implement authentication improvements');
     });
 
+    it('renders work item with correct icon', async () => {
+      const mockWorkItemResponse = {
+        data: {
+          currentUser: {
+            id: 123,
+            recentlyViewedItems: [
+              {
+                viewedAt: '2025-06-19T10:00:00Z',
+                item: {
+                  __typename: 'WorkItem',
+                  id: 'work-item-1',
+                  title: 'Test Work Item',
+                  webUrl: '/project/-/work_items/1',
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/1',
+                    name: 'Issue',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      };
+
+      const workItemHandler = jest.fn().mockResolvedValue(mockWorkItemResponse);
+      createComponent({ recentlyViewedHandler: workItemHandler });
+      await waitForPromises();
+
+      expect(findItemLinks()).toHaveLength(1);
+      expect(findItemIcons().at(0).props('name')).toBe('work-item-issue');
+      expect(findItemLinks().at(0).text()).toBe('Test Work Item');
+    });
+
     it('renders items with correct URLs', () => {
       const links = findItemLinks();
 
@@ -289,7 +322,7 @@ describe('RecentlyViewedItems', () => {
     it('tracks click on issue item', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      const mockIssueItem = { icon: 'work-item-issue', __typename: 'Issue' };
+      const mockIssueItem = { icon: 'work-item-issue', itemType: 'Issue' };
       wrapper.vm.handleItemClick(mockIssueItem);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
@@ -305,7 +338,7 @@ describe('RecentlyViewedItems', () => {
     it('tracks click on merge request item', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      const mockMrItem = { icon: 'merge-request', __typename: 'MergeRequest' };
+      const mockMrItem = { icon: 'merge-request', itemType: 'MergeRequest' };
       wrapper.vm.handleItemClick(mockMrItem);
 
       expect(trackEventSpy).toHaveBeenCalledWith(

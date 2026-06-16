@@ -125,6 +125,7 @@ working:
    ```
 
 1. If using Elasticsearch, verify that searches are successful.
+1. Optional. [Pre-download a package from the official repository](package/_index.md#pre-download-a-package-from-the-official-repository) to test package availability and reduce install time.
 
 If something goes wrong, [get support](#get-support).
 
@@ -205,6 +206,6 @@ If something goes wrong during your upgrade:
 For support:
 
 - [Contact GitLab Support](https://support.gitlab.com/hc/en-us) and your Customer Success Manager, if you have one.
-- If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact) and
-  [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),
+- If [the situation qualifies](https://support.gitlab.com/hc/en-us/articles/11626416629660-Definitions#definitions-of-support-impact) and
+  [your plan includes emergency support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#priority-support),
   create an emergency ticket.

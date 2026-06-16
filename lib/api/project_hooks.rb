@@ -21,10 +21,6 @@ module API
         user_project.hooks
       end
 
-      def webhook_signing_token_actor
-        user_project
-      end
-
       params :common_hook_parameters do
         optional :name, type: String, desc: 'Name of the hook'
         optional :description, type: String, desc: 'Description of the hook'
@@ -69,8 +65,8 @@ module API
         mount ::API::Hooks::CustomHeaders, with: { boundary_type: :project }
       end
 
-      desc 'List project hooks' do
-        detail 'Get a list of project hooks'
+      desc 'List all webhooks for a project' do
+        detail 'Lists all webhooks for a specified project.'
         success Entities::ProjectHook
         is_array true
         tags project_hooks_tags
@@ -84,8 +80,8 @@ module API
       end
 
       namespace ":id/hooks/:hook_id/" do
-        desc 'Get project hook' do
-          detail 'Get a specific hook for a project'
+        desc 'Retrieve a project webhook' do
+          detail 'Retrieves a specified webhook for a project.'
           success Entities::ProjectHook
           failure [
             { code: 404, message: 'Not found' }
@@ -101,8 +97,8 @@ module API
           present hook, with: Entities::ProjectHook
         end
 
-        desc 'Edit project hook' do
-          detail 'Edits a hook for a specified project.'
+        desc 'Update a project webhook' do
+          detail 'Updates a specified webhook for a project.'
           success Entities::ProjectHook
           failure [
             { code: 400, message: 'Validation error' },
@@ -121,8 +117,8 @@ module API
           update_hook(entity: Entities::ProjectHook)
         end
 
-        desc 'Delete a project hook' do
-          detail 'Removes a hook from a project. This is an idempotent method and can be called multiple times. Either the hook is available or not.'
+        desc 'Delete a project webhook' do
+          detail 'Deletes a specified webhook for a project.'
           success Entities::ProjectHook
           failure [
             { code: 404, message: 'Not found' }
@@ -144,8 +140,8 @@ module API
         mount ::API::Hooks::Events, with: { boundary_type: :project }
       end
 
-      desc 'Add project hook' do
-        detail 'Adds a hook to a specified project'
+      desc 'Add a webhook to a project' do
+        detail 'Adds a webhook to a specified project.'
         success Entities::ProjectHook
         failure [
           { code: 400, message: 'Validation error' },

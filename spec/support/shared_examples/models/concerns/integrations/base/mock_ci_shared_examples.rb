@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Integrations::Base::MockCi do
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project, freeze: false) { build(:project) }
 
   subject(:integration) { described_class.new(project: project, mock_service_url: generate(:url)) }
 

@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCollapsibleListbox, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSprintf, GlLink, GlModal } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -45,6 +45,8 @@ describe('BranchRuleModal', () => {
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findHelpText = () => wrapper.findByTestId('help-text');
   const findHelpLink = () => wrapper.findComponent(GlLink);
+  const findBranchNameError = () => wrapper.findByTestId('branch-name-error');
+  const findModal = () => wrapper.findComponent(GlModal);
 
   it('renders dropdown with correct initial data', () => {
     expect(findBranchRuleListbox().props()).toMatchObject({
@@ -195,6 +197,56 @@ describe('BranchRuleModal', () => {
       expect(wildcardItem).toBeUndefined();
       expect(branchNameItem).toBeUndefined();
       expect(noResultsItem).toBeUndefined();
+    });
+
+    describe('branch name longer than 255 characters', () => {
+      const longBranchName =
+        'feature/implement-advanced-user-authentication-system-with-multi-factor-support-including-sms-email-and-authenticator-app-integration-plus-session-management-and-password-reset-functionality-with-comprehensive-logging-and-security-audit-trail-capabilities2';
+
+      beforeEach(async () => {
+        await createComponent();
+      });
+
+      it('shows "Branch name cannot exceed 255 characters" message', async () => {
+        const listbox = findBranchRuleListbox();
+
+        await listbox.vm.$emit('search', longBranchName);
+        await nextTick();
+
+        expect(findBranchNameError().exists()).toBe(true);
+      });
+
+      it('shows "No branch rules found" and disables creation options when no matches', async () => {
+        const listbox = findBranchRuleListbox();
+
+        await listbox.vm.$emit('search', longBranchName);
+        await nextTick();
+
+        const items = listbox.props('items');
+
+        const noResultsItem = items.find((item) => item.isNoResults);
+        expect(noResultsItem).toBeDefined();
+
+        const branchNameItem = items.find((item) => item.isBranchName);
+        expect(branchNameItem).toBeUndefined();
+
+        const wildcardItem = items.find((item) => item.isWildcard);
+        expect(wildcardItem).toBeUndefined();
+
+        expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
+      });
+
+      it('hides error message when query is shortened below 256 characters', async () => {
+        await findBranchRuleListbox().vm.$emit('search', longBranchName);
+        await nextTick();
+
+        expect(findBranchNameError().exists()).toBe(true);
+
+        await findBranchRuleListbox().vm.$emit('search', longBranchName.slice(0, 255));
+        await nextTick();
+
+        expect(findBranchNameError().exists()).toBe(false);
+      });
     });
   });
 

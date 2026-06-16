@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
             'Some failure'
         end
 
-        context 'and has failure with no message but has system-err' do
+        context 'and has failure with no message but one system-err' do
           let(:testcase_content) do
             <<~XML
               <failure></failure>
@@ -133,7 +133,21 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
             "System Err:\n\nSome failure"
         end
 
-        context 'and has failure with message, system-out and system-err' do
+        context 'and has failure with no message but two system-err tags' do
+          let(:testcase_content) do
+            <<~XML
+              <failure></failure>
+              <system-err>Some failure</system-err>
+              <system-err>Second failure</system-err>
+            XML
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            "System Err:\n\nSome failure\n\nSecond failure"
+        end
+
+        context 'and has failure with message, single system-out and system-err' do
           let(:testcase_content) do
             <<~XML
               <failure>Some failure</failure>
@@ -147,6 +161,22 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
             "Some failure\n\nSystem Out:\n\nThis is the system output\n\nSystem Err:\n\nThis is the system err"
         end
 
+        context 'and has failure with message, two system-out and two system-err tags' do
+          let(:testcase_content) do
+            <<~XML
+              <failure>Some failure</failure>
+              <system-out>This is the system output</system-out>
+              <system-out>Second output</system-out>
+              <system-err>This is the system err</system-err>
+              <system-err>Second system err</system-err>
+            XML
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            "Some failure\n\nSystem Out:\n\nThis is the system output\n\nSecond output\n\nSystem Err:\n\nThis is the system err\n\nSecond system err"
+        end
+
         context 'and has error' do
           let(:testcase_content) { '<error>Some error</error>' }
 
@@ -155,7 +185,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
             'Some error'
         end
 
-        context 'and has error with no message but has system-err' do
+        context 'and has error with no message but one system-err' do
           let(:testcase_content) do
             <<~XML
               <error></error>
@@ -168,18 +198,34 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
             "System Err:\n\nSome error"
         end
 
-        context 'and has error with message, system-out and system-err' do
+        context 'and has error with no message and two system-err tags' do
           let(:testcase_content) do
             <<~XML
-              <error>Some error</error>
-              <system-out>This is the system output</system-out>
-              <system-err>This is the system err</system-err>
+              <error></error>
+              <system-err>Some error</system-err>
+              <system-err>Second error</system-err>
             XML
           end
 
           it_behaves_like '<testcase> XML parser',
             ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
-            "Some error\n\nSystem Out:\n\nThis is the system output\n\nSystem Err:\n\nThis is the system err"
+            "System Err:\n\nSome error\n\nSecond error"
+        end
+
+        context 'and has error with messages, two system-out and two system-err tags' do
+          let(:testcase_content) do
+            <<~XML
+              <error>Some error</error>
+              <system-out>This is the system output</system-out>
+              <system-out>Second system output</system-out>
+              <system-err>This is the system err</system-err>
+              <system-err>Second system err</system-err>
+            XML
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
+            "Some error\n\nSystem Out:\n\nThis is the system output\n\nSecond system output\n\nSystem Err:\n\nThis is the system err\n\nSecond system err"
         end
 
         context 'and has skipped' do
@@ -210,6 +256,22 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
           it_behaves_like '<testcase> XML parser',
             ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS,
             nil
+        end
+
+        context 'and is success with one system-out' do
+          let(:testcase_content) { '<system-out>Some output</system-out>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS,
+            "System Out:\n\nSome output"
+        end
+
+        context 'and is success with two system-out tags' do
+          let(:testcase_content) { '<system-out>Some output</system-out><system-out>Second output</system-out>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS,
+            "System Out:\n\nSome output\n\nSecond output"
         end
       end
 
@@ -536,6 +598,29 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing
         expect(test_cases[0].has_attachment?).to be_truthy
         expect(test_cases[0].attachment).to eq("some/path.png")
 
+        expect(test_cases[0].job).to eq(job)
+      end
+    end
+
+    context 'when attachment is specified in successful test case' do
+      let(:junit) do
+        <<~XML
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <system-out>[[ATTACHMENT|some/path.png]]</system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        XML
+      end
+
+      it 'assigns correct attributes to the test case' do
+        expect { subject }.not_to raise_error
+
+        expect(test_cases[0].status).to eq(::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
+        expect(test_cases[0].has_attachment?).to be_truthy
+        expect(test_cases[0].attachment).to eq("some/path.png")
         expect(test_cases[0].job).to eq(job)
       end
     end

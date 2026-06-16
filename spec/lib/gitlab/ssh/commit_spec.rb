@@ -139,16 +139,6 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
             expect(signature).not_to receive(:update!)
           end
         end
-
-        context 'when feature flag check_for_mailmapped_commit_emails is disabled' do
-          before do
-            stub_feature_flags(check_for_mailmapped_commit_emails: false)
-          end
-
-          it 'does not update the stored signature' do
-            expect(signature.committer_email).to be_nil
-          end
-        end
       end
     end
   end

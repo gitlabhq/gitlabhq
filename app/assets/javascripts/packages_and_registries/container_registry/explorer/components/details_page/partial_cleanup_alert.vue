@@ -4,6 +4,7 @@ import { GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
 import { DELETE_ALERT_TITLE, DELETE_ALERT_LINK_TEXT } from '../../constants/index';
 
 export default {
+  name: 'PartialCleanupAlert',
   components: {
     GlSprintf,
     GlAlert,

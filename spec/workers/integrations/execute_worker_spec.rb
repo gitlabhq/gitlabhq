@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integrations do
-  let_it_be(:integration) { create(:jira_integration) }
+  let_it_be(:integration, freeze: false) { create(:jira_integration) }
 
   let(:worker) { described_class.new }
 
@@ -129,10 +129,10 @@ RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integ
   end
 
   context 'when object is wiki_page' do
-    let_it_be(:container) { create(:project) }
-    let_it_be(:wiki) { container.wiki }
-    let_it_be(:content) { 'test content' }
-    let_it_be(:wiki_page) { create(:wiki_page, container: container, content: content) }
+    let_it_be(:container, freeze: false) { create(:project) }
+    let_it_be(:wiki, freeze: false) { container.wiki }
+    let_it_be(:content, freeze: false) { 'test content' }
+    let_it_be(:wiki_page, freeze: false) { create(:wiki_page, container: container, content: content) }
 
     let(:object_kind) { 'wiki_page' }
     let(:slug) { wiki_page.slug }

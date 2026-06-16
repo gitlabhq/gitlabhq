@@ -9,8 +9,9 @@ module API
     feature_category :gitaly
 
     resource :snippet_repository_storage_moves do
-      desc 'Get a list of all snippet repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'List all snippet repository storage moves' do
+        detail 'Lists all snippet repository storage moves. By default, `GET` requests return 20 results at a time ' \
+          'because the API results are paginated.'
         tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
@@ -25,8 +26,8 @@ module API
         present paginate(storage_moves), with: Entities::Snippets::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Get a snippet repository storage move' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'Retrieve a snippet repository storage move' do
+        detail 'Retrieves a specified snippet repository storage move.'
         tags ['storage_moves']
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
@@ -40,8 +41,9 @@ module API
         present storage_move, with: Entities::Snippets::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Schedule bulk snippet repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'Schedule repository storage moves for all snippets on a storage shard' do
+        detail 'Schedules repository storage moves for each snippet repository stored on the source storage shard. ' \
+          'This endpoint migrates all snippets at once.'
         tags ['storage_moves']
         success code: 202
       end
@@ -77,8 +79,9 @@ module API
         not_found!('Snippet') unless user_snippet
       end
 
-      desc 'Get a list of all snippets repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'List all repository storage moves for a snippet' do
+        detail 'Lists all repository storage moves for a specified snippet. By default, `GET` requests return 20 ' \
+          'results at a time because the API results are paginated.'
         tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
@@ -93,8 +96,8 @@ module API
         present paginate(storage_moves), with: Entities::Snippets::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Get a snippet repository storage move' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'Retrieve a repository storage move for a snippet' do
+        detail 'Retrieves a repository storage move for a specified snippet.'
         tags ['storage_moves']
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
@@ -108,8 +111,8 @@ module API
         present storage_move, with: Entities::Snippets::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Schedule a snippet repository storage move' do
-        detail 'This feature was introduced in GitLab 13.8.'
+      desc 'Schedule a repository storage move for a snippet' do
+        detail 'Schedules a repository storage move for a specified snippet.'
         tags ['storage_moves']
         success code: 201, model: Entities::Snippets::RepositoryStorageMove
       end

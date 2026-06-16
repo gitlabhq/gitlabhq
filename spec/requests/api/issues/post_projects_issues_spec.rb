@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace, reporters: user)
   end
 
@@ -12,11 +12,11 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:author) { create(:author) }
-  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  let_it_be(:assignee) { create(:assignee) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be(:assignee, freeze: false) { create(:assignee) }
   let_it_be(:admin) { create(:user, :admin) }
 
-  let_it_be(:closed_issue) do
+  let_it_be(:closed_issue, freeze: false) do
     create :closed_issue,
       author: user,
       assignees: [user],
@@ -38,7 +38,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       updated_at: 2.hours.ago
   end
 
-  let_it_be(:issue) do
+  let_it_be(:issue, freeze: false) do
     create :issue,
       author: user,
       assignees: [user],
@@ -286,7 +286,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_maintainer(user)
+        project.add_maintainer(user) # -- Does not work in before_all
       end
 
       context 'resolving all discussions in a merge request' do
@@ -326,6 +326,20 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         expect(json_response['title']).to eq('new issue')
         expect(json_response['description']).to be_nil
         expect(json_response['due_date']).to eq(due_date)
+      end
+    end
+
+    context 'with start date' do
+      it 'creates a new project issue' do
+        start_date = 2.weeks.from_now.to_date.iso8601
+
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new issue', start_date: start_date }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['description']).to be_nil
+        expect(json_response['start_date']).to eq(start_date)
       end
     end
 
@@ -411,6 +425,59 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
+
+    context 'with milestone' do
+      context 'by milestone_id' do
+        it 'returns issue with milestone assigned' do
+          post api("/projects/#{project.id}/issues", user),
+            params: { title: 'new issue', milestone_id: milestone.id }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['milestone']['id']).to eq(milestone.id)
+        end
+
+        it 'creates the issue without a milestone when milestone_id is invalid' do
+          post api("/projects/#{project.id}/issues", user),
+            params: { title: 'new issue', milestone_id: non_existing_record_id }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['milestone']).to be_nil
+        end
+      end
+
+      context 'by milestone title' do
+        it 'returns issue with milestone assigned' do
+          post api("/projects/#{project.id}/issues", user),
+            params: { title: 'new issue', milestone: milestone.title }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['milestone']['id']).to eq(milestone.id)
+        end
+
+        it 'creates the issue without a milestone when the milestone title does not match any milestone in scope' do
+          post api("/projects/#{project.id}/issues", user),
+            params: { title: 'new issue', milestone: 'nonexistent' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['milestone']).to be_nil
+        end
+      end
+
+      it 'returns 400 when both milestone and milestone_id are provided' do
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new issue', milestone: milestone.title, milestone_id: milestone.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 when milestone title exceeds the length limit' do
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new issue', milestone: 'a' * 256 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include('milestone must be less than 255 characters')
+      end
+    end
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
@@ -438,7 +505,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
     context 'when allow_possible_spam application setting is false' do
       it 'does not create a new project issue' do
-        expect { post_issue }.not_to change(Issue, :count)
+        expect { post_issue }.not_to change { Issue.count }
       end
 
       it 'returns correct status and message' do
@@ -460,7 +527,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       end
 
       it 'does creates a new project issue' do
-        expect { post_issue }.to change(Issue, :count).by(1)
+        expect { post_issue }.to change { Issue.count }.by(1)
       end
 
       it 'returns correct status' do
@@ -724,7 +791,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", user2)
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['subscribed']).to eq(true)
+      expect(json_response['subscribed']).to be(true)
     end
 
     it 'returns 304 if already subscribed' do
@@ -757,7 +824,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", user)
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['subscribed']).to eq(false)
+      expect(json_response['subscribed']).to be(false)
     end
 
     it 'returns 304 if not subscribed' do

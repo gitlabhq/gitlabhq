@@ -12,6 +12,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'RepositoryOverflowMenu',
   i18n,
   components: {
     GlDisclosureDropdown,

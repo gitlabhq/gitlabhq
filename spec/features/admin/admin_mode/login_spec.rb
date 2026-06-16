@@ -130,7 +130,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
           before do
             sign_in_using_saml!
             expect(page).to have_no_content(_('Enter verification code'))
-            gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
+            enter_admin_mode_via('saml', user, 'my-uid', saml_response: mock_saml_response)
           end
 
           it 'signs user in without prompting for second factor' do
@@ -160,7 +160,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
         end
 
         def expect_admin_sign_in_waiting_for_code_saml!(user)
-          gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
+          enter_admin_mode_via('saml', user, 'my-uid', saml_response: mock_saml_response)
           expect(page).to have_content(_('Enter verification code'))
         end
       end

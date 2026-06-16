@@ -1,0 +1,12 @@
+---
+table_name: user_permission_export_upload_upload_states
+description: Separate table for User Permission Export Upload Upload verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235089
+milestone: '19.1'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::UserPermissionExportUploadUploadState
+gitlab_schema: gitlab_main_user
+sharding_key:
+  uploaded_by_user_id: users

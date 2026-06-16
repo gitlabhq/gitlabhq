@@ -1,0 +1,22 @@
+---
+description: Tracks when the "What's new" drawer is opened. Replaces the legacy `click_whats_new_drawer` event; carries the placement of the entry point (help menu vs. profile menu) so engagement can be attributed by placement for the What's new placement experiment.
+category: default
+action: view_whats_new_drawer
+extra_properties:
+identifiers:
+additional_properties:
+  label:
+    description: Always the literal string "namespace_id".
+  value:
+    description: The current namespace ID from the page (`body.dataset.namespaceId`).
+  property:
+    description: Menu placement that opened the drawer ("help_menu" or "profile_menu").
+product_group: acquisition
+product_categories:
+- onboarding
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238286
+tiers:
+- free
+- premium
+- ultimate

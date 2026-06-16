@@ -2,6 +2,8 @@
 description: Tracks clicks on the retry button for failed jobs.
 action: click_retry
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '16.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128037
 tiers:

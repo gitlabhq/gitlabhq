@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Security::CiConfiguration::SecretDetectionCreateService, :snowplow, feature_category: :container_scanning do
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let(:snowplow_event) do
       {
         category: 'Security::CiConfiguration::SecretDetectionCreateService',

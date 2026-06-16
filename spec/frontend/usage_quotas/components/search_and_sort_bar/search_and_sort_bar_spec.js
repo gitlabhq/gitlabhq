@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import SearchAndSortBar from '~/usage_quotas/components/search_and_sort_bar/search_and_sort_bar.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSortContainerRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 describe('SearchAndSortBar', () => {
   let wrapper;
@@ -11,7 +11,7 @@ describe('SearchAndSortBar', () => {
     searchInputPlaceholder: 'Search term',
   };
 
-  const findFilteredSortContainerRoot = () => wrapper.findComponent(FilteredSortContainerRoot);
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 
   const createComponent = (config) => {
     const { props = {}, listeners = {} } = config;
@@ -32,8 +32,8 @@ describe('SearchAndSortBar', () => {
     });
 
     it('parses and propagates emitted search event', () => {
-      const filteredSortContainerRoot = findFilteredSortContainerRoot();
-      filteredSortContainerRoot.vm.$emit('onFilter', [
+      const filteredSearchBar = findFilteredSearchBar();
+      filteredSearchBar.vm.$emit('onFilter', [
         {
           id: 'token-1',
           type: FILTERED_SEARCH_TERM,
@@ -73,8 +73,8 @@ describe('SearchAndSortBar', () => {
 
     it('propagates emitted sorting value', () => {
       const SORTING_VALUE = 'name_desc';
-      const filteredSortContainerRoot = findFilteredSortContainerRoot();
-      filteredSortContainerRoot.vm.$emit('onSort', SORTING_VALUE);
+      const filteredSearchBar = findFilteredSearchBar();
+      filteredSearchBar.vm.$emit('onSort', SORTING_VALUE);
 
       expect(onSort).toHaveBeenCalledTimes(1);
       expect(onSort).toHaveBeenCalledWith(SORTING_VALUE);

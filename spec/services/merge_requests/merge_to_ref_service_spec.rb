@@ -232,7 +232,7 @@ RSpec.describe MergeRequests::MergeToRefService, feature_category: :code_review_
     end
 
     describe 'cascading merge refs' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
       let(:params) { { commit_message: 'Cascading merge', first_parent_ref: first_parent_ref, target_ref: target_ref, sha: merge_request.diff_head_sha } }
 

@@ -157,4 +157,27 @@ describe('DetailLayout', () => {
       });
     });
   });
+
+  describe('showSidebar', () => {
+    it('applies the has-sidebar class by default when sidebar slot is provided', () => {
+      createComponent({}, { sidebar: '<div>Sidebar</div>' });
+      expect(findContainer().classes()).toContain('gl-detail-layout-container-has-sidebar');
+    });
+
+    it('does not apply the has-sidebar class when showSidebar is false, but keeps the sidebar in the DOM', () => {
+      createComponent({ showSidebar: false }, { sidebar: '<div>Sidebar</div>' });
+      expect(findContainer().classes()).not.toContain('gl-detail-layout-container-has-sidebar');
+      expect(findSidebar().exists()).toBe(true);
+    });
+
+    it('makes the sidebar wrapper display:contents when showSidebar is false so it reserves no grid space', () => {
+      createComponent({ showSidebar: false }, { sidebar: '<div>Sidebar</div>' });
+      expect(findSidebar().classes()).toContain('gl-contents');
+    });
+
+    it('does not make the sidebar wrapper display:contents by default', () => {
+      createComponent({}, { sidebar: '<div>Sidebar</div>' });
+      expect(findSidebar().classes()).not.toContain('gl-contents');
+    });
+  });
 });

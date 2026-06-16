@@ -77,16 +77,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
       it 'returns a hash with the type name' do
         expect(work_item.exported_work_item_type).to eq({ 'name' => system_defined_type.name })
       end
-
-      context 'when work_item_configurable_types feature flag is disabled' do
-        before do
-          stub_feature_flags(work_item_configurable_types: false)
-        end
-
-        it 'returns a hash with the base_type for backward compatibility' do
-          expect(work_item.exported_work_item_type).to eq({ 'base_type' => system_defined_type.base_type })
-        end
-      end
     end
 
     context 'when work_item_type cannot be resolved' do
@@ -98,16 +88,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
         issue_type = ::WorkItems::TypesFramework::Provider.new.default_issue_type
 
         expect(work_item.exported_work_item_type).to eq({ 'name' => issue_type.name })
-      end
-
-      context 'when work_item_configurable_types feature flag is disabled' do
-        before do
-          stub_feature_flags(work_item_configurable_types: false)
-        end
-
-        it 'defaults to the issue base_type' do
-          expect(work_item.exported_work_item_type).to eq({ 'base_type' => 'issue' })
-        end
       end
     end
   end

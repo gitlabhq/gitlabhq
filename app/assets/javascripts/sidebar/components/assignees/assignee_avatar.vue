@@ -3,6 +3,7 @@ import { GlAvatar, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 export default {
+  name: 'AssigneeAvatar',
   components: {
     GlAvatar,
     GlIcon,

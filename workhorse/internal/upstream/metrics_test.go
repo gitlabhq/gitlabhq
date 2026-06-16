@@ -40,7 +40,8 @@ func TestInstrumentGeoProxyRoute(t *testing.T) {
 	local := routeMetadata{`\A/local\z`, "local", "local"}
 	main := routeMetadata{"", "default", "default"}
 
-	u := newUpstream(config.Config{}, testDependencies(t), func(u *upstream) {
+	shutdownChan := make(chan struct{})
+	u := newUpstream(config.Config{}, testDependencies(t, withShutdownChan(shutdownChan)), func(u *upstream) {
 		u.Routes = []routeEntry{
 			handleRouteWithMatchers(u, remote, withGeoProxy()),
 			handleRouteWithMatchers(u, local),
@@ -48,7 +49,10 @@ func TestInstrumentGeoProxyRoute(t *testing.T) {
 		}
 	})
 	ts := httptest.NewServer(u)
-	defer ts.Close()
+	t.Cleanup(func() {
+		close(shutdownChan)
+		ts.Close()
+	})
 
 	testCases := []metricsTestCase{
 		{"remote", "/remote", remote},

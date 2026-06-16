@@ -28,6 +28,7 @@ export default {
     'gravatarLink',
     'profileAvatarPath',
   ],
+  emits: ['blob-change'],
   computed: {
     avatarHelpText() {
       const { changeOrRemoveAvatar, changeAvatar, uploadOrChangeAvatar, uploadAvatar } = avatarI18n;

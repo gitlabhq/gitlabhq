@@ -19,7 +19,7 @@ describe('PermalinkDropdownItem', () => {
 
   const mockToastShow = jest.fn();
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {}, query = {} } = {}) => {
     wrapper = shallowMountExtended(PermalinkDropdownItem, {
       propsData: {
         permalinkPath: relativePermalinkPath,
@@ -29,6 +29,9 @@ describe('PermalinkDropdownItem', () => {
       mocks: {
         $toast: {
           show: mockToastShow,
+        },
+        $route: {
+          query,
         },
       },
     });
@@ -97,6 +100,24 @@ describe('PermalinkDropdownItem', () => {
         `http://test.host/flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json#something-wonderful`,
       );
     });
+
+    it('includes blame=1 in permalink when blame query param is present', () => {
+      hashState.currentHash = '#L10';
+      createComponent({ query: { blame: '1' } });
+
+      expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
+        `http://test.host/flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json?blame=1#L10`,
+      );
+    });
+
+    it('does not include blame in permalink when blame query param is absent', () => {
+      hashState.currentHash = '#L10';
+      createComponent({ query: {} });
+
+      expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
+        `http://test.host/flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json#L10`,
+      );
+    });
   });
 
   describe('handles onCopyPermalink correctly', () => {
@@ -126,7 +147,7 @@ describe('PermalinkDropdownItem', () => {
       it.each([['blob'], ['repository']])(
         'emits a tracking event with %s source when the dropdown item is clicked',
         (source) => {
-          createComponent({ source });
+          createComponent({ props: { source } });
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
           findPermalinkLinkDropdown().vm.$emit('action');
           expect(trackEventSpy).toHaveBeenCalledWith(
@@ -140,7 +161,7 @@ describe('PermalinkDropdownItem', () => {
       it.each(['blob', 'repository'])(
         'emits a tracking event with %s source when the shortcut is used',
         async (source) => {
-          createComponent({ source });
+          createComponent({ props: { source } });
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
           const clickSpy = jest.spyOn(findPermalinkLinkDropdown().element, 'click');
 

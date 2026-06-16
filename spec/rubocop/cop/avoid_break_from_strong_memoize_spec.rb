@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_break_from_strong_memoize'
 
-RSpec.describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
+RSpec.describe RuboCop::Cop::AvoidBreakFromStrongMemoize, feature_category: :tooling do
   it 'flags violation for break inside strong_memoize' do
     expect_offense(<<~RUBY)
       strong_memoize(:result) do

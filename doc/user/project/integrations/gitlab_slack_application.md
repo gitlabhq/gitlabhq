@@ -3,7 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Slack app
-description: "Configure the GitLab for Slack app to use slash commands and receive notifications from GitLab in your Slack workspace."
+description: "Configure the GitLab for Slack app to use slash commands, receive notifications, and interact with GitLab Duo from your Slack workspace."
 ---
 
 {{< details >}}
@@ -22,9 +22,9 @@ description: "Configure the GitLab for Slack app to use slash commands and recei
 > [!note]
 > This page contains user documentation for the GitLab for Slack app. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
 
-The GitLab for Slack app is a native Slack app that provides [slash commands](#slash-commands) and [notifications](#slack-notifications)
-in your Slack workspace. GitLab links your Slack user with your GitLab user so that any command
-you run in Slack is run by your linked GitLab user.
+The GitLab for Slack app is a native Slack app that provides [slash commands](#slash-commands), [notifications](#slack-notifications),
+and the [GitLab Duo integration](#gitlab-duo) in your Slack workspace. GitLab links your Slack user
+with your GitLab user so that any command you run in Slack is run by your linked GitLab user.
 
 ## Install the GitLab for Slack app
 
@@ -98,6 +98,93 @@ The GitLab for Slack app is updated for all projects that use the integration.
 
 Alternatively, you can [configure the integration](https://about.gitlab.com/solutions/slack/) again.
 
+## GitLab Duo
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+You can interact with [GitLab Duo](../../gitlab_duo/_index.md) directly from Slack by mentioning the
+GitLab bot in any channel or thread where the bot is present. GitLab Duo reads the full
+conversation thread as context, runs a flow on a CI/CD runner, and posts the
+result back to the Slack thread.
+
+For example, you can ask GitLab Duo to do the following:
+
+- Turn a conversation into a GitLab issue.
+- Search for existing issues or merge requests.
+- Summarize a discussion thread.
+- Answer questions about your projects.
+
+> [!note]
+> When you mention the GitLab bot in a thread, the full conversation content
+> (including messages from all participants) is sent to a large language model (LLM)
+> to generate a response. Do not share sensitive information in threads where you
+> mention GitLab Duo.
+
+### Prerequisites
+
+- [Turn on the GitLab Duo Agent Platform](../../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+- Link a Slack account to your GitLab account.
+  If your accounts are not linked, GitLab sends you a message
+  with a link to authorize the connection on first mention.
+- [Set a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- Turn on the [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md) for the top-level group.
+- Add the GitLab bot to the Slack channel where you want to use it.
+- For existing installations, [reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app)
+  to grant the additional permissions required for GitLab Duo.
+
+### Use GitLab Duo in Slack
+
+To use GitLab Duo in Slack:
+
+1. In a Slack channel or thread, type `@GitLab` followed by your request
+   (for example, `@GitLab create an issue to track this bug`).
+1. GitLab Duo acknowledges your request and starts working on the task.
+1. When the task is complete, GitLab Duo posts a threaded reply with the result.
+
+If an error occurs, GitLab Duo sends you a message with details about the issue.
+This message is visible only to you.
+
+### Workspace project
+
+When you first use GitLab Duo from Slack, a workspace project called `duo-workspace`
+is automatically created in your default GitLab Duo namespace. This project serves as the
+execution environment for any flows triggered from Slack.
+
+You can customize the agent behavior in the workspace project.
+For more information, see [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md).
+
+### GitLab for Slack app permissions
+
+GitLab Duo requires the following additional GitLab for Slack app permissions:
+
+| Scope               | Purpose |
+|---------------------|---------|
+| `app_mentions:read` | Receives events when users mention the bot in a channel. |
+| `channels:history`  | Reads conversation history in public channels to provide thread context to the agent. |
+| `groups:history`    | Reads conversation history in private channels to provide thread context to the agent. |
+| `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
+
+New installations receive these permissions automatically.
+Existing installations receive these permissions only after you
+[reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app).
+
 ## Slash commands
 
 You can use slash commands to run common GitLab operations.
@@ -110,7 +197,7 @@ For the GitLab for Slack app:
 
 If you use [Mattermost slash commands](mattermost_slash_commands.md) instead:
 
-- Replace `/gitlab` with the trigger name you've configured for the integration.
+- Replace `/gitlab` with the trigger name you've configured for these integrations.
 - Remove `<project>`.
 
 The following slash commands are available for GitLab:

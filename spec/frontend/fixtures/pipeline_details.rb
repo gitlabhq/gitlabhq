@@ -7,9 +7,9 @@ RSpec.describe "GraphQL Pipeline details", '(JavaScript fixtures)', type: :reque
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:admin) { project.first_owner }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:admin, freeze: false) { project.first_owner }
 
   let(:config) do
     <<~YAML

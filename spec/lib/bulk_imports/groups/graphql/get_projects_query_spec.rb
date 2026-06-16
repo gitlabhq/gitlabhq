@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Graphql::GetProjectsQuery, feature_category: :importers do
-  let_it_be(:entity) { create(:bulk_import_entity, :group_entity) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, :group_entity) }
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   subject(:query) { described_class.new(context: context) }
 

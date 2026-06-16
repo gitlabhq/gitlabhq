@@ -25,33 +25,33 @@ RSpec.describe Gitlab::Suggestions::CommitMessage, feature_category: :code_revie
       to_content: to_content)
   end
 
-  let_it_be(:user) do
+  let_it_be(:user, freeze: false) do
     create(:user, :commit_email, name: 'Test User', username: 'test.user')
   end
 
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(:project, :repository, path: 'project-1', name: 'Project_1')
   end
 
-  let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
+  let_it_be(:forked_project, freeze: false) { fork_project(project, nil, repository: true) }
 
-  let_it_be(:merge_request_same_project) do
+  let_it_be(:merge_request_same_project, freeze: false) do
     create(:merge_request, source_project: project, target_project: project)
   end
 
-  let_it_be(:merge_request_from_fork) do
+  let_it_be(:merge_request_from_fork, freeze: false) do
     create(:merge_request, source_project: forked_project, target_project: project)
   end
 
-  let_it_be(:first_author) { merge_request_same_project.author }
+  let_it_be(:first_author, freeze: false) { merge_request_same_project.author }
 
-  let_it_be(:second_author) do
+  let_it_be(:second_author, freeze: false) do
     merge_request_from_fork.author.tap do |author|
       author.commit_email = author.verified_emails.last
     end
   end
 
-  let_it_be(:suggestion_set_same_project) do
+  let_it_be(:suggestion_set_same_project, freeze: false) do
     suggestion1 = create_suggestion(
       merge_request_same_project, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***', user
     )
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Suggestions::CommitMessage, feature_category: :code_revie
     Gitlab::Suggestions::SuggestionSet.new([suggestion1, suggestion2, suggestion3])
   end
 
-  let_it_be(:suggestion_set_forked_project) do
+  let_it_be(:suggestion_set_forked_project, freeze: false) do
     suggestion1 = create_suggestion(
       merge_request_from_fork, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***', user
     )

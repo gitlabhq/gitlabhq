@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Transformers::SubgroupToEntityTransformer do
+RSpec.describe BulkImports::Groups::Transformers::SubgroupToEntityTransformer, feature_category: :importers do
   describe "#transform" do
+    subject(:transformer) { described_class.new }
+
     it "transforms subgroups data in entity params" do
-      parent = create(:group)
+      parent = build_stubbed(:group)
       parent_entity = instance_double(BulkImports::Entity, group: parent, id: 1,
         migrate_projects: false, migrate_memberships: false)
       context = instance_double(BulkImports::Pipeline::Context, entity: parent_entity)
@@ -14,7 +16,7 @@ RSpec.describe BulkImports::Groups::Transformers::SubgroupToEntityTransformer do
         "full_path" => "parent/sub-group"
       }
 
-      expect(subject.transform(context, subgroup_data)).to eq(
+      expect(transformer.transform(context, subgroup_data)).to eq(
         source_type: :group_entity,
         source_full_path: "parent/sub-group",
         destination_name: "sub-group",

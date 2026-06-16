@@ -371,7 +371,7 @@ and the configuration options `unhealthy_requests_limit` and `unhealthy_interval
 ### OpenBao prerequisites
 
 If you have [OpenBao](https://docs.gitlab.com/charts/charts/openbao/) installed with the GitLab Helm chart,
-complete these checks while the **primary** cluster is still accessible.
+complete these checks while the primary cluster is still accessible.
 
 #### Verify the unseal secret is present on the secondary
 

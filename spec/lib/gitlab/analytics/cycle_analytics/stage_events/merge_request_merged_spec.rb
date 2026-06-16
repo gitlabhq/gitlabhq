@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestMerged do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestMerged, feature_category: :value_stream_management do
   it_behaves_like 'value stream analytics event'
 
   it_behaves_like 'LEFT JOIN-able value stream analytics event' do

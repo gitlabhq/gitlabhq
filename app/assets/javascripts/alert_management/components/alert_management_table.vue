@@ -36,6 +36,7 @@ const TWELVE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
 const MAX_VISIBLE_ASSIGNEES = 4;
 
 export default {
+  name: 'AlertManagementTable',
   trackAlertListViewsOptions,
   MAX_VISIBLE_ASSIGNEES,
   i18n: {

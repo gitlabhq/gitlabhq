@@ -11,6 +11,8 @@ module Mutations
         description 'These settings can be adjusted only by the group Owner.'
 
         authorize :admin_dependency_proxy
+        authorize_granular_token permissions: :update_dependency_proxy,
+          boundary_argument: :group_path, boundary_type: :group
 
         argument :group_path,
           GraphQL::Types::ID,

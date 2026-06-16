@@ -1,0 +1,199 @@
+# Per-test coverage child pipeline, generated dynamically by
+# scripts/generate_rspec_pipeline.rb. Triggered by per-test-coverage:trigger
+# in the parent maintenance schedule pipeline (see
+# .gitlab/ci/per_test_coverage.gitlab-ci.yml).
+#
+# Activates the rspec formatter at spec/support/per_test_coverage_formatter.rb
+# via GLCI_PER_TEST_COVERAGE=true. Each shard writes
+# tmp/per-test-coverage-rspec-{slug}-{hex}.ndjson as a regular job artifact.
+# The parent pipeline's export job in https://gitlab.com/gitlab-org/quality/analytics/team/-/work_items/663+
+# pulls those artifacts via cross-pipeline `needs:` and uploads them to
+# ClickHouse. The child has no in-pipeline artifact-collector job, since at
+# `parallel: N` the GitLab CI normalizer expands a single `needs:` entry
+# into N entries and exceeds the ci_needs_size_limit (default 50).
+
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+default:
+  image: $DEFAULT_CI_IMAGE
+  <%- if job_tags.any? -%>
+  tags:
+    <%- job_tags.each do |job_tag| -%>
+    - <%= job_tag %>
+    <%- end -%>
+  <%- end -%>
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
+  interruptible: true
+
+stages:
+  - test
+
+workflow:
+  name: '$PIPELINE_NAME'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
+    - when: always
+
+.base-per-test-coverage:
+  needs:
+  <% if repo_from_artifacts %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  <% end %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: setup-test-env
+    - pipeline: $PARENT_PIPELINE_ID
+      job: retrieve-tests-metadata
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-test-assets
+    - pipeline: $PARENT_PIPELINE_ID
+      job: per-test-coverage:pipeline-generate
+  rules:
+    - when: always
+  # Project / group CI/CD variables outrank job-level `variables:` in GitLab,
+  # so a per-process `unset` is the only reliable way to clear
+  # CRYSTALBALL_COVERAGE_STRATEGY before the formatter's mutual-exclusion guard
+  # in spec/support/rspec.rb reads ENV. The per-test formatter destructively
+  # clears the global Coverage table per example, which would corrupt
+  # Crystalball's coverage strategy if both ran in the same process.
+  before_script:
+    - unset CRYSTALBALL_COVERAGE_STRATEGY
+    - !reference [.default-before_script, before_script]
+  variables:
+    GLCI_PER_TEST_COVERAGE: "true"
+    # Skip SimpleCov so its Coverage.start does not run during spec_helper.
+    # The per-test formatter starts Coverage itself in before(:suite), which
+    # limits instrumentation to files autoloaded during examples.
+    SIMPLECOV: "false"
+    # scripts/rspec_helpers.sh:rspec_parallelized_job only passes
+    # --filter $RSPEC_TESTS_FILTER_FILE to parallel_rspec when this flag is set.
+    # Without it, the filter file is loaded but ignored and each shard runs the
+    # full default bucket for its test level.
+    GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED: "true"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/per-test-coverage-rspec-*.ndjson
+    when: always
+
+<% if test_suite_prefix.nil? %>
+.base-rspec-per-test-coverage:
+  extends:
+    - .rspec-base-pg17
+    - .base-per-test-coverage
+  variables:
+    RSPEC_TESTS_FILTER_FILE: "$GLCI_PER_TEST_COVERAGE_QUEUE_FOSS_PATH"
+
+<% if rspec_files_per_test_level.dig(:migration, :files).size > 0 %>
+rspec migration per-test-coverage:
+  extends:
+    - .base-rspec-per-test-coverage
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:background_migration, :files).size > 0 %>
+rspec background_migration per-test-coverage:
+  extends:
+    - .base-rspec-per-test-coverage
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:background_migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:background_migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:unit, :files).size > 0 %>
+rspec unit per-test-coverage:
+  extends:
+    - .base-rspec-per-test-coverage
+<% if rspec_files_per_test_level.dig(:unit, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:unit, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:integration, :files).size > 0 %>
+rspec integration per-test-coverage:
+  extends:
+    - .base-rspec-per-test-coverage
+<% if rspec_files_per_test_level.dig(:integration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:integration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
+rspec system per-test-coverage:
+  tags:
+    - <%= medium_runner_tag %>
+  extends:
+    - .base-rspec-per-test-coverage
+<% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
+<% end %>
+<% end %>
+
+<% end %>
+
+<% if test_suite_prefix == 'ee/' %>
+.base-rspec-ee-per-test-coverage:
+  extends:
+    - .rspec-ee-base-pg17
+    - .base-per-test-coverage
+  variables:
+    RSPEC_TESTS_FILTER_FILE: "$GLCI_PER_TEST_COVERAGE_QUEUE_EE_PATH"
+
+<% if rspec_files_per_test_level.dig(:migration, :files).size > 0 %>
+rspec-ee migration per-test-coverage:
+  extends:
+    - .base-rspec-ee-per-test-coverage
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:background_migration, :files).size > 0 %>
+rspec-ee background_migration per-test-coverage:
+  extends:
+    - .base-rspec-ee-per-test-coverage
+    - .rspec-base-migration
+<% if rspec_files_per_test_level.dig(:background_migration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:background_migration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:unit, :files).size > 0 %>
+rspec-ee unit per-test-coverage:
+  extends:
+    - .base-rspec-ee-per-test-coverage
+<% if rspec_files_per_test_level.dig(:unit, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:unit, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:integration, :files).size > 0 %>
+rspec-ee integration per-test-coverage:
+  extends:
+    - .base-rspec-ee-per-test-coverage
+<% if rspec_files_per_test_level.dig(:integration, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:integration, :parallelization) %>
+<% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
+rspec-ee system per-test-coverage:
+  tags:
+    - <%= medium_runner_tag %>
+  extends:
+    - .base-rspec-ee-per-test-coverage
+<% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
+  parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
+<% end %>
+<% end %>
+
+<% end %>

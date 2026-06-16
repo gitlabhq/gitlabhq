@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   include StubVersion
-  let_it_be(:user, refind: true) { create(:user) }
+  let_it_be_with_refind(:user) { create(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -280,6 +280,14 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       end
 
       it { is_expected.to be false }
+
+      context 'and email_otp_enabled application setting is enabled' do
+        before do
+          stub_application_setting(email_otp_enabled: true)
+        end
+
+        it { is_expected.to be true }
+      end
     end
 
     context 'when user has dismissed the banner' do

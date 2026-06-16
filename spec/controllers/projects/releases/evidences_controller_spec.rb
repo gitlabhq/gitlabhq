@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Projects::Releases::EvidencesController, :with_license do
   let!(:project) { create(:project, :repository, :public) }
-  let_it_be(:private_project) { create(:project, :repository, :private) }
-  let_it_be(:developer)  { create(:user) }
-  let_it_be(:reporter)   { create(:user) }
+  let_it_be(:private_project, freeze: false) { create(:project, :repository, :private) }
+  let_it_be(:developer, freeze: false)  { create(:user) }
+  let_it_be(:reporter, freeze: false)   { create(:user) }
 
-  let(:user)             { developer }
+  let(:user) { developer }
 
   before do
     project.add_developer(developer)

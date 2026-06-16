@@ -8,11 +8,11 @@ RSpec.describe Emails::MergeRequests do
 
   include_context 'gitlab email notification'
 
-  let_it_be(:current_user, reload: true) { create(:user, email: "current@email.com", name: 'www.example.com') }
-  let_it_be(:assignee, reload: true) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
-  let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
+  let_it_be_with_reload(:current_user) { create(:user, email: "current@email.com", name: 'www.example.com') }
+  let_it_be_with_reload(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
+  let_it_be_with_reload(:reviewer) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:merge_request) do
+  let_it_be(:merge_request, freeze: false) do
     create(
       :merge_request,
       source_project: project,
@@ -262,7 +262,6 @@ RSpec.describe Emails::MergeRequests do
   end
 
   describe '#merge_requests_csv_email' do
-    let(:merge_requests) { create_list(:merge_request, 10) }
     let(:export_status) do
       {
         rows_expected: 10,

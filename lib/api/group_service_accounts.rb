@@ -98,6 +98,7 @@ module API
 
         desc 'Delete a group service account.' do
           detail 'Deletes a service account from a specified group. Available only for group owners and admins.'
+          success code: 204, message: 'Resource deleted'
           failure [
             { code: 400, message: '400 Bad request' },
             { code: 401, message: '401 Unauthorized' },

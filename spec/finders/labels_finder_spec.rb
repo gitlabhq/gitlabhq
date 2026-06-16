@@ -10,7 +10,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
     let_it_be(:private_group_1) { create(:group, :private) }
     let_it_be(:private_subgroup_1) { create(:group, :private, parent: private_group_1) }
 
-    let_it_be(:project_1, reload: true) { create(:project, namespace: group_1) }
+    let_it_be_with_reload(:project_1) { create(:project, namespace: group_1) }
     let_it_be(:project_2) { create(:project, namespace: group_2) }
     let_it_be(:project_3) { create(:project) }
     let_it_be(:project_4) { create(:project, :public) }
@@ -130,7 +130,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
       context 'when including labels from group projects with limited visibility' do
         let(:finder)                              { described_class.new(user, **group_params(group_4)) }
         let_it_be(:group_4)                       { create(:group) }
-        let_it_be(:limited_visibility_project, reload: true) { create(:project, :public, group: group_4) }
+        let_it_be_with_reload(:limited_visibility_project) { create(:project, :public, group: group_4) }
         let_it_be(:visible_project)               { create(:project, :public, group: group_4) }
         let_it_be(:group_label_1)                 { create(:group_label, group: group_4) }
         let_it_be(:limited_visibility_label)      { create(:label, project: limited_visibility_project) }

@@ -37,7 +37,7 @@ RSpec.shared_examples 'a deploy token in settings' do
     end
 
     expect(find("input#deploy_token_name").value).to be_empty
-    expect(find("input#deploy_token_read_repository").checked?).to eq false
+    expect(find("input#deploy_token_read_repository").checked?).to be false
   end
 
   context "with form errors", :js do

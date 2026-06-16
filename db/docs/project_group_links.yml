@@ -5,7 +5,7 @@ classes:
 feature_categories:
 - groups_and_projects
 - permissions
-description: Stores the relationship when a project is shared with a group
+description: Stores project sharing relationships that grant groups access to projects.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3ac5a759e93e632539438d4564582c645a9f6799
 milestone: "<6.0"
 gitlab_schema: gitlab_main_org

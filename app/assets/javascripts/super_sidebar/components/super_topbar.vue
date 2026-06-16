@@ -1,12 +1,5 @@
 <script>
-import {
-  GlBadge,
-  GlBreadcrumb,
-  GlButton,
-  GlIcon,
-  GlModalDirective,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlBreadcrumb, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
@@ -21,13 +14,9 @@ import PromoMenu from './promo_menu.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
-  // "GitLab Next" is a proper noun, so don't translate "Next"
-  /* eslint-disable-next-line @gitlab/require-i18n-strings */
-  NEXT_LABEL: 'Next',
   SEARCH_MODAL_ID,
   staticBreadcrumbs,
   components: {
-    GlBadge,
     GlButton,
     GlBreadcrumb,
     GlIcon,
@@ -122,15 +111,6 @@ export default {
     </gl-button>
     <div class="gl-flex gl-items-center gl-gap-3">
       <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
-
-      <gl-badge
-        v-if="sidebarData.gitlab_com_and_canary"
-        variant="success"
-        data-testid="canary-badge-link"
-        :href="sidebarData.canary_toggle_com_url"
-      >
-        {{ $options.NEXT_LABEL }}
-      </gl-badge>
 
       <super-sidebar-toggle
         v-if="sidebarData.current_menu_items.length"

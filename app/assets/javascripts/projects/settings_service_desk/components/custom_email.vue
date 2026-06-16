@@ -57,6 +57,7 @@ export default {
       default: false,
     },
   },
+  emits: ['reset', 'toggle'],
   computed: {
     isVerificationFailed() {
       return this.verificationState === 'failed';

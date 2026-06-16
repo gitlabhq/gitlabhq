@@ -7,7 +7,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
   let_it_be(:users) { create_list(:user, 2) }
 
-  let_it_be(:group) { create(:group, owners: users.first) }
+  let_it_be(:group, freeze: false) { create(:group, owners: users.first) }
   let_it_be(:subgroup) { create(:group, parent: group) }
 
   let_it_be(:organization) { create_default(:organization) }
@@ -23,11 +23,11 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
   let_it_be(:project2) { create(:project, creator_id: users.first.id, maintainers: users.first) }
 
-  let_it_be(:shared_runner, reload: true) do
+  let_it_be_with_reload(:shared_runner) do
     create(:ci_runner, :instance, :with_runner_manager, description: 'Shared runner', maintenance_note: 'Maintenance note')
   end
 
-  let_it_be(:project_runner, reload: true) do
+  let_it_be_with_reload(:project_runner) do
     create(:ci_runner, :project, description: 'Project runner', projects: [project], maintenance_note: 'Maintenance note')
   end
 
@@ -2674,7 +2674,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     context 'authorized user' do
-      let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
+      let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, projects: [project2]) }
 
       let(:current_user) { users.first }
       let(:runner) { project_runner2 }

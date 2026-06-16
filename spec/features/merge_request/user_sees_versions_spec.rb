@@ -26,7 +26,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
 
   shared_examples 'allows commenting' do |file_name:, line_text:, comment:|
     it do
-      page.within find_in_page_or_panel_by_scrolling('.diff-file', text: file_name) do
+      page.within find_in_panel_by_scrolling('.diff-file', text: file_name) do
         line_code_element = page.find('.diff-grid-row', text: line_text)
         # scrolling to element's bottom is required in order for .hover action to work
         # otherwise, the element could be hidden underneath a sticky header
@@ -279,9 +279,5 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
       file_name: 'files/ruby/popen.rb',
       line_text: 'RuntimeError',
       comment: 'Typo, please fix.'
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
   end
 end

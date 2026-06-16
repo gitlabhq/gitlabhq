@@ -2,19 +2,25 @@
 
 RSpec.shared_examples 'work items finder group parameter' do |expect_group_items: true|
   context 'when group parameter is present' do
-    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
-    let_it_be(:group_confidential_work_item) do
+    let_it_be(:group_work_item, freeze: false) { create(:work_item, :group_level, namespace: group, author: user) }
+    let_it_be(:group_confidential_work_item, freeze: false) do
       create(:work_item, :confidential, :group_level, namespace: group, author: user2)
     end
 
-    let_it_be(:subgroup_work_item) { create(:work_item, :group_level, namespace: subgroup, author: user) }
-    let_it_be(:subgroup_confidential_work_item) do
+    let_it_be(:subgroup_work_item, freeze: false) do
+      create(:work_item, :group_level, namespace: subgroup, author: user)
+    end
+
+    let_it_be(:subgroup_confidential_work_item, freeze: false) do
       create(:work_item, :confidential, :group_level, namespace: subgroup, author: user2)
     end
 
-    let_it_be(:subgroup2) { create(:group, :private, parent: group) }
-    let_it_be(:subgroup2_work_item) { create(:work_item, :group_level, namespace: subgroup2, author: user) }
-    let_it_be(:subgroup2_confidential_work_item) do
+    let_it_be(:subgroup2, freeze: false) { create(:group, :private, parent: group) }
+    let_it_be(:subgroup2_work_item, freeze: false) do
+      create(:work_item, :group_level, namespace: subgroup2, author: user)
+    end
+
+    let_it_be(:subgroup2_confidential_work_item, freeze: false) do
       create(:work_item, :confidential, :group_level, namespace: subgroup2, author: user2)
     end
 
@@ -173,8 +179,10 @@ RSpec.shared_examples 'work items finder group parameter' do |expect_group_items
     end
 
     context 'when both include_descendants and include_ancestors are true' do
-      let_it_be(:sub_subgroup) { create(:group, parent: subgroup) }
-      let_it_be(:sub_subgroup_work_item) { create(:work_item, :group_level, namespace: sub_subgroup, author: user) }
+      let_it_be(:sub_subgroup, freeze: false) { create(:group, parent: subgroup) }
+      let_it_be(:sub_subgroup_work_item, freeze: false) do
+        create(:work_item, :group_level, namespace: sub_subgroup, author: user)
+      end
 
       let(:params) { { group_id: subgroup, include_descendants: true, include_ancestors: true } }
 

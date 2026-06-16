@@ -127,9 +127,6 @@ describe('WorkItemParent component', () => {
         allowedParentTypesForNewWorkItem,
       },
       provide: {
-        glFeatures: {
-          workItemConfigurableTypes: true,
-        },
         getWorkItemTypeConfiguration: mockWorkItemConfigGetter,
         workItemTypesConfiguration: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', isGroupWorkItemType: false },
@@ -489,6 +486,7 @@ describe('WorkItemParent component', () => {
             parentId: 'gid://gitlab/WorkItem/716',
           },
         },
+        useWorkItemFeatures: false,
       });
       expect(updateParent).toHaveBeenCalledWith({
         cache: expect.anything(Object),
@@ -520,6 +518,7 @@ describe('WorkItemParent component', () => {
             parentId: null,
           },
         },
+        useWorkItemFeatures: false,
       });
       expect(updateParent).toHaveBeenCalledWith({
         cache: expect.anything(Object),
@@ -645,13 +644,14 @@ describe('WorkItemParent component', () => {
   describe('work item type configuration', () => {
     describe('query selection based on configuration', () => {
       it.each`
-        workItemType   | isGroupWorkItemType | expectedQuery
-        ${'Epic'}      | ${true}             | ${'group'}
-        ${'Epic'}      | ${null}             | ${'project'}
-        ${'Objective'} | ${false}            | ${'project'}
-        ${'Objective'} | ${null}             | ${'project'}
-        ${'Issue'}     | ${true}             | ${'group'}
-        ${'Issue'}     | ${null}             | ${'project'}
+        workItemType               | isGroupWorkItemType | expectedQuery
+        ${'Epic'}                  | ${true}             | ${'group'}
+        ${'Epic'}                  | ${null}             | ${'project'}
+        ${'Objective'}             | ${false}            | ${'project'}
+        ${'Objective'}             | ${null}             | ${'project'}
+        ${'Issue'}                 | ${true}             | ${'group'}
+        ${'Issue'}                 | ${null}             | ${'project'}
+        ${'Custom work item type'} | ${false}            | ${'group'}
       `(
         'selects correct query when workItemType=$workItemType, isGroupWorkItemType=$isGroupWorkItemType',
         async ({ workItemType, isGroupWorkItemType, expectedQuery }) => {

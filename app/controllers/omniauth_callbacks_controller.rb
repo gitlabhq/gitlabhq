@@ -61,9 +61,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # the number of failed sign in attempts
   def failure
     update_login_counter_metric(failed_strategy.name, 'failed')
-    log_saml_response if params['SAMLResponse']
+    log_saml_response if params.permit(:SAMLResponse)[:SAMLResponse]
 
-    username = params[:username].to_s
+    username = params.permit(:username)[:username].to_s
     if username.present? && AuthHelper.form_based_provider?(failed_strategy.name)
       user = User.find_by_login(username)
 
@@ -105,6 +105,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       handle_omniauth
     else
       fail_salesforce_login
+    end
+  end
+
+  def chatgpt
+    if oauth.dig('extra', 'raw_info', 'email_verified') == true
+      handle_omniauth
+    else
+      fail_chatgpt_login
     end
   end
 
@@ -362,7 +370,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def fail_login(user)
     log_failed_login(user.username, oauth['provider'])
 
-    @provider = Gitlab::Auth::OAuth::Provider.label_for(params[:action])
+    @provider = Gitlab::Auth::OAuth::Provider.label_for(action_name)
     @error = user.errors.full_messages.to_sentence
 
     render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
@@ -374,6 +382,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_salesforce_login
     fail_login_with_message(_('Email not verified. Please verify your email in Salesforce.'))
+  end
+
+  def fail_chatgpt_login
+    fail_login_with_message(_('Email not verified. Please verify your email in your ChatGPT account.'))
   end
 
   def fail_login_with_message(message)
@@ -430,7 +442,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     return unless remember_me?
 
     if user.two_factor_enabled? && !auth_user.bypass_two_factor?
-      params[:remember_me] = '1'
+      params[:remember_me] = '1' # rubocop:disable Rails/StrongParams -- internal state, not user input
     else
       remember_me(user)
     end
@@ -538,7 +550,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def log_saml_response
-    ParameterFilters::SamlResponse.log(params['SAMLResponse'].dup)
+    ParameterFilters::SamlResponse.log(params.permit(:SAMLResponse)[:SAMLResponse].dup)
   end
 end
 

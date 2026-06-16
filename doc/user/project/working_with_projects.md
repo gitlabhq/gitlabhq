@@ -87,6 +87,7 @@ Use the **Projects** list to view:
 {{< history >}}
 
 - Trending projects tab [removed](https://gitlab.com/groups/gitlab-org/-/work_items/18493) in GitLab 19.0. Feature flags `retire_trending_projects` enabled by default.
+- Feature flag `retire_trending_projects` removed in GitLab 19.1.
 
 {{< /history >}}
 

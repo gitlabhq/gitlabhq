@@ -17,6 +17,14 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     subject(:perform_request) { post api("/projects/#{project_id}/service_accounts", current_user), params: params }
 
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :create_service_account do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { post api("/projects/#{project.id}/service_accounts", personal_access_token: pat) }
+      end
+    end
+
     context 'when current user is an admin', :enable_admin_mode do
       let(:current_user) { admin }
 
@@ -135,6 +143,14 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     subject(:perform_request) { get api(path, current_user, admin_mode: true), params: params }
 
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :read_service_account do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { get api(path, personal_access_token: pat) }
+      end
+    end
+
     context 'when the user is an admin', :enable_admin_mode do
       let(:current_user) { admin }
       let!(:service_account_a) do
@@ -197,6 +213,14 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     subject(:perform_request) { patch api(path, current_user, admin_mode: true), params: params }
 
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :update_service_account do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { patch api(path, personal_access_token: pat), params: { name: 'Updated Name' } }
+      end
+    end
+
     context 'when current user is an admin', :enable_admin_mode do
       let(:current_user) { admin }
 
@@ -249,6 +273,14 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
     let!(:service_account_user) { create(:user, :service_account, provisioned_by_project: project) }
     let(:path) { "/projects/#{project_id}/service_accounts/#{service_account_user.id}" }
 
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :delete_service_account do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { delete api(path, personal_access_token: pat) }
+      end
+    end
+
     context 'when current user is an admin' do
       it 'marks the user for deletion', :sidekiq_inline do
         perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
@@ -294,6 +326,12 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
         { name: 'pat-1', scopes: scopes, expires_at: 30.days.from_now.to_date.to_s }
       end
 
+      it_behaves_like 'authorizing granular token permissions', :create_service_account_personal_access_token do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { post api(base_path, personal_access_token: pat), params: params }
+      end
+
       it 'creates a token for the service account' do
         post api(base_path, admin, admin_mode: true), params: params
 
@@ -322,6 +360,12 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
     describe 'GET /projects/:id/service_accounts/:user_id/personal_access_tokens' do
       let!(:existing_token) { create(:personal_access_token, user: service_account_user, scopes: scopes) }
 
+      it_behaves_like 'authorizing granular token permissions', :read_service_account_personal_access_token do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { get api(base_path, personal_access_token: pat) }
+      end
+
       it 'lists tokens for the service account' do
         get api(base_path, admin, admin_mode: true)
 
@@ -333,6 +377,12 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     describe 'DELETE /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id' do
       let!(:token) { create(:personal_access_token, user: service_account_user) }
+
+      it_behaves_like 'authorizing granular token permissions', :revoke_service_account_personal_access_token do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { delete api("#{base_path}/#{token.id}", personal_access_token: pat) }
+      end
 
       it 'revokes the specified token' do
         delete api("#{base_path}/#{token.id}", admin, admin_mode: true)
@@ -350,6 +400,12 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
 
     describe 'POST /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate' do
       let!(:token) { create(:personal_access_token, user: service_account_user) }
+
+      it_behaves_like 'authorizing granular token permissions', :rotate_service_account_personal_access_token do
+        let(:boundary_object) { project }
+        let(:user) { admin }
+        let(:request) { post api("#{base_path}/#{token.id}/rotate", personal_access_token: pat) }
+      end
 
       it 'rotates the specified token' do
         post api("#{base_path}/#{token.id}/rotate", admin, admin_mode: true)

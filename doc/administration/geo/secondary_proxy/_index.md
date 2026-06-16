@@ -61,12 +61,12 @@ Follow this example to route traffic to the closest Geo site, whether primary or
 This example creates a `gitlab.example.com` subdomain that automatically directs
 requests:
 
-- From Europe to a **secondary** site.
-- From all other locations to the **primary** site.
+- From Europe to a secondary site.
+- From all other locations to the primary site.
 
 For this example, you need:
 
-- A working Geo **primary** site and **secondary** site, see the [Geo setup instructions](../setup/_index.md).
+- A working Geo primary site and secondary site, see the [Geo setup instructions](../setup/_index.md).
 - A DNS zone managing your domain. Although the following instructions use
   [AWS Route53](https://aws.amazon.com/route53/)
   and [GCP cloud DNS](https://cloud.google.com/dns/), other services such as
@@ -89,11 +89,11 @@ routing configurations. To create a traffic policy:
 1. For the first **Location**:
    1. Leave it as `Default`.
    1. Select **Connect to**, then select **New endpoint**.
-   1. Choose **Type** `value` and fill it in with `<your **primary** IP address>`.
+   1. Choose **Type** `value` and fill it in with `<your primary IP address>`.
 1. For the second **Location**:
    1. Choose `Europe`.
    1. Select **Connect to**, then select **New endpoint**.
-   1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
+   1. Choose **Type** `value` and fill it in with `<your secondary IP address>`.
 
    ![Route53 traffic policy editor showing a geolocation rule with two locations - Default and Europe - each connected to endpoints with different IP addresses](img/single_url_add_traffic_policy_endpoints_v14_5.png)
 
@@ -120,11 +120,11 @@ When creating Geo-Based record sets, GCP applies a nearest match for the source 
 1. Select the **Routing Policy**: **Geo-Based**.
 1. Select **Add Managed RRData**.
    1. Select **Source Region**: **us-central1**.
-   1. Enter your `<**primary** IP address>`.
+   1. Enter your `<primary IP address>`.
    1. Select **Done**.
 1. Select **Add Managed RRData**.
    1. Select **Source Region**: **europe-west1**.
-   1. Enter your `<**secondary** IP address>`.
+   1. Enter your `<secondary IP address>`.
    1. Select **Done**.
 1. Select **Create**.
 
@@ -152,7 +152,7 @@ the following steps if your sites use different URLs:
 1. To match the new external URL set on the secondary Geo sites, the primary database
    needs to reflect this change.
 
-   In the Geo administration page of the **primary** site, edit each Geo secondary that
+   In the Geo administration page of the primary site, edit each Geo secondary that
    is using the secondary proxying and set the `URL` field to the single URL.
    Make sure the primary site is also using this URL.
 
@@ -188,7 +188,7 @@ but you want to change it to use a different URL:
 1. To match the new external URL set on the secondary Geo site, the primary database
    needs to reflect this change.
 
-   In the Geo administration page of the **primary** site, edit the target secondary site and set the `URL` field to the desired URL.
+   In the Geo administration page of the primary site, edit the target secondary site and set the `URL` field to the desired URL.
 
    To allow the sites to talk to each other, [make sure the `Internal URL` field is unique for each site](../../geo_sites.md#set-up-the-internal-urls). If the desired URL is unique to this site, then you can clear the `Internal URL` field. On save, it defaults to the external URL.
 

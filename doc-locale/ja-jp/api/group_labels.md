@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループラベルAPI
 ---
 
@@ -14,15 +14,18 @@ title: グループラベルAPI
 
 {{< history >}}
 
-- `archived`属性は、GitLab 18.3で`labels_archive`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/4233)されました。デフォルトでは無効になっています。
+- GitLab 18.3で、`archived`属性が`labels_archive`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/4233)されました。
+- GitLab 18.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/556700)になりました。機能フラグ`labels_archive`は削除されました。
 
 {{< /history >}}
 
-このAPIは、[group labels](../user/project/labels.md#types-of-labels)の管理をサポートします。これにより、ユーザーはgroup labelsを一覧表示、作成、更新、削除できます。さらに、ユーザーはgroup labelsをサブスクライブおよびサブスクライブ解除できます。
+このAPIを使用して、[グループラベル](../user/project/labels.md#types-of-labels)を管理します。
 
-## Group labelsの一覧表示 {#list-group-labels}
+プロジェクトラベルには、[プロジェクトラベルAPI](labels.md)を使用します。
 
-特定のグループのすべてのラベルを取得します。
+## グループラベルの一覧表示 {#list-group-labels}
+
+指定されたグループのすべてのラベルを取得します。
 
 ```plaintext
 GET /groups/:id/labels
@@ -31,18 +34,20 @@ GET /groups/:id/labels
 | 属性     | 型           | 必須 | 説明                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
 | `id`          | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                                               |
-| `with_counts` | ブール値        | いいえ       | イシューとマージリクエストの数を表示するかどうか。`false`がデフォルトです。 |
+| `with_counts` | ブール値        | いいえ       | イシューとマージリクエストの数を含めるかどうか。`false`がデフォルトです。 |
 | `include_ancestor_groups` | ブール値 | いいえ | 祖先グループを含めます。`true`がデフォルトです。 |
 | `include_descendant_groups` | ブール値 | いいえ | 子孫グループを含めます。`false`がデフォルトです。 |
-| `only_group_labels` | ブール値 | いいえ | group labelsのみを含めるか、プロジェクトラベルも表示するかを切り替えます。`true`がデフォルトです。 |
-| `search` | 文字列 | いいえ | ラベルをフィルターするキーワード。 |
-| `archived` | ブール値 | いいえ | ラベルがアーカイブされているかどうか。設定されていない場合は、すべてのラベルを返します。`:labels_archive`機能フラグを有効にする必要があります。 |
+| `only_group_labels` | ブール値 | いいえ | グループラベルのみを含めるか、プロジェクトラベルも一緒に含めるかの切替。`true`がデフォルトです。 |
+| `search` | 文字列 | いいえ | ラベルでフィルタリングするキーワード。 |
+| `archived` | ブール値 | いいえ | `true`の場合、アーカイブされたラベルのみを返します。設定されていない場合、すべてのラベルを返します。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -77,7 +82,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## 単一のグループラベルを取得 {#get-a-single-group-label}
 
-特定のグループの単一のラベルを取得します。
+指定されたグループの単一のラベルを取得します。
 
 ```plaintext
 GET /groups/:id/labels/:label_id
@@ -89,13 +94,15 @@ GET /groups/:id/labels/:label_id
 | `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
 | `include_ancestor_groups` | ブール値 | いいえ | 祖先グループを含めます。`true`がデフォルトです。 |
 | `include_descendant_groups` | ブール値 | いいえ | 子孫グループを含めます。`false`がデフォルトです。 |
-| `only_group_labels` | ブール値 | いいえ | group labelsのみを含めるか、プロジェクトラベルも表示するかを切り替えます。`true`がデフォルトです。 |
+| `only_group_labels` | ブール値 | いいえ | グループラベルのみを含めるか、プロジェクトラベルも一緒に含めるかの切替。`true`がデフォルトです。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -115,7 +122,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## 新しいグループラベルを作成 {#create-a-new-group-label}
 
-特定のグループに新しいgroup labelを作成します。
+指定されたグループの新しいグループラベルを作成します。
 
 ```plaintext
 POST /groups/:id/labels
@@ -125,17 +132,23 @@ POST /groups/:id/labels
 | ------------- | ------- | -------- | ---------------------------- |
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `name`        | 文字列  | はい      | ラベルの名前        |
-| `color`       | 文字列  | はい      | ラベルの色。先頭が「#」記号の6桁の16進数表記（#FFAABBなど）か、[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定。 |
-| `description` | 文字列  | いいえ       | ラベルの説明 |
-| `archived`    | ブール値 | いいえ       | ラベルがアーカイブされているかどうか。`labels_archive`機能フラグを有効にする必要があります。 |
+| `color`       | 文字列  | はい      | ラベルの色。先頭に「#」が付いた6桁の16進表記（例: #FFAABB）または[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定します。 |
+| `description` | 文字列  | いいえ       | ラベルの説明、 |
+| `archived`    | ブール値 | いいえ       | `true`の場合、ラベルをアーカイブ済みとしてマークします。デフォルト値: false。デフォルト値: `false`。 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"name": "Feature Proposal", "color": "#FFA500", "description": "Describes new ideas" }' \
-     "https://gitlab.example.com/api/v4/groups/5/labels"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Feature Proposal",
+    "color": "#FFA500",
+    "description": "Describes new ideas"
+  }' \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -155,7 +168,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Cont
 
 ## グループラベルを更新 {#update-a-group-label}
 
-既存のgroup labelを更新します。少なくとも1つのパラメータは、group labelを更新するために必要です。
+既存のグループラベルを更新します。グループラベルを更新するには、少なくとも1つのパラメータが必要です。
 
 ```plaintext
 PUT /groups/:id/labels/:label_id
@@ -166,16 +179,19 @@ PUT /groups/:id/labels/:label_id
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
 | `new_name`    | 文字列  | いいえ      | ラベルの新しい名前        |
-| `color`       | 文字列  | いいえ      | ラベルの色。先頭が「#」記号の6桁の16進数表記（#FFAABBなど）か、[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定。 |
+| `color`       | 文字列  | いいえ      | ラベルの色。先頭に「#」が付いた6桁の16進表記（例: #FFAABB）または[CSSカラー名](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords)のいずれかで指定します。 |
 | `description` | 文字列  | いいえ       | ラベルの説明。 |
-| `archived`    | ブール値 | いいえ       | ラベルがアーカイブされているかどうか。`labels_archive`機能フラグを有効にする必要があります。 |
+| `archived`    | ブール値 | いいえ       | `true`の場合、ラベルをアーカイブ済みとしてマークします。デフォルト値: false。デフォルト値: `false`。 |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"new_name": "Feature Idea" }' "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"new_name": "Feature Idea"}' \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/Feature%20Proposal"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -193,15 +209,12 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Conte
 }
 ```
 
-{{< alert type="note" >}}
-
-古いエンドポイント`PUT /groups/:id/labels`（パラメータに`name`がある）はまだ使用できますが、非推奨です。
-
-{{< /alert >}}
+> [!note]
+> 古いエンドポイント`PUT /groups/:id/labels` (パラメータに`name`を含む) は引き続き利用可能ですが、非推奨です。
 
 ## グループラベルを削除 {#delete-a-group-label}
 
-指定された名前でgroup labelを削除します。
+指定された名前のグループラベルを削除します。
 
 ```plaintext
 DELETE /groups/:id/labels/:label_id
@@ -213,18 +226,17 @@ DELETE /groups/:id/labels/:label_id
 | `label_id` | 整数または文字列 | はい | グループのラベルのIDまたはタイトル。 |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> 古いエンドポイント`DELETE /groups/:id/labels` (パラメータに`name`を含む) は引き続き利用可能ですが、非推奨です。
 
-古いエンドポイント`DELETE /groups/:id/labels`（パラメータに`name`がある）はまだ使用できますが、非推奨です。
+## グループラベルを購読 {#subscribe-to-a-group-label}
 
-{{< /alert >}}
-
-## Group labelをサブスクライブする {#subscribe-to-a-group-label}
-
-認証済みユーザーが通知を受信できるように、グループラベルをサブスクライブします。ユーザーがすでにラベルをサブスクライブしている場合、ステータスコード`304`が返されます。
+認証済みユーザーをグループラベルに登録し、通知を受け取ります。ユーザーがすでにラベルを購読している場合、ステータスコード`304`が返されます。
 
 ```plaintext
 POST /groups/:id/labels/:label_id/subscribe
@@ -236,10 +248,12 @@ POST /groups/:id/labels/:label_id/subscribe
 | `label_id` | 整数または文字列 | はい      | グループのラベルのIDまたはタイトル。 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/9/subscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/9/subscribe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -257,9 +271,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 }
 ```
 
-## Group labelのサブスクライブを解除する {#unsubscribe-from-a-group-label}
+## グループラベルの購読解除 {#unsubscribe-from-a-group-label}
 
-通知を受信しないようにするため、認証済みユーザーをグループラベルからサブスクライブ解除します。ユーザーがラベルをサブスクライブしていない場合、ステータスコード`304`が返されます。
+認証済みユーザーをグループラベルから登録解除し、それからの通知を受け取らないようにします。ユーザーがラベルを購読していない場合、ステータスコード`304`が返されます。
 
 ```plaintext
 POST /groups/:id/labels/:label_id/unsubscribe
@@ -271,10 +285,12 @@ POST /groups/:id/labels/:label_id/unsubscribe
 | `label_id` | 整数または文字列 | はい      | グループのラベルのIDまたはタイトル。 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/9/unsubscribe"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/labels/9/unsubscribe"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/background_migration_record'
 
-RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationRecord do
+RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationRecord, feature_category: :database do
   context 'outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

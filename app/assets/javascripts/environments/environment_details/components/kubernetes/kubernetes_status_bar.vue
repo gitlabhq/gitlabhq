@@ -29,6 +29,7 @@ import {
 import { WORKLOAD_DETAILS_SECTIONS } from '~/kubernetes_dashboard/constants';
 
 export default {
+  name: 'KubernetesStatusBar',
   components: {
     KubernetesConnectionStatus,
     KubernetesConnectionStatusBadge,

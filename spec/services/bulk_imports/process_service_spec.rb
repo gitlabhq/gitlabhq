@@ -100,6 +100,21 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
             expect(bulk_import.reload.started?).to eq(true)
           end
+
+          context 'when the import is offline' do
+            before do
+              bulk_import.update!(source_type: :offline_export)
+            end
+
+            it 'initializes store with offline transfer import source' do
+              expect(Import::PlaceholderReferences::Store).to receive(:new).with(
+                import_source: Import::SOURCE_OFFLINE_TRANSFER,
+                import_uid: bulk_import.id
+              ).and_call_original
+
+              subject.execute
+            end
+          end
         end
       end
     end

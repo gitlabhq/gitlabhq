@@ -18,7 +18,6 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
     include Gitlab::InternalEventsTracking
-    include Ci::PartitionableFinder
 
     self.table_name = :p_ci_pipelines
     self.primary_key = :id
@@ -410,7 +409,8 @@ module Ci
             user: pipeline.user,
             additional_properties: {
               label: pipeline.status,
-              failure_reason: pipeline.failure_reason
+              failure_reason: pipeline.failure_reason,
+              author_source: Ci::ProjectMetric.ci_config_generated_by_for(pipeline.project_id)
             }.compact
           )
         end
@@ -557,6 +557,10 @@ module Ci
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
 
       archive_cutoff ? created_after(archive_cutoff) : all
+    end
+
+    def self.find_by_id(id)
+      Gitlab::Ci::Pipeline::ByIdLookup.new(self, id).execute
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -811,11 +815,19 @@ module Ci
     end
 
     def triggered_pipelines_with_preloads
-      triggered_pipelines.preload(
-        :source_job,
-        :retryable_builds,
-        project: [:route, { namespace: :route }]
-      )
+      retried_source_jobs = CommitStatus.retried.in_partition(partition_id)
+        .where(CommitStatus.arel_table[:id].eq(Ci::Sources::Pipeline.arel_table[:source_job_id]))
+
+      pairs = sourced_pipelines.where_not_exists(retried_source_jobs).pluck(:pipeline_id, :partition_id)
+
+      Ci::Pipeline
+        .id_and_partition_in(pairs)
+        .order(id: :desc)
+        .preload(
+          :source_job,
+          :retryable_builds,
+          project: [:route, { namespace: :route }]
+        )
     end
 
     def valid_commit_sha
@@ -911,7 +923,11 @@ module Ci
     end
 
     def archived?(log: false)
-      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
+      archive_builds_older_than =
+        if ::Feature.enabled?(:ci_pipeline_archival_setting, project)
+          Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
+        end
+
       is_archived = archive_builds_older_than.present? && created_at < archive_builds_older_than
 
       if log

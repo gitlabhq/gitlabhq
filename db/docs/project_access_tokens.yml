@@ -3,7 +3,8 @@ table_name: project_access_tokens
 classes: []
 feature_categories:
 - system_access
-description: TODO
+description: Join table linking a project to the personal_access_tokens row of its
+  project bot user. The actual token digest, scopes, and expiry live in personal_access_tokens.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33272
 milestone: '13.1'
 gitlab_schema: gitlab_main_org

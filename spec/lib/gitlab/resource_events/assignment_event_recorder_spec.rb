@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::ResourceEvents::AssignmentEventRecorder, feature_category: :value_stream_management do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
-  let_it_be(:user3) { create(:user) }
+  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
+  let_it_be(:user3, freeze: false) { create(:user) }
 
   let_it_be_with_refind(:issue_with_two_assignees) { create(:issue, assignees: [user1, user2]) }
   let_it_be_with_refind(:mr_with_no_assignees) { create(:merge_request) }

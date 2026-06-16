@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::MockCi, feature_category: :integrations do
+RSpec.describe Integrations::MockCi, feature_category: :continuous_integration do
   it_behaves_like Integrations::Base::MockCi
 end

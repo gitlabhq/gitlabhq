@@ -177,6 +177,8 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       instance_double(ServiceResponse, payload: { commit_sha: '11' })
     end
 
+    let(:target_branch_sha) { project.repository.commit(merge_request.target_branch).sha }
+
     context 'when we are using ff only strategy' do
       before do
         project.merge_method = :ff
@@ -196,7 +198,10 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
 
           expect(merge_request.target_project.repository)
             .to receive(:ff_merge)
-            .with(user, '11', merge_request.target_branch, { merge_request: merge_request })
+            .with(
+              user, '11', merge_request.target_branch,
+              { target_sha: target_branch_sha, merge_request: merge_request }
+            )
             .and_return('1234')
 
           expect(merge_request).to receive(:schedule_cleanup_refs).with(only: [:rebase_on_merge_path])
@@ -246,7 +251,10 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
 
         expect(merge_request.target_project.repository)
           .to receive(:ff_merge)
-          .with(user, '11', merge_request.target_branch, { merge_request: merge_request })
+          .with(
+            user, '11', merge_request.target_branch,
+            { target_sha: target_branch_sha, merge_request: merge_request }
+          )
           .and_return('1234')
 
         expect(merge_request).to receive(:schedule_cleanup_refs).with(only: [:rebase_on_merge_path])
@@ -306,6 +314,78 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
 
           expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234', merge_commit_sha: '1234' })
         end
+      end
+    end
+
+    context 'when the fast-forward does not advance the target branch' do
+      before do
+        project.merge_method = :ff
+        project.save!
+      end
+
+      it 'raises rather than recording a no-op when ff_merge returns the unchanged target tip' do
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge).and_return(target_branch_sha)
+
+        expect { strategy.execute_git_merge! }
+          .to raise_exception(
+            MergeRequests::MergeStrategies::StrategyError,
+            'Fast-forward merge did not advance the target branch'
+          )
+      end
+
+      it 'raises when ff_merge returns a blank result' do
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge).and_return(nil)
+
+        expect { strategy.execute_git_merge! }
+          .to raise_exception(
+            MergeRequests::MergeStrategies::StrategyError,
+            'Fast-forward merge did not advance the target branch'
+          )
+      end
+    end
+
+    context 'when the fast-forward does not advance the target branch via the auto-rebase path' do
+      before do
+        project.merge_method = :ff
+        project.save!
+        project.project_setting.update!(automatic_rebase_enabled: true)
+        allow(merge_request).to receive(:should_be_rebased?).and_return(true)
+      end
+
+      it 'raises when the rebased sha collapses onto the unchanged target tip' do
+        expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+          expect(instance).to receive(:execute).and_return(create_ref_service_response)
+        end
+
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge).and_return(target_branch_sha)
+
+        expect { strategy.execute_git_merge! }
+          .to raise_exception(
+            MergeRequests::MergeStrategies::StrategyError,
+            'Fast-forward merge did not advance the target branch'
+          )
+      end
+    end
+
+    context 'when the verify_ff_merge_advancement feature flag is disabled' do
+      before do
+        stub_feature_flags(verify_ff_merge_advancement: false)
+        project.merge_method = :ff
+        project.save!
+      end
+
+      it 'records the merge without guarding advancement (legacy behavior)' do
+        # The legacy call must be byte-for-byte identical to the pre-fix code:
+        # no target_sha: keyword is forwarded to ff_merge when the flag is off.
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge)
+          .with(user, anything, merge_request.target_branch, { merge_request: merge_request })
+          .and_return(target_branch_sha)
+
+        expect(strategy.execute_git_merge!).to eq({ commit_sha: target_branch_sha })
       end
     end
   end

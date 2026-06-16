@@ -118,7 +118,9 @@ based on your specific team needs.
 Customers with an offline license must purchase the GitLab Duo Agent Platform Self-Hosted add-on
 to use self-hosted models in the Agent Platform.
 
-Customers with this add-on are billed based on seats instead of [usage](gitlab_credits.md).
+Customers with this add-on are billed under an Enterprise License Agreement (ELA) with a flat fee
+per customer, not based on [usage](gitlab_credits.md) or seats. The add-on applies to all billable
+users on the instance.
 
 Customers with an online license can use self-hosted models in the Agent Platform without an
 add-on, and are billed based on usage.

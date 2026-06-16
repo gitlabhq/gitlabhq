@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe API::Ci::Catalog, feature_category: :pipeline_composition do
   include HttpBasicAuthHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :catalog_resource_with_components) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :catalog_resource_with_components) }
   let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
-  let_it_be(:release) do
+  let_it_be(:release, freeze: false) do
     create(:release, project: project, sha: project.repository.root_ref_sha, author: user)
   end
 

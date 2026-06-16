@@ -293,80 +293,39 @@ RSpec.describe AuditEvents::Processor, feature_category: :audit_events do
       }
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(stream_audit_events_from_new_tables: true)
-      end
-
-      context 'with group_id present' do
-        let(:audit_event_json) do
-          base_json.merge(
-            group_id: group.id
-          ).to_json
-        end
-
-        it 'creates a GroupAuditEvent' do
-          allow(described_class).to receive(:determine_audit_model_entity).and_return([::AuditEvents::GroupAuditEvent,
-            group])
-          allow(::Gitlab::Audit::FeatureFlags).to receive(:stream_from_new_tables?).with(group).and_return(true)
-
-          result = described_class.fetch_from_json(audit_event_json)
-
-          expect(result).to be_a(::AuditEvents::GroupAuditEvent)
-        end
-      end
-
-      context 'with project_id present' do
-        let(:project) { create(:project) }
-        let(:audit_event_json) do
-          base_json.merge(
-            project_id: project.id
-          ).to_json
-        end
-
-        it 'creates a ProjectAuditEvent' do
-          allow(described_class).to receive(:determine_audit_model_entity).and_return([
-            ::AuditEvents::ProjectAuditEvent, project
-          ])
-          allow(::Gitlab::Audit::FeatureFlags).to receive(:stream_from_new_tables?).with(project).and_return(true)
-
-          result = described_class.fetch_from_json(audit_event_json)
-
-          expect(result).to be_a(::AuditEvents::ProjectAuditEvent)
-        end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(stream_audit_events_from_new_tables: false)
-        allow(described_class).to receive(:determine_audit_model_entity).and_return([::AuditEvents::GroupAuditEvent,
-          group])
-        allow(::Gitlab::Audit::FeatureFlags).to receive(:stream_from_new_tables?).with(group).and_return(false)
-      end
-
+    context 'with group_id present' do
       let(:audit_event_json) do
         base_json.merge(
-          group_id: group.id,
-          event_name: 'some_event_name'
+          group_id: group.id
         ).to_json
       end
 
-      it 'creates a base AuditEvent' do
+      it 'creates a GroupAuditEvent' do
+        allow(described_class).to receive(:determine_audit_model_entity).and_return([::AuditEvents::GroupAuditEvent,
+          group])
+
         result = described_class.fetch_from_json(audit_event_json)
 
-        expect(result).to be_a(::AuditEvent)
+        expect(result).to be_a(::AuditEvents::GroupAuditEvent)
+      end
+    end
+
+    context 'with project_id present' do
+      let_it_be(:project) { create(:project) }
+      let(:audit_event_json) do
+        base_json.merge(
+          project_id: project.id
+        ).to_json
       end
 
-      it 'filters out group_id, project_id, user_id, and evnet_name fields' do
-        expect do
-          result = described_class.fetch_from_json(audit_event_json)
+      it 'creates a ProjectAuditEvent' do
+        allow(described_class).to receive(:determine_audit_model_entity).and_return([
+          ::AuditEvents::ProjectAuditEvent, project
+        ])
 
-          expect(result.attributes).not_to include('group_id')
-          expect(result.attributes).not_to include('project_id')
-          expect(result.attributes).not_to include('user_id')
-          expect(result.attributes).not_to include('event_name')
-        end.not_to raise_error
+        result = described_class.fetch_from_json(audit_event_json)
+
+        expect(result).to be_a(::AuditEvents::ProjectAuditEvent)
       end
     end
 

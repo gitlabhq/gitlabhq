@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_category: :source_code_management do
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
   let(:lfs_endpoint) { "#{import_url}/info/lfs/objects/batch" }
-  let!(:project) { create(:project, import_url: import_url) }
+  let(:project) { build_stubbed(:project, import_url: import_url) }
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }
   let(:headers) { { 'X-Some-Header' => '456' } }
   let(:remote_uri) { URI.parse(lfs_endpoint) }

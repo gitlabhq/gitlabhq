@@ -94,19 +94,19 @@ RSpec.shared_examples 'housekeeps repository' do
 
     describe '#needed?' do
       it 'when the count is low enough' do
-        expect(subject.needed?).to eq(false)
+        expect(subject.needed?).to be(false)
       end
 
       it 'when the count is high enough' do
         allow(resource).to receive(:pushes_since_gc).and_return(10)
-        expect(subject.needed?).to eq(true)
+        expect(subject.needed?).to be(true)
       end
 
       it 'when incremental repack period is not multiple of gc period' do
         allow(Gitlab::CurrentSettings).to receive(:housekeeping_incremental_repack_period).and_return(12)
         allow(resource).to receive(:pushes_since_gc).and_return(200)
 
-        expect(subject.needed?).to eq(true)
+        expect(subject.needed?).to be(true)
       end
     end
 

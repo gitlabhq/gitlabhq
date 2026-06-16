@@ -40,7 +40,7 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           expect(project.reload.namespace).to eq(new_namespace)
           expect(project_namespace.reload).to be_ancestor_inherited
           expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-            message: 'Cancelling stale transfer_in_progress state',
+            message: 'Cancelling stale transfer state',
             project_id: project.id
           ))
         end

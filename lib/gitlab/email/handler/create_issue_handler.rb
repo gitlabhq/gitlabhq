@@ -34,6 +34,7 @@ module Gitlab
         def execute
           raise ProjectNotFound unless project
 
+          log_email_handler
           validate_permission!(:create_issue)
 
           result = create_issue
@@ -59,6 +60,14 @@ module Gitlab
         end
 
         private
+
+        def parent_namespace
+          project.project_namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_PROJECT_ID => project.id }
+        end
 
         def create_issue
           ::Issues::CreateService.new(

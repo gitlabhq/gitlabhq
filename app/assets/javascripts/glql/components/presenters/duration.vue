@@ -1,5 +1,5 @@
 <script>
-import { timeIntervalInWords } from '~/lib/utils/datetime/date_format_utility';
+import { formatDuration } from '../../utils/value_format';
 
 export default {
   name: 'DurationPresenter',
@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     formatted() {
-      return timeIntervalInWords(this.data);
+      return formatDuration(this.data);
     },
   },
 };

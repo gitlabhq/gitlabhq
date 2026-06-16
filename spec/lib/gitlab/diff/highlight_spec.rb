@@ -161,6 +161,17 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
       end
 
       it_behaves_like 'diff highlighter'
+
+      context 'with diff_file: keyword and explicit diff lines' do
+        let(:highlighted_lines) { described_class.new(diff_file.diff_lines, diff_file: diff_file).highlight }
+
+        it 'highlights lines using diff_line_highlighting instead of blob_highlighting', :aggregate_failures do
+          code = %(-<span class="line" data-lang="ruby">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n)
+
+          expect(highlighted_lines[4].rich_text).to eq(code)
+          expect(highlighted_lines.length).to eq(diff_file.diff_lines.length)
+        end
+      end
     end
   end
 end

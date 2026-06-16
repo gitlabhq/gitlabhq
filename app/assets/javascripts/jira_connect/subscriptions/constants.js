@@ -33,6 +33,12 @@ export const I18N_OAUTH_FAILED_TITLE = s__('JiraConnect|Failed to sign in to Git
 export const I18N_OAUTH_FAILED_MESSAGE = s__(
   'JiraConnect|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}.',
 );
+export const I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE = s__(
+  "JiraConnect|Your browser couldn't reach the GitLab instance.",
+);
+export const I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE = s__(
+  'JiraConnect|If your instance is on a local or private network, Chrome 142 and later may block the request because of its Local Network Access policy when GitLab is loaded inside Jira Cloud. Use Firefox or Safari, or ask your administrator to allow local network access for Jira Cloud in your enterprise Chrome policy. %{linkStart}Learn more%{linkEnd}.',
+);
 
 export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/configure');
 export const PREREQUISITES_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
@@ -41,6 +47,12 @@ export const PREREQUISITES_DOC_LINK = helpPagePath('administration/settings/jira
 export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
   anchor: 'set-up-oauth-authentication',
 });
+export const OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK = helpPagePath(
+  'administration/settings/jira_cloud_app_troubleshooting',
+  {
+    anchor: 'error-failed-to-sign-in-to-gitlab',
+  },
+);
 export const SET_UP_INSTANCE_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
   anchor: 'set-up-your-instance-for-atlassian-marketplace-installation',
 });

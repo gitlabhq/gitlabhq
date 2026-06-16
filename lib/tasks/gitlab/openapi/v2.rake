@@ -34,6 +34,11 @@ namespace :gitlab do
           raise 'This task can only be run in the development or test environment'
         end
 
+        # Force deterministic output unless the caller explicitly opts in for THIS task
+        ENV['GITLAB_SIMULATE_SAAS'] = ENV['OPENAPI_SIMULATE_SAAS'].presence || 'false'
+        puts "Generating OpenAPI v2 docs with GITLAB_SIMULATE_SAAS=#{ENV['GITLAB_SIMULATE_SAAS']} " \
+          "(override with OPENAPI_SIMULATE_SAAS=true)"
+
         ENV['store'] = 'tmp/openapi.json'
         Rake::Task["oapi:fetch"].invoke(['openapi.json'])
 
@@ -45,7 +50,12 @@ namespace :gitlab do
       task generate_and_check: [:generate, :validate]
 
       desc 'GitLab | OpenAPI | Check if OpenAPI doc are up to date'
-      task check_docs: [:environment, :enable_feature_flags] do
+      task check_docs: :environment do
+        # Force deterministic output unless the caller explicitly opts in for THIS task
+        ENV['GITLAB_SIMULATE_SAAS'] = ENV['OPENAPI_SIMULATE_SAAS'].presence || 'false'
+        puts "Checking OpenAPI v2 docs with GITLAB_SIMULATE_SAAS=#{ENV['GITLAB_SIMULATE_SAAS']} " \
+          "(override with OPENAPI_SIMULATE_SAAS=true)"
+
         ENV['store'] = 'tmp/openapi.json'
         Rake::Task["oapi:fetch"].invoke(['openapi.json'])
 

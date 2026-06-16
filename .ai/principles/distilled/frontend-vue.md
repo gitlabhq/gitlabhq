@@ -1,6 +1,6 @@
 ---
-source_checksum: 4fcb3e4127a73961
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 1bc92ed264b6835e
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -24,6 +24,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use kebab-case component names in templates (e.g., `<my-component />` not `<MyComponent />`)
 - DO NOT use `<style>` tags in Vue components; use Tailwind CSS utility classes or page-specific CSS instead
 - Parse non-scalar values (e.g., booleans) during Vue app instantiation using helpers like `parseBoolean`
+- Set a `name` property on every Vue component using PascalCase derived from the filename; for generic filenames (`app.vue`, `index.vue`) prefix with directory context to ensure uniqueness; add an `EE` suffix to EE components that share a name with a CE component
 
 ### State Management
 
@@ -93,13 +94,12 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `__()`, `s__()`, `n__()` from `~/locale` for JavaScript/Vue translations
 - DO NOT include HTML directly in translation strings; use placeholder pairs (e.g., `%{linkStart}/%{linkEnd}`) instead
 - DO NOT split a sentence across multiple translation calls; keep full sentences together so word order can be reordered by translators
-- DO NOT split a translatable sentence across multiple `GlSprintf` instances; keep the full sentence in a single `GlSprintf :message`
+- DO NOT split a translatable sentence across multiple `GlSprintf` instances; keep the full sentence (e.g., `"Created %{date} by %{author}"`) in a single `GlSprintf :message` so translators can reorder words across languages
 - Use `GlSprintf` when including child components or HTML in translation strings
 - Use `sprintf` for simple variable interpolation in computed properties
 - Use namespaces (PascalCase, pipe-separated) for all UI strings; prefer granular subcategories (e.g., `WorkItemsStatusConfigure|Add to`) over broad ones (e.g., `WorkItems|Add to`)
 - DO NOT use `downcase` or `toLocaleLowerCase()` on translatable strings; let translators control casing
 - Always pass string literals to translation helpers; DO NOT pass variables, function calls, or template literals
-- DO NOT split sentences when adding links; use `%{linkStart}/%{linkEnd}` placeholder pairs
 - Extract translation strings to a static `i18n` object on the Vue component (e.g., `$options.i18n.myString`) instead of inlining `s__()`/`__()` calls directly in `<template>`
 - In Jest tests, DO NOT wrap expected strings in `__()` or `s__()`; use plain string literals (i18n is mocked in the test environment)
 - Run `tooling/bin/gettext_extractor locale/gitlab.pot` after adding new translatable strings

@@ -10,7 +10,6 @@ import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warn
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { StreamingError } from '~/rapid_diffs/web_components/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
-import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
@@ -20,7 +19,6 @@ jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
 jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/file_browser');
-jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 
 describe('Rapid Diffs App Facade', () => {
@@ -100,7 +98,6 @@ describe('Rapid Diffs App Facade', () => {
     );
     expect(window.customElements.define).toHaveBeenCalledWith('streaming-error', StreamingError);
     expect(initHiddenFilesWarning).toHaveBeenCalledWith(getHiddenFilesWarningTarget());
-    expect(fixWebComponentsStreamingOnSafari).toHaveBeenCalled();
     expect(disableBrokenContentVisibility).toHaveBeenCalled();
     expect(initFileBrowser).toHaveBeenCalledWith({
       toggleTarget: document.querySelector('[data-file-browser-toggle]'),

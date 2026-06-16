@@ -6,13 +6,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
   include ProjectForksHelper
 
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :private, :repository, group: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
-  let_it_be(:label) { create(:label, title: 'a', project: project) }
-  let_it_be(:label2) { create(:label) }
+  let_it_be(:project, freeze: false) do
+    create(:project, :private, :repository, group: group,
+      maintainers: user, developers: [user2, user3, service_account])
+  end
+
+  let_it_be(:label, freeze: false) { create(:label, title: 'a', project: project) }
+  let_it_be(:label2, freeze: false) { create(:label) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:merge_request) do
@@ -29,13 +33,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
   end
 
   let(:current_user) { user }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_developer(user2)
-    project.add_developer(user3)
-    project.add_developer(service_account)
-  end
 
   describe 'execute' do
     def find_note(starting_with)
@@ -392,12 +389,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       end
 
       context 'when current user cannot admin issues in the project' do
-        let_it_be(:guest) { create(:user) }
+        let_it_be(:guest) { create(:user, guest_of: project) }
         let(:current_user) { guest }
-
-        before_all do
-          project.add_guest(guest)
-        end
 
         before do
           update_merge_request(opts)
@@ -556,7 +549,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       let(:service) { described_class.new(project: project, current_user: user, params: opts) }
 
       before do
-        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- we're overriding the project in this context
+        project.add_maintainer(user)
       end
 
       context 'without pipeline' do
@@ -744,6 +737,21 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
           should_email(user3)
         end
 
+        it 'passes the previous reviewers to the notification service' do
+          merge_request.reviewers = [user2, user3]
+          async_notification_service = instance_double(NotificationService)
+
+          expect_next_instance_of(NotificationService) do |notification_service|
+            expect(notification_service).to receive(:async).and_return(async_notification_service)
+          end
+
+          expect(async_notification_service)
+            .to receive(:changed_reviewer_of_merge_request)
+            .with(merge_request, current_user, contain_exactly(user2, user3))
+
+          update_merge_request({ reviewer_ids: [user2.id] })
+        end
+
         it 'updates open merge request counter for reviewers', :use_clean_rails_memory_store_caching do
           merge_request.reviewers = [user3]
 
@@ -807,7 +815,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       end
 
       context 'when the milestone is removed' do
-        let!(:non_subscriber) { create(:user) }
+        let_it_be(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
           create(:user) do |u|
@@ -831,7 +839,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       end
 
       context 'when the milestone is changed' do
-        let!(:non_subscriber) { create(:user) }
+        let_it_be(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
           create(:user) do |u|
@@ -958,7 +966,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
     end
 
     context 'when the draft status is changed' do
-      let!(:non_subscriber) { create(:user, developer_of: project) }
+      let_it_be(:non_subscriber) { create(:user, developer_of: project) }
       let!(:subscriber) do
         create(:user, developer_of: project) { |u| merge_request.toggle_subscription(u, project) }
       end
@@ -1103,13 +1111,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
     end
 
     context 'when the merge request is relabeled' do
-      let_it_be(:non_subscriber) { create(:user) }
-      let_it_be(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
-
-      before_all do
-        project.add_developer(non_subscriber)
-        project.add_developer(subscriber)
-      end
+      let_it_be(:non_subscriber) { create(:user, developer_of: project) }
+      let_it_be(:subscriber) { create(:user, developer_of: project) { |u| label.toggle_subscription(u, project) } }
 
       it 'sends notifications for subscribers of newly added labels', :sidekiq_inline do
         opts = { label_ids: [label.id] }
@@ -1166,7 +1169,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
       end
 
-      it { expect(@merge_request.tasks?).to eq(true) }
+      it { expect(@merge_request.tasks?).to be(true) }
 
       it_behaves_like 'updating a single task'
 
@@ -1243,8 +1246,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
     context 'while saving references to issues that the updated merge request closes', :aggregate_failures do
       let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group, :public) }
-      let_it_be(:project) { create(:project, :private, :repository, group: group, developers: user) }
-      let_it_be(:merge_request, refind: true) { create(:merge_request, :simple, :unchanged, source_project: project) }
+      let_it_be(:project, freeze: false) { create(:project, :private, :repository, group: group, developers: user) }
+      let_it_be_with_refind(:merge_request) { create(:merge_request, :simple, :unchanged, source_project: project) }
       let_it_be(:first_issue) { create(:issue, project: project) }
       let_it_be(:second_issue) { create(:issue, project: project) }
 
@@ -1321,7 +1324,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       context 'when MergeRequestsClosingIssues already exist' do
         let_it_be(:third_issue) { create(:issue, project: project) }
 
-        before_all do
+        before do
           merge_request.update!(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
           merge_request.cache_merge_request_closes_issues!(user)
         end
@@ -1578,8 +1581,20 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
             .to change { merge_request.reload.target_branch }.from('mr-a').to('master')
 
           expect(merge_request.reload.head_pipeline_id).to be_nil
-          expect(merge_request.retargeted).to eq(true)
+          expect(merge_request.retargeted).to be(true)
         end
+
+        it 'tracks the retarget_merge_request_on_target_branch_merge internal event' do
+          expect { update_merge_request(target_branch: 'master', target_branch_was_deleted: true) }
+            .to trigger_internal_events('retarget_merge_request_on_target_branch_merge')
+              .with(user: user, project: project, namespace: project.namespace)
+            .and increment_usage_metrics('counts.count_total_retarget_merge_request_on_target_branch_merge')
+        end
+      end
+
+      it 'does not track the retarget event on a normal target branch change' do
+        expect { update_merge_request(target_branch: 'master') }
+          .not_to trigger_internal_events('retarget_merge_request_on_target_branch_merge')
       end
     end
 

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/rake/require'
 
-RSpec.describe RuboCop::Cop::Rake::Require do
+RSpec.describe RuboCop::Cop::Rake::Require, feature_category: :tooling do
   let(:msg) { described_class::MSG }
 
   describe '#in_rake_file?' do

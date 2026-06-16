@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { mapActions } from 'pinia';
 import { computed } from 'vue';
@@ -38,6 +38,7 @@ import { loadViewer } from './blob_viewers';
 const trackingMixin = InternalEvents.mixin();
 
 export default {
+  name: 'BlobContentViewer',
   components: {
     BlobHeader,
     BlobContent,
@@ -46,6 +47,9 @@ export default {
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
     OrbitCodePanel: () => import('ee_component/orbit/components/orbit_code_panel.vue'),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [
     getRefMixin,
@@ -81,6 +85,7 @@ export default {
       update({ project }) {
         this.pathLocks = project?.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
         this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
+        this.defaultBranch = project?.repository?.rootRef || '';
       },
     },
     project: {
@@ -169,6 +174,7 @@ export default {
       useFallback: false,
       pathLocks: DEFAULT_BLOB_INFO.pathLocks,
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
+      defaultBranch: '',
       blobInfo: {},
       isEmptyRepository: false,
       projectId: null,
@@ -287,7 +293,18 @@ export default {
       return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
     },
     isOrbitCodeIntelligenceAvailable() {
-      return this.glFeatures.orbitCodeIntelligence && this.glLicensedFeatures.orbit;
+      return (
+        this.glFeatures.orbitCodeIntelligence &&
+        this.glLicensedFeatures.orbit &&
+        this.isOnDefaultBranch
+      );
+    },
+    // KG only indexes the default branch today, so the panel would render
+    // stale or misleading data on any other ref. Hide the toggle until the
+    // user is viewing the default branch (and we've resolved which one it
+    // is via the projectInfo query).
+    isOnDefaultBranch() {
+      return Boolean(this.defaultBranch && this.currentRef === this.defaultBranch);
     },
   },
   watch: {
@@ -474,15 +491,17 @@ export default {
           @preload-blame="shouldPreloadBlame = true"
           @blame="handleToggleBlame"
         >
-          <template #actions>
+          <template #orbit-action>
             <gl-button
               v-if="isOrbitCodeIntelligenceAvailable && (blobViewer || legacyViewerLoaded)"
-              category="secondary"
-              size="small"
-              icon="earth"
+              v-gl-tooltip
+              category="primary"
+              variant="default"
+              icon="code"
+              :aria-label="__('Code Navigation')"
+              :title="__('Code Navigation')"
               @click="orbitPanelOpen = !orbitPanelOpen"
-              >{{ __('Code Intelligence') }}</gl-button
-            >
+            />
           </template>
         </blob-header>
         <blob-content

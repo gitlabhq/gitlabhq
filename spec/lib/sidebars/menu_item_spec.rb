@@ -43,6 +43,31 @@ RSpec.describe Sidebars::MenuItem, feature_category: :navigation do
         expect(subject[:pill_count_field]).to eq('countField')
       end
     end
+
+    context 'with Feature Library metadata' do
+      let(:extra) do
+        { description: 'A short description.', tier: :premium, library_icon: 'rocket' }
+      end
+
+      it 'includes the Feature Library keys', :aggregate_failures do
+        expect(subject[:description]).to eq('A short description.')
+        expect(subject[:tier]).to eq(:premium)
+        expect(subject[:library_icon]).to eq('rocket')
+      end
+
+      it 'does not populate the keys the current sidebar renders' do
+        expect(subject).not_to have_key(:subtitle)
+        expect(subject[:icon]).to be_nil
+      end
+    end
+
+    context 'without Feature Library metadata' do
+      it 'omits the Feature Library keys entirely' do
+        expect(subject).not_to have_key(:description)
+        expect(subject).not_to have_key(:tier)
+        expect(subject).not_to have_key(:library_icon)
+      end
+    end
   end
 
   describe '#render?' do

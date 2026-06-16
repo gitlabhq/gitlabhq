@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import { disableShortcuts, enableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
 export default {
+  name: 'ShortcutsToggle',
   i18n: {
     toggleLabel: __('Toggle shortcuts'),
   },

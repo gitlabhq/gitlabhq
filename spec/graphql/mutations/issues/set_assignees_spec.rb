@@ -26,6 +26,6 @@ RSpec.describe Mutations::Issues::SetAssignees, feature_category: :api do
   end
 
   it_behaves_like 'an assignable resource' do
-    let_it_be(:resource, reload: true) { create(:issue) }
+    let_it_be_with_reload(:resource) { create(:issue) }
   end
 end

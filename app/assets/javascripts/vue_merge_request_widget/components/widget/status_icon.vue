@@ -4,6 +4,7 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICON_NAMES } from '../../constants';
 
 export default {
+  name: 'StatusIcon',
   components: {
     GlLoadingIcon,
     GlIcon,

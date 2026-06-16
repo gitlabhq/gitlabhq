@@ -4,7 +4,8 @@
 # eslint-disable-next-line @graphql-eslint/require-selections
 fragment BaseCiInstanceVariable on CiInstanceVariable {
   description
-  protected
+  hidden @gl_introduced(version: "19.0.0")
   masked
+  protected
   raw
 }

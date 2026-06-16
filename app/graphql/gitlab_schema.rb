@@ -19,6 +19,8 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::Pagination::Connections
   use Gitlab::Graphql::Timeout, max_seconds: Gitlab.config.gitlab.graphql_timeout
 
+  introspection Types::CustomIntrospection
+
   directive Gitlab::Graphql::VersionFilter::IntroducedDirective
 
   query_analyzer Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer

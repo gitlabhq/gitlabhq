@@ -27,6 +27,7 @@ const generateCollapsedAssigneeTooltip = ({ renderUsers, allUsers, tooltipTitleM
 };
 
 export default {
+  name: 'CollapsedAssigneeList',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

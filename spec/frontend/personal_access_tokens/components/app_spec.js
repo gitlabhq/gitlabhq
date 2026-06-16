@@ -389,6 +389,59 @@ describe('PersonalAccessTokensApp', () => {
         before: 'cursor456',
       });
     });
+
+    describe('resets pagination on filter or sort change', () => {
+      const expectResetPagination = () =>
+        expect(mockQueryHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            first: PAGE_SIZE,
+            after: null,
+            last: null,
+            before: null,
+          }),
+        );
+
+      beforeEach(async () => {
+        await waitForPromises();
+        await findPagination().vm.$emit('next', 'cursor123');
+        mockQueryHandler.mockClear();
+      });
+
+      it('resets pagination when filter is submitted', async () => {
+        findFilteredSearch().vm.$emit('input', [{ type: 'state', value: { data: 'INACTIVE' } }]);
+        findFilteredSearch().vm.$emit('submit');
+        await nextTick();
+
+        expectResetPagination();
+      });
+
+      it('resets pagination when filter is cleared', async () => {
+        findFilteredSearch().vm.$emit('clear');
+        await nextTick();
+
+        expectResetPagination();
+      });
+
+      it('resets pagination when sort column changes', async () => {
+        await findSorting().vm.$emit('sortByChange', 'name');
+
+        expectResetPagination();
+      });
+
+      it('resets pagination when sort direction changes', async () => {
+        await findSorting().vm.$emit('sortDirectionChange', false);
+
+        expectResetPagination();
+      });
+
+      it('resets pagination when statistics emits filter', async () => {
+        await findStatistics().vm.$emit('filter', [
+          { type: 'state', value: { data: 'ACTIVE', operator: '=' } },
+        ]);
+
+        expectResetPagination();
+      });
+    });
   });
 
   describe('drawer integration', () => {

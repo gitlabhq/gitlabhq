@@ -7,14 +7,15 @@ export default {
     state.autocompleteError = false;
   },
   [types.RECEIVE_AUTOCOMPLETE_SUCCESS](state, data) {
-    state.loading = false;
     state.autocompleteOptions = [...state.autocompleteOptions].concat(data);
     state.autocompleteError = false;
   },
   [types.RECEIVE_AUTOCOMPLETE_ERROR](state) {
-    state.loading = false;
     state.autocompleteOptions = [];
     state.autocompleteError = true;
+  },
+  [types.RECEIVE_AUTOCOMPLETE_COMPLETE](state) {
+    state.loading = false;
   },
   [types.CLEAR_AUTOCOMPLETE](state) {
     state.autocompleteOptions = [];

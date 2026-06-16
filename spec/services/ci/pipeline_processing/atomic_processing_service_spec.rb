@@ -1296,52 +1296,45 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
         expect(process_pipeline).to be_falsy
       end
-
-      # Remove with FF `ci_atomic_processing_check_inside_lease`
-      it 'does not call needs_processing? before attempting the lease' do
-        expect(pipeline).not_to receive(:needs_processing?)
-
-        process_pipeline
-      end
-
-      context 'when FF `ci_atomic_processing_check_inside_lease` is disabled' do
-        before do
-          stub_feature_flags(ci_atomic_processing_check_inside_lease: false)
-        end
-
-        it 'skips pipeline processing' do
-          expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
-          expect(process_pipeline).to be_falsy
-        end
-
-        it 'calls needs_processing? before attempting the lease' do
-          expect(pipeline).to receive(:needs_processing?).and_call_original
-
-          process_pipeline
-        end
-      end
     end
 
-    # Remove this context with FF `ci_atomic_processing_log_check_mismatch`
-    describe 'logging needs_processing? vs new_collection.processing_jobs.any? mismatch' do
-      let(:mismatch_message) { 'needs_processing? differs from new_collection.processing_jobs.any?' }
+    describe 'rescheduling PipelineProcessWorker' do
+      before do
+        # Suppress the PipelineProcessWorker enqueues that happen via job transitions
+        allow_any_instance_of(CommitStatus).to receive(:run_after_commit) # rubocop:disable RSpec/AnyInstanceOf -- need to stub all
+      end
 
-      context 'when there are no stopped jobs at snapshot' do
-        # In this context, `new_alive_jobs` returns early without building `@new_collection`
+      context 'when @new_collection is not built (no stopped jobs at snapshot)' do
         before do
           create_build('linux', stage_idx: 0)
         end
 
-        it 'does not log a mismatch' do
-          expect(Gitlab::AppJsonLogger).not_to receive(:info)
-            .with(a_hash_including(message: mismatch_message))
+        context 'and post-processing pipeline.needs_processing? is true' do
+          before do
+            allow(pipeline).to receive(:needs_processing?).and_return(true, true)
+          end
 
-          process_pipeline
+          it 'reschedules the worker' do
+            expect(PipelineProcessWorker).to receive(:perform_async).with(pipeline.id).once
+
+            process_pipeline
+          end
+        end
+
+        context 'and post-processing pipeline.needs_processing? is false' do
+          before do
+            allow(pipeline).to receive(:needs_processing?).and_return(true, false)
+          end
+
+          it 'does not reschedule the worker' do
+            expect(PipelineProcessWorker).not_to receive(:perform_async)
+
+            process_pipeline
+          end
         end
       end
 
-      context 'when stopped jobs exist at snapshot' do
-        # In this context, `new_alive_jobs` runs and builds `@new_collection`
+      context 'when @new_collection is built (stopped jobs at snapshot)' do
         let(:config) do
           <<-YAML
           manual1:
@@ -1369,65 +1362,30 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           manual1.enqueue! # play the manual job
         end
 
-        context 'when new alive jobs are detected' do
-          # The newly-alive jobs always have processed=false (set by `before_save` on their transition).
-          # This guarantees both queries return true, so a mismatch is impossible in this branch.
+        context 'and @new_collection.processing_jobs.any? is true' do
           before do
             mock_play_jobs_during_processing([manual1])
+            # We set post-processing pipeline.needs_processing? to false to confirm it's ignored
+            allow(pipeline).to receive(:needs_processing?).and_return(true, false)
           end
 
-          it 'does not log a mismatch' do
-            expect(Gitlab::AppJsonLogger).not_to receive(:info)
-              .with(a_hash_including(message: mismatch_message))
+          it 'reschedules the worker' do
+            expect(PipelineProcessWorker).to receive(:perform_async).with(pipeline.id).once
 
             process_pipeline
           end
         end
 
-        context 'when no new alive jobs are detected' do
-          context 'and the queries agree' do
-            it 'does not log a mismatch' do
-              expect(Gitlab::AppJsonLogger).not_to receive(:info)
-                .with(a_hash_including(message: mismatch_message))
-
-              process_pipeline
-            end
+        context 'and @new_collection.processing_jobs.any? is false' do
+          before do
+            # We set post-processing pipeline.needs_processing? to true to confirm it's ignored
+            allow(pipeline).to receive(:needs_processing?).and_return(true, true)
           end
 
-          context 'and the queries disagree' do
-            before do
-              # Simulate a job transition slipped in between building
-              # @new_collection and executing pipeline.needs_processing?.
-              # This is a very small window and should rarely happen.
-              allow(pipeline).to receive(:needs_processing?).and_return(true)
-            end
+          it 'does not reschedule the worker' do
+            expect(PipelineProcessWorker).not_to receive(:perform_async)
 
-            it 'logs a mismatch' do
-              expect(Gitlab::AppJsonLogger).to receive(:info).with(
-                a_hash_including(
-                  message: mismatch_message,
-                  project_id: project.id,
-                  pipeline_id: pipeline.id,
-                  needs_processing: true,
-                  processing_jobs_any: false
-                )
-              )
-
-              process_pipeline
-            end
-
-            context 'when FF `ci_atomic_processing_log_check_mismatch` is disabled' do
-              before do
-                stub_feature_flags(ci_atomic_processing_log_check_mismatch: false)
-              end
-
-              it 'does not log a mismatch' do
-                expect(Gitlab::AppJsonLogger).not_to receive(:info)
-                  .with(a_hash_including(message: mismatch_message))
-
-                process_pipeline
-              end
-            end
+            process_pipeline
           end
         end
       end

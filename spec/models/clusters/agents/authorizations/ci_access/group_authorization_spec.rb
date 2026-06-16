@@ -7,7 +7,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::GroupAuthorization, f
   it { is_expected.to belong_to(:group).class_name('::Group').required }
 
   describe '#config_project' do
-    let(:record) { create(:agent_ci_access_group_authorization) }
+    let(:record) { build_stubbed(:agent_ci_access_group_authorization) }
 
     it { expect(record.config_project).to eq(record.agent.project) }
   end

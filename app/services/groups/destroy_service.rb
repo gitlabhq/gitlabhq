@@ -95,12 +95,30 @@ module Groups
         project_ids = obtain_project_ids_for_authorization_refresh
         return if project_ids.blank?
 
-        -> { AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids.to_a).execute }
+        -> do
+          Gitlab::AppLogger.info(
+            message: "Refreshing project_authorizations for projects previously shared with destroyed group",
+            group_id: group.id,
+            user_ids_count: 0,
+            project_ids_count: project_ids.size
+          )
+
+          AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids.to_a).execute
+        end
       else
         user_ids = obtain_user_ids_for_project_authorizations_refresh
         return if user_ids.blank?
 
-        -> { UserProjectAccessChangedService.new(user_ids).execute }
+        -> do
+          Gitlab::AppLogger.info(
+            message: "Refreshing project_authorizations of users to projects previously shared with destroyed group",
+            group_id: group.id,
+            user_ids_count: user_ids.size,
+            project_ids_count: 0
+          )
+
+          UserProjectAccessChangedService.new(user_ids).execute
+        end
       end
     end
 

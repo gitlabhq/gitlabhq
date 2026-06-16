@@ -53,6 +53,7 @@ export default {
       default: null,
     },
   },
+  emits: ['award', 'cancelEditing', 'input'],
   computed: {
     noteBody: {
       get() {

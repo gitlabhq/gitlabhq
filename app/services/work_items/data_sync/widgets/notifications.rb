@@ -17,7 +17,7 @@ module WorkItems
 
           # This replicates current move Issues::MoveService behaviour. This should be changed though to
           # move sent_notifications for any work_item that is being moved.
-          return unless work_item.from_service_desk?
+          return unless work_item.work_item_type.service_desk?
 
           # When moving sent notifications for any work item this can entail updating many records in some instances.
           # We should consider moving this to an async worker rather than have it run in a single request.
@@ -40,7 +40,7 @@ module WorkItems
           # Until we implement async copy of sent_notifications, we'll continue to copy only
           # notifications for service_desk items. So only service_desk items can be skipped here as they were already
           # deleted in the transaction above
-          return if work_item.from_service_desk?
+          return if work_item.work_item_type.service_desk?
 
           # When moving sent notifications for any work item this can entail deleting many records in some instances.
           # We should consider moving this to an async worker rather than have it run in a single request.

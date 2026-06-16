@@ -10,6 +10,11 @@ module Mutations
       include Gitlab::InternalEventsTracking
 
       authorize :create_snippet
+      authorize_granular_token permissions: :create_snippet,
+        boundaries: [
+          { boundary_argument: :project_path, boundary_type: :project },
+          { boundary: :user, boundary_type: :user }
+        ]
 
       field :snippet,
         Types::SnippetType,

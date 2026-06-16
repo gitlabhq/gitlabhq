@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Moderate users
 ---
 
-If you are assigned the Owner role for a group, you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
+If you are assigned the Owner role for a group, you can [approve](manage.md#approve-pending-members-for-a-group), ban, or automatically remove dormant members.
 
 > [!note]
 > This topic is specifically related to user moderation in groups. For information related to GitLab Self-Managed, see the [administration documentation](../../administration/moderate_users.md).
@@ -107,10 +107,10 @@ The following actions count as activity:
   [deactivated](../../administration/moderate_users.md#deactivate-and-reactivate-users).
   When these users sign back in, their accounts are reactivated and their access
   is restored. However, when
-  [restricted access](manage.md#restricted-access) is active on the enterprise
+  [restricted access](../../subscriptions/manage_seats.md#restricted-access) is active on the enterprise
   group and no seats are available, the user is set to pending approval instead
   of being reactivated. For more information, see
-  [dormant enterprise user reactivation](manage.md#dormant-enterprise-user-reactivation).
+  [dormant enterprise user reactivation](../../subscriptions/manage_seats.md#dormant-user-reactivation).
 
 To turn on automatic dormant member removal:
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issues::ZoomLinkService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:issue) { create(:issue) }
+  let_it_be(:issue, freeze: false) { create(:issue) }
 
   let(:project) { issue.project }
   let(:service) { described_class.new(container: project, current_user: user, params: { issue: issue }) }

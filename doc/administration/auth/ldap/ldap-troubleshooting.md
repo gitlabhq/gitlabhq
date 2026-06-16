@@ -396,6 +396,34 @@ adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP pr
 Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 ```
 
+### Merge request approval rules
+
+When LDAP connectivity issues occur, users might be removed from merge request approval rules during sync operations.
+This can result in approval rules becoming empty and being marked as invalid.
+
+#### Approval rules fail when LDAP connectivity is lost
+
+If your LDAP server becomes temporarily unavailable or the bind account fails:
+
+- Users configured in LDAP-based approval rules may be removed during the next sync cycle.
+- Approval rules with no remaining users become [invalid](../../../user/project/merge_requests/approvals/_index.md#invalid-rules).
+- Standard approval rules are marked as **Auto approved** and no longer block merging.
+- Merge request approval policy rules are marked as **Action required** and continue to block merging.
+
+To prevent standard approval rules from being silently bypassed:
+
+- Ensure your LDAP server has high availability and reliable connectivity.
+- Monitor LDAP sync operations for failures.
+- Use [merge request approval policies](../../../user/application_security/policies/merge_request_approval_policies.md)
+  instead of standard approval rules for critical security requirements.
+  Approval policies provide stronger enforcement and don't fail open.
+
+For more information about approval rule behavior,
+see [Invalid rules](../../../user/project/merge_requests/approvals/_index.md#invalid-rules).
+
+If users are removed from approval rules due to LDAP issues, they are not automatically re-added when LDAP connectivity is restored.
+You may need to manually restore approval rules or recover from a backup.
+
 ### Group memberships
 
 {{< details >}}

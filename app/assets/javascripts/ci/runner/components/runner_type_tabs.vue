@@ -22,6 +22,7 @@ const I18N_TAB_TITLES = {
 const TAB_COUNT_REF = 'tab-count';
 
 export default {
+  name: 'RunnerTypeTabs',
   components: {
     GlBadge,
     GlTabs,

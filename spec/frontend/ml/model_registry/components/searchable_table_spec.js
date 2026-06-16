@@ -1,4 +1,4 @@
-import { GlTable } from '@gitlab/ui';
+import { GlKeysetPagination, GlTable } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
@@ -6,7 +6,7 @@ import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
 import * as urlHelpers from '~/lib/utils/url_utility';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
-import { defaultPageInfo } from '../mock_data';
+import { defaultPageInfo, startCursor } from '../mock_data';
 import { graphqlCandidates } from '../graphql_mock_data';
 
 describe('ml/model_registry/components/searchable_table.vue', () => {
@@ -18,6 +18,7 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
   const findRows = () => wrapper.findComponent(GlTable);
   const findSearch = () => wrapper.findComponent(RegistrySearch);
   const findTable = () => wrapper.findByTestId('dynamicTable');
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const expectedFirstPage = {
     after: 'eyJpZCI6IjIifQ',
@@ -101,43 +102,24 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
       expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage]]);
     });
 
-    describe('when list emits next-page', () => {
-      beforeEach(() => mountComponent());
+    it('emits fetch-page when pagination emits next', () => {
+      findPagination().vm.$emit('next');
 
-      it('emits fetchPage with correct pageInfo', () => {
-        findSearchableTable().vm.$emit('next-page');
-
-        const expectedNewPageInfo = {
-          after: 'eyJpZCI6IjIifQ',
-          first: 30,
-          last: null,
-          orderBy: 'created_at',
-          sort: 'desc',
-        };
-
-        expect(wrapper.emitted('fetch-page')[0]).toEqual([expectedFirstPage]);
-        expect(wrapper.emitted('fetch-page')[0]).toEqual([expectedNewPageInfo]);
-      });
+      expect(wrapper.emitted('fetch-page')[1]).toEqual([expectedFirstPage]);
     });
 
-    it('when list emits next-page emits fetchPage with correct pageInfo', () => {
-      findSearchableTable().vm.$emit('nextPage');
+    it('emits fetch-page when pagination emits prev', () => {
+      findPagination().vm.$emit('prev');
 
-      const expectedNewPageInfo = {
-        after: 'eyJpZCI6IjIifQ',
-        first: 30,
-        last: null,
+      const expectedPrevPageInfo = {
+        first: null,
+        last: 30,
+        before: startCursor,
         orderBy: 'created_at',
         sort: 'desc',
       };
 
-      expect(wrapper.emitted('fetch-page')).toEqual([[expectedNewPageInfo]]);
-    });
-
-    it('when list emits prev-page emits fetchPage with correct pageInfo', () => {
-      findSearchableTable().vm.$emit('prev-page');
-
-      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage]]);
+      expect(wrapper.emitted('fetch-page')[1]).toEqual([expectedPrevPageInfo]);
     });
   });
 

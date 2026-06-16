@@ -9,6 +9,7 @@ import TagSearch from './tag_search.vue';
 import TagCreate from './tag_create.vue';
 
 export default {
+  name: 'TagFieldNew',
   components: {
     GlTruncate,
     GlButton,

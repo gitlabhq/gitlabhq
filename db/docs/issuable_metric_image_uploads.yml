@@ -1,6 +1,7 @@
 ---
 table_name: issuable_metric_image_uploads
 classes:
+- Geo::IssuableMetricImageUpload
 - IssuableMetricImage
 - Upload
 feature_categories:

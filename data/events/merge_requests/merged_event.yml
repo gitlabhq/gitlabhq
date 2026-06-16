@@ -1,7 +1,7 @@
 ---
 event: MergeRequests::MergedEvent
 description: Published when a merge request has been merged and post-merge processing
-  runs, allowing EE subscribers (such as compliance, security policy, AutoFlow, and
-  audit workers) to react.
+  runs, allowing EE subscribers (such as compliance, security policy, and audit
+  workers) to react.
 feature_category: code_review_workflow
 ee_only: true

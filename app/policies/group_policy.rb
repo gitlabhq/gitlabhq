@@ -11,24 +11,17 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_options scope: :subject, score: 0
   condition(:public_group) { @subject.public? }
 
+  desc "Group is visible to internal users"
   with_score 0
-  condition(:logged_in_viewable) { @user && @subject.try(:internal?) && !@user.external? }
+  condition(:internal_access) { @user && @subject.try(:internal?) && !@user.external? }
 
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
-  # Planner is a non-hierarchical role (some permissions available for planner might not be available for higher access levels)
-  condition(:planner) { access_level == GroupMember::PLANNER }
-  condition(:reporter) { access_level >= GroupMember::REPORTER }
-  # Security manager is a non-hierarchical role (some permissions available for security_manager might not be available for higher access levels)
-  condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && access_level == GroupMember::SECURITY_MANAGER }
-  condition(:developer) { access_level >= GroupMember::DEVELOPER }
-  condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:owner) { access_level >= GroupMember::OWNER }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:is_root_namespace, scope: :subject) { @subject.root? }
-  condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
   condition(:can_read_group_member) { can_read_group_member? }
@@ -37,52 +30,44 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
 
   condition(:has_projects) do
-    group_projects_for(user: @user, group: @subject).any?
+    # GUEST routes Users through the fast auth-only path
+    # (visible_to_user_and_access_level). Non-User actors stay on nil so
+    # the finder takes their visibility branches - DeployToken doesn't
+    # respond to authorized_projects, and anonymous needs public_only.
+    min_access_level = ::Gitlab::Access::GUEST if @user.is_a?(User)
+    group_projects_for(user: @user, group: @subject, min_access_level: min_access_level).any?
   end
 
   desc "User owns the group's organization"
   condition(:organization_owner) { owns_organization?(@subject.organization) }
 
-  rule { admin | organization_owner }.enable :admin_organization
+  rule { admin | organization_owner }.enable :update_organization
 
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
   condition(:create_projects_disabled) do
     next true if @user.nil?
+    next true if Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
 
-    visibility_levels = if can?(:admin_all_resources)
-                          # admin can create projects even with restricted visibility levels
-                          Gitlab::VisibilityLevel.values
-                        else
-                          Gitlab::VisibilityLevel.allowed_levels
-                        end
-
-    allowed_visibility_levels = visibility_levels.select do |level|
-      Project.new(group: @subject).visibility_level_allowed?(level)
+    case @subject.project_creation_level
+    when ::Gitlab::Access::NO_ONE_PROJECT_ACCESS then true
+    when ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS then !can?(:admin_all_resources)
+    when ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS then access_level < GroupMember::DEVELOPER
+    when ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS then access_level < GroupMember::MAINTAINER
+    when ::Gitlab::Access::OWNER_PROJECT_ACCESS then access_level < GroupMember::OWNER
+    else false
     end
-
-    Group.prevent_project_creation?(user, @subject.project_creation_level) || allowed_visibility_levels.empty?
   end
 
   condition(:create_subgroup_disabled) do
-    Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
-  end
+    next true if Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
 
-  condition(:owner_project_creation_level, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::OWNER_PROJECT_ACCESS
-  end
-
-  condition(:maintainer_project_creation_level, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
-  end
-
-  condition(:developer_project_creation_level, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
-  end
-
-  condition(:maintainer_can_create_group, scope: :subject) do
-    @subject.subgroup_creation_level == ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
+    case @subject.subgroup_creation_level
+    when ::Gitlab::Access::OWNER_SUBGROUP_ACCESS then access_level < GroupMember::OWNER
+    when ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS then access_level < GroupMember::MAINTAINER
+    else false
+    end
   end
 
   condition(:design_management_enabled) do
@@ -152,6 +137,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable(*Authz::Role.get(:public_anonymous).direct_permissions(:group))
   end
 
+  rule { (~anonymous & public_group) | internal_access }.policy do
+    enable(*Authz::Role.get(:public_authenticated).permissions(:group))
+  end
+
   rule { admin }.policy do
     enable(*Authz::Role.get(:admin).permissions(:group))
   end
@@ -167,12 +156,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
-  end
-
-  rule { logged_in_viewable }.enable :read_group
-
-  rule { admin | organization_owner }.policy do
-    enable :read_group
   end
 
   rule { has_projects }.policy do
@@ -193,10 +176,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_namespace
     enable :read_upload
     enable :read_group_metadata
-    enable :upload_file
+    enable :read_achievement
   end
-
-  rule { anonymous }.prevent :upload_file
 
   rule { ~achievements_enabled }.policy do
     prevent :read_achievement
@@ -205,23 +186,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :destroy_user_achievement
   end
 
-  rule { can?(:read_group) }.policy do
-    enable :read_achievement
-  end
-
   rule { ~public_group & ~has_access }.prevent :read_counts
 
   rule { ~can_read_group_member }.policy do
     prevent :read_group_member
   end
 
-  rule { ~can?(:read_group) }.policy do
-    prevent :read_design_activity
-  end
-
   rule { has_access }.enable :read_namespace_via_membership
 
-  rule { can?(:read_nested_project_resources) }.policy do
+  rule { can?(:read_cross_project) & can?(:read_group) }.policy do
     enable :read_group_activity
     enable :read_group_issues
     enable :read_group_boards
@@ -231,44 +204,19 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_build_report_results
   end
 
-  rule { can?(:read_cross_project) & can?(:read_group) }.policy do
-    enable :read_nested_project_resources
-  end
-
-  rule { maintainer & maintainer_can_create_group }.enable :create_subgroup
-
-  rule { public_group | logged_in_viewable }.enable :view_globally
-
-  rule { default }.enable(:request_access)
-
   rule { ~request_access_enabled }.prevent :request_access
-  rule { ~can?(:view_globally) }.prevent   :request_access
   rule { has_access }.prevent              :request_access
 
-  rule do
-    owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
-  end.enable :change_share_with_group_lock
+  rule { parent_share_with_group_locked & ~can_change_parent_share_with_group_lock }.prevent :change_share_with_group_lock
 
-  rule { owner & owner_project_creation_level }.enable :create_projects
-  rule { maintainer & maintainer_project_creation_level }.enable :create_projects
-  rule { developer & developer_project_creation_level }.enable :create_projects
   rule { create_projects_disabled }.policy do
     prevent :create_projects
     prevent :import_projects
+    prevent :transfer_projects
   end
 
   rule { create_subgroup_disabled }.policy do
     prevent :create_subgroup
-  end
-
-  rule { owner | admin | organization_owner }.policy do
-    enable :read_statistics
-    enable :update_group_organization
-  end
-
-  rule { maintainer & can?(:create_projects) }.policy do
-    enable :transfer_projects
-    enable :import_projects
   end
 
   rule { read_package_registry_deploy_token }.policy do

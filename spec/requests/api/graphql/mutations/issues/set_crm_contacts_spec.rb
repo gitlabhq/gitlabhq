@@ -117,6 +117,24 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
 
     it_behaves_like 'successful mutation'
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :issue_set_crm_contacts,
+          {
+            project_path: issue.project.full_path,
+            iid: issue.iid.to_s,
+            operation_mode: operation_mode,
+            contact_ids: contact_ids
+          },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when the contact does not exist' do
       let(:contact_ids) { [global_id_of(model_name: 'CustomerRelations::Contact', id: non_existing_record_id)] }
 

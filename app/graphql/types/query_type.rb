@@ -89,7 +89,8 @@ module Types
       resolver: Resolvers::GroupResolver,
       description: "Find a group.",
       directives: granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group
+        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
+        traversal: true
       )
     field :groups, Types::GroupType.connection_type,
       null: true,
@@ -170,7 +171,8 @@ module Types
       description: "Find a project.",
       scopes: [:api, :read_api, :ai_workflows],
       directives: granular_scope_directive(
-        permissions: :read_project, boundary_argument: :full_path, boundary_type: :project
+        permissions: :read_project, boundary_argument: :full_path, boundary_type: :project,
+        traversal: true
       )
     field :projects,
       null: true,

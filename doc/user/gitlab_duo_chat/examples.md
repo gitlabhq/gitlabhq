@@ -724,6 +724,18 @@ To troubleshoot a failed CI/CD job from the job log:
    - Select **Troubleshoot**.
    - Open GitLab Duo Chat and type `/troubleshoot`.
 
+### From the security configuration page
+
+To troubleshoot a failed scanner job from the security configuration page:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Security configuration**.
+1. In the **Scan profiles** section, find the scanner with the failed status.
+1. Open the job details drawer by completing either of the following options:
+   - Hover over the **Last scan** column to open the job details popover, then select **Troubleshoot failure**.
+   - Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) next to the scanner, then select **Troubleshoot failure**.
+1. In the drawer footer, select **Troubleshoot failure** ({{< icon name="tanuki-ai" >}}).
+
 ## Explain a vulnerability
 
 {{< details >}}

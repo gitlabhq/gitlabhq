@@ -6,6 +6,7 @@ module Gitlab
       class Provider
         LABELS = {
           "alicloud" => "AliCloud",
+          "chatgpt" => "ChatGPT",
           "github" => "GitHub",
           "gitlab" => "GitLab.com",
           "google_oauth2" => "Google",

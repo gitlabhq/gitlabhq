@@ -9,7 +9,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
   include_context 'workhorse headers'
 
   let_it_be(:personal_access_token) { create(:personal_access_token) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:deploy_token_rw) do
     create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
   end
@@ -80,7 +80,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   shared_examples 'secure endpoint' do
     before do
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
     end
 
     it 'rejects malicious request' do
@@ -203,7 +203,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     context 'for use_final_store_path' do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       it 'sends use_final_store_path with true' do
@@ -311,7 +311,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
     end
 
@@ -390,7 +390,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     context 'when user can upload packages and has valid credentials' do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       shared_examples 'creates a package and package file' do
@@ -620,7 +620,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       context 'with existing package' do
         let_it_be(:package_name) { 'mypackage' }
         let_it_be(:package_version) { '1.2.3' }
-        let_it_be(:existing_package) do
+        let_it_be(:existing_package, freeze: false) do
           create(:generic_package, name: package_name, version: package_version, project: project)
         end
 
@@ -1001,7 +1001,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name' do
     let_it_be(:package) { create(:generic_package, project: project) }
-    let_it_be(:package_file) { create(:package_file, :generic, package: package) }
+    let_it_be(:package_file, freeze: false) { create(:package_file, :generic, package: package) }
 
     it_behaves_like 'enforcing job token policies', :read_packages,
       allow_public_access_for_enabled_project_features: :package_registry do
@@ -1021,7 +1021,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
     end
 
@@ -1140,7 +1140,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
       with_them do
         before do
-          project.add_developer(user)
+          project.add_developer(user) # -- Does not work in before_all
           package.update!(status: package_status)
         end
 
@@ -1160,7 +1160,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     context 'event tracking' do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       subject { download_file(personal_access_token_header) }
@@ -1235,7 +1235,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       let_it_be(:file_path) { "path/to/#{package_file.file_name}" }
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         package_file.update_column(:file_name, URI.encode_uri_component(file_path))
       end
 
@@ -1250,7 +1250,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       let(:file_name) { 'my+file.tar.gz' }
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         package_file.update_column(:file_name, file_name)
       end
 
@@ -1265,7 +1265,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       let(:expected_checksum) { Digest::SHA256.hexdigest('test content') }
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       context 'when package file has a checksum' do
@@ -1300,7 +1300,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       subject(:download) { download_file(personal_access_token_header) }
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       context 'when direct download is enabled' do
@@ -1363,7 +1363,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     context 'for head request' do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         download_file(personal_access_token_header, method: :head)
       end
 

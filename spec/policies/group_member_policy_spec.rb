@@ -84,8 +84,8 @@ RSpec.describe GroupMemberPolicy do
   end
 
   context 'for access requests' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     let(:current_user) { user }
 

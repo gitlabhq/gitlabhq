@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Builder::Release do
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:release) { create(:release, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:release, freeze: false) { create(:release, project: project) }
 
   let(:builder) { described_class.new(release) }
 

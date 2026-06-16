@@ -51,7 +51,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   end
 
   shared_examples 'details view as atom' do
-    let!(:event) { create(:event, project: project) }
+    let_it_be(:event) { create(:event, project: project) }
     let(:format) { :atom }
 
     it { is_expected.to render_template('groups/show') }
@@ -112,7 +112,9 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     context 'adjourned deletion', :freeze_time do
       render_views
 
-      let_it_be(:subgroup) { create(:group, :private, parent: group) }
+      let_it_be(:active_subgroup) { create(:group, :private, parent: group) }
+      let_it_be(:deleted_subgroup) { create(:group, :deletion_scheduled, :private, parent: group) }
+
       let_it_be(:deletion_date) { permanent_deletion_date_formatted(Date.current) }
       let_it_be(:ancestor_notice) do
         safe_format(
@@ -122,6 +124,8 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           date: tag.strong(deletion_date)
         )
       end
+
+      let(:subgroup) { active_subgroup }
 
       subject(:get_show) { get :show, params: { id: subgroup.to_param } }
 
@@ -135,8 +139,9 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
       context 'when the parent group has been scheduled for deletion' do
         before do
+          group.schedule_deletion!(transition_user: user)
           create(:group_deletion_schedule,
-            group: subgroup.parent,
+            group: group,
             marked_for_deletion_on: Date.current,
             deleting_user: user
           )
@@ -149,13 +154,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         end
 
         context 'when the group itself has also been scheduled for deletion' do
-          before do
-            create(:group_deletion_schedule,
-              group: subgroup,
-              marked_for_deletion_on: Date.current,
-              deleting_user: user
-            )
-          end
+          let(:subgroup) { deleted_subgroup }
 
           it 'does not show the notice that the parent group has been scheduled for deletion' do
             subject
@@ -226,7 +225,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
-          before do
+          before_all do
             User.where(id: [admin_with_admin_mode, admin_without_admin_mode, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
           end
 
@@ -270,6 +269,72 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['count']).to eq(3)
         expect(assigns(:projects).limit_value).to be_nil
+      end
+
+      it 'includes transferred group events when group events are unavailable' do
+        transfer_event = create(
+          :event,
+          :transferred,
+          project: nil,
+          group: group,
+          target: group,
+          target_type: 'Group',
+          author: user
+        )
+
+        request.cookies[:event_filter] = EventFilter::ALL
+
+        get :activity, params: { id: group.to_param }, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:events).map(&:id)).to include(transfer_event.id)
+      end
+
+      it 'includes subgroup group-transfer events in parent group activity' do
+        subgroup = create(:group, :public, parent: group, organization: group.organization)
+        parent_transfer_event = create(
+          :event,
+          :transferred,
+          project: nil,
+          group: group,
+          target: group,
+          target_type: 'Group',
+          author: user
+        )
+        subgroup_transfer_event = create(
+          :event,
+          :transferred,
+          project: nil,
+          group: subgroup,
+          target: subgroup,
+          target_type: 'Group',
+          author: user
+        )
+
+        request.cookies[:event_filter] = EventFilter::ALL
+
+        get :activity, params: { id: group.to_param }, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:events).map(&:id)).to include(parent_transfer_event.id, subgroup_transfer_event.id)
+      end
+
+      it 'includes project transfer events in group activity' do
+        project_transfer_event = create(
+          :event,
+          :transferred,
+          project: project,
+          target: project,
+          target_type: 'Project',
+          author: user
+        )
+
+        request.cookies[:event_filter] = EventFilter::ALL
+
+        get :activity, params: { id: group.to_param }, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:events).map(&:id)).to include(project_transfer_event.id)
       end
     end
 
@@ -640,6 +705,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
       context 'when group is already marked for deletion' do
         before do
+          group.schedule_deletion!(transition_user: user)
           create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
         end
 
@@ -703,13 +769,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   end
 
   describe 'POST #restore' do
-    let_it_be(:group, freeze: false) { create(:group, :deletion_scheduled) }
+    let_it_be(:group, freeze: false) { create(:group, :deletion_scheduled, owners: user) }
 
     subject { post :restore, params: { group_id: group.to_param } }
 
     context 'when authenticated user can admin the group' do
       before do
-        group.add_owner(user)
         sign_in(user)
       end
 
@@ -848,10 +913,13 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     context 'when a project inside the group has container repositories' do
+      before_all do
+        create(:container_repository, project: project, name: :image)
+      end
+
       before do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags(repository: /image/, tags: %w[rc1])
-        create(:container_repository, project: project, name: :image)
       end
 
       it 'does allow the group to be renamed' do
@@ -941,6 +1009,50 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
       it 'does not update the attribute' do
         expect { subject }.not_to change { group.reload.prevent_sharing_groups_outside_hierarchy }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'updating :enforce_granular_tokens and :granular_tokens_enforced_after' do
+    let(:settings) { group.namespace_settings }
+
+    subject(:update_group) do
+      put :update, params: {
+        id: group.to_param,
+        group: {
+          enforce_granular_tokens: true,
+          granular_tokens_enforced_after: Date.current.to_s
+        }
+      }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when user is a group owner' do
+      before do
+        group.add_owner(user)
+      end
+
+      it 'updates the attributes' do
+        update_group
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(settings.reload.enforce_granular_tokens).to be(true)
+        expect(settings.granular_tokens_enforced_after).to eq(Date.current)
+      end
+    end
+
+    context 'when not a group owner' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it 'does not update the attributes' do
+        expect { update_group }.not_to change { settings.reload.enforce_granular_tokens }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1218,13 +1330,11 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     context 'when transferring an archived group' do
-      let(:group) { create(:group, :public) }
-      let(:new_parent_group) { create(:group, :public) }
+      let(:group) { create(:group, :public, owners: user) }
+      let(:new_parent_group) { create(:group, :public, owners: user) }
 
       before do
         group.update!(archived: true)
-        group.add_owner(user)
-        new_parent_group.add_owner(user)
 
         put :transfer,
           params: {
@@ -1282,13 +1392,11 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     context 'when groups_and_projects_async_transfer feature flag is enabled' do
-      let(:group) { create(:group, :public) }
-      let(:new_parent_group) { create(:group, :public) }
+      let(:group) { create(:group, :public, owners: user) }
+      let(:new_parent_group) { create(:group, :public, owners: user) }
 
       before do
         stub_feature_flags(groups_and_projects_async_transfer: true)
-        group.add_owner(user)
-        new_parent_group.add_owner(user)
       end
 
       context 'when transferring to a new parent group' do
@@ -1333,11 +1441,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
 
       context 'when transferring to root (no parent group)' do
-        let(:group) { create(:group, :public, :nested) }
-
-        before do
-          group.add_owner(user)
-        end
+        let(:group) { create(:group, :public, :nested, owners: user) }
 
         it 'enqueues the worker with nil parent group id' do
           expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
@@ -1385,9 +1489,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         end
       end
 
-      context 'when the group is already in transfer_scheduled state' do
+      context 'when the group is already in transfer_scheduled state with an active worker' do
         before do
           group.schedule_transfer!(transition_user: user)
+          Gitlab::ExclusiveLease.new(
+            Namespaces::Groups::TransferWorker.lease_key(group.id), timeout: 30.minutes
+          ).try_obtain
         end
 
         it 'does not enqueue the worker and shows an error' do

@@ -18,7 +18,9 @@ module BulkImports
           decompression_service.execute
           extraction_service.execute
 
-          upload_file_paths = Dir.glob(File.join(tmpdir, '**', '*'))
+          FileUtils.rm_f(File.join(tmpdir, tar_filename))
+
+          upload_file_paths = Dir.glob(File.join(tmpdir, '**', '*')).select { |path| File.file?(path) }
 
           BulkImports::Pipeline::ExtractedData.new(data: upload_file_paths)
         end

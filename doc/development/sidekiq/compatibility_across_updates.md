@@ -179,7 +179,7 @@ Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs
        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
          # If the job has been scheduled via `sidekiq-cron`, we must also remove
          # it from the scheduled worker set using the key used to define the cron
-         # schedule in config/initializers/1_settings.rb.
+         # schedule in config/schedule.yml or ee/config/schedule.yml.
          job_to_remove = Sidekiq::Cron::Job.find('my_deprecated_worker')
          # The job may be removed entirely:
          job_to_remove.destroy if job_to_remove

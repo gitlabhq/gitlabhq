@@ -126,6 +126,11 @@ R = Responsible, A = Accountable, C = Consulted, I = Informed
    - Set due date at least 2-4 weeks before provider's cutoff date
    - AI Framework team identifies replacement models
 
+1. **Deprecation Announcement**
+   - AI Framework team adds a `deprecation` block to the model entry in
+      [`ai_gateway/model_selection/models.yml`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/model_selection/models.yml)
+      following the [model deprecation instructions](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/model_selection.md#model-deprecations)
+   - (Optional) Marketing/AI Partnership publishes a blog post on the model deprecation
 1. **Evaluation**
    - AI Framework team evaluates replacement models
    - Feature teams test affected features with candidates
@@ -133,20 +138,17 @@ R = Responsible, A = Accountable, C = Consulted, I = Informed
 
 1. **Implementation**
    - AI Framework team creates model configuration files
-   - Feature teams update features to use the replacement model
-   - Teams implement feature flags for controlled rollout
+   - Feature teams update [`ai_gateway/model_selection/unit_primitives.yml`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/model_selection/unit_primitives.yml) to use the replacement model
 
 1. **Testing**
    - Feature teams run comprehensive evaluations
    - Teams document performance metrics
 
 1. **Deployment**
-   - Feature teams manage phased rollout via feature flags
    - Teams monitor performance closely
    - Rollout expands gradually based on performance
 
 1. **Completion**
-   - Remove feature flags when migration is complete
    - Update documentation
    - Clean up deprecated model references
 
@@ -249,23 +251,6 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 - Monitor performance during rollout
 - Update documentation
 
-## Feature Flag Implementation
-
-### Implementation Steps
-
-For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/_index.md).
-
-> [!note]
-> Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
-
-### Model Selection Implementation
-
-Implement model selection logic in:
-
-- AI Gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
-- Model definitions in AI Gateway
-- Any custom implementations in specific features
-
 ### Rollout Strategy
 
 1. **Enable feature flag** for small percentage of users/groups
@@ -328,6 +313,7 @@ Implement model selection logic in:
 **AI Framework Team**:
 
 - Create epic to track deprecation
+- Mark model as deprecated and announce model deprecation
 - Evaluate replacement models
 - Create model configuration
 - Document routing logic
@@ -434,7 +420,7 @@ See an example in our [Claude 3.7 Model Upgrade](https://gitlab.com/gitlab-org/g
 
 - **Model Documentation**
   - [Anthropic Model Documentation](https://docs.anthropic.com/claude/reference/versions)
-  - [Google Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs/reference)
+  - [Gemini Enterprise Agent Platform Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform/apis)
 - **GitLab Resources**
   - [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)
   - [AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)

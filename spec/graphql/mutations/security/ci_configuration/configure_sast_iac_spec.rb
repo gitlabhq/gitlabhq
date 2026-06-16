@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Security::CiConfiguration::ConfigureSastIac do
+RSpec.describe Mutations::Security::CiConfiguration::ConfigureSastIac, feature_category: :static_application_security_testing do
   include GraphqlHelpers
 
   let(:service) { ::Security::CiConfiguration::SastIacCreateService }

@@ -5,7 +5,7 @@ RSpec.shared_examples 'authenticates sessionless user for the request spec' do |
     stub_authentication_activity_metrics(debug: false)
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let(:personal_access_token) { create(:personal_access_token, user: user) }
 
   shared_examples 'authenticates user and returns response with ok status' do
@@ -53,14 +53,14 @@ RSpec.shared_examples 'authenticates sessionless user for the request spec' do |
       include_examples 'authenticates user and returns response with ok status'
 
       context 'when user with expired password' do
-        let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+        let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
         include_examples 'does not return response with ok status'
       end
 
       context 'when password expiration is not applicable' do
         context 'when ldap user' do
-          let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+          let_it_be(:user, freeze: false) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
 
           include_examples 'authenticates user and returns response with ok status'
         end
@@ -71,7 +71,7 @@ RSpec.shared_examples 'authenticates sessionless user for the request spec' do |
       include_examples 'authenticates user and returns response with ok status'
 
       context 'when user with expired password' do
-        let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+        let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
         include_examples 'does not authenticate user and returns response with ok status'
       end

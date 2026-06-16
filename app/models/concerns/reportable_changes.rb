@@ -14,6 +14,8 @@ module ReportableChanges
   extend ActiveSupport::Concern
 
   def as_json(options = {})
+    # Rails 8 may pass a frozen hash; dup before mutating.
+    options = options.dup
     options[:except] = [*options[:except], "reportable_changes"]
     super(options)
   end

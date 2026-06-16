@@ -5,7 +5,8 @@ classes:
 feature_categories:
 - groups_and_projects
 - permissions
-description: Stores the relationship when a group is shared with another group
+description: Stores group-to-group sharing relationships that grant one group access
+  to another group.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17117
 milestone: '12.5'
 gitlab_schema: gitlab_main_org

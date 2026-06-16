@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe NotePolicy, feature_category: :team_planning do
   describe '#rules', :aggregate_failures do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
     let(:noteable) { issue }
@@ -129,7 +129,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
       end
 
       context 'when the user is admin' do
-        let_it_be(:admin) { create(:admin) }
+        let_it_be(:admin, freeze: false) { create(:admin) }
         let(:policy) { described_class.new(admin, note) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
@@ -243,8 +243,8 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
       end
 
       context 'when it is a system note' do
-        let_it_be(:developer) { create(:user) }
-        let_it_be(:any_user) { create(:user) }
+        let_it_be(:developer, freeze: false) { create(:user) }
+        let_it_be(:any_user, freeze: false) { create(:user) }
 
         shared_examples_for 'user can read the note' do
           it 'allows the user to read the note' do
@@ -345,14 +345,14 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
           described_class.new(user, note)
         end
 
-        let_it_be(:reporter) { create(:user) }
-        let_it_be(:developer) { create(:user) }
-        let_it_be(:maintainer) { create(:user) }
-        let_it_be(:guest) { create(:user) }
-        let_it_be(:non_member) { create(:user) }
-        let_it_be(:author) { create(:user) }
-        let_it_be(:assignee) { create(:user) }
-        let_it_be(:admin) { create(:admin) }
+        let_it_be(:reporter, freeze: false) { create(:user) }
+        let_it_be(:developer, freeze: false) { create(:user) }
+        let_it_be(:maintainer, freeze: false) { create(:user) }
+        let_it_be(:guest, freeze: false) { create(:user) }
+        let_it_be(:non_member, freeze: false) { create(:user) }
+        let_it_be(:author, freeze: false) { create(:user) }
+        let_it_be(:assignee, freeze: false) { create(:user) }
+        let_it_be(:admin, freeze: false) { create(:admin) }
 
         before do
           project.add_reporter(reporter)

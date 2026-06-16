@@ -104,6 +104,7 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
         click_button 'Clear'
         page.execute_script('document.activeElement.blur()')
         expect_hidden_suggestions_list
+        find('span', text: task.title)
         click_bulk_edit
       end
 

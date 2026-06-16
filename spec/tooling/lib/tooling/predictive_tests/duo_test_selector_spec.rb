@@ -147,6 +147,7 @@ RSpec.describe Tooling::PredictiveTests::DuoTestSelector, feature_category: :too
         allow(Dir).to receive(:glob).with('spec/features/projects/**/*_spec.rb').and_return(
           ['spec/features/projects/show_spec.rb', 'spec/features/projects/edit_spec.rb']
         )
+        allow(Dir).to receive(:glob).with('spec/features/projects*_spec.rb').and_return([])
       end
 
       it 'returns successful result with specs' do
@@ -322,6 +323,7 @@ RSpec.describe Tooling::PredictiveTests::DuoTestSelector, feature_category: :too
       allow(Dir).to receive(:glob).with('spec/features/projects/**/*_spec.rb').and_return(
         ['spec/features/projects/show_spec.rb', 'spec/features/projects/settings_spec.rb']
       )
+      allow(Dir).to receive(:glob).with('spec/features/projects*_spec.rb').and_return([])
       allow(File).to receive(:exist?).and_call_original
       allow(File).to receive(:exist?).with('spec/features/users/profile_spec.rb').and_return(true)
       allow(File).to receive(:exist?).with('spec/features/nonexistent_spec.rb').and_return(false)
@@ -359,10 +361,38 @@ RSpec.describe Tooling::PredictiveTests::DuoTestSelector, feature_category: :too
 
       before do
         allow(Dir).to receive(:glob).with('spec/models/**/*_spec.rb').and_return(['spec/models/user_spec.rb'])
+        allow(Dir).to receive(:glob).with('spec/models*_spec.rb').and_return([])
       end
 
       it 'filters out non-feature specs' do
         expect(expand_to_specs).to be_empty
+      end
+    end
+
+    context 'when directory has sibling root-level specs sharing its stem' do
+      let(:directories) { ['ee/spec/features/duo_chat'] }
+
+      before do
+        allow(Dir).to receive(:exist?).with('ee/spec/features/duo_chat').and_return(true)
+        allow(Dir).to receive(:glob).with('ee/spec/features/duo_chat/**/*_spec.rb').and_return(
+          ['ee/spec/features/duo_chat/user_opens_duo_chat_spec.rb']
+        )
+        allow(Dir).to receive(:glob).with('ee/spec/features/duo_chat*_spec.rb').and_return(
+          [
+            'ee/spec/features/duo_chat_spec.rb',
+            'ee/spec/features/duo_chat_disabled_admin_spec.rb',
+            'ee/spec/features/duo_chat_disabled_non_admin_spec.rb'
+          ]
+        )
+      end
+
+      it 'includes both subdirectory specs and root-level siblings' do
+        expect(expand_to_specs).to contain_exactly(
+          'ee/spec/features/duo_chat/user_opens_duo_chat_spec.rb',
+          'ee/spec/features/duo_chat_spec.rb',
+          'ee/spec/features/duo_chat_disabled_admin_spec.rb',
+          'ee/spec/features/duo_chat_disabled_non_admin_spec.rb'
+        )
       end
     end
 

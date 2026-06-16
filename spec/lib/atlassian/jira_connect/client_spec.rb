@@ -7,13 +7,13 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
   subject(:client) { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
 
-  let_it_be(:project) { create_default(:project, :repository) }
+  let_it_be(:project, freeze: false) { create_default(:project, :repository) }
   let_it_be(:mrs_by_title) { create_list(:merge_request, 4, :unique_branches, :jira_title) }
   let_it_be(:mrs_by_branch) { create_list(:merge_request, 2, :jira_branch) }
   let_it_be(:red_herrings) { create_list(:merge_request, 1, :unique_branches) }
   let_it_be(:mrs_by_description) { create_list(:merge_request, 2, :unique_branches, :jira_description) }
 
-  let_it_be(:pipelines) do
+  let_it_be(:pipelines, freeze: false) do
     (red_herrings + mrs_by_branch + mrs_by_title + mrs_by_description).map do |mr|
       create(:ci_pipeline, merge_request: mr)
     end
@@ -320,44 +320,13 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
         allow(subject).to receive(:post).and_return(success_response)
       end
 
-      context 'when truncate_jira_deployment_associations is enabled' do
-        before do
-          stub_feature_flags(truncate_jira_deployment_associations: true)
-        end
+      it 'makes a single API request with at most the limit of association values' do
+        subject.send(:store_deploy_info, project: project, deployments: deployments)
 
-        it 'makes a single API request with at most the limit of association values' do
-          subject.send(:store_deploy_info, project: project, deployments: deployments)
-
-          expect(subject).to have_received(:post).once do |_path, payload|
-            deployment = payload[:deployments].first
-            total = (deployment[:associations] || []).sum { |a| a[:values]&.size || 0 }
-            expect(total).to eq(Atlassian::JiraConnect::Client::ASSOCIATION_VALUES_LIMIT)
-          end
-        end
-      end
-
-      context 'when truncate_jira_deployment_associations is disabled' do
-        before do
-          stub_feature_flags(truncate_jira_deployment_associations: false)
-        end
-
-        it 'sends the full payload without truncation' do
-          subject.send(:store_deploy_info, project: project, deployments: deployments)
-
-          expect(subject).to have_received(:post).once do |_path, payload|
-            deployment = payload[:deployments].first
-            total = (deployment[:associations] || []).sum { |a| a[:values]&.size || 0 }
-            expect(total).to be > Atlassian::JiraConnect::Client::ASSOCIATION_VALUES_LIMIT
-          end
-        end
-
-        it 'does not track a truncation exception' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_exception).with(
-            instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
-            anything
-          )
-
-          subject.send(:store_deploy_info, project: project, deployments: deployments)
+        expect(subject).to have_received(:post).once do |_path, payload|
+          deployment = payload[:deployments].first
+          total = (deployment[:associations] || []).sum { |a| a[:values]&.size || 0 }
+          expect(total).to eq(Atlassian::JiraConnect::Client::ASSOCIATION_VALUES_LIMIT)
         end
       end
     end
@@ -616,7 +585,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   end
 
   describe '#store_ff_info' do
-    let_it_be(:feature_flags) { create_list(:operations_feature_flag, 3, project: project) }
+    let_it_be(:feature_flags, freeze: false) { create_list(:operations_feature_flag, 3, project: project) }
 
     let(:schema) do
       Atlassian::Schemata.ff_info_payload
@@ -755,7 +724,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   end
 
   describe '#store_dev_info' do
-    let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
+    let_it_be(:merge_requests, freeze: false) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
 
     before do
       path = '/rest/devinfo/0.10/bulk'
@@ -783,7 +752,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   end
 
   describe '#remove_branch_info' do
-    let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
+    let_it_be(:merge_requests, freeze: false) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
     let(:branch_name) { merge_requests.first.source_branch }
     let(:jira_branch_id) { Digest::SHA256.hexdigest(branch_name) }
     let(:additional_headers) do

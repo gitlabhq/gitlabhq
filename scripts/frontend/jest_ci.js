@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 const defaultChalk = require('chalk');
 const { program } = require('commander');
@@ -13,6 +14,15 @@ const VUE_3_TESTING_EPIC = 'https://gitlab.com/groups/gitlab-org/-/epics/11740';
 
 // Force basic color output in CI
 const chalk = new defaultChalk.constructor({ level: IS_CI ? 1 : undefined });
+
+// Reads a list of test file paths, one per line. Blank lines are dropped.
+function readFilterFile(path) {
+  return fs
+    .readFileSync(path, 'utf8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
 
 function showVue3Help() {
   console.warn(' ');
@@ -47,6 +57,10 @@ function parseArgumentsAndEnvironment() {
       '--coverage',
       "Tell Jest to generate coverage. If not specified, it's enabled only on non-FOSS branch or tag pipelines under Vue 2, non-predictive runs.",
     )
+    .option(
+      '--filter-file <path>',
+      'Restrict the run to the test files listed in this file (one path per line). Used by the per-test coverage child pipeline so each shard runs only the queued specs.',
+    )
     .parse(process.argv);
   const options = program.opts();
 
@@ -80,6 +94,16 @@ function parseArgumentsAndEnvironment() {
     }
   }
 
+  let filterFiles = [];
+  if (options.filterFile) {
+    filterFiles = readFilterFile(options.filterFile);
+
+    if (!filterFiles.length) {
+      console.warn(`Filter file ${options.filterFile} is empty; will not run Jest.`);
+      process.exit(0);
+    }
+  }
+
   const coverageBranchExclusions = [
     /^as-if-foss\//,
     /^\d+-\d+-stable(-ee)?$/, // exclude stable branches like 17-10-stable-ee, 18-0-stable-ee, etc.
@@ -107,6 +131,7 @@ function parseArgumentsAndEnvironment() {
     nodeIndex: process.env.CI_NODE_INDEX ?? '1',
     nodeTotal: process.env.CI_NODE_TOTAL ?? '1',
     changedFiles,
+    filterFiles,
   };
 }
 
@@ -130,6 +155,7 @@ function runJest({
   nodeIndex,
   nodeTotal,
   changedFiles,
+  filterFiles,
 }) {
   const commonArguments = [
     '--config',
@@ -137,6 +163,7 @@ function runJest({
     '--ci',
     `--shard=${nodeIndex}/${nodeTotal}`,
     '--logHeapUsage',
+    '--testLocationInResults',
   ];
 
   const sequencerArguments = [
@@ -152,9 +179,22 @@ function runJest({
 
   const coverageArguments = coverage ? ['--coverage'] : [];
 
+  // Pass the filter-file's test paths as positional arguments. Jest treats
+  // positional args as test path patterns (regex), but our paths only contain
+  // /, _, alphanumerics, and dots, none of which conflict with the regex
+  // interpretation in practice (dots match themselves as well as any char).
+  // Combined with --shard, each parallel instance runs its slice of the list.
+  const filterArguments = filterFiles && filterFiles.length ? filterFiles : [];
+
   const childProcess = loggedSpawnSync(
     'node_modules/.bin/jest',
-    [...commonArguments, ...sequencerArguments, ...predictiveArguments, ...coverageArguments],
+    [
+      ...commonArguments,
+      ...sequencerArguments,
+      ...predictiveArguments,
+      ...coverageArguments,
+      ...filterArguments,
+    ],
     {
       stdio: 'inherit',
       env: {

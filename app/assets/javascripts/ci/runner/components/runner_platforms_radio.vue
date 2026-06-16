@@ -2,6 +2,7 @@
 import { GlFormRadio } from '@gitlab/ui';
 
 export default {
+  name: 'RunnerPlatformsRadio',
   components: {
     GlFormRadio,
   },

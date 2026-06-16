@@ -143,8 +143,6 @@ class Group < Namespace
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
-  has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting', inverse_of: :group
-
   has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
   delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
   delegate :mcp_server_enabled, :mcp_server_enabled=, to: :namespace_settings, allow_nil: true
@@ -1304,9 +1302,9 @@ class Group < Namespace
   end
 
   def pending_delete?
-    return false unless deletion_schedule
+    return false unless self_deletion_scheduled_deletion_created_on
 
-    deletion_schedule.marked_for_deletion_on.future?
+    self_deletion_scheduled_deletion_created_on.future?
   end
 
   def unarchive_descendants!

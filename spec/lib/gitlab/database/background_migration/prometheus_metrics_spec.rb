@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::PrometheusMetrics, :prometheus do
+RSpec.describe Gitlab::Database::BackgroundMigration::PrometheusMetrics, :prometheus, feature_category: :database do
   describe '#track' do
     let(:job_record) do
       build(

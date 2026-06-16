@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
 
 export default {
+  name: 'ListItemStat',
   components: { GlIcon, GlTooltip },
   props: {
     tooltipText: {

@@ -1,0 +1,9 @@
+---
+name: revoke_support_pin
+description: Grants the ability to revoke support PINs
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_user_support_pin

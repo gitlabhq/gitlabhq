@@ -120,9 +120,9 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with popularity sorts' do
-      let_it_be(:upvote_1a) { create(:award_emoji, :upvote, awardable: work_item_1) }
-      let_it_be(:upvote_1b) { create(:award_emoji, :upvote, awardable: work_item_1) }
-      let_it_be(:upvote_2a) { create(:award_emoji, :upvote, awardable: work_item_2) }
+      let_it_be(:upvote_1a, freeze: false) { create(:award_emoji, :upvote, awardable: work_item_1) }
+      let_it_be(:upvote_1b, freeze: false) { create(:award_emoji, :upvote, awardable: work_item_1) }
+      let_it_be(:upvote_2a, freeze: false) { create(:award_emoji, :upvote, awardable: work_item_2) }
 
       where(:order_by, :sort, :expected_order) do
         [
@@ -137,11 +137,11 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with milestone_due sorts' do
-      let_it_be(:early_ms) do
+      let_it_be(:early_ms, freeze: false) do
         create_milestone_for_namespace(namespace_record).tap { |m| m.update!(due_date: 1.day.from_now) }
       end
 
-      let_it_be(:late_ms) do
+      let_it_be(:late_ms, freeze: false) do
         create_milestone_for_namespace(namespace_record).tap { |m| m.update!(due_date: 2.days.from_now) }
       end
 
@@ -163,11 +163,11 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with priority sorts' do
-      let_it_be(:early_ms) do
+      let_it_be(:early_ms, freeze: false) do
         create_milestone_for_namespace(namespace_record).tap { |m| m.update!(due_date: 1.day.from_now) }
       end
 
-      let_it_be(:late_ms) do
+      let_it_be(:late_ms, freeze: false) do
         create_milestone_for_namespace(namespace_record).tap { |m| m.update!(due_date: 2.days.from_now) }
       end
 
@@ -189,8 +189,13 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with label_priority sorts' do
-      let_it_be(:high_priority_label) { create(:label, project: resource_project, priority: 1) if resource_project }
-      let_it_be(:low_priority_label) { create(:label, project: resource_project, priority: 10) if resource_project }
+      let_it_be(:high_priority_label, freeze: false) do
+        create(:label, project: resource_project, priority: 1) if resource_project
+      end
+
+      let_it_be(:low_priority_label, freeze: false) do
+        create(:label, project: resource_project, priority: 10) if resource_project
+      end
 
       before do
         skip 'label priority is project-scoped' unless resource_project
@@ -212,8 +217,8 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with severity sorts' do
-      let_it_be(:severity_1) { create(:issuable_severity, issue: work_item_1, severity: :high) }
-      let_it_be(:severity_2) { create(:issuable_severity, issue: work_item_2, severity: :low) }
+      let_it_be(:severity_1, freeze: false) { create(:issuable_severity, issue: work_item_1, severity: :high) }
+      let_it_be(:severity_2, freeze: false) { create(:issuable_severity, issue: work_item_2, severity: :low) }
 
       where(:order_by, :sort, :expected_order) do
         [
@@ -228,11 +233,11 @@ RSpec.shared_examples 'work item listing sorting' do
     end
 
     context 'with escalation_status sorts' do
-      let_it_be(:escalation_1) do
+      let_it_be(:escalation_1, freeze: false) do
         create(:incident_management_issuable_escalation_status, :triggered, issue: work_item_1)
       end
 
-      let_it_be(:escalation_2) do
+      let_it_be(:escalation_2, freeze: false) do
         create(:incident_management_issuable_escalation_status, :resolved, issue: work_item_2)
       end
 

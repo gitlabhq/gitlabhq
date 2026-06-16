@@ -234,7 +234,10 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     link = line_link(line_holder, diff_side)
     wait_for('new-discussion toggle to appear on the row') do
       link.hover
-      has_testid?('new_discussion_toggle', context: line_holder, wait: 0.2)
+
+      has_testid?('new_discussion_toggle', context: line_holder, wait: 0.2).tap do |has_toggle|
+        find_by_testid('super-topbar-search-button').hover unless has_toggle
+      end
     end
     find_by_testid('new_discussion_toggle', context: line_holder).click
   end

@@ -10,7 +10,7 @@ RSpec.shared_examples 'loadable from yaml' do
     end
 
     context 'when config_path is not implemented' do
-      let_it_be(:test_class) do
+      let_it_be(:test_class, freeze: false) do
         Class.new do
           include Authz::Concerns::YamlPermission
         end

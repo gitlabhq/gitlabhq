@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
-  let_it_be(:versionless_package_for_versions) { create(:maven_package, name: 'MyDummyMavenPkg', version: nil) }
-  let_it_be(:metadata_package_file) { create(:package_file, :xml, package: versionless_package_for_versions) }
+  let_it_be(:versionless_package_for_versions, freeze: false) { create(:maven_package, name: 'MyDummyMavenPkg', version: nil) }
+  let_it_be(:metadata_package_file, freeze: false) { create(:package_file, :xml, package: versionless_package_for_versions) }
 
   let(:versions) { %w[1.2 1.1 2.1 3.0-SNAPSHOT] }
   let(:worker) { described_class.new }
@@ -83,11 +83,11 @@ RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
 
     context 'with a maven plugin' do
       let_it_be(:versionless_package_name_for_plugins) { versionless_package_for_versions.maven_metadatum.app_group.tr('.', '/') }
-      let_it_be(:versionless_package_for_versions) { create(:maven_package, name: "#{versionless_package_name_for_plugins}/one-maven-plugin", version: nil) }
-      let_it_be(:metadata_package_file) { create(:package_file, :xml, package: versionless_package_for_versions) }
+      let_it_be(:versionless_package_for_versions, freeze: false) { create(:maven_package, name: "#{versionless_package_name_for_plugins}/one-maven-plugin", version: nil) }
+      let_it_be(:metadata_package_file, freeze: false) { create(:package_file, :xml, package: versionless_package_for_versions) }
 
       let_it_be(:versionless_package_for_plugins) { create(:maven_package, name: versionless_package_name_for_plugins, version: nil, project: versionless_package_for_versions.project) }
-      let_it_be(:metadata_package_file_for_plugins) { create(:package_file, :xml, package: versionless_package_for_plugins) }
+      let_it_be(:metadata_package_file_for_plugins, freeze: false) { create(:package_file, :xml, package: versionless_package_for_plugins) }
 
       let_it_be(:addtional_maven_package_for_same_group_id) { create(:maven_package, name: "#{versionless_package_name_for_plugins}/maven-package", project: versionless_package_for_versions.project) }
 

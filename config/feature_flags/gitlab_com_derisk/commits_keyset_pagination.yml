@@ -1,0 +1,9 @@
+---
+name: commits_keyset_pagination
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595507
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239139
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/602360
+milestone: '19.1'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

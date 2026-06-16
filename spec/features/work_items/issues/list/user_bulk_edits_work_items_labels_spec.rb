@@ -38,7 +38,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
             update_issues
           end
 
-          it do
+          it 'applies the label to all issues' do
             expect(find(issue_1_selector)).to have_content 'bug'
             expect(find(issue_1_selector)).to have_content 'frontend'
             expect(find(issue_2_selector)).to have_content 'bug'
@@ -54,7 +54,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
             update_issues
           end
 
-          it do
+          it 'applies the label to the selected issues' do
             expect(find(issue_1_selector)).to have_content 'bug'
             expect(find(issue_1_selector)).to have_content 'frontend'
             expect(find(issue_2_selector)).to have_content 'bug'
@@ -69,7 +69,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
             update_issues
           end
 
-          it do
+          it 'applies the label to the selected issue' do
             expect(find(issue_1_selector)).to have_content 'bug'
             expect(find(issue_1_selector)).to have_content 'frontend'
             expect(find(issue_2_selector)).not_to have_content 'bug'
@@ -86,7 +86,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
             update_issues
           end
 
-          it do
+          it 'applies all labels to all issues' do
             expect(find(issue_1_selector)).to have_content 'bug'
             expect(find(issue_1_selector)).to have_content 'feature'
             expect(find(issue_2_selector)).to have_content 'bug'
@@ -101,7 +101,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
             update_issues
           end
 
-          it do
+          it 'applies all labels to the selected issue' do
             expect(find(issue_1_selector)).to have_content 'bug'
             expect(find(issue_1_selector)).to have_content 'feature'
             expect(find(issue_2_selector)).not_to have_content 'bug'
@@ -122,7 +122,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
         update_issues
       end
 
-      it do
+      it 'applies the label to all issues' do
         expect(find(issue_1_selector)).to have_content 'bug'
         expect(find(issue_2_selector)).to have_content 'bug'
       end
@@ -142,7 +142,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
           update_issues
         end
 
-        it do
+        it 'removes all labels from all issues' do
           expect(find(issue_1_selector)).not_to have_content 'bug'
           expect(find(issue_1_selector)).not_to have_content 'feature'
           expect(find(issue_2_selector)).not_to have_content 'bug'
@@ -161,7 +161,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
           update_issues
         end
 
-        it do
+        it 'removes the label from the selected issue' do
           expect(find(issue_1_selector)).not_to have_content 'bug'
           expect(find(issue_2_selector)).to have_content 'feature'
         end
@@ -181,7 +181,7 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
           update_issues
         end
 
-        it do
+        it 'removes only the specified label and keeps the rest' do
           expect(find(issue_1_selector)).not_to have_content 'bug'
           expect(find(issue_1_selector)).to have_content 'feature'
           expect(find(issue_2_selector)).not_to have_content 'bug'

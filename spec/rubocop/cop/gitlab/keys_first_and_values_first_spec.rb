@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/gitlab/keys_first_and_values_first'
 
-RSpec.describe RuboCop::Cop::Gitlab::KeysFirstAndValuesFirst do
+RSpec.describe RuboCop::Cop::Gitlab::KeysFirstAndValuesFirst, feature_category: :tooling do
   let(:msg) { described_class::MSG }
 
   shared_examples 'inspect use of keys or values first' do |method, autocorrect|

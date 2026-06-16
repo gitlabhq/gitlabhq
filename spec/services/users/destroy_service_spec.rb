@@ -3,20 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Users::DestroyService, feature_category: :user_management do
-  let!(:user)      { create(:user) }
-  let!(:admin)     { create(:admin) }
-  let!(:namespace) { user.namespace }
-  let!(:project)   { create(:project, namespace: namespace) }
-  let(:service)    { described_class.new(admin) }
+  let!(:user)        { create(:user) }
+  let_it_be(:admin)  { create(:admin) }
+  let(:namespace)    { user.namespace }
+  let(:service)      { described_class.new(admin) }
   let(:gitlab_shell) { Gitlab::Shell.new }
 
   describe "Initiates user deletion and deletes all their personal projects", :enable_admin_mode do
+    let!(:project) { create(:project, namespace: namespace) }
+
     context 'no options are given' do
       it 'creates GhostUserMigration record to handle migration in a worker' do
         expect { service.execute(user) }
           .to(
             change do
-              Users::GhostUserMigration.where(user: user, initiator_user: admin).exists?
+              Users::GhostUserMigration.where(user: user, user_type: user.user_type, initiator_user: admin).exists?
             end.from(false).to(true))
       end
 

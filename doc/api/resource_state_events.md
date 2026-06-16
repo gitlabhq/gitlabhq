@@ -14,7 +14,7 @@ title: Resource state events API
 
 Use this API to interact with state change events for issues, merge requests, and epics.
 
-This API does not track the initial state ("create" or "open") of resources.
+This API does not track the initial state (`created` or `opened`) of resources.
 For a resource that was not closed or re-opened, an empty list is returned.
 
 ## Issues

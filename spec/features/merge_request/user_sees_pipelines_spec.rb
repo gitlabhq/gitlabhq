@@ -3,9 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :code_review_workflow do
-  context 'with feature flag `mr_pipelines_graphql turned off`' do
+  using RSpec::Parameterized::TableSyntax
+
+  where(:mr_pipelines_graphql) do
+    [true, false]
+  end
+
+  with_them do
     before do
-      stub_feature_flags(mr_pipelines_graphql: false)
+      stub_feature_flags(mr_pipelines_graphql: mr_pipelines_graphql)
     end
 
     describe 'pipeline tab' do
@@ -67,9 +73,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               click_link('Pipelines')
             end
 
-            wait_for_requests
-
-            expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
+            expect(page).to have_testid('run_pipeline_button', text: 'Run pipeline')
           end
         end
 
@@ -83,9 +87,34 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               click_link('Pipelines')
             end
 
-            wait_for_requests
+            expect(page).to have_testid('run_pipeline_button', text: 'Run pipeline')
+          end
+        end
 
-            expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
+        context 'with 4 downstream pipelines' do
+          before do
+            # the first 3 are shown explicitly and the last one is added as a counter
+            create_list(:ci_pipeline, 4, :success, child_of: pipeline)
+
+            visit project_merge_request_path(project, merge_request)
+          end
+
+          it 'renders downstream pipelines and the counter in the mini graph', :aggregate_failures do
+            page.within('.merge-request-tabs') do
+              click_link('Pipelines')
+            end
+
+            within_testid('pipeline-table-row', match: :first) do
+              within_testid('pipeline-mini-graph') do
+                # arrow in between pipeline stages and downstream icons
+                expect(page).to have_testid('downstream-arrow-icon')
+
+                within_testid('pipeline-mini-graph-downstream') do
+                  expect(page).to have_testid('pipeline-mini-graph-dropdown', count: 3)
+                  expect(page).to have_testid('downstream-pipeline-counter', text: '+1')
+                end
+              end
+            end
           end
         end
       end

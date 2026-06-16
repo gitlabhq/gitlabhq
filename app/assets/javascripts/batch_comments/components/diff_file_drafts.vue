@@ -6,6 +6,7 @@ import { useBatchComments } from '~/batch_comments/store';
 import DraftNote from './draft_note.vue';
 
 export default {
+  name: 'DiffFileDrafts',
   components: {
     DraftNote,
     DesignNotePin,

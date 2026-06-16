@@ -103,6 +103,13 @@ export default {
       default: '',
     },
   },
+  emits: [
+    'edit-issuable',
+    'keydown-description',
+    'keydown-title',
+    'task-list-update-failure',
+    'task-list-update-success',
+  ],
   methods: {
     handleKeydownTitle(e, issuableMeta) {
       this.$emit('keydown-title', e, issuableMeta);

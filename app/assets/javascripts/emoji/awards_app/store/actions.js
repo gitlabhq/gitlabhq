@@ -13,6 +13,7 @@ export const setInitialData = ({ commit }, data) => commit(SET_INITIAL_DATA, dat
 
 export const fetchAwards = async ({ commit, dispatch, state }, page = '1') => {
   try {
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- state.path is a REST API path passed from Rails. Not an ideal setup but acceptable.
     const { data, headers } = await axios.get(joinPaths(gon.relative_url_root || '', state.path), {
       params: { per_page: 100, page },
     });
@@ -54,6 +55,7 @@ export const toggleAward = async ({ commit, state }, name) => {
       commit(REMOVE_AWARD, award.id);
 
       await axios
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- state.path is a REST API path passed from Rails. Not an ideal setup but acceptable.
         .delete(joinPaths(gon.relative_url_root || '', `${state.path}/${award.id}`))
         .catch((err) => {
           commit(ADD_NEW_AWARD, award);
@@ -66,6 +68,7 @@ export const toggleAward = async ({ commit, state }, name) => {
       commit(ADD_NEW_AWARD, optimisticAward);
 
       const { data } = await axios
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- state.path is a REST API path passed from Rails. Not an ideal setup but acceptable.
         .post(joinPaths(gon.relative_url_root || '', state.path), {
           name,
         })

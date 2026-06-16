@@ -6,7 +6,7 @@ RSpec.describe Mutations::MergeRequests::SetReviewers, feature_category: :api do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:merge_request, reload: true) { create(:merge_request) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request) }
   let_it_be(:reviewer) { create(:user) }
   let_it_be(:reviewer2) { create(:user) }
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }

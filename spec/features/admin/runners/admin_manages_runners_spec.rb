@@ -96,14 +96,12 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
         visit admin_runners_path
       end
 
-      it 'runner types tabs have total counts and can be selected' do
+      it 'shows runners with type tab counts', :aggregate_failures do
         expect(page).to have_link('All 2')
         expect(page).to have_link('Instance 2')
         expect(page).to have_link('Group 0')
         expect(page).to have_link('Project 0')
-      end
 
-      it 'shows runners' do
         expect(page).to have_content("runner foo")
         expect(page).to have_content("runner bar")
       end
@@ -181,18 +179,14 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
         visit admin_runners_path
       end
 
-      it 'shows all runners' do
+      it 'shows filtered runner based on supplied prefix', :aggregate_failures do
         expect(page).to have_link('All 2')
-
         expect(page).to have_content 'runner-v15'
         expect(page).to have_content 'runner-v14'
-      end
 
-      it 'shows filtered runner based on supplied prefix' do
         input_filtered_search_filter_is_only('Version starts with', '15.0')
 
         expect(page).to have_link('All 1')
-
         expect(page).not_to have_content 'runner-v14'
         expect(page).to have_content 'runner-v15'
       end
@@ -208,18 +202,14 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
         visit admin_runners_path
       end
 
-      it 'shows all runners' do
+      it 'shows filtered runner based on creator', :aggregate_failures do
         expect(page).to have_link('All 2')
-
         expect(page).to have_content 'runner-creator-admin'
         expect(page).to have_content 'runner-creator-user'
-      end
 
-      it 'shows filtered runner based on creator' do
         input_filtered_search_filter_is_only('Creator', admin.username)
 
         expect(page).to have_link('All 1')
-
         expect(page).to have_content 'runner-creator-admin'
         expect(page).not_to have_content 'runner-creator-user'
       end
@@ -321,46 +311,30 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
         create(:ci_runner, :group, description: 'runner-group', groups: [group])
       end
 
-      it '"All" tab is selected by default' do
+      it 'shows tab counts and filters runners by selected tab', :aggregate_failures do
         visit admin_runners_path
 
         expect(page).to have_link('All 2')
         expect(page).to have_link('Group 1')
         expect(page).to have_link('Project 1')
-
-        within_testid('runner-type-tabs') do
-          expect(page).to have_link('All', class: 'active')
-        end
-      end
-
-      it 'shows correct runner when type matches' do
-        visit admin_runners_path
-
         expect(page).to have_content 'runner-project'
         expect(page).to have_content 'runner-group'
 
         within_testid('runner-type-tabs') do
+          expect(page).to have_link('All', class: 'active')
+
           click_on('Project')
 
           wait_for_requests
 
           expect(page).to have_link('Project', class: 'active')
-        end
-
-        expect(page).to have_content 'runner-project'
-        expect(page).not_to have_content 'runner-group'
-      end
-
-      it 'show the same counts after selecting another tab' do
-        visit admin_runners_path
-
-        within_testid('runner-type-tabs') do
-          click_on('Project')
-
           expect(page).to have_link('All 2')
           expect(page).to have_link('Group 1')
           expect(page).to have_link('Project 1')
         end
+
+        expect(page).to have_content 'runner-project'
+        expect(page).not_to have_content 'runner-group'
       end
 
       it 'shows correct runner when type is selected and search term is entered' do
@@ -511,20 +485,6 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
         expect(page).to have_link('Group 0')
         expect(page).to have_link('Project 0')
       end
-    end
-  end
-
-  context "when visiting outdated URLs" do
-    it 'updates ACTIVE runner status to paused=false' do
-      visit admin_runners_path('status[]': 'ACTIVE')
-
-      expect(page).to have_current_path(admin_runners_path('paused[]': 'false'))
-    end
-
-    it 'updates PAUSED runner status to paused=true' do
-      visit admin_runners_path('status[]': 'PAUSED')
-
-      expect(page).to have_current_path(admin_runners_path('paused[]': 'true'))
     end
   end
 end

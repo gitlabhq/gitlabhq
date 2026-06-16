@@ -358,4 +358,4 @@ this area.
 ## Related topics
 
 - [The responsibility of the merge request author](../code_review.md#the-responsibility-of-the-merge-request-author)
-- [Having your merge request reviewed](../code_review.md#having-your-merge-request-reviewed)
+- [Having your merge request reviewed](../code_review.md#participating-in-code-review)

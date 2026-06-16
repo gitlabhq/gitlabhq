@@ -11,6 +11,11 @@ module Ci
     end
 
     def execute
+      if bridge.cross_project_trigger_resolved_to_empty?
+        bridge.drop!(:downstream_project_trigger_resolved_to_empty)
+        return ServiceResponse.error(message: 'The trigger:project value resolved to a blank value')
+      end
+
       unless bridge.triggers_downstream_pipeline?
         return ServiceResponse.success(message: 'Does not trigger a downstream pipeline')
       end

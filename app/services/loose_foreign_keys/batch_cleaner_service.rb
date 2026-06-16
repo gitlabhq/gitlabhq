@@ -11,7 +11,8 @@ module LooseForeignKeys
       deleted_parent_records:,
       connection:,
       logger: Sidekiq.logger,
-      modification_tracker: LooseForeignKeys::ModificationTracker.new
+      modification_tracker: LooseForeignKeys::ModificationTracker.new,
+      record_store: LooseForeignKeys::DeletedRecord
     )
       @parent_table = parent_table
       @loose_foreign_key_definitions = loose_foreign_key_definitions
@@ -19,6 +20,7 @@ module LooseForeignKeys
       @modification_tracker = modification_tracker
       @connection = connection
       @logger = logger
+      @record_store = record_store
       @deleted_records_counter = Gitlab::Metrics.counter(
         :loose_foreign_key_processed_deleted_records,
         'The number of processed loose foreign key deleted records'
@@ -57,7 +59,7 @@ module LooseForeignKeys
 
       # At this point, all associations are cleaned up, we can update the status of the parent records
       update_count = Gitlab::Database::SharedModel.using_connection(connection) do
-        LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
+        record_store.mark_records_processed(deleted_parent_records)
       end
 
       deleted_records_counter.increment({ table: parent_table, db_config_name: db_config_name }, update_count)
@@ -65,7 +67,7 @@ module LooseForeignKeys
 
     private
 
-    attr_reader :parent_table, :loose_foreign_key_definitions, :deleted_parent_records, :modification_tracker, :deleted_records_counter, :deleted_records_rescheduled_count, :deleted_records_incremented_count, :connection, :logger
+    attr_reader :parent_table, :loose_foreign_key_definitions, :deleted_parent_records, :modification_tracker, :deleted_records_counter, :deleted_records_rescheduled_count, :deleted_records_incremented_count, :connection, :logger, :record_store
 
     def dictionary_entries
       @dictionary_entries ||= Gitlab::Database::Dictionary.entries
@@ -107,10 +109,10 @@ module LooseForeignKeys
       end
 
       Gitlab::Database::SharedModel.using_connection(connection) do
-        reschedule_count = LooseForeignKeys::DeletedRecord.reschedule(records_to_reschedule, CONSUME_AFTER_RESCHEDULE.from_now)
+        reschedule_count = record_store.reschedule(records_to_reschedule, CONSUME_AFTER_RESCHEDULE.from_now)
         deleted_records_rescheduled_count.increment({ table: parent_table, db_config_name: db_config_name }, reschedule_count)
 
-        increment_count = LooseForeignKeys::DeletedRecord.increment_attempts(records_to_increment)
+        increment_count = record_store.increment_attempts(records_to_increment)
         deleted_records_incremented_count.increment({ table: parent_table, db_config_name: db_config_name }, increment_count)
       end
     end
@@ -160,7 +162,7 @@ module LooseForeignKeys
 
     def db_config_name
       Gitlab::Database::SharedModel.using_connection(connection) do
-        LooseForeignKeys::DeletedRecord.connection.pool.db_config.name
+        record_store.connection.pool.db_config.name
       end
     end
   end

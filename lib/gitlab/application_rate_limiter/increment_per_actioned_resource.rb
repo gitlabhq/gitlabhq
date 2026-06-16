@@ -3,6 +3,8 @@
 module Gitlab
   module ApplicationRateLimiter
     class IncrementPerActionedResource < BaseStrategy
+      attr_reader :resource_key
+
       def initialize(resource_key)
         @resource_key = resource_key
       end
@@ -25,10 +27,6 @@ module Gitlab
           redis.scard(cache_key)
         end
       end
-
-      private
-
-      attr_accessor :resource_key
     end
   end
 end

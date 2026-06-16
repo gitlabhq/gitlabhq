@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/destroy_all'
 
-RSpec.describe RuboCop::Cop::DestroyAll do
+RSpec.describe RuboCop::Cop::DestroyAll, feature_category: :database do
   it 'flags the use of destroy_all with a send receiver' do
     expect_offense(<<~RUBY)
       foo.destroy_all

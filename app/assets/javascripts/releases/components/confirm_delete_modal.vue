@@ -5,6 +5,7 @@ import { mapState } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
 
 export default {
+  name: 'ConfirmDeleteModal',
   components: {
     GlModal,
     GlSprintf,

@@ -61,7 +61,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
 
     context 'when commit does not exist in the repository' do
       let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:deployment) { create(:deployment, project: project) }
+      let_it_be(:deployment, freeze: false) { create(:deployment, project: project) }
 
       subject(:data) { described_class.build(deployment, 'created', Time.current) }
 
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
     end
 
     context 'when deployed_by is nil' do
-      let_it_be(:deployment) { create(:deployment, user: nil, deployable: nil) }
+      let_it_be(:deployment, freeze: false) { create(:deployment, user: nil, deployable: nil) }
 
       subject(:data) { described_class.build(deployment, 'created', Time.current) }
 

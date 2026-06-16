@@ -1,8 +1,8 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: APIカスタム属性
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: カスタム属性API
 ---
 
 {{< details >}}
@@ -12,13 +12,15 @@ title: APIカスタム属性
 
 {{< /details >}}
 
-カスタム属性に対するすべてのAPIコールは、管理者として認証されている必要があります。
+ユーザー、グループ、プロジェクトのカスタム属性を管理するために、このAPIを使用します。
 
-カスタム属性は現在、ユーザー、グループ、およびプロジェクトで利用可能であり、このドキュメントでは「リソース」と呼ばれています。
+前提条件: 
 
-## 属性一覧 {#list-custom-attributes}
+- インスタンスの管理者である必要があります。
 
-リソースのすべてのカスタム属性を取得します。
+## すべてのカスタム属性を一覧表示 {#list-all-custom-attributes}
+
+指定されたリソースのすべてのカスタム属性を一覧表示します。
 
 ```plaintext
 GET /users/:id/custom_attributes
@@ -36,7 +38,7 @@ curl --request GET \
    --url "https://gitlab.example.com/api/v4/users/42/custom_attributes"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -51,9 +53,9 @@ curl --request GET \
 ]
 ```
 
-## 単一のカスタム属性 {#single-custom-attribute}
+## カスタム属性を取得する {#retrieve-a-custom-attribute}
 
-リソースの単一のカスタム属性を取得します。
+指定されたリソースのカスタム属性を取得します。
 
 ```plaintext
 GET /users/:id/custom_attributes/:key
@@ -72,7 +74,7 @@ curl --request GET \
    --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -81,9 +83,9 @@ curl --request GET \
 }
 ```
 
-## カスタム属性の設定 {#set-custom-attribute}
+## カスタム属性を更新する {#update-a-custom-attribute}
 
-リソースにカスタム属性を設定します。属性が既に存在する場合は更新され、それ以外の場合は新しく作成されます。
+指定されたリソースのカスタム属性を更新または作成します。属性がすでに存在する場合は更新され、そうでない場合は新規作成されます。
 
 ```plaintext
 PUT /users/:id/custom_attributes/:key
@@ -104,7 +106,7 @@ curl --request PUT \
    --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -113,9 +115,9 @@ curl --request PUT \
 }
 ```
 
-## カスタム属性の削除 {#delete-custom-attribute}
+## カスタム属性を削除する {#delete-custom-attribute}
 
-リソースのカスタム属性を削除します。
+指定されたリソースのカスタム属性を削除します。
 
 ```plaintext
 DELETE /users/:id/custom_attributes/:key

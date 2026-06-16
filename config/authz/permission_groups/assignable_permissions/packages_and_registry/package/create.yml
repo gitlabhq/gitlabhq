@@ -8,6 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - create_npm_package_tag
+  - create_package_protection_rule
   - publish_composer_package
   - upload_conan_package
   - upload_debian_package

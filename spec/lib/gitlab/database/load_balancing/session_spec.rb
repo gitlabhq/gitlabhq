@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Session do
+RSpec.describe Gitlab::Database::LoadBalancing::Session, feature_category: :database do
   describe '#use_primary?' do
     it 'returns true when the primary should be used' do
       instance = described_class.new

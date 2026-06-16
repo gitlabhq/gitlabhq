@@ -3,7 +3,9 @@ category: default
 action: click_button
 extra_properties:
 identifiers:
-product_group: optimize
+product_group: project_management
+product_categories:
+- team_planning
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54214
 tiers:

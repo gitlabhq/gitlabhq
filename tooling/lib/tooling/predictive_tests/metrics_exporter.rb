@@ -122,14 +122,14 @@ module Tooling
         results.all?(true)
       end
 
-      # Export Duo metrics by reading from artifact written by detect-system-tests-duo-experiment.
+      # Export Duo metrics by reading from artifact written by detect-system-tests-duo.
       #
       # Duo is intentionally NOT re-invoked here because:
       # 1. It would incur additional LLM API costs
       # 2. The LLM response is non-deterministic - a second call could return different
       #    specs than what was actually used for test selection, making metrics misleading
       #
-      # Instead, the detect-system-tests-duo-experiment job saves its predictions to a file which
+      # Instead, the detect-system-tests-duo job saves its predictions to a file which
       # is passed to this job as an artifact via GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH.
       #
       # Note: missed_failing_test_files is calculated against feature specs only, since

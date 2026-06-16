@@ -869,10 +869,16 @@ RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_he
   context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:pat_project_developer) { personal_access_token }
-    let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: [project])) }
-    let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
-    let_it_be(:pat_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+    let_it_be(:pat_project_developer, freeze: false) { personal_access_token }
+    let_it_be(:pat_project_maintainer, freeze: false) do
+      create(:personal_access_token, user: create(:user, maintainer_of: [project]))
+    end
+
+    let_it_be(:pat_project_owner, freeze: false) do
+      create(:personal_access_token, user: create(:user, owner_of: [project]))
+    end
+
+    let_it_be(:pat_admin, freeze: false) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
 
     let(:package_protection_rule) do
       create(:package_protection_rule, package_type: :conan, project: project)
@@ -920,10 +926,16 @@ RSpec.shared_examples 'protected package main example' do
   context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:pat_project_developer) { personal_access_token }
-    let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: [project])) }
-    let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
-    let_it_be(:pat_instance_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+    let_it_be(:pat_project_developer, freeze: false) { personal_access_token }
+    let_it_be(:pat_project_maintainer, freeze: false) do
+      create(:personal_access_token, user: create(:user, maintainer_of: [project]))
+    end
+
+    let_it_be(:pat_project_owner, freeze: false) do
+      create(:personal_access_token, user: create(:user, owner_of: [project]))
+    end
+
+    let_it_be(:pat_instance_admin, freeze: false) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
 
     let(:package_protection_rule) do
       create(:package_protection_rule, package_type: :conan, project: project)
@@ -1376,9 +1388,9 @@ end
 RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe_revision: false|
   subject(:request) { get api(url), headers: headers }
 
-  let_it_be(:reference1) { package.conan_package_references.first }
+  let_it_be(:reference1, freeze: false) { package.conan_package_references.first }
 
-  let_it_be(:reference2) do
+  let_it_be(:reference2, freeze: false) do
     create(:conan_package_reference, package: package, info: { 'settings' => { 'os' => 'Linux' } })
   end
 
@@ -1441,29 +1453,13 @@ RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe
     context 'when recipe revision does not exist' do
       let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
 
-      it 'returns package references metadata', :aggregate_failures do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to include(
-          reference1.reference => reference1.info,
-          reference2.reference => reference2.info
-        )
-      end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returning response status with message', status: :not_found,
-          message: '404 Revision Not Found'
-      end
+      it_behaves_like 'returning response status with message', status: :not_found,
+        message: '404 Revision Not Found'
     end
 
     context 'with different recipe revisions' do
-      let_it_be(:recipe_revision2) { create(:conan_recipe_revision, package: package) }
-      let_it_be(:reference2) do
+      let_it_be(:recipe_revision2, freeze: false) { create(:conan_recipe_revision, package: package) }
+      let_it_be(:reference2, freeze: false) do
         create(:conan_package_reference, package: package, info: { 'settings' => { 'os' => 'Linux' } },
           recipe_revision: recipe_revision2)
       end

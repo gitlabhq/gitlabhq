@@ -1,0 +1,9 @@
+---
+name: clear_active_context_dead_queue
+description: Grants the ability to clear the ActiveContext dead queue
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - clear_active_context_dead_queue

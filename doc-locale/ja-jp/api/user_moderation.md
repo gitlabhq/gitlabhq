@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ユーザーモデレーションAPI
 ---
 
@@ -12,13 +12,13 @@ title: ユーザーモデレーションAPI
 
 {{< /details >}}
 
-このAPIを使用して、ユーザーアカウントをモデレートします。詳細については、[ユーザーのモデレート](../administration/moderate_users.md)を参照してください。
+このAPIを使用してユーザーアカウントをモデレートします。詳細については、[ユーザーのモデレート](../administration/moderate_users.md)を参照してください。
 
 ## ユーザーへのアクセスを承認 {#approve-access-to-a-user}
 
-承認待ちの特定のユーザーアカウントへのアクセスを承認します。
+承認待ちの指定されたユーザーアカウントへのアクセスを承認します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -26,7 +26,7 @@ title: ユーザーモデレーションAPI
 POST /users/:id/approve
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -42,10 +42,10 @@ curl --request POST \
 
 - 成功した場合は`201 Created`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden`管理者またはLDAP同期によってブロックされているため、ユーザーを承認できない場合。
-- `409 Conflict`ユーザーが無効になっている場合。
+- `403 Forbidden`は、ユーザーが管理者またはLDAP同期によってブロックされているため承認できない場合です。
+- ユーザーが無効化されている場合は`409 Conflict`です。
 
-レスポンス例:
+応答例:
 
 ```json
 { "message": "Success" }
@@ -61,9 +61,9 @@ curl --request POST \
 
 ## ユーザーへのアクセスを拒否 {#reject-access-to-a-user}
 
-承認待ちの特定のユーザーアカウントへのアクセスを拒否します。
+承認待ちの指定されたユーザーアカウントへのアクセスを拒否します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -71,7 +71,7 @@ curl --request POST \
 POST /users/:id/reject
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -88,9 +88,9 @@ curl --request POST \
 - 成功した場合は`200 OK`。
 - 管理者として認証されていない場合は`403 Forbidden`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `409 Conflict`ユーザーが承認待ちでない場合。
+- ユーザーが承認待ちでない場合は`409 Conflict`です。
 
-レスポンス例:
+応答例:
 
 ```json
 { "message": "Success" }
@@ -104,11 +104,11 @@ curl --request POST \
 { "message": "User does not have a pending request" }
 ```
 
-## ユーザーを非アクティブ化 {#deactivate-a-user}
+## ユーザーを無効化 {#deactivate-a-user}
 
-特定のユーザーアカウントを非アクティブ化します。BANされたユーザーの詳細については、[ユーザーのアクティブ化と非アクティブ化](../administration/moderate_users.md#deactivate-and-reactivate-users)を参照してください。
+指定されたユーザーアカウントを無効化します。禁止されたユーザーの詳細については、[ユーザーのアクティブ化と非アクティブ化](../administration/moderate_users.md#deactivate-and-reactivate-users)を参照してください。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -116,7 +116,7 @@ curl --request POST \
 POST /users/:id/deactivate
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -132,16 +132,16 @@ curl --request POST \
 
 - 成功した場合は`201 OK`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden`次のユーザーを非アクティブ化しようとした場合:
-  - 管理者またはLDAP同期によってブロックされています。
-  - [休止状態](../administration/moderate_users.md#automatically-deactivate-dormant-users)ではありません。
-  - 内部。
+- 以下のユーザーを非アクティブ化しようとした場合は`403 Forbidden`:
+  - 管理者またはLDAP同期によってブロックされている。
+  - [休止状態](../administration/moderate_users.md#automatically-deactivate-dormant-users)ではない。
+  - 内部ユーザー。
 
 ## ユーザーを再アクティブ化 {#reactivate-a-user}
 
-以前に非アクティブ化された特定のユーザーアカウントを再アクティブ化します。
+以前に無効化された指定のユーザーアカウントを再アクティブ化します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -149,7 +149,7 @@ curl --request POST \
 POST /users/:id/activate
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -164,14 +164,14 @@ curl --request POST \
 戻り値:
 
 - 成功した場合は`201 OK`。
-- ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden`管理者またはLDAP同期によってブロックされているため、ユーザーをアクティブ化できない場合。
+- ユーザーが見つからない場合は`404 User Not Found`です。
+- `403 Forbidden`は、ユーザーが管理者またはLDAP同期によってブロックされているためアクティブ化できない場合です。
 
 ## ユーザーへのアクセスをブロック {#block-access-to-a-user}
 
-特定のユーザーアカウントをブロックします。BANされたユーザーの詳細については、[ブロックとブロックの解除](../administration/moderate_users.md#block-and-unblock-users)を参照してください。
+指定されたユーザーアカウントをブロックします。禁止されたユーザーの詳細については、[ユーザーをブロックおよびブロック解除](../administration/moderate_users.md#block-and-unblock-users)を参照してください。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -179,7 +179,7 @@ curl --request POST \
 POST /users/:id/block
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -195,15 +195,15 @@ curl --request POST \
 
 - 成功した場合は`201 OK`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden`ブロックしようとした場合:
+- 以下のユーザーをブロックしようとした場合は`403 Forbidden`:
   - LDAP経由でブロックされているユーザー。
   - 内部ユーザー。
 
 ## ユーザーへのアクセスをブロック解除 {#unblock-access-to-a-user}
 
-以前にブロックされた特定のユーザーアカウントのブロックを解除します。
+以前にブロックされた指定のユーザーアカウントのブロックを解除します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -211,7 +211,7 @@ curl --request POST \
 POST /users/:id/unblock
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -227,13 +227,13 @@ curl --request POST \
 
 - 成功した場合は`201 OK`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden` LDAP同期によってブロックされたユーザーのブロックを解除しようとした場合。
+- LDAP同期によってブロックされたユーザーのブロック解除を試みた場合は`403 Forbidden`です。
 
 ## ユーザーをBAN {#ban-a-user}
 
-特定のユーザーアカウントをBANします。BANされたユーザーの詳細については、[BANとBAN解除](../administration/moderate_users.md#ban-and-unban-users)を参照してください。
+指定されたユーザーアカウントをBANします。禁止されたユーザーの詳細については、[ユーザーをBANおよびBAN解除](../administration/moderate_users.md#ban-and-unban-users)を参照してください。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -241,7 +241,7 @@ curl --request POST \
 POST /users/:id/ban
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -257,13 +257,13 @@ curl --request POST \
 
 - 成功した場合は`201 OK`。
 - ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden`アクティブでないユーザーをBANしようとした場合。
+- アクティブではないユーザーをBANしようとした場合は`403 Forbidden`です。
 
 ## ユーザーのBANを解除 {#unban-a-user}
 
-以前にBANされた特定のユーザーアカウントのBANを解除します。
+以前にBANされた指定のユーザーアカウントのBANを解除します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -271,7 +271,7 @@ curl --request POST \
 POST /users/:id/unban
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明        |
 |------------|---------|----------|--------------------|
@@ -286,8 +286,8 @@ curl --request POST \
 戻り値:
 
 - 成功した場合は`201 OK`。
-- ユーザーが見つからない場合は`404 User Not Found`。
-- `403 Forbidden` BANされていないユーザーのBANを解除しようとした場合。
+- ユーザーが見つからない場合は`404 User Not Found`です。
+- BANされていないユーザーのBAN解除を試みた場合は`403 Forbidden`です。
 
 ## 関連トピック {#related-topics}
 

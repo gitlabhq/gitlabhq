@@ -25,10 +25,10 @@ end
 
 RSpec.shared_examples 'when user does not have permission' do
   context 'when user does not have permission' do
-    let_it_be(:developer) { create(:user, developer_of: project) }
-    let_it_be(:reporter) { create(:user, reporter_of: project) }
-    let_it_be(:guest) { create(:user, guest_of: project) }
-    let_it_be(:anonymous) { create(:user) }
+    let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
+    let_it_be(:reporter, freeze: false) { create(:user, reporter_of: project) }
+    let_it_be(:guest, freeze: false) { create(:user, guest_of: project) }
+    let_it_be(:anonymous, freeze: false) { create(:user) }
 
     where(:current_user) do
       [ref(:developer), ref(:reporter), ref(:guest), ref(:anonymous)]

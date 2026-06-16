@@ -25,14 +25,17 @@ module Packages
       validate :cargo_reserved_name
       validate :cargo_package_version_already_taken
 
-      scope :with_normalized_cargo_name, ->(name) do
+      scope :with_normalized_cargo_metadata, ->(project_id, name, version) do
         normalized_name = Packages::Cargo.normalize_name(name)
-        joins(:cargo_metadatum).where(packages_cargo_metadata: { normalized_name: normalized_name })
-      end
-
-      scope :with_normalized_cargo_version, ->(version) do
         normalized_version = Packages::Cargo.normalize_version(version) if version
-        joins(:cargo_metadatum).where(packages_cargo_metadata: { normalized_version: normalized_version })
+
+        joins(:cargo_metadatum).where(
+          packages_cargo_metadata: {
+            project_id: project_id,
+            normalized_name: normalized_name,
+            normalized_version: normalized_version
+          }
+        )
       end
 
       def self.cargo_package_already_taken?(project_id, package_name, package_version)

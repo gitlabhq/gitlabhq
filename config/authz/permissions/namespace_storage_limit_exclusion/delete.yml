@@ -1,0 +1,3 @@
+---
+name: delete_namespace_storage_limit_exclusion
+description: Grants the ability to delete namespace storage limit exclusions

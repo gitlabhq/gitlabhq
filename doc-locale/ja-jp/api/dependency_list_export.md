@@ -1,8 +1,9 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: 依存関係リストのエクスポートAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: プロジェクトまたはグループの依存関係のエクスポートファイルを生成およびダウンロードするには、依存関係リストエクスポートAPIを使用します。
+title: 依存関係リストエクスポートAPI
 ---
 
 {{< details >}}
@@ -12,7 +13,7 @@ title: 依存関係リストのエクスポートAPI
 
 {{< /details >}}
 
-このAPIを使用して、[依存関係リスト](../user/application_security/dependency_list/_index.md)をエクスポートします。このAPIを呼び出すには、すべて認証が必要です。
+このAPIを使用して、[依存関係リスト](../user/application_security/dependency_list/_index.md)をエクスポートします。このAPIへのすべての呼び出しには認証が必要です。
 
 ## 依存関係リストのエクスポートを作成する {#create-a-dependency-list-export}
 
@@ -23,7 +24,7 @@ title: 依存関係リストのエクスポートAPI
 
 {{< /history >}}
 
-パイプラインで検出されたすべてのプロジェクト依存関係について、新しいCycloneDX JSONエクスポートを作成します。
+パイプラインで検出されたすべてのプロジェクト依存関係について、CycloneDX JSONエクスポートを作成します。
 
 認証済みユーザーが[read_dependency](../user/custom_roles/abilities.md#vulnerability-management)権限を持っていない場合、このリクエストは`403 Forbidden`ステータスコードを返します。
 
@@ -38,8 +39,8 @@ POST /pipelines/:id/dependency_list_exports
 | 属性           | 型              | 必須   | 説明                                                                                                                  |
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
 | `id`                | 整数           | はい        | 認証済みユーザーがアクセスできるプロジェクト、グループ、またはパイプラインのID。 |
-| `export_type`       | 文字列            | はい        | エクスポートの形式。承認された値のリストについては、[エクスポートの種類](#export-types)を参照してください。 |
-| `send_email`        | ブール値           | いいえ         | `true`に設定すると、エクスポートが完了したときに、エクスポートをリクエストしたユーザーにメール通知が送信されます。 |
+| `export_type`       | 文字列            | はい        | エクスポートの形式。受け入れられる値のリストについては、[export types](#export-types)を参照してください。 |
+| `send_email`        | ブール値           | いいえ         | `true`に設定すると、エクスポートの完了時に、エクスポートをリクエストしたユーザーにメール通知が送信されます。 |
 
 ```shell
 curl --request POST \
@@ -48,9 +49,9 @@ curl --request POST \
   --data "export_type=sbom"
 ```
 
-作成された依存関係リストのエクスポートは、`expires_at`フィールドで指定された時刻に自動的に削除されます。
+作成された依存関係リストエクスポートは、`expires_at`フィールドで指定された時刻に自動的に削除されます。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -65,21 +66,21 @@ curl --request POST \
 }
 ```
 
-### エクスポートの種類 {#export-types}
+### エクスポートタイプ {#export-types}
 
-エクスポートは、さまざまなファイル形式でリクエストできます。一部の形式は、特定のオブジェクトでのみ使用できます。
+エクスポートは、異なるファイル形式でリクエストできます。一部の形式は特定のオブジェクトでのみ利用可能です。
 
-| エクスポートの種類 | 説明 | 利用可能 |
+| エクスポートタイプ | 説明 | 利用可能 |
 | ----------- | ----------- | ------------- |
-| `dependency_list` | キー/バリューペアとして依存関係をリストする標準のJSONオブジェクト。 | プロジェクト |
-| `sbom` | [CycloneDX](https://cyclonedx.org/) 1.4ソフトウェア部品表 | パイプライン |
-| `cyclonedx_1_6_json` | [CycloneDX](https://cyclonedx.org/) 1.6ソフトウェア部品表 | プロジェクト |
+| `dependency_list` | 依存関係をキー/バリューペアとしてリストする標準のJSONオブジェクト。 | プロジェクト |
+| `sbom` | A [CycloneDX](https://cyclonedx.org/) 1.4の部品表 | パイプライン |
+| `cyclonedx_1_6_json` | A [CycloneDX](https://cyclonedx.org/) 1.6の部品表 | プロジェクト |
 | `json_array` | コンポーネントオブジェクトを含むフラットなJSON配列。 | グループ |
-| `csv` | コンマ区切り値（CSV）ドキュメント。 | プロジェクト、グループ |
+| `csv` | カンマ区切り値（CSV）ドキュメント。 | プロジェクト、グループ |
 
-## 単一の依存関係リストのエクスポートを取得 {#get-single-dependency-list-export}
+## 単一の依存関係リストエクスポートを取得する {#retrieve-a-single-dependency-list-export}
 
-単一の依存関係リストのエクスポートを取得します。
+依存関係リストエクスポートを取得します。
 
 ```plaintext
 GET /dependency_list_exports/:id
@@ -87,7 +88,7 @@ GET /dependency_list_exports/:id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数 | はい | 依存関係リストのエクスポートのID。 |
+| `id` | 整数 | はい | 依存関係リストエクスポートのID。 |
 
 ```shell
 curl --request GET \
@@ -95,9 +96,9 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/dependency_list_exports/2"
 ```
 
-ステータスコードは、依存関係リストのエクスポートが生成されている場合は`202 Accepted`、準備ができている場合は`200 OK`です。
+依存関係リストエクスポートが生成されているときはステータスコードが`202 Accepted`で、準備ができたときは`200 OK`です。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -108,9 +109,9 @@ curl --request GET \
 }
 ```
 
-## 依存関係リストのエクスポートをダウンロード {#download-dependency-list-export}
+## 依存関係リストエクスポートをダウンロード {#download-dependency-list-export}
 
-単一の依存関係リストのエクスポートをダウンロードします。
+単一の依存関係リストエクスポートをダウンロードします。
 
 ```plaintext
 GET /dependency_list_exports/:id/download
@@ -118,7 +119,7 @@ GET /dependency_list_exports/:id/download
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数 | はい | 依存関係リストのエクスポートのID。 |
+| `id` | 整数 | はい | 依存関係リストエクスポートのID。 |
 
 ```shell
 curl --request GET \
@@ -126,9 +127,9 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 ```
 
-依存関係リストのエクスポートがまだ完了していないか、見つからなかった場合、応答は`404 Not Found`です。
+依存関係リストエクスポートがまだ完了していないか、見つからなかった場合、応答は`404 Not Found`です。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

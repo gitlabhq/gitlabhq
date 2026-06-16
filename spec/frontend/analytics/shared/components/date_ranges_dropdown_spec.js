@@ -92,8 +92,8 @@ describe('DateRangesDropdown', () => {
         expect(findDateRangeString().exists()).toBe(true);
       });
 
-      it('should not emit `customDateRangeSelected` event', () => {
-        expect(wrapper.emitted('customDateRangeSelected')).toBeUndefined();
+      it('should not emit `custom-date-range-selected` event', () => {
+        expect(wrapper.emitted('custom-date-range-selected')).toBeUndefined();
       });
     });
 
@@ -104,8 +104,8 @@ describe('DateRangesDropdown', () => {
         await nextTick();
       });
 
-      it('should emit `customDateRangeSelected` event', () => {
-        expect(wrapper.emitted('customDateRangeSelected')).toHaveLength(1);
+      it('should emit `custom-date-range-selected` event', () => {
+        expect(wrapper.emitted('custom-date-range-selected')).toHaveLength(1);
       });
 
       it('should hide date range string', () => {

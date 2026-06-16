@@ -167,8 +167,8 @@ pre-push:
       run: .lefthook/gitleaks.sh pre-push
     permissions_docs:
       tags: documentation
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,config/authz/roles/**/*.yml,lib/tasks/gitlab/permissions/**/*.rb,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: '{config/authz/**/*,lib/tasks/gitlab/permissions/**/*.rb,{,ee/}app/policies/**/*.rb,{,ee/}app/graphql/**/*.rb,{,ee/}lib/api/**/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
     unused-methods-linter:
       tags: backend
@@ -283,6 +283,11 @@ pre-commit:
       tags: gitaly
       glob: '{Gemfile.lock,VERSION}'
       run: 'scripts/lint/gitaly_version.rb'
+    skills-parity:
+      tags: claude tooling
+      files: git diff --name-only --diff-filter=d --staged
+      glob: '{.claude/skills/**,.agents/skills/**}'
+      run: scripts/check-skills-parity.sh
 
 auto-fix:
   parallel: true

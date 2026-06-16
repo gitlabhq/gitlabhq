@@ -2,6 +2,7 @@
 import { GlIcon, GlBadge, GlLink } from '@gitlab/ui';
 
 export default {
+  name: 'EnvironmentFolder',
   components: {
     GlIcon,
     GlBadge,

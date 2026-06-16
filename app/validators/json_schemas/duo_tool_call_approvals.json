@@ -16,6 +16,16 @@
         },
         "minItems": 0,
         "uniqueItems": true
+      },
+      "patterns": {
+        "type": "array",
+        "description": "Array of glob patterns for approved tool call arguments",
+        "items": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "uniqueItems": true,
+        "maxItems": 100
       }
     },
     "required": [

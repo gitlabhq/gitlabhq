@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: user, extern_uid: '{123}', provider: :bitbucket) }
+  let_it_be(:identity, freeze: false) { create(:identity, user: user, extern_uid: '{123}', provider: :bitbucket) }
   let(:created_id) { 1 }
   let(:project) { instance_double(Project, creator_id: created_id, id: 1) }
   let(:author_uuid) { '{123}' }

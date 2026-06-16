@@ -6,10 +6,10 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   include Import::UserMappingHelper
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_project) { create(:project, namespace: group, import_type: 'github') }
+  let_it_be(:group_project, freeze: false) { create(:project, namespace: group, import_type: 'github') }
 
   let_it_be(:user) { create(:user, :with_namespace) }
-  let_it_be(:personal_project) { create(:project, namespace: user.namespace, import_type: 'github') }
+  let_it_be(:personal_project, freeze: false) { create(:project, namespace: user.namespace, import_type: 'github') }
 
   let(:project) { group_project }
 

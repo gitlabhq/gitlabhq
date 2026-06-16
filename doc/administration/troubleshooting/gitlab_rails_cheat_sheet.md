@@ -27,7 +27,7 @@ You may want to update your bookmarks accordingly.
 If you are currently having an issue with GitLab,
 it is highly recommended that you first check
 our guide on [the Rails console](../operations/rails_console.md),
-and your [support options](https://about.gitlab.com/support/),
+and your [support options](https://support.gitlab.com/),
 before attempting the information pointed to from here.
 
 > [!warning]

@@ -3,6 +3,7 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { I18N_PAUSED, I18N_PAUSED_DESCRIPTION } from '../constants';
 
 export default {
+  name: 'RunnerPausedBadge',
   components: {
     GlBadge,
   },

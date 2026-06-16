@@ -1,0 +1,10 @@
+---
+name: create_cd_application
+description: Grants the ability to create continuous deployment applications
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_cd_application

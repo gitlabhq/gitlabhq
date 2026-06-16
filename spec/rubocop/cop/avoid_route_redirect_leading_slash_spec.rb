@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_route_redirect_leading_slash'
 
-RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash do
+RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash, feature_category: :tooling do
   before do
     allow(cop).to receive(:in_routes?).and_return(true)
   end

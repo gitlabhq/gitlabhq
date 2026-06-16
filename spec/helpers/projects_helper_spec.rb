@@ -48,7 +48,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'error tracking setting exists' do
-      let_it_be(:error_tracking_setting) { create(:project_error_tracking_setting, project: project) }
+      let_it_be(:error_tracking_setting, freeze: false) { create(:project_error_tracking_setting, project: project) }
 
       context 'api_url present' do
         let(:json) do
@@ -78,7 +78,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe "can_change_visibility_level?" do
-    let_it_be(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
+    let_it_be(:user, freeze: false) { create(:project_member, :reporter, user: create(:user), project: project).user }
 
     let(:forked_project) { fork_project(project, user) }
 
@@ -96,7 +96,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_disable_emails?' do
-    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+    let_it_be(:user, freeze: false) { create(:project_member, :maintainer, user: create(:user), project: project).user }
 
     it 'returns true for the project owner' do
       allow(helper).to receive(:can?).with(project.owner, :set_emails_disabled, project) { true }
@@ -119,7 +119,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_set_diff_preview_in_email?' do
-    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+    let_it_be(:user, freeze: false) { create(:project_member, :maintainer, user: create(:user), project: project).user }
 
     it 'returns true for the project owner' do
       expect(helper.can_set_diff_preview_in_email?(project, project.owner)).to be_truthy
@@ -157,7 +157,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       create_list(:project, 2)
     end
 
-    let_it_be(:projects) { Project.all.to_a }
+    let_it_be(:projects, freeze: false) { Project.all.to_a }
 
     it 'does not execute a database query when project.catalog_resource is accessed' do
       helper.load_catalog_resources(projects)
@@ -210,7 +210,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'with a pipeline' do
-      let_it_be(:pipeline) { create(:ci_pipeline, project: project_with_repo) }
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project_with_repo) }
 
       it 'returns the latest pipeline', :aggregate_failures do
         expect(::Gitlab::GitalyClient).to receive(:call).at_least(:once).and_call_original
@@ -602,12 +602,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(subject).to be_truthy
     end
 
-    it 'returns true when on the "Trending" tab under "Explore projects"' do
-      allow(@request).to receive(:path) { trending_explore_projects_path }
-
-      expect(subject).to be_truthy
-    end
-
     it 'returns false when on the "Your projects" tab' do
       allow(@request).to receive(:path) { dashboard_projects_path }
 
@@ -638,7 +632,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#project_license_name(project)', :request_store do
-    let_it_be(:repository) { project.repository }
+    let_it_be(:repository, freeze: false) { project.repository }
 
     subject { project_license_name(project) }
 
@@ -819,7 +813,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#transfer_project_message' do
-    let_it_be(:project) { create(:project, name: 'My Test  Project') }
+    let_it_be(:project, freeze: false) { create(:project, name: 'My Test  Project') }
 
     it 'includes the project full path' do
       result = helper.transfer_project_message(project)
@@ -991,7 +985,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#fork_button_data_attributes' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
 
     project_forks_path = '/project/forks'
     project_new_fork_path = '/project/new/fork'
@@ -1183,7 +1177,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     describe 'dropdown attributes' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
       let_it_be_with_reload(:project) { create(:project, :public) }
 
       before do
@@ -1214,7 +1208,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       context 'when user can withdraw access' do
-        let_it_be(:access_request) { create(:project_member, :guest, :access_request, project: project, user: user) }
+        let_it_be(:access_request, freeze: false) { create(:project_member, :guest, :access_request, project: project, user: user) }
 
         specify { expect(result[:can_withdraw_access_request]).to eq('true') }
       end
@@ -1255,13 +1249,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject(:archiving_available?) { helper.archiving_available?(project) }
 
     context 'with nil project' do
-      let_it_be(:project) { nil }
+      let_it_be(:project, freeze: false) { nil }
 
       it { is_expected.to be(false) }
     end
 
     context 'with unsaved project' do
-      let_it_be(:project) { build(:project) }
+      let_it_be(:project, freeze: false) { build(:project) }
 
       it { is_expected.to be(false) }
     end
@@ -1319,7 +1313,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'with unsaved project' do
-      let_it_be(:project) { build(:project) }
+      let_it_be(:project, freeze: false) { build(:project) }
 
       it_behaves_like 'does not show the banner'
     end
@@ -1386,27 +1380,27 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when project has a cluster' do
-      let_it_be(:namespace) { project }
+      let_it_be(:namespace, freeze: false) { project }
 
       before do
         create(:cluster, projects: [namespace])
       end
 
       context 'if user can admin cluster' do
-        let_it_be(:user_can_admin_cluster) { true }
+        let_it_be(:user_can_admin_cluster, freeze: false) { true }
 
         it { is_expected.to be_truthy }
       end
 
       context 'if user can not admin cluster' do
-        let_it_be(:user_can_admin_cluster) { false }
+        let_it_be(:user_can_admin_cluster, freeze: false) { false }
 
         it { is_expected.to be_falsey }
       end
     end
 
     context 'when project has a group cluster' do
-      let_it_be(:namespace) { create(:group) }
+      let_it_be(:namespace, freeze: false) { create(:group) }
 
       before do
         project.update!(namespace: namespace)
@@ -1414,29 +1408,29 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       context 'if user can admin cluster' do
-        let_it_be(:user_can_admin_cluster) { true }
+        let_it_be(:user_can_admin_cluster, freeze: false) { true }
 
         it { is_expected.to be_truthy }
       end
 
       context 'if user can not admin cluster' do
-        let_it_be(:user_can_admin_cluster) { false }
+        let_it_be(:user_can_admin_cluster, freeze: false) { false }
 
         it { is_expected.to be_falsey }
       end
     end
 
     context 'when project doesn\'t have a cluster' do
-      let_it_be(:namespace) { project }
+      let_it_be(:namespace, freeze: false) { project }
 
       context 'if user can admin cluster' do
-        let_it_be(:user_can_admin_cluster) { true }
+        let_it_be(:user_can_admin_cluster, freeze: false) { true }
 
         it { is_expected.to be_falsey }
       end
 
       context 'if user can not admin cluster' do
-        let_it_be(:user_can_admin_cluster) { false }
+        let_it_be(:user_can_admin_cluster, freeze: false) { false }
 
         it { is_expected.to be_falsey }
       end
@@ -1473,7 +1467,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'if user has an active licence' do
-      let_it_be(:has_active_license) { true }
+      let_it_be(:has_active_license, freeze: false) { true }
 
       it 'displays the correct messagee' do
         expect(subject).to eq(s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support.'))
@@ -1481,7 +1475,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'if user doesn\'t have an active licence' do
-      let_it_be(:has_active_license) { false }
+      let_it_be(:has_active_license, freeze: false) { false }
 
       it 'displays the correct message' do
         expect(subject).to eq(s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}.'))
@@ -1556,8 +1550,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when fork source is available' do
-      let_it_be(:fork_network) { create(:fork_network, root_project: project_with_repo) }
-      let_it_be(:source_project) { project_with_repo }
+      let_it_be(:fork_network, freeze: false) { create(:fork_network, root_project: project_with_repo) }
+      let_it_be(:source_project, freeze: false) { project_with_repo }
 
       before_all do
         project.fork_network = fork_network
@@ -1738,7 +1732,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#branch_rules_path' do
     subject { helper.branch_rules_path }
 
-    it { is_expected.to eq(project_settings_repository_path(project, anchor: 'js-branch-rules')) }
+    it { is_expected.to eq(project_settings_repository_path(project, anchor: 'branch-rules')) }
   end
 
   describe '#visibility_level_content' do
@@ -1776,7 +1770,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it { is_expected.to be_falsey }
 
     context 'when beyond identity is disabled for a project' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance, active: false) }
+      let_it_be(:integration, freeze: false) { create(:beyond_identity_integration, :instance, active: false) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1786,7 +1780,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when a GPG key failed external validation and one GPC key is externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration, freeze: false) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1798,7 +1792,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when there are no GPG keys externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration, freeze: false) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1810,7 +1804,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when GPG keys are missing' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration, freeze: false) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1927,7 +1921,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#project_unarchive_settings_app_data' do
     let_it_be_with_reload(:ancestor) { create(:group) }
-    let_it_be(:project) { create(:project, group: ancestor) }
+    let_it_be(:project, freeze: false) { create(:project, group: ancestor) }
 
     subject { helper.project_unarchive_settings_app_data(project) }
 

@@ -8,10 +8,14 @@ export default {
     GlBreadcrumb,
   },
   inject: ['projectFullPath', 'projectPath', 'escapedRef', 'refType'],
-  computed: {
-    currentPath() {
-      return this.$route.params.path || '';
+  props: {
+    filePath: {
+      type: String,
+      required: false,
+      default: '',
     },
+  },
+  computed: {
     breadcrumbItems() {
       const items = [];
 
@@ -25,8 +29,8 @@ export default {
         to: projectRootUrl,
       });
 
-      if (this.currentPath) {
-        const parts = this.currentPath.split('/').filter(Boolean);
+      if (this.filePath) {
+        const parts = this.filePath.split('/').filter(Boolean);
 
         parts.forEach((part, index) => {
           const escapedParts = parts.slice(0, index + 1).map((p) => escapeFileUrl(p));

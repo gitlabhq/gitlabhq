@@ -9,12 +9,6 @@ RSpec.describe ::Authn::ServiceAccounts, feature_category: :system_access do
     end
   end
 
-  describe 'LIMIT_FOR_TRIAL' do
-    it 'is set to 100' do
-      expect(described_class::LIMIT_FOR_TRIAL).to eq(100)
-    end
-  end
-
   describe '.creation_allowed_for_saas?', unless: Gitlab.ee? do
     it 'returns true regardless of arguments' do
       expect(described_class.creation_allowed_for_saas?).to be(true)

@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'BranchRuleUpdate'
 
       authorize :update_branch_rule
+      authorize_granular_token permissions: :update_branch_rule,
+        boundary_argument: :id, boundary_type: :project
 
       argument :id, ::Types::GlobalIDType[::Projects::BranchRule],
         required: true,
@@ -27,7 +29,9 @@ module Mutations
       def resolve(id:, **params)
         branch_rule = authorized_find!(id: id)
 
-        response = ::BranchRules::UpdateService.new(branch_rule, current_user, params).execute
+        response = ::BranchRules::UpdateService.new(branch_rule, user: current_user, params: params).execute
+
+        raise_resource_not_available_error! if response.error? && response.cause.access_denied?
 
         { branch_rule: (branch_rule if response.success?), errors: response.errors }
       end

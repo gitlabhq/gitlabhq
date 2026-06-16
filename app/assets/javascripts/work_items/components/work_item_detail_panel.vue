@@ -239,18 +239,15 @@ export default {
 
 <template>
   <mounting-portal v-if="open" mount-to="#contextual-panel-portal" append>
-    <div
-      data-testid="work-item-detail-panel"
-      class="work-item-detail-panel gl-pt-4 gl-leading-reset"
-    >
+    <div data-testid="work-item-detail-panel" class="work-item-detail-panel gl-leading-reset">
       <div class="work-item-detail-panel-header">
-        <div class="gl-flex gl-grow gl-items-center gl-gap-2">
+        <div class="gl-flex gl-min-w-0 gl-grow gl-items-center gl-gap-2">
           <!-- eslint-disable local-rules/vue-no-web-url -->
           <gl-link
             ref="workItemUrl"
             data-testid="work-item-detail-panel-ref-link"
             :href="activeItem.webUrl"
-            class="gl-text-sm gl-font-bold gl-text-default"
+            class="gl-truncate gl-text-sm gl-font-bold gl-text-default"
             @click="redirectToWorkItem"
           >
             {{ headerReference }}
@@ -267,28 +264,30 @@ export default {
             @click="handleCopyToClipboard"
           />
         </div>
-        <gl-button
-          v-gl-tooltip.bottom
-          data-testid="work-item-detail-panel-link-button"
-          :href="activeItem.webUrl"
-          :title="$options.i18n.openTooltipText"
-          category="tertiary"
-          icon="maximize"
-          size="small"
-          :aria-label="$options.i18n.openTooltipText"
-          @click="redirectToWorkItem"
-        />
-        <!-- eslint-enable local-rules/vue-no-web-url -->
-        <gl-button
-          v-gl-tooltip.bottom
-          class="gl-detail-panel-close-button"
-          category="tertiary"
-          icon="close"
-          size="small"
-          :aria-label="$options.i18n.closePanelText"
-          :title="$options.i18n.closePanelText"
-          @click="handleClose"
-        />
+        <div class="panel-header-controls">
+          <gl-button
+            v-gl-tooltip.bottom
+            data-testid="work-item-detail-panel-link-button"
+            :href="activeItem.webUrl"
+            :title="$options.i18n.openTooltipText"
+            category="tertiary"
+            icon="maximize"
+            size="small"
+            :aria-label="$options.i18n.openTooltipText"
+            @click="redirectToWorkItem"
+          />
+          <!-- eslint-enable local-rules/vue-no-web-url -->
+          <gl-button
+            v-gl-tooltip.bottom
+            class="gl-detail-panel-close-button"
+            category="tertiary"
+            icon="close"
+            size="small"
+            :aria-label="$options.i18n.closePanelText"
+            :title="$options.i18n.closePanelText"
+            @click="handleClose"
+          />
+        </div>
       </div>
       <work-item-metadata-provider :full-path="activeItemFullPath">
         <!-- eslint-disable vue/custom-event-name-casing, vue/v-on-event-hyphenation-->

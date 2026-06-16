@@ -33,7 +33,7 @@ RSpec.describe RapidDiffs::DiffVersionEntity, feature_category: :code_review_wor
       expect(serialized).to include(
         :id,
         :version_index,
-        :head,
+        :is_merge_head,
         :latest,
         :short_commit_sha,
         :commits_count,

@@ -318,7 +318,7 @@ describe('Design overlay component', () => {
           newCoordinates,
         );
 
-        findOverlay().vm.$emit('mouseleave');
+        await findOverlay().trigger('mouseleave');
         expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
       });
 

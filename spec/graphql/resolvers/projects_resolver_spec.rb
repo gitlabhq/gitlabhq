@@ -8,21 +8,21 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
   describe '#resolve' do
     subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }).items }
 
-    let_it_be(:user) { create(:user, :with_namespace) }
-    let_it_be(:group) { create(:group, name: 'public-group') }
-    let_it_be(:private_group) { create(:group, name: 'private-group', developers: user) }
-    let_it_be(:project) { create(:project, :public, topic_list: %w[ruby javascript], developers: user) }
-    let_it_be(:other_project) { create(:project, :public) }
-    let_it_be(:archived_project) { create(:project, :public, :archived, developers: user) }
-    let_it_be(:group_project) { create(:project, :public, group: group) }
-    let_it_be(:private_project) { create(:project, :private, developers: user) }
-    let_it_be(:other_private_project) { create(:project, :private) }
-    let_it_be(:private_group_project) { create(:project, :private, group: private_group) }
-    let_it_be(:private_personal_project) { create(:project, :private, namespace: user.namespace) }
-    let_it_be(:other_org) { create(:organization, :private) }
-    let_it_be(:other_org_project) { create(:project, organization: other_org, topic_list: ['postgres']) }
-    let_it_be(:marked_for_deletion_on) { Date.yesterday }
-    let_it_be(:project_marked_for_deletion) do
+    let_it_be(:user, freeze: false) { create(:user, :with_namespace) }
+    let_it_be(:group, freeze: false) { create(:group, name: 'public-group') }
+    let_it_be(:private_group, freeze: false) { create(:group, name: 'private-group', developers: user) }
+    let_it_be(:project, freeze: false) { create(:project, :public, topic_list: %w[ruby javascript], developers: user) }
+    let_it_be(:other_project, freeze: false) { create(:project, :public) }
+    let_it_be(:archived_project, freeze: false) { create(:project, :public, :archived, developers: user) }
+    let_it_be(:group_project, freeze: false) { create(:project, :public, group: group) }
+    let_it_be(:private_project, freeze: false) { create(:project, :private, developers: user) }
+    let_it_be(:other_private_project, freeze: false) { create(:project, :private) }
+    let_it_be(:private_group_project, freeze: false) { create(:project, :private, group: private_group) }
+    let_it_be(:private_personal_project, freeze: false) { create(:project, :private, namespace: user.namespace) }
+    let_it_be(:other_org, freeze: false) { create(:organization, :private) }
+    let_it_be(:other_org_project, freeze: false) { create(:project, organization: other_org, topic_list: ['postgres']) }
+    let_it_be(:marked_for_deletion_on, freeze: false) { Date.yesterday }
+    let_it_be(:project_marked_for_deletion, freeze: false) do
       create(:project, name: project.name, marked_for_deletion_at: marked_for_deletion_on, developers: user)
     end
 
@@ -196,10 +196,10 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
         end
 
         context 'when sorting' do
-          let_it_be(:named_project1) { create(:project, :public, name: 'projAB', path: 'projAB') }
-          let_it_be(:named_project2) { create(:project, :public, name: 'projABC', path: 'projABC') }
-          let_it_be(:named_project3) { create(:project, :public, name: 'projA', path: 'projA') }
-          let_it_be(:named_projects) { [named_project1, named_project2, named_project3] }
+          let_it_be(:named_project1, freeze: false) { create(:project, :public, name: 'projAB', path: 'projAB') }
+          let_it_be(:named_project2, freeze: false) { create(:project, :public, name: 'projABC', path: 'projABC') }
+          let_it_be(:named_project3, freeze: false) { create(:project, :public, name: 'projA', path: 'projA') }
+          let_it_be(:named_projects, freeze: false) { [named_project1, named_project2, named_project3] }
 
           context 'when sorting by similarity' do
             let(:filters) { { search: 'projA', sort: 'similarity' } }
@@ -258,17 +258,17 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
         end
 
         context 'when last_repository_check_failed filter is provided' do
-          let_it_be(:admin) { create(:admin) }
+          let_it_be(:admin, freeze: false) { create(:admin) }
 
-          let_it_be(:project_repository_check_failed) do
+          let_it_be(:project_repository_check_failed, freeze: false) do
             project.tap { |p| p.update!(last_repository_check_failed: true) }
           end
 
-          let_it_be(:project_repository_check_success) do
+          let_it_be(:project_repository_check_success, freeze: false) do
             other_project.tap { |p| p.update!(last_repository_check_failed: false) }
           end
 
-          let_it_be(:project_repository_check_nil) do
+          let_it_be(:project_repository_check_nil, freeze: false) do
             group_project.tap { |p| p.update!(last_repository_check_failed: nil) }
           end
 

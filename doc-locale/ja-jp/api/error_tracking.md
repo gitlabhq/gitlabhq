@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: エラートラッキングAPI
 ---
 
@@ -12,15 +12,15 @@ title: エラートラッキングAPI
 
 {{< /details >}}
 
-このAPIを使用して、プロジェクトのError Tracking機能とやり取りします。詳細については、[Error Tracking](../operations/error_tracking.md)を参照してください。
+このAPIを使用して、プロジェクトのエラートラッキング機能と対話します。詳細については、[エラートラッキング](../operations/error_tracking.md)を参照してください。
 
-前提要件: 
+前提条件: 
 
-- メンテナーロール以上が必要です。
+- メンテナーまたはオーナーのロールを持っている必要があります。
 
-## Error Tracking設定を取得します {#get-error-tracking-settings}
+## エラートラッキング設定を取得する {#retrieve-error-tracking-settings}
 
-指定されたプロジェクトのError Tracking設定を取得します。
+指定されたプロジェクトのエラートラッキング設定を取得する。
 
 ```plaintext
 GET /projects/:id/error_tracking/settings
@@ -35,7 +35,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -47,7 +47,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Error Tracking設定を作成します {#create-error-tracking-settings}
+## エラートラッキング設定を作成 {#create-error-tracking-settings}
 
 {{< history >}}
 
@@ -55,34 +55,32 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-指定されたプロジェクトのError Tracking設定を作成します。
+指定されたプロジェクトのエラートラッキング設定を作成します。
 
-{{< alert type="note" >}}
-
-このAPIは、[integrated error tracking](../operations/integrated_error_tracking.md)で使用する場合にのみ使用できます。
-
-{{< /alert >}}
+> [!note]
+> このAPIは、[統合エラートラッキング](../operations/integrated_error_tracking.md)と組み合わせて使用する場合にのみ利用可能です。
 
 ```plaintext
 PUT /projects/:id/error_tracking/settings
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型    | 必須 | 説明                                                                                                                                                     |
 | ------------ | ------- |----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`         | 整数 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                            |
-| `active`     | ブール値 | はい      | `true`を渡してError Tracking設定構成を有効にするか、`false`を渡して無効にします。                                                                        |
-| `integrated` | ブール値 | はい      | `true`を渡して、統合されたError Trackingバックエンドを有効にします。 |
+| `active`     | ブール値 | はい      | `true`を渡してエラートラッキング設定の構成を有効にするか、`false`を渡して無効にします。                                                                        |
+| `integrated` | ブール値 | はい      | `true`を渡して統合エラートラッキングバックエンドを有効にします。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true&integrated=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -94,9 +92,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Error Trackingプロジェクト設定を有効化します {#activate-the-error-tracking-project-settings}
+## エラートラッキングプロジェクト設定を更新 {#update-error-tracking-project-settings}
 
-指定されたプロジェクトのError Tracking設定をアクティブ化または非アクティブ化します。
+指定されたプロジェクトのエラートラッキング設定を更新します。
 
 ```plaintext
 PATCH /projects/:id/error_tracking/settings
@@ -105,15 +103,16 @@ PATCH /projects/:id/error_tracking/settings
 | 属性    | 型    | 必須 | 説明           |
 | ------------ | ------- | -------- | --------------------- |
 | `id`         | 整数 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `active`     | ブール値 | はい      | `true`を渡して、すでに構成されているError Tracking設定を有効にするか、`false`を渡して無効にします。 |
-| `integrated` | ブール値 | いいえ       | `true`を渡して、統合されたError Trackingバックエンドを有効にします。 |
+| `active`     | ブール値 | はい      | `true`を渡してすでに構成されているエラートラッキング設定を有効にするか、`false`を渡して無効にします。 |
+| `integrated` | ブール値 | いいえ       | `true`を渡して統合エラートラッキングバックエンドを有効にします。 |
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -125,9 +124,9 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## すべてのプロジェクトクライアントキーを一覧表示します {#list-all-project-client-keys}
+## すべてのプロジェクトクライアントキーを一覧表示 {#list-all-project-client-keys}
 
-指定されたプロジェクトのすべての[integrated error tracking](../operations/integrated_error_tracking.md)クライアントキーをリストします。
+指定されたプロジェクトのすべての[統合エラートラッキング](../operations/integrated_error_tracking.md)クライアントキーを一覧表示します。
 
 ```plaintext
 GET /projects/:id/error_tracking/client_keys
@@ -142,7 +141,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -161,9 +160,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## クライアントキーを作成します {#create-a-client-key}
+## クライアントキーを作成 {#create-a-client-key}
 
-指定されたプロジェクトの[integrated error tracking](../operations/integrated_error_tracking.md)クライアントキーを作成します。公開キーの属性は自動的に生成されます。
+指定されたプロジェクトの[統合エラートラッキング](../operations/integrated_error_tracking.md)クライアントキーを作成します。パブリックキー属性は自動的に生成されます。
 
 ```plaintext
 POST /projects/:id/error_tracking/client_keys
@@ -180,7 +179,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -191,9 +190,9 @@ curl --request POST \
 }
 ```
 
-## クライアントキーを削除します {#delete-a-client-key}
+## クライアントキーを削除 {#delete-a-client-key}
 
-指定されたプロジェクトから[integrated error tracking](../operations/integrated_error_tracking.md)クライアントキーを削除します。
+指定されたプロジェクトから[統合エラートラッキング](../operations/integrated_error_tracking.md)クライアントキーを削除します。
 
 ```plaintext
 DELETE /projects/:id/error_tracking/client_keys/:key_id
@@ -205,6 +204,7 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 | `key_id`  | 整数 | はい | クライアントキーのID。 |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
 ```

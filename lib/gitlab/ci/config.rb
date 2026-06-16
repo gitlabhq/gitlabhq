@@ -154,6 +154,14 @@ module Gitlab
         normalizer.errors
       end
 
+      # Returns a mapping of original job names to their normalized (expanded) names
+      # for jobs that use parallel:matrix or parallel:N
+      def job_name_mappings
+        Gitlab::Ci::Config::FeatureFlags.with_actor(@project) do
+          normalizer.job_name_mappings
+        end
+      end
+
       def included_templates
         @context.includes.filter_map { |i| i[:location] if i[:type] == :template }
       end

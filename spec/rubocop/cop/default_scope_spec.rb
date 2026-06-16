@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/default_scope'
 
-RSpec.describe RuboCop::Cop::DefaultScope do
+RSpec.describe RuboCop::Cop::DefaultScope, feature_category: :database do
   it 'does not flag the use of default_scope with a send receiver' do
     expect_no_offenses('foo.default_scope')
   end

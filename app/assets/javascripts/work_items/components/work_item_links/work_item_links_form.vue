@@ -307,6 +307,7 @@ export default {
               id: this.issuableGid,
               childrenIds: this.workItemsToAdd.map((wi) => wi.id),
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (
             cache,

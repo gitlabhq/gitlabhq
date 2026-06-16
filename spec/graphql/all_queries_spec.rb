@@ -63,7 +63,7 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/security_configuration/graphql/security_configuration.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboards.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboard.query.graphql
-    app/assets/javascripts/explore/analytics_dashboards/graphql/create_custom_dashboard.mutation.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql
   ]
 
   Gitlab::Graphql::Queries.all.each do |definition| # rubocop:disable Rails/FindEach -- Not an ActiveRecord relation

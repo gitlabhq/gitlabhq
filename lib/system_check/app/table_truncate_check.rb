@@ -25,7 +25,7 @@ module SystemCheck
           sudo_gitlab("bundle exec rake #{@rake_tasks.join(' ')}")
         )
         for_more_information(
-          "doc/development/database/multiple_databases.md in section 'Truncating tables'"
+          'doc/development/database/multiple_databases.md#truncating-tables'
         )
         fix_and_rerun
       end

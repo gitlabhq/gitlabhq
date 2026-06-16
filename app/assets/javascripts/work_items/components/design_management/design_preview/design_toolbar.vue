@@ -65,6 +65,7 @@ export default {
       required: false,
     },
   },
+  emits: ['archive-design', 'todosUpdated', 'toggle-sidebar'],
   computed: {
     toggleCommentsButtonLabel() {
       return this.isSidebarOpen

@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe ReleasePresenter do
+RSpec.describe ReleasePresenter, feature_category: :release_orchestration do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   let(:developer) { create(:user) }
   let(:guest) { create(:user) }
@@ -26,14 +26,30 @@ RSpec.describe ReleasePresenter do
   describe '#commit_path' do
     subject { presenter.commit_path }
 
-    it 'returns commit path' do
-      is_expected.to eq(project_commit_path(project, release.commit.id))
+    it 'returns commit path without a Gitaly call' do
+      expect { is_expected.to eq(project_commit_path(project, release.sha)) }
+        .not_to change { Gitlab::GitalyClient.get_request_count }
     end
 
-    context 'when commit is not found' do
-      let(:release) { create(:release, project: project, sha: 'not-found') }
+    context 'when release has no stored sha' do
+      let(:release) { build_stubbed(:release, project: project, sha: nil) }
+      let(:commit) { instance_double(Commit, id: 'abcdef0123456789') }
 
-      it { is_expected.to be_nil }
+      before do
+        allow(release).to receive(:commit).and_return(commit)
+      end
+
+      it 'falls back to resolving the commit via the tag' do
+        is_expected.to eq(project_commit_path(project, commit.id))
+      end
+
+      context 'and the tag does not resolve to a commit' do
+        before do
+          allow(release).to receive(:commit).and_return(nil)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     context 'when user is guest' do

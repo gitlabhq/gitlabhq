@@ -2,6 +2,8 @@
 description: Tracks when the secure file is deleted.
 action: delete_secure_file
 product_group: mobile_devops
+product_categories:
+- mobile_devops
 milestone: '15.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90449
 tiers:

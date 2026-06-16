@@ -5,7 +5,8 @@ classes:
 - OauthAccessGrant
 feature_categories:
 - system_access
-description: TODO
+description: Stores OAuth authorization grants issued during the OAuth authorization
+  code flow.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e41dadcb33fda44ee274daa673bd933e13aa90eb
 milestone: '7.7'
 gitlab_schema: gitlab_main_org

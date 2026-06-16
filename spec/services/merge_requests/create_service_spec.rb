@@ -7,8 +7,8 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
   include AfterNextHelpers
 
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
 
   describe '#execute' do
     context 'valid params' do
@@ -461,7 +461,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
     context 'merge request create service' do
       context 'asssignee_id' do
-        let_it_be(:user2) { create(:user) }
+        let_it_be(:user2, freeze: false) { create(:user) }
 
         before_all do
           project.add_maintainer(user)

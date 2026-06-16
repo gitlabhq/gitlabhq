@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Conan v2 API
 ---
 
@@ -15,35 +15,26 @@ title: Conan v2 API
 {{< history >}}
 
 - GitLab 17.11で`conan_package_revisions_support`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/519741)されました。デフォルトでは無効になっています。
-- GitLab 18.3の[GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14896)で有効になりました。機能フラグ`conan_package_revisions_support`は削除されました。
+- GitLab 18.3で[GitLab.comで有効化](https://gitlab.com/groups/gitlab-org/-/epics/14896)されました。機能フラグ`conan_package_revisions_support`は削除されました。
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+このAPIを使用して、[Conan v2パッケージマネージャー](../../user/packages/conan_2_repository/_index.md)と連携します。Conan v1オペレーションについては、[Conan v1 API](conan_v1.md)を参照してください。
 
-{{< /alert >}}
+> [!note]
+> これらのエンドポイントは、標準のAPI認証メソッドに準拠していません。認証情報がどのように渡されるかについては、各ルートで詳細を確認してください。記載されていない認証方法は、将来削除される可能性があります。
 
-{{< alert type="note" >}}
+一般的に、これらのエンドポイントは[Conan 2パッケージマネージャークライアント](https://docs.conan.io/2/index.html)によって使用され、手動での利用は想定されていません。
 
-Conan v1の操作については、[Conan v1 API](conan_v1.md)を参照してください。
+> [!warning]
+> ConanレジストリはFIPSに準拠しておらず、FIPSモードが有効になっている場合は無効になります。これらのエンドポイントはすべて`404 Not Found`を返します。
 
-{{< /alert >}}
+## 認証トークンを作成する {#create-an-authentication-token}
 
-このAPIを使用して、[Conan v2パッケージマネージャー](../../user/packages/conan_2_repository/_index.md)とやり取りします。
-
-通常、これらのエンドポイントは[Conan 2パッケージマネージャークライアント](https://docs.conan.io/2/index.html)によって使用され、手動での使用は意図されていません。
-
-{{< alert type="note" >}}
-
-- これらのエンドポイントは、標準のAPI認証方法に準拠していません。認証情報の受け渡し方法の詳細については、各ルートを参照してください。記載されていない認証方法は、将来削除される可能性があります。
-
-- Conanレジストリは連邦情報処理規格に準拠しておらず、FIPSモードが有効になっている場合は無効になります。これらのエンドポイントはすべて`404 Not Found`を返します。{{< /alert >}}
-
-## 認証トークンを作成します {#create-an-authentication-token}
-
-他のリクエストでBearerヘッダーとして使用するJSON Webトークン（JWT）を作成します。
+他のリクエストでBearerヘッダーとして使用するJSON Webトークン (JWT) を作成します。
 
 ```shell
 "Authorization: Bearer <authenticate_token>
@@ -57,15 +48,15 @@ GET /projects/:id/packages/conan/v2/users/authenticate
 
 | 属性 | 型   | 必須      | 説明                                                                  |
 | --------- | ------ | ------------- | ---------------------------------------------------------------------------- |
-| `id`      | 文字列 | 条件付き | プロジェクトIDまたは完全なプロジェクトパス。プロジェクトエンドポイントでのみ必須。 |
+| `id`      | 文字列 | 条件付き | プロジェクトIDまたは完全なプロジェクトパス。プロジェクトエンドポイントにのみ必要です。 |
 
-base64でエンコードされたBasic基本認証トークンを生成します:
+base64エンコードされたBasic認証トークンを生成します:
 
 ```shell
 echo -n "<username>:<your_access_token>"|base64
 ```
 
-base64でエンコードされたBasic基本認証トークンを使用して、JWTトークンを取得します:
+base64エンコードされたBasic認証トークンを使用してJWTトークンを取得する:
 
 ```shell
 curl --request GET \
@@ -73,15 +64,15 @@ curl --request GET \
      --url "https://gitlab.example.com/api/v4/packages/conan/v2/users/authenticate"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```shell
 eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQiOjQwNTkyNTQsImp0aSI6IjdlNzBiZTNjLWFlNWQtNDEyOC1hMmIyLWZiOThhZWM0MWM2OSIsImlhd3r1MTYxNjYyMzQzNSwibmJmIjoxNjE2NjIzNDMwLCJleHAiOjE2MTY2MjcwMzV9.QF0Q3ZIB2GW5zNKyMSIe0HIFOITjEsZEioR-27Rtu7E
 ```
 
-## 認証情報を確認する {#verify-authentication-credentials}
+## 認証情報を検証する {#verify-authentication-credentials}
 
-Basic基本認証認証情報、またはConan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token)エンドポイントから生成されたConan JWTの有効性を検証します。
+Basic認証の認証情報、またはConan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token)エンドポイントから生成された指定のConan JWTの有効性を検証します。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/users/check_credentials
@@ -97,7 +88,7 @@ curl --request GET \
      --url "https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan/v2/users/check_credentials"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```plaintext
 ok
@@ -105,7 +96,7 @@ ok
 
 ## Conanパッケージを検索する {#search-for-a-conan-package}
 
-指定された名前のConanパッケージをプロジェクトで検索します。
+指定したConanパッケージをプロジェクトで検索します。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/search?q=:query
@@ -122,7 +113,7 @@ curl --request GET \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/search?q=Hello*"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -138,7 +129,7 @@ curl --request GET \
 }
 ```
 
-## 最新のレシピリビジョンを取得します {#get-latest-recipe-revision}
+## 最新のレシピリビジョンを取得する {#retrieve-latest-recipe-revision}
 
 最新のパッケージレシピのリビジョンハッシュと作成日を取得します。
 
@@ -149,9 +140,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 
 ```shell
@@ -159,7 +150,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/latest"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -168,7 +159,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-## すべてのレシピリビジョンをリストします {#list-all-recipe-revisions}
+## すべてのレシピリビジョンをリストする {#list-all-recipe-revisions}
 
 パッケージレシピのすべてのリビジョンをリストします。
 
@@ -179,9 +170,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 
 ```shell
@@ -189,7 +180,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -207,9 +198,9 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-## レシピリビジョンを削除します {#delete-a-recipe-revision}
+## レシピリビジョンを削除する {#delete-a-recipe-revision}
 
-レジストリからレシピリビジョンを削除します。パッケージにレシピリビジョンが1つしかない場合、パッケージも削除されます。
+指定したレシピリビジョンをレジストリから削除します。パッケージにレシピリビジョンが1つしかない場合、パッケージも削除されます。
 
 ```plaintext
 DELETE /projects/:id/packages/conan/conans/:package_name/package_version/:package_username/:package_channel/revisions/:recipe_revision
@@ -218,9 +209,9 @@ DELETE /projects/:id/packages/conan/conans/:package_name/package_version/:packag
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`  | 文字列 | はい      | 削除するレシピリビジョンのリビジョンハッシュ。                                                |
 
@@ -230,7 +221,7 @@ curl --request DELETE \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/2be19f5a69b2cb02ab576755252319b9"
 ```
 
-## すべてのレシピファイルをリストします {#list-all-recipe-files}
+## すべてのレシピファイルをリストする {#list-all-recipe-files}
 
 パッケージレジストリからすべてのレシピファイルをリストします。
 
@@ -241,9 +232,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`  | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
 
@@ -252,7 +243,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -264,9 +255,9 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-## レシピファイルを取得する {#get-a-recipe-file}
+## レシピファイルを取得する {#retrieve-a-recipe-file}
 
-パッケージレジストリからレシピファイルを取得します。
+指定されたレシピファイルをパッケージレジストリから取得する。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
@@ -275,9 +266,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`  | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
 | `file_name`        | 文字列 | はい      | リクエストされたファイルの名前とファイル拡張子。                                          |
@@ -287,7 +278,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py"
 ```
 
-次の方法で、出力をファイルに書き込むこともできます:
+次のコマンドを使用して、出力をファイルに書き込むこともできます:
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
@@ -299,7 +290,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 
 ## レシピファイルをアップロードする {#upload-a-recipe-file}
 
-レシピファイルをパッケージレジストリにアップロードします。
+指定されたレシピファイルをパッケージレジストリにアップロードします。
 
 ```plaintext
 PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
@@ -308,9 +299,9 @@ PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性          | 型   | 必須 | 説明                                                                                 |
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`               | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`     | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`     | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`  | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username` | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`  | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`  | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
 | `file_name`        | 文字列 | はい      | リクエストされたファイルの名前とファイル拡張子。                                          |
@@ -322,7 +313,7 @@ curl --request PUT \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/upload-v2-package/1.0.0/user/stable/revisions/123456789012345678901234567890ab/files/conanfile.py"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -353,7 +344,7 @@ curl --request PUT \
 }
 ```
 
-## すべてのパッケージリビジョンをリストします {#list-all-package-revisions}
+## すべてのパッケージリビジョンをリストする {#list-all-package-revisions}
 
 特定のレシピリビジョンとパッケージ参照のすべてのパッケージリビジョンをリストします。
 
@@ -364,19 +355,19 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性                 | 型   | 必須 | 説明                                                                                 |
 | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`                      | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`            | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`            | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`         | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`         | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`         | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
-| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanはこの値を生成します。                              |
+| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanがこの値を生成します。                              |
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -394,9 +385,9 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-## 最新のパッケージリビジョンを取得します {#get-latest-package-revision}
+## 最新のパッケージリビジョンを取得する {#retrieve-latest-package-revision}
 
-特定のレシピリビジョンおよびパッケージ参照の最新のパッケージリビジョンのリビジョンハッシュと作成日を取得します。
+指定したレシピリビジョンおよびパッケージ参照の最新のパッケージリビジョンのリビジョンハッシュと作成日を取得します。
 
 ```plaintext
 GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest
@@ -405,19 +396,19 @@ GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version
 | 属性                 | 型   | 必須 | 説明                                                                                 |
 | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`                      | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`            | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`            | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`         | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`         | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`         | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
-| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanはこの値を生成します。                              |
+| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanがこの値を生成します。                              |
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/latest"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -426,9 +417,9 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-## パッケージリビジョンを削除します {#delete-a-package-revision}
+## パッケージリビジョンを削除する {#delete-a-package-revision}
 
-レジストリからパッケージリビジョンを削除します。パッケージ参照にパッケージリビジョンが1つしかない場合、パッケージ参照も削除されます。
+指定したパッケージリビジョンをレジストリから削除します。パッケージ参照にパッケージリビジョンが1つしかない場合、そのパッケージ参照も削除されます。
 
 ```plaintext
 DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision
@@ -437,12 +428,12 @@ DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:pa
 | 属性                 | 型   | 必須 | 説明                                                                                 |
 | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`                      | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`            | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`            | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`         | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`         | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`         | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                             |
-| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanはこの値を生成します。                              |
+| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanがこの値を生成します。                              |
 | `package_revision`        | 文字列 | はい      | パッケージのリビジョン。`0`の値は受け入れません。                                    |
 
 ```shell
@@ -451,9 +442,9 @@ curl --request DELETE \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c"
 ```
 
-## パッケージファイルを取得する {#get-a-package-file}
+## パッケージファイルを取得する {#retrieve-a-package-file}
 
-パッケージレジストリからパッケージファイルを取得します。
+指定されたパッケージファイルをパッケージレジストリから取得する。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
@@ -462,12 +453,12 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性                 | 型   | 必須 | 説明                                                                                 |
 | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`                      | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`            | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`            | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`         | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`         | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`         | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
-| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanはこの値を生成します。                              |
+| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanがこの値を生成します。                              |
 | `package_revision`        | 文字列 | はい      | パッケージのリビジョン。`0`の値は受け入れません。                                    |
 | `file_name`               | 文字列 | はい      | リクエストされたファイルの名前とファイル拡張子。                                          |
 
@@ -476,7 +467,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
 ```
 
-次の方法で、出力をファイルに書き込むこともできます:
+次のコマンドを使用して、出力をファイルに書き込むこともできます:
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
@@ -488,7 +479,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 
 ## パッケージファイルをアップロードする {#upload-a-package-file}
 
-パッケージファイルをパッケージレジストリにアップロードします。
+指定されたパッケージファイルをパッケージレジストリにアップロードします。
 
 ```plaintext
 PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
@@ -497,16 +488,16 @@ PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性                 | 型   | 必須 | 説明                                                                                 |
 | ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
 | `id`                      | 文字列 | はい      | プロジェクトIDまたは完全なプロジェクトパス。                                                        |
-| `package_name`            | 文字列 | はい      | パッケージ名。                                                                          |
+| `package_name`            | 文字列 | はい      | パッケージの名前。                                                                          |
 | `package_version`         | 文字列 | はい      | パッケージのバージョン。                                                                       |
-| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`        | 文字列 | はい      | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`         | 文字列 | はい      | パッケージのチャンネル。                                                                       |
 | `recipe_revision`         | 文字列 | はい      | レシピのリビジョン。`0`の値は受け入れません。                                     |
-| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanはこの値を生成します。                              |
+| `conan_package_reference` | 文字列 | はい      | Conanパッケージの参照ハッシュ。Conanがこの値を生成します。                              |
 | `package_revision`        | 文字列 | はい      | パッケージのリビジョン。`0`の値は受け入れません。                                    |
 | `file_name`               | 文字列 | はい      | リクエストされたファイルの名前とファイル拡張子。                                          |
 
-リクエストの本文で、ファイルの内容を提供します:
+リクエストボディでファイルコンテキストを指定してください:
 
 ```shell
 curl --request PUT \
@@ -515,7 +506,7 @@ curl --request PUT \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -546,9 +537,9 @@ curl --request PUT \
 }
 ```
 
-## パッケージ参照メタデータを取得する {#get-package-references-metadata}
+## パッケージ参照メタデータを取得する {#retrieve-package-references-metadata}
 
-パッケージのすべてのパッケージ参照のメタデータを取得します。
+指定されたパッケージのすべてのパッケージ参照のメタデータを取得する。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/search
@@ -557,9 +548,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`                | 文字列 | はい | プロジェクトIDまたは完全なプロジェクトパス。 |
-| `package_name`      | 文字列 | はい | パッケージ名。 |
+| `package_name`      | 文字列 | はい | パッケージの名前。 |
 | `package_version`   | 文字列 | はい | パッケージのバージョン。 |
-| `package_username`  | 文字列 | はい | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`  | 文字列 | はい | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`   | 文字列 | はい | パッケージのチャンネル。 |
 
 ```shell
@@ -567,7 +558,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/search"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -591,16 +582,16 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-出力には、各パッケージ参照について、次のメタデータが含まれます:
+応答には、各パッケージ参照の次のメタデータが含まれています:
 
 - `settings`: パッケージに使用されるビルド設定。
-- `options`: パッケージオプション。
+- `options`: パッケージのオプション。
 - `requires`: パッケージに必要な依存関係。
 - `recipe_hash`: レシピのハッシュ。
 
-## レシピリビジョンでパッケージ参照メタデータを取得します {#get-package-references-metadata-by-recipe-revision}
+## レシピリビジョン別にパッケージ参照のメタデータを取得する {#retrieve-package-references-metadata-by-recipe-revision}
 
-特定のレシピリビジョンに関連付けられているすべてのパッケージ参照のメタデータを取得します。
+指定したレシピリビジョンに関連付けられたすべてのパッケージ参照のメタデータを取得します。
 
 ```plaintext
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search
@@ -609,9 +600,9 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`                | 文字列 | はい | プロジェクトIDまたは完全なプロジェクトパス。 |
-| `package_name`      | 文字列 | はい | パッケージ名。 |
+| `package_name`      | 文字列 | はい | パッケージの名前。 |
 | `package_version`   | 文字列 | はい | パッケージのバージョン。 |
-| `package_username`  | 文字列 | はい | パッケージのConanユーザー名。この属性は、プロジェクトの`+`区切りのフルパスです。 |
+| `package_username`  | 文字列 | はい | パッケージのConanユーザー名。この属性は、`+`で区切られたプロジェクトの完全なパスです。 |
 | `package_channel`   | 文字列 | はい | パッケージのチャンネル。 |
 | `recipe_revision`   | 文字列 | はい | レシピのリビジョン。`0`の値は受け入れません。 |
 
@@ -620,7 +611,7 @@ curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/search"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -644,9 +635,9 @@ curl --header "Authorization: Bearer <authenticate_token>" \
 }
 ```
 
-出力には、各パッケージ参照について、次のメタデータが含まれます:
+応答には、各パッケージ参照の次のメタデータが含まれています:
 
 - `settings`: パッケージに使用されるビルド設定。
-- `options`: パッケージオプション。
+- `options`: パッケージのオプション。
 - `requires`: パッケージに必要な依存関係。
 - `recipe_hash`: レシピのハッシュ。

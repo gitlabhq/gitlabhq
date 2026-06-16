@@ -3,6 +3,7 @@ import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE, I18N_ADMIN } from '../../constants';
 
 export default {
+  name: 'RunnerOwnerCell',
   components: {
     GlLink,
   },

@@ -197,7 +197,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
-      desc 'Get a project repository commits' do
+      desc 'List all repository commits' do
+        detail 'Lists all commits for a specified project repository.'
         success code: 200, model: Entities::Commit
         tags %w[commits]
         is_array true
@@ -215,11 +216,11 @@ module API
         optional :since,
           type: DateTime,
           desc: 'Only commits after or on this date will be returned',
-          documentation: { example: '2021-09-20T11:50:22.001' }
+          documentation: { example: '2021-09-20T11:50:22.001Z' }
         optional :until,
           type: DateTime,
           desc: 'Only commits before or on this date will be returned',
-          documentation: { example: '2021-09-20T11:50:22.001' }
+          documentation: { example: '2021-09-20T11:50:22.001Z' }
         optional :path,
           type: String,
           desc: 'The file path',
@@ -302,7 +303,8 @@ module API
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Create a new commit' do
+      desc 'Create a commit' do
+        detail 'Creates a commit in the specified project.'
         success code: 200, model: Entities::CommitDetail
         tags %w[commits]
         failure [
@@ -356,7 +358,8 @@ module API
         end
       end
 
-      desc 'Get a specific commit of a project' do
+      desc 'Retrieve a commit' do
+        detail 'Retrieves a specified commit identified by the commit hash or name of a branch or tag.'
         success code: 200, model: Entities::CommitDetail
         tags %w[commits]
         failure [
@@ -378,7 +381,8 @@ module API
         present commit, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
       end
 
-      desc 'Get the diff for a specific commit of a project' do
+      desc 'Retrieve a commit diff' do
+        detail 'Retrieves the diff of a commit in a project.'
         success code: 200, model: Entities::Diff
         tags %w[commits]
         is_array true
@@ -402,7 +406,8 @@ module API
         present paginate(raw_diffs), with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
-      desc "Get a commit's comments" do
+      desc 'List all commit comments' do
+        detail 'Lists all the comments of a commit in a project.'
         success code: 200, model: Entities::CommitNote
         tags %w[commits]
         is_array true
@@ -424,7 +429,8 @@ module API
         present paginate(notes), with: Entities::CommitNote
       end
 
-      desc 'Get the sequence count of a commit SHA' do
+      desc 'Retrieve a commit sequence' do
+        detail 'Retrieves the commit sequence for a specified commit.'
         success code: 200, model: Entities::CommitSequence
         tags %w[commits]
         failure [
@@ -446,8 +452,8 @@ module API
         present count_hash, with: Entities::CommitSequence
       end
 
-      desc 'Cherry pick commit into a branch' do
-        detail 'This feature was introduced in GitLab 8.15'
+      desc 'Cherry-pick a commit' do
+        detail 'Cherry-picks a commit to a specified branch.'
         success code: 200, model: Entities::Commit
         tags %w[commits]
         failure [
@@ -505,8 +511,8 @@ module API
         end
       end
 
-      desc 'Revert a commit in a branch' do
-        detail 'This feature was introduced in GitLab 11.5'
+      desc 'Revert a commit' do
+        detail 'Reverts a commit in a specified branch.'
         success code: 200, model: Entities::Commit
         tags %w[commits]
         failure [
@@ -559,8 +565,9 @@ module API
         end
       end
 
-      desc 'Get all references a commit is pushed to' do
-        detail 'This feature was introduced in GitLab 10.6'
+      desc 'List all references a commit is pushed to' do
+        detail 'Lists all references (from branches or tags) a commit is pushed to. The pagination parameters `page` ' \
+          'and `per_page` can be used to restrict the list of references.'
         success code: 200, model: Entities::BasicRef
         tags %w[commits]
         is_array true
@@ -606,8 +613,10 @@ module API
         present paginate(refs, without_count: true), with: Entities::BasicRef
       end
 
-      desc 'Post comment to commit' do
-        success  code: 200, model: Entities::CommitNote
+      desc 'Create a comment on a commit' do
+        detail 'Creates a comment on a commit. To comment on a specific line in a file, specify the full ' \
+          'commit SHA, `path`, `line`, and set `line_type` to `new`.'
+        success code: 200, model: Entities::CommitNote
         tags %w[commits]
         failure [
           { code: 400, message: 'Bad request' },
@@ -668,7 +677,8 @@ module API
         end
       end
 
-      desc 'Get Merge Requests associated with a commit' do
+      desc 'List all merge requests for a commit' do
+        detail 'Lists all merge requests associated with a specified commit.'
         success code: 200, model: Entities::MergeRequestBasic
         tags %w[commits]
         is_array true
@@ -705,7 +715,9 @@ module API
         present paginate(commit_merge_requests), with: Entities::MergeRequestBasic
       end
 
-      desc "Get a commit's signature" do
+      desc 'Retrieve a commit signature' do
+        detail 'Retrieves the signature from a commit, if it is signed. For unsigned commits, it results in a 404 ' \
+          'response.'
         success code: 200, model: Entities::CommitSignature
         tags %w[commits]
         failure [

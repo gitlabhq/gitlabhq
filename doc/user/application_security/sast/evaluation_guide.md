@@ -59,7 +59,7 @@ When choosing a codebase to test SAST, you should:
 Your test project must have GitLab Ultimate. Only Ultimate includes [features](_index.md#features) like:
 
 - Proprietary cross-file, cross-function scanning with GitLab Advanced SAST.
-- The merge request widget, pipeline security report, and default-branch vulnerability report that makes scan results visible and actionable.
+- The merge request **Reports** tab, pipeline security report, and default-branch vulnerability report that makes scan results visible and actionable.
 
 ### Benchmarks and example projects
 

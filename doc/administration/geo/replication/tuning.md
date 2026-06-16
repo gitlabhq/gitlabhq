@@ -18,7 +18,7 @@ in the background.
 
 ## Changing the sync/verification concurrency values
 
-On the **primary** site:
+On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.

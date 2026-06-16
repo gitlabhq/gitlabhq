@@ -71,7 +71,7 @@ RSpec.describe Database::LockTablesWorker, feature_category: :cell do
             it 'locks the tables on the corresponding database' do
               tables.each do |table_name|
                 unlock_table(database_name, table_name)
-                expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to eq(false)
+                expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to be(false)
               end
 
               expected_log_results = tables.map do |table_name|
@@ -81,7 +81,7 @@ RSpec.describe Database::LockTablesWorker, feature_category: :cell do
 
               worker.perform(database_name, tables)
               tables.each do |table_name|
-                expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to eq(true)
+                expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to be(true)
               end
             end
           end
@@ -105,7 +105,7 @@ RSpec.describe Database::LockTablesWorker, feature_category: :cell do
 
                 worker.perform(database_name, tables)
                 tables.each do |table_name|
-                  expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to eq(true)
+                  expect(lock_writes_manager(database_name, table_name).table_locked_for_writes?).to be(true)
                 end
               end
             end

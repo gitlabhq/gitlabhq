@@ -197,6 +197,12 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     expect(merged_report.scanners.values).to contain_exactly(scanner_1, scanner_2, scanner_3)
   end
 
+  it 'preserves scanner_external_id from the first source report that sets one' do
+    report_1.scanner_external_id = 'semgrep'
+
+    expect(merged_report.scanner_external_id).to eq('semgrep')
+  end
+
   it 'copies identifiers into target report and eliminates duplicates' do
     expect(merged_report.identifiers.values).to(
       contain_exactly(

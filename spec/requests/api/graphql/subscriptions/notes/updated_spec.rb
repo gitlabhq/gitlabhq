@@ -10,7 +10,7 @@ RSpec.describe 'Subscriptions::Notes::Updated', feature_category: :team_planning
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:task) { create(:work_item, :task, project: project) }
-  let_it_be(:note, refind: true) { create(:note, noteable: task, project: task.project, type: 'DiscussionNote') }
+  let_it_be_with_refind(:note) { create(:note, noteable: task, project: task.project, type: 'DiscussionNote') }
 
   let(:current_user) { nil }
   let(:subscribe) { note_subscription('workItemNoteUpdated', task, current_user) }
@@ -44,7 +44,7 @@ RSpec.describe 'Subscriptions::Notes::Updated', feature_category: :team_planning
     end
 
     context 'when note is confidential' do
-      let_it_be(:note, refind: true) do
+      let_it_be_with_refind(:note) do
         create(:note, :confidential, noteable: task, project: task.project, type: 'DiscussionNote')
       end
 

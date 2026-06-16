@@ -58,9 +58,6 @@ To create your GitLab Dedicated instance:
      For more information, see [expected load](../../reference_architectures/_index.md#expected-load).
    - **Total purchased storage**: The total purchased storage space (repository and object storage) purchased with your contract.
      Predetermined by your account team.
-   - **Repository storage**: The total storage space available for all repositories (for example, 16 GiB).
-     Based on initial capacity planning discussions using the [Evaluate tool](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/evaluate).
-     Can be increased but not decreased after provisioning.
 
    These settings are predetermined by your contract and account team discussions.
 

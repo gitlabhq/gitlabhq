@@ -109,6 +109,16 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
     end
 
+    describe 'when project_id is in sub_components' do
+      let(:sub_components) { [:project_id, :ref_type, :ref] }
+
+      it 'includes the immutable project_id in sub instead of project_path', :aggregate_failures do
+        expect(payload[:sub])
+          .to eq("project_id:#{project.id}:ref_type:branch:ref:#{pipeline.source_ref}")
+        expect(payload[:sub]).not_to include('project_path:')
+      end
+    end
+
     describe 'when project_path and ref_protected provided' do
       let(:sub_components) { [:project_path, :ref_protected] }
 
@@ -466,6 +476,62 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
             expect(payload[:ci_config_sha]).to eq(pipeline.sha)
           end
         end
+      end
+    end
+  end
+
+  describe 'burned-path enforcement' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'main') }
+    let_it_be(:build) { create(:ci_build, project: project, user: user, pipeline: pipeline) }
+
+    subject(:mint) do
+      described_class.new(build, ttl: 30, aud: nil, sub_components: sub_components,
+        target_audience: nil)
+    end
+
+    context 'when no tombstone exists for the project path' do
+      let(:sub_components) { [:project_path, :ref_type, :ref] }
+
+      it 'mints the token successfully' do
+        expect { mint }.not_to raise_error
+      end
+    end
+
+    context 'when a tombstone exists for the project path owned by a different project' do
+      before do
+        create(:burned_project_route,
+          organization: project.organization, path: project.full_path, project_id: project.id + 1)
+      end
+
+      context 'when sub_components includes project_path' do
+        let(:sub_components) { [:project_path, :ref_type, :ref] }
+
+        it 'raises OidcBurnedPathError' do
+          expect { mint }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+        end
+      end
+
+      context 'when sub_components excludes project_path (smart escape)' do
+        let(:sub_components) { [:project_id, :ref_type, :ref] }
+
+        it 'mints the token successfully' do
+          expect { mint }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when the tombstone project_id matches the requesting project' do
+      let(:sub_components) { [:project_path, :ref_type, :ref] }
+
+      before do
+        create(:burned_project_route,
+          organization: project.organization, path: project.full_path, project_id: project.id)
+      end
+
+      it 'mints the token successfully (same project re-minting on its own path)' do
+        expect { mint }.not_to raise_error
       end
     end
   end

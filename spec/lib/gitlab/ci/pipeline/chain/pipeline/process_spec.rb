@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Pipeline::Process do
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project, freeze: false) { build(:project) }
   let_it_be(:user) { build(:user) }
-  let_it_be(:pipeline) { build(:ci_pipeline, project: project, id: 42) }
+  let_it_be(:pipeline, freeze: false) { build(:ci_pipeline, project: project, id: 42) }
 
   let_it_be(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user)

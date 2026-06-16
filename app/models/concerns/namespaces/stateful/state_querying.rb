@@ -14,6 +14,16 @@ module Namespaces
             .merge(Namespace::Detail.deletion_scheduled_before(time))
         end
 
+        scope :stuck_in_transfer_in_progress, ->(timeout) do
+          where(state: :transfer_in_progress)
+            .where(namespaces: { updated_at: ...timeout.ago })
+        end
+
+        scope :stuck_in_transfer_scheduled, ->(timeout) do
+          where(state: :transfer_scheduled)
+            .where(namespaces: { updated_at: ...timeout.ago })
+        end
+
         delegate :deletion_scheduled_by_user, to: :namespace_details
       end
 

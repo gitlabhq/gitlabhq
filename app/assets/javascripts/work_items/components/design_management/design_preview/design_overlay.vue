@@ -44,6 +44,7 @@ export default {
       default: false,
     },
   },
+  emits: ['closeCommentForm', 'moveNote', 'openCommentForm'],
   apollo: {
     activeDesignDiscussion: {
       query: activeDiscussionQuery,

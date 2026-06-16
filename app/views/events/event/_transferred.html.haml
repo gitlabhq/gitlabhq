@@ -1,0 +1,9 @@
+= icon_for_profile_event(event)
+
+= event_user_info(event)
+
+.event-title.gl-flex
+  = inline_event_icon(event)
+  .event-title-block.gl-inline-block.gl-mr-2
+    %span.event-type{ class: event.action_name + user_profile_activity_classes }
+      = transferred_event_title(event)

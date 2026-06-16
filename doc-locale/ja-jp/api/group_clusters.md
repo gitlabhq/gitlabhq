@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループクラスターAPI（証明書ベース）（非推奨）
 ---
 
@@ -12,19 +12,16 @@ title: グループクラスターAPI（証明書ベース）（非推奨）
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> この機能はGitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
 
-この機能は、GitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
+同様に、[プロジェクトレベル](../user/project/clusters/_index.md)および[インスタンスレベル](../user/instance/clusters/_index.md)のKubernetesクラスターを使用すると、Kubernetesクラスターをグループに接続でき、複数のプロジェクトで同じクラスターを使用できます。
 
-{{< /alert >}}
+これらのエンドポイントを使用するには、グループのメンテナーまたはオーナーロールが必要です。
 
-[プロジェクトレベル](../user/project/clusters/_index.md)および[インスタンスレベル](../user/instance/clusters/_index.md)のKubernetesクラスターと同様に、グループレベルのKubernetesクラスターを使用すると、Kubernetesクラスターをグループに接続して、複数のプロジェクトで同じクラスターを使用できます。
+## グループクラスターを一覧表示 {#list-group-clusters}
 
-これらのエンドポイントを使用するには、グループのメンテナーロール以上が必要です。
-
-## グループクラスターの一覧表示 {#list-group-clusters}
-
-グループクラスターの一覧を返します。
+指定されたグループのすべてのグループクラスターを一覧表示します。
 
 ```plaintext
 GET /groups/:id/clusters
@@ -36,14 +33,14 @@ GET /groups/:id/clusters
 | --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/26/clusters"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -92,9 +89,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一グループクラスターの取得 {#get-a-single-group-cluster}
+## グループクラスターを取得する {#retrieve-a-group-cluster}
 
-単一グループクラスターを取得します。
+指定されたグループクラスターを取得します。
 
 ```plaintext
 GET /groups/:id/clusters/:cluster_id
@@ -105,16 +102,16 @@ GET /groups/:id/clusters/:cluster_id
 | 属性    | 型           | 必須 | 説明                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
 | `id`         | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `cluster_id` | 整数        | はい      | クラスターの                                                         |
+| `cluster_id` | 整数        | はい      | クラスターのID                                                         |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/26/clusters/18"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -162,9 +159,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 既存のクラスターをグループに追加 {#add-existing-cluster-to-group}
+## グループクラスターを作成する {#create-a-group-cluster}
 
-既存のKubernetesクラスターをグループに追加します。
+既存のKubernetesクラスターを追加して、指定されたグループのグループクラスターを作成します。
 
 ```plaintext
 POST /groups/:id/clusters/user
@@ -177,16 +174,16 @@ POST /groups/:id/clusters/user
 | `id`                                                 | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                       |
 | `name`                                               | 文字列         | はい      | クラスターの名前                                                                             |
 | `domain`                                             | 文字列         | いいえ       | クラスターの[ベースドメイン](../user/group/clusters/_index.md#base-domain)                       |
-| `management_project_id`                              | 整数        | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)の          |
-| `enabled`                                            | ブール値        | いいえ       | クラスターがアクティブかどうかを決定します。`true`がデフォルトです。                                            |
-| `managed`                                            | ブール値        | いいえ       | が、このクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します。デフォルトは`true`です。 |
+| `management_project_id`                              | 整数        | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)のID          |
+| `enabled`                                            | ブール値        | いいえ       | クラスターがアクティブかどうかを決定します。`true`にデフォルト設定されます。                                            |
+| `managed`                                            | ブール値        | いいえ       | GitLabがこのクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します。デフォルトは`true`です。 |
 | `platform_kubernetes_attributes[api_url]`            | 文字列         | はい      | Kubernetes APIにアクセスするためのURL                                                                |
 | `platform_kubernetes_attributes[token]`              | 文字列         | はい      | Kubernetesに対して認証するためのトークン                                                        |
 | `platform_kubernetes_attributes[ca_cert]`            | 文字列         | いいえ       | TLS証明書。APIが自己署名TLS証明書を使用している場合に必要です。                            |
-| `platform_kubernetes_attributes[authorization_type]` | 文字列         | いいえ       | クラスターの認可タイプ: `rbac`、`abac`、または`unknown_authorization`。`rbac`がデフォルトです。      |
+| `platform_kubernetes_attributes[authorization_type]` | 文字列         | いいえ       | クラスターの認可タイプ: `rbac`、`abac`、または`unknown_authorization`。デフォルトはrbacです。`rbac`がデフォルトです。      |
 | `environment_scope`                                  | 文字列         | いいえ       | クラスターに関連付けられた環境。`*`がデフォルトです。PremiumおよびUltimateのみです。              |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -204,7 +201,7 @@ curl --request POST \
   }'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -242,9 +239,9 @@ curl --request POST \
 }
 ```
 
-## グループクラスターの編集 {#edit-group-cluster}
+## グループクラスターを更新する {#update-a-group-cluster}
 
-既存のグループクラスターを更新します。
+指定されたグループクラスターを更新します。
 
 ```plaintext
 PUT /groups/:id/clusters/:cluster_id
@@ -255,24 +252,21 @@ PUT /groups/:id/clusters/:cluster_id
 | 属性                                 | 型           | 必須 | 説明                                                                                |
 | ----------------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------ |
 | `id`                                      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)              |
-| `cluster_id`                              | 整数        | はい      | クラスターの                                                                      |
+| `cluster_id`                              | 整数        | はい      | クラスターのID                                                                      |
 | `name`                                    | 文字列         | いいえ       | クラスターの名前                                                                    |
 | `domain`                                  | 文字列         | いいえ       | クラスターの[ベースドメイン](../user/group/clusters/_index.md#base-domain)              |
-| `management_project_id`                   | 整数        | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)の |
-| `enabled`                                 | ブール値        | いいえ       | クラスターがアクティブかどうかを判断します                                                     |
-| `managed`                                 | ブール値        | いいえ       | が、このクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します          |
+| `management_project_id`                   | 整数        | いいえ       | クラスターの[管理プロジェクト](../user/clusters/management_project.md)のID |
+| `enabled`                                 | ブール値        | いいえ       | クラスターがアクティブかどうかを決定します                                                     |
+| `managed`                                 | ブール値        | いいえ       | GitLabがこのクラスターのネームスペースとサービスアカウントを管理するかどうかを決定します          |
 | `platform_kubernetes_attributes[api_url]` | 文字列         | いいえ       | Kubernetes APIにアクセスするためのURL                                                       |
 | `platform_kubernetes_attributes[token]`   | 文字列         | いいえ       | Kubernetesに対して認証するためのトークン                                               |
 | `platform_kubernetes_attributes[ca_cert]` | 文字列         | いいえ       | TLS証明書。APIが自己署名TLS証明書を使用している場合に必要です。                   |
 | `environment_scope`                       | 文字列         | いいえ       | クラスターに関連付けられた環境。PremiumおよびUltimateのみです。                      |
 
-{{< alert type="note" >}}
+> [!note]
+> `name`、`api_url`、`ca_cert`、および`token`は、クラスターが[「既存のKubernetesクラスターを追加」](../user/project/clusters/add_existing_cluster.md)オプションまたは[「グループクラスターを作成」](#create-a-group-cluster)エンドポイントを介して追加された場合にのみ更新できます。
 
-`name`、`api_url`、`ca_cert`、および`token`は、[「既存のKubernetesクラスターを追加」](../user/project/clusters/add_existing_cluster.md)オプションまたは[「既存のクラスターをグループに追加」](#add-existing-cluster-to-group)エンドポイントを介してクラスターが追加された場合にのみ更新できます。
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -288,7 +282,7 @@ curl --request PUT \
   }'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -336,9 +330,9 @@ curl --request PUT \
 }
 ```
 
-## グループクラスターの削除 {#delete-group-cluster}
+## グループクラスターを削除する {#delete-a-group-cluster}
 
-既存のグループクラスターを削除します。接続されているKubernetesクラスター内の既存のリソースは削除しません。
+指定されたグループクラスターを削除します。接続されているKubernetesクラスター内の既存のリソースは削除されません。
 
 ```plaintext
 DELETE /groups/:id/clusters/:cluster_id
@@ -349,9 +343,9 @@ DELETE /groups/:id/clusters/:cluster_id
 | 属性    | 型           | 必須 | 説明                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
 | `id`         | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `cluster_id` | 整数        | はい      | クラスターの                                                         |
+| `cluster_id` | 整数        | はい      | クラスターのID                                                         |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

@@ -9,7 +9,7 @@ title: Scheduled pipeline execution policies
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -45,6 +45,29 @@ experiments:
 
 > [!note]
 > This feature is experimental and may change in future releases. You should test it thoroughly in a non-production environment only. You should not use this feature in production environments as it may be unstable.
+
+## Test a scheduled pipeline execution policy
+
+Before enabling a scheduled pipeline execution policy across all projects, you can run a test to
+verify that the pipeline works and to understand how the policy impacts your infrastructure.
+The test run executes real pipelines to provide accurate timing and resource estimates.
+
+> [!note]
+> Test runs create real pipelines and consume compute minutes against the target project.
+
+To run a test:
+
+1. In the left sidebar, select **Security** > **Policies**.
+1. Select the scheduled pipeline execution policy you want to test.
+1. Select the **Test runs** tab.
+1. If you are viewing the policy at the group level, select a target project from the dropdown list.
+1. Select **Begin test run**.
+
+The test run creates a pipeline on the selected project using the policy's CI/CD configuration.
+You can monitor the test run status in the **Test runs** tab.
+
+After the test run completes, the **Test runs** tab displays the result, including the duration and
+any error messages.
 
 ## Configure schedule pipeline execution policies
 
@@ -150,6 +173,7 @@ To prevent overwhelming your CI/CD infrastructure when applying policies to mult
 - For monthly schedules, if you specify dates that don't exist in certain months (like 31 for February), those runs are skipped.
 - A security policy project can contain up to five scheduled pipeline execution policies.
 - A scheduled policy can only have one schedule configuration at a time.
+- A scheduled policy can target up to five branches. If you omit `branches`, the policy runs on the project default branch only.
 - When you apply a policy to multiple projects, ensure your time window is large enough to accommodate the number of projects, based on your available runner capacity. For example, a policy applied to 1000 projects with a one hour time window distributes pipeline creation evenly throughout that hour (approximately 16 pipelines per minute). Verify that your runners can handle this pipeline creation rate or choose a larger time window to avoid queuing or delays.
 - For monthly schedules, the interval between consecutive runs may vary due to random distribution during the time window. For example, a monthly schedule might run 20 days after the previous run, then 30 days later. This distribution is the expected behavior because it helps distribute load across your infrastructure.
 
@@ -271,10 +295,10 @@ This setting applies to any user who triggers a pipeline with pipeline execution
 1. Turn on **Grant security policy project access to CI/CD configuration**.
 1. Select **Save changes**.
 
-### Option 2: Allow Security Policy Bot access to private projects
+### Option 2: Allow Security Policy Bot access to private or internal projects
 
-If your policy `include:` value references a CI/CD configuration file stored in a private project
-other than the security policy project, use this option.
+If your policy `include:` value references a CI/CD configuration file stored in a private or internal
+project other than the security policy project, use this option.
 This setting applies only to Security Policy Bot users and can be enabled on any project.
 
 1. Enable the `pipeline_execution_policy_bot_access` experiment in your security policy project.
@@ -287,15 +311,20 @@ This setting applies only to Security Policy Bot users and can be enabled on any
    ```
 
    > [!note]
-   > Your private project or one of its parent groups must be linked to this security policy project.
-   > If it is not already linked, you must [link the security policy project](enforcement/security_policy_projects.md#link-to-a-security-policy-project).
+   > Your private or internal project, or one of its parent groups, must be linked to this security
+   > policy project. If it is not already linked, you must
+   > [link the security policy project](enforcement/security_policy_projects.md#link-to-a-security-policy-project).
 
-1. In the private project that stores CI/CD files, in the left sidebar, select **Settings** >
-   **General**.
+1. In the private or internal project that stores CI/CD files, in the left sidebar, select
+   **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. In **Security policy bot access**, select
    **Allow security policy bots to access CI/CD configuration files in this project**.
 1. In **Allowed file patterns**, add one or more glob patterns to specify the files that bots can access, separated by commas.
+1. Optional. In **Allowed group**, select a group to allow only security policy bots from projects
+   in that group to access CI/CD configuration files.
+
+   If not specified, bots from any project in the root ancestor group can access the files.
 1. Select **Save changes**.
 
 The glob patterns for the allowed files must match the paths specified in the `include:file:` value. For example:
@@ -310,20 +339,21 @@ Scheduled pipelines are executed by the Security Policy Bot User, a dedicated sy
 To ensure that policy execution remains isolated and secure, the bot user has the following security restrictions:
 
 - The bot user is a member of that specific project only. It cannot be added to groups or other projects.
+- The bot user is treated as an external user and cannot access internal projects by default.
 - The bot user can access files in the security policy project and public projects.
-- The bot user can access files in private projects only if those projects explicitly enable
-  **Security policy bot access** and the file path matches the pattern specified in the project.
+- The bot user can access files in private or internal projects only if those projects explicitly
+  enable **Security policy bot access** and the file path matches the pattern specified in the project.
 
 Because the bot user is not a member of other projects, it cannot complete any of the following actions:
 
-- Access CI/CD configuration files from private projects that do not allow bot access or do not
-  match allowed file patterns.
-- Start multi-project child pipelines that target private projects.
-- Access artifacts or resources from private projects.
+- Access CI/CD configuration files from private or internal projects that do not allow bot access
+  or do not match allowed file patterns.
+- Start multi-project child pipelines that target private or internal projects.
+- Access artifacts or resources from private or internal projects.
 
 > [!important]
-> When you include files from a private project, enable **Security policy bot access** in that
-> private project and set matching file patterns. Without these settings, pipeline execution fails
+> When you include files from a private or internal project, enable **Security policy bot access**
+> in that project and set matching file patterns. Without these settings, pipeline execution fails
 > with an access error.
 
 ## Scheduling limits
@@ -344,7 +374,7 @@ If your scheduled pipelines are not running as expected, follow these troublesho
 1. **Verify experimental flag**: Ensure that the `pipeline_execution_schedule_policy: enabled: true` flag is set in the `experiments` section of your `policy.yml` file.
 1. **Check policy access**: Verify that:
    - The CI/CD configuration file is in the security policy project, in a public project, or in a
-     private project with bot access enabled and matching file patterns.
+     private or internal project with bot access enabled and matching file patterns.
    - The **Pipeline execution policies** setting is enabled in the security policy project (**Settings** > **General** > **Visibility, project features, permissions**).
 1. **Validate CI configuration**:
    - Check that the CI/CD configuration file exists at the specified path.

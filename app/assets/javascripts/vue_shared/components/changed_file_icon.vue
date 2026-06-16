@@ -4,6 +4,7 @@ import getCommitIconMap from '~/ide/commit_icon';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ChangedFileIcon',
   components: {
     GlButton,
     GlIcon,

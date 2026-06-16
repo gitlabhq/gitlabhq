@@ -1,0 +1,9 @@
+---
+name: block_user
+description: Grants the ability to block users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - block_user

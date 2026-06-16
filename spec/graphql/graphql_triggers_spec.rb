@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GraphqlTriggers, feature_category: :api do
   let_it_be(:project) { create(:project) }
-  let_it_be(:issuable, refind: true) { create(:work_item, project: project) }
+  let_it_be_with_refind(:issuable) { create(:work_item, project: project) }
 
   describe '.issuable_assignees_updated' do
     let(:assignees) { create_list(:user, 2) }

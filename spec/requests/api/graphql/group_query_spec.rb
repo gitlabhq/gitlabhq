@@ -11,7 +11,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
   let_it_be(:user1)         { create(:user, can_create_group: false) }
   let_it_be(:user2)         { create(:user) }
   let_it_be(:admin)         { create(:admin) }
-  let_it_be(:private_group) { create(:group, :private) }
+  let_it_be(:private_group, freeze: false) { create(:group, :private) }
   let_it_be(:public_group)  { create(:group, :public) }
 
   # similar to the API "GET /groups/:id"
@@ -144,7 +144,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
     context 'when marked_for_deletion_on filter is applied' do
       let(:marked_for_deletion_on) { Date.parse('2024-01-01') }
       let(:group) do
-        create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_on, owners: user2)
+        create(:group, :deletion_scheduled, deletion_scheduled_at: marked_for_deletion_on, owners: user2)
       end
 
       it 'returns groups with marked_for_deletion_on' do
@@ -152,7 +152,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(graphql_data['group']['id']).to eq(group.to_global_id.to_s)
-        expect(graphql_data['group']['markedForDeletionOn']).to eq(marked_for_deletion_on.iso8601)
+        expect(graphql_data['group']['markedForDeletionOn']).to eq(group.deletion_scheduled_at.iso8601)
       end
     end
 

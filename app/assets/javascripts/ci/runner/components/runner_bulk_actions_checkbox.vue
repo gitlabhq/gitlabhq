@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 
 export default {
+  name: 'RunnerBulkActionsCheckbox',
   components: {
     GlFormCheckbox,
   },

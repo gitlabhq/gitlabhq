@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/no_code_coverage_comment'
 
-RSpec.describe RuboCop::Cop::Gitlab::NoCodeCoverageComment do
+RSpec.describe RuboCop::Cop::Gitlab::NoCodeCoverageComment, feature_category: :tooling do
   let(:msg) { format(described_class::MSG, nocov_comment: nocov_comment) }
   let(:nocov_comment) { ":#{comment_token}:" }
 

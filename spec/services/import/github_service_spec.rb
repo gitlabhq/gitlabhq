@@ -25,6 +25,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
   let(:client) { Gitlab::GithubImport::Client.new(token) }
   let(:project_double) { instance_double(Project, persisted?: true) }
+  let(:organization_log_attributes) do
+    { Labkit::Fields::GL_ORGANIZATION_ID => user.namespace.organization_id }
+  end
 
   subject(:github_importer) { described_class.new(client, user, params) }
 
@@ -55,7 +58,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         message: 'Import failed because of a GitHub error',
         status: 404,
         error: 'Not Found'
-      }).and_call_original
+      }.merge(organization_log_attributes)).and_call_original
 
       github_importer.execute(access_params, :github)
     end
@@ -153,7 +156,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           message: 'Import failed because of a GitHub error',
           status: 500,
           error: 'Internal Server Error'
-        }).and_call_original
+        }.merge(organization_log_attributes)).and_call_original
 
         github_importer.execute(access_params, :github)
       end
@@ -230,8 +233,27 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         expect(::Import::Framework::Logger).to receive(:error).with({
           message: message,
           error: error
-        }).and_call_original
+        }.merge(organization_log_attributes)).and_call_original
         expect(github_importer.execute(access_params, :github)).to include(blocked_url_error(url))
+      end
+    end
+
+    context 'when the target namespace does not exist' do
+      let(:url) { 'https://localhost' }
+
+      before do
+        params[:target_namespace] = 'unknown_path'
+        allow(github_importer).to receive(:url).and_return(url)
+      end
+
+      it 'logs the error with a nil organization id and does not raise' do
+        expect(::Import::Framework::Logger).to receive(:error).with({
+          message: message,
+          error: error,
+          Labkit::Fields::GL_ORGANIZATION_ID => nil
+        }).and_call_original
+
+        expect { github_importer.execute(access_params, :github) }.not_to raise_error
       end
     end
   end

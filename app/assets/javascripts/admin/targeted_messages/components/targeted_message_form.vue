@@ -1,17 +1,25 @@
 <script>
-import { GlButton, GlFormFields, GlFormSelect, GlFormInput } from '@gitlab/ui';
+import {
+  GlButton,
+  GlCollapsibleListbox,
+  GlFormFields,
+  GlFormSelect,
+  GlFormInput,
+} from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __, sprintf, createListFormat } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
 const DATETIME_FORMAT = "yyyy-mm-dd'T'HH:MM";
+const ALL_ROLES_VALUE = 'all';
 
 export default {
   name: 'TargetedMessageForm',
   components: {
     GlButton,
+    GlCollapsibleListbox,
     GlFormFields,
     GlFormSelect,
     GlFormInput,
@@ -52,11 +60,22 @@ export default {
       type: String,
       required: true,
     },
+    roleOptions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    initialRoles: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       formValues: {
         targetType: this.initialTargetType,
+        roles: this.initialRoles.length ? this.initialRoles : [ALL_ROLES_VALUE],
         startsAt: this.initialStartsAt ? formatDate(this.initialStartsAt, DATETIME_FORMAT) : null,
         endsAt: this.initialEndsAt ? formatDate(this.initialEndsAt, DATETIME_FORMAT) : null,
         namespaceIdsCsvFile: null,
@@ -83,6 +102,21 @@ export default {
     formMethod() {
       return this.isAddForm ? 'post' : 'patch';
     },
+    roleItems() {
+      return [{ value: ALL_ROLES_VALUE, text: __('All') }, ...this.roleOptions];
+    },
+    rolesToggleText() {
+      if (this.formValues.roles.includes(ALL_ROLES_VALUE)) {
+        return __('All');
+      }
+      const selectedTexts = this.roleItems
+        .filter((item) => this.formValues.roles.includes(item.value))
+        .map((item) => item.text);
+      return createListFormat().format(selectedTexts);
+    },
+    selectedRoles() {
+      return this.formValues.roles.filter((r) => r !== ALL_ROLES_VALUE);
+    },
     fields() {
       return {
         targetType: {
@@ -91,6 +125,9 @@ export default {
         namespaceIdsCsvFile: {
           label: s__('TargetedMessages|Upload a csv file for targeted namespaces'),
           description: this.namespaceIdsLimitText,
+        },
+        roles: {
+          label: s__('TargetedMessages|Roles'),
         },
         startsAt: {
           label: s__('TargetedMessages|Starts at'),
@@ -106,6 +143,19 @@ export default {
       const [file] = event.target.files;
       this.formValues.namespaceIdsCsvFile = file;
     },
+    onRolesSelect(selectedRoles) {
+      if (selectedRoles.includes(ALL_ROLES_VALUE) && selectedRoles.length > 1) {
+        const addedAll = !this.formValues.roles.includes(ALL_ROLES_VALUE);
+
+        this.formValues.roles = addedAll
+          ? [ALL_ROLES_VALUE]
+          : selectedRoles.filter((r) => r !== ALL_ROLES_VALUE);
+      } else if (selectedRoles.length === 0) {
+        this.formValues.roles = [ALL_ROLES_VALUE];
+      } else {
+        this.formValues.roles = selectedRoles;
+      }
+    },
     async onSubmit() {
       this.serverValidations = {};
       this.isSubmitting = true;
@@ -117,6 +167,11 @@ export default {
     async submitForm() {
       const formData = new FormData();
       formData.append('targeted_message[target_type]', this.formValues.targetType);
+
+      this.selectedRoles.forEach((role) => {
+        formData.append('targeted_message[roles][]', role);
+      });
+
       if (this.formValues.startsAt) {
         formData.append(
           'targeted_message[starts_at]',
@@ -207,6 +262,17 @@ export default {
           class="form-control"
           data-testid="namespace-ids-csv-input"
           @change="onFileChange"
+        />
+      </template>
+      <template #input(roles)="{ id }">
+        <gl-collapsible-listbox
+          :toggle-id="id"
+          :selected="formValues.roles"
+          :items="roleItems"
+          :toggle-text="rolesToggleText"
+          multiple
+          block
+          @select="onRolesSelect"
         />
       </template>
       <template #input(startsAt)>

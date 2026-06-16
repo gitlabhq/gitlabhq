@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Config::Entry::Validator do
+RSpec.describe Gitlab::Config::Entry::Validator, feature_category: :pipeline_composition do
   let(:validator) { Class.new(described_class) }
   let(:validator_instance) { validator.new(node) }
   let(:node) { spy('node') }

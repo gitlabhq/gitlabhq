@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting merge request information nested in a project', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'ttl_expirable' do
-  let_it_be(:class_symbol) { described_class.model_name.param_key.to_sym }
+  let_it_be(:class_symbol, freeze: false) { described_class.model_name.param_key.to_sym }
 
   it_behaves_like 'having unique enum values'
 
@@ -19,7 +19,7 @@ RSpec.shared_examples 'ttl_expirable' do
   describe '.read_before' do
     # rubocop:disable Rails/SaveBang
     let_it_be_with_reload(:item1) { create(class_symbol) }
-    let_it_be(:item2) { create(class_symbol) }
+    let_it_be(:item2, freeze: false) { create(class_symbol) }
     # rubocop:enable Rails/SaveBang
 
     before do
@@ -33,9 +33,9 @@ RSpec.shared_examples 'ttl_expirable' do
 
   describe '.active' do
     # rubocop:disable Rails/SaveBang
-    let_it_be(:item1) { create(class_symbol) }
-    let_it_be(:item2) { create(class_symbol, :pending_destruction) }
-    let_it_be(:item3) { create(class_symbol, status: :error) }
+    let_it_be(:item1, freeze: false) { create(class_symbol) }
+    let_it_be(:item2, freeze: false) { create(class_symbol, :pending_destruction) }
+    let_it_be(:item3, freeze: false) { create(class_symbol, status: :error) }
     # rubocop:enable Rails/SaveBang
 
     it 'returns only active items' do
@@ -44,8 +44,8 @@ RSpec.shared_examples 'ttl_expirable' do
   end
 
   describe '#read!', :freeze_time do
-    let_it_be(:old_read_at) { 1.day.ago }
-    let_it_be(:item1) { create(class_symbol, read_at: old_read_at) }
+    let_it_be(:old_read_at, freeze: false) { 1.day.ago }
+    let_it_be(:item1, freeze: false) { create(class_symbol, read_at: old_read_at) }
 
     it 'updates read_at' do
       expect { item1.read! }.to change { item1.reload.read_at }

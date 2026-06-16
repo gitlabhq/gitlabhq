@@ -2,16 +2,29 @@
 
 RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_name|
   noteable_type_singular = noteable_type.to_s.split('/').last.singularize
+
+  shared_examples 'ai_workflows scope for resolvable discussions' do
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'is successful' do
+        note_action
+
+        expect(response).to have_gitlab_http_status(expected_status)
+      end
+    end
+  end
+
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
     it "resolves discussion if resolved is true" do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}", user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['resolvable']).to eq(true)
-      expect(json_response['resolved']).to eq(true)
+      expect(json_response['resolvable']).to be(true)
+      expect(json_response['resolved']).to be(true)
       expect(json_response['notes'].size).to eq(1)
-      expect(json_response['notes'][0]['resolved']).to eq(true)
+      expect(json_response['notes'][0]['resolved']).to be(true)
       expect(Time.parse(json_response['notes'][0]['resolved_at'])).to be_like_time(note.reload.resolved_at)
     end
 
@@ -23,10 +36,10 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
               "discussions/#{note.discussion_id}", user), params: { resolved: false }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['resolvable']).to eq(true)
-      expect(json_response['resolved']).to eq(false)
+      expect(json_response['resolvable']).to be(true)
+      expect(json_response['resolved']).to be(false)
       expect(json_response['notes'].size).to eq(1)
-      expect(json_response['notes'][0]['resolved']).to eq(false)
+      expect(json_response['notes'][0]['resolved']).to be(false)
       expect(json_response['notes'][0]['resolved_at']).to be_nil
     end
 
@@ -71,6 +84,15 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
       end
     end
 
+    it_behaves_like 'ai_workflows scope for resolvable discussions' do
+      let(:note_action) do
+        put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}",
+          oauth_access_token: oauth_token), params: { resolved: true }
+      end
+
+      let(:expected_status) { :ok }
+    end
+
     it_behaves_like 'authorizing granular token permissions', :"update_#{noteable_type_singular}_discussion" do
       let(:boundary_object) { parent }
       let(:request) do
@@ -86,7 +108,7 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
               "discussions/#{note.discussion_id}/notes/#{note.id}", user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['resolved']).to eq(true)
+      expect(json_response['resolved']).to be(true)
     end
 
     it 'returns a 404 error when note id not found' do
@@ -108,6 +130,16 @@ RSpec.shared_examples 'resolvable discussions API' do |parent_type, noteable_typ
               "discussions/#{note.discussion_id}/notes/#{note.id}", private_user), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it_behaves_like 'ai_workflows scope for resolvable discussions' do
+      let(:note_action) do
+        put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+                "discussions/#{note.discussion_id}/notes/#{note.id}",
+          oauth_access_token: oauth_token), params: { resolved: true }
+      end
+
+      let(:expected_status) { :ok }
     end
   end
 end

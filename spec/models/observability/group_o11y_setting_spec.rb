@@ -6,7 +6,14 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
   let_it_be(:group) { create(:group) }
 
   describe 'relations' do
-    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:namespace) }
+
+    it 'exposes `group` as a deprecated alias for `namespace`' do
+      setting = build(:observability_group_o11y_setting, group: group)
+
+      expect(setting.group).to eq(setting.namespace)
+      expect(setting.group).to eq(group)
+    end
   end
 
   describe 'validations' do
@@ -171,10 +178,10 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       expect(result).to be_empty
     end
 
-    it 'can be chained with other scopes' do
-      result = described_class.with_group.search_by_group_id(group1.id)
+    it 'eager-loads the namespace association with with_namespace' do
+      result = described_class.with_namespace.search_by_group_id(group1.id)
       expect(result).to contain_exactly(setting1)
-      expect(result.first.association(:group)).to be_loaded
+      expect(result.first.association(:namespace)).to be_loaded
     end
   end
 
@@ -197,10 +204,20 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       end
     end
 
-    context 'when group is nil' do
+    context 'when namespace is nil' do
       let(:setting) { build(:observability_group_o11y_setting, group: nil) }
 
       it 'returns nil' do
+        expect(setting.gitlab_observability_export_variable).to be_nil
+      end
+    end
+
+    context 'when namespace is a personal (user) namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let(:setting) { build(:observability_group_o11y_setting, group: user_namespace) }
+
+      it 'returns nil without raising NoMethodError for #variables', :aggregate_failures do
+        expect { setting.gitlab_observability_export_variable }.not_to raise_error
         expect(setting.gitlab_observability_export_variable).to be_nil
       end
     end
@@ -361,12 +378,15 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
         expect(described_class.observability_setting_for(nil)).to be_nil
       end
 
-      it 'returns nil for non-Project/Group resource' do
+      it 'returns nil for non-Project/Namespace resource' do
         expect(described_class.observability_setting_for(build_stubbed(:user))).to be_nil
       end
 
-      it 'returns nil for Project without group' do
-        expect(described_class.observability_setting_for(build_stubbed(:project, group: nil))).to be_nil
+      it 'returns nil for Project whose namespace is nil' do
+        project = build_stubbed(:project)
+        allow(project).to receive(:namespace).and_return(nil)
+
+        expect(described_class.observability_setting_for(project)).to be_nil
       end
     end
 
@@ -415,6 +435,31 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
 
     context 'when resource is a Group' do
       include_examples 'traverses parent groups', :group
+    end
+
+    shared_examples 'resolves personal namespace setting' do |resource_factory|
+      let_it_be(:user_namespace) { create(:namespace) }
+      let_it_be(:resource) do
+        resource_factory == :project ? create(:project, namespace: user_namespace) : user_namespace
+      end
+
+      it 'returns the setting when the user namespace has one' do
+        setting = create(:observability_group_o11y_setting, group: user_namespace)
+
+        expect(described_class.observability_setting_for(resource)).to eq(setting)
+      end
+
+      it 'returns nil when no setting exists' do
+        expect(described_class.observability_setting_for(resource)).to be_nil
+      end
+    end
+
+    context 'when resource is a Project in a personal namespace' do
+      include_examples 'resolves personal namespace setting', :project
+    end
+
+    context 'when resource is a personal (user) Namespace' do
+      include_examples 'resolves personal namespace setting', :namespace
     end
   end
 end

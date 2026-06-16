@@ -44,12 +44,14 @@ module Ci
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
-      return unless deployment_job?
+      return unless interacts_with_environment?
 
       if success?
         return successful_deployment_status
       elsif failed?
         return :failed
+      elsif canceled?
+        return :canceled
       end
 
       :creating
@@ -167,6 +169,10 @@ module Ci
       has_environment_keyword? && environment_action == 'start'
     end
     alias_method :starts_environment?, :deployment_job?
+
+    def interacts_with_environment?
+      deployment_job? || prepares_environment? || verifies_environment? || accesses_environment? || stops_environment?
+    end
 
     def accesses_environment?
       has_environment_keyword? && environment_action == 'access'

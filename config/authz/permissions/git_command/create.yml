@@ -1,0 +1,3 @@
+---
+name: create_git_command
+description: Grants the ability to generate Git commands from natural language

@@ -4,9 +4,9 @@ require "spec_helper"
 
 RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, type: :component, feature_category: :design_system do
   let_it_be(:name) { :access_level }
-  let_it_be(:label) { "Access Level" }
+  let_it_be(:label, freeze: false) { "Access Level" }
   let_it_be(:value) { :regular }
-  let_it_be(:help_text) do
+  let_it_be(:help_text, freeze: false) do
     'Administrators have access to all groups, projects, and users and can manage all features in this installation'
   end
 
@@ -43,9 +43,9 @@ RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, type: :component
   end
 
   context 'with custom options' do
-    let_it_be(:radio_options) { { class: 'radio-foo-bar' } }
-    let_it_be(:label_options) { { class: 'label-foo-bar' } }
-    let_it_be(:label) { 'Custom label' }
+    let_it_be(:radio_options, freeze: false) { { class: 'radio-foo-bar' } }
+    let_it_be(:label_options, freeze: false) { { class: 'label-foo-bar' } }
+    let_it_be(:label, freeze: false) { 'Custom label' }
 
     before do
       render_inline(
@@ -74,7 +74,7 @@ RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, type: :component
   end
 
   context 'with `label` slot' do
-    let_it_be(:label) { 'Slot label' }
+    let_it_be(:label, freeze: false) { 'Slot label' }
 
     before do
       render_inline(
@@ -109,7 +109,7 @@ RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, type: :component
   end
 
   context 'with `label` and `help_text` slots' do
-    let_it_be(:label) { 'Slot label' }
+    let_it_be(:label, freeze: false) { 'Slot label' }
 
     before do
       render_inline(

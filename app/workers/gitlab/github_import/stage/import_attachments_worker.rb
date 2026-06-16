@@ -37,12 +37,22 @@ module Gitlab
         end
 
         def start_importer(project, importer, client)
-          info(project.id, message: "starting importer", importer: importer.name)
+          info(
+            project.id,
+            message: "starting importer",
+            importer: importer.name,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
           importer.new(project, client).execute
         end
 
         def skip_to_next_stage(project)
-          info(project.id, message: "skipping importer", importer: 'Attachments')
+          info(
+            project.id,
+            message: "skipping importer",
+            importer: 'Attachments',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
           move_to_next_stage(project)
         end
 

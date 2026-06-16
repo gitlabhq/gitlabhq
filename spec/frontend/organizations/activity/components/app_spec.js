@@ -11,7 +11,7 @@ import {
   FILTERED_SEARCH_NAMESPACE,
 } from '~/organizations/activity/filters';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -53,7 +53,7 @@ describe('OrganizationsActivityApp', () => {
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findContributionEvents = () => wrapper.findComponent(ContributionEvents);
-  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -129,7 +129,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('when filter is updated with empty value, calls API with event_filter: all', () => {
-      findFilteredSearch().vm.$emit('onFilter', []);
+      findFilteredSearchBar().vm.$emit('onFilter', []);
 
       expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
         params: {
@@ -141,7 +141,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it(`when filter is updated with ${MOCK_SELECTED_CONTRIBUTION_TYPE.type}: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}, calls API with event_filter: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}`, () => {
-      findFilteredSearch().vm.$emit('onFilter', [MOCK_SELECTED_CONTRIBUTION_TYPE]);
+      findFilteredSearchBar().vm.$emit('onFilter', [MOCK_SELECTED_CONTRIBUTION_TYPE]);
 
       expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
         params: {
@@ -171,11 +171,11 @@ describe('OrganizationsActivityApp', () => {
         },
       ];
 
-      expect(findFilteredSearch().props('recentSearchesStorageKey')).toBe(
+      expect(findFilteredSearchBar().props('recentSearchesStorageKey')).toBe(
         RECENT_SEARCHES_STORAGE_KEY,
       );
-      expect(findFilteredSearch().props('namespace')).toBe(FILTERED_SEARCH_NAMESPACE);
-      expect(findFilteredSearch().props('tokens')).toStrictEqual(expectedTokens);
+      expect(findFilteredSearchBar().props('namespace')).toBe(FILTERED_SEARCH_NAMESPACE);
+      expect(findFilteredSearchBar().props('tokens')).toStrictEqual(expectedTokens);
     });
   });
 
@@ -193,7 +193,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('renders filtered search bar', () => {
-      expect(findFilteredSearch().exists()).toBe(true);
+      expect(findFilteredSearchBar().exists()).toBe(true);
     });
 
     it('does not render pagination', () => {
@@ -220,7 +220,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('renders filtered search bar', () => {
-      expect(findFilteredSearch().exists()).toBe(true);
+      expect(findFilteredSearchBar().exists()).toBe(true);
     });
 
     it('does not render pagination', () => {
@@ -247,7 +247,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('renders filtered search bar', () => {
-      expect(findFilteredSearch().exists()).toBe(true);
+      expect(findFilteredSearchBar().exists()).toBe(true);
     });
 
     it('renders pagination', () => {

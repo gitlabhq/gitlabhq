@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   let(:gitaly_diff) do
     Gitlab::GitalyClient::Diff.new(
@@ -434,9 +434,9 @@ DIFF
   end
 
   describe '#unidiff' do
-    let_it_be(:project) { create(:project, :empty_repo) }
-    let_it_be(:repository) { project.repository }
-    let_it_be(:user) { project.first_owner }
+    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+    let_it_be(:repository, freeze: false) { project.repository }
+    let_it_be(:user, freeze: false) { project.first_owner }
 
     let(:commits) { repository.commits('master', limit: 10) }
     let(:diffs) { commits.map(&:diffs).map(&:diffs).flat_map(&:to_a).reverse }

@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'BranchRuleCreate'
 
       authorize :create_branch_rule
+      authorize_granular_token permissions: :create_branch_rule,
+        boundary_argument: :project_path, boundary_type: :project
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

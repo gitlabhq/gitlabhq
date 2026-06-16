@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:package_file1) { create(:package_file, :xml, file_name: 'FooBar') }
-  let_it_be(:package_file2) { create(:package_file, :xml, file_name: 'ThisIsATest') }
-  let_it_be(:package_file3) { create(:package_file, :xml, file_name: 'formatted.zip') }
-  let_it_be(:package_file4) { create(:package_file, :nuget, file_name: 'package-1.0.0.nupkg') }
-  let_it_be(:package_file5) { create(:package_file, :xml, file_name: 'my_dir%2Fformatted') }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:package_file1, freeze: false) { create(:package_file, :xml, file_name: 'FooBar') }
+  let_it_be(:package_file2, freeze: false) { create(:package_file, :xml, file_name: 'ThisIsATest') }
+  let_it_be(:package_file3, freeze: false) { create(:package_file, :xml, file_name: 'formatted.zip') }
+  let_it_be(:package_file4, freeze: false) { create(:package_file, :nuget, file_name: 'package-1.0.0.nupkg') }
+  let_it_be(:package_file5, freeze: false) { create(:package_file, :xml, file_name: 'my_dir%2Fformatted') }
   let_it_be_with_reload(:debian_package) { create(:debian_package, project: project, with_changes_file: true) }
 
   it_behaves_like 'having unique enum values'
@@ -53,7 +53,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     it { is_expected.not_to allow_value('A' * (Packages::PackageFile::FILE_SHA256_MAX_LENGTH + 1)).for(:file_sha256) }
 
     context 'with pypi package' do
-      let_it_be(:package) { create(:pypi_package) }
+      let_it_be(:package, freeze: false) { create(:pypi_package) }
 
       let(:package_file) { package.package_files.first }
       let(:status) { :default }
@@ -104,10 +104,10 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     context 'with conan package' do
-      let_it_be(:package) { create(:conan_package, without_package_files: true) }
-      let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
-      let_it_be(:package_reference) { package.conan_package_references.first }
-      let_it_be(:package_revision) { package.conan_package_revisions.first }
+      let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
+      let_it_be(:recipe_revision, freeze: false) { package.conan_recipe_revisions.first }
+      let_it_be(:package_reference, freeze: false) { package.conan_package_references.first }
+      let_it_be(:package_revision, freeze: false) { package.conan_package_revisions.first }
 
       let!(:existing_file) do
         create(:conan_package_file, :conan_package, package: package, conan_recipe_revision: recipe_revision,
@@ -167,8 +167,8 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
         end
 
         context 'when both existing and new files have no revision' do
-          let_it_be(:recipe_revision) { nil }
-          let_it_be(:package_revision) { nil }
+          let_it_be(:recipe_revision, freeze: false) { nil }
+          let_it_be(:package_revision, freeze: false) { nil }
 
           it 'allows same file name' do
             expect(new_file).to be_valid
@@ -222,7 +222,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   context 'for updating project statistics' do
-    let_it_be(:package, reload: true) { create(:maven_package, package_files: [], maven_metadatum: nil) }
+    let_it_be_with_reload(:package) { create(:maven_package, package_files: [], maven_metadatum: nil) }
 
     context 'when the package file has an explicit size' do
       subject { build(:package_file, :jar, package: package, size: 42) }
@@ -239,11 +239,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.with_file_sha1' do
-    let_it_be(:file_sha1) { '415ab40ae9b7cc4e66d6769cb2c08106e8293b48' }
-    let_it_be(:package) { create(:generic_package) }
-    let_it_be(:package_file) { create(:package_file, file_sha1: file_sha1, package: package) }
+    let_it_be(:file_sha1, freeze: false) { '415ab40ae9b7cc4e66d6769cb2c08106e8293b48' }
+    let_it_be(:package, freeze: false) { create(:generic_package) }
+    let_it_be(:package_file, freeze: false) { create(:package_file, file_sha1: file_sha1, package: package) }
 
-    let_it_be(:another_package_file) do
+    let_it_be(:another_package_file, freeze: false) do
       create(:package_file, file_sha1: 'd0941e68da8f38151ff86a61fc59f7c5cf9fcaa2', package: package)
     end
 
@@ -253,13 +253,16 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.for_rubygem_with_file_name' do
-    let_it_be(:non_ruby_package) { create(:nuget_package, project: project, package_type: :nuget) }
-    let_it_be(:ruby_package) { create(:rubygems_package, project: project, package_type: :rubygems) }
-    let_it_be(:file_name) { 'other.gem' }
+    let_it_be(:non_ruby_package, freeze: false) { create(:nuget_package, project: project, package_type: :nuget) }
+    let_it_be(:ruby_package, freeze: false) { create(:rubygems_package, project: project, package_type: :rubygems) }
+    let_it_be(:file_name, freeze: false) { 'other.gem' }
 
-    let_it_be(:non_ruby_file) { create(:package_file, :nuget, package: non_ruby_package, file_name: file_name) }
-    let_it_be(:gem_file1) { create(:package_file, :gem, package: ruby_package) }
-    let_it_be(:gem_file2) { create(:package_file, :gem, package: ruby_package, file_name: file_name) }
+    let_it_be(:non_ruby_file, freeze: false) do
+      create(:package_file, :nuget, package: non_ruby_package, file_name: file_name)
+    end
+
+    let_it_be(:gem_file1, freeze: false) { create(:package_file, :gem, package: ruby_package) }
+    let_it_be(:gem_file2, freeze: false) { create(:package_file, :gem, package: ruby_package, file_name: file_name) }
 
     it 'returns the matching gem file only for ruby packages' do
       expect(described_class.for_rubygem_with_file_name(project, file_name)).to contain_exactly(gem_file2)
@@ -267,19 +270,19 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   context 'for Conan scopes' do
-    let_it_be(:package) { create(:conan_package, without_package_files: true) }
+    let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
 
     describe '.with_conan_package_reference' do
-      let_it_be(:package_reference) { create(:conan_package_reference, package: package) }
-      let_it_be(:other_package_reference) { create(:conan_package_reference, package: package) }
+      let_it_be(:package_reference, freeze: false) { create(:conan_package_reference, package: package) }
+      let_it_be(:other_package_reference, freeze: false) { create(:conan_package_reference, package: package) }
 
-      let_it_be(:matching_package_file) do
+      let_it_be(:matching_package_file, freeze: false) do
         create(:conan_package_file, :conan_package,
           package: package,
           conan_package_reference: package_reference)
       end
 
-      let_it_be(:package_file_with_other_reference) do
+      let_it_be(:package_file_with_other_reference, freeze: false) do
         create(:conan_package_file, :conan_package,
           package: package,
           conan_package_reference: other_package_reference)
@@ -305,22 +308,22 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     context 'for recipe revision scopes' do
-      let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
-      let_it_be(:other_revision) { create(:conan_recipe_revision, package: package) }
+      let_it_be(:recipe_revision, freeze: false) { package.conan_recipe_revisions.first }
+      let_it_be(:other_revision, freeze: false) { create(:conan_recipe_revision, package: package) }
 
-      let_it_be(:package_file_with_revision) do
+      let_it_be(:package_file_with_revision, freeze: false) do
         create(:conan_package_file, :conan_recipe_file,
           package: package,
           conan_recipe_revision: recipe_revision)
       end
 
-      let_it_be(:package_file_with_other_revision) do
+      let_it_be(:package_file_with_other_revision, freeze: false) do
         create(:conan_package_file, :conan_recipe_file,
           package: package,
           conan_recipe_revision: other_revision)
       end
 
-      let_it_be(:package_file_without_revision) do
+      let_it_be(:package_file_without_revision, freeze: false) do
         create(:conan_package_file, :conan_recipe_file,
           package: package, conan_recipe_revision: nil)
       end
@@ -355,24 +358,24 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     context 'for package revision scopes' do
-      let_it_be(:package_revision) { package.conan_package_revisions.first }
-      let_it_be(:other_package_revision) do
+      let_it_be(:package_revision, freeze: false) { package.conan_package_revisions.first }
+      let_it_be(:other_package_revision, freeze: false) do
         create(:conan_package_revision, package_reference: package.conan_package_references.first)
       end
 
-      let_it_be(:package_file_with_revision) do
+      let_it_be(:package_file_with_revision, freeze: false) do
         create(:conan_package_file, :conan_package,
           package: package,
           conan_package_revision: package_revision)
       end
 
-      let_it_be(:package_file_with_other_revision) do
+      let_it_be(:package_file_with_other_revision, freeze: false) do
         create(:conan_package_file, :conan_package,
           package: package,
           conan_package_revision: other_package_revision)
       end
 
-      let_it_be(:package_file_without_revision) do
+      let_it_be(:package_file_without_revision, freeze: false) do
         create(:conan_package_file, :conan_package,
           package: package, conan_recipe_revision: nil, conan_package_revision: nil)
       end
@@ -408,18 +411,18 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   context 'for Debian scopes' do
-    let_it_be(:debian_changes) { debian_package.package_files.last }
-    let_it_be(:debian_deb) { create(:debian_package_file, package: debian_package) }
-    let_it_be(:debian_udeb) { create(:debian_package_file, :udeb, package: debian_package) }
-    let_it_be(:debian_ddeb) { create(:debian_package_file, :ddeb, package: debian_package) }
+    let_it_be(:debian_changes, freeze: false) { debian_package.package_files.last }
+    let_it_be(:debian_deb, freeze: false) { create(:debian_package_file, package: debian_package) }
+    let_it_be(:debian_udeb, freeze: false) { create(:debian_package_file, :udeb, package: debian_package) }
+    let_it_be(:debian_ddeb, freeze: false) { create(:debian_package_file, :ddeb, package: debian_package) }
 
-    let_it_be(:debian_contrib) do
+    let_it_be(:debian_contrib, freeze: false) do
       create(:debian_package_file, package: debian_package).tap do |pf|
         pf.debian_file_metadatum.update!(component: 'contrib')
       end
     end
 
-    let_it_be(:debian_mipsel) do
+    let_it_be(:debian_mipsel, freeze: false) do
       create(:debian_package_file, package: debian_package).tap do |pf|
         pf.debian_file_metadatum.update!(architecture: 'mipsel')
       end
@@ -438,7 +441,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     describe '#with_debian_unknown_since' do
-      let_it_be(:incoming) { create(:debian_incoming, project: project) }
+      let_it_be(:incoming, freeze: false) { create(:debian_incoming, project: project) }
 
       before do
         incoming.package_files.first.debian_file_metadatum.update! updated_at: 1.day.ago
@@ -451,11 +454,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     describe '.latest_id_per_file_name' do
-      let_it_be(:package) { create(:debian_package, project: project, without_package_files: true) }
-      let_it_be(:shared_file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
-      let_it_be(:file_a) { create(:debian_package_file, package: package, file_name: shared_file_name) }
-      let_it_be(:file_b) { create(:debian_package_file, package: package, file_name: shared_file_name) }
-      let_it_be(:file_c) { create(:debian_package_file, package: package, file_name: shared_file_name) }
+      let_it_be(:package, freeze: false) { create(:debian_package, project: project, without_package_files: true) }
+      let_it_be(:shared_file_name, freeze: false) { 'libsample0_1.2.3~alpha2_amd64.deb' }
+      let_it_be(:file_a, freeze: false) { create(:debian_package_file, package: package, file_name: shared_file_name) }
+      let_it_be(:file_b, freeze: false) { create(:debian_package_file, package: package, file_name: shared_file_name) }
+      let_it_be(:file_c, freeze: false) { create(:debian_package_file, package: package, file_name: shared_file_name) }
 
       it 'returns a single id per file name when multiple package files share the same file name' do
         ids = described_class
@@ -467,11 +470,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
       end
 
       context 'with multiple different file names' do
-        let_it_be(:other_file_old) do
+        let_it_be(:other_file_old, freeze: false) do
           create(:debian_package_file, package: package, file_name: 'sample-dev_1.2.3~binary_amd64.deb')
         end
 
-        let_it_be(:other_file_new) do
+        let_it_be(:other_file_new, freeze: false) do
           create(:debian_package_file, package: package, file_name: 'sample-dev_1.2.3~binary_amd64.deb')
         end
 
@@ -497,22 +500,22 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.for_helm_with_channel' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:non_helm_package) { create(:nuget_package, project: project, package_type: :nuget) }
-    let_it_be(:helm_package1) { create(:helm_package, project: project, package_type: :helm) }
-    let_it_be(:helm_package2) { create(:helm_package, project: project, package_type: :helm) }
-    let_it_be(:channel) { 'some-channel' }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:non_helm_package, freeze: false) { create(:nuget_package, project: project, package_type: :nuget) }
+    let_it_be(:helm_package1, freeze: false) { create(:helm_package, project: project, package_type: :helm) }
+    let_it_be(:helm_package2, freeze: false) { create(:helm_package, project: project, package_type: :helm) }
+    let_it_be(:channel, freeze: false) { 'some-channel' }
 
-    let_it_be(:non_helm_file) { create(:package_file, :nuget, package: non_helm_package) }
-    let_it_be(:helm_file1) { create(:helm_package_file, package: helm_package1) }
-    let_it_be(:helm_file2) { create(:helm_package_file, package: helm_package2, channel: channel) }
+    let_it_be(:non_helm_file, freeze: false) { create(:package_file, :nuget, package: non_helm_package) }
+    let_it_be(:helm_file1, freeze: false) { create(:helm_package_file, package: helm_package1) }
+    let_it_be(:helm_file2, freeze: false) { create(:helm_package_file, package: helm_package2, channel: channel) }
 
     it 'returns the matching file only for Helm packages' do
       expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
     end
 
     context 'with package files pending destruction' do
-      let_it_be(:package_file_pending_destruction) do
+      let_it_be(:package_file_pending_destruction, freeze: false) do
         create(:helm_package_file, :pending_destruction, package: helm_package2, channel: channel)
       end
 
@@ -527,25 +530,25 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.most_recent_for_helm_with_channel' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:package1) { create(:helm_package, project: project) }
-    let_it_be(:package2) { create(:helm_package, project: project) }
-    let_it_be(:package3) { create(:helm_package, project: project) }
-    let_it_be(:package4) { create(:helm_package, project: project) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:package1, freeze: false) { create(:helm_package, project: project) }
+    let_it_be(:package2, freeze: false) { create(:helm_package, project: project) }
+    let_it_be(:package3, freeze: false) { create(:helm_package, project: project) }
+    let_it_be(:package4, freeze: false) { create(:helm_package, project: project) }
 
-    let_it_be(:package_file1_2) { create(:helm_package_file, channel: 'alpha', package: package1) }
+    let_it_be(:package_file1_2, freeze: false) { create(:helm_package_file, channel: 'alpha', package: package1) }
 
-    let_it_be(:package_file2_2) { create(:helm_package_file, package: package2) }
-    let_it_be(:package_file2_3) { create(:helm_package_file, channel: 'alpha', package: package2) }
+    let_it_be(:package_file2_2, freeze: false) { create(:helm_package_file, package: package2) }
+    let_it_be(:package_file2_3, freeze: false) { create(:helm_package_file, channel: 'alpha', package: package2) }
 
-    let_it_be(:package_file3_2) { create(:helm_package_file, channel: 'alpha', package: package3) }
-    let_it_be(:package_file3_3) { create(:helm_package_file, channel: 'alpha', package: package3) }
-    let_it_be(:package_file3_4) { create(:helm_package_file, :pending_destruction, package: package3) }
+    let_it_be(:package_file3_2, freeze: false) { create(:helm_package_file, channel: 'alpha', package: package3) }
+    let_it_be(:package_file3_3, freeze: false) { create(:helm_package_file, channel: 'alpha', package: package3) }
+    let_it_be(:package_file3_4, freeze: false) { create(:helm_package_file, :pending_destruction, package: package3) }
 
-    let_it_be(:package_file4_2) { create(:helm_package_file, package: package4) }
-    let_it_be(:package_file4_3) { create(:helm_package_file, package: package4, channel: 'alpha') }
-    let_it_be(:package_file4_4) { create(:helm_package_file, package: package4) }
-    let_it_be(:package_file4_5) { create(:helm_package_file, :pending_destruction, package: package4) }
+    let_it_be(:package_file4_2, freeze: false) { create(:helm_package_file, package: package4) }
+    let_it_be(:package_file4_3, freeze: false) { create(:helm_package_file, package: package4, channel: 'alpha') }
+    let_it_be(:package_file4_4, freeze: false) { create(:helm_package_file, package: package4) }
+    let_it_be(:package_file4_5, freeze: false) { create(:helm_package_file, :pending_destruction, package: package4) }
 
     let(:packages) { [package1, package2, package3, package4] }
 
@@ -565,7 +568,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
         described_class.most_recent_for_helm_with_channel([package4], 'alpha')
       end
 
-      let_it_be(:package_file_pending_destruction) do
+      let_it_be(:package_file_pending_destruction, freeze: false) do
         create(:helm_package_file, :pending_destruction, package: package4, channel: 'alpha')
       end
 
@@ -576,9 +579,14 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.order_by' do
-    let_it_be(:package) { create(:generic_package, project:) }
-    let_it_be(:older_file) { create(:package_file, package: package, file_name: 'beta.txt', created_at: 2.days.ago) }
-    let_it_be(:newer_file) { create(:package_file, package: package, file_name: 'alpha.txt', created_at: 1.day.ago) }
+    let_it_be(:package, freeze: false) { create(:generic_package, project:) }
+    let_it_be(:older_file, freeze: false) do
+      create(:package_file, package: package, file_name: 'beta.txt', created_at: 2.days.ago)
+    end
+
+    let_it_be(:newer_file, freeze: false) do
+      create(:package_file, package: package, file_name: 'alpha.txt', created_at: 1.day.ago)
+    end
 
     where(:column_name, :order, :expected_order) do
       'id'         | 'asc'     | ->(older, newer) { [older, newer] }
@@ -622,8 +630,8 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
 
     context 'for package_file with pipeline' do
-      let_it_be(:pipeline) { create(:ci_pipeline) }
-      let_it_be(:pipeline2) { create(:ci_pipeline) }
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline) }
+      let_it_be(:pipeline2, freeze: false) { create(:ci_pipeline) }
 
       before do
         package_file.package_file_build_infos.create!(pipeline: pipeline)
@@ -635,7 +643,7 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '#update_file_store callback' do
-    let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
+    let_it_be(:package_file, freeze: false) { build(:package_file, :nuget, size: nil) }
 
     subject(:save_result) { package_file.save! }
 
@@ -716,9 +724,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   context 'for status scopes' do
-    let_it_be(:package) { create(:generic_package) }
-    let_it_be(:default_package_file) { create(:package_file, package: package) }
-    let_it_be(:pending_destruction_package_file) { create(:package_file, :pending_destruction, package: package) }
+    let_it_be(:package, freeze: false) { create(:generic_package) }
+    let_it_be(:default_package_file, freeze: false) { create(:package_file, package: package) }
+    let_it_be(:pending_destruction_package_file, freeze: false) do
+      create(:package_file, :pending_destruction, package: package)
+    end
 
     describe '.installable' do
       subject { package.installable_package_files }
@@ -781,11 +791,11 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.for_projects' do
-    let_it_be(:package) { create(:generic_package) }
-    let_it_be(:package2) { create(:generic_package) }
-    let_it_be(:package_file1) { create(:package_file, package: package) }
-    let_it_be(:package_file2) { create(:package_file, package: package2) }
-    let_it_be(:package_file3) { create(:package_file) }
+    let_it_be(:package, freeze: false) { create(:generic_package) }
+    let_it_be(:package2, freeze: false) { create(:generic_package) }
+    let_it_be(:package_file1, freeze: false) { create(:package_file, package: package) }
+    let_it_be(:package_file2, freeze: false) { create(:package_file, package: package2) }
+    let_it_be(:package_file3, freeze: false) { create(:package_file) }
 
     let(:projects) { ::Project.id_in([package_file1.project_id, package_file2.project_id]) }
 
@@ -801,10 +811,10 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   end
 
   describe '.preload_pipelines_with_user_project_namespace_route' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:package) { create(:generic_package, project: project) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: package.project) }
-    let_it_be(:package_file) { create(:package_file, pipelines: [pipeline], package: package) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:package, freeze: false) { create(:generic_package, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: package.project) }
+    let_it_be(:package_file, freeze: false) { create(:package_file, pipelines: [pipeline], package: package) }
 
     subject(:execute) { described_class.preload_pipelines_with_user_project_namespace_route.id_in(package_file.id) }
 

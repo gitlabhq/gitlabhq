@@ -52,8 +52,11 @@ module MergeRequests
 
     def set_rebase_error(exception)
       @rebase_error =
-        if exception.is_a?(Gitlab::Git::PreReceiveError)
+        case exception
+        when Gitlab::Git::PreReceiveError
           "The rebase pre-receive hook failed: #{exception.message}."
+        when Gitlab::Git::CommandError
+          "Rebase failed: #{exception.message}."
         else
           REBASE_ERROR
         end

@@ -3,9 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category: :permissions do
-  let_it_be(:boundary) { Authz::Boundary.for(:instance) }
-  let_it_be(:granular_pat) { create(:granular_pat, boundary: boundary, permissions: :create_member_role) }
-  let_it_be(:token) { granular_pat }
+  let_it_be(:boundary, freeze: false) { Authz::Boundary.for(:instance) }
+  let_it_be(:granular_pat, freeze: false) do
+    create(:granular_pat, boundary: boundary, permissions: :create_member_role)
+  end
+
+  let_it_be(:token, freeze: false) { granular_pat }
   let_it_be(:permissions) { :create_member_role }
 
   subject(:service) { described_class.new(boundaries: boundary, permissions: permissions, token: token) }
@@ -114,9 +117,9 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       it_behaves_like 'successful response'
 
       context 'when the namespace requires granular tokens' do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:project) { create(:project, :in_group) }
-        let_it_be(:boundary) { Authz::Boundary.for(group) }
+        let_it_be(:group, freeze: false) { create(:group) }
+        let_it_be(:project, freeze: false) { create(:project, :in_group) }
+        let_it_be(:boundary, freeze: false) { Authz::Boundary.for(group) }
 
         before do
           stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
@@ -173,8 +176,8 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         end
 
         context 'when `granular_personal_access_tokens_enforcement_saas` FF is not enabled for root' do
-          let_it_be(:sub_group) { create(:group, parent: group) }
-          let_it_be(:boundary) { Authz::Boundary.for(sub_group) }
+          let_it_be(:sub_group, freeze: false) { create(:group, parent: group) }
+          let_it_be(:boundary, freeze: false) { Authz::Boundary.for(sub_group) }
 
           before do
             stub_feature_flags(granular_personal_access_tokens_enforcement_saas: sub_group)
@@ -186,18 +189,21 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
 
     context 'when the token does not have the required permissions' do
-      let_it_be(:granular_pat) { create(:granular_pat, boundary: boundary, permissions: :read_work_item) }
-      let_it_be(:permissions) { [:read_issue, :read_epic, :read_fork] }
+      let_it_be(:granular_pat, freeze: false) do
+        create(:granular_pat, boundary: boundary, permissions: :read_work_item)
+      end
+
+      let_it_be(:permissions, freeze: false) { [:read_issue, :read_epic, :read_fork] }
 
       it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained personal access token ' \
         'with the following instance permissions: [Project: Read, Work Item: Read].'
     end
 
     context 'when the boundary is not visible to the user' do
-      let_it_be(:private_project) { create(:project, :private) }
-      let_it_be(:boundary) { Authz::Boundary.for(private_project) }
+      let_it_be(:private_project, freeze: false) { create(:project, :private) }
+      let_it_be(:boundary, freeze: false) { Authz::Boundary.for(private_project) }
       let_it_be(:permissions) { :read_code }
-      let_it_be(:granular_pat) { create(:granular_pat) }
+      let_it_be(:granular_pat, freeze: false) { create(:granular_pat) }
 
       it 'returns a resource_not_found error response' do
         result = service.execute
@@ -222,8 +228,8 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
 
       context 'when one of the multiple boundaries is hidden' do
-        let_it_be(:public_group) { create(:group, :public) }
-        let_it_be(:boundary) { [Authz::Boundary.for(private_project), Authz::Boundary.for(public_group)] }
+        let_it_be(:public_group, freeze: false) { create(:group, :public) }
+        let_it_be(:boundary, freeze: false) { [Authz::Boundary.for(private_project), Authz::Boundary.for(public_group)] }
 
         it 'hides existence by returning resource_not_found' do
           result = service.execute
@@ -237,7 +243,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     context 'when permissions are declared but no boundary resolves' do
       let_it_be(:boundary) { nil }
       let_it_be(:permissions) { :read_code }
-      let_it_be(:granular_pat) { create(:granular_pat) }
+      let_it_be(:granular_pat, freeze: false) { create(:granular_pat) }
 
       it_behaves_like 'error response', '404 Not Found'
 
@@ -251,15 +257,15 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         create(:granular_scope, boundary:, permissions:)
       end
 
-      let_it_be(:token) { create(:granular_pat) }
-      let_it_be(:instance_boundary) { Authz::Boundary.for(:instance) }
-      let_it_be(:user_boundary) { Authz::Boundary.for(:user) }
-      let_it_be(:group_boundary) { Authz::Boundary.for(create(:group, developers: token.user)) }
-      let_it_be(:project_boundary) { Authz::Boundary.for(create(:project, developers: token.user)) }
-      let_it_be(:instance_scope) { create_granular_scope(instance_boundary, [:delete_member_role]) }
-      let_it_be(:user_scope) { create_granular_scope(user_boundary, [:read_member_role]) }
-      let_it_be(:project_scope) { create_granular_scope(project_boundary, [:create_member_role]) }
-      let_it_be(:group_scope) { create_granular_scope(group_boundary, [:create_member_role]) }
+      let_it_be(:token, freeze: false) { create(:granular_pat) }
+      let_it_be(:instance_boundary, freeze: false) { Authz::Boundary.for(:instance) }
+      let_it_be(:user_boundary, freeze: false) { Authz::Boundary.for(:user) }
+      let_it_be(:group_boundary, freeze: false) { Authz::Boundary.for(create(:group, developers: token.user)) }
+      let_it_be(:project_boundary, freeze: false) { Authz::Boundary.for(create(:project, developers: token.user)) }
+      let_it_be(:instance_scope, freeze: false) { create_granular_scope(instance_boundary, [:delete_member_role]) }
+      let_it_be(:user_scope, freeze: false) { create_granular_scope(user_boundary, [:read_member_role]) }
+      let_it_be(:project_scope, freeze: false) { create_granular_scope(project_boundary, [:create_member_role]) }
+      let_it_be(:group_scope, freeze: false) { create_granular_scope(group_boundary, [:create_member_role]) }
 
       before do
         ::Authz::GranularScopeService.new(token).add_granular_scopes(
@@ -268,7 +274,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
 
       context 'when the token has the required permissions for some of the boundaries' do
-        let_it_be(:boundary) { [instance_boundary, group_boundary, project_boundary] }
+        let_it_be(:boundary, freeze: false) { [instance_boundary, group_boundary, project_boundary] }
 
         # In this case the authorization succeeds on the project boundary. The
         # group and instance boundaries are no longer checked.
@@ -284,7 +290,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
 
       context 'when the token has the required permissions for only one of the boundaries' do
-        let_it_be(:boundary) { [user_boundary, instance_boundary, group_boundary, project_boundary] }
+        let_it_be(:boundary, freeze: false) { [user_boundary, instance_boundary, group_boundary, project_boundary] }
         let_it_be(:permissions) { :delete_member_role }
 
         it 'authorizes based on boundary priority order' do
@@ -301,7 +307,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
 
       context 'when the token does not have the required permissions' do
-        let_it_be(:boundary) { [user_boundary, project_boundary] }
+        let_it_be(:boundary, freeze: false) { [user_boundary, project_boundary] }
         let_it_be(:permissions) { :delete_member_role }
 
         it 'returns the correct error message' do

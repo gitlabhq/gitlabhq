@@ -74,22 +74,9 @@ module Gitlab
                   **cpu_utilization
                 }
               },
-              minio: {
-                resources: resources("30m", "32Mi")
-              },
               "nginx-ingress": {
                 controller: {
                   resources: resources("30m", "256Mi")
-                }
-              },
-              postgresql: {
-                primary: {
-                  resources: resources("400m", "1Gi")
-                }
-              },
-              redis: {
-                master: {
-                  resources: resources("50m", "16Mi")
                 }
               }
             }
@@ -142,22 +129,9 @@ module Gitlab
                   **cpu_utilization
                 }
               },
-              minio: {
-                resources: resources("50m", "32Mi")
-              },
               "nginx-ingress": {
                 controller: {
                   resources: resources("30m", "256Mi")
-                }
-              },
-              postgresql: {
-                primary: {
-                  resources: resources("600m", "1536Mi")
-                }
-              },
-              redis: {
-                master: {
-                  resources: resources("100m", "16Mi")
                 }
               }
             }
@@ -167,13 +141,7 @@ module Gitlab
           #
           # @return [Hash]
           def performance
-            high.deep_merge({
-              redis: {
-                master: {
-                  resources: resources("200m", "128Mi")
-                }
-              }
-            })
+            high
           end
 
           # Kubernetes resources configuration

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/sidekiq_api_usage'
 
-RSpec.describe RuboCop::Cop::SidekiqApiUsage do
+RSpec.describe RuboCop::Cop::SidekiqApiUsage, feature_category: :scalability do
   let(:msg) { described_class::MSG }
 
   context 'when calling Sidekiq::Worker' do

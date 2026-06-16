@@ -19,6 +19,12 @@ module Ci
         @push_options = push_options&.deep_symbolize_keys || {}
       end
 
+      # Mirrors Gitlab::PushOptions#get so the parsed push options can be read
+      # by consumers that accept either push-options representation.
+      def get(*keys)
+        push_options.dig(*keys)
+      end
+
       def skips_ci?
         push_options.dig(:ci, :skip).present?
       end

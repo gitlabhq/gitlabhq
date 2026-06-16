@@ -49,14 +49,14 @@ RSpec.describe RepositoryCheck::BatchWorker, feature_category: :source_code_mana
 
     stub_application_setting(repository_checks_enabled: false)
 
-    expect(subject.perform(shard_name)).to eq(nil)
+    expect(subject.perform(shard_name)).to be_nil
   end
 
   it 'does nothing when shard is unhealthy' do
     shard_name = 'broken'
     create(:project, :broken_storage, created_at: 1.week.ago)
 
-    expect(subject.perform(shard_name)).to eq(nil)
+    expect(subject.perform(shard_name)).to be_nil
   end
 
   it 'skips projects created less than 24 hours ago' do

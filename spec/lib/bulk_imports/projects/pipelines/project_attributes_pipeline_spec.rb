@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :with_license, feature_category: :importers do
-  let_it_be(:project) { create(:project, name: 'Project name') }
-  let_it_be(:bulk_import) { create(:bulk_import) }
-  let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:project, freeze: false) { create(:project, name: 'Project name') }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
+  let_it_be(:entity, freeze: false) do
+    create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import)
+  end
+
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:tmpdir) { Dir.mktmpdir }
   let(:extra) { {} }
@@ -30,7 +33,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
       'public_builds' => true,
       'last_repository_check_failed' => nil,
       'only_allow_merge_if_pipeline_succeeds' => true,
-      'has_external_issue_tracker' => false,
       'request_access_enabled' => true,
       'has_external_wiki' => false,
       'ci_config_path' => nil,
@@ -95,6 +97,12 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
       expect(Gitlab::ImportExport::AttributeCleaner).to receive(:clean).and_call_original
 
       expect(pipeline.transform(context, input)).to eq({ 'description' => 'description' })
+    end
+
+    it 'does not import has_external_issue_tracker' do
+      input = { 'description' => 'description', 'has_external_issue_tracker' => false }
+
+      expect(pipeline.transform(context, input)).not_to have_key('has_external_issue_tracker')
     end
   end
 

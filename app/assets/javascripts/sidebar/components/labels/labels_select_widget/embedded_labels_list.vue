@@ -4,6 +4,7 @@ import { sortBy } from 'lodash-es';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
+  name: 'EmbeddedLabelsList',
   components: {
     GlLabel,
   },

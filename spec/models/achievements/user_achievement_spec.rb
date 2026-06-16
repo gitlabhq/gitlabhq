@@ -56,5 +56,40 @@ RSpec.describe Achievements::UserAchievement, type: :model, feature_category: :u
   describe 'validations' do
     it { is_expected.to allow_values([false, true]).for(:show_on_profile) }
     it { is_expected.not_to allow_value(nil).for(:show_on_profile) }
+    it { is_expected.to validate_length_of(:award_message).is_at_most(200) }
+  end
+
+  describe 'cached markdown fields' do
+    describe '#award_message_html' do
+      let_it_be(:user_achievement) { create(:user_achievement, award_message: 'Great contribution') }
+
+      it 'renders markdown to HTML' do
+        expect(user_achievement.award_message_html).to include('Great contribution')
+      end
+
+      context 'when award_message contains unsafe HTML' do
+        let_it_be(:user_achievement) do
+          create(:user_achievement, award_message: '<script>alert(1)</script>Great contribution')
+        end
+
+        it 'strips unsafe tags from award_message_html' do
+          expect(user_achievement.award_message_html).not_to include('<script>')
+        end
+
+        it 'preserves safe text content' do
+          expect(user_achievement.award_message_html).to include('Great contribution')
+        end
+      end
+
+      context 'when award_message contains an unsafe event handler' do
+        let_it_be(:user_achievement) do
+          create(:user_achievement, award_message: '<img src=x onerror=alert(1)>')
+        end
+
+        it 'strips the unsafe attribute from award_message_html' do
+          expect(user_achievement.award_message_html).not_to include('onerror')
+        end
+      end
+    end
   end
 end

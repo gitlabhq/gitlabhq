@@ -1,0 +1,9 @@
+---
+name: create_broadcast_message
+description: Grants the ability to create broadcast messages
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_broadcast_message

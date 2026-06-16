@@ -5,8 +5,16 @@ import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
+import { VISIBILITY_LEVELS_INTEGER_TO_STRING } from '~/visibility_level/constants';
 import organizationCreateMutation from '../graphql/mutations/organization_create.mutation.graphql';
 import NewEditForm from '../../shared/components/new_edit_form.vue';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_PATH,
+  FORM_FIELD_DESCRIPTION,
+  FORM_FIELD_AVATAR,
+  FORM_FIELD_VISIBILITY_LEVEL,
+} from '../../shared/constants';
 
 export default {
   name: 'OrganizationNewApp',
@@ -43,14 +51,16 @@ export default {
           mutation: organizationCreateMutation,
           variables: {
             input: {
-              name: formValues.name,
-              path: formValues.path,
-              description: formValues.description,
-              avatar: formValues.avatar,
+              name: formValues[FORM_FIELD_NAME],
+              path: formValues[FORM_FIELD_PATH],
+              description: formValues[FORM_FIELD_DESCRIPTION],
+              avatar: formValues[FORM_FIELD_AVATAR],
+              visibility:
+                VISIBILITY_LEVELS_INTEGER_TO_STRING[formValues[FORM_FIELD_VISIBILITY_LEVEL]],
             },
           },
           context: {
-            hasUpload: formValues.avatar instanceof File,
+            hasUpload: formValues[FORM_FIELD_AVATAR] instanceof File,
           },
         });
 

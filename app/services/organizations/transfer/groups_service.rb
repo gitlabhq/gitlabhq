@@ -202,7 +202,7 @@ module Organizations
 
       def has_permission?
         return false unless Ability.allowed?(current_user, :admin_group, group)
-        return false unless Ability.allowed?(current_user, :admin_organization, new_organization)
+        return false unless Ability.allowed?(current_user, :update_organization, new_organization)
 
         true
       end
@@ -217,7 +217,9 @@ module Organizations
 
       def localized_error_messages
         {
-          group_not_root: s_('TransferOrganization|Only root groups can be transferred to a different organization.'),
+          group_not_root: s_(
+            'TransferOrganization|Only top-level groups can be transferred to a different organization.'
+          ),
           already_transferred: s_('TransferOrganization|Group is already in the target organization.'),
           permission: s_("TransferOrganization|You must be an owner of both the group and new organization.")
         }.freeze

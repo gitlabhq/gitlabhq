@@ -22,7 +22,7 @@ values, based on attributes including your database's setup and size.
 > the roles cannot perform all necessary configuration steps. In this case, use the
 > [Geo with external PostgreSQL instances](external_database.md) process instead.
 
-Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
+Ensure the secondary site is running the same version of GitLab Enterprise Edition as the primary site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your primary site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.
@@ -64,21 +64,21 @@ instructions on setting up replication with a Patroni cluster.
 
 ### PostgreSQL replication
 
-The GitLab **primary** site where the write operations happen connects to
-the **primary** database server. **Secondary** sites
+The GitLab primary site where the write operations happen connects to
+the primary database server. Secondary sites
 connect to their own database servers (which are read-only).
 
 You should use [PostgreSQL's replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
-to ensure that the **primary** site retains all the data necessary for the **secondary** sites to
+to ensure that the primary site retains all the data necessary for the secondary sites to
 recover. See below for more details.
 
 The following guide assumes that:
 
 - You are using the Linux package (so are using PostgreSQL 12 or later),
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
-- You have a **primary** site already set up (the GitLab server you are
+- You have a primary site already set up (the GitLab server you are
   replicating from), running PostgreSQL (or equivalent version) managed by your Linux package installation, and
-  you have a new **secondary** site set up with the same
+  you have a new secondary site set up with the same
   [versions of PostgreSQL](../_index.md#requirements-for-running-geo),
   OS, and GitLab on all sites.
 
@@ -87,9 +87,9 @@ The following guide assumes that:
 > but [epic 18022](https://gitlab.com/groups/gitlab-org/-/epics/18022) proposes to
 > change this behavior.
 
-#### Step 1. Configure the **primary** site
+#### Step 1. Configure the primary site
 
-1. SSH into your GitLab **primary** site and sign in as root:
+1. SSH into your GitLab primary site and sign in as root:
 
    ```shell
    sudo -i
@@ -106,13 +106,13 @@ The following guide assumes that:
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
-1. Reconfigure the **primary** site for the change to take effect:
+1. Reconfigure the primary site for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. Execute the command below to define the site as **primary** site:
+1. Execute the command below to define the site as primary site:
 
    ```shell
    gitlab-ctl set-geo-primary-node
@@ -186,8 +186,8 @@ The following guide assumes that:
 1. Configure PostgreSQL to listen on network interfaces:
 
    For security reasons, PostgreSQL does not listen on any network interfaces
-   by default. However, Geo requires the **secondary** site to be able to
-   connect to the **primary** site's database. For this reason, you need the IP address of
+   by default. However, Geo requires the secondary site to be able to
+   connect to the primary site's database. For this reason, you need the IP address of
    each site.
 
    > [!note]
@@ -215,12 +215,12 @@ The following guide assumes that:
 
    | Configuration                           | Address                                                               |
    |:----------------------------------------|:----------------------------------------------------------------------|
-   | `postgresql['listen_address']`          | **Primary** site's public or VPC private address.                     |
-   | `postgresql['md5_auth_cidr_addresses']` | **Primary** and **Secondary** sites' public or VPC private addresses. |
+   | `postgresql['listen_address']`          | Primary site's public or VPC private address.                     |
+   | `postgresql['md5_auth_cidr_addresses']` | Primary and Secondary sites' public or VPC private addresses. |
 
    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
-   provides a virtual private cloud (VPC), we recommend using the **primary**
-   and **secondary** sites' "private" or "internal" addresses for
+   provides a virtual private cloud (VPC), we recommend using the primary
+   and secondary sites' "private" or "internal" addresses for
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface
@@ -233,10 +233,10 @@ The following guide assumes that:
    > `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
    Depending on your network configuration, the suggested addresses may
-   be incorrect. If your **primary** and **secondary** sites connect over a local
+   be incorrect. If your primary and secondary sites connect over a local
    area network, or a virtual network connecting availability zones like the
    [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc/),
-   you should use the **secondary** site's private address for `postgresql['md5_auth_cidr_addresses']`.
+   you should use the secondary site's private address for `postgresql['md5_auth_cidr_addresses']`.
 
    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
    addresses with addresses appropriate to your network configuration:
@@ -270,7 +270,7 @@ The following guide assumes that:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Optional. If you want to add another **secondary** site, the relevant setting would look like:
+1. Optional. If you want to add another secondary site, the relevant setting would look like:
 
    ```ruby
    postgresql['md5_auth_cidr_addresses'] = ['<primary_site_ip>/32', '<secondary_site_ip>/32', '<another_secondary_site_ip>/32']
@@ -310,20 +310,20 @@ The following guide assumes that:
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt | grep 5432` to ensure that PostgreSQL is listening on port
-   `5432` to the **primary** site's private address.
+   `5432` to the primary site's private address.
 1. A certificate was automatically generated when GitLab was reconfigured. This
    is used automatically to protect your PostgreSQL traffic from
    eavesdroppers. To protect against active ("man-in-the-middle") attackers,
-   the **secondary** site needs a copy of the CA that signed the certificate. In
+   the secondary site needs a copy of the CA that signed the certificate. In
    the case of this self-signed certificate, make a copy of the PostgreSQL
-   `server.crt` file on the **primary** site by running this command:
+   `server.crt` file on the primary site by running this command:
 
    ```shell
    cat ~gitlab-psql/data/server.crt
    ```
 
    Copy the output to the clipboard or into a local file. You
-   need it when setting up the **secondary** site! The certificate is not sensitive
+   need it when setting up the secondary site! The certificate is not sensitive
    data.
 
    However, this certificate is created with a generic `PostgreSQL` Common Name. For this,
@@ -346,9 +346,9 @@ The following guide assumes that:
 
    On your primary database, open `/etc/gitlab/gitlab.rb` and search for `postgresql['ssl_ca_file']` (the CA certificate). Copy its value to your clipboard that you'll later paste into `server.crt`.
 
-#### Step 2. Configure the **secondary** server
+#### Step 2. Configure the secondary server
 
-1. SSH into your GitLab **secondary** site and sign in as root:
+1. SSH into your GitLab secondary site and sign in as root:
 
    ```shell
    sudo -i
@@ -365,7 +365,7 @@ The following guide assumes that:
    > [!note]
    > This step is important so you don't try to execute anything before the site is fully configured.
 
-1. [Check TCP connectivity](../../raketasks/maintenance.md) to the **primary** site's PostgreSQL server:
+1. [Check TCP connectivity](../../raketasks/maintenance.md) to the primary site's PostgreSQL server:
 
    ```shell
    gitlab-rake gitlab:tcp_check[<primary_site_ip>,5432]
@@ -375,16 +375,16 @@ The following guide assumes that:
    > If this step fails, you may be using the wrong IP address, or a firewall may
    > be preventing access to the site. Check the IP address, paying close
    > attention to the difference between public and private addresses. Ensure
-   > that, if a firewall is present, the **secondary** site is permitted to connect to the
-   > **primary** site on port 5432.
+   > that, if a firewall is present, the secondary site is permitted to connect to the
+   > primary site on port 5432.
 
-1. Create a file `server.crt` in the **secondary** site, with the content you got on the last step of the **primary** site's setup:
+1. Create a file `server.crt` in the secondary site, with the content you got on the last step of the primary site's setup:
 
    ```shell
    editor server.crt
    ```
 
-1. Set up PostgreSQL TLS verification on the **secondary** site:
+1. Set up PostgreSQL TLS verification on the secondary site:
 
    Install the `server.crt` file:
 
@@ -399,9 +399,9 @@ The following guide assumes that:
 
    PostgreSQL now only recognizes that exact certificate when verifying TLS
    connections. The certificate can only be replicated by someone with access
-   to the private key, which is **only** present on the **primary** site.
+   to the private key, which is **only** present on the primary site.
 
-1. Test that the `gitlab-psql` user can connect to the **primary** site's database
+1. Test that the `gitlab-psql` user can connect to the primary site's database
    (the default database name is `gitlabhq_production` on a Linux package installation):
 
    ```shell
@@ -422,11 +422,11 @@ The following guide assumes that:
 
    When prompted, enter the plaintext password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
-   the list of the **primary** site's databases.
+   the list of the primary site's databases.
 
    A failure to connect here indicates that the TLS configuration is incorrect.
-   Ensure that the contents of `~gitlab-psql/data/server.crt` on the **primary** site
-   match the contents of `~gitlab-psql/.postgresql/root.crt` on the **secondary** site.
+   Ensure that the contents of `~gitlab-psql/data/server.crt` on the primary site
+   match the contents of `~gitlab-psql/.postgresql/root.crt` on the secondary site.
 
 1. Edit `/etc/gitlab/gitlab.rb` and set the role to `geo_secondary_role` (for more information, see [Geo roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)):
 
@@ -440,7 +440,7 @@ The following guide assumes that:
 
 1. Configure PostgreSQL:
 
-   This step is similar to how you configured the **primary** instance.
+   This step is similar to how you configured the primary instance.
    You must enable this, even if using a single node.
 
    > [!warning]
@@ -467,7 +467,7 @@ The following guide assumes that:
    ```
 
    For external PostgreSQL instances, see [additional instructions](external_database.md).
-   If you bring a former **primary** site back online to serve as a **secondary** site, then you also must remove `roles(['geo_primary_role'])` or `geo_primary_role['enable'] = true`.
+   If you bring a former primary site back online to serve as a secondary site, then you also must remove `roles(['geo_primary_role'])` or `geo_primary_role['enable'] = true`.
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -483,25 +483,25 @@ The following guide assumes that:
 
 #### Step 3. Initiate the replication process
 
-Below is a script that connects the database on the **secondary** site to
-the database on the **primary** site. This script replicates the database and creates the
+Below is a script that connects the database on the secondary site to
+the database on the primary site. This script replicates the database and creates the
 needed files for streaming replication.
 
 The directories used are the defaults that are set up in a Linux package installation. If you have
 changed any defaults, configure the script accordingly (replacing any directories and paths).
 
 > [!warning]
-> Make sure to run this on the **secondary** site as it removes all PostgreSQL's
+> Make sure to run this on the secondary site as it removes all PostgreSQL's
 > data before running `pg_basebackup`.
 
-1. SSH into your GitLab **secondary** site and sign in as root:
+1. SSH into your GitLab secondary site and sign in as root:
 
    ```shell
    sudo -i
    ```
 
 1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)
-   to use for your **secondary** site to
+   to use for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name as shown in the commands below.
@@ -509,7 +509,7 @@ changed any defaults, configure the script accordingly (replacing any directorie
 1. Execute the command below to start a backup/restore and begin the replication
 
    > [!warning]
-   > Each Geo **secondary** site must have its own unique replication slot name.
+   > Each Geo secondary site must have its own unique replication slot name.
    > Using the same slot name between two secondaries breaks PostgreSQL replication.
 
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
@@ -542,7 +542,7 @@ changed any defaults, configure the script accordingly (replacing any directorie
        If not, you must target the actual database host.
      - For setups with a dedicated PostgreSQL node, target the dedicated database host directly.
    - Change the `--slot-name` to the name of the replication slot
-     to be used on the **primary** database. The script attempts to create the
+     to be used on the primary database. The script attempts to create the
      replication slot automatically if it does not exist.
    - If PostgreSQL is listening on a non-standard port, add `--port=`.
    - If your database is too large to be transferred in 30 minutes, you need
@@ -550,12 +550,12 @@ changed any defaults, configure the script accordingly (replacing any directorie
      initial replication to take under an hour.
    - Pass `--sslmode=disable` to skip PostgreSQL TLS authentication altogether
      (for example, you know the network path is secure, or you are using a site-to-site
-     VPN). It is **not** safe over the public Internet!
+     VPN). It is not safe over the public Internet!
    - You can read more details about each `sslmode` in the
      [PostgreSQL documentation](https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
      The instructions listed previously are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
-   - If you're repurposing an old site into a Geo **secondary** site, you must
+   - If you're repurposing an old site into a Geo secondary site, you must
      add `--force` to the command line.
    - When not in a production machine, you can disable the backup step (if you
      are certain this is what you want) by adding `--skip-backup`.
@@ -572,8 +572,8 @@ PostgreSQL connections, which can improve performance even when using in a
 single instance installation.
 
 You should use PgBouncer if you use GitLab in a highly available
-configuration with a cluster of nodes supporting a Geo **primary** site and
-two other clusters of nodes supporting a Geo **secondary** site. You need two PgBouncer nodes: one for the
+configuration with a cluster of nodes supporting a Geo primary site and
+two other clusters of nodes supporting a Geo secondary site. You need two PgBouncer nodes: one for the
 main database and the other for the tracking database. For more information,
 see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
@@ -585,7 +585,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
 
-On the GitLab Geo **primary** site:
+On the GitLab Geo primary site:
 
 1. The default value for the replication user is `gitlab_replicator`, but if you've set a custom replication
    user in your `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']` setting, ensure you
@@ -619,18 +619,18 @@ On the GitLab Geo **primary** site:
    sudo gitlab-ctl restart postgresql
    ```
 
-Until the password is updated on any **secondary** sites, the [PostgreSQL log](../../logs/_index.md#postgresql-logs) on
+Until the password is updated on any secondary sites, the [PostgreSQL log](../../logs/_index.md#postgresql-logs) on
 the secondaries report the following error message:
 
 ```console
 FATAL:  could not connect to the primary server: FATAL:  password authentication failed for user "gitlab_replicator"
 ```
 
-On all GitLab Geo **secondary** sites:
+On all GitLab Geo secondary sites:
 
 1. The first step isn't necessary from a configuration perspective, because the hashed `'sql_replication_password'`
-   is not used on the GitLab Geo **secondary** sites. However in the event that **secondary** site needs to be promoted
-   to the GitLab Geo **primary**, make sure to match the `'sql_replication_password'` in the **secondary** site configuration.
+   is not used on the GitLab Geo secondary sites. However in the event that secondary site needs to be promoted
+   to the GitLab Geo primary, make sure to match the `'sql_replication_password'` in the secondary site configuration.
 
    Edit `/etc/gitlab/gitlab.rb`:
 
@@ -656,11 +656,11 @@ On all GitLab Geo **secondary** sites:
 
 ### Migrating a single PostgreSQL node to Patroni
 
-Before the introduction of Patroni, Geo had no support for Linux package installations for HA setups on the **secondary** site.
+Before the introduction of Patroni, Geo had no support for Linux package installations for HA setups on the secondary site.
 
 With Patroni, this support is now possible. To migrate the existing PostgreSQL to Patroni:
 
-1. Make sure you have a Consul cluster setup on the secondary (similar to how you set it up on the **primary** site).
+1. Make sure you have a Consul cluster setup on the secondary (similar to how you set it up on the primary site).
 1. [Configure a permanent replication slot](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
 1. [Configure the internal load balancer](#step-2-configure-the-internal-load-balancer-on-the-primary-site).
 1. [Configure a PgBouncer node](#step-3-configure-pgbouncer-nodes-on-the-secondary-site)
@@ -672,8 +672,8 @@ You end up with a **Standby Cluster** with a single node. That allows you to add
 ### Patroni support
 
 Patroni is the official replication management solution for Geo. Patroni
-can be used to build a highly available cluster on the **primary** and a **secondary** Geo site.
-Using Patroni on a **secondary** site is optional and you don't have to use the same number of
+can be used to build a highly available cluster on the primary and a secondary Geo site.
+Using Patroni on a secondary site is optional and you don't have to use the same number of
 nodes on each Geo site.
 
 For instructions on how to set up Patroni on the primary site, see the
@@ -892,7 +892,7 @@ more than one PgBouncer service node. The internal load balancer provides a sing
 endpoint for connecting to the PgBouncer cluster. For more information,
 see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
-On each node running a PgBouncer instance on the **secondary** site:
+On each node running a PgBouncer instance on the secondary site:
 
 1. SSH into your PgBouncer node and sign in as root:
 
@@ -1088,7 +1088,7 @@ synchronization is required.
 
 ### Configuring Patroni cluster for the tracking PostgreSQL database
 
-**Secondary** Geo sites use a separate PostgreSQL installation as a tracking database to
+Secondary Geo sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
 
 If you want to run the Geo tracking database on a single node, see

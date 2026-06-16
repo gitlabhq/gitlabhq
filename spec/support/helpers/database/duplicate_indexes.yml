@@ -79,6 +79,9 @@ pm_package_versions:
 project_compliance_standards_adherence:
   u_project_compliance_standards_adherence_for_reporting:
   - index_project_compliance_standards_adherence_on_project_id
+project_uploads:
+  index_project_uploads_on_project_id_and_id:
+  - project_uploads_project_id_idx
 projects:
   index_service_desk_enabled_projects_on_id_creator_id_created_at:
   - index_projects_on_id_service_desk_enabled

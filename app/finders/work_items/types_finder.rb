@@ -26,9 +26,6 @@ module WorkItems
     def execute(name: nil, only_available: nil)
       return [] if unavailable_container?
 
-      # The provider now returns both system-defined and custom work item types when the
-      # work_item_configurable_types feature flag is enabled. When disabled, it falls back
-      # to system-defined types only for backward compatibility.
       provider = ::WorkItems::TypesFramework::Provider.new(@container)
 
       # Default ("omitted") path: return all types filtered by FF/license.

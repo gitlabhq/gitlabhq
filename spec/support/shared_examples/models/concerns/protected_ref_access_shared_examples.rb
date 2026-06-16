@@ -33,8 +33,8 @@ RSpec.shared_examples 'protected ref access' do
     describe '::for_role' do
       subject(:for_role) { described_class.for_role }
 
-      let_it_be(:developer_access) { create(described_factory, :developer_access) }
-      let_it_be(:maintainer_access) { create(described_factory, :maintainer_access) }
+      let_it_be(:developer_access, freeze: false) { create(described_factory, :developer_access) }
+      let_it_be(:maintainer_access, freeze: false) { create(described_factory, :maintainer_access) }
 
       it 'includes all role based access levels' do
         expect(for_role).to contain_exactly(developer_access, maintainer_access)
@@ -58,7 +58,7 @@ RSpec.shared_examples 'protected ref access' do
   end
 
   describe '#check_access(user, current_project)' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user, freeze: false) { create(:user) }
 
     let(:access_level) { ::Gitlab::Access::DEVELOPER }
     let(:current_project) { project }
@@ -76,13 +76,13 @@ RSpec.shared_examples 'protected ref access' do
     context 'when current_user is nil' do
       let(:current_user) { nil }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'when access_level is NO_ACCESS' do
       let(:access_level) { ::Gitlab::Access::NO_ACCESS }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'when instance admin access is configured' do
@@ -93,7 +93,7 @@ RSpec.shared_examples 'protected ref access' do
           project.add_maintainer(current_user)
         end
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
 
       context 'when current_user is admin' do
@@ -101,27 +101,27 @@ RSpec.shared_examples 'protected ref access' do
           allow(current_user).to receive(:admin?).and_return(true)
         end
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
     end
 
     context 'when current_user can push_code to project' do
       context 'and member access is high enough' do
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
 
         context 'when external authorization denies access' do
           before do
             external_service_deny_access(current_user, project)
           end
 
-          it { is_expected.to eq false }
+          it { is_expected.to be false }
         end
       end
 
       context 'and member access is too low' do
         let(:access_level) { ::Gitlab::Access::MAINTAINER }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
     end
 
@@ -130,7 +130,7 @@ RSpec.shared_examples 'protected ref access' do
         allow(current_user).to receive(:can?).with(:push_code, project).and_return(false)
       end
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 end

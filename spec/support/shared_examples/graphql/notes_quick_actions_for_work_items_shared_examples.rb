@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work item supports assignee widget updates via quick actions' do
-  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
 
   context 'when assigning a user' do
     let(:body) { "/assign @#{developer.username}" }
@@ -52,7 +52,7 @@ end
 
 RSpec.shared_examples 'work item supports labels widget updates via quick actions' do
   shared_examples 'work item labels are updated' do
-    it do
+    it 'updates the work item labels' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         noteable.reload
@@ -62,9 +62,9 @@ RSpec.shared_examples 'work item supports labels widget updates via quick action
     end
   end
 
-  let_it_be(:existing_label) { create(:label, project: project) }
-  let_it_be(:label1) { create(:label, project: project) }
-  let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:existing_label, freeze: false) { create(:label, project: project) }
+  let_it_be(:label1, freeze: false) { create(:label, project: project) }
+  let_it_be(:label2, freeze: false) { create(:label, project: project) }
 
   let(:add_label_ids) { [] }
   let(:remove_label_ids) { [] }
@@ -151,8 +151,8 @@ RSpec.shared_examples 'work item does not support start and due date widget upda
 end
 
 RSpec.shared_examples 'work item supports type change via quick actions' do
-  let_it_be(:assignee) { create(:user) }
-  let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
+  let_it_be(:assignee, freeze: false) { create(:user) }
+  let_it_be(:task_type, freeze: false) { build(:work_item_system_defined_type, :task) }
 
   let(:body) { "Updating type.\n/type issue" }
 
@@ -171,7 +171,7 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
     end
 
     context 'when update service returns errors' do
-      let_it_be(:issue) { create(:work_item, :issue, project: project) }
+      let_it_be(:issue, freeze: false) { create(:work_item, :issue, project: project) }
 
       before do
         create(:parent_link, work_item: noteable, work_item_parent: issue)

@@ -1,0 +1,7 @@
+# @feature_category: wiki
+mutation wikiPageToggleAwardEmoji($awardableId: AwardableID!, $name: String!) {
+  awardEmojiToggle(input: { awardableId: $awardableId, name: $name }) {
+    errors
+    toggledOn
+  }
+}

@@ -2,6 +2,8 @@
 
 module Issues
   class ConvertToTicketService < ::BaseContainerService
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(target:, current_user:, email:)
       super(container: target.resource_parent, current_user: current_user)
 
@@ -41,6 +43,8 @@ module Issues
 
       # Migrate to IssueEmailParticipants::CreateService
       # https://gitlab.com/gitlab-org/gitlab/-/issues/440456
+      return if email_participant_exists?
+
       IssueEmailParticipant.create!(issue_id: target.id, email: email)
     end
 
@@ -62,12 +66,20 @@ module Issues
     end
 
     def ticket?
-      target.from_service_desk? && target.work_item_type.base_type == 'ticket'
+      target.work_item_type.service_desk?
     end
 
     def valid_email?
-      email.present? && IssueEmailParticipant.new(issue_id: target.id, email: email).valid?
+      return false if email.blank?
+      return true if email_participant_exists?
+
+      IssueEmailParticipant.new(issue_id: target.id, email: email).valid?
     end
+
+    def email_participant_exists?
+      target.issue_email_participants.with_emails([email]).exists?
+    end
+    strong_memoize_attr :email_participant_exists?
 
     def target_confidentiality
       return true if project.service_desk_setting.nil?

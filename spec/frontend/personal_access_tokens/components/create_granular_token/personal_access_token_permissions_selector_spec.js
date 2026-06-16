@@ -13,6 +13,7 @@ import {
   mockAccessTokenPermissionsQueryResponse,
   mockGroupPermissions,
   mockUserPermissions,
+  mockInstancePermissions,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -58,6 +59,12 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       createComponent({ props: { targetBoundaries: ['USER'] } });
 
       expect(findTab().attributes('title')).toBe('User');
+    });
+
+    it('renders global tab', () => {
+      createComponent({ props: { targetBoundaries: ['INSTANCE'] } });
+
+      expect(findTab().attributes('title')).toBe('Global');
     });
 
     it('renders tab with an initial count', () => {
@@ -118,9 +125,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
     it('filters permissions by target boundaries', () => {
       expect(findResourcesList().props('scope')).toBe('namespace');
-      expect(findResourcesList().props('permissionsFilteredBySearch')).toStrictEqual(
-        mockGroupPermissions,
-      );
+      expect(findResourcesList().props('permissions')).toStrictEqual(mockGroupPermissions);
 
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
       expect(findPermissionsList().props('scope')).toEqual('namespace');
@@ -132,20 +137,28 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       await waitForPromises();
 
       expect(findResourcesList().props('scope')).toBe('user');
-      expect(findResourcesList().props('permissionsFilteredBySearch')).toStrictEqual(
-        mockUserPermissions,
-      );
+      expect(findResourcesList().props('permissions')).toStrictEqual(mockUserPermissions);
 
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockUserPermissions);
       expect(findPermissionsList().props('scope')).toEqual('user');
     });
 
+    it('filters instance permissions correctly', async () => {
+      createComponent({ props: { targetBoundaries: ['INSTANCE'] } });
+
+      await waitForPromises();
+
+      expect(findResourcesList().props('scope')).toBe('instance');
+      expect(findResourcesList().props('permissions')).toStrictEqual(mockInstancePermissions);
+
+      expect(findPermissionsList().props('permissions')).toStrictEqual(mockInstancePermissions);
+      expect(findPermissionsList().props('scope')).toEqual('instance');
+    });
+
     it('searches by permission description', async () => {
       await findSearchBox().vm.$emit('input', 'Repository');
 
-      expect(findResourcesList().props('permissionsFilteredBySearch')).toStrictEqual([
-        mockGroupPermissions[2],
-      ]);
+      expect(findResourcesList().props('permissions')).toStrictEqual([mockGroupPermissions[2]]);
 
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
     });
@@ -153,7 +166,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     it('searches by permission category', async () => {
       await findSearchBox().vm.$emit('input', 'groups');
 
-      expect(findResourcesList().props('permissionsFilteredBySearch')).toStrictEqual([
+      expect(findResourcesList().props('permissions')).toStrictEqual([
         mockGroupPermissions[0],
         mockGroupPermissions[1],
         mockGroupPermissions[3],

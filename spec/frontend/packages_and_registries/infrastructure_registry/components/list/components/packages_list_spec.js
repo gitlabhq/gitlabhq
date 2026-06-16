@@ -1,23 +1,25 @@
 import { GlTable, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
 import { last } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PackagesList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import { packageList } from '../../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('packages_list', () => {
   let wrapper;
+  let pinia;
   let store;
 
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
@@ -28,30 +30,15 @@ describe('packages_list', () => {
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
 
-  const createStore = (isGroupPage, packages, isLoading) => {
-    const state = {
+  const createStore = (packages, isLoading) => {
+    pinia = createTestingPinia();
+    store = useInfrastructureList();
+    store.$patch({
       isLoading,
       packages,
-      pagination: {
-        perPage: 1,
-        total: 1,
-        page: 1,
-      },
-      config: {
-        isGroupPage,
-      },
-      sorting: {
-        orderBy: 'version',
-        sort: 'desc',
-      },
-    };
-    store = new Vuex.Store({
-      state,
-      getters: {
-        getList: () => packages,
-      },
+      pagination: { perPage: 1, total: 1, page: 1 },
+      sorting: { orderBy: 'version', sort: 'desc' },
     });
-    store.dispatch = jest.fn();
   };
 
   const mountComponent = ({
@@ -60,10 +47,13 @@ describe('packages_list', () => {
     isLoading = false,
     ...options
   } = {}) => {
-    createStore(isGroupPage, packages, isLoading);
+    createStore(packages, isLoading);
 
     wrapper = mount(PackagesList, {
-      store,
+      pinia,
+      provide: {
+        isGroupPage,
+      },
       stubs: {
         ...stubChildren(PackagesList),
         GlTable,

@@ -38,6 +38,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancel:edit', 'creating-note:done', 'creating-note:start', 'creating-note:success'],
   data() {
     return {
       updatedNote: cloneDeep(this.note),

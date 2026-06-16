@@ -35,7 +35,7 @@ describe('WebhookFormApp', () => {
     vulnerabilityEvents: false,
   };
 
-  const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(WebhookFormApp, {
       propsData: {
         initialTriggers: defaultInitialTriggers,
@@ -43,7 +43,6 @@ describe('WebhookFormApp', () => {
         hasGroup: false,
         ...props,
       },
-      provide: { glFeatures },
     });
   };
 
@@ -177,69 +176,38 @@ describe('WebhookFormApp', () => {
         .at(0);
     const findSecretTokenAlert = () => wrapper.findByTestId('secret-token-not-recommended-alert');
 
-    describe('when webhookSigningToken feature flag is disabled (default)', () => {
-      it('does not render WebhookTokenInput', () => {
-        expect(findWebhookTokenInput().exists()).toBe(false);
-      });
-
-      it('renders the secret token label without "(optional)"', () => {
-        expect(findSecretTokenFormGroup().attributes('label')).toBe('Secret token');
-      });
+    it('renders WebhookTokenInput', () => {
+      expect(findWebhookTokenInput().exists()).toBe(true);
     });
 
-    describe('when webhookSigningToken feature flag is enabled', () => {
-      it('renders WebhookTokenInput', () => {
-        createComponent({ glFeatures: { webhookSigningToken: true } });
+    it('passes hasSigningToken as hasExistingToken to WebhookTokenInput', () => {
+      createComponent({ props: { hasSigningToken: true } });
 
-        expect(findWebhookTokenInput().exists()).toBe(true);
-      });
+      expect(findWebhookTokenInput().props('hasExistingToken')).toBe(true);
+    });
 
-      it('passes hasSigningToken as hasExistingToken to WebhookTokenInput', () => {
-        createComponent({
-          glFeatures: { webhookSigningToken: true },
-          props: { hasSigningToken: true },
-        });
+    it('passes signingTokenDocsPath as docsPath to WebhookTokenInput', () => {
+      createComponent({ props: { signingTokenDocsPath: '/help/webhooks' } });
 
-        expect(findWebhookTokenInput().props('hasExistingToken')).toBe(true);
-      });
+      expect(findWebhookTokenInput().props('docsPath')).toBe('/help/webhooks');
+    });
 
-      it('passes signingTokenDocsPath as docsPath to WebhookTokenInput', () => {
-        createComponent({
-          glFeatures: { webhookSigningToken: true },
-          props: { signingTokenDocsPath: '/help/webhooks' },
-        });
+    it('renders WebhookTokenInput with hook[signing_token] inputName prop', () => {
+      expect(findWebhookTokenInput().props('inputName')).toBe('hook[signing_token]');
+    });
 
-        expect(findWebhookTokenInput().props('docsPath')).toBe('/help/webhooks');
-      });
+    it('renders the secret token label with "(not recommended)"', () => {
+      expect(findSecretTokenFormGroup().attributes('label')).toBe('Secret token (not recommended)');
+    });
 
-      it('renders WebhookTokenInput with hook[signing_token] inputName prop', () => {
-        createComponent({ glFeatures: { webhookSigningToken: true } });
+    it('does not show the secret token alert when no initial secret token', () => {
+      expect(findSecretTokenAlert().exists()).toBe(false);
+    });
 
-        expect(findWebhookTokenInput().props('inputName')).toBe('hook[signing_token]');
-      });
+    it('shows the secret token not-recommended alert when initial secret token exists', () => {
+      createComponent({ props: { initialSecretToken: '************' } });
 
-      it('renders the secret token label with "(not recommended)"', () => {
-        createComponent({ glFeatures: { webhookSigningToken: true } });
-
-        expect(findSecretTokenFormGroup().attributes('label')).toBe(
-          'Secret token (not recommended)',
-        );
-      });
-
-      it('does not show the secret token alert when no initial secret token', () => {
-        createComponent({ glFeatures: { webhookSigningToken: true } });
-
-        expect(findSecretTokenAlert().exists()).toBe(false);
-      });
-
-      it('shows the secret token not-recommended alert when initial secret token exists', () => {
-        createComponent({
-          glFeatures: { webhookSigningToken: true },
-          props: { initialSecretToken: '************' },
-        });
-
-        expect(findSecretTokenAlert().exists()).toBe(true);
-      });
+      expect(findSecretTokenAlert().exists()).toBe(true);
     });
   });
 

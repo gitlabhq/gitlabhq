@@ -4,7 +4,8 @@ classes:
 - Ci::Subscriptions::Project
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores subscriptions where a downstream project receives a pipeline trigger
+  whenever a public upstream project releases a new tag.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18678
 milestone: '12.5'
 gitlab_schema: gitlab_ci

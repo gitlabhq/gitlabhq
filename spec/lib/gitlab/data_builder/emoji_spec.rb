@@ -7,7 +7,7 @@ RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :markdown do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:snippet) { create(:project_snippet, project: project) }
+  let_it_be(:snippet, freeze: false) { create(:project_snippet, project: project) }
   let(:action) { 'award' }
   let(:data) { described_class.build(award_emoji, user, action) }
   let(:award_emoji) { create(:award_emoji, awardable: awardable) }

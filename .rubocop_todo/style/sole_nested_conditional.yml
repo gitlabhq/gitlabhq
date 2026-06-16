@@ -26,7 +26,6 @@ Style/SoleNestedConditional:
     - 'lib/api/users.rb'
     - 'lib/banzai/filter/ascii_doc_sanitization_filter.rb'
     - 'lib/gitlab/auth.rb'
-    - 'lib/gitlab/ci/pipeline/chain/skip.rb'
     - 'lib/gitlab/config/entry/configurable.rb'
     - 'lib/gitlab/config/entry/validators.rb'
     - 'lib/gitlab/database/each_database.rb'

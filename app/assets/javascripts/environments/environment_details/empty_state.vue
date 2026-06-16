@@ -4,6 +4,7 @@ import EMPTY_SVG from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.
 import { translations, environmentsLearnMorePath, environmentsHelpPagePath } from './constants';
 
 export default {
+  name: 'EnvironmentDetailsEmptyState',
   components: {
     GlSprintf,
     GlLink,

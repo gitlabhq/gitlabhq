@@ -34,6 +34,7 @@ RSpec.describe 'Gitlab OAuth2 Client Credentials Flow', feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to include('access_token', 'token_type', 'expires_in', 'scope')
+        expect(json_response['expires_in']).to be(Gitlab::CurrentSettings.oauth_access_token_expires_in)
       end
 
       it 'returns a bearer token type' do

@@ -1,16 +1,24 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
 
 fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   assignees {
     allowsMultipleAssignees
+    canInviteMembers
     assignees {
       nodes {
+        ...User
+      }
+    }
+  }
+  labels {
+    allowsScopedLabels
+    labels {
+      nodes {
         id
-        avatarUrl
-        name
-        username
-        webUrl
-        webPath
+        color
+        description
+        title
       }
     }
   }
@@ -26,6 +34,7 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   startAndDueDate {
     startDate
     dueDate
+    rollUp
   }
   timeTracking {
     humanReadableAttributes {
@@ -40,6 +49,13 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   hierarchy {
     parent {
       id
+    }
+  }
+  linkedResources {
+    linkedResources {
+      nodes {
+        url
+      }
     }
   }
 }

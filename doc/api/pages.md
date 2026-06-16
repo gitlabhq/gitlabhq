@@ -73,7 +73,7 @@ response attributes:
 
 | Attribute                                 | Type       | Description                                                                                                                  |
 | ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `url`                                     | string     | URL to access this project's Pages.                                                                                            |
+| `url`                                     | string     | URL to access the Pages site for this project.                                                                                            |
 | `is_unique_domain_enabled`                | boolean    | If [unique domain](../user/project/pages/introduction.md) is enabled.                                                        |
 | `force_https`                             | boolean    | `true` if the project is set to force HTTPS.                                                                                      |
 | `deployments[]`                           | array      | List of current active deployments.                                                                                          |
@@ -152,7 +152,7 @@ response attributes:
 
 | Attribute                                 | Type       | Description                                                                                                                  |
 | ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `url`                                     | string     | URL to access this project's Pages.                                                                                            |
+| `url`                                     | string     | URL to access the Pages site for this project.                                                                                            |
 | `is_unique_domain_enabled`                | boolean    | If [unique domain](../user/project/pages/introduction.md) is enabled.                                                        |
 | `force_https`                             | boolean    | `true` if the project is set to force HTTPS.                                                                                      |
 | `deployments[]`                           | array      | List of current active deployments.                                                                                          |

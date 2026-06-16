@@ -99,7 +99,7 @@ class DiffsEntity < Grape::Entity
   private
 
   def commit_ids
-    @commit_ids ||= merge_request.recent_commits.map(&:id)
+    @commit_ids ||= merge_request.merge_request_diff&.commit_shas(mode: :force_metadata) || []
   end
 
   def commit_neighbors(commit_id)

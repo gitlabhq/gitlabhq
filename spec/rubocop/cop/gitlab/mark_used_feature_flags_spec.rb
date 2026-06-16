@@ -215,4 +215,10 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags, feature_category: :sc
     include_examples 'sets flag as used', 'deduplicate :delayed, feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'deduplicate :delayed'
   end
+
+  describe '#external_dependency_checksum' do
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
 end

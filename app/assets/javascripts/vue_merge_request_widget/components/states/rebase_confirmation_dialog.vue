@@ -20,6 +20,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel', 'rebase-confirmed'],
   methods: {
     hide() {
       this.$refs.modal.hide();

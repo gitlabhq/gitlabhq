@@ -12,6 +12,7 @@ import {
 import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
+  name: 'PipelineConfigReferenceSection',
   CI_EXAMPLES_LINK,
   CI_HELP_LINK,
   CI_NEEDS_LINK,

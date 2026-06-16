@@ -94,6 +94,7 @@ export const findDesignsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
 
 export const findDevelopmentWidget = (workItem) =>
+  workItem?.features?.development ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DEVELOPMENT);
 
 export const findEmailParticipantsWidget = (workItem) =>
@@ -107,6 +108,7 @@ export const findHealthStatusWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS);
 
 export const findHierarchyWidget = (workItem) =>
+  workItem?.features?.hierarchy ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
 export const findIterationWidget = (workItem) =>
@@ -132,6 +134,7 @@ export const findLinkedResourcesWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_RESOURCES);
 
 export const findMilestoneWidget = (workItem) =>
+  workItem?.features?.milestone ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
 
 export const findNotificationsWidget = (workItem) =>

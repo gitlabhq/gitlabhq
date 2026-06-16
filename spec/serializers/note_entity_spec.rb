@@ -6,8 +6,8 @@ RSpec.describe NoteEntity, feature_category: :team_planning do
   include Gitlab::Routing
 
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Persisted records required
-  let_it_be(:note) { create(:note) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:note, freeze: false) { create(:note) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:email) { 'user@example.com' }
   # rubocop:enable RSpec/FactoryBot/AvoidCreate
 
@@ -31,7 +31,7 @@ RSpec.describe NoteEntity, feature_category: :team_planning do
   context 'when system note with issue_email_participants action', feature_category: :service_desk do
     let_it_be(:note_text) { "added #{email}" }
     # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Notes::RenderService updates #note and #cached_markdown_version
-    let_it_be(:note) { create(:note, :system, note: note_text, author: create(:support_bot)) }
+    let_it_be(:note, freeze: false) { create(:note, :system, note: note_text, author: create(:support_bot)) }
 
     let_it_be(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
     # rubocop:enable RSpec/FactoryBot/AvoidCreate

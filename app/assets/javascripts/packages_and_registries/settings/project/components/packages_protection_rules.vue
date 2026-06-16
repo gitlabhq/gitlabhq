@@ -32,6 +32,7 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access l
 const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__('PackageRegistry|Minimum access level for delete');
 
 export default {
+  name: 'PackagesProtectionRules',
   components: {
     CrudComponent,
     GlButton,

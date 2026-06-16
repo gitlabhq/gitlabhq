@@ -228,37 +228,37 @@ RSpec.shared_examples 'Debian Distribution with group container' do
   end
 
   describe 'group distribution specifics' do
-    let_it_be(:public_project) { create(:project, :public, group: distribution_with_suite.container) }
-    let_it_be(:public_distribution_with_same_codename) do
+    let_it_be(:public_project, freeze: false) { create(:project, :public, group: distribution_with_suite.container) }
+    let_it_be(:public_distribution_with_same_codename, freeze: false) do
       create(:debian_project_distribution, container: public_project, codename: distribution_with_suite.codename)
     end
 
-    let_it_be(:public_package_with_same_codename) do
+    let_it_be(:public_package_with_same_codename, freeze: false) do
       create(:debian_package, project: public_project, published_in: public_distribution_with_same_codename)
     end
 
-    let_it_be(:public_distribution_with_same_suite) do
+    let_it_be(:public_distribution_with_same_suite, freeze: false) do
       create(:debian_project_distribution, container: public_project, suite: distribution_with_suite.suite)
     end
 
-    let_it_be(:public_package_with_same_suite) do
+    let_it_be(:public_package_with_same_suite, freeze: false) do
       create(:debian_package, project: public_project, published_in: public_distribution_with_same_suite)
     end
 
-    let_it_be(:private_project) { create(:project, :private, group: distribution_with_suite.container) }
-    let_it_be(:private_distribution_with_same_codename) do
+    let_it_be(:private_project, freeze: false) { create(:project, :private, group: distribution_with_suite.container) }
+    let_it_be(:private_distribution_with_same_codename, freeze: false) do
       create(:debian_project_distribution, container: private_project, codename: distribution_with_suite.codename)
     end
 
-    let_it_be(:private_package_with_same_codename) do
+    let_it_be(:private_package_with_same_codename, freeze: false) do
       create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)
     end
 
-    let_it_be(:private_distribution_with_same_suite) do
+    let_it_be(:private_distribution_with_same_suite, freeze: false) do
       create(:debian_project_distribution, container: private_project, suite: distribution_with_suite.suite)
     end
 
-    let_it_be(:private_package_with_same_suite) do
+    let_it_be(:private_package_with_same_suite, freeze: false) do
       create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)
     end
 
@@ -278,7 +278,7 @@ RSpec.shared_examples 'Debian Distribution with group container' do
       end
 
       context 'with pending destruction package files' do
-        let_it_be(:package_file_pending_destruction) do
+        let_it_be(:package_file_pending_destruction, freeze: false) do
           create(:package_file, :pending_destruction, package: public_package_with_same_codename)
         end
 

@@ -6,7 +6,7 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:sub_group) { create(:group, parent: group) }
-  let_it_be(:project, reload: true) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:shared_group) { create(:group, parent: group) }
   let_it_be(:shared_group_user) { create(:user) }
 
@@ -129,7 +129,7 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
         context 'when group is invited to project parent' do
           let_it_be(:parent_group) { create(:group, :public) }
-          let_it_be(:project, reload: true) { create(:project, :public, namespace: parent_group) }
+          let_it_be_with_reload(:project) { create(:project, :public, namespace: parent_group) }
 
           before do
             group.add_owner(invited_group_member)

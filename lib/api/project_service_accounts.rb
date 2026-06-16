@@ -47,6 +47,7 @@ module API
           optional :email, type: String, desc: 'Custom email address for the user'
         end
 
+        route_setting :authorization, permissions: :create_service_account, boundary_type: :project
         post do
           check_rate_limit!(:service_account_creation, scope: current_user)
 
@@ -87,6 +88,7 @@ module API
         end
 
         # rubocop: disable CodeReuse/ActiveRecord -- for reorder
+        route_setting :authorization, permissions: :read_service_account, boundary_type: :project
         get do
           service_accounts = user_project.service_accounts
 
@@ -114,6 +116,7 @@ module API
           optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
         end
 
+        route_setting :authorization, permissions: :delete_service_account, boundary_type: :project
         delete ":user_id" do
           validate_service_account
 
@@ -145,6 +148,7 @@ module API
           optional :email, type: String, desc: 'Custom email address for the user'
         end
 
+        route_setting :authorization, permissions: :update_service_account, boundary_type: :project
         patch ":user_id" do
           validate_service_account
 
@@ -179,6 +183,8 @@ module API
             use :pagination
           end
 
+          route_setting :authorization, permissions: :read_service_account_personal_access_token,
+            boundary_type: :project
           get do
             validate_service_account
 
@@ -202,6 +208,8 @@ module API
               desc: 'The array of scopes of the personal access token'
           end
 
+          route_setting :authorization, permissions: :create_service_account_personal_access_token,
+            boundary_type: :project
           post do
             validate_service_account
 
@@ -232,6 +240,8 @@ module API
             tags %w[access_tokens service_accounts]
           end
 
+          route_setting :authorization, permissions: :revoke_service_account_personal_access_token,
+            boundary_type: :project
           delete ':token_id' do
             validate_service_account
 
@@ -258,6 +268,8 @@ module API
               documentation: { example: '2021-01-31' }
           end
 
+          route_setting :authorization, permissions: :rotate_service_account_personal_access_token,
+            boundary_type: :project
           post ':token_id/rotate' do
             validate_service_account
 

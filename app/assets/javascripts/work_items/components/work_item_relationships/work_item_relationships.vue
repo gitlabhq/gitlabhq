@@ -84,6 +84,11 @@ export default {
       required: false,
       default: null,
     },
+    activePanel: {
+      type: String,
+      required: false,
+      default: null,
+    },
     hasBlockedWorkItemsFeature: {
       type: Boolean,
       required: false,
@@ -439,6 +444,7 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {
@@ -461,6 +467,7 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {
@@ -483,6 +490,7 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {

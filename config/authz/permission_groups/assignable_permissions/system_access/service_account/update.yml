@@ -2,6 +2,7 @@
 name: update_service_account
 description: Grants the ability to update service accounts
 boundaries:
+  - project
   - group
   - instance
 available_for:

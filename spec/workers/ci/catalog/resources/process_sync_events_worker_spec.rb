@@ -16,7 +16,7 @@ RSpec.describe Ci::Catalog::Resources::ProcessSyncEventsWorker, feature_category
   end
 
   describe '#perform' do
-    let_it_be(:project) { create(:project, name: 'Old Name') }
+    let_it_be(:project, freeze: false) { create(:project, name: 'Old Name') }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     before_all do

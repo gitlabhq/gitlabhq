@@ -49,6 +49,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
       click_button 'More actions', match: :first
       click_button 'Move'
       click_button 'Select project'
+      find('[role="option"]', match: :first)
       send_keys :down, :enter
       click_button 'Move'
 

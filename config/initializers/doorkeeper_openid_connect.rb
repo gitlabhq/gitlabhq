@@ -38,6 +38,8 @@ Doorkeeper::OpenidConnect.configure do
       o.claim(:name, response: [:id_token, :user_info]) { |user| user.name }
       o.claim(:nickname, response: [:id_token, :user_info]) { |user| user.username }
       o.claim(:preferred_username, response: [:id_token, :user_info]) { |user| user.username }
+      o.claim(:given_name, response: [:id_token, :user_info]) { |user| user.first_name.presence }
+      o.claim(:family_name, response: [:id_token, :user_info]) { |user| user.last_name.presence }
 
       # Check whether the application has access to the email scope, and grant
       # access to the user's primary email address if so, otherwise their

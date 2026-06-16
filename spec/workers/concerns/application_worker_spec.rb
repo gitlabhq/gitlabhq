@@ -533,24 +533,24 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
     context 'when the worker is not marked as deferred' do
       it 'all deferred-related keys are nil' do
         worker.perform_async
-        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq nil
-        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq nil
-        expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to be_nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to be_nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to be_nil
       end
     end
 
     context 'when the worker is marked as deferred' do
       it 'correctly sets options' do
         worker.deferred(1, :feature_flag).perform_async
-        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq true
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to be true
         expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq "feature_flag"
         expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq 1
       end
 
       it 'sets defaults if no arguments are passed' do
         worker.deferred.perform_async
-        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq true
-        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to be true
+        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to be_nil
         expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq 0
       end
     end
@@ -564,7 +564,7 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
     context 'when the worker is not marked as deferred' do
       it 'concurrency_limit_resume key is nil' do
         worker.perform_async
-        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to be_nil
       end
     end
 
@@ -573,7 +573,7 @@ RSpec.describe ApplicationWorker, feature_category: :sidekiq do
 
       it 'sets resume and buffered_at attributes' do
         worker.concurrency_limit_resume(buffered_at).perform_async
-        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to eq(true)
+        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to be(true)
         expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_buffered_at']).to eq(buffered_at)
       end
     end

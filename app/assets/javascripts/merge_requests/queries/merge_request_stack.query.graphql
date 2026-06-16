@@ -1,0 +1,18 @@
+# @feature_category: code_review_workflow
+
+query mergeRequestStack($id: MergeRequestID!) {
+  mergeRequest(id: $id) {
+    id
+    stack {
+      id
+      text: title
+      href: webPath
+      createdAt
+      diffStatsSummary {
+        fileCount
+        additions
+        deletions
+      }
+    }
+  }
+}

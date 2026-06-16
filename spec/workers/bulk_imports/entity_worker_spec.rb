@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
   subject(:worker) { described_class.new }
 
-  let_it_be(:entity) { create(:bulk_import_entity, :started) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity, :started) }
 
   let_it_be_with_reload(:pipeline_tracker) do
     create(
@@ -124,6 +124,25 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
           )
 
         subject
+      end
+
+      context 'when the import is offline' do
+        let(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration) }
+
+        before do
+          entity.update!(bulk_import: offline_bulk_import)
+        end
+
+        it 'enqueues Import::LoadPlaceholderReferencesWorker with offline transfer source' do
+          expect(Import::LoadPlaceholderReferencesWorker)
+            .to receive(:perform_async)
+            .with(
+              Import::SOURCE_OFFLINE_TRANSFER,
+              entity.bulk_import_id
+            )
+
+          subject
+        end
       end
     end
 

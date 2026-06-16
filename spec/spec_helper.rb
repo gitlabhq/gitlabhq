@@ -300,10 +300,6 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
       stub_feature_flags(repository_file_tree_browser: false)
 
-      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
-      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17482 for tracking the progress.
-      stub_feature_flags(project_commits_refactor: false)
-
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
@@ -327,10 +323,6 @@ RSpec.configure do |config|
       # Default to false, since switching the finders over is still a WIP
       stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
 
-      # AutoFlow is disabled by default to prevent timing-dependent test failures.
-      # Enable explicitly in tests that need it.
-      stub_feature_flags(autoflow_enabled: false)
-
       stub_feature_flags(merge_widget_stop_polling: false)
 
       # This feature has global impact and most tests aren't ready for it yet
@@ -353,6 +345,13 @@ RSpec.configure do |config|
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 
+      # When enabled, audit events are written only to the new scoped tables and not to the legacy
+      # AuditEvent table. The flag is being rolled out gradually; many existing specs assert on
+      # AuditEvent.count, so keep legacy writes enabled in tests by default. Specs that need to
+      # exercise the new behavior should stub this explicitly.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/591414
+      stub_feature_flags(stop_legacy_audit_event_writes: false)
+
       # Work items list REST API is still in development and not compatible with
       # all filters yet.
       # Please see https://gitlab.com/gitlab-org/gitlab/-/work_items/594636 for tracking progress.
@@ -361,6 +360,11 @@ RSpec.configure do |config|
       # This middleware fires use_pat for every PAT-authenticated request
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)
+
+      # The user preferences and sort options are being merged in a drawer
+      # and it will be a WIP feature that will be enabled in a future milestone.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/597602
+      stub_feature_flags(work_item_list_display_settings_drawer: false)
     else
       unstub_all_feature_flags
     end

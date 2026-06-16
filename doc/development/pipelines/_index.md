@@ -128,7 +128,7 @@ the MR changes. This runs in addition to the `detect-tests` job and is specific 
 
 #### How it works
 
-The `detect-system-tests-duo-experiment` job invokes the GitLab Duo CLI against the MR diff.
+The `detect-system-tests-duo` job invokes the GitLab Duo CLI against the MR diff.
 The `PreparePredictiveSystemPipeline` script then processes the output and prepares the pipeline inputs:
 
 - **GitLab Duo is confident**: GitLab Duo predictions are merged with `detect-tests`-selected system
@@ -152,7 +152,7 @@ selection.
 
 To disable GitLab Duo system test selection without a code change, set the
 `GLCI_DUO_SYSTEM_TESTS_DISABLED` CI/CD project variable to `"true"`. When disabled,
-the `detect-system-tests-duo-experiment` job is skipped and the full system test suite runs
+the `detect-system-tests-duo` job is skipped and the full system test suite runs
 as the fallback on tier-2.
 
 ### Jest predictive jobs

@@ -22,7 +22,12 @@ module Gitlab
         # project - An instance of Project.
         def import(client, project)
           IMPORTERS.each do |klass|
-            info(project.id, message: "starting importer", importer: klass.name)
+            info(
+              project.id,
+              message: "starting importer",
+              importer: klass.name,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+            )
             klass.new(project, client).execute
           end
 

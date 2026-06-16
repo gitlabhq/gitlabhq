@@ -8,6 +8,7 @@ import utilsMixin from '../mixins/line_conflict_utils';
 import { useMergeConflicts } from '../store';
 
 export default {
+  name: 'InlineConflictLines',
   components: {
     GlButton,
   },

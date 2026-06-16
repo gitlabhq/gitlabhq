@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe API::Pages, feature_category: :pages do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 
@@ -74,8 +74,8 @@ RSpec.describe API::Pages, feature_category: :pages do
 
         get api("/projects/#{project.id}/pages", user)
 
-        expect(json_response["force_https"]).to eq(false)
-        expect(json_response["is_unique_domain_enabled"]).to eq(true)
+        expect(json_response["force_https"]).to be(false)
+        expect(json_response["is_unique_domain_enabled"]).to be(true)
         expect(json_response["url"]).to eq("http://unique-domain.example.com")
         expect(json_response["deployments"]).to match_array([
           {
@@ -113,8 +113,8 @@ RSpec.describe API::Pages, feature_category: :pages do
             patch api(path, user), params: params
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['force_https']).to eq(true)
-            expect(json_response['is_unique_domain_enabled']).to eq(true)
+            expect(json_response['force_https']).to be(true)
+            expect(json_response['is_unique_domain_enabled']).to be(true)
           end
 
           it_behaves_like 'authorizing granular token permissions', :update_page do
@@ -234,7 +234,7 @@ RSpec.describe API::Pages, feature_category: :pages do
         patch api(path, admin, admin_mode: true), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pages_primary_domain']).to eq(nil)
+        expect(json_response['pages_primary_domain']).to be_nil
       end
     end
   end

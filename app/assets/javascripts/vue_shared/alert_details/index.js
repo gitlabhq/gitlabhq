@@ -1,5 +1,4 @@
 import { defaultDataIdFromObject } from '@apollo/client/core';
-import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
@@ -8,7 +7,6 @@ import createStore from '~/vue_shared/components/metric_images/store';
 import service from './service';
 import AlertDetails from './components/alert_details.vue';
 import { PAGE_CONFIG } from './constants';
-import sidebarStatusQuery from './graphql/queries/alert_sidebar_status.query.graphql';
 import createRouter from './router';
 
 Vue.use(VueApollo);
@@ -26,18 +24,7 @@ export default (selector) => {
   } = domEl.dataset;
   const iid = alertId;
   const router = createRouter(projectAlertManagementDetailsPath);
-
-  const resolvers = {
-    Mutation: {
-      toggleSidebarStatus: (_, __, { cache }) => {
-        const sourceData = cache.readQuery({ query: sidebarStatusQuery });
-        const data = produce(sourceData, (draftData) => {
-          draftData.sidebarStatus = !draftData.sidebarStatus;
-        });
-        cache.writeQuery({ query: sidebarStatusQuery, data });
-      },
-    },
-  };
+  const resolvers = {};
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers, {
@@ -51,13 +38,6 @@ export default (selector) => {
         },
       },
     }),
-  });
-
-  apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: sidebarStatusQuery,
-    data: {
-      sidebarStatus: false,
-    },
   });
 
   const provide = {

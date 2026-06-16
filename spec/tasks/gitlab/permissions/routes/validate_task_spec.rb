@@ -65,7 +65,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -389,7 +389,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -404,7 +404,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -499,7 +499,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -578,7 +578,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'ignores comments and blank lines and completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
     end
 
@@ -652,8 +652,133 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       it 'completes successfully' do
-        expect { run }.to output(/API route permissions are valid/).to_stdout
+        expect { run }.to output(/REST permissions are valid/).to_stdout
       end
+    end
+  end
+
+  describe '#current_todo_entries' do
+    let(:route_settings) { {} }
+    let(:mock_route) do
+      instance_double(
+        Grape::Router::Route,
+        settings: route_settings,
+        request_method: 'GET',
+        origin: '/api/:version/projects/:id/test'
+      )
+    end
+
+    let(:mock_routes) { [mock_route] }
+
+    before do
+      allow(API::API).to receive(:endpoints).and_return(
+        [instance_double(Grape::Endpoint, routes: mock_routes,
+          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
+      )
+    end
+
+    context 'when the route has no authorization settings' do
+      let(:route_settings) { {} }
+
+      it 'includes the route id in the returned set' do
+        expect(task.send(:current_todo_entries)).to include('GET /projects/:id/test')
+      end
+    end
+
+    context 'when the route has authorization with permissions' do
+      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
+
+      it 'does not include the route id in the returned set' do
+        expect(task.send(:current_todo_entries)).not_to include('GET /projects/:id/test')
+      end
+    end
+
+    context 'when the route has skip_granular_token_authorization' do
+      let(:route_settings) { { authorization: { skip_granular_token_authorization: :job_token_auth } } }
+
+      it 'does not include the route id in the returned set' do
+        expect(task.send(:current_todo_entries)).not_to include('GET /projects/:id/test')
+      end
+    end
+  end
+
+  describe '#sync_todo' do
+    let(:route_settings) { {} }
+    let(:mock_route) do
+      instance_double(
+        Grape::Router::Route,
+        settings: route_settings,
+        request_method: 'GET',
+        origin: '/api/:version/projects/:id/test'
+      )
+    end
+
+    let(:mock_routes) { [mock_route] }
+
+    before do
+      allow(API::API).to receive(:endpoints).and_return(
+        [instance_double(Grape::Endpoint, routes: mock_routes,
+          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
+      )
+      allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
+    end
+
+    context 'when the file entries exactly match current_todo_entries' do
+      let(:route_settings) { {} }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
+      end
+
+      it 'returns without output' do
+        expect { task.sync_todo }.not_to output.to_stdout
+      end
+    end
+
+    context 'when the file has a stale entry' do
+      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
+        allow(described_class::TODO_FILE).to receive(:write)
+      end
+
+      it 'auto-updates the file and aborts with a commit reminder' do
+        expect { task.sync_todo }
+          .to raise_error(SystemExit)
+          .and output(/had stale entries and has been updated.*Please commit/m).to_stdout
+      end
+    end
+  end
+
+  describe '#update_todo' do
+    let(:route_settings) { {} }
+    let(:mock_route) do
+      instance_double(
+        Grape::Router::Route,
+        settings: route_settings,
+        request_method: 'GET',
+        origin: '/api/:version/projects/:id/test'
+      )
+    end
+
+    let(:mock_routes) { [mock_route] }
+
+    before do
+      allow(API::API).to receive(:endpoints).and_return(
+        [instance_double(Grape::Endpoint, routes: mock_routes,
+          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
+      )
+      allow(described_class::TODO_FILE).to receive_messages(
+        exist?: true,
+        readlines: ["# Routes header\n"]
+      )
+      allow(described_class::TODO_FILE).to receive(:write)
+    end
+
+    it 'writes the header followed by the current todo entries and prints a success message' do
+      expect { task.update_todo }.to output(/updated/).to_stdout
+      expect(described_class::TODO_FILE).to have_received(:write).with("# Routes header\nGET /projects/:id/test\n")
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'permission level for issue mutation is correctly verified' do |raises_for_all_errors = false|
-  let_it_be(:other_user_author) { create(:user) }
+  let_it_be(:other_user_author, freeze: false) { create(:user) }
 
   def issue_attributes(issue)
     issue.attributes.except(

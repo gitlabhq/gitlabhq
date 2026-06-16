@@ -6,7 +6,7 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:container_expiration_policy) { project.container_expiration_policy.reload }
@@ -153,7 +153,7 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
     end
 
     context 'without existing container expiration policy' do
-      let_it_be(:project, reload: true) { create(:project, :without_container_expiration_policy) }
+      let_it_be_with_reload(:project) { create(:project, :without_container_expiration_policy) }
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'accepting the mutation request creating the container expiration policy'

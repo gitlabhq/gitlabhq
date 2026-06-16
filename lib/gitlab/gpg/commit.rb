@@ -36,7 +36,7 @@ module Gitlab
           commit_sha: @commit.sha,
           project: project
         }.tap do |attrs|
-          attrs[:committer_email] = committer_email if check_for_mailmapped_commit_emails?
+          attrs[:committer_email] = committer_email
           sig = gpg_signature(gpg_key:)
           gpg_key = sig.gpg_key
           attrs[:gpg_key] = gpg_key

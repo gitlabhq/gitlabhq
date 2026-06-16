@@ -26,7 +26,7 @@ RSpec.describe Users::ResetFeedTokenService, feature_category: :system_access do
   end
 
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:alex) { create(:user) }
+  let_it_be(:alex, freeze: false) { create(:user) }
 
   describe '#initialize' do
     it 'raises an argument error when source is not permitted' do

@@ -1,6 +1,6 @@
 ---
 event: MergeRequests::CreatedEvent
 description: Published when a new merge request is created and prepared, so EE subscribers
-  (such as Cluster Agent AutoFlow workers) can react to the new merge request.
+  can react to the new merge request.
 feature_category: code_review_workflow
 ee_only: true

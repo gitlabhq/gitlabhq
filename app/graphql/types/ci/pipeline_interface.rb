@@ -34,9 +34,18 @@ module Types
         type: 'Types::UserType',
         null: true,
         description: 'Pipeline user.'
+      field :commit,
+        type: 'Types::Repositories::CommitType',
+        null: true,
+        description: 'Git commit of the pipeline.',
+        calls_gitaly: true
 
       def self.resolve_type(_object, _context)
         PipelineType
+      end
+
+      def commit
+        BatchLoader::GraphQL.wrap(object.commit)
       end
 
       def path

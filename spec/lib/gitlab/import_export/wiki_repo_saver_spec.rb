@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::WikiRepoSaver do
   describe 'bundle a wiki Git repo' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :wiki_repo) }
+    let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
 
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }

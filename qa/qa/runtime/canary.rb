@@ -20,7 +20,7 @@ module QA
         return if Page::Main::Menu.perform(&:canary?)
 
         raise Canary::CanaryValidationError,
-          "gitlab_canary=true cookie was set in browser but 'Next' badge was not shown on UI"
+          "gitlab_canary=true cookie was set in browser but the GitLab Next toggle was not enabled on UI"
       end
     end
   end

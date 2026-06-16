@@ -17,6 +17,7 @@ export default {
       required: true,
     },
   },
+  emits: ['scale'],
   data() {
     return {
       scale: DEFAULT_SCALE,

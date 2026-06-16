@@ -130,6 +130,11 @@ export default {
     shouldShowEmptyState() {
       return this.currentUserGroups && this.currentUserGroups.length === 0;
     },
+    pathInputClass() {
+      if (this.hasPathBeenManuallySet || !this.computedPath?.length) return '';
+
+      return '!gl-bg-feedback-info';
+    },
   },
   watch: {
     name: [
@@ -382,6 +387,7 @@ export default {
           <gl-form-input
             :id="fields.path.id"
             class="gl-field-error-ignore !gl-h-auto"
+            :class="pathInputClass"
             :name="fields.path.name"
             :value="computedPath"
             :placeholder="$options.i18n.inputs.path.placeholder"

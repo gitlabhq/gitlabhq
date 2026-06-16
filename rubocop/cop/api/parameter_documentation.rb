@@ -71,21 +71,23 @@ module RuboCop
         }.freeze
         RESTRICT_ON_SEND = %i[requires optional].freeze
 
-        PROC_PATTERN = "{(block (send nil? :proc) ...) (block (send nil? :lambda) ...) " \
-          "(block (send (const nil? :Proc) :new) ...) (send nil? :proc) (send nil? :lambda) " \
-          "(send _ :to_proc)}"
+        PROC_PATTERN = <<~PATTERN
+          {(block (send nil? :proc) ...) (block (send nil? :lambda) ...)
+          (block (send (const nil? :Proc) :new) ...) (send nil? :proc) (send nil? :lambda)
+          (send _ :to_proc)}
+        PATTERN
 
         def on_new_investigation
           @proc_variables = {}
         end
 
-        # @!method proc_assignment?(node)
-        def_node_matcher :proc_assignment?, <<~PATTERN
+        # @!method proc_assignment(node)
+        def_node_matcher :proc_assignment, <<~PATTERN
           (lvasgn $_name #{PROC_PATTERN})
         PATTERN
 
         def on_lvasgn(node)
-          proc_assignment?(node) do |name|
+          proc_assignment(node) do |name|
             @proc_variables[name] = true
           end
         end

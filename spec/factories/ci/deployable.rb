@@ -127,6 +127,7 @@ module Factories
             end
 
             after(:create) do |job, evaluator|
+              job.job_environment&.save!
               Deployments::CreateForJobService.new.execute(job)
             end
           end

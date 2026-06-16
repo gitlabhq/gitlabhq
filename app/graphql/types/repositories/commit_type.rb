@@ -11,6 +11,7 @@ module Types
       present_using CommitPresenter
 
       implements Types::TodoableInterface
+      implements Types::Notes::NoteableInterface
 
       field :id, type: GraphQL::Types::ID, null: false,
         description: 'ID (global ID) of the commit.'
@@ -35,6 +36,10 @@ module Types
 
       field :message, type: GraphQL::Types::String, null: true,
         description: 'Raw commit message.'
+
+      field :has_agent_session, type: GraphQL::Types::Boolean, null: false,
+        method: :has_agent_session?,
+        description: 'Indicates the commit was authored during a GitLab Duo Agent Platform flow.'
 
       field :authored_date, type: Types::TimeType, null: true,
         description: 'Timestamp of when the commit was authored.'

@@ -9,15 +9,15 @@ RSpec.describe Clusters::ClustersHierarchy do
     end
 
     context 'project in nested group with clusters at every level' do
-      let!(:cluster) { create(:cluster, :project, projects: [project]) }
-      let!(:child) { create(:cluster, :group, groups: [child_group]) }
-      let!(:parent) { create(:cluster, :group, groups: [parent_group]) }
-      let!(:ancestor) { create(:cluster, :group, groups: [ancestor_group]) }
+      let_it_be(:ancestor_group) { create(:group) }
+      let_it_be(:parent_group) { create(:group, parent: ancestor_group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:project) { create(:project, group: child_group) }
 
-      let(:ancestor_group) { create(:group) }
-      let(:parent_group) { create(:group, parent: ancestor_group) }
-      let(:child_group) { create(:group, parent: parent_group) }
-      let(:project) { create(:project, group: child_group) }
+      let_it_be(:cluster) { create(:cluster, :project, projects: [project]) }
+      let_it_be(:child) { create(:cluster, :group, groups: [child_group]) }
+      let_it_be(:parent) { create(:cluster, :group, groups: [parent_group]) }
+      let_it_be(:ancestor) { create(:cluster, :group, groups: [ancestor_group]) }
 
       it 'returns clusters for project' do
         expect(base_and_ancestors(project)).to eq([cluster, child, parent, ancestor])
@@ -67,12 +67,12 @@ RSpec.describe Clusters::ClustersHierarchy do
     end
 
     context 'cluster has management project' do
-      let!(:project_cluster) { create(:cluster, :project, projects: [project]) }
-      let!(:group_cluster) { create(:cluster, :group, groups: [group], management_project: management_project) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:management_project) { create(:project, group: group) }
 
-      let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
-      let(:management_project) { create(:project, group: group) }
+      let_it_be(:project_cluster) { create(:cluster, :project, projects: [project]) }
+      let_it_be(:group_cluster) { create(:cluster, :group, groups: [group], management_project: management_project) }
 
       it 'returns clusters for management_project' do
         expect(base_and_ancestors(management_project)).to eq([group_cluster])
@@ -88,14 +88,16 @@ RSpec.describe Clusters::ClustersHierarchy do
     end
 
     context 'project in nested group with clusters at some levels' do
-      let!(:child) { create(:cluster, :group, groups: [child_group]) }
-      let!(:ancestor) { create(:cluster, :group, groups: [ancestor_group], management_project: management_project) }
+      let_it_be(:ancestor_group) { create(:group) }
+      let_it_be(:parent_group) { create(:group, parent: ancestor_group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:project) { create(:project, group: child_group) }
+      let_it_be(:management_project) { create(:project, group: child_group) }
 
-      let(:ancestor_group) { create(:group) }
-      let(:parent_group) { create(:group, parent: ancestor_group) }
-      let(:child_group) { create(:group, parent: parent_group) }
-      let(:project) { create(:project, group: child_group) }
-      let(:management_project) { create(:project, group: child_group) }
+      let_it_be(:child) { create(:cluster, :group, groups: [child_group]) }
+      let_it_be(:ancestor) do
+        create(:cluster, :group, groups: [ancestor_group], management_project: management_project)
+      end
 
       it 'returns clusters for management_project' do
         expect(base_and_ancestors(management_project)).to eq([ancestor, child])

@@ -28,6 +28,13 @@ module Authn
         iam_config.jwt_issuer
       end
 
+      def grpc_address
+        grpc = iam_config.grpc
+        raise ConfigurationError, 'IAM gRPC service is not configured' if grpc.host.blank? || grpc.port.blank?
+
+        "#{grpc.host}:#{grpc.port}"
+      end
+
       def secret
         path = iam_config.secret_file
         raise ConfigurationError, 'IAM auth service secret_file is not configured' if path.blank?

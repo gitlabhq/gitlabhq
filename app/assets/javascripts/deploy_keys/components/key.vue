@@ -12,6 +12,7 @@ import confirmDisableMutation from '../graphql/mutations/confirm_action.mutation
 import ActionBtn from './action_btn.vue';
 
 export default {
+  name: 'DeployKey',
   components: {
     ActionBtn,
     GlBadge,

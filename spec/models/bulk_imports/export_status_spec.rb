@@ -6,10 +6,10 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feat
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:relation) { 'labels' }
-  let_it_be(:import) { create(:bulk_import) }
+  let_it_be(:import, freeze: false) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import, source_full_path: 'foo') }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: import, source_full_path: 'foo') }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
 
   let(:batched) { false }
   let(:batches) { [] }

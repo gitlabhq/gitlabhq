@@ -1,0 +1,16 @@
+---
+table_name: burned_project_routes
+classes:
+- Authn::BurnedProjectRoute
+feature_categories:
+- continuous_integration
+description: |
+  Records project routes that have been vacated by deletion or rename.
+  Consulted by Gitlab::Ci::JwtV2 when minting CI ID tokens.
+introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6229
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

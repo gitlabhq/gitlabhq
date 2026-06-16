@@ -1,32 +1,38 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
-import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
+import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { mockTracking } from 'helpers/tracking_helper';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import HelpCenterUpgradeSubscription from 'ee_component/super_sidebar/components/help_center_upgrade_subscription.vue';
 import { sidebarData } from '../mock_data';
-
-jest.mock('~/whats_new');
 
 describe('HelpCenter component', () => {
   let wrapper;
   let trackingSpy;
+  let origGl;
+
+  beforeEach(() => {
+    origGl = window.gl;
+    window.gl = { ...window.gl, experiments: {} };
+  });
+
+  afterEach(() => {
+    window.gl = origGl;
+  });
 
   const GlEmoji = { template: '<img/>' };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDropdownGroup = (i = 0) => {
-    return wrapper.findAllComponents(GlDisclosureDropdownGroup).at(i);
-  };
+  const findAllGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
+  const findDropdownGroup = (i = 0) => findAllGroups().at(i);
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
-  const findWhatsNew = () => wrapper.findByTestId('sidebar-whatsnew-button');
   const findUpgradeButton = () => wrapper.findComponent(HelpCenterUpgradeSubscription);
-  const findNotificationCount = () => wrapper.findByTestId('notification-count');
-  const findNotificationDot = () => wrapper.findByTestId('notification-dot');
+  const findWhatsNewForYouMenuItem = () => wrapper.findComponent(WhatsNewForYouMenuItem);
 
   const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
@@ -100,7 +106,6 @@ describe('HelpCenter component', () => {
     });
 
     it('renders menu items', () => {
-      expect(findWhatsNew().exists()).toBe(true);
       expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
 
       expect(findDropdownGroup(1).props('group').items).toEqual([
@@ -121,20 +126,6 @@ describe('HelpCenter component', () => {
         ...getDefaultHelpItems(),
         PRIVACY_HELP_ITEM,
       ]);
-    });
-
-    describe('when there are no unread articles', () => {
-      beforeEach(() => {
-        createWrapper({
-          ...sidebarData,
-          whats_new_most_recent_release_items_count: 0,
-          whats_new_read_articles: [],
-        });
-      });
-
-      it('does not show whats new button at top level', () => {
-        expect(findWhatsNew().exists()).toBe(false);
-      });
     });
 
     describe('compare plans URL', () => {
@@ -159,12 +150,6 @@ describe('HelpCenter component', () => {
         const plansItem = helpItems.find((item) => item.text === HelpCenter.i18n.plans);
 
         expect(plansItem.href).toBe(sidebarData.compare_plans_url);
-      });
-    });
-
-    it('passes custom offset to the dropdown', () => {
-      expect(findDropdown().props('dropdownOffset')).toEqual({
-        mainAxis: 4,
       });
     });
 
@@ -262,106 +247,6 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe("What's new", () => {
-      beforeEach(() => {
-        createWrapper({
-          ...sidebarData,
-          show_version_check: true,
-        });
-
-        findButton("What's new").click();
-      });
-
-      it("shows the What's new slideout", () => {
-        expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
-          {
-            versionDigest: sidebarData.whats_new_version_digest,
-            initialReadArticles: sidebarData.whats_new_read_articles,
-            markAsReadPath: sidebarData.whats_new_mark_as_read_path,
-            mostRecentReleaseItemsCount: sidebarData.whats_new_most_recent_release_items_count,
-          },
-          expect.any(Function),
-          expect.any(Function),
-        );
-      });
-
-      it("shows the existing What's new slideout instance on subsequent clicks", () => {
-        findButton("What's new").click();
-        expect(toggleWhatsNewDrawer).toHaveBeenCalledTimes(2);
-        expect(toggleWhatsNewDrawer).toHaveBeenLastCalledWith();
-      });
-
-      it('has Snowplow tracking attributes', () => {
-        createWrapper({
-          ...sidebarData,
-          display_whats_new: true,
-        });
-
-        expect(findButton("What's new").dataset).toEqual(
-          expect.objectContaining({
-            trackAction: 'click_button',
-            trackLabel: 'whats_new',
-            trackProperty: 'nav_whats_new',
-          }),
-        );
-      });
-    });
-
-    describe("What's new notification", () => {
-      describe('when setting is disabled', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            display_whats_new: false,
-          });
-        });
-
-        it('does not render notification count', () => {
-          expect(findNotificationCount().exists()).toBe(false);
-        });
-      });
-
-      describe('when setting is enabled', () => {
-        beforeEach(() => {
-          createWrapper({
-            ...sidebarData,
-            display_whats_new: true,
-          });
-        });
-
-        it('renders notification count', () => {
-          expect(findNotificationCount().exists()).toBe(true);
-        });
-
-        describe("when What's new drawer is opened", () => {
-          beforeEach(() => {
-            findButton("What's new").click();
-          });
-
-          it('renders notification count', () => {
-            expect(findNotificationCount().exists()).toBe(true);
-          });
-        });
-      });
-
-      describe('with all articles read', () => {
-        beforeEach(() => {
-          createWrapper({ ...sidebarData, whats_new_read_articles: [1, 2] });
-        });
-
-        it('renders menu items, does not render notification count', () => {
-          expect(findNotificationCount().exists()).toBe(false);
-
-          expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
-
-          expect(findDropdownGroup(1).props('group').items).toEqual([
-            expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
-            expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
-          ]);
-        });
-      });
-    });
-
     describe('dropdown toggle', () => {
       it('tracks Snowplow event when dropdown is shown', () => {
         findDropdown().vm.$emit('shown');
@@ -381,6 +266,69 @@ describe('HelpCenter component', () => {
     });
   });
 
+  describe("What's new for you", () => {
+    describe('when not in the candidate variant', () => {
+      it('renders WhatsNewForYouMenuItem with help_menu placement (no experiment data)', () => {
+        createWrapper();
+        const item = findWhatsNewForYouMenuItem();
+        expect(item.exists()).toBe(true);
+        expect(item.props('placement')).toBe('help_menu');
+        expect(item.props('sidebarData')).toBe(sidebarData);
+      });
+
+      it('renders the item when explicitly in control variant', () => {
+        stubExperiments({ whats_new_placement: 'control' });
+        createWrapper();
+        expect(findWhatsNewForYouMenuItem().exists()).toBe(true);
+      });
+
+      it('fires the render tracking event when the dropdown is opened', () => {
+        createWrapper();
+        findDropdown().vm.$emit('shown');
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'render_whats_new_for_you_menu_item',
+          expect.objectContaining({ property: 'help_menu' }),
+        );
+      });
+    });
+
+    describe('when in the candidate variant', () => {
+      beforeEach(() => {
+        stubExperiments({ whats_new_placement: 'candidate' });
+        createWrapper();
+      });
+
+      it('does not render WhatsNewForYouMenuItem in the help menu', () => {
+        expect(findWhatsNewForYouMenuItem().exists()).toBe(false);
+      });
+
+      it('does not fire the render tracking event when the dropdown is opened', () => {
+        findDropdown().vm.$emit('shown');
+        expect(trackingSpy).not.toHaveBeenCalledWith(
+          undefined,
+          'render_whats_new_for_you_menu_item',
+          expect.anything(),
+        );
+      });
+    });
+
+    describe('when display_whats_new is false', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, display_whats_new: false });
+      });
+
+      it('does not fire the render tracking event when the dropdown is opened', () => {
+        findDropdown().vm.$emit('shown');
+        expect(trackingSpy).not.toHaveBeenCalledWith(
+          undefined,
+          'render_whats_new_for_you_menu_item',
+          expect.anything(),
+        );
+      });
+    });
+  });
+
   describe('when free_group_upgrade_link is provided', () => {
     beforeEach(() => {
       createWrapper({ ...sidebarData, free_group_upgrade_link: '/groups/my-group/-/billings' });
@@ -388,35 +336,6 @@ describe('HelpCenter component', () => {
 
     it('renders upgrade subscription button', () => {
       expect(findUpgradeButton().exists()).toBe(true);
-    });
-
-    it('renders menu items without whats new at top level', () => {
-      expect(findWhatsNew().exists()).toBe(false);
-      expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
-
-      expect(findDropdownGroup(1).props('group').items).toEqual([
-        expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
-        expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
-      ]);
-    });
-
-    it('shows notification dot on help button', () => {
-      expect(findNotificationDot().exists()).toBe(true);
-    });
-
-    describe('when there are no unread articles', () => {
-      beforeEach(() => {
-        createWrapper({
-          ...sidebarData,
-          free_group_upgrade_link: '/groups/my-group/-/billings',
-          whats_new_most_recent_release_items_count: 0,
-          whats_new_read_articles: [],
-        });
-      });
-
-      it('does not show notification dot on help button', () => {
-        expect(findNotificationDot().exists()).toBe(false);
-      });
     });
   });
 
@@ -427,10 +346,6 @@ describe('HelpCenter component', () => {
 
     it('does not render upgrade subscription button', () => {
       expect(findUpgradeButton().exists()).toBe(false);
-    });
-
-    it('shows whats new button at top level', () => {
-      expect(findWhatsNew().exists()).toBe(true);
     });
   });
 });

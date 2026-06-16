@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe API::BulkImports, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:import_1) { create(:bulk_import, user: user) }
-  let_it_be(:import_2) { create(:bulk_import, user: user) }
+  let_it_be(:import_1, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:import_2, freeze: false) { create(:bulk_import, user: user) }
   let_it_be(:entity_1) { create(:bulk_import_entity, bulk_import: import_1) }
   let_it_be(:entity_2) { create(:bulk_import_entity, bulk_import: import_1) }
   let_it_be(:entity_3) { create(:bulk_import_entity, bulk_import: import_2) }

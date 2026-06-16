@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::FeatureFlagsUserLists, feature_category: :feature_flags do
-  let_it_be(:project, refind: true) { create(:project) }
-  let_it_be(:client, refind: true) { create(:operations_feature_flags_client, project: project) }
+  let_it_be_with_refind(:project) { create(:project) }
+  let_it_be_with_refind(:client) { create(:operations_feature_flags_client, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
 

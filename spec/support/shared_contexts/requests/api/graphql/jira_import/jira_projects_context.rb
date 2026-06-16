@@ -13,7 +13,7 @@ RSpec.shared_context 'Jira projects request context' do
     )
   end
 
-  let_it_be(:jira_projects_json) do
+  let_it_be(:jira_projects_json, freeze: false) do
     '{
           "self": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=0&maxResults=2",
           "nextPage": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=2&maxResults=2",
@@ -74,7 +74,7 @@ RSpec.shared_context 'Jira projects request context' do
         }'
   end
 
-  let_it_be(:all_jira_projects_json) do
+  let_it_be(:all_jira_projects_json, freeze: false) do
     '[{
       "expand": "description,lead,issueTypes,url,projectKeys,permissions,insight",
       "self": "https://gitlab-jira.atlassian.net/rest/api/2/project/10000",
@@ -117,7 +117,7 @@ RSpec.shared_context 'Jira projects request context' do
     }]'
   end
 
-  let_it_be(:empty_jira_projects_json) do
+  let_it_be(:empty_jira_projects_json, freeze: false) do
     '{
           "self": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=0&maxResults=2",
           "nextPage": "https://your-domain.atlassian.net/rest/api/2/project/search?startAt=2&maxResults=2",

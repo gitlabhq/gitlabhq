@@ -7,9 +7,9 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
-  let_it_be(:commit_without_author) { RepoHelpers.another_sample_commit }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
+  let_it_be(:commit_without_author, freeze: false) { RepoHelpers.another_sample_commit }
 
   let!(:pipeline_without_author) { create(:ci_pipeline, project: project, sha: commit_without_author.id) }
   let!(:test_stage_no_author) { create(:ci_stage, name: 'test', pipeline: pipeline_without_author, project: project) }
@@ -17,7 +17,10 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     create(:ci_build, pipeline: pipeline_without_author, ci_stage: test_stage_no_author)
   end
 
-  let_it_be(:pipeline_without_commit) { create(:ci_pipeline, status: :success, project: project, sha: '0000') }
+  let_it_be(:pipeline_without_commit, freeze: false) do
+    create(:ci_pipeline, status: :success, project: project, sha: '0000')
+  end
+
   let!(:test_stage_no_commit) do
     create(:ci_stage, name: 'test', pipeline: pipeline_without_commit, project: pipeline_without_commit.project)
   end

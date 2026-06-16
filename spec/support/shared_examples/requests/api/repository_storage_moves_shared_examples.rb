@@ -14,7 +14,7 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
     end
   end
 
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user, freeze: false) { create(:admin) }
 
   shared_examples 'get single container repository storage move' do
     let(:repository_storage_move_id) { storage_move.id }

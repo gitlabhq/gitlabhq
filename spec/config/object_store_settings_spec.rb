@@ -26,6 +26,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'external_diffs' => { 'enabled' => false },
           'pages' => { 'enabled' => true },
           'ci_secure_files' => { 'enabled' => true },
+          'agent_plan_content' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -47,6 +48,9 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
               },
               'ci_secure_files' => {
                 'bucket' => 'ci_secure_files'
+              },
+              'agent_plan_content' => {
+                'bucket' => 'agent-plan-content'
               }
             }
           }
@@ -91,6 +95,16 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
         expect(settings.lfs['object_store']['consolidated_settings']).to be true
         expect(settings.lfs).to eq(settings['lfs'])
+
+        expect(settings.agent_plan_content['enabled']).to be true
+        expect(settings.agent_plan_content['object_store']['enabled']).to be true
+        expect(settings.agent_plan_content['object_store']['connection'].to_hash).to eq(connection)
+        expect(settings.agent_plan_content['object_store']['direct_upload']).to be true
+        expect(settings.agent_plan_content['object_store']['proxy_download']).to be true
+        expect(settings.agent_plan_content['object_store']['remote_directory']).to eq('agent-plan-content')
+        expect(settings.agent_plan_content['object_store']['bucket_prefix']).to eq(nil)
+        expect(settings.agent_plan_content['object_store']['consolidated_settings']).to be true
+        expect(settings.agent_plan_content).to eq(settings['agent_plan_content'])
 
         expect(settings.pages['enabled']).to be true
         expect(settings.pages['object_store']['enabled']).to be true

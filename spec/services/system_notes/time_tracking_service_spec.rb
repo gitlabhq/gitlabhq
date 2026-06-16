@@ -7,8 +7,8 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#change_start_date_or_due_date' do
-    let_it_be(:issue)     { create(:issue, project: project) }
-    let_it_be(:work_item) { create(:work_item, project: project) }
+    let_it_be(:issue, freeze: false)     { create(:issue, project: project) }
+    let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
 
     let(:start_date) { Date.today }
     let(:due_date) { 1.week.from_now.to_date }
@@ -192,7 +192,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     subject { described_class.new(noteable: noteable, container: project, author: author).change_time_estimate }
 
     context 'when noteable is an issue' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       it_behaves_like 'a system note' do
         let(:action) { 'time_tracking' }
@@ -257,7 +257,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     end
 
     context 'when noteable is a merge request' do
-      let_it_be(:noteable) { create(:merge_request, source_project: project) }
+      let_it_be(:noteable, freeze: false) { create(:merge_request, source_project: project) }
 
       it 'does not track the issue event' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)
@@ -278,7 +278,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     subject { described_class.new(noteable: noteable, container: project, author: author).created_timelog(timelog) }
 
     context 'when the timelog has a positive time spent value' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: 1800, spent_at: '2022-03-30T00:00:00.000Z') }
 
@@ -288,7 +288,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     end
 
     context 'when the timelog has a negative time spent value' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       let!(:existing_timelog) { create(:timelog, user: author, issue: noteable, time_spent: time_spent.to_i) }
 
@@ -314,7 +314,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     subject { described_class.new(noteable: noteable, container: project, author: author).remove_timelog(timelog) }
 
     context 'when the timelog has a positive time spent value' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: 1800, spent_at: '2022-03-30T12:00:00.000Z') }
 
@@ -332,7 +332,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     end
 
     context 'when the timelog has a negative time spent value' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       let!(:existing_timelog) { create(:timelog, user: author, issue: noteable, time_spent: time_spent.to_i) }
 
@@ -350,7 +350,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     subject { described_class.new(noteable: noteable, container: project, author: author).change_time_spent }
 
     context 'when noteable is an issue' do
-      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
       it_behaves_like 'a system note' do
         let(:action) { 'time_tracking' }
@@ -457,7 +457,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
       end
 
       context 'when noteable is a merge request' do
-        let_it_be(:noteable) { create(:merge_request, source_project: project) }
+        let_it_be(:noteable, freeze: false) { create(:merge_request, source_project: project) }
 
         it 'does not track the issue event' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)

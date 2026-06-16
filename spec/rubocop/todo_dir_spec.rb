@@ -8,7 +8,7 @@ require 'tmpdir'
 
 require_relative '../../rubocop/todo_dir'
 
-RSpec.describe RuboCop::TodoDir do
+RSpec.describe RuboCop::TodoDir, feature_category: :tooling do
   let(:todo_dir) { described_class.new(directory) }
   let(:directory) { Dir.mktmpdir }
   let(:cop_name) { 'RSpec/VariableInstance' }

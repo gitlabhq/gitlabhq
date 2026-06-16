@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SearchController, :with_current_organization, feature_category: :global_search do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, :repository, :wiki_repo, name: 'awesome project', group: group) }
   let_it_be(:projects) { create_list(:project, 5, :public, :repository, :wiki_repo) }
@@ -317,6 +317,29 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
           expect(response.body).to eq '["foo","bar"]'
         end
       end
+    end
+  end
+
+  describe 'GET /search/autocomplete' do
+    let_it_be(:work_item) { create(:work_item, project: project, title: 'autocomplete fix') }
+
+    subject(:request) { get search_autocomplete_path, params: { term: 'autocomplete fix' } }
+
+    before do
+      stub_feature_flags(work_items_autocomplete: true)
+      login_as(user)
+      allow_next_instance_of(Gitlab::Search::RecentWorkItems) do |instance|
+        allow(instance).to receive(:search).and_return([work_item])
+      end
+    end
+
+    it 'returns recent work items with a working URL' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      entry = json_response.find { |r| r['category'] == 'Recent work items' }
+      expected_url = Gitlab::UrlBuilder.build(work_item, only_path: true)
+      expect(entry['url']).to eq(expected_url)
     end
   end
 end

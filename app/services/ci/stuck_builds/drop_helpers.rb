@@ -28,6 +28,9 @@ module Ci
                     .in_partition(partition_id)
                     .id_in(records.map(&:build_id))
                     .includes(:tags, :runner, project: [:namespace, :route])
+                    .to_a
+
+            preload_pending_states_for_enabled_projects(jobs)
 
             jobs.each do |job|
               Gitlab::ApplicationContext.with_context(project: job.project) { yield(job) }
@@ -44,12 +47,24 @@ module Ci
 
           break if jobs.empty?
 
+          preload_pending_states_for_enabled_projects(jobs)
+
           jobs.each do |job|
             Gitlab::ApplicationContext.with_context(project: job.project) { yield(job) }
           end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def preload_pending_states_for_enabled_projects(jobs)
+        jobs = jobs.select do |job|
+          Feature.enabled?(:ci_anchor_finished_at_to_pending_state, job.project)
+        end
+
+        return if jobs.empty?
+
+        ActiveRecord::Associations::Preloader.new(records: jobs, associations: :pending_state).call
+      end
 
       def drop_build(type, build, reason)
         log_dropping_message(type, build, reason)

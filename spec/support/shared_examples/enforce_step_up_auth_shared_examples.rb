@@ -1,19 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'enforces step-up authentication' do
-  let(:oidc_provider_config) do
-    GitlabSettings::Options.new(
-      name: 'openid_connect',
-      step_up_auth: {
-        namespace: {
-          id_token: {
-            required: { acr: 'gold' }
-          }
-        }
-      }
-    )
-  end
-
+  let(:oidc_provider_config) { build(:omniauth_provider_config, :with_namespace_scope) }
   let(:oidc_provider_name) { oidc_provider_config.name }
 
   let(:session_step_up_succeeded) do
@@ -281,19 +269,7 @@ RSpec.shared_examples 'enforces step-up authentication (request spec)' do
 end
 
 RSpec.shared_examples 'does not enforce step-up authentication' do
-  let(:oidc_provider_config) do
-    GitlabSettings::Options.new(
-      name: 'openid_connect',
-      step_up_auth: {
-        namespace: {
-          id_token: {
-            required: { acr: 'gold' }
-          }
-        }
-      }
-    )
-  end
-
+  let(:oidc_provider_config) { build(:omniauth_provider_config, :with_namespace_scope) }
   let(:oidc_provider_name) { oidc_provider_config.name }
 
   before do

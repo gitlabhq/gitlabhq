@@ -6,12 +6,12 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
   let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, :with_artifact, name: 'candidate0') }
   let_it_be(:candidate_with_generic) { create(:ml_candidates, :with_generic_package, name: 'run1') }
   let_it_be(:candidate_with_no_package) { create(:ml_candidates, name: 'run2') }
-  let_it_be(:candidate2) do
+  let_it_be(:candidate2, freeze: false) do
     create(:ml_candidates, experiment: candidate.experiment, name: 'candidate2', project: candidate.project)
   end
 
-  let_it_be(:existing_model) { create(:ml_models, project: candidate2.project) }
-  let_it_be(:existing_model_version) do
+  let_it_be(:existing_model, freeze: false) { create(:ml_models, project: candidate2.project) }
+  let_it_be(:existing_model_version, freeze: false) do
     create(:ml_model_versions, model: existing_model, candidate: candidate2)
   end
 

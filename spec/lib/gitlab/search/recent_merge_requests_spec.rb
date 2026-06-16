@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Search::RecentMergeRequests do
+RSpec.describe ::Gitlab::Search::RecentMergeRequests, feature_category: :code_review_workflow do
   let(:parent_type) { :project }
 
   def create_item(content:, parent:)

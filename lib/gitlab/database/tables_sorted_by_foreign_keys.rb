@@ -35,6 +35,22 @@ module Gitlab
         @all_foreign_keys ||= @tables.each_with_object(Hash.new { |h, k| h[k] = [] }) do |table, hash|
           foreign_keys_for(table).each do |fk|
             hash[fk.referenced_table_name] << table
+
+            # When the FK targets an attached partition, also record the
+            # dependency against the partitioned parent. TRUNCATE on the parent
+            # cascades to every partition, so any referencing table must be
+            # truncated before the parent's batch--otherwise PostgreSQL raises
+            # a feature-not-supported error on the implicit partition truncate.
+            parent = partition_parents[fk.referenced_table_name]
+            hash[parent] << table if parent
+          end
+        end
+      end
+
+      def partition_parents
+        @partition_parents ||= Gitlab::Database::SharedModel.using_connection(@connection) do
+          Gitlab::Database::PostgresPartition.all.each_with_object({}) do |partition, hash|
+            hash[partition.name] = partition.parent_identifier.split('.', 2).last
           end
         end
       end

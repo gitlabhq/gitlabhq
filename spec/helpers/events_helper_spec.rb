@@ -131,6 +131,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
         :destroyed | 'Event|destroyed'
         :expired   | 'Event|removed due to membership expiration from'
         :approved  | 'Event|approved'
+        :transferred | 'Event|transferred'
       end
 
       with_them do
@@ -140,6 +141,147 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
             expect(helper.localized_action_name(event)).to eq(s_(localized_action_key))
           end
+        end
+      end
+    end
+  end
+
+  describe '#transferred_event_title' do
+    let(:users_activity_page?) { false }
+    let(:groups_activity_page?) { false }
+
+    before do
+      allow(helper).to receive(:current_controller?).and_call_original
+      allow(helper).to receive(:current_controller?).with('users').and_return(users_activity_page?)
+      allow(helper).to receive(:current_controller?).with('groups').and_return(groups_activity_page?)
+    end
+
+    context 'when not on users activity page' do
+      let(:event) do
+        create(
+          :event,
+          :transferred,
+          target: project,
+          target_type: 'Project',
+          project: project,
+          author: user
+        )
+      end
+
+      it 'renders a generic transfer message' do
+        expect(helper.transferred_event_title(event)).to eq(s_('Event|Transferred to a new namespace'))
+      end
+    end
+
+    context 'when on groups activity page' do
+      let(:groups_activity_page?) { true }
+
+      context 'with a project transferred into the current group' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project_in_group) { create(:project, namespace: group) }
+        let(:event) do
+          build_stubbed(
+            :event,
+            :transferred,
+            target: project_in_group,
+            target_type: 'Project',
+            project: project_in_group,
+            author: user
+          )
+        end
+
+        before do
+          helper.instance_variable_set(:@group, group)
+        end
+
+        it 'renders the into-this-group project message with link' do
+          result = Capybara.string(helper.transferred_event_title(event))
+
+          expect(result).to have_content('Transferred project')
+          expect(result).to have_content('into this group')
+          expect(result).to have_link(project_in_group.name, href: project_path(project_in_group))
+        end
+      end
+
+      context 'with a subgroup transferred into the current group' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let(:event) do
+          build_stubbed(
+            :event,
+            :transferred,
+            target: subgroup,
+            target_type: 'Group',
+            group: subgroup,
+            project: nil,
+            author: user
+          )
+        end
+
+        before do
+          helper.instance_variable_set(:@group, group)
+        end
+
+        it 'renders the into-this-group group message with link' do
+          result = Capybara.string(helper.transferred_event_title(event))
+
+          expect(result).to have_content('Transferred group')
+          expect(result).to have_content('into this group')
+          expect(result).to have_link(subgroup.name, href: group_path(subgroup))
+        end
+      end
+    end
+
+    context 'when on users activity page' do
+      let(:users_activity_page?) { true }
+
+      context 'with a project event' do
+        let(:event) do
+          build_stubbed(
+            :event,
+            :transferred,
+            target: project,
+            target_type: 'Project',
+            project: project,
+            author: user
+          )
+        end
+
+        it 'renders the project-specific transfer message with link' do
+          result = Capybara.string(helper.transferred_event_title(event))
+
+          expect(result).to have_content('Transferred project')
+          expect(result).to have_link(project.name, href: project_path(project))
+        end
+      end
+
+      context 'with a group event' do
+        let_it_be(:group) { create(:group) }
+        let(:event) do
+          create(
+            :event,
+            :transferred,
+            group: group,
+            project: nil,
+            target_type: nil,
+            target_id: nil,
+            author: user
+          )
+        end
+
+        it 'renders the group-specific transfer message with link' do
+          result = Capybara.string(helper.transferred_event_title(event))
+
+          expect(result).to have_content('Transferred group')
+          expect(result).to have_link(group.name, href: group_path(group))
+        end
+      end
+
+      context 'with an event without project or group' do
+        let(:event) { build_stubbed(:event, :transferred, project: nil, group: nil) }
+
+        it 'renders the generic transfer message' do
+          expect(helper.transferred_event_title(event)).to eq(s_('Event|Transferred to a new namespace'))
         end
       end
     end
@@ -201,7 +343,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     context 'for wiki page' do
       # We need non-frozen project since wiki activity touches it
-      let_it_be(:project_2) { create(:project) }
+      let_it_be(:project_2, freeze: false) { create(:project) }
 
       let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project_2) }
       let(:note) { create(:note, noteable: wiki_page_meta, project: project_2, author: user) }
@@ -342,7 +484,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
   end
 
   describe '#event_wiki_page_target_url' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     context 'for project wiki' do
       let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
@@ -410,7 +552,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
   end
 
   describe '#event_note_target_url' do
-    let_it_be(:event) { create(:event) }
+    let_it_be(:event, freeze: false) { create(:event) }
     let(:project_base_url) { namespace_project_url(namespace_id: project.namespace, id: project) }
 
     subject { helper.event_note_target_url(event) }

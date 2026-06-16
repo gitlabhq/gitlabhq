@@ -9,6 +9,7 @@ import { installScript, platformArchitectures } from './utils';
 import CliCommand from './cli_command.vue';
 
 export default {
+  name: 'PlatformsDrawer',
   components: {
     GlDrawer,
     GlFormGroup,

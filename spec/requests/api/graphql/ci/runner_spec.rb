@@ -522,7 +522,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         let_it_be(:owned_project_owner) { create(:user) }
         let_it_be(:owned_project) { create(:project, owners: owned_project_owner) }
         let_it_be(:other_project) { create(:project) }
-        let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
+        let_it_be(:project_runner, freeze: false) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
         let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
         let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: other_project) }
         let_it_be(:owned_build) do
@@ -808,7 +808,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   describe 'for multiple runners' do
     let_it_be(:project2) { create(:project, :test_repo) }
     let_it_be(:project_runner1) { create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1') }
-    let_it_be(:project_runner2) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
+    let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
 
     let!(:job) { create(:ci_build, runner: project_runner1) }
 
@@ -1080,7 +1080,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let_it_be(:merge_request1) { create(:merge_request, source_project: project1) }
     let_it_be(:merge_request2) { create(:merge_request, source_project: project3) }
 
-    let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
+    let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, projects: [project1, project2]) }
     let_it_be(:pipeline1) do
       create(
         :ci_pipeline,
@@ -1187,7 +1187,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     context 'with project search term' do
       let_it_be(:project1) { create(:project, description: 'abc') }
       let_it_be(:project2) { create(:project, description: 'def') }
-      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+      let_it_be(:project_runner, freeze: false) { create(:ci_runner, :project, projects: [project1, project2]) }
 
       let(:variables) { { id: project_runner.to_global_id.to_s, n: n, project_search_term: search_term } }
 

@@ -10,13 +10,7 @@ test:
   image: gliderlabs/herokuish:latest
   needs: []
   script:
-    - |
-      if [ -z ${KUBERNETES_PORT+x} ]; then
-        DB_HOST=postgres
-      else
-        DB_HOST=localhost
-      fi
-    - export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}"
+    - export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
   rules:

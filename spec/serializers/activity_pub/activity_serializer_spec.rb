@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActivityPub::ActivitySerializer, feature_category: :integrations do
+RSpec.describe ActivityPub::ActivitySerializer, feature_category: :release_orchestration do
   let(:implementer_class) do
     Class.new(described_class)
   end

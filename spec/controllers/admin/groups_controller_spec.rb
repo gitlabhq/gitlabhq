@@ -22,7 +22,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
   describe 'DELETE #destroy' do
     it 'schedules a group destroy' do
       Sidekiq::Testing.fake! do
-        expect { delete :destroy, params: { id: project.group.path } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+        expect { delete :destroy, params: { id: project.group.path } }.to change { GroupDestroyWorker.jobs.size }.by(1)
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
         expect do
           update!
           group.reload
-        end.not_to change(group, :runners_token)
+        end.not_to change { group.runners_token }
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
         expect do
           update!
           group.reload
-        end.not_to change(group, :runners_token)
+        end.not_to change { group.runners_token }
       end
 
       context 'with registration tokens enabled' do
@@ -135,7 +135,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
           expect do
             update!
             group.reload
-          end.to change(group, :runners_token)
+          end.to change { group.runners_token }
         end
       end
     end

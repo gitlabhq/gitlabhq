@@ -76,12 +76,6 @@ For more information, see [Resource Group documentation](../resource_groups/_ind
 
 ## Prevent outdated deployment jobs
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5 to prevent outdated job runs.
-
-{{< /history >}}
-
 The effective execution order of pipeline jobs can vary from run to run, which
 could cause undesired behavior. For example, a [deployment job](../jobs/_index.md#deployment-jobs)
 in a newer pipeline could finish before a deployment job in an older pipeline.
@@ -105,13 +99,6 @@ For example, pipeline A (older commit) and pipeline B (newer commit) both have m
 job after you create pipeline B, pipeline B's manual deploy job is blocked as outdated, even though the pipeline itself is newer.
 
 ### Job retries for rollback deployments
-
-{{< history >}}
-
-- Rollback via job retry [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) in GitLab 15.6.
-- Job retries for rollback deployments checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410427) in GitLab 16.3.
-
-{{< /history >}}
 
 You might need to quickly roll back to a stable, outdated deployment.
 By default, pipeline job retries for [deployment rollback](deployments.md#deployment-rollback) are enabled.

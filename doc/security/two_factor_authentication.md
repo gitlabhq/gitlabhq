@@ -92,7 +92,7 @@ Administrators can enforce 2FA for both:
 1. Select **Save changes**.
 
 > [!note]
-> If you are using an external provider to sign in into GitLab, this setting will **not** enforce 2FA for users. 2FA should be enabled on that external provider.
+> If you are using an external provider to sign in into GitLab, this setting will not enforce 2FA for users. 2FA should be enabled on that external provider.
 
 ## Enforce 2FA for all users in a group
 
@@ -179,7 +179,7 @@ for the 2FA group.
 
 > [!warning]
 > If you add members to a project in a group or subgroup that has 2FA
-> enabled, 2FA is **not** required for those individually added members.
+> enabled, 2FA is not required for those individually added members.
 
 ## Disable 2FA
 

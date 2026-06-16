@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { GlLoadingIcon, GlHoverLoadDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import FileRow from '~/vue_shared/components/file_row.vue';
@@ -131,6 +131,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, ['resetFileTreeBrowserAllStates']),
+    isTreeRow(item) {
+      return item?.type === 'tree';
+    },
     async loadInitialPath() {
       await this.expandPathAncestors(this.currentRouterPath || '/');
       await this.$nextTick();
@@ -403,10 +407,15 @@ export default {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           if (item?.isShowMore) this.handleShowMore(item.parentPath, event);
-          if (item?.type === 'tree') this.toggleDirectory(item.path, { toggleClose: false });
+          if (this.isTreeRow(item)) this.toggleDirectory(item.path, { toggleClose: false });
           if (item?.submodule && item?.webUrl) visitUrl(item.webUrl);
-          if (item?.routerPath && !this.isCurrentPath(item?.path))
+          if (item?.routerPath && !this.isCurrentPath(item?.path)) {
             this.$router.push(item.routerPath);
+
+            if (this.fileTreeBrowserIsPeekOn && !this.isTreeRow(item)) {
+              this.resetFileTreeBrowserAllStates();
+            }
+          }
           return;
         }
 
@@ -425,7 +434,7 @@ export default {
         if (event.key === '*' && item) {
           event.preventDefault();
           items
-            .filter((i) => i.type === 'tree' && !i.opened && i.parentPath === item.parentPath)
+            .filter((i) => this.isTreeRow(i) && !i.opened && i.parentPath === item.parentPath)
             .forEach((i) => this.toggleDirectory(i.path, { toggleClose: false }));
         }
 
@@ -450,12 +459,12 @@ export default {
         // Right Arrow
         if (event.key === 'ArrowRight') {
           event.preventDefault();
-          if (item?.type === 'tree' && !item.opened) {
+          if (this.isTreeRow(item) && !item.opened) {
             this.toggleDirectory(item.path, { toggleClose: false });
             return;
           }
           const child = items[current + 1];
-          if (item?.type === 'tree' && child?.level > item.level) {
+          if (this.isTreeRow(item) && child?.level > item.level) {
             this.activeItemId = child.id;
             this.$nextTick(() => this.focusActiveItemThrottled());
           }
@@ -465,7 +474,7 @@ export default {
         // Left Arrow
         if (event.key === 'ArrowLeft') {
           event.preventDefault();
-          if (item?.type === 'tree' && item.opened) {
+          if (this.isTreeRow(item) && item.opened) {
             this.toggleDirectory(item.path);
             return;
           }
@@ -519,9 +528,13 @@ export default {
       this.activeItemId = nextItem.dataset?.itemId;
       nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
-    handleNavigate(itemPath, routerPath) {
-      if (!routerPath || this.isCurrentPath(itemPath)) return;
-      this.$router.push(routerPath);
+    handleNavigate(item) {
+      if (!item.routerPath || this.isCurrentPath(item.path)) return;
+      this.$router.push(item.routerPath);
+
+      if (this.fileTreeBrowserIsPeekOn && !this.isTreeRow(item)) {
+        this.resetFileTreeBrowserAllStates();
+      }
     },
     scrollFileRowIntoView(path, block = 'nearest') {
       const item = this.flatFilesList.find((i) => i.path === path);
@@ -539,7 +552,7 @@ export default {
     },
     onTreeClick(item) {
       this.toggleDirectory(item.path, { toggleClose: false });
-      this.handleNavigate(item.path, item.routerPath);
+      this.handleNavigate(item);
     },
     siblingInfo(item) {
       const siblings = this.siblingMap.get(`${item.parentPath || ''}-${item.level}`);
@@ -547,7 +560,7 @@ export default {
     },
     handlePreload(item) {
       if (item.submodule || item.isSkeleton || item.isShowMore) return;
-      if (item.type === 'tree') {
+      if (this.isTreeRow(item)) {
         this.preloadFolder(item.path);
       } else {
         this.preloadBlob(item.path);
@@ -659,7 +672,7 @@ export default {
             @clickTree="onTreeClick(item)"
             @toggleTree.stop="toggleDirectory(item.path)"
             @clickSubmodule="handleClickSubmodule(item.webUrl)"
-            @clickFile="handleNavigate(item.path, item.routerPath)"
+            @clickFile="handleNavigate(item)"
             @clickRow="onFileClick"
             @showMore="handleShowMore(item.parentPath, $event)"
           />

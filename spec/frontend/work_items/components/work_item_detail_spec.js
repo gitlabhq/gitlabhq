@@ -9,6 +9,7 @@ import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { useRealDate } from 'helpers/fake_date';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -143,6 +144,7 @@ describe('WorkItemDetail component', () => {
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
   const findShowSidebarButton = () => wrapper.findByTestId('work-item-show-sidebar-button');
+  const findDetailLayoutContainer = () => wrapper.findByTestId('detail-layout-container');
   const findRootNode = () => wrapper.findByTestId('work-item-detail');
   const findRefetchAlert = () => wrapper.findByTestId('work-item-refetch-alert');
 
@@ -201,6 +203,7 @@ describe('WorkItemDetail component', () => {
       },
       stubs: {
         GlSprintf,
+        DetailLayout,
         WorkItemAncestors: true,
         WorkItemWeight: true,
         WorkItemIteration: true,
@@ -1288,10 +1291,6 @@ describe('WorkItemDetail component', () => {
       await mockApollo.resolveAll();
     });
 
-    it('has the `work-item-overview` class', () => {
-      expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
-    });
-
     it('renders the work item sticky header component', () => {
       expect(findStickyHeader().exists()).toBe(true);
     });
@@ -1427,12 +1426,18 @@ describe('WorkItemDetail component', () => {
       await mockApollo.resolveAll();
       expect(findShowSidebarButton().exists()).toBe(false);
       expect(findRightSidebar().classes()).not.toContain('@md/panel:gl-hidden');
+      expect(findDetailLayoutContainer().classes()).toContain(
+        'gl-detail-layout-container-has-sidebar',
+      );
     });
     it('when sidebar is hidden based on view options', async () => {
       createComponent({ showSidebar: false });
       await mockApollo.resolveAll();
       expect(findShowSidebarButton().exists()).toBe(true);
       expect(findRightSidebar().classes()).toContain('@md/panel:gl-hidden');
+      expect(findDetailLayoutContainer().classes()).not.toContain(
+        'gl-detail-layout-container-has-sidebar',
+      );
     });
     it('when show sidebar button is used', async () => {
       createComponent({ showSidebar: false });

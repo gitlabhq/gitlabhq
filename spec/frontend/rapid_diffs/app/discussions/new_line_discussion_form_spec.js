@@ -151,13 +151,30 @@ describe('NewLineDiscussionForm', () => {
   describe('saving note', () => {
     const noteBody = 'Test note body';
 
-    it('calls store.createLineDiscussion', async () => {
+    it('calls store.createLineDiscussion with undefined showWhitespace when not provided', async () => {
       const oldDiscussion = createDiscussion();
       createComponent({ props: { discussion: oldDiscussion } });
 
       await findNoteForm().props('saveNote')(noteBody);
 
-      expect(store.createLineDiscussion).toHaveBeenCalledWith(oldDiscussion, noteBody);
+      expect(store.createLineDiscussion).toHaveBeenCalledWith({
+        discussion: oldDiscussion,
+        noteBody,
+        showWhitespace: undefined,
+      });
+    });
+
+    it('passes injected showWhitespace to store.createLineDiscussion', async () => {
+      const oldDiscussion = createDiscussion();
+      createComponent({ props: { discussion: oldDiscussion } }, { showWhitespace: false });
+
+      await findNoteForm().props('saveNote')(noteBody);
+
+      expect(store.createLineDiscussion).toHaveBeenCalledWith({
+        discussion: oldDiscussion,
+        noteBody,
+        showWhitespace: false,
+      });
     });
 
     it('shows alert on submission failure', async () => {
@@ -196,7 +213,11 @@ describe('NewLineDiscussionForm', () => {
         const discussion = createDiscussion();
         createComponent({ discussion });
         await findNoteForm().props('saveDraft')('draft text');
-        expect(store.createDraftLineDiscussion).toHaveBeenCalledWith(discussion, 'draft text');
+        expect(store.createDraftLineDiscussion).toHaveBeenCalledWith({
+          discussion,
+          noteBody: 'draft text',
+          showWhitespace: undefined,
+        });
       });
 
       it('shows alert on draft save failure', async () => {

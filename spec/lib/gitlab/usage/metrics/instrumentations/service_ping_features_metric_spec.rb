@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ServicePingFeaturesMetric do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ServicePingFeaturesMetric, feature_category: :service_ping do
   using RSpec::Parameterized::TableSyntax
 
   where(:usage_ping_features_enabled, :expected_value) do

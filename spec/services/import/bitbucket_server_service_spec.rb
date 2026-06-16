@@ -84,6 +84,34 @@ RSpec.describe Import::BitbucketServerService, feature_category: :importers do
     end
   end
 
+  context 'with an invalid project key' do
+    let(:project_key) { 'PROJ?ECT' }
+
+    it 'returns an error' do
+      result = subject.execute(credentials)
+
+      expect(result).to include(
+        message: _('Missing or invalid project key'),
+        status: :error,
+        http_status: :unprocessable_entity
+      )
+    end
+  end
+
+  context 'with an invalid repository slug' do
+    let(:repo_slug) { 'my~repo' }
+
+    it 'returns an error' do
+      result = subject.execute(credentials)
+
+      expect(result).to include(
+        message: _('Missing or invalid repository slug'),
+        status: :error,
+        http_status: :unprocessable_entity
+      )
+    end
+  end
+
   context 'when user is unauthorized' do
     before do
       allow(subject).to receive(:authorized?).and_return(false)

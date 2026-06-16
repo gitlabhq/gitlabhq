@@ -6,6 +6,7 @@ module Types
       graphql_name 'ClusterAgent'
 
       authorize :read_cluster_agent
+      authorize_granular_token permissions: :read_cluster_agent, boundary: :project, boundary_type: :project
 
       def self.authorization_scopes
         super + [:ai_workflows]

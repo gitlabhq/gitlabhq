@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { ROUTE_NAME_LOGS } from '~/environments/constants';
 
 export default {
+  name: 'PodLogsButton',
   components: {
     GlButton,
     GlDisclosureDropdown,

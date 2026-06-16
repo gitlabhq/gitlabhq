@@ -33,6 +33,22 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
         expect(export_job.reload.failed?).to be true
       end
     end
+
+    context 'when the export file is not ready' do
+      let(:error) { ::Import::AfterExportStrategies::BaseAfterExportStrategy::ExportNotReadyError }
+
+      before do
+        allow_next_instance_of(::Projects::ImportExport::ParallelExportService) do |service|
+          allow(service).to receive(:execute).and_raise(error)
+        end
+      end
+
+      it 'propagates the error so Sidekiq can retry and leaves the job unfinished', :aggregate_failures do
+        expect { described_class.new.perform(*job_args) }.to raise_error(error)
+
+        expect(export_job.reload.finished?).to be false
+      end
+    end
   end
 
   describe '.sidekiq_retries_exhausted' do
@@ -52,6 +68,15 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
             export_error: 'Error message'
           )
         )
+      end
+
+      described_class.sidekiq_retries_exhausted_block.call(job)
+    end
+
+    it 'notifies the user that the project was not exported' do
+      expect_next_instance_of(NotificationService) do |notification|
+        expect(notification).to receive(:project_not_exported)
+          .with(export_job.project, user, ['Error message'])
       end
 
       described_class.sidekiq_retries_exhausted_block.call(job)

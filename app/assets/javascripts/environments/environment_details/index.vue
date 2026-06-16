@@ -9,6 +9,7 @@ import DeploymentHistory from './components/deployment_history.vue';
 import KubernetesOverview from './components/kubernetes/kubernetes_overview.vue';
 
 export default {
+  name: 'EnvironmentDetailsIndex',
   components: {
     GlLoadingIcon,
     GlTabs,

@@ -90,10 +90,6 @@ export const SEARCH_RESULTS_DESCRIPTION = 'label-search-results-description';
 export const LABEL_FILTER_HEADER = __('Labels');
 export const LABEL_AGREGATION_NAME = 'labels';
 
-export const SOURCE_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_source_branches.json';
-export const TARGET_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_target_branches.json';
-export const AUTHOR_ENDPOINT_PATH = '/-/autocomplete/users.json';
-
 export const CONFIDENTIAL_FILTERS = {
   ANY: {
     label: __('Any'),

@@ -3,6 +3,8 @@
 RSpec.shared_examples 'work items title' do
   it 'updates title' do
     click_button 'Edit', match: :first
+    expect(page).to have_content 'Add description templates to help your contributors communicate effectively!'
+
     fill_in 'Title (required)', with: 'Work item title'
     send_keys([:command, :enter])
 
@@ -253,6 +255,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
       click_button "Create #{namespace_type} label"
       send_keys 'Quintessence'
       click_button 'Create'
+      expect(page).to have_content('Quintessence')
       click_button 'Apply'
 
       expect(page).to have_css '.gl-label', text: 'Quintessence'
@@ -380,6 +383,7 @@ RSpec.shared_examples 'work items milestone' do
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
   it 'passes axe automated accessibility testing in closed state' do
+    expect(page).to have_selector(work_item_milestone_selector)
     expect(page).to be_axe_clean.within(work_item_milestone_selector)
   end
 
@@ -483,6 +487,10 @@ RSpec.shared_examples 'work items lock discussion' do
 
     expect(page).to have_text "Discussion is locked. Only members can comment."
 
+    within_testid('work-item-actions-dropdown') do
+      expect(page).to have_no_testid('base-dropdown-menu')
+    end
+
     click_button _('More actions'), match: :first
     click_button 'Unlock discussion'
 
@@ -495,13 +503,13 @@ RSpec.shared_examples 'work items confidentiality' do
     click_button _('More actions'), match: :first
     click_button 'Turn on confidentiality'
 
-    expect(page).to have_no_css('[data-testid="confidentiality-toggle-action"]', wait: 5)
+    expect(page).to have_no_css('[data-testid="confidentiality-toggle-action"]')
     expect(page).to have_css('.gl-badge', text: 'Confidential')
 
     click_button _('More actions'), match: :first
     click_button 'Turn off confidentiality'
 
-    expect(page).not_to have_css('.gl-badge', text: 'Confidential', wait: 5)
+    expect(page).not_to have_css('.gl-badge', text: 'Confidential')
   end
 end
 
@@ -687,6 +695,7 @@ RSpec.shared_examples 'work items iteration' do
   end
 
   it 'passes axe automated accessibility testing in closed state' do
+    expect(page).to have_selector(work_item_iteration_selector)
     expect(page).to be_axe_clean.within(work_item_iteration_selector)
   end
 
@@ -1181,6 +1190,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
     click_button "New #{type.to_s.capitalize}"
     fill_in 'Add a title', with: title
     click_button "Create #{type.to_s.capitalize}"
+    expect(page).to have_link title
   end
 end
 

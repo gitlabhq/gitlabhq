@@ -157,7 +157,7 @@ export const mapParallel =
   (line) => {
     let { left, right } = line;
 
-    // Dicussions/Comments
+    // Discussions/Comments
     const hasExpandedDiscussionOnLeft =
       left?.discussions?.length > 0 ? left?.discussionsExpanded : false;
     const hasExpandedDiscussionOnRight =

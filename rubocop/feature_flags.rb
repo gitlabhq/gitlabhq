@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
+
 module RuboCop
   module FeatureFlags
     FEATURE_CALLERS = %w[Feature FeatureFlags Gitlab::AiGateway].freeze
@@ -77,6 +79,16 @@ module RuboCop
 
       def jh_feature_flag_names
         @jh_feature_flag_names ||= load_feature_flags('jh/config/feature_flags/**/*.yml')
+      end
+
+      # Used by RuboCop to invalidate its cache when feature flag YAML files
+      # are added or removed across CE, EE, and JH. Checksums sorted file paths
+      # (not contents) since only flag names derived from filenames are used.
+      def all_config_checksum
+        @all_config_checksum ||= begin
+          paths = Dir.glob(File.expand_path('../{,ee/,jh/}config/feature_flags/**/*.yml', __dir__))
+          Digest::SHA256.hexdigest(paths.join("\n"))
+        end
       end
 
       private

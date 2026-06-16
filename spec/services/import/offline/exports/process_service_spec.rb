@@ -49,6 +49,30 @@ RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :impo
       end
     end
 
+    shared_examples 'concurrent export limit exceeded' do
+      context 'when the concurrent export limit is exceeded' do
+        before do
+          create_list(
+            :bulk_import_export, BulkImports::Export::MAX_CONCURRENT_RELATION_EXPORTS,
+            :started, offline_export: offline_export
+          )
+        end
+
+        it 're-enqueues without calling BulkImports::ExportService' do
+          expect(BulkImports::ExportService).not_to receive(:new)
+          expect(Import::Offline::ExportWorker).to receive(:perform_in).with(
+            described_class::PERFORM_DELAY, offline_export.id
+          )
+
+          service.execute
+        end
+
+        it 'does not change the offline export status' do
+          expect { service.execute }.not_to change { offline_export.reload.status_name }
+        end
+      end
+    end
+
     context 'when offline_export is not present' do
       let(:offline_export) { nil }
 
@@ -151,7 +175,7 @@ RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :impo
       end
 
       context 'when there are no descendent portables' do
-        let_it_be(:offline_export) { create(:offline_export) }
+        let_it_be(:offline_export, freeze: false) { create(:offline_export) }
         let_it_be(:bulk_export) do
           create(
             :bulk_import_export, :pending, offline_export: offline_export,
@@ -163,6 +187,8 @@ RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :impo
           expect { service.execute }.not_to change { BulkImports::Export.count }
         end
       end
+
+      it_behaves_like 'concurrent export limit exceeded'
     end
 
     context 'when offline export is started' do
@@ -195,6 +221,8 @@ RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :impo
           service.execute
         end
       end
+
+      it_behaves_like 'concurrent export limit exceeded'
 
       context 'and not all relation exports are complete' do
         let_it_be(:self_export_group_1) { create_self_relation_export(:pending, group: group_1) }

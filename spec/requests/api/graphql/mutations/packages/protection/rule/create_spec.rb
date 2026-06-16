@@ -86,6 +86,15 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
     let(:expected_attributes) { kwargs }
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_package_protection_rule do
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(:create_packages_protection_rule, kwargs, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when feature flag `packages_protected_packages_delete` is disabled' do
     before do
       stub_feature_flags(packages_protected_packages_delete: false)

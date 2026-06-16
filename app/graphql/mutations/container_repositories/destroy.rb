@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'DestroyContainerRepository'
 
       authorize :destroy_container_image
+      authorize_granular_token permissions: :delete_container_repository,
+        boundary_argument: :id, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::ContainerRepository],

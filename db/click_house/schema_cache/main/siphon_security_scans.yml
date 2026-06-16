@@ -64,3 +64,5 @@ columns:
   default_kind: DEFAULT
   default_expression: 'false'
   compression_codec: CODEC(ZSTD(1))
+- name: scanner_external_id
+  type: Nullable(String)

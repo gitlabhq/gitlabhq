@@ -1,7 +1,8 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabにおける外部ステータスチェックのREST APIに関するドキュメントです。
 title: 外部ステータスチェックAPI
 ---
 
@@ -12,11 +13,11 @@ title: 外部ステータスチェックAPI
 
 {{< /details >}}
 
-このAPIを使用して、[external status checks](../user/project/merge_requests/status_checks.md)を管理します。
+このAPIを使用して、[外部ステータスチェック](../user/project/merge_requests/status_checks.md)を管理します。
 
-## プロジェクトの外部ステータスチェックサービスを取得 {#get-project-external-status-check-services}
+## プロジェクトの外部ステータスチェックサービスを取得する {#retrieve-project-external-status-check-services}
 
-次のエンドポイントを使用すると、プロジェクトの外部ステータスチェックサービスに関する情報をリクエストできます:
+次のエンドポイントを使用して、プロジェクトの外部ステータスチェックサービスに関する情報を取得する:
 
 ```plaintext
 GET /projects/:id/external_status_checks
@@ -50,31 +51,28 @@ GET /projects/:id/external_status_checks
 ]
 ```
 
-## 外部ステータスチェックサービスを作成 {#create-external-status-check-service}
+## 外部ステータスチェックサービスを作成する {#create-external-status-check-service}
 
-次のエンドポイントを使用すると、プロジェクトの新しい外部ステータスチェックサービスを作成できます:
+次のエンドポイントを使用して、プロジェクトの新しい外部ステータスチェックサービスを作成します:
 
 ```plaintext
 POST /projects/:id/external_status_checks
 ```
 
-{{< alert type="warning" >}}
-
-外部ステータスチェックは、該当するすべてのマージリクエストに関する情報を、定義された外部サービスに送信します。これには、機密のマージリクエストが含まれます。
-
-{{< /alert >}}
+> [!warning]
+> 外部ステータスチェックは、適用可能なすべてのマージリクエストに関する情報を定義済みの外部サービスに送信します。これには、機密のマージリクエストが含まれます。
 
 | 属性              | 型             | 必須 | 説明                                    |
 |------------------------|------------------|----------|------------------------------------------------|
 | `id`                   | 整数          | はい      | プロジェクトのID                                |
 | `name`                 | 文字列           | はい      | 外部ステータスチェックサービスの表示名  |
 | `external_url`         | 文字列           | はい      | 外部ステータスチェックサービスのURL           |
-| `shared_secret`        | 文字列           | いいえ       | 外部ステータスチェックのHMACシークレット          |
-| `protected_branch_ids` | `array<Integer>` | いいえ       | ルールをスコープする保護ブランチのID |
+| `shared_secret`        | 文字列           | いいえ       | 外部ステータスチェック用のHMACシークレット          |
+| `protected_branch_ids` | `array<Integer>` | いいえ       | ルールをスコープするための保護ブランチのID |
 
-## 外部ステータスチェックサービスを更新 {#update-external-status-check-service}
+## 外部ステータスチェックサービスを更新する {#update-external-status-check-service}
 
-次のエンドポイントを使用すると、プロジェクトの既存の外部ステータスチェックを更新できます:
+次のエンドポイントを使用して、プロジェクトの既存の外部ステータスチェックを更新します:
 
 ```plaintext
 PUT /projects/:id/external_status_checks/:check_id
@@ -86,12 +84,12 @@ PUT /projects/:id/external_status_checks/:check_id
 | `check_id`             | 整数          | はい      | 外部ステータスチェックサービスのID         |
 | `name`                 | 文字列           | いいえ       | 外部ステータスチェックサービスの表示名  |
 | `external_url`         | 文字列           | いいえ       | 外部ステータスチェックサービスのURL           |
-| `shared_secret`        | 文字列           | いいえ       | 外部ステータスチェックのHMACシークレット          |
-| `protected_branch_ids` | `array<Integer>` | いいえ       | ルールをスコープする保護ブランチのID |
+| `shared_secret`        | 文字列           | いいえ       | 外部ステータスチェック用のHMACシークレット          |
+| `protected_branch_ids` | `array<Integer>` | いいえ       | ルールをスコープするための保護ブランチのID |
 
-## 外部ステータスチェックサービスを削除 {#delete-external-status-check-service}
+## 外部ステータスチェックサービスを削除する {#delete-external-status-check-service}
 
-次のエンドポイントを使用すると、プロジェクトの外部ステータスチェックサービスを削除できます:
+次のエンドポイントを使用して、プロジェクトの外部ステータスチェックサービスを削除します:
 
 ```plaintext
 DELETE /projects/:id/external_status_checks/:check_id
@@ -102,9 +100,9 @@ DELETE /projects/:id/external_status_checks/:check_id
 | `check_id`             | 整数        | はい      | 外部ステータスチェックサービスのID |
 | `id`                   | 整数        | はい      | プロジェクトのID                        |
 
-## マージリクエストのステータスチェックをリスト表示 {#list-status-checks-for-a-merge-request}
+## マージリクエストのすべてのステータスチェックをリストする {#list-all-status-checks-for-a-merge-request}
 
-単一のマージリクエストについて、それに適用される外部ステータスチェックサービスとそのステータスをリスト表示します。
+単一のマージリクエストに適用される外部ステータスチェックサービスとそのステータスをリストします。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/status_checks
@@ -134,18 +132,18 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 ]
 ```
 
-## 外部ステータスチェックのステータスを設定 {#set-status-of-an-external-status-check}
+## 外部ステータスチェックのステータスを設定する {#set-status-of-an-external-status-check}
 
 {{< history >}}
 
-- `failed`と`passed`のサポートは、GitLab 15.0で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/353836)
-- GitLab 16.5の`pending`のサポートは、GitLab 16.5で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/413723)
+- GitLab 15.0で`failed`および`passed`のサポートが[デフォルト](https://gitlab.com/gitlab-org/gitlab/-/issues/353836)で有効になりました
+- GitLab 16.5で`pending`のサポートが[デフォルト](https://gitlab.com/gitlab-org/gitlab/-/issues/413723)で有効になりました
 
 {{< /history >}}
 
-単一のマージリクエストの場合、APIを使用して、外部サービスによるチェックにマージリクエストが合格したことをGitLabに通知します。外部チェックのステータスを設定するには、使用するパーソナルアクセストークンが、マージリクエストのターゲットプロジェクトに対する少なくともデベロッパーロールを持つユーザーに属している必要があります。
+単一のマージリクエストの外部ステータスチェックのステータスを設定し、GitLabにマージリクエストが外部サービスによるチェックに合格したことを通知します。外部チェックのステータスを設定するには、使用されるパーソナルアクセストークンが、マージリクエストのターゲットプロジェクトでデベロッパー、メンテナー、またはオーナーロールを持つユーザーに属している必要があります。
 
-このAPIコールは、マージリクエスト自体を承認する権限を持つ任意のユーザーとして実行します。
+マージリクエスト自体を承認する権限を持つ任意のユーザーとして、このAPIコールを実行します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
@@ -157,17 +155,14 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 | -------------------------- | ------- | -------- |---------------------------------------------------------------------------------------------------|
 | `id`                       | 整数 | はい      | プロジェクトのID                                                                                   |
 | `merge_request_iid`        | 整数 | はい      | マージリクエストのIID                                                                            |
-| `sha`                      | 文字列  | はい      | ソースブランチの`HEAD`のSHA                                                                |
+| `sha`                      | 文字列  | はい      | ソースブランチの`HEAD`にあるSHA                                                                |
 | `external_status_check_id` | 整数 | はい      | 外部ステータスチェックのID                                                                    |
-| `status`                   | 文字列  | いいえ       | チェックを保留中としてマークするには`pending`、チェックに合格するには`passed`、失敗させるには`failed`に設定します |
+| `status`                   | 文字列  | いいえ       | チェックを保留中としてマークするには`pending`に設定し、チェックを合格とするには`passed`に設定し、失敗とするには`failed`に設定します |
 
-{{< alert type="note" >}}
+> [!note]
+> `sha`は、マージリクエストのソースブランチの`HEAD`にあるSHAである必要があります。
 
-`sha`は、マージリクエストのソースブランチの`HEAD`にあるSHAである必要があります。
-
-{{< /alert >}}
-
-## マージリクエストの失敗したステータスチェックを再試行 {#retry-failed-status-check-for-a-merge-request}
+## マージリクエストの失敗したステータスチェックを再試行する {#retry-failed-status-check-for-a-merge-request}
 
 {{< history >}}
 
@@ -175,7 +170,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 
 {{< /history >}}
 
-単一のマージリクエストについて、指定された失敗した外部ステータスチェックを再試行します。マージリクエストが変更されていなくても、このエンドポイントはマージリクエストの現在の状態を定義済みの外部サービスに再送信します。
+単一のマージリクエストに対して、指定された失敗した外部ステータスチェックを再試行します。マージリクエストが変更されていない場合でも、このエンドポイントはマージリクエストの現在の状態を定義済みの外部サービスに再送信します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry
@@ -191,7 +186,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_sta
 
 ## レスポンス {#response}
 
-成功した場合、ステータスコードは202です。
+成功した場合のステータスコードは202です。
 
 ```json
 {
@@ -199,7 +194,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_sta
 }
 ```
 
-ステータスチェックがすでに合格している場合、ステータスコードは422です
+ステータスチェックがすでに合格している場合、ステータスコードは422です。
 
 ```json
 {
@@ -207,7 +202,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_sta
 }
 ```
 
-## 外部サービスに送信されるペイロード {#example-payload-sent-to-external-service}
+## 外部サービスに送信されたペイロードの例 {#example-payload-sent-to-external-service}
 
 ```json
 {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
+RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store, feature_category: :database do
   let(:configuration_hash) { {} }
   let(:db_config) { ActiveRecord::DatabaseConfigurations::HashConfig.new('test', 'ci', configuration_hash) }
   let(:model) { double(:model, connection_db_config: db_config) }

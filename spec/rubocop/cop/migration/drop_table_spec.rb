@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
-RSpec.describe RuboCop::Cop::Migration::DropTable do
+RSpec.describe RuboCop::Cop::Migration::DropTable, feature_category: :database do
   context 'when in deployment migration' do
     let(:msg) do
       '`drop_table` in deployment migrations requires downtime. Drop tables in post-deployment migrations instead.'

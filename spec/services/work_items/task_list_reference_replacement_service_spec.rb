@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe WorkItems::TaskListReferenceReplacementService, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository, developers: developer) }
-  let_it_be(:single_line_work_item, refind: true) { create(:work_item, project: project, description: '- [ ] single line', lock_version: 3) }
-  let_it_be(:multiple_line_work_item, refind: true) { create(:work_item, project: project, description: "Any text\n\n* [ ] Item to be converted\n    second line\n    third line", lock_version: 3) }
+  let_it_be_with_refind(:single_line_work_item) { create(:work_item, project: project, description: '- [ ] single line', lock_version: 3) }
+  let_it_be_with_refind(:multiple_line_work_item) { create(:work_item, project: project, description: "Any text\n\n* [ ] Item to be converted\n    second line\n    third line", lock_version: 3) }
 
   let(:line_number_start) { 3 }
   let(:line_number_end) { 5 }

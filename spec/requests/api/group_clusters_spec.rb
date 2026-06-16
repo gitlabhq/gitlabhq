@@ -242,7 +242,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
           expect(cluster_result.managed).to be_falsy
           expect(cluster_result.enabled).to be_falsy
           expect(cluster_result.management_project_id).to eq management_project_id
-          expect(cluster_result.namespace_per_environment).to eq(false)
+          expect(cluster_result.namespace_per_environment).to be(false)
           expect(platform_kubernetes.rbac?).to be_truthy
           expect(platform_kubernetes.api_url).to eq(api_url)
           expect(platform_kubernetes.token).to eq('sample-token')

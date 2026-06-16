@@ -5,10 +5,15 @@ module Tasks
     module Permissions
       module Graphql
         class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
+          include SchemaDirectives
+
+          TODO_FILE = Rails.root.join('config/authz/graphql/authorization_todo.txt')
+
           def initialize
             @violations = {
               boundary_mismatch: [],
-              invalid_permission: []
+              invalid_permission: [],
+              missing_authorization: []
             }
           end
 
@@ -17,7 +22,7 @@ module Tasks
           attr_reader :violations
 
           def validate!
-            each_directive do |item, directive|
+            each_granular_directive do |item, directive|
               permissions = directive.arguments[:permissions].map { |p| p.to_s.downcase.to_sym }
               boundary_type = directive.arguments[:boundary_type]&.to_sym
 
@@ -27,88 +32,45 @@ module Tasks
               end
             end
 
+            (current_todo_entries - load_todo_entries).each do |entry|
+              kind, name = entry.split(':', 2)
+              violations[:missing_authorization] << {
+                kind: kind,
+                name: name,
+                source: current_entry_sources[entry]
+              }
+            end
+
             super
           end
 
-          def each_directive(&block)
-            each_type_directive(&block)
-            each_mutation_directive(&block)
-            each_field_directive(&block)
+          def current_todo_entries
+            @current_todo_entries ||= current_entry_sources.keys.to_set
           end
 
-          def each_type_directive
-            GitlabSchema.types.each do |name, type|
-              next unless graphql_object_type?(name, type)
+          def current_entry_sources
+            @current_entry_sources ||= {}.tap do |entries|
+              GitlabSchema.types['Mutation'].fields.each do |field_name, field|
+                resolver = resolve_mutation_class(field)
+                next unless resolver
 
-              type.directives.each do |directive|
-                next unless directive.is_a?(Directives::Authz::GranularScope)
+                name = mutation_name_for(field_name, resolver)
+                entries["mutation:#{name}"] = class_source_path(resolver) if find_mutation_directives(field,
+                  resolver).empty?
+              end
 
-                yield({ kind: 'type', name: name, source: class_source_path(type) }, directive)
+              GitlabSchema.types.each do |name, type|
+                next unless graphql_object_type?(name, type)
+
+                next if type.directives.any?(Directives::Authz::GranularScope)
+
+                entries["type:#{name}"] = class_source_path(type)
               end
             end
           end
 
-          def each_mutation_directive
-            GitlabSchema.types['Mutation'].fields.each do |field_name, field|
-              resolver = resolve_mutation_class(field)
-              next unless resolver
-
-              mutation_name = resolver.respond_to?(:graphql_name) ? resolver.graphql_name : field_name.camelize
-              find_mutation_directives(field, resolver).each do |directive|
-                yield({ kind: 'mutation', name: mutation_name, source: class_source_path(resolver) }, directive)
-              end
-            end
-          end
-
-          def each_field_directive
-            GitlabSchema.types.each do |type_name, type|
-              next if type_name == 'Mutation'
-              next unless type.respond_to?(:fields)
-
-              type.fields.each do |field_name, field|
-                next unless field.respond_to?(:directives)
-
-                field.directives.each do |directive|
-                  next unless directive.is_a?(Directives::Authz::GranularScope)
-
-                  yield({ kind: 'field', name: "#{type_name}.#{field_name}",
-                          source: class_source_path(type) }, directive)
-                end
-              end
-            end
-          end
-
-          def graphql_object_type?(name, type)
-            # Skip introspection types (__Schema, __Type, __Field, etc.)
-            return false if name.start_with?('__')
-
-            type.kind.object? && !name.end_with?('Payload', 'Connection', 'Edge')
-          end
-
-          # Resolves the mutation class from a field on the Mutation type.
-          # GraphQL Ruby exposes the resolver differently depending on context:
-          # - `resolver_class` is available on most field objects
-          # - `resolver` and `mutation` are fallbacks for different GraphQL Ruby versions
-          # Returns the resolver only if it's a BaseMutation subclass.
-          def resolve_mutation_class(field)
-            resolver = field.respond_to?(:resolver_class) ? field.resolver_class : nil
-            resolver ||= field.respond_to?(:resolver) ? field.resolver : nil
-            resolver ||= field.respond_to?(:mutation) ? field.mutation : nil
-            resolver if resolver && resolver < Mutations::BaseMutation
-          end
-
-          def find_mutation_directives(field, resolver)
-            directives = if field.respond_to?(:directives)
-                           field.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
-                         else
-                           []
-                         end
-
-            if directives.empty? && resolver.respond_to?(:directives)
-              directives = resolver.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
-            end
-
-            directives
+          def todo_file_label
+            'GraphQL'
           end
 
           def valid_permissions
@@ -138,7 +100,9 @@ module Tasks
           end
 
           def format_all_errors
-            format_graphql_errors(:invalid_permission) + format_boundary_mismatch_errors
+            format_graphql_errors(:invalid_permission) +
+              format_boundary_mismatch_errors +
+              format_missing_authorization_errors
           end
 
           def format_graphql_errors(kind)
@@ -167,9 +131,16 @@ module Tasks
             "#{out}\n"
           end
 
-          def class_source_path(klass)
-            file, _line = Object.const_source_location(klass.name)
-            relative_path(file)
+          def format_missing_authorization_errors
+            return '' if violations[:missing_authorization].empty?
+
+            out = "#{error_messages[:missing_authorization]}\n\n"
+
+            violations[:missing_authorization].each do |v|
+              out += "  - [#{v[:kind]}] #{v[:name]} (#{v[:source]})\n"
+            end
+
+            "#{out}\n"
           end
 
           def error_messages
@@ -179,10 +150,15 @@ module Tasks
                 Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/.
                 #{assignable_permissions_link(anchor: 'create-the-assignable-permission-file')}
               MSG
-              boundary_mismatch: <<~MSG.chomp
+              boundary_mismatch: <<~MSG.chomp,
                 The following GraphQL types/mutations/fields have a boundary_type that doesn't match the assignable permission boundaries.
                 Update the assignable permission to include the directive's boundary_type, or fix the directive's boundary_type.
                 #{assignable_permissions_link(anchor: 'determining-boundaries')}
+              MSG
+              missing_authorization: <<~MSG.chomp
+                The following GraphQL mutations and/or types are missing granular token authorization.
+                Add `authorize_granular_token` with permissions and boundary_type to the mutation or type.
+                #{graphql_implementation_guide_link}
               MSG
             }
           end

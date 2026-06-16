@@ -6,7 +6,7 @@ RSpec.describe Projects::GoogleCloud::RevokeOauthController, feature_category: :
   include SessionHelpers
 
   describe 'POST #create', :snowplow, :clean_gitlab_redis_sessions, :aggregate_failures do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:url) { project_google_cloud_revoke_oauth_index_path(project).to_s }
 
     let(:user) { project.creator }

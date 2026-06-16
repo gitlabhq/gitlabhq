@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe 'Link alerts to an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:linked_alert) { create(:alert_management_alert, project: project) }
+  let_it_be(:linked_alert, freeze: false) { create(:alert_management_alert, project: project) }
   let_it_be(:alert1) { create(:alert_management_alert, project: project) }
   let_it_be(:alert2) { create(:alert_management_alert, project: project) }
-  let_it_be(:incident) { create(:incident, project: project, alert_management_alerts: [linked_alert]) }
+  let_it_be(:incident, freeze: false) { create(:incident, project: project, alert_management_alerts: [linked_alert]) }
 
   let(:mutation) do
     variables = {
@@ -63,6 +63,24 @@ RSpec.describe 'Link alerts to an incident', feature_category: :incident_managem
       expect(response).to have_gitlab_http_status(:success)
       expected_response = [linked_alert, alert1, alert2].map { |a| { 'iid' => a.iid.to_s } }
       expect(mutation_response.dig('issue', 'alertManagementAlerts', 'nodes')).to match_array(expected_response)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :issue_link_alerts,
+          {
+            project_path: project.full_path,
+            iid: incident.iid.to_s,
+            alert_references: [alert1.to_reference]
+          },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
   end
 

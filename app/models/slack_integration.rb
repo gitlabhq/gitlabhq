@@ -9,12 +9,28 @@ class SlackIntegration < ApplicationRecord
   SCOPE_COMMANDS = 'commands'
   SCOPE_CHAT_WRITE = 'chat:write'
   SCOPE_CHAT_WRITE_PUBLIC = 'chat:write.public'
+  SCOPE_APP_MENTIONS_READ = 'app_mentions:read'
+  SCOPE_CHANNELS_HISTORY = 'channels:history'
+  SCOPE_GROUPS_HISTORY = 'groups:history'
+  SCOPE_REACTIONS_WRITE = 'reactions:write'
   ORGANIZATION_ALIAS = 'gitlab-organization'
 
   # These scopes are requested when installing the app, additional scopes
   # will need reauthorization.
   # https://api.slack.com/authentication/oauth-v2#asking
   SCOPES = [SCOPE_COMMANDS, SCOPE_CHAT_WRITE, SCOPE_CHAT_WRITE_PUBLIC].freeze
+
+  # Extended scope set required for the Duo Agent (@mention) feature.
+  # Used when the `slack_duo_agent` feature flag is enabled for the installing user.
+  DUO_SCOPES = [
+    SCOPE_COMMANDS,
+    SCOPE_CHAT_WRITE,
+    SCOPE_CHAT_WRITE_PUBLIC,
+    SCOPE_APP_MENTIONS_READ,
+    SCOPE_CHANNELS_HISTORY,
+    SCOPE_GROUPS_HISTORY,
+    SCOPE_REACTIONS_WRITE
+  ].freeze
   DATABASE_ATTRIBUTES = %w[
     team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv
   ].freeze
@@ -61,6 +77,10 @@ class SlackIntegration < ApplicationRecord
     raise ArgumentError, 'organization_id must be an Integer' unless organization_id.is_a?(Integer)
 
     [SlackIntegration::ORGANIZATION_ALIAS, organization_id].join('-')
+  end
+
+  def self.scopes_for(duo_enabled:)
+    duo_enabled ? DUO_SCOPES : SCOPES
   end
 
   def feature_available?(feature_name)

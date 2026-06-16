@@ -28,10 +28,10 @@ project:
   - create_work_item
   - delete_saved_view
   - export_work_items
-  - read_ai_agents
   - read_ai_catalog_item
   - read_ai_catalog_item_consumer
   - read_analytics
+  - read_approval_rule
   - read_contribution_analytics
   - read_cycle_analytics
   - read_insights
@@ -77,6 +77,7 @@ group:
   - award_emoji
   - delete_saved_view
   - read_ai_catalog_item_consumer
+  - read_approval_rule
   - read_epic_link_relation
   - read_epic_relation
   - read_group
@@ -99,3 +100,4 @@ group:
   - set_new_work_item_metadata
   - update_saved_view
   - update_saved_view_visibility
+  - upload_file

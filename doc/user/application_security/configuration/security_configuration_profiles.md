@@ -14,15 +14,22 @@ title: Managing security configuration profiles
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19802) in GitLab 18.9.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19802) in GitLab 18.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_scan_profiles_feature`. Enabled by default.
+- Secret detection profile [added](https://gitlab.com/groups/gitlab-org/-/epics/19903) in GitLab 18.10.
+- SAST profile [added](https://gitlab.com/groups/gitlab-org/-/epics/19951) in GitLab 18.11.
+- Dependency scanning profile [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19952) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_scan_profiles_dependency_scanning`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Security configuration profiles are centralized settings that define how and when security scanners run across your projects.
 Use security configuration profiles to manage security scanners across your organization efficiently. A profile-based approach applies best practices with minimal manual setup.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Introducing security configuration profiles](https://www.youtube.com/watch?v=XYMKhhtRvwA).
+For an overview, see [Introducing security configuration profiles](https://www.youtube.com/watch?v=QbnLGzTEqGI).
 
 When you apply a profile to a group, it is applied to each individual project within that group. Profiles are not attached to the group itself, and there is no inheritance between profiles or subgroups.
 
@@ -34,7 +41,7 @@ To assess and manage your profiles, use the [security inventory](../security_inv
 
 ### Review test coverage
 
-To view a high-level status (**Enabled**, **Not Enabled**, or **Failed**) of scanners in the group like SAST, DAST, and secret detection:
+To view a high-level status (**Enabled**, **Not Enabled**, or **Failed**) of scanners in the group like SAST, dependency scanning, and secret detection:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Security inventory**.
@@ -78,6 +85,13 @@ When you apply the SAST profile, you enable static application security testing 
 - **Merge Request Pipelines**: Automatically runs a SAST scan each time new commits are pushed to a branch with an open merge request. Results include only new vulnerabilities introduced by the merge request. Targets all branches.
 - **Branch Pipelines (default only)**: Runs automatically when changes are merged or pushed to the default branch, providing a complete picture of your default branch's SAST posture. Targets the default branch.
 
+### Dependency scanning profile
+
+When you enable the dependency scanning profile, your project's dependencies are scanned for known vulnerabilities using the recommended configuration. The profile activates the following scan triggers:
+
+- **Merge Request Pipelines**: Automatically runs a dependency scan each time new commits are pushed to a branch with an open merge request. Results include only new vulnerabilities introduced by the merge request. Targets all branches.
+- **Branch Pipelines (default only)**: Runs automatically when changes are merged or pushed to the default branch, providing a complete picture of your default branch's dependency vulnerability posture. Targets the default branch.
+
 ### View details about a profile
 
 To view technical details about the secret detection profile:
@@ -86,9 +100,15 @@ To view technical details about the secret detection profile:
 1. In the left sidebar, select **Secure** > **Security inventory**.
 1. Select the **Secret Detection** profile.
 1. Review the following information:
-   - **Analyzer type**: The type of profile (for example, **Secret Detection**, **SAST**).
+   - **Analyzer type**: The type of profile (for example, **Secret Detection**, **SAST**, **Dependency Scanning**).
    - **Scan triggers**: The triggers that the profile supports (for example, **Push Protection**, **Merge Request Pipelines**, **Branch Pipelines**).
    - **Status**: Displays whether the profile is currently **Active** or **Disabled** for the current context using coverage status indicators.
+
+## Enable scanners with the Scanner Enablement Wizard
+
+To apply profiles to projects that lack scanner coverage, use the
+[scanner enablement wizard](scanner_enablement_wizard.md). The wizard identifies uncovered projects
+and lets you apply default or custom profiles across your group.
 
 ## Coverage status indicators
 

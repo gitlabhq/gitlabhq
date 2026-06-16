@@ -14,6 +14,9 @@ module API
       desc 'Get global notification level settings and email, defaults to Participate' do
         detail 'This feature was introduced in GitLab 8.12'
         success Entities::GlobalNotificationSetting
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
         tags ['notification_settings']
       end
       route_setting :authorization, permissions: :read_notification_setting, boundary_type: :user
@@ -26,6 +29,10 @@ module API
       desc 'Update global notification level settings and email, defaults to Participate' do
         detail 'This feature was introduced in GitLab 8.12'
         success Entities::GlobalNotificationSetting
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
         tags ['notification_settings']
       end
       params do
@@ -73,6 +80,9 @@ module API
         desc "Get #{source_type} level notification level settings, defaults to Global" do
           detail 'This feature was introduced in GitLab 8.12'
           success Entities::NotificationSetting
+          failure [
+            { code: 401, message: 'Unauthorized' }
+          ]
           tags ['notification_settings']
         end
         route_setting :authorization, permissions: :read_notification_setting, boundary_type: source_type.to_sym
@@ -87,6 +97,10 @@ module API
         desc "Update #{source_type} level notification level settings, defaults to Global" do
           detail 'This feature was introduced in GitLab 8.12'
           success Entities::NotificationSetting
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' }
+          ]
           tags ['notification_settings']
         end
         params do

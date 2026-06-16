@@ -4,7 +4,8 @@ classes:
 - Ci::Sources::Project
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores the originating source project for each downstream pipeline created
+  by a multi-project pipeline trigger.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20063
 milestone: '12.9'
 gitlab_schema: gitlab_ci

@@ -19,22 +19,6 @@ class ProjectPolicy < BasePolicy
   desc "User has guest access"
   condition(:guest) { team_member? }
 
-  # This is not a linear condition (some policies available for planner might not be available for higher access levels)
-  desc "User has planner access"
-  condition(:planner) { team_access_level == Gitlab::Access::PLANNER }
-
-  desc "User has reporter access"
-  condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
-
-  desc "User has security manager access"
-  condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && team_access_level == Gitlab::Access::SECURITY_MANAGER }
-
-  desc "User has developer access"
-  condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
-
-  desc "User has maintainer access"
-  condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
-
   desc "User has owner access"
   condition :owner do
     owner_of_personal_namespace = project.owner.present? && project.owner == @user
@@ -67,11 +51,12 @@ class ProjectPolicy < BasePolicy
 
   rule { admin | organization_owner }.enable :read_all_organization_resources
 
-  desc "User is a member of the group"
-  condition(:group_member, scope: :subject) { project_group_member? }
-
-  desc "User is a requester of the group"
-  condition(:group_requester, scope: :subject) { project_group_requester? }
+  desc "User already has access to the project or its group, or has a pending group access request"
+  condition(:has_project_access_or_pending_request) do
+    team_access_level >= Gitlab::Access::GUEST ||
+      project_group_member? ||
+      project_group_requester?
+  end
 
   desc "User is external"
   condition(:external_user) { user.external? }
@@ -369,9 +354,6 @@ class ProjectPolicy < BasePolicy
 
   rule { ~can?(:read_environment) }.prevent :read_freeze_period
 
-  rule { guest & can?(:download_code) }.enable :build_download_code
-  rule { guest & can?(:read_container_image) }.enable :build_read_container_image
-
   rule { ~forking_allowed }.prevent :fork_project
 
   rule { metrics_dashboard_disabled }.policy do
@@ -446,6 +428,15 @@ class ProjectPolicy < BasePolicy
     prevent :update_terraform_state
     prevent :admin_terraform_state
     prevent :destroy_terraform_state
+    prevent :create_terraform_state_protection_rule
+    prevent :delete_terraform_state_protection_rule
+    prevent :update_terraform_state_protection_rule
+  end
+
+  rule { can?(:admin_terraform_state) }.policy do
+    enable :create_terraform_state_protection_rule
+    enable :delete_terraform_state_protection_rule
+    enable :update_terraform_state_protection_rule
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -489,7 +480,7 @@ class ProjectPolicy < BasePolicy
     prevent :destroy_package
   end
 
-  rule { owner | admin | organization_owner | guest | group_member | group_requester }.prevent :request_access
+  rule { has_project_access_or_pending_request }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { ~user_confirmed }.policy do
@@ -760,9 +751,7 @@ class ProjectPolicy < BasePolicy
     (can?(:read_project_for_iids) & issues_visible_to_user) | can?(:read_issue)
   end.enable :read_issue_iid
 
-  rule do
-    (~guest & can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
-  end.enable :read_merge_request_iid
+  rule { ~merge_requests_visible_to_user }.prevent :read_merge_request_iid
 
   rule { external_authorization_enabled & ~classification_label_authorized }.prevent_all do
     # Preventing access here still allows the projects to be listed. Listing
@@ -884,6 +873,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_security_configuration
     prevent :read_security_settings
     prevent :update_security_setting
+    prevent :update_sec_ai_workflow_settings
     prevent :read_project_security_dashboard
     prevent :read_security_resource
     prevent :read_security_inventory
@@ -963,7 +953,10 @@ class ProjectPolicy < BasePolicy
 
   rule { ~model_experiments_enabled }.prevent :write_model_experiments
 
-  rule { ~private_project & guest & external_user }.enable :read_container_image
+  rule { ~private_project & guest & external_user }.policy do
+    enable :read_container_image
+    enable :build_read_container_image
+  end
 
   rule { can?(:create_pipeline_schedule) }.policy do
     enable :read_ci_pipeline_schedules_plan_limit
@@ -1070,8 +1063,7 @@ class ProjectPolicy < BasePolicy
   end
 
   def cross_project_push_allowed_for_job_token?
-    Feature.enabled?(:allow_push_to_allowlisted_projects, project) &&
-      project.ci_cross_project_push_for_job_token_allowed? &&
+    project.ci_cross_project_push_for_job_token_allowed? &&
       project.ci_inbound_job_token_scope_enabled? &&
       @user.ci_job_token_scope.policies_allowed?(project, [:admin_repositories])
   end

@@ -1,0 +1,6 @@
+---
+table: banned_users
+database: main
+replication_targets:
+- name: clickhouse_main
+  target: siphon_banned_users

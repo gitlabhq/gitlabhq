@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
 
 export default {
+  name: 'FormCustomHeaderItem',
   components: {
     GlButton,
     GlFormGroup,
@@ -44,6 +45,7 @@ export default {
       required: true,
     },
   },
+  emits: ['remove', 'update:header-key', 'update:header-value'],
   computed: {
     valueIsHidden() {
       return MASK_ITEM_VALUE_HIDDEN === this.headerValue;

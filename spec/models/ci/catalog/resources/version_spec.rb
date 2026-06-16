@@ -5,12 +5,21 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
-  let_it_be(:minor_release) { create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day) }
-  let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
-  let_it_be(:patch) { create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha') }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
+  let_it_be(:minor_release, freeze: false) do
+    create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day)
+  end
+
+  let_it_be(:major_release, freeze: false) do
+    create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday)
+  end
+
+  let_it_be(:patch, freeze: false) do
+    create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha')
+  end
+
   let!(:v1_1_0) do
     create(:ci_catalog_resource_version, semver: '1.1.0', catalog_resource: resource, release: minor_release)
   end
@@ -70,10 +79,13 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe 'with multiple catalog resources' do
-    let_it_be(:project2) { create(:project, :catalog_resource_with_components) }
-    let_it_be(:resource2) { create(:ci_catalog_resource, project: project2) }
-    let_it_be(:release_v3) { create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday) }
-    let_it_be(:v3_0_0) do
+    let_it_be(:project2, freeze: false) { create(:project, :catalog_resource_with_components) }
+    let_it_be(:resource2, freeze: false) { create(:ci_catalog_resource, project: project2) }
+    let_it_be(:release_v3, freeze: false) do
+      create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday)
+    end
+
+    let_it_be(:v3_0_0, freeze: false) do
       create(:ci_catalog_resource_version, catalog_resource: resource2, semver: '3.0.0', release: release_v3)
     end
 
@@ -207,8 +219,8 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe '.search_by_version' do
-    let_it_be(:release_v2_beta) { create(:release, project: project, tag: '2.0.0-beta') }
-    let_it_be(:v2_0_0_beta) do
+    let_it_be(:release_v2_beta, freeze: false) { create(:release, project: project, tag: '2.0.0-beta') }
+    let_it_be(:v2_0_0_beta, freeze: false) do
       create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v2_beta, semver: '2.0.0-beta')
     end
 
@@ -269,8 +281,8 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe 'synchronizing released_at with `releases` table using model callbacks' do
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do
       create(:release, :with_catalog_resource_version, project: project, tag: '1.2.3',

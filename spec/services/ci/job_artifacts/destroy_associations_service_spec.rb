@@ -6,13 +6,13 @@ RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :
   let_it_be(:project_1) { create(:project) }
   let_it_be(:project_2) { create(:project) }
 
-  let_it_be(:artifact_1, refind: true) { create(:ci_job_artifact, :zip, project: project_1) }
-  let_it_be(:artifact_2, refind: true) { create(:ci_job_artifact, :junit, project: project_2) }
-  let_it_be(:artifact_3, refind: true) { create(:ci_job_artifact, :terraform, project: project_1) }
-  let_it_be(:artifact_4, refind: true) { create(:ci_job_artifact, :trace, project: project_2) }
-  let_it_be(:artifact_5, refind: true) { create(:ci_job_artifact, :metadata, project: project_2) }
+  let_it_be_with_refind(:artifact_1) { create(:ci_job_artifact, :zip, project: project_1) }
+  let_it_be_with_refind(:artifact_2) { create(:ci_job_artifact, :junit, project: project_2) }
+  let_it_be_with_refind(:artifact_3) { create(:ci_job_artifact, :terraform, project: project_1) }
+  let_it_be_with_refind(:artifact_4) { create(:ci_job_artifact, :trace, project: project_2) }
+  let_it_be_with_refind(:artifact_5) { create(:ci_job_artifact, :metadata, project: project_2) }
 
-  let_it_be(:locked_artifact, refind: true) { create(:ci_job_artifact, :zip, :locked, project: project_1) }
+  let_it_be_with_refind(:locked_artifact) { create(:ci_job_artifact, :zip, :locked, project: project_1) }
 
   let(:artifact_ids_to_be_removed) { [artifact_1.id, artifact_2.id, artifact_3.id, artifact_4.id, artifact_5.id] }
   let(:artifacts) { Ci::JobArtifact.where(id: artifact_ids_to_be_removed) }

@@ -6,5 +6,6 @@ export const mockDefaultOrganization = {
   id: `gid://gitlab/Organizations::Organization/${DEFAULT_ORGANIZATION_ID}`,
   name: 'Default',
   avatarUrl: null,
+  visibility: 'public',
   groups: { nodes: [] },
 };

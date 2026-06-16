@@ -151,6 +151,10 @@ module Ci
       triggers_child_pipeline? || triggers_cross_project_pipeline?
     end
 
+    def cross_project_trigger_resolved_to_empty?
+      options&.dig(:trigger, :project).present? && downstream_project_path.blank?
+    end
+
     def triggers_child_pipeline?
       yaml_for_downstream.present?
     end

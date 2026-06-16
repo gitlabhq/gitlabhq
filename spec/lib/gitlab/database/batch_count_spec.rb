@@ -278,6 +278,28 @@ RSpec.describe Gitlab::Database::BatchCount, feature_category: :database do
       ).to eq({ status: :timeout, partial_results: 1, continue_from: model.minimum(:id) + 1 })
     end
 
+    it 'does not sleep after the last batch' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      counter = Gitlab::Database::BatchCounter.new(model, column: :id, operation: :count)
+      expect(counter).not_to receive(:sleep)
+
+      counter.count_with_timeout(batch_size: model.count + 1)
+    end
+
+    it 'sleeps between batches but not after the last one' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      min_id = model.minimum(:id)
+      max_id = model.maximum(:id)
+      batch_size = ((max_id - min_id + 1) / 2.0).ceil
+
+      counter = Gitlab::Database::BatchCounter.new(model, column: :id, operation: :count)
+      expect(counter).to receive(:sleep).with(Gitlab::Database::BatchCounter::SLEEP_TIME_IN_SECONDS).once
+
+      counter.count_with_timeout(batch_size: batch_size)
+    end
+
     it 'starts counting from a given partial result' do
       expect(described_class.batch_count_with_timeout(model, partial_results: 3)).to eq({ status: :completed, count: 3 + model.count })
     end

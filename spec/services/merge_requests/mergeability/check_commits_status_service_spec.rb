@@ -46,13 +46,13 @@ RSpec.describe MergeRequests::Mergeability::CheckCommitsStatusService, feature_c
 
   describe '#skip?' do
     it 'returns false' do
-      expect(check_commits_status.skip?).to eq false
+      expect(check_commits_status.skip?).to be false
     end
   end
 
   describe '#cacheable?' do
     it 'returns false' do
-      expect(check_commits_status.cacheable?).to eq false
+      expect(check_commits_status.cacheable?).to be false
     end
   end
 end

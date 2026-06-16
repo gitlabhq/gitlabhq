@@ -326,7 +326,7 @@ module API
         requires :refs, type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           desc: 'The refs to find the common ancestor of, multiple refs can be passed',
-          documentation: { example: 'main' }
+          documentation: { example: %w[main feature] }
       end
       route_setting :authorization, permissions: :read_repository_merge_base, boundary_type: :project
       get ':id/repository/merge_base' do
@@ -362,7 +362,7 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_repository_changelog, boundary_type: :project, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: :repository
-      get ':id/repository/changelog' do
+      get ':id/repository/changelog', requirements: { format: /txt/ } do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
         end
@@ -374,7 +374,12 @@ module API
         )
         changelog = service.execute(commit_to_changelog: false)
 
-        present changelog, with: Entities::Changelog
+        case env['api.format']
+        when :txt
+          body changelog.to_s
+        else
+          present changelog, with: Entities::Changelog
+        end
       rescue Gitlab::Changelog::Error => ex
         render_api_error!("Failed to generate the changelog: #{ex.message}", 422)
       end

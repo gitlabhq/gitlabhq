@@ -4,7 +4,7 @@ classes:
 - ElasticsearchIndexedNamespace
 feature_categories:
 - global_search
-description: TODO
+description: List of namespaces explicitly included in Elasticsearch indexing.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9861
 milestone: '11.10'
 gitlab_schema: gitlab_main_org

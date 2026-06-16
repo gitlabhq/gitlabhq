@@ -1,6 +1,8 @@
 const coreJSVersion = require('./node_modules/core-js/package.json').version;
 
-console.debug(`BABEL_ENV inside Babel config is: ${process.env.BABEL_ENV}`);
+if (process.env.DEBUG_BABEL_ENV === 'true') {
+  console.debug(`BABEL_ENV inside Babel config is: ${process.env.BABEL_ENV}`);
+}
 
 let presets = [
   [

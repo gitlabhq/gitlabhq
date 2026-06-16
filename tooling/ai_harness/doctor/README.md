@@ -42,3 +42,48 @@ The specification files are:
 - `02_contracts.md` — context hash shapes, step signatures, message types
 - `03_constraints.md` — code-level rules (type safety, testing, error handling)
 - `04_scenarios.md` — concrete test scenarios and expected behavior
+
+## Error handling philosophy
+
+The doctor follows a "fail loud" model: only invalid CLI arguments are
+expected (domain) errors and are handled via the ROP chain. Everything else —
+missing repo root, missing or unparseable `config.yml`, missing required
+config keys, unexpected context hash shape — propagates as an exception. See
+[`SPECIFICATION/03_constraints.md` §3.4](SPECIFICATION/03_constraints.md#34-error-handling-via-rop)
+for the contract, and the broader Remote Development error philosophy at
+[`ee/lib/remote_development/README.md`](../../../ee/lib/remote_development/README.md#what-types-of-errors-should-be-handled-as-domain-messages)
+for the underlying rationale (domain messages are for *expected* errors only;
+infrastructure errors and bugs in our own code propagate).
+
+Concretely:
+
+- `YAML.safe_load_file` enforces YAML syntax (parse error → propagates).
+- `config.fetch('key')` enforces required-key presence (`KeyError` →
+  propagates). We do **not** use `.fetch(key, default)` fallbacks for
+  required keys — a missing key in our own internal `config.yml` is a bug,
+  not a validation case, and silently defaulting would mask it.
+- Pattern destructuring (`config: Hash => config`) enforces top-level type.
+
+Schema validation is intentionally absent for our own internal config files;
+the boundary checks above are the contract.
+
+## Review criteria for AI-generated specs
+
+The unit and integration specs under `spec/tooling/ai_harness/doctor/` are
+AI-generated and treated as an opaque implementation detail. Reviewers and
+the assignee should evaluate them against just two criteria:
+
+1. **Unit-level coverage** — 100% line and branch coverage via SimpleCov.
+2. **Integration-level coverage** — full coverage of the scenarios in
+   [`SPECIFICATION/04_scenarios.md`](SPECIFICATION/04_scenarios.md).
+
+Beyond those, spec internals (test descriptions, identifier choices,
+assertion shape, occasional placeholder-y wording) are intentionally out of
+scope for human review on this tooling. The rationale is that this is an
+isolated, low-risk, low-blast-radius CLI; spending review cycles on
+spec-internal cosmetics is not a good use of time. See
+[this discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229391#note_3237537772)
+for the original framing.
+
+These criteria apply only to this tool's specs; they are **not** a
+recommendation for the wider GitLab codebase.

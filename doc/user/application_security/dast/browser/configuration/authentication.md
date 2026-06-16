@@ -163,7 +163,7 @@ dast:
     DAST_AUTH_URL: "https://example.com"
 ```
 
-Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
+Do not define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
 See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a single-step login form
@@ -186,7 +186,7 @@ dast:
     DAST_AUTH_SUBMIT_FIELD: "css:button[type=submit]"
 ```
 
-Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
+Do not define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
 See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a multi-step login form
@@ -220,7 +220,7 @@ dast:
     DAST_AUTH_SUBMIT_FIELD: "css:button[type=submit]"
 ```
 
-Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
+Do not define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
 See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for Time-Based One-Time Password (TOTP)
@@ -251,7 +251,7 @@ dast:
     DAST_AUTH_OTP_SUBMIT_FIELD: "css:input[type=submit]"
 ```
 
-Do **not** define `DAST_AUTH_OTP_KEY` in the YAML job definition file as this could present a security risk. Instead, create it as a masked CI/CD variable using the GitLab UI.
+Do not define `DAST_AUTH_OTP_KEY` in the YAML job definition file as this could present a security risk. Instead, create it as a masked CI/CD variable using the GitLab UI.
 See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for Single Sign-On (SSO)
@@ -518,7 +518,7 @@ Following the submission of the login form, authentication is determined to be u
 
 ### Verification checks
 
-Verification checks run checks on the state of the browser once authentication is complete
+Verification checks run checks on the state of the browser after authentication is complete
 to determine further if authentication succeeded.
 
 DAST tests for the absence of a login form if no verification checks are configured.

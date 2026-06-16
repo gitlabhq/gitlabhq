@@ -20,17 +20,18 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
   end
 
   describe 'scopes' do
-    let_it_be(:queued_worker) { create(worker_factory, :queued) }
-    let_it_be(:active_worker) { create(worker_factory, :active) }
-    let_it_be(:paused_worker) { create(worker_factory, :paused) }
-    let_it_be(:finished_worker) { create(worker_factory, :finished) }
-    let_it_be(:failed_worker) { create(worker_factory, :failed) }
+    let_it_be(:queued_worker, freeze: false) { create(worker_factory, :queued) }
+    let_it_be(:active_worker, freeze: false) { create(worker_factory, :active) }
+    let_it_be(:paused_worker, freeze: false) { create(worker_factory, :paused) }
+    let_it_be(:stopped_worker, freeze: false) { create(worker_factory, :stopped) }
+    let_it_be(:finished_worker, freeze: false) { create(worker_factory, :finished) }
+    let_it_be(:failed_worker, freeze: false) { create(worker_factory, :failed) }
 
-    let(:unfinished_workers) { [queued_worker, active_worker, paused_worker] }
+    let(:unfinished_workers) { [queued_worker, active_worker, paused_worker, stopped_worker] }
     let(:completed_workers) { [finished_worker, failed_worker] }
 
     describe '.unfinished' do
-      it 'returns workers with queued, active or paused status' do
+      it 'returns workers with queued, active, paused or stopped status' do
         expect(described_class.unfinished).to match_array(unfinished_workers)
       end
     end
@@ -120,7 +121,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     describe '.executable' do
-      let_it_be(:paused_without_hold) { create(worker_factory, :paused, on_hold_until: 2.days.ago) }
+      let_it_be(:paused_without_hold, freeze: false) { create(worker_factory, :paused, on_hold_until: 2.days.ago) }
 
       it 'returns workers with queued, active, paused statuses and on_hold_until in the past' do
         expect(described_class.executable).to match_array([queued_worker, active_worker, paused_without_hold])
@@ -128,14 +129,37 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     describe '.for_gitlab_schema' do
-      let(:main_workers) { [queued_worker, active_worker, paused_worker, finished_worker, failed_worker] }
-      let_it_be(:ci_worker) { create(worker_factory, :queued, gitlab_schema: :gitlab_ci_org) }
+      let(:main_workers) do
+        [queued_worker, active_worker, paused_worker, stopped_worker, finished_worker, failed_worker]
+      end
+
+      let_it_be(:ci_worker, freeze: false) { create(worker_factory, :queued, gitlab_schema: :gitlab_ci_org) }
 
       it 'returns workers with the specified gitlab_schema' do
         expect(described_class.for_gitlab_schema([:gitlab_main_org, :gitlab_ci_org]).to_a)
           .to match_array(main_workers + [ci_worker])
 
         expect(described_class.for_gitlab_schema(:gitlab_ci_org).to_a).to match_array([ci_worker])
+      end
+    end
+
+    describe '.for_job_class' do
+      let_it_be(:custom_job_worker, freeze: false) { create(worker_factory, :queued, job_class_name: 'CustomJob') }
+
+      it 'returns workers with the matching job_class_name' do
+        expect(described_class.for_job_class('CustomJob')).to match_array([custom_job_worker])
+      end
+
+      it 'returns an empty relation when no workers match' do
+        expect(described_class.for_job_class('NoSuchJob')).to be_empty
+      end
+    end
+
+    describe '.ordered_by_created_at_desc' do
+      it 'orders workers by created_at descending' do
+        ordered = described_class.ordered_by_created_at_desc.pluck(:created_at)
+
+        expect(ordered).to eq(ordered.sort.reverse)
       end
     end
   end
@@ -154,7 +178,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     context 'with logging' do
-      let_it_be(:pending_worker) { create(worker_factory, :queued) }
+      let_it_be(:pending_worker, freeze: false) { create(worker_factory, :queued) }
 
       it 'logs state transitions' do
         expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
@@ -267,6 +291,14 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
           create(worker_factory, :active)
           create(worker_factory, :paused)
           create(worker_factory, :finished)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the partition contains only stopped workers' do
+        before do
+          create(worker_factory, :stopped)
         end
 
         it { is_expected.to be(false) }
@@ -425,7 +457,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
   end
 
   describe '#on_hold?', :freeze_time do
-    let_it_be(:worker) { create(worker_factory, :queued) }
+    let_it_be(:worker, freeze: false) { create(worker_factory, :queued) }
 
     subject(:on_hold) { worker.on_hold? }
 
@@ -549,7 +581,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
   end
 
   describe '#create_job!' do
-    let_it_be(:worker) { create(worker_factory, :queued) }
+    let_it_be(:worker, freeze: false) { create(worker_factory, :queued) }
     let(:min_cursor) { [1] }
     let(:max_cursor) { [1000] }
 
@@ -596,6 +628,102 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
       worker = create(worker_factory, :failed)
 
       expect { worker.finish! }.to raise_error(StateMachines::InvalidTransition)
+    end
+  end
+
+  describe 'stop event transition' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:initial_status) { %i[queued paused active] }
+
+    with_them do
+      it 'transitions to stopped' do
+        worker = create(worker_factory, initial_status)
+
+        expect { worker.stop! }.to change { worker.reload.stopped? }.from(false).to(true)
+      end
+    end
+
+    %i[finished failed].each do |terminal_status|
+      it "does not allow transition from #{terminal_status} to stopped" do
+        worker = create(worker_factory, terminal_status)
+
+        expect { worker.stop! }.to raise_error(StateMachines::InvalidTransition)
+      end
+    end
+
+    it 'logs the stop transition via observability' do
+      worker = create(worker_factory, :active)
+
+      expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+        event: :worker_transition,
+        record: worker,
+        previous_state: :active,
+        new_state: :stopped
+      )
+
+      worker.stop!
+    end
+  end
+
+  describe 'restart event transition', :freeze_time do
+    it 'transitions a stopped worker to active' do
+      worker = create(worker_factory, :stopped)
+
+      expect { worker.restart! }.to change { worker.reload.active? }.from(false).to(true)
+    end
+
+    it 'preserves started_at so the failure-ratio baseline is not reset' do
+      worker = create(worker_factory, :stopped, started_at: 1.day.ago)
+
+      expect { worker.restart! }.not_to change { worker.reload.started_at }
+    end
+
+    %i[queued active paused finished failed].each do |non_stopped_status|
+      it "does not allow transition from #{non_stopped_status} to active via restart" do
+        worker = create(worker_factory, non_stopped_status)
+
+        expect { worker.restart! }.to raise_error(StateMachines::InvalidTransition)
+      end
+    end
+
+    it 'logs the restart transition via observability' do
+      worker = create(worker_factory, :stopped)
+
+      expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+        event: :worker_transition,
+        record: worker,
+        previous_state: :stopped,
+        new_state: :active
+      )
+
+      worker.restart!
+    end
+
+    it 'is executable after restart so it is picked up out of the box' do
+      worker = create(worker_factory, :stopped)
+
+      worker.restart!
+
+      expect(described_class.executable).to include(worker)
+    end
+  end
+
+  describe '#external_id' do
+    it 'returns the id with the correct format' do
+      worker = create(worker_factory) # rubocop:disable Rails/SaveBang -- this is a factory
+
+      expect(worker.external_id).to eq("#{worker.class::WORKER_TYPE}:#{worker.partition}:#{worker.id}")
+    end
+  end
+
+  describe 'primary key and query constraints' do
+    it 'uses :id as the primary key' do
+      expect(described_class.primary_key).to eq('id')
+    end
+
+    it 'scopes write operations by both id and partition' do
+      expect(described_class.query_constraints_list).to eq(%w[id partition])
     end
   end
 end

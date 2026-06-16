@@ -329,7 +329,8 @@ module Gitlab
           revisions: revisions,
           reverse: !!params[:reverse],
           ignore_case: params[:ignore_case],
-          pagination_params: params[:pagination_params]
+          pagination_params: params[:pagination_params],
+          global_options: parse_global_options!(literal_pathspec: params[:literal_pathspec])
         )
 
         request.order = params[:order].upcase if params[:order].present?

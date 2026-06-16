@@ -16,7 +16,7 @@ import {
   CONTACTED_DESC,
 } from '~/ci/runner/constants';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 const mockSearch = {
@@ -30,7 +30,7 @@ const mockSearch = {
 describe('RunnerList', () => {
   let wrapper;
 
-  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findGlSorting = () => wrapper.findComponent(GlSorting);
   const getSortOptions = () => findGlSorting().props('sortOptions');
@@ -59,7 +59,7 @@ describe('RunnerList', () => {
         ...props,
       },
       stubs: {
-        FilteredSearch,
+        FilteredSearchBar,
         GlFilteredSearch,
       },
       ...options,
@@ -71,7 +71,7 @@ describe('RunnerList', () => {
   });
 
   it('binds a namespace to the filtered search', () => {
-    expect(findFilteredSearch().props('namespace')).toBe('runners');
+    expect(findFilteredSearchBar().props('namespace')).toBe('runners');
   });
 
   it('sets sorting options', () => {
@@ -90,7 +90,7 @@ describe('RunnerList', () => {
       },
     });
 
-    expect(findFilteredSearch().props('tokens')).toEqual([
+    expect(findFilteredSearchBar().props('tokens')).toEqual([
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         token: BaseToken,
@@ -110,7 +110,7 @@ describe('RunnerList', () => {
       },
     });
 
-    expect(findFilteredSearch().props('tokens')).toEqual([statusTokenConfig]);
+    expect(findFilteredSearchBar().props('tokens')).toEqual([statusTokenConfig]);
   });
 
   it('fails validation for v-model with the wrong shape', () => {

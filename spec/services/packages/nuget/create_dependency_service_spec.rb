@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::CreateDependencyService, feature_category: :package_registry do
-  let_it_be(:package, reload: true) { create(:nuget_package) }
+  let_it_be_with_reload(:package) { create(:nuget_package) }
 
   describe '#execute' do
     RSpec.shared_examples 'creating dependencies, links and nuget metadata for' do |expected_dependency_names, dependency_count, dependency_link_count|

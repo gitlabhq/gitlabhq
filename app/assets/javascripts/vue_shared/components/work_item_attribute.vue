@@ -2,6 +2,7 @@
 import { GlTooltip, GlIcon, GlLink, GlTruncate } from '@gitlab/ui';
 
 export default {
+  name: 'WorkItemAttribute',
   components: {
     GlTooltip,
     GlIcon,

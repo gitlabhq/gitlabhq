@@ -119,4 +119,37 @@ describe('Branches Sort Dropdown', () => {
       );
     });
   });
+
+  describe('when clearing the search field', () => {
+    beforeEach(() => {
+      urlUtils.visitUrl = jest.fn();
+    });
+
+    describe('when the page was loaded with a search param in the URL', () => {
+      beforeEach(() => {
+        setWindowLocation('/root/ci-cd-project-demo/-/branches?search=branch-1');
+        wrapper = createWrapper();
+      });
+
+      it('navigates to the all branches path without a search param on clear', () => {
+        findSearchBox().vm.$emit('clear');
+
+        expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+          '/root/ci-cd-project-demo/-/branches?state=all&sort=updated_desc',
+        );
+      });
+    });
+
+    describe('when no search has been performed', () => {
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('does not navigate when clear is emitted', () => {
+        findSearchBox().vm.$emit('clear');
+
+        expect(urlUtils.visitUrl).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

@@ -24,6 +24,7 @@ module Gitlab
         def execute
           raise SentNotificationNotFoundError unless sent_notification
 
+          log_email_handler
           validate_permission!(:create_note)
 
           validate_from_address!
@@ -51,6 +52,14 @@ module Gitlab
         end
 
         private
+
+        def parent_namespace
+          sent_notification.namespace
+        end
+
+        def additional_log_data
+          { Labkit::Fields::GL_SENT_NOTIFICATION_ID => sent_notification.id }
+        end
 
         def author
           sent_notification.recipient

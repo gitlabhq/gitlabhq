@@ -40,6 +40,78 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   describe 'validations' do
     subject { organization }
 
+    describe '#validate_single_organization_on_self_managed' do
+      subject(:new_organization) { build(:organization) }
+
+      context 'when Gitlab.com', :saas do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(::Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it 'allows creating additional organizations' do
+          expect(new_organization).to be_valid
+        end
+      end
+
+      context 'when on self-managed' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+          allow(::Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        context 'when creating the default organization' do
+          # rubocop:disable Gitlab/AvoidConstDefaultOrganizationId -- required for this test
+          subject(:new_default_organization) { build(:organization, id: described_class::DEFAULT_ORGANIZATION_ID) }
+          # rubocop:enable Gitlab/AvoidConstDefaultOrganizationId
+
+          context 'when an organization already exists' do
+            it 'is invalid and adds an error', :aggregate_failures do
+              expect(new_default_organization).not_to be_valid
+              expect(new_default_organization.errors[:base])
+                .to include(s_('Organization|Only one organization is allowed on this instance.'))
+            end
+          end
+
+          context 'when no organization exists' do
+            before do
+              described_class.delete_all
+            end
+
+            it 'allows creating the default organization' do
+              expect(new_default_organization).to be_valid
+            end
+          end
+        end
+
+        context 'when creating a non-default organization' do
+          context 'when an organization already exists' do
+            it 'is invalid and adds an error', :aggregate_failures do
+              expect(new_organization).not_to be_valid
+              expect(new_organization.errors[:base])
+                .to include(s_('Organization|Only one organization is allowed on this instance.'))
+            end
+          end
+
+          context 'when no organization exists' do
+            before do
+              described_class.delete_all
+            end
+
+            it 'is valid' do
+              expect(new_organization).to be_valid
+            end
+          end
+        end
+
+        context 'when updating an existing organization' do
+          it 'does not run the validation' do
+            expect(organization).to be_valid
+          end
+        end
+      end
+    end
+
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_presence_of(:path) }
@@ -49,7 +121,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     context 'with visibility level' do
       shared_examples 'visibility level validation' do
         it 'performs visibility level validation' do
-          expect(organization).to receive(:check_visibility_level).and_call_original
+          expect(organization).to receive(:check_visibility_level_broader_than_groups).and_call_original
+          expect(organization).to receive(:check_visibility_level_allowed).and_call_original
 
           organization.valid?
         end
@@ -71,39 +144,65 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
       context 'when visibility level is not changed' do
         it 'skips visibility level validation' do
-          expect(organization).not_to receive(:check_visibility_level).and_call_original
+          expect(organization).not_to receive(:check_visibility_level_broader_than_groups)
+          expect(organization).not_to receive(:check_visibility_level_allowed)
 
           organization.valid?
         end
       end
 
-      where(:visibility_level, :max_group_visibility, :valid) do
-        [
-          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PRIVATE, true],
-          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL, false],
-          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC, false],
-          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE, true],
-          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::INTERNAL, true],
-          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC, false],
-          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE, true],
-          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, true],
-          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PUBLIC, true]
-        ]
+      context 'when checking visibility level is broader than group visibility levels' do
+        where(:visibility_level, :max_group_visibility, :valid) do
+          [
+            [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PRIVATE, true],
+            [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL, false],
+            [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC, false],
+            [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE, true],
+            [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, true],
+            [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PUBLIC, true]
+          ]
+        end
+
+        with_them do
+          let(:organization) { build(:organization, visibility_level: visibility_level) }
+
+          it 'validates visibility level' do
+            allow(organization.root_groups).to receive(:maximum)
+              .with(:visibility_level).and_return(max_group_visibility)
+
+            expect(organization.valid?).to eq(valid)
+
+            error_message = "Visibility level can not be more restrictive than group visibility levels"
+            if valid
+              expect(organization.errors.full_messages).not_to include(error_message)
+            else
+              expect(organization.errors.full_messages).to include(error_message)
+            end
+          end
+        end
       end
 
-      with_them do
-        let(:organization) { build(:organization, visibility_level: visibility_level) }
+      context 'when checking visibility level is not internal' do
+        where(:visibility_level, :valid) do
+          [
+            [Gitlab::VisibilityLevel::PRIVATE, true],
+            [Gitlab::VisibilityLevel::INTERNAL, false],
+            [Gitlab::VisibilityLevel::PUBLIC, true]
+          ]
+        end
 
-        it 'validates visibility level' do
-          allow(organization.root_groups).to receive(:maximum).with(:visibility_level).and_return(max_group_visibility)
+        with_them do
+          let(:organization) { build(:organization, visibility_level: visibility_level) }
 
-          expect(organization.valid?).to eq(valid)
+          it 'validates visibility level is not internal' do
+            expect(organization.valid?).to eq(valid)
 
-          error_message = "Visibility level can not be more restrictive than group visibility levels"
-          if valid
-            expect(organization.errors.full_messages).not_to include(error_message)
-          else
-            expect(organization.errors.full_messages).to include(error_message)
+            error_message = "Visibility level must be private or public"
+            if valid
+              expect(organization.errors.full_messages).not_to include(error_message)
+            else
+              expect(organization.errors.full_messages).to include(error_message)
+            end
           end
         end
       end
@@ -205,9 +304,9 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     describe '.active' do
       let_it_be(:active_org) { create(:organization) }
 
-      let_it_be(:deletion_scheduled_org) do
+      let_it_be(:soft_deleted_org) do
         create(:organization).tap do |o|
-          o.update_column(:state, described_class.states['deletion_scheduled'])
+          o.update_column(:state, described_class.states['soft_deleted'])
         end
       end
 
@@ -219,7 +318,42 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
       it 'returns only active organizations' do
         expect(described_class.active).to include(active_org)
-        expect(described_class.active).not_to include(deletion_scheduled_org, deletion_in_progress_org)
+        expect(described_class.active).not_to include(soft_deleted_org, deletion_in_progress_org)
+      end
+    end
+
+    describe '.with_states' do
+      let_it_be(:active_org) { create(:organization) }
+
+      let_it_be(:soft_deleted_org) do
+        create(:organization).tap do |o|
+          o.update_column(:state, described_class.states['soft_deleted'])
+        end
+      end
+
+      let_it_be(:deletion_in_progress_org) do
+        create(:organization).tap do |o|
+          o.update_column(:state, described_class.states['deletion_in_progress'])
+        end
+      end
+
+      it 'returns organizations matching a single state' do
+        expect(described_class.with_states('soft_deleted')).to include(soft_deleted_org)
+        expect(described_class.with_states('soft_deleted')).not_to include(active_org, deletion_in_progress_org)
+      end
+
+      it 'returns organizations matching multiple states' do
+        result = described_class.with_states(%w[soft_deleted deletion_in_progress])
+
+        expect(result).to include(soft_deleted_org, deletion_in_progress_org)
+        expect(result).not_to include(active_org)
+      end
+
+      it 'ignores invalid states' do
+        result = described_class.with_states(%w[active invalid_state])
+
+        expect(result).to include(active_org)
+        expect(result).not_to include(soft_deleted_org, deletion_in_progress_org)
       end
     end
 
@@ -267,8 +401,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     describe '.with_user' do
-      let_it_be(:user) { create(:user, organization: organization) }
-      let_it_be(:second_organization) { create(:organization, users: [user]) }
+      let_it_be(:user, freeze: false) { create(:user, organization: organization) }
+      let_it_be(:second_organization, freeze: false) { create(:organization, users: [user]) }
 
       subject(:organizations_for_user) { described_class.with_user(user) }
 
@@ -277,6 +411,40 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   it_behaves_like 'an isolatable', :organization
+
+  describe '#destroy!' do
+    context 'when trying to delete the last organization' do
+      it 'raises an error' do
+        expect do
+          organization.destroy!
+        end.to raise_error(ActiveRecord::RecordNotDestroyed, s_('Organization|Cannot delete the last organization'))
+      end
+    end
+
+    context 'when trying to delete another organization' do
+      let(:to_be_removed) { create(:organization) }
+
+      it 'does not raise error' do
+        expect { to_be_removed.destroy! }.not_to raise_error
+      end
+    end
+  end
+
+  describe '#destroy' do
+    context 'when trying to delete the last organization' do
+      it 'returns false' do
+        expect(organization.destroy).to eq(false)
+      end
+    end
+
+    context 'when trying to delete another organization' do
+      let(:to_be_removed) { create(:organization) }
+
+      it 'returns true' do
+        expect(to_be_removed.destroy).to eq(to_be_removed)
+      end
+    end
+  end
 
   describe '#owner_user_ids' do
     let_it_be(:organization_users) { create_list(:organization_user, 3, :owner, organization: organization) }
@@ -369,12 +537,12 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe 'invalid state transitions' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
-    it 'cannot schedule_deletion! from deletion_scheduled state' do
-      organization.update_column(:state, described_class.states['deletion_scheduled'])
+    it 'cannot soft_delete! from soft_deleted state' do
+      organization.update_column(:state, described_class.states['soft_deleted'])
 
-      expect { organization.schedule_deletion!(transition_user: user) }
+      expect { organization.soft_delete!(transition_user: user) }
         .to raise_error(StateMachines::InvalidTransition)
     end
   end
@@ -406,7 +574,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe '#owner?' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     subject { organization.owner?(user) }
 
@@ -432,7 +600,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe '#add_owner' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before_all do
       organization.add_owner(user)
@@ -527,27 +695,27 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
       end
     end
 
-    describe '.find_by_path_with_isolation' do
+    describe '.find_by_path_with_isolation_record' do
       let_it_be(:org) { create(:organization, path: 'My-Org') }
 
       it 'finds organization case-insensitively' do
-        expect(described_class.find_by_path_with_isolation('my-org')).to eq(org)
-        expect(described_class.find_by_path_with_isolation('MY-ORG')).to eq(org)
-        expect(described_class.find_by_path_with_isolation('My-Org')).to eq(org)
+        expect(described_class.find_by_path_with_isolation_record('my-org')).to eq(org)
+        expect(described_class.find_by_path_with_isolation_record('MY-ORG')).to eq(org)
+        expect(described_class.find_by_path_with_isolation_record('My-Org')).to eq(org)
       end
 
       it 'returns nil when path does not match' do
-        expect(described_class.find_by_path_with_isolation('nonexistent')).to be_nil
+        expect(described_class.find_by_path_with_isolation_record('nonexistent')).to be_nil
       end
 
       it 'uses LOWER in the query' do
-        query = described_class.with_isolation.where("LOWER(path) = ?", 'my-org').to_sql
+        query = described_class.with_isolation_record.where("LOWER(path) = ?", 'my-org').to_sql
 
         expect(query).to include('LOWER(path)')
       end
 
       it 'returns nil when path is nil' do
-        expect(described_class.find_by_path_with_isolation(nil)).to be_nil
+        expect(described_class.find_by_path_with_isolation_record(nil)).to be_nil
       end
     end
 
@@ -570,7 +738,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         it 'raises an error' do
           expect do
             default_organization.destroy!
-          end.to raise_error(ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization'))
+          end.to raise_error(ActiveRecord::RecordNotDestroyed,
+            s_('Organization|Cannot delete the default organization'))
         end
       end
 

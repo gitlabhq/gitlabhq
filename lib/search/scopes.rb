@@ -113,6 +113,22 @@ module Search
       }
     }.freeze
 
+    # Map of search scopes to the ability required to access them on a project.
+    # Used by project-scoped permission checks across the UI (Search::Navigation),
+    # the API (lib/api/search.rb) and the service layer (Search::ProjectService).
+    SEARCH_TAB_ABILITY_MAP = {
+      blobs: :read_code,
+      commits: :read_code,
+      issues: :read_issue, # API backward compatibility
+      merge_requests: :read_merge_request,
+      milestones: :read_milestone,
+      notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
+      snippets: :read_snippet,
+      users: :read_project_member,
+      wiki_blobs: :read_wiki,
+      work_items: :read_work_item
+    }.freeze
+
     # Map of scopes to their required application setting for global search
     # EE settings are added in ee/lib/ee/search/scopes.rb
     GLOBAL_SEARCH_SETTING_MAP = {
@@ -152,9 +168,26 @@ module Search
         include_api_only ? SCOPE_DEFINITIONS.merge(API_ONLY_SCOPES) : SCOPE_DEFINITIONS
       end
 
+      # Whether a user is allowed to access a scope on a given project.
+      # Resolves the scope to its required ability via search_tab_ability_map
+      # and checks it against the project (or any project when an array is given).
+      # @param scope [Symbol, String] The scope/tab key (e.g. :work_items, :blobs)
+      # @param user [User] The user requesting access
+      # @param project [Project, Array<Project>, nil] The project(s) being searched
+      # @return [Boolean] True if the user can access the scope on the project
+      def scope_allowed_for_project?(scope, user, project)
+        return false unless project.present?
+
+        abilities = Array(search_tab_ability_map[scope.to_sym])
+        Array.wrap(project).any? { |p| abilities.any? { |ability| ::Ability.allowed?(user, ability, p) } }
+      end
+
       private
 
-      # Returns the global search setting map (can be overridden in EE)
+      def search_tab_ability_map
+        SEARCH_TAB_ABILITY_MAP
+      end
+
       def global_search_setting_map
         GLOBAL_SEARCH_SETTING_MAP
       end

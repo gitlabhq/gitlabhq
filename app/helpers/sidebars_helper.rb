@@ -102,9 +102,7 @@ module SidebarsHelper
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       projects_path: dashboard_projects_path,
       groups_path: dashboard_groups_path,
-      gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
-      canary_toggle_com_url: Gitlab.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
       pinned_items: pinned_items(user, panel_type, group: group),
       update_pins_url: pins_path,
@@ -126,6 +124,7 @@ module SidebarsHelper
     }
   end
 
+  # Overridden in EE
   def super_sidebar_whats_new_data
     return {} unless display_whats_new?
 

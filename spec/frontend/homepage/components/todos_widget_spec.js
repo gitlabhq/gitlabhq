@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TodosWidget from '~/homepage/components/todos_widget.vue';
@@ -453,36 +454,29 @@ describe('TodosWidget', () => {
   });
 
   describe('relative URL handling', () => {
-    beforeEach(() => {
-      // ensure any previous value is cleared
-      delete gon.relative_url_root;
+    describe('when relative URL root is set', () => {
+      useConfigurePathHelpers('/gitlab');
+
+      it('prepends gon.relative_url_root to the todos link', async () => {
+        createComponent();
+        await waitForPromises();
+
+        expect(findAllTodosLink().attributes('href')).toBe('/gitlab/dashboard/todos');
+      });
     });
 
-    afterEach(() => {
-      delete gon.relative_url_root;
-    });
+    describe('when relative URL root is empty', () => {
+      useConfigurePathHelpers('');
 
-    it('prepends gon.relative_url_root to the todos link when set', async () => {
-      gon.relative_url_root = '/gitlab';
+      it('does not append relative URL root', async () => {
+        createComponent();
+        await waitForPromises();
 
-      createComponent();
-      await waitForPromises();
-
-      expect(findAllTodosLink().attributes('href')).toBe('/gitlab/dashboard/todos');
-    });
-
-    it('uses dashboard path when gon.relative_url_root is empty', async () => {
-      gon.relative_url_root = '';
-
-      createComponent();
-      await waitForPromises();
-
-      expect(findAllTodosLink().attributes('href')).toBe('/dashboard/todos');
+        expect(findAllTodosLink().attributes('href')).toBe('/dashboard/todos');
+      });
     });
 
     it('uses dashboard path when gon.relative_url_root is undefined', async () => {
-      delete gon.relative_url_root;
-
       createComponent();
       await waitForPromises();
 

@@ -8,8 +8,8 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
   end
 
   let_it_be(:custom_email_path) { project_service_desk_custom_email_path(project, format: :json) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:illegitimite_user) { create(:user, developer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:illegitimite_user, freeze: false) { create(:user, developer_of: project) }
 
   let(:message) { instance_double(Mail::Message) }
   let(:error_cannot_create_custom_email) { s_("ServiceDesk|Cannot create custom email") }

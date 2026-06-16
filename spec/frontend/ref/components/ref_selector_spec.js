@@ -692,15 +692,14 @@ describe('Ref selector component', () => {
   });
 
   describe('validation state', () => {
-    const invalidClass = '!gl-shadow-inner-1-red-500';
-    const isInvalidClassApplied = () => findListbox().props('toggleClass')[0][invalidClass];
+    const listboxState = () => findListbox().props('state');
 
     describe('valid state', () => {
       describe('when the state prop is not provided', () => {
         it('does not render a red border', () => {
           createComponent();
 
-          expect(isInvalidClassApplied()).toBe(false);
+          expect(listboxState()).toBe(true);
         });
       });
 
@@ -708,7 +707,7 @@ describe('Ref selector component', () => {
         it('does not render a red border', () => {
           createComponent({ propsData: { state: true } });
 
-          expect(isInvalidClassApplied()).toBe(false);
+          expect(listboxState()).toBe(true);
         });
       });
     });
@@ -717,7 +716,7 @@ describe('Ref selector component', () => {
       it('renders the dropdown with a red border if the state prop is false', () => {
         createComponent({ propsData: { state: false } });
 
-        expect(isInvalidClassApplied()).toBe(true);
+        expect(listboxState()).toBe(false);
       });
     });
   });

@@ -10,9 +10,8 @@ module Observability
     self.reactive_cache_lifetime = 10.minutes
     self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(id, *_args) do
-      # Since ObservabilityPresenter is not an ActiveRecord model, we need to reconstruct it
-      group = Group.id_in([id]).first
-      new(group, nil) if group
+      namespace = Namespace.id_in([id]).first
+      new(namespace, nil) if namespace
     end
 
     SEGMENT_TITLES = {

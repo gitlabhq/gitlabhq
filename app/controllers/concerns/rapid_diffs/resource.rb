@@ -41,9 +41,11 @@ module RapidDiffs
       diff_file = find_diff_file(options, old_path, new_path)
       return render_404 unless diff_file
 
+      extra_file_data = {}
       if diff_file.whitespace_only? && ignore_whitespace_changes
         options[:ignore_whitespace_change] = false
         diff_file = find_diff_file(options, old_path, new_path)
+        extra_file_data[:show_whitespace] = true
       end
 
       if full
@@ -55,7 +57,8 @@ module RapidDiffs
       render diff_file_component(
         diff_file: diff_file,
         parallel_view: diff_view == :parallel,
-        plain_view: (Gitlab::Utils.to_boolean(diff_file_params[:plain_view]) if diff_file_params[:plain_view].present?)
+        plain_view: (Gitlab::Utils.to_boolean(diff_file_params[:plain_view]) if diff_file_params[:plain_view].present?),
+        extra_file_data: extra_file_data
       ), layout: false
     end
 

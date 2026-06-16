@@ -216,6 +216,147 @@ describe('mergeRequestDraftNotes store', () => {
     });
   });
 
+  describe('source version filtering', () => {
+    const basePosition = {
+      position_type: 'text',
+      old_path: 'a.js',
+      new_path: 'a.js',
+      old_line: 1,
+      new_line: 1,
+      head_sha: 'source_head_1',
+    };
+    const nonMatchingPosition = { ...basePosition, head_sha: 'source_head_2' };
+
+    it('excludes drafts whose head_sha does not match sourceHeadSha', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(0);
+    });
+
+    it('includes drafts whose head_sha matches sourceHeadSha', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: basePosition })],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('includes all drafts when sourceHeadSha is not provided', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('includes all drafts when isLatestVersion is true', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+          sourceHeadSha: 'source_head_1',
+          isLatestVersion: true,
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('prefers original_position.head_sha over position.head_sha for matching', () => {
+      useBatchComments().$patch({
+        drafts: [
+          makeDraft(1, {
+            position: { ...basePosition, head_sha: 'rewritten_by_backend' },
+            original_position: { head_sha: 'source_head_1' },
+          }),
+        ],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('falls back to position.head_sha when original_position is absent', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: basePosition })],
+      });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 1,
+          newLine: 1,
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('findDraftsAsLineDiscussionsForFile respects sourceHeadSha', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+      });
+
+      expect(
+        store.findDraftsAsLineDiscussionsForFile({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(0);
+    });
+
+    it('findDraftsAsDiscussionsForFile respects sourceHeadSha', () => {
+      useBatchComments().$patch({
+        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+      });
+
+      expect(
+        store.findDraftsAsDiscussionsForFile({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          sourceHeadSha: 'source_head_1',
+        }),
+      ).toHaveLength(0);
+    });
+  });
+
   describe('findDraftsForDiscussion', () => {
     it('returns the draft matching the given discussion id', () => {
       useBatchComments().$patch({ drafts: [makeDraft(1, { discussion_id: 'disc-1' })] });

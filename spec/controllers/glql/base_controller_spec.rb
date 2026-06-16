@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Glql::BaseController, feature_category: :integrations do
+RSpec.describe Glql::BaseController, feature_category: :api do
   let(:query) { 'query GLQL { __typename }' }
   let(:query_sha) { Digest::SHA256.hexdigest(query) }
   let(:rate_limit_message) do

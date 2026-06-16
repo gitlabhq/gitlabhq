@@ -91,6 +91,13 @@ export default {
       default: true,
     },
   },
+  emits: [
+    'addIssuableFormBlur',
+    'addIssuableFormCancel',
+    'addIssuableFormInput',
+    'addIssuableFormSubmit',
+    'pendingIssuableRemoveRequest',
+  ],
   data() {
     return {
       linkedIssueType: linkedIssueTypesMap.RELATES_TO,

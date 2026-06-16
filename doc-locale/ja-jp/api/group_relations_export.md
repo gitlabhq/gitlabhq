@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループリレーションエクスポートAPI
-description: "REST APIを使用して、グループ関係をエクスポートします。"
+description: "REST APIを使用してグループリレーションをエクスポートします。"
 ---
 
 {{< details >}}
@@ -13,15 +13,18 @@ description: "REST APIを使用して、グループ関係をエクスポート�
 
 {{< /details >}}
 
-グループ関係エクスポートAPIは、グループの構造を、最上位の各関係（たとえば、マイルストーン、ボード、ラベル）ごとに個別のファイルとして部分的にエクスポートします。
+このAPIは、[直接転送によるグループ移行](../user/group/import/_index.md)中に、宛先インスタンスによってグループ構造を移行するために使用されます。通常、このAPIを自分で使用する必要はありません。
 
-グループ関係エクスポートAPIは、主に[直接転送によるグループ移行](../user/group/import/_index.md)で使用され、GitLabインスタンスが[特定の前提条件](../user/group/import/direct_transfer_migrations.md#prerequisites)を満たしている必要があります。
+このコンテキストでは、{{< glossary-tooltip text="relation" >}}はエピックのようなエクスポート可能な項目です。エクスポートされると、リレーションにはラベルなど、リレーションに関連する項目が含まれます。
 
-このAPIは、[グループインポートおよびエクスポートAPI](group_import_export.md)では使用できません。
+このAPIを使用するには、GitLabインスタンスが特定の[前提条件](../user/group/import/direct_transfer_migrations.md#prerequisites)を満たしている必要があります。
 
-## 新しいエクスポートをスケジュール {#schedule-new-export}
+> [!note]
+> このAPIは、ファイルベースの移行用である[グループインポートおよびエクスポートAPI](group_import_export.md)では使用できません。
 
-新しいグループ関係エクスポートを開始します:
+## グループの新しいエクスポートをスケジュールする {#schedule-a-new-export-for-a-group}
+
+指定されたグループのリレーションエクスポートをスケジュールします。
 
 ```plaintext
 POST /groups/:id/export_relations
@@ -44,9 +47,9 @@ curl --request POST \
 }
 ```
 
-## エクスポートステータス {#export-status}
+## エクスポートのステータスを取得する {#retrieve-the-status-of-an-export}
 
-関係エクスポートのステータスを表示します:
+リレーションエクスポートのステータスを取得します。
 
 ```plaintext
 GET /groups/:id/export_relations/status
@@ -55,7 +58,7 @@ GET /groups/:id/export_relations/status
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|------------ |
 | `id`       | 整数または文字列 | はい      | グループのID。 |
-| `relation` | 文字列            | いいえ       | 表示するプロジェクトの最上位関係の名前。 |
+| `relation` | 文字列            | いいえ       | 表示するグループトップレベルリレーションの名前。 |
 
 ```shell
 curl --request GET \
@@ -63,7 +66,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/1/export_relations/status"
 ```
 
-ステータスは、次のいずれかになります:
+ステータスは次のいずれかになります:
 
 - `0`: `started`
 - `1`: `finished`
@@ -99,9 +102,9 @@ curl --request GET \
 ]
 ```
 
-## エクスポートのダウンロード {#export-download}
+## エクスポートをダウンロードする {#download-an-export}
 
-完了した関係エクスポートをダウンロードします:
+完了したリレーションエクスポートをダウンロードします。
 
 ```plaintext
 GET /groups/:id/export_relations/download
@@ -110,9 +113,9 @@ GET /groups/:id/export_relations/download
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|------------ |
 | `id`           | 整数または文字列 | はい      | グループのID。 |
-| `relation`     | 文字列            | はい      | ダウンロードするグループの最上位関係の名前。 |
+| `relation`     | 文字列            | はい      | ダウンロードするグループトップレベルリレーションの名前。 |
 | `batched`      | ブール値           | いいえ       | エクスポートがバッチ処理されているかどうか。 |
-| `batch_number` | 整数           | いいえ       | ダウンロードするエクスポートバッチの番号。 |
+| `batch_number` | 整数           | いいえ       | ダウンロードするエクスポートバッチの数。 |
 
 ```shell
 curl --request GET \

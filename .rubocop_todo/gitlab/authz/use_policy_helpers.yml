@@ -143,7 +143,6 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'spec/policies/project_hook_policy_spec.rb'
     - 'spec/policies/project_member_policy_spec.rb'
     - 'spec/policies/project_policy_spec.rb'
-    - 'spec/policies/projects/branch_rule_policy_spec.rb'
     - 'spec/policies/release_policy_spec.rb'
     - 'spec/policies/resource_label_event_policy_spec.rb'
     - 'spec/policies/resource_milestone_event_policy_spec.rb'

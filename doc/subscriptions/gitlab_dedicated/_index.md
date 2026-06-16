@@ -32,6 +32,21 @@ With GitLab Dedicated, you can:
 - Improve organizational agility.
 - Meet strict compliance requirements.
 
+## Default URLs
+
+GitLab Dedicated assigns each tenant a set of default URLs based on the
+environment type. Replace `tenant_name` with the name of your tenant.
+
+| Component                          | Production                              | Pre-production                                |
+|------------------------------------|-----------------------------------------|-----------------------------------------------|
+| GitLab instance                    | `tenant_name.gitlab-dedicated.com`      | `tenant_name.gitlab-dedicated.systems`        |
+| GitLab Pages                       | `tenant_name.gitlab-dedicated.site`     | `tenant_name.gitlab-dedicated-pages.systems`  |
+| Switchboard (management console)   | `console.gitlab-dedicated.com`          | `console.gitlab-dedicated.systems`            |
+
+You can replace the default GitLab instance URL with a
+[custom domain](#custom-domains). Custom domains are not supported
+for GitLab Pages, and Switchboard URLs cannot be customized.
+
 ## Available features
 
 This section lists the key features that are available for GitLab Dedicated.
@@ -135,7 +150,7 @@ You can access [application logs](../../administration/dedicated/monitor.md) for
 
 ### Custom domains
 
-By default, your GitLab Dedicated instance is accessible at `tenant_name.gitlab-dedicated.com`.
+By default, your GitLab Dedicated instance is accessible at its [default URL](#default-urls).
 You can configure a custom domain to use your own domain name instead, such as `gitlab.company.com`.
 
 Use custom domains to:
@@ -153,8 +168,8 @@ You can configure custom domains for:
 For more information, see [custom domains](../../administration/dedicated/configure_instance/network_security.md#custom-domains).
 
 > [!note]
-> GitLab Pages does not support custom domains. Pages sites are accessible only at
-> `tenant_name.gitlab-dedicated.site`, regardless of any custom domain configured for your
+> GitLab Pages does not support custom domains. Pages sites are accessible only at the
+> default Pages URL, regardless of any custom domain configured for your
 > GitLab Dedicated instance.
 
 ### Object storage downloads
@@ -199,17 +214,17 @@ ClickHouse Cloud integration, which is enabled by default for eligible customers
 
 You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. Pages is enabled by default.
 
-Your website uses the domain `tenant_name.gitlab-dedicated.site`, where `tenant_name` matches your instance URL.
+Your website uses the default Pages URL.
 
 > [!note]
 > Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
-> you still access your website at `tenant_name.gitlab-dedicated.site`.
+> you still access your website at the default Pages URL.
 
 If you migrate from GitLab Self-Managed and want to preserve a legacy wildcard domain
 (for example, `*.gitlab-pages.company.com`), you can use the
 [`terraform-gitlab-pages-redirect`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-gitlab-pages-redirect)
 Terraform module to issue 301 redirects from your existing wildcard domain to your
-`tenant_name.gitlab-dedicated.site` URLs.
+default Pages URL.
 
 Control access to your website with:
 
@@ -329,7 +344,7 @@ following the [release schedule](../../administration/dedicated/maintenance.md) 
 
 | Feature                | Description                                                     | Impact |
 | ---------------------- | --------------------------------------------------------------- | ------ |
-| Custom domains         | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
+| Custom domains         | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using the default Pages URL. |
 | Namespaces in URL path | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options. |
 
 ### Operational features

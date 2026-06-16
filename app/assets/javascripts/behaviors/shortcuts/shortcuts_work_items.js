@@ -2,6 +2,7 @@ import ClipboardJS from 'clipboard';
 import toast from '~/vue_shared/plugins/global_toast';
 import { s__ } from '~/locale';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import {
   ISSUE_MR_CHANGE_ASSIGNEE,
   ISSUE_MR_CHANGE_MILESTONE,
@@ -53,6 +54,7 @@ export default class ShortcutsWorkItem {
   }
 
   static openSidebarDropdown(selector) {
+    suppressShortcutsUntilInputFocus();
     setTimeout(() => {
       const shortcutSelector = `.${selector} .shortcut-sidebar-dropdown-toggle`;
       const editBtn =

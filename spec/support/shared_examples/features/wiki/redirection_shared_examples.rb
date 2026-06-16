@@ -78,7 +78,7 @@ RSpec.shared_examples 'Wiki redirection' do
       it 'does not redirect old path anywhere' do
         visit wiki_page_path(wiki, old_path)
 
-        expect(page).not_to have_content("The page at #{old_path}")
+        expect(page).to have_no_content("The page at #{old_path}")
       end
     end
   end

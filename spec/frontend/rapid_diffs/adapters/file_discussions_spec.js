@@ -9,7 +9,7 @@ import { pinia } from '~/pinia/instance';
 
 jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
   return {
-    inject: ['filePaths', 'linkedFileData', 'newCommentTemplatePaths'],
+    inject: ['filePaths', 'linkedFileData', 'newCommentTemplatePaths', 'showWhitespace'],
     methods: {
       empty() {
         this.$emit('empty');
@@ -28,6 +28,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
           'data-file-paths': JSON.stringify(this.filePaths),
           'data-linked-file-data': JSON.stringify(this.linkedFileData),
           'data-new-comment-template-paths': JSON.stringify(this.newCommentTemplatePaths),
+          'data-show-whitespace': JSON.stringify(this.showWhitespace),
         },
       });
     },
@@ -76,8 +77,13 @@ describe('fileDiscussionsAdapter', () => {
     customElements.define('diff-file', DiffFile);
   }
 
-  const mountAdapter = () => {
-    const fileData = { viewer: 'text_inline', old_path: oldPath, new_path: newPath };
+  const mountAdapter = (extraFileData = {}) => {
+    const fileData = {
+      viewer: 'text_inline',
+      old_path: oldPath,
+      new_path: newPath,
+      ...extraFileData,
+    };
     setHTMLFixture(`
       <diff-file data-file-data='${JSON.stringify(fileData)}'>
         <div>
@@ -233,6 +239,34 @@ describe('fileDiscussionsAdapter', () => {
     getFileDiscussionsComponent().onDestroy = onDestroy;
     getDiffFile().remove();
     expect(onDestroy).toHaveBeenCalled();
+  });
+
+  describe('showWhitespace provide', () => {
+    const fileDiscussion = {
+      id: 'file-disc',
+      diff_discussion: true,
+      position: {
+        old_path: oldPath,
+        new_path: newPath,
+        position_type: 'file',
+        old_line: null,
+        new_line: null,
+      },
+    };
+
+    it('provides showWhitespace from this.data when set on the diff-file element', async () => {
+      mountAdapter({ show_whitespace: true });
+      useDiscussions().discussions = [fileDiscussion];
+      await nextTick();
+      expect(JSON.parse(getFileDiscussionsComponent().dataset.showWhitespace)).toBe(true);
+    });
+
+    it('provides undefined showWhitespace when not set on the diff-file element', async () => {
+      mountAdapter();
+      useDiscussions().discussions = [fileDiscussion];
+      await nextTick();
+      expect(getFileDiscussionsComponent().dataset.showWhitespace).toBeUndefined();
+    });
   });
 
   it('cleans up component on empty event', async () => {

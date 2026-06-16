@@ -5,6 +5,7 @@ import createEnvironment from '../graphql/mutations/create_environment.mutation.
 import EnvironmentForm from './environment_form.vue';
 
 export default {
+  name: 'NewEnvironment',
   components: {
     EnvironmentForm,
   },

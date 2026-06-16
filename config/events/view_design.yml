@@ -2,6 +2,8 @@
 description: Tracks the view of a design detail
 action: view_design
 product_group: product_planning
+product_categories:
+- design_management
 milestone: '13.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44129
 tiers:

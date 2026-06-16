@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AutoDevopsHelper do
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   describe '#auto_devops_settings_path' do

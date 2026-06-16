@@ -57,19 +57,7 @@ export const INACTIVE_TAB = {
   },
 };
 
-export const TRENDING_TAB = {
-  ...baseTab,
-  text: __('Trending'),
-  value: 'trending',
-  variables: { trending: true },
-  emptyStateComponentProps: {
-    ...baseTab.emptyStateComponentProps,
-    title: s__('Projects|No trending projects found'),
-    description: s__('Projects|View projects that are trending.'),
-  },
-};
-
-export const EXPLORE_PROJECTS_TABS = [ACTIVE_TAB, INACTIVE_TAB, TRENDING_TAB];
+export const EXPLORE_PROJECTS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 
 export const FILTERED_SEARCH_NAMESPACE = 'explore';
 export const FILTERED_SEARCH_TERM_KEY = 'name';

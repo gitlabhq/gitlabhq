@@ -6,7 +6,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: current_user) }
 
   let_it_be(:variable_one) do

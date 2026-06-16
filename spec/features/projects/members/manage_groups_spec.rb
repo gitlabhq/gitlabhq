@@ -166,13 +166,13 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
   end
 
   describe 'group search results' do
-    let_it_be(:parent_group) { create(:group, :public) }
+    let_it_be(:parent_group, freeze: false) { create(:group, :public) }
     let_it_be(:project_group) { create(:group, :public, parent: parent_group) }
-    let_it_be(:project) { create(:project, group: project_group) }
+    let_it_be(:project, freeze: false) { create(:project, group: project_group) }
     let_it_be(:user) { owner }
 
     it_behaves_like 'inviting groups search results' do
-      let_it_be(:group) { parent_group }
+      let_it_be(:group, freeze: false) { parent_group }
       let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
       let_it_be(:project_within_hierarchy) { create(:project, group: group_within_hierarchy) }
       let_it_be(:members_page_path) { project_project_members_path(project) }

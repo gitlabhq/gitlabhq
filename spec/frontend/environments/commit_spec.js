@@ -1,4 +1,4 @@
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import Commit from '~/environments/components/commit.vue';
 import { resolvedEnvironment } from './graphql/mock_data';
@@ -31,7 +31,7 @@ describe('~/environments/components/commit.vue', () => {
     });
 
     it('links to the user profile', () => {
-      const link = wrapper.findByRole('link', { name: commit.author.name });
+      const link = wrapper.findComponent(GlAvatarLink);
       expect(link.attributes('href')).toBe(commit.author.path);
     });
 
@@ -56,7 +56,7 @@ describe('~/environments/components/commit.vue', () => {
     });
 
     it('links to the user profile', () => {
-      const link = wrapper.findByRole('link', { name: commit.authorName });
+      const link = wrapper.findComponent(GlAvatarLink);
       expect(link.attributes('href')).toBe(`mailto:${commit.authorEmail}`);
     });
 
@@ -78,7 +78,7 @@ describe('~/environments/components/commit.vue', () => {
     });
 
     it('links to the user profile', () => {
-      const link = wrapper.findByRole('link', { name: commit.author.name });
+      const link = wrapper.findComponent(GlAvatarLink);
       expect(link.attributes('href')).toBe(commit.author.path);
     });
 

@@ -6,7 +6,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group, :public) }
+  let_it_be_with_reload(:group) { create(:group, :public) }
 
   before do
     travel_to DateTime.new(2019, 4, 1)
@@ -269,7 +269,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
 
   describe 'DELETE destroy' do
     let_it_be(:sub_group) { create(:group, parent: group) }
-    let_it_be(:member) { create(:group_member, :developer, group: group) }
+    let_it_be(:member, freeze: false) { create(:group_member, :developer, group: group) }
     let_it_be(:sub_member) { create(:group_member, :developer, group: sub_group, user: member.user) }
 
     before do
@@ -474,7 +474,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
   end
 
   describe 'POST approve_access_request' do
-    let_it_be(:member) { create(:group_member, :access_request, group: group) }
+    let_it_be(:member, freeze: false) { create(:group_member, :access_request, group: group) }
 
     before do
       sign_in(user)

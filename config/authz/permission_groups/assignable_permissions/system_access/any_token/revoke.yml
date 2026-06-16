@@ -1,0 +1,9 @@
+---
+name: revoke_any_token
+description: Grants the ability to revoke any token
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_any_token

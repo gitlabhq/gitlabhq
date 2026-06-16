@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
-RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
+RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks, feature_category: :tooling do
   it 'flags violation for return inside a block' do
     expect_offense(<<~RUBY)
       call do

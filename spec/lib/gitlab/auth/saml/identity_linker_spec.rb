@@ -14,44 +14,44 @@ RSpec.describe Gitlab::Auth::Saml::IdentityLinker do
     OmniAuth::AuthHash.new(provider: provider, uid: uid, extra: { response_object: saml_response })
   end
 
-  subject { described_class.new(user, oauth, session) }
+  subject(:identity_linker) { described_class.new(user, oauth, session) }
 
   context 'with valid GitLab initiated request' do
     context 'linked identity exists' do
       let!(:identity) { user.identities.create!(provider: provider, extern_uid: uid) }
 
       it "doesn't create new identity" do
-        expect { subject.link }.not_to change { Identity.count }
+        expect { identity_linker.link }.not_to change { Identity.count }
       end
 
       it "sets #changed? to false" do
-        subject.link
+        identity_linker.link
 
-        expect(subject).not_to be_changed
+        expect(identity_linker).not_to be_changed
       end
     end
 
     context 'identity needs to be created' do
       it 'creates linked identity' do
-        expect { subject.link }.to change { user.identities.count }
+        expect { identity_linker.link }.to change { user.identities.count }
       end
 
       it 'sets identity provider' do
-        subject.link
+        identity_linker.link
 
         expect(user.identities.last.provider).to eq provider
       end
 
       it 'sets identity extern_uid' do
-        subject.link
+        identity_linker.link
 
         expect(user.identities.last.extern_uid).to eq uid
       end
 
       it 'sets #changed? to true' do
-        subject.link
+        identity_linker.link
 
-        expect(subject).to be_changed
+        expect(identity_linker).to be_changed
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Auth::Saml::IdentityLinker do
     let(:session) { { 'last_authn_request_id' => nil } }
 
     it 'attempting to link accounts raises an exception' do
-      expect { subject.link }.to raise_error(Gitlab::Auth::Saml::IdentityLinker::UnverifiedRequest)
+      expect { identity_linker.link }.to raise_error(Gitlab::Auth::Saml::IdentityLinker::UnverifiedRequest)
     end
   end
 end

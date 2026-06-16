@@ -4,6 +4,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { sprintf, __ } from '~/locale';
 
 export default {
+  name: 'DownloadViewer',
   components: {
     GlIcon,
     GlLink,

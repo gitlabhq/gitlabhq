@@ -152,7 +152,7 @@ module Gitlab
         builder = Builder.new(view_context)
 
         builder.with_snippet(@snippet) if @snippet.present?
-        @snippets.each(&builder.method(:with_snippet)) if @snippets.present?
+        @snippets.each { |snippet| builder.with_snippet(snippet) } if @snippets.present?
         builder.with_project(@project) if @project.present? && @project.persisted?
         builder.with_group(@group) if @group.present? && @group.persisted?
         builder.with_ref(@ref) if @ref.present?

@@ -10,10 +10,20 @@ module BulkImports
 
         PROJECT_IMPORT_TYPE = 'gitlab_project_migration'
 
+        NamespaceNotFoundError = Class.new(StandardError)
+
         def transform(context, data)
           project = {}
           entity = context.entity
-          namespace = Namespace.find_by_full_path(entity.destination_namespace)
+          namespace = entity.bulk_import.organization.namespaces.find_by_full_path(entity.destination_namespace)
+
+          unless namespace
+            raise(
+              NamespaceNotFoundError,
+              "Destination namespace '#{entity.destination_namespace}' not found in the import organization"
+            )
+          end
+
           path = normalize_path(entity.destination_slug)
 
           project[:name] = uniquify(namespace, data['name'], :name)

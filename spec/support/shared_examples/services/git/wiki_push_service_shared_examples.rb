@@ -6,8 +6,8 @@ require "spec_helper"
 RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
   include RepoHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:key_id) { create(:key, user: current_user).shell_id }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:key_id, freeze: false) { create(:key, user: current_user).shell_id }
 
   let(:wiki) { create(wiki_type, user: current_user) }
   let(:default_branch) { wiki.default_branch }

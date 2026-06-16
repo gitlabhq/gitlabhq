@@ -36,6 +36,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'AlertsIntegrationsList',
   i18n,
   typeSet,
   modal: {

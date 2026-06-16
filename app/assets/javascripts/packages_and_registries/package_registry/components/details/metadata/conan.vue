@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 export default {
+  name: 'MetadataConan',
   i18n: {
     recipeText: s__('PackageRegistry|Recipe: %{recipe}'),
   },

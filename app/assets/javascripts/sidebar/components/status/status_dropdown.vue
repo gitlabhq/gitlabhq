@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { statusDropdownOptions } from '../../constants';
 
 export default {
+  name: 'StatusDropdown',
   components: {
     GlCollapsibleListbox,
   },

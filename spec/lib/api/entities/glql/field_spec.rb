@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Glql::Field, feature_category: :integrations do
+RSpec.describe API::Entities::Glql::Field, feature_category: :custom_dashboards_foundation do
   let(:field) { { key: 'title', label: 'Title', name: 'title' } }
   let(:entity) { described_class.new(field) }
 

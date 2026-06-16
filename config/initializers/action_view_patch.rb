@@ -19,10 +19,10 @@
 # sending of the Link header entirely. This patch does this by turning
 # send_preload_links_header into a NOP.
 #
-# We can probably drop this patch for Rails 7.1 and up, but we might
-# want to wait for https://github.com/rails/rails/pull/51441 or some
-# mechanism that can disable the `Link` header.
-if Gem::Version.new(ActionView.version) >= Gem::Version.new('7.3')
+# We can probably drop this patch for Rails 8.0 and up, but we might
+# want to wait for https://github.com/rails/rails/pull/51441 (still open
+# as of Rails 8.0) or some mechanism that can disable the `Link` header.
+if Gem::Version.new(ActionView.version) >= Gem::Version.new('8.1')
   raise 'New version of ActionView detected. This patch can likely be removed.'
 end
 

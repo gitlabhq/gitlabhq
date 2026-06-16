@@ -25,7 +25,8 @@ title: イシューAPI
 
 このAPIからの応答は[ページ分割](rest/_index.md#pagination)されており、デフォルトで20件の結果が返されます。
 
-> [!note] `references.relative`属性は、リクエストされているイシューのグループまたはプロジェクトを基準にしています。プロジェクトからイシューがフェッチされるときの`relative`形式は、`short`形式と同じです。グループ全体またはプロジェクト全体にわたってリクエストされた場合、`full`形式と同じになると想定されます。
+> [!note]
+> `references.relative`属性は、リクエストされたイシューのグループまたはプロジェクトに相対的です。プロジェクトからイシューがフェッチされるときの`relative`形式は、`short`形式と同じです。グループ全体またはプロジェクト全体にわたってリクエストされた場合、`full`形式と同じになると想定されます。
 
 ## すべてのイシューをリスト表示 {#list-all-issues}
 
@@ -250,7 +251,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -298,7 +300,7 @@ GET /groups/:id/issues?state=opened
 | `labels`            | 文字列           | いいえ         | ラベル名のカンマ区切りリスト。イシューが返されるようにするには、イシューにすべてのラベルが含まれている必要があります。`None`は、ラベルのないすべてのイシューをリストします。`Any`は、1つ以上のラベルがあるすべてのイシューをリストします。`No+Label`（非推奨）は、ラベルのないすべてのイシューをリストします。定義済みの名前では大文字と小文字が区別されません。 |
 | `milestone`         | 文字列           | いいえ         | マイルストーンのタイトル。`None`は、マイルストーンのないすべてのイシューをリストします。`Any`は、割り当てられているマイルストーンがあるすべてのイシューをリストします。       |
 | `my_reaction_emoji` | 文字列           | いいえ         | 認証済みユーザーが、指定された`emoji`でリアクションしたイシューを返します。`None`は、リアクションがないイシューを返します。`Any`は、1つ以上のリアクションがあるイシューを返します。 |
-| `non_archived`      | ブール値          | いいえ         | 非アーカイブ済みプロジェクトのイシューを返します。デフォルトはtrueです。 |
+| `non_archived`      | ブール値          | いいえ         | アーカイブされていないプロジェクトからイシューを返します。デフォルトはtrueです。 |
 | `not`               | ハッシュ             | いいえ         | 指定されたパラメータに一致しないイシューを返します。`labels`、`milestone`、`author_id`、`author_username`、`assignee_id`、`assignee_username`、`my_reaction_emoji`、`search`、`in`を指定できます。 |
 | `order_by`          | 文字列           | いいえ         | `created_at`、`updated_at`、`priority`、`due_date`、`relative_position`、`label_priority`、`milestone_due`、`popularity`、`weight`フィールドで並べ替えられたイシューを返します。デフォルトは`created_at`です。                                                               |
 | `scope`             | 文字列           | いいえ         | 指定されたスコープ（`created_by_me`、`assigned_to_me`、または`all`）のイシューを返します。デフォルトは`all`です。 |
@@ -453,7 +455,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -461,7 +464,7 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 
 {{< history >}}
 
-- キーセットページネーションのサポートは、GitLab 18.3で[導入](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/26555)されました。
+- GitLab 18.3でキーセットページネーションのサポートが導入されました。
 
 {{< /history >}}
 
@@ -673,7 +676,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -840,7 +844,8 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -1000,7 +1005,8 @@ GitLab PremiumまたはUltimateのユーザーが作成したイシューには�
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -1030,7 +1036,8 @@ POST /projects/:id/issues
 | `issue_type`                              | 文字列         | いいえ       | イシューのタイプ。`issue`、`incident`、`test_case`、`task`のいずれかです。デフォルトは`issue`です。 |
 | `labels`                                  | 文字列         | いいえ       | 新しいイシューに割り当てるラベル名のカンマ区切りリスト。ラベルがまだ存在しない場合、新しいプロジェクトラベルが作成され、イシューに割り当てられます。  |
 | `merge_request_to_resolve_discussions_of` | 整数        | いいえ       | すべてのイシューを解決するマージリクエストのIID。これにより、イシューにデフォルトの説明が入力され、すべてのディスカッションが解決済みとしてマークされます。descriptionまたはtitleを渡すと、これらの値がデフォルト値よりも優先されます。|
-| `milestone_id`                            | 整数        | いいえ       | イシューを割り当てるマイルストーンのグローバルID。マイルストーンに関連付けられている`milestone_id`を検索するには、マイルストーンが割り当てられているイシューを表示し、[APIを使用して](#retrieve-a-project-issue)イシューの詳細取得します。 |
+| `milestone_id`                            | 整数        | いいえ       | イシューを割り当てるマイルストーンのグローバルID。マイルストーンに関連付けられている`milestone_id`を検索するには、マイルストーンが割り当てられているイシューを表示し、[APIを使用して](#retrieve-a-project-issue)イシューの詳細取得します。`milestone`と相互に排他的です。 |
+| `milestone`                               | 文字列         | いいえ       | イシューを割り当てるための、プロジェクトまたは祖先グループのマイルストーンのタイトル。完全に一致します（大文字と小文字を区別します）。`milestone_id`と相互に排他的です。 |
 | `title`                                   | 文字列         | はい      | イシューのタイトル。 |
 | `weight`                                  | 整数        | いいえ       | イシューのウェイト。有効な値は0以上です。PremiumおよびUltimateのみです。 |
 
@@ -1157,7 +1164,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -1202,9 +1210,10 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | 文字列  | いいえ       | 期限。`YYYY-MM-DD`形式の日時文字列。たとえば、`2016-03-11`などです。                                           |
 | `epic_id`      | 整数 | いいえ | イシューを追加するエピックのID。有効な値は0以上です。PremiumおよびUltimateのみです。 |
 | `epic_iid`     | 整数 | いいえ | イシューを追加するエピックのIID。有効な値は0以上です（非推奨。APIバージョン5で[削除予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)）。PremiumおよびUltimateのみです。 |
-| `issue_type`   | 文字列  | いいえ       | イシューのタイプを更新します。`issue`、`incident`、`test_case`、`task`のいずれかです。 |
+| `issue_type`   | 文字列  | いいえ       | イシューのタイプを更新します。`issue`、`incident`、`test_case`のいずれかです。 |
 | `labels`       | 文字列  | いいえ       | イシューのラベル名のカンマ区切りリスト。すべてのラベルの割り当てを解除するには、空の文字列に設定します。ラベルがまだ存在しない場合、新しいプロジェクトラベルが作成され、イシューに割り当てられます。 |
-| `milestone_id` | 整数 | いいえ       | イシューの割り当て先マイルストーンのグローバルID。マイルストーンの割り当てを解除するには、`0`に設定するか、空の値を指定します。|
+| `milestone_id` | 整数 | いいえ       | イシューの割り当て先マイルストーンのグローバルID。マイルストーンの割り当てを解除するには、`0`に設定するか、空の値を指定します。`milestone`と相互に排他的です。|
+| `milestone`    | 文字列  | いいえ       | イシューを割り当てるための、プロジェクトまたは祖先グループのマイルストーンのタイトル。完全に一致します（大文字と小文字を区別します）。`milestone_id`と相互に排他的です。 |
 | `remove_labels`| 文字列  | いいえ       | イシューから削除するラベル名のカンマ区切りリスト。                                                       |
 | `state_event`  | 文字列  | いいえ       | イシューの状態イベント。イシューを完了するには`close`を使用し、再度開くには`reopen`を使用します。                      |
 | `title`        | 文字列  | いいえ       | イシューのタイトル。                                                                                      |
@@ -1333,7 +1342,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning]非推奨事項:
+> [!warning]
+> 非推奨:
 >
 > - `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 > - `assignee`列は非推奨になりました。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
@@ -1541,7 +1551,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -1803,7 +1814,8 @@ GitLab Ultimateのユーザーが作成したイシューには、`health_status
 ]
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 >
 > `epic_iid`属性は非推奨であり、APIバージョン5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)です。代わりに`epic`属性の`iid`を使用してください。
 
@@ -2004,7 +2016,8 @@ curl --request POST \
 }
 ```
 
-> [!warning] `assignee`列は非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
+> [!warning]
+> `assignee`カラムは非推奨です。GitLab EE APIに準拠するように、シングルサイズの配列`assignees`として表示されるようになりました。
 
 ## イシューをエピックにプロモートする {#promote-an-issue-to-an-epic}
 

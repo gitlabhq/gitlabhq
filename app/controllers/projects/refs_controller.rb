@@ -3,6 +3,7 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
   include TreeHelper
+  include HandlesGitalyErrors
 
   around_action :allow_gitaly_ref_name_caching, only: [:logs_tree]
 

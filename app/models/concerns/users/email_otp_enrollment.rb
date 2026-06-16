@@ -23,7 +23,7 @@ module Users
     end
 
     def email_otp_enrollment_restriction
-      return :feature_disabled            unless Feature.enabled?(:email_based_mfa, self)
+      return :feature_disabled            unless email_otp_available?
       return :uses_external_authenticator if password_automatically_set?
 
       # TwoFactorAuthVerifier provides Group, Global, and Admin 2FA
@@ -54,7 +54,7 @@ module Users
     # @param save [Boolean] whether to persist changes if
     #   email_otp_required_after is modified (default: false)
     def set_email_otp_required_after_based_on_restrictions(save: false)
-      return unless Feature.enabled?(:email_based_mfa, self)
+      return unless email_otp_available?
 
       if email_otp_required_after.nil? && must_require_email_otp?
         # Revert if being changed to nil, or set to Time.current if

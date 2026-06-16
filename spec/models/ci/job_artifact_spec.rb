@@ -25,7 +25,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'UpdateProjectStatistics', :with_counter_attribute do
-    let_it_be(:job, reload: true) { create(:ci_build) }
+    let_it_be_with_reload(:job) { create(:ci_build) }
 
     subject { build(:ci_job_artifact, :archive, job: job, size: ci_artifact_fixture_size) }
   end

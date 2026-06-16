@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Git::BlamePagination, feature_category: :source_code_management do
   subject(:blame_pagination) { described_class.new(blob, blame_mode, params) }
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:commit) { project.repository.commit }
-  let_it_be(:blob) { project.repository.blob_at('HEAD', 'README.md') }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:commit, freeze: false) { project.repository.commit }
+  let_it_be(:blob, freeze: false) { project.repository.blob_at('HEAD', 'README.md') }
 
   let(:blame_mode) do
     instance_double(

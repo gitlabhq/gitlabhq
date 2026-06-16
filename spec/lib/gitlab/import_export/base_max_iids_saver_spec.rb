@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ImportExport::BaseMaxIidsSaver, feature_category: :import
     end
   end
 
-  let(:exportable) { create(:project) }
+  let(:exportable) { build_stubbed(:project) }
   let(:export_path) { Dir.mktmpdir('base_max_iids_saver_spec') }
   let(:shared) { instance_double(Gitlab::ImportExport::Shared, export_path: export_path, error: nil) }
 

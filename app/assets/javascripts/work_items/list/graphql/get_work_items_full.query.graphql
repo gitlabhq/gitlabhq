@@ -130,7 +130,7 @@ query getWorkItemsFull(
             DEVELOPMENT
             HIERARCHY
           ]
-        ) {
+        ) @skip(if: $useWorkItemFeatures) {
           type
           ...WorkItemWidgets
         }

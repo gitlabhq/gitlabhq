@@ -297,3 +297,4 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 - [Secure your application in GitLab for VS Code](security_scanning.md)
 - [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)
 - [GitLab Duo](../../user/gitlab_duo/feature_summary.md)
+- [Custom queries](custom_queries.md)

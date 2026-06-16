@@ -6,7 +6,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:ci_job) { create(:ci_build, project: project, user: user, status: :running) }
   let_it_be(:ci_job_done) { create(:ci_build, project: project, user: user, status: :success) }
@@ -89,6 +89,22 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
 
         it 'returns the credentials' do
           expect(subject.password).to eq(password)
+        end
+      end
+
+      context 'when the Authorization header uses a recognized scheme' do
+        where(:description, :authorization_header) do
+          'Basic auth credentials' | "Basic #{::Base64.strict_encode64('user:pass')}"
+          'case-insensitive Basic' | "basic #{::Base64.strict_encode64('user:pass')}"
+          'Bearer credentials'     | "Bearer sometoken"
+        end
+
+        with_them do
+          let(:request) { double(headers: { "Authorization" => authorization_header }) }
+
+          it 'returns nil so the scheme-specific locator can claim the header' do
+            expect(subject).to be_nil
+          end
         end
       end
     end

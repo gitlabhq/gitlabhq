@@ -32,6 +32,7 @@ import IntegrationsList from './alerts_integrations_list.vue';
 import AlertSettingsForm from './alerts_settings_form.vue';
 
 export default {
+  name: 'AlertsSettingsWrapper',
   i18n,
   components: {
     IntegrationsList,

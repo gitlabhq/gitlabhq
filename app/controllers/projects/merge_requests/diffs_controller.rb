@@ -2,6 +2,7 @@
 
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
   include DiffHelper
+  include HandlesGitalyErrors
   include RendersNotes
   include Gitlab::Cache::Helpers
   include Gitlab::Tracking::Helpers

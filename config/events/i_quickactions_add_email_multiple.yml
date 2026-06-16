@@ -7,6 +7,8 @@ identifiers:
 - user
 - namespace
 product_group: project_management
+product_categories:
+- service_desk
 milestone: "17.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151776
 tiers:

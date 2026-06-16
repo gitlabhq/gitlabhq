@@ -1,16 +1,11 @@
 <script>
-import sidebarStatusQuery from '../graphql/queries/alert_sidebar_status.query.graphql';
 import SidebarAssignees from './sidebar/sidebar_assignees.vue';
-import SidebarHeader from './sidebar/sidebar_header.vue';
 import SidebarStatus from './sidebar/sidebar_status.vue';
-import SidebarTodo from './sidebar/sidebar_todo.vue';
 
 export default {
   name: 'AlertSidebar',
   components: {
     SidebarAssignees,
-    SidebarHeader,
-    SidebarTodo,
     SidebarStatus,
   },
   inject: {
@@ -27,60 +22,24 @@ export default {
       required: true,
     },
   },
-  emits: ['toggle-sidebar', 'alert-error'],
-  apollo: {
-    sidebarStatus: {
-      query: sidebarStatusQuery,
-    },
-  },
-  data() {
-    return {
-      sidebarStatus: false,
-    };
-  },
-  computed: {
-    sidebarCollapsedClass() {
-      return this.sidebarStatus ? 'right-sidebar-collapsed' : 'right-sidebar-expanded';
-    },
-  },
+  emits: ['alert-error'],
 };
 </script>
 
 <template>
-  <aside :class="sidebarCollapsedClass" class="right-sidebar alert-sidebar">
-    <div class="issuable-sidebar js-issuable-update">
-      <sidebar-header
-        :sidebar-collapsed="sidebarStatus"
-        :project-path="projectPath"
-        :alert="alert"
-        @toggle-sidebar="$emit('toggle-sidebar')"
-        @alert-error="$emit('alert-error', $event)"
-      />
-      <sidebar-todo
-        v-if="sidebarStatus"
-        :project-path="projectPath"
-        :alert="alert"
-        :sidebar-collapsed="sidebarStatus"
-        @alert-error="$emit('alert-error', $event)"
-      />
-      <sidebar-status
-        :project-path="projectPath"
-        :alert="alert"
-        :sidebar-collapsed="sidebarStatus"
-        text-class="gl-text-subtle"
-        class="gl-w-7/10"
-        @toggle-sidebar="$emit('toggle-sidebar')"
-        @alert-error="$emit('alert-error', $event)"
-      />
-      <sidebar-assignees
-        :project-path="projectPath"
-        :project-id="projectId"
-        :alert="alert"
-        :sidebar-collapsed="sidebarStatus"
-        @toggle-sidebar="$emit('toggle-sidebar')"
-        @alert-error="$emit('alert-error', $event)"
-      />
-      <div class="block"></div>
-    </div>
-  </aside>
+  <div class="js-issuable-update gl-space-y-5" data-testid="alert-sidebar">
+    <sidebar-status
+      class="gl-border-b gl-pb-5"
+      :project-path="projectPath"
+      :alert="alert"
+      @alert-error="$emit('alert-error', $event)"
+    />
+    <sidebar-assignees
+      class="gl-border-b gl-pb-5"
+      :project-path="projectPath"
+      :project-id="projectId"
+      :alert="alert"
+      @alert-error="$emit('alert-error', $event)"
+    />
+  </div>
 </template>

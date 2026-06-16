@@ -8,6 +8,8 @@ RSpec.describe Types::EventType do
   specify { expect(described_class).to require_graphql_authorizations(:read_event) }
 
   specify do
-    expect(described_class).to have_graphql_fields(:id, :author, :action, :project, :target, :created_at, :updated_at)
+    expect(described_class).to have_graphql_fields(
+      :id, :author, :action, :project, :target, :created_at, :updated_at, :push_event_payload
+    )
   end
 end

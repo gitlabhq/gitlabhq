@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe 'GFM autocomplete', :js, feature_category: :markdown do
   include Features::AutocompleteHelpers
 
-  let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let_it_be(:user, freeze: false) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:group) { create(:group, name: 'Ancestor', maintainers: user) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:issue) { create(:issue, project: project, assignees: [user], title: 'My special issue') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project, assignees: [user], title: 'My special issue') }
   let_it_be(:label) { create(:group_label, group: group, title: 'special+') }
   let_it_be(:milestone) { create(:milestone, resource_parent: group, title: "group milestone") }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

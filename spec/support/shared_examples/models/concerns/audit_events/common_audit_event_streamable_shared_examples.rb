@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'streaming audit event model' do
-  let_it_be(:audit_event) { create(:"audit_events_#{described_class.name.demodulize.underscore}") }
+  let_it_be(:audit_event, freeze: false) { create(:"audit_events_#{described_class.name.demodulize.underscore}") }
 
   describe '#stream_to_external_destinations' do
     let(:event_name) { 'custom_event' }
     let(:streamer) { instance_double(AuditEvents::ExternalDestinationStreamer) }
 
     before do
-      stub_feature_flags(stream_audit_events_from_new_tables: true)
       allow(AuditEvents::ExternalDestinationStreamer)
         .to receive(:new)
         .with(event_name, audit_event)

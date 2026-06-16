@@ -75,7 +75,7 @@ Any implementation of a GitLab Duo feature using a self-hosted model, BYOM, fine
 
 ### Embeddings
 
-In the context of machine learning and large language models, embeddings refer to a technique used to represent words, phrases, or even entire documents as dense numerical vectors in a continuous vector space. At GitLab, [we use Vertex AI's Embeddings API](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129930) to create a vector representation of GitLab documentation. These embeddings are stored in the `vertex_gitlab_docs` database table in the `embeddings` database. The embeddings search is done in Postgres using the `vector` extension. The vertex embeddings database is updated based on the latest version of GitLab documentation on a daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker` as a cronjob.
+In the context of machine learning and large language models, embeddings refer to a technique used to represent words, phrases, or even entire documents as dense numerical vectors in a continuous vector space. At GitLab, [we use the Embeddings API of Gemini Enterprise Agent Platform](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129930) to create a vector representation of GitLab documentation. These embeddings are stored in the `vertex_gitlab_docs` database table in the `embeddings` database. The embeddings search is done in Postgres using the `vector` extension. The vertex embeddings database is updated based on the latest version of GitLab documentation on a daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker` as a cronjob.
 
 ### Fine-tuning
 

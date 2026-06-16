@@ -17,7 +17,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
   context '-/google_cloud/databases' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:renders_template) { 'projects/google_cloud/databases/index' }
     let_it_be(:redirects_to) { nil }
 
@@ -28,7 +28,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
   context '-/google_cloud/databases/new/postgres' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:renders_template) { 'projects/google_cloud/databases/cloudsql_form' }
     let_it_be(:redirects_to) { nil }
 
@@ -39,7 +39,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
   context '-/google_cloud/databases/new/mysql' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:renders_template) { 'projects/google_cloud/databases/cloudsql_form' }
     let_it_be(:redirects_to) { nil }
 
@@ -50,7 +50,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
   context '-/google_cloud/databases/new/sqlserver' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:renders_template) { 'projects/google_cloud/databases/cloudsql_form' }
     let_it_be(:redirects_to) { nil }
 
@@ -61,7 +61,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
   context '-/google_cloud/databases/create' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:renders_template) { nil }
     let_it_be(:redirects_to) { project_google_cloud_databases_path(project) }
 

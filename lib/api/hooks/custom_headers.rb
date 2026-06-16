@@ -10,8 +10,8 @@ module API
           limit: WebHook::MAX_CUSTOM_HEADER_NAME_LENGTH
       end
       namespace ':hook_id/custom_headers' do
-        desc 'Set a custom header' do
-          detail 'Sets a custom header for a webhook'
+        desc 'Update a custom header' do
+          detail 'Updates a custom header for a specified webhook.'
           tags ['hooks']
         end
         params do
@@ -30,8 +30,8 @@ module API
           status :no_content
         end
 
-        desc 'Un-Set a custom header' do
-          detail 'Removes a custom header from a webhook'
+        desc 'Delete a custom header' do
+          detail 'Deletes a custom header from a specified webhook.'
           tags ['hooks']
         end
         route_setting :authorization, permissions: :delete_webhook_custom_header,

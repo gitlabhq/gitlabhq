@@ -117,7 +117,7 @@ export default {
   <div v-if="isLoading">
     <gl-loading-icon inline />
   </div>
-  <div v-else class="gl-my-2 gl-text-subtle">
+  <div v-else class="gl-text-subtle">
     <work-item-state-badge
       v-if="workItemState"
       :work-item-state="workItemState"

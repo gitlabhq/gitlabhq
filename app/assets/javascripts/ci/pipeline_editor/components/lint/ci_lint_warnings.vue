@@ -3,6 +3,7 @@ import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 
 export default {
+  name: 'CiLintWarnings',
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   components: {
     GlAlert,

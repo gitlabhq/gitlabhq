@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: source_code
+product_categories:
+- source_code_management
 milestone: "15.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105148
 tiers:

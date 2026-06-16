@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Track coverage percentages and visualize line-by-line test coverage in merge requests.
 title: Code coverage
 ---
 
@@ -12,283 +13,41 @@ title: Code coverage
 
 {{< /details >}}
 
-Configure code coverage to track and visualize how much of your source code is covered by tests. You can:
+To track code coverage in merge requests, you can display a percentage in the MR widget,
+annotate individual lines in the MR diff, or both. Each output requires a separate keyword.
+Configuring one does not enable the other.
 
-- Track overall coverage metrics and trends using the `coverage` keyword.
-- Visualize line-by-line coverage using the `artifacts:reports:coverage_report` keyword.
+| Output                                                                           | Keyword |
+| -------------------------------------------------------------------------------- | ------- |
+| Show a coverage percentage in the MR widget, pipeline list, and analytics graphs | [`coverage`](../../yaml/_index.md#coverage) |
+| Show line-by-line annotations in the MR diff                                     | [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report) |
 
-## Configure coverage reporting
+To get both outputs, configure both keywords.
 
-Use the [`coverage`](../../yaml/_index.md#coverage) keyword to monitor your test coverage and enforce coverage requirements in merge requests.
+## Coverage reporting
 
-With coverage reporting, you can:
+Coverage reporting extracts a percentage from your test tool's job log output.
+You define a regular expression in the `coverage` keyword. GitLab scans the job log,
+extracts the first matching number, and stores it.
 
-- Display the overall coverage percentage in merge requests.
-- Aggregate coverage from multiple test jobs.
-- Add coverage check approval rules.
-- Track coverage trends over time.
+GitLab displays this value in:
 
-To configure coverage reporting:
+- The MR widget, including the delta compared to the target branch.
+- The pipeline job list.
+- Per-project and per-group coverage history graphs in **Analyze** > **Repository analytics**.
+- Coverage badges.
+- The `Coverage-Check` approval rule (Premium and Ultimate), which can require approval
+  when coverage drops.
 
-1. Add the `coverage` keyword to your pipeline configuration:
-
-   ```yaml
-   test-unit:
-     script:
-       - coverage run unit/
-     coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
-
-   test-integration:
-     script:
-       - coverage run integration/
-     coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
-   ```
-
-1. Configure the regular expression (regex) to match your test output format.
-   See [coverage regex patterns](#coverage-regex-patterns) for common patterns.
-1. To aggregate coverage from multiple jobs, add the `coverage` keyword to each job you want to include.
-1. Optional. [Add a coverage check approval rule](#add-a-coverage-check-approval-rule).
-
-### Coverage regex patterns
-
-The following sample regex patterns were designed to parse coverage output from common test coverage tools.
-
-Test the regex patterns carefully. Tool output formats can change over time, and these patterns might no longer work as expected.
-
-<!-- vale gitlab_base.Spelling = NO -->
-<!--
-Verify regex patterns carefully, especially patterns containing the pipe (`|`) character.
-To use `|` in the text of a table cell (not as cell delimiters), you must escape it with a backslash (`\|`).
-Verify all tables render as expected both in GitLab and on `docs.gitlab.com`.
-See: <https://docs.gitlab.com/user/markdown/#tables>
--->
-
-{{< tabs >}}
-
-{{< tab title="Python and Ruby" >}}
-
-| Tool       | Language | Command        | Regex pattern |
-|------------|----------|----------------|---------------|
-| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Simplecov-html  | Ruby     | `rspec spec`   | `/Line\sCoverage:\s\d+\.\d+%/` |
-
-{{< /tab >}}
-
-{{< tab title="C/C++ and Rust" >}}
-
-| Tool      | Language | Command           | Regex pattern |
-|-----------|----------|-------------------|---------------|
-| gcovr     | C/C++    | `gcovr`           | `/^TOTAL.*\s+(\d+\%)$/` |
-| tarpaulin | Rust     | `cargo tarpaulin` | `/^\d+.\d+% coverage/` |
-
-{{< /tab >}}
-
-{{< tab title="Java and JVM" >}}
-
-| Tool      | Language    | Command                            | Regex pattern |
-|-----------|-------------|------------------------------------|---------------|
-| JaCoCo    | Java/Kotlin | `./gradlew test jacocoTestReport`  | `/Total.*?([0-9]{1,3})%/` |
-| Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-
-{{< /tab >}}
-
-{{< tab title="Node.js" >}}
-
-<!-- markdownlint-disable MD056 -->
-
-| Tool      | Command                                    | Regex pattern |
-|-----------|--------------------------------------------|---------------|
-| tap       | `tap --coverage-report=text-summary`       | `/^Statements\s*:\s*([^%]+)/` |
-| nyc       | `nyc npm test`                             | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
-| jest      | `jest --ci --coverage`                     | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
-| node:test | `node --experimental-test-coverage --test` | `/all files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
-
-<!-- markdownlint-enable MD056 -->
-
-{{< /tab >}}
-
-{{< tab title="PHP" >}}
-
-| Tool    | Command                                  | Regex pattern |
-|---------|------------------------------------------|---------------|
-| pest    | `pest --coverage --colors=never`         | `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/` |
-| phpunit | `phpunit --coverage-text --colors=never` | `/^\s*Lines:\s*\d+.\d+\%/` |
-
-{{< /tab >}}
-
-{{< tab title="Go" >}}
-
-| Tool              | Command          | Regex pattern |
-|-------------------|------------------|---------------|
-| go test (single)  | `go test -cover` | `/coverage: \d+.\d+% of statements/` |
-| go test (project) | `go test -coverprofile=cover.profile && go tool cover -func cover.profile` | `/total:\s+\(statements\)\s+\d+.\d+%/` |
-
-{{< /tab >}}
-
-{{< tab title=".NET and PowerShell" >}}
-
-<!-- markdownlint-disable MD056 -->
-
-| Tool      | Language   | Command | Regex pattern |
-|-----------|------------|---------|---------------|
-| OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
-| dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
-| Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.\|,)?\d{0,2}%)/` |
-
-<!-- markdownlint-enable MD056 -->
-
-{{< /tab >}}
-
-{{< tab title="Elixir" >}}
-
-| Tool        | Command            | Regex pattern |
-|-------------|--------------------|---------------|
-| excoveralls | None               | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
-| mix         | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-<!-- vale gitlab_base.Spelling = YES -->
+For setup instructions, see [configure coverage reporting](coverage_reporting.md).
 
 ## Coverage visualization
 
-Use the [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report)
-keyword to view which specific lines of code are covered by tests in merge requests.
+Coverage visualization parses a Cobertura or JaCoCo XML report that your test job uploads
+as a CI/CD artifact. After the pipeline completes, GitLab processes the report in the
+background and annotates lines in the MR diff.
 
-You can generate coverage reports in these formats:
+Annotations appear only on files that are changed in the MR diff. Files not changed in
+the MR are not annotated, even if the report includes coverage data for them.
 
-- Cobertura: For multiple languages including Java, JavaScript, Python, and Ruby.
-- JaCoCo: For Java projects only.
-
-Coverage visualization uses [artifacts reports](../../yaml/_index.md#artifactsreports) to:
-
-1. Collect one or more coverage reports, including from wildcard paths.
-1. Combine the coverage information from all reports.
-1. Display the combined results in merge request diffs.
-
-Coverage files are parsed in a background job, so there might be a delay between
-pipeline completion and the visualization appearing in the merge request.
-
-By default, coverage visualization data expires one week after creation.
-
-### Configure coverage visualization
-
-To configure coverage visualization:
-
-1. Configure your test tool to generate a coverage report.
-1. Add the `artifacts:reports:coverage_report` configuration to your pipeline:
-
-   ```yaml
-   test:
-     script:
-       - run tests with coverage
-     artifacts:
-       reports:
-         coverage_report:
-           coverage_format: cobertura  # or jacoco
-           path: coverage/coverage.xml
-   ```
-
-For language-specific configuration details see:
-
-- [Cobertura coverage report](cobertura.md)
-- [JaCoCo coverage report](jacoco.md)
-
-### Coverage reports for child pipelines
-
-Coverage reports for child pipelines appear in merge request diff annotations.
-However, parent pipelines cannot access these coverage reports for use in their own jobs.
-
-Support for parent pipelines to fetch coverage reports for child pipelines is proposed in
-[issue 285100](https://gitlab.com/gitlab-org/gitlab/-/issues/285100).
-
-## Add a coverage check approval rule
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
-You can require specific users or a group to approve merge requests that reduce the project's test coverage.
-
-Prerequisites:
-
-- [Configure coverage reporting](#configure-coverage-reporting).
-
-To add a `Coverage-Check` approval rule:
-
-1. Go to your project and select **Settings** > **Merge requests**.
-1. Under **Merge request approvals**, do one of the following:
-   - Next to the `Coverage-Check` approval rule, select **Enable**.
-   - For manual setup, select **Add approval rule**, then enter `Coverage-Check` as the **Rule name**.
-1. Select a **Target branch**.
-1. Set the number of **Required number of approvals**.
-1. Select the **Users** or **Groups** to provide approval.
-1. Select **Save changes**.
-
-> [!note]
-> The `Coverage-Check` approval rule requires approval when the merge base pipeline contains no coverage data, even if the merge request improves overall coverage.
-
-## View coverage results
-
-After a pipeline runs successfully, you can view code coverage results in:
-
-- Merge request widget: See the coverage percentage and changes compared to the target branch.
-
-  ![Merge request widget showing code coverage percentage](img/pipelines_test_coverage_mr_widget_v17_3.png)
-
-- Merge request diff: Review which lines are covered by tests. Available with Cobertura and JaCoCo reports.
-- Pipeline jobs: Monitor coverage results for individual jobs.
-
-## View coverage history
-
-You can track the evolution of code coverage for your project or group over time.
-
-### For a project
-
-To view the code coverage history for a project:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Analyze** > **Repository analytics**.
-1. From the dropdown list, select the job you want to view historical data for.
-1. Optional. To view a CSV file of the data, select **Download raw data (.csv)**.
-
-### For a group
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-
-{{< /details >}}
-
-To view the code coverage history for all projects in a group:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Analyze** > **Repository analytics**.
-1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
-
-## Display coverage badges
-
-Share your project's code coverage status using pipeline badges.
-
-To add a coverage badge to your project, see [test coverage report badges](../../../user/project/badges.md#test-coverage-report-badges).
-
-## Troubleshooting
-
-### Remove color codes from code coverage
-
-Some test coverage tools output with ANSI color codes that aren't
-parsed correctly by the regular expression. This causes coverage
-parsing to fail.
-
-Some coverage tools do not provide an option to disable color
-codes in the output. If so, pipe the output of the coverage tool through a one-line script that strips the color codes.
-
-For example:
-
-```shell
-lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
-```
+For setup instructions, see [configure coverage visualization](coverage_visualization.md).

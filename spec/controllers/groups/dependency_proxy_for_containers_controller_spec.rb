@@ -7,7 +7,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   include DependencyProxyHelpers
   include WorkhorseHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be_with_reload(:group) { create(:group, :private) }
 
   let(:token_response) { { status: :success, token: 'abcd1234' } }
@@ -74,16 +74,16 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
 
     context 'with invalid group access token' do
-      let_it_be(:user) { create(:user, :project_bot) }
-      let_it_be(:token) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
-      let_it_be(:jwt) { build_jwt(token) }
+      let_it_be(:user, freeze: false) { create(:user, :project_bot) }
+      let_it_be(:token, freeze: false) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
+      let_it_be(:jwt, freeze: false) { build_jwt(token) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
 
       context 'with sufficient scopes, but not active' do
         %i[expired revoked].each do |status|
           context status.to_s do
-            let_it_be(:pat) do
+            let_it_be(:pat, freeze: false) do
               create(:personal_access_token, status, user: user).tap do |pat|
                 pat.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
               end
@@ -96,25 +96,25 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
 
     context 'with deploy token from a different group,' do
-      let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+      let_it_be(:user, freeze: false) { create(:deploy_token, :group, :dependency_proxy_scopes) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'with revoked deploy token' do
-      let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes, groups: [group]) }
+      let_it_be(:user, freeze: false) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
     context 'with expired deploy token' do
-      let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes, groups: [group]) }
+      let_it_be(:user, freeze: false) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
     context 'with deploy token with insufficient scopes' do
-      let_it_be(:user) { create(:deploy_token, :group, groups: [group]) }
+      let_it_be(:user, freeze: false) { create(:deploy_token, :group, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
@@ -183,22 +183,22 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       it_behaves_like 'sends Workhorse instructions'
 
       context 'with a job token triggered by a group access token user' do
-        let_it_be(:user) { create(:user, :project_bot) }
+        let_it_be(:user, freeze: false) { create(:user, :project_bot) }
 
         it_behaves_like 'sends Workhorse instructions'
       end
 
       context 'with a job token triggered by a service account user' do
-        let_it_be(:user) { create(:user, :service_account) }
+        let_it_be(:user, freeze: false) { create(:user, :service_account) }
 
         it_behaves_like 'sends Workhorse instructions'
       end
     end
 
     context 'with a valid group access token' do
-      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be(:user, freeze: false) { create(:user, :project_bot) }
       let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
-      let_it_be(:jwt) { build_jwt(token) }
+      let_it_be(:jwt, freeze: false) { build_jwt(token) }
 
       before do
         token.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
@@ -208,7 +208,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
 
     context 'with a deploy token' do
-      let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
+      let_it_be(:user, freeze: false) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
 
       it_behaves_like 'sends Workhorse instructions'
     end
@@ -318,10 +318,10 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   end
 
   describe 'GET #manifest' do
-    let_it_be(:image) { 'alpine' }
-    let_it_be(:tag) { 'latest' }
-    let_it_be(:file_name) { "#{image}:#{tag}.json" }
-    let_it_be(:manifest) { create(:dependency_proxy_manifest, file_name: file_name, group: group) }
+    let_it_be(:image, freeze: false) { 'alpine' }
+    let_it_be(:tag, freeze: false) { 'latest' }
+    let_it_be(:file_name, freeze: false) { "#{image}:#{tag}.json" }
+    let_it_be(:manifest, freeze: false) { create(:dependency_proxy_manifest, file_name: file_name, group: group) }
 
     let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
 
@@ -381,8 +381,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       end
 
       context 'with a composite identity service account', :request_store do
-        let_it_be(:scoped_user) { create(:user, guest_of: group) }
-        let_it_be(:service_account) { create(:user, :ai_service_account) }
+        let_it_be(:scoped_user, freeze: false) { create(:user, guest_of: group) }
+        let_it_be(:service_account, freeze: false) { create(:user, :ai_service_account) }
         let(:jwt) do
           build_jwt(service_account) do |t|
             t['user_id'] = service_account.id
@@ -402,7 +402,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         end
 
         context 'when the scoped user is not a group member' do
-          let_it_be(:scoped_user) { create(:user) }
+          let_it_be(:scoped_user, freeze: false) { create(:user) }
 
           it 'denies access' do
             subject
@@ -534,23 +534,23 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       end
 
       context 'a valid deploy token' do
-        let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
+        let_it_be(:user, freeze: false) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
 
         it_behaves_like 'a successful manifest pull'
 
         context 'pulling from a subgroup' do
           let_it_be_with_reload(:parent_group) { create(:group) }
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
-          let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [parent_group]) }
+          let_it_be(:user, freeze: false) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [parent_group]) }
 
           it_behaves_like 'a successful manifest pull'
         end
       end
 
       context 'a valid group access token' do
-        let_it_be(:user) { create(:user, :project_bot) }
-        let_it_be(:token) { create(:personal_access_token, :dependency_proxy_scopes, user: user) }
-        let_it_be(:jwt) { build_jwt(token) }
+        let_it_be(:user, freeze: false) { create(:user, :project_bot) }
+        let_it_be(:token, freeze: false) { create(:personal_access_token, :dependency_proxy_scopes, user: user) }
+        let_it_be(:jwt, freeze: false) { build_jwt(token) }
 
         before do
           group.add_guest(user)
@@ -668,14 +668,14 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       end
 
       context 'a valid deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [group]) }
+        let_it_be(:user, freeze: false) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [group]) }
 
         it_behaves_like 'a successful blob pull'
 
         context 'pulling from a subgroup' do
           let_it_be_with_reload(:parent_group) { create(:group) }
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
-          let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [parent_group]) }
+          let_it_be(:user, freeze: false) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [parent_group]) }
 
           it_behaves_like 'a successful blob pull'
         end
@@ -749,12 +749,12 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   end
 
   describe 'POST #upload_manifest' do
-    let_it_be(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/manifest", 'application/json') }
-    let_it_be(:image) { 'alpine' }
-    let_it_be(:tag) { 'latest' }
-    let_it_be(:content_type) { 'v2/manifest' }
-    let_it_be(:digest) { 'foo' }
-    let_it_be(:file_name) { "#{image}:#{tag}.json" }
+    let_it_be(:file, freeze: false) { fixture_file_upload("spec/fixtures/dependency_proxy/manifest", 'application/json') }
+    let_it_be(:image, freeze: false) { 'alpine' }
+    let_it_be(:tag, freeze: false) { 'latest' }
+    let_it_be(:content_type, freeze: false) { 'v2/manifest' }
+    let_it_be(:digest, freeze: false) { 'foo' }
+    let_it_be(:file_name, freeze: false) { "#{image}:#{tag}.json" }
 
     subject do
       request.headers.merge!(
@@ -800,7 +800,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       end
 
       context 'with existing stale manifest' do
-        let_it_be(:old_digest) { 'asdf' }
+        let_it_be(:old_digest, freeze: false) { 'asdf' }
         let_it_be_with_reload(:manifest) { create(:dependency_proxy_manifest, file_name: file_name, digest: old_digest, group: group) }
 
         it 'updates the existing manifest' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Integrations::Base::Confluence do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   describe 'Validations' do
     before do

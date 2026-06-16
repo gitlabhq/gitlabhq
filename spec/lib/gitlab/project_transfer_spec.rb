@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::ProjectTransfer do
+RSpec.describe Gitlab::ProjectTransfer, feature_category: :groups_and_projects do
   before do
     @root_dir = File.join(Rails.root, "public", "uploads")
     @project_transfer = described_class.new

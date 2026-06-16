@@ -13,7 +13,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'TAGS and BRANCHES scope' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
     let_it_be(:branch_pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
     let_it_be(:tag_pipeline) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
 
@@ -56,7 +56,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'sha' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
 
@@ -98,7 +98,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'duration fields' do
-    let_it_be(:pipeline) do
+    let_it_be(:pipeline, freeze: false) do
       create(:ci_pipeline, project: project)
     end
 
@@ -135,7 +135,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
 
   describe '.stages' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project) }
     let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, project: project) }
     let_it_be(:other_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'other') }
 
@@ -300,7 +300,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe '.job_artifacts' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
     let_it_be(:pipeline_job_1) { create(:ci_build, pipeline: pipeline, name: 'Job 1') }
     let_it_be(:pipeline_job_artifact_1) { create(:ci_job_artifact, job: pipeline_job_1) }
     let_it_be(:pipeline_job_2) { create(:ci_build, pipeline: pipeline, name: 'Job 2') }
@@ -373,7 +373,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'errorMessages' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
     let_it_be(:error_message) { create(:ci_pipeline_message, pipeline: pipeline, content: 'error', severity: :error) }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
@@ -419,7 +419,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'warningMessages' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
     let_it_be(:warning_message) { create(:ci_pipeline_message, pipeline: pipeline, content: 'warning') }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
@@ -504,7 +504,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'upstream' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: user) }
     let_it_be(:upstream_project) { create(:project, :repository, :public) }
     let_it_be(:upstream_pipeline) { create(:ci_pipeline, project: upstream_project, user: user) }
 
@@ -564,7 +564,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'downstream' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: user) }
     let(:pipeline_2) { create(:ci_pipeline, project: project, user: user) }
 
     let_it_be(:downstream_project) { create(:project, :repository, :public) }
@@ -655,6 +655,57 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
         expect do
           post_graphql(query, current_user: second_user)
         end.to issue_same_number_of_queries_as(control_count)
+      end
+    end
+
+    context 'with a retried trigger job and more downstream pipelines than the render cap' do
+      let_it_be(:overflow_parent) { create(:ci_pipeline, project: project, user: user) }
+      let_it_be(:visible_children) { create_list(:ci_pipeline, 4, project: downstream_project, user: user) }
+      let_it_be(:superseded_child) { create(:ci_pipeline, project: downstream_project, user: user) }
+
+      before_all do
+        visible_children.each do |child|
+          create(:ci_sources_pipeline,
+            source_pipeline: overflow_parent, pipeline: child,
+            source_job: create(:ci_bridge, pipeline: overflow_parent))
+        end
+
+        create(:ci_sources_pipeline,
+          source_pipeline: overflow_parent, pipeline: superseded_child,
+          source_job: create(:ci_bridge, :retried, pipeline: overflow_parent))
+      end
+
+      def downstream_data(first:)
+        query = %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{overflow_parent.iid}") {
+                downstream(first: #{first}) {
+                  count
+                  nodes { iid }
+                }
+              }
+            }
+          }
+        )
+
+        post_graphql(query, current_user: user)
+        graphql_data.dig('project', 'pipeline', 'downstream')
+      end
+
+      it 'excludes the superseded downstream pipeline from nodes and count' do
+        data = downstream_data(first: 10)
+
+        expect(data['count']).to eq(visible_children.size)
+        expect(data['nodes'].map { |node| node['iid'].to_i })
+          .to match_array(visible_children.map(&:iid))
+      end
+
+      it 'counts all latest downstream pipelines even when nodes are capped (+N overflow)' do
+        data = downstream_data(first: 3)
+
+        expect(data['count']).to eq(visible_children.size)
+        expect(data['nodes'].size).to eq(3)
       end
     end
   end

@@ -52,6 +52,61 @@ RSpec.describe Namespaces::Stateful::StateQuerying, feature_category: :groups_an
     end
   end
 
+  describe '.stuck_in_transfer_in_progress' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:stuck_group) { create(:group) }
+    let_it_be_with_reload(:recent_group) { create(:group) }
+    let_it_be_with_reload(:scheduled_group) { create(:group) }
+
+    before do
+      [stuck_group, recent_group, scheduled_group].each { |g| g.add_owner(user) }
+
+      stuck_group.schedule_transfer!(transition_user: user)
+      stuck_group.start_transfer!(transition_user: user)
+      stuck_group.update_column(:updated_at, 5.hours.ago)
+
+      recent_group.schedule_transfer!(transition_user: user)
+      recent_group.start_transfer!(transition_user: user)
+
+      scheduled_group.schedule_transfer!(transition_user: user)
+      scheduled_group.update_column(:updated_at, 5.hours.ago)
+    end
+
+    it 'returns namespaces stuck in transfer_in_progress beyond the timeout', :aggregate_failures do
+      result = Namespace.stuck_in_transfer_in_progress(4.hours)
+
+      expect(result).to include(stuck_group)
+      expect(result).not_to include(recent_group, scheduled_group)
+    end
+  end
+
+  describe '.stuck_in_transfer_scheduled' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:stuck_group) { create(:group) }
+    let_it_be_with_reload(:recent_group) { create(:group) }
+    let_it_be_with_reload(:in_progress_group) { create(:group) }
+
+    before do
+      [stuck_group, recent_group, in_progress_group].each { |g| g.add_owner(user) }
+
+      stuck_group.schedule_transfer!(transition_user: user)
+      stuck_group.update_column(:updated_at, 2.hours.ago)
+
+      recent_group.schedule_transfer!(transition_user: user)
+
+      in_progress_group.schedule_transfer!(transition_user: user)
+      in_progress_group.start_transfer!(transition_user: user)
+      in_progress_group.update_column(:updated_at, 2.hours.ago)
+    end
+
+    it 'returns namespaces stuck in transfer_scheduled beyond the timeout', :aggregate_failures do
+      result = Namespace.stuck_in_transfer_scheduled(1.hour)
+
+      expect(result).to include(stuck_group)
+      expect(result).not_to include(recent_group, in_progress_group)
+    end
+  end
+
   describe '#effective_state' do
     context 'with explicit state' do
       where(:state_key) do

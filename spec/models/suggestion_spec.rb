@@ -30,7 +30,7 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:note) { create(:diff_note_on_merge_request) }
+    let_it_be(:note, freeze: false) { create(:diff_note_on_merge_request) }
     let_it_be(:record_attrs) do
       { relative_order: 0, from_content: "    vars = {\n", to_content: "    vars = [\n", note_id: note.id }
     end

@@ -30,6 +30,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/oauthproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/orbit"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
@@ -40,6 +41,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendurl"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/staticpages"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
 type matcherFunc func(*http.Request) bool
@@ -368,6 +370,39 @@ func configureRoutes(u *upstream) {
 
 	gob := gobpkg.NewProxy(api, u.Version, u.ProxyHeadersTimeout, u.Config)
 
+	// AUTH-011: gradual rollout of OAuth handling to the IAM Auth service.
+	// When IAMServiceURL is nil, BuildAuthorizeRoute / BuildTokenRoute return
+	// proxy unchanged and the OAuth routes below behave exactly as today
+	// (Rails-only).
+	var iamProxy http.Handler
+	if u.IAMServiceURL == nil {
+		log.WithFields(log.Fields{
+			"iam_routing_enabled": false,
+		}).Info("oauthproxy: IAMServiceURL not set; OAuth requests will be handled by Rails")
+	} else {
+		iamRoundTripper := roundtripper.NewBackendRoundTripper(u.IAMServiceURL, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
+		iamProxy = proxypkg.NewProxy(
+			u.IAMServiceURL,
+			u.Version,
+			iamRoundTripper,
+			proxypkg.WithForcedTargetHostHeader(),
+			proxypkg.WithCorrelationID(),
+		)
+		log.WithFields(log.Fields{
+			"iam_routing_enabled": true,
+			"iam_backend_url":     u.IAMServiceURL.String(),
+		}).Info("oauthproxy: OAuth routing to IAM service enabled")
+	}
+	oauthHandler := &oauthproxy.Handler{
+		API:           api,
+		Version:       u.Version,
+		RailsProxy:    proxy,
+		IAMProxy:      iamProxy,
+		IAMServiceURL: u.IAMServiceURL,
+	}
+	authorizeRoute := oauthHandler.BuildAuthorizeRoute()
+	tokenRoute := oauthHandler.BuildTokenRoute()
+
 	u.Routes = []routeEntry{
 		// Git Clone
 		u.route("GET",
@@ -619,6 +654,26 @@ func configureRoutes(u *upstream) {
 			newRoute(snippetUploadPattern, "personal_snippet_uploads", railsBackend), mimeMultipartUploader),
 		u.route("POST",
 			newRoute(userUploadPattern, "user_uploads", railsBackend), mimeMultipartUploader),
+
+		// AUTH-011: OAuth endpoints routed through the oauthproxy handler. When
+		// IAMServiceURL is unset, authorizeRoute and tokenRoute are the Rails
+		// proxy unchanged, so these entries have no effect on existing
+		// behavior. Static OIDC discovery endpoints
+		// (/.well-known/openid-configuration, /oauth/discovery/keys) are
+		// intentionally NOT wired here because AUTH-011 Phase 1 handles them
+		// via a Cloudflare Origin Rule independent of Workhorse.
+		// /oauth/userinfo and /oauth/device are also not wired because
+		// AUTH-011 keeps them on Rails permanently.
+		u.route("",
+			newRoute(`^/oauth/authorize\z`, "oauth_authorize", railsBackend), authorizeRoute),
+		u.route("",
+			newRoute(`^/oauth/authorize_device\z`, "oauth_authorize_device", railsBackend), authorizeRoute),
+		u.route("",
+			newRoute(`^/oauth/token\z`, "oauth_token", railsBackend), tokenRoute),
+		u.route("",
+			newRoute(`^/oauth/revoke\z`, "oauth_revoke", railsBackend), tokenRoute),
+		u.route("",
+			newRoute(`^/oauth/introspect\z`, "oauth_introspect", railsBackend), tokenRoute),
 
 		// health checks don't intercept errors and go straight to rails
 		// TODO: We should probably not return a HTML deploy page?

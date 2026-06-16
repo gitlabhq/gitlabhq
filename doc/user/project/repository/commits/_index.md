@@ -13,9 +13,15 @@ title: Commits
 
 {{< /details >}}
 
+{{< history >}}
+
+- Commit list [redesigned](https://gitlab.com/groups/gitlab-org/-/epics/17482) with grouped commits, token-based search, and new actions menu in GitLab 19.1.
+
+{{< /history >}}
+
 The **Commits** list displays the commit history for your repository. Use it to browse
-code changes, view commit details, and verify commit signatures. You can filter the commit list by
-Git revision to see the changes for a specific revision.
+code changes, view commit details, and verify commit signatures. Commits are grouped by
+day, and you can filter the list by author, commit message, date, or Git revision.
 
 The list shows:
 
@@ -27,7 +33,7 @@ The list shows:
 - Signature verification: GPG, SSH, or X.509 signature status.
 - Tags: Any tags pointing to this commit.
 
-![An example of a repository's commits list](img/repository_commits_list_v18_2.png)
+![An example of a repository's commits list](img/repository_commits_list_v19_1.png)
 
 ## View commits
 
@@ -36,8 +42,8 @@ To view your repository's commit history:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
 
-To view a commit's summary, select the **Toggle commit description** icon ({{< icon name="ellipsis_h" >}}).
-This summary does not display file changes or statistics.
+To view a commit's full description, select the expand ({{< icon name="chevron-down" >}}) icon
+on the right side of the commit. To collapse the description, select the expand ({{< icon name="chevron-down" >}}) icon again.
 
 ## View commit details
 
@@ -77,15 +83,30 @@ You are directed to the [repository](../_index.md) page at that specific revisio
 
 ## Filter and search commits
 
-Filter and search the commit history to find specific changes or track work by particular authors.
+Use the search bar to filter the commit history by author, commit message, or date. You can
+combine multiple filters at the same time.
 
-### Filter by author
+### Filter by date
 
-To filter commits by a specific author:
+To filter commits by date:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
-1. In the **Author** dropdown list, select or search for the author's name or username.
+1. In the search bar, select **Committed after** or **Committed before** from the filter dropdown list.
+1. Enter a date.
+
+To view commits for a specific date range, use both filters together.
+
+### Filter by author
+
+To filter commits by one or more authors:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Commits**.
+1. In the search bar, select **Author** from the filter dropdown list.
+1. Select or search for one or more authors.
+
+The list updates to show only commits from the selected authors.
 
 If author filtering doesn't work for names with special characters, use the URL parameter format.
 For example, append `?author=Elliot%20Stevens` to the URL.
@@ -96,7 +117,7 @@ To filter commits by Git revision, such as branch, tag, or commit SHA:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
-1. In the dropdown list, select or search for a Git revision.
+1. In the dropdown list at the top, select or search for a Git revision.
    For example, branch name, tag, or commit SHA.
 1. Select the Git revision to view the list of filtered commits.
 
@@ -106,9 +127,58 @@ To search for commits by message content:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
-1. In the **Search by message** field, enter your search terms.
+1. In the search bar, select **Message** from the filter dropdown list.
+1. Enter your search terms.
 
 You can also search by commit SHA, full or partial, to find a specific commit directly.
+
+### Share and bookmark filtered views
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599000) in GitLab 19.1.
+
+{{< /history >}}
+
+When you filter the commits list or change the page size, the URL updates to reflect your current
+view. You can:
+
+- Copy the URL to share a filtered view.
+- Bookmark the URL to save a filter combination.
+- Use the browser's Back and Forward buttons to move between filter states.
+
+The URL uses these parameters:
+
+| Parameter          | Description |
+|--------------------|-------------|
+| `author`           | Username of the commit author. |
+| `message`          | Text to match in commit messages. |
+| `committed_after`  | Earliest commit date, in `YYYY-MM-DD` format. |
+| `committed_before` | Latest commit date, in `YYYY-MM-DD` format. |
+| `page_size`        | Number of commits per page. Default is `20`. |
+
+## Navigate between pages of commits
+
+The commit list uses cursor-based pagination. To move between pages:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Commits**.
+1. At the bottom of the list, select **Previous** or **Next** to navigate between pages.
+
+## Access commit list actions
+
+The commits page includes an actions menu with quick links for the current Git revision.
+
+To access the actions menu:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Commits**.
+1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) to open the actions menu.
+
+The actions menu includes:
+
+- **Browse files**: View all repository files at the selected Git revision.
+- **Subscribe to commits RSS feed**: Subscribe to an RSS feed of commits for the current revision.
 
 ## Cherry-pick a commit
 
@@ -199,5 +269,6 @@ The commit list includes a CI/CD pipeline status icon next to each commit. To vi
 
 - [Signed commits](../signed_commits/_index.md)
 - [Compare revisions](../compare_revisions.md)
+- [File management](../files/_index.md)
 - [Git file history](../files/git_history.md)
 - [Tags](../tags/_index.md)

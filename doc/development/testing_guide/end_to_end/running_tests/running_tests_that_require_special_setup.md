@@ -562,34 +562,6 @@ To run the [`login_via_oauth_and_oidc_with_gitlab_as_idp_spec`](https://gitlab.c
    RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_LOG_LEVEL=debug CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
    ```
 
-## Product Analytics tests
-
-Product Analytics e2e tests require Product Analytics services running and connected to your GDK.
-
-In order to run Product Analytics services, devkit can be used. Instructions to set it up and connect to your GDK can be found in the [devkit project's `README.md`](https://gitlab.com/gitlab-org/analytics-section/product-analytics/devkit).
-
-Additionally, the following setup is required on the GDK:
-
-- Set environment variables for product analytics configuration. The following variables are default for running devkit locally.
-
-  ```shell
-  export PA_CONFIGURATOR_URL=http://test:test@localhost:4567
-  export PA_COLLECTOR_HOST=http://localhost:9091
-  export PA_CUBE_API_URL=http://localhost:4000
-  export PA_CUBE_API_KEY=thisisnotarealkey43ff15165ce01e4ff47d75092e3b25b2c0b20dc27f6cd5a8aed7b7bd855df88c9e0748d7afd37adda6d981c16177b086acf496bbdc62dbb
-  ```
-
-- Ultimate license applied.
-  - [How to request the license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
-  - [How to activate GitLab EE with a license file or key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
-- Simulate SaaS enabled. Instructions can be [found here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md#simulate-a-saas-instance).
-
-Once Product Analytics services are running and are connected to your GDK, the tests can be executed with:
-
-```shell
-bundle exec rspec qa/specs/features/ee/browser_ui/8_monitor/product_analytics/onboarding_spec.rb
-```
-
 ## Tests that require a global server hook
 
 The [`tag_revision_trigger_prereceive_hook_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/c3342dac0c6c8e9e11ec049b910eac832600b0bf/qa/qa/specs/features/api/3_create/repository/tag_revision_trigger_prereceive_hook_spec.rb) requires a global server hook to be pre-configured in the target test environment. When running this tests against a local GDK, the server hook will need to be configured with:

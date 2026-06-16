@@ -10,6 +10,8 @@ additional_properties:
   property:
     description: Action type of the todo
 product_group: engagement
+product_categories:
+- notifications
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
 tiers:

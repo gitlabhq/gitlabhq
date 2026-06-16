@@ -37,5 +37,15 @@ RSpec.describe 'CatalogResourceDestroy', feature_category: :pipeline_composition
       expect(project.reload.catalog_resource).to be_nil
       expect_graphql_errors_to_be_empty
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_catalog_resource do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:catalog_resources_destroy, { project_path: project.full_path }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

@@ -1,0 +1,6 @@
+---
+name: _contribute_security_policy_project
+description: Private permission that gates the ability to contribute changes to
+  a Security Policy Project. It enables pushing code and creating merge requests
+  when the project is registered as a Security Policy management project,
+  so that policies can be authored and updated through merge requests.

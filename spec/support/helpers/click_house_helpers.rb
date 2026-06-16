@@ -67,6 +67,61 @@ module ClickHouseHelpers
     end)
 
     expect(result).to eq(true)
+
+    insert_ci_pipelines_to_siphon(pipelines)
+  end
+
+  def insert_ci_pipelines_to_siphon(pipelines, replicated_at: Time.current, deleted: false)
+    result = clickhouse_fixture(:siphon_p_ci_pipelines, pipelines.map do |pipeline|
+      project = pipeline.project
+
+      # NOTE: siphon_* tables store traversal_path with the leading organization_id
+      # segment (e.g. '1/9970/19/') because the project_traversal_paths_dict source
+      # uses `with_organization: true`. The non-siphon `ci_finished_pipelines` table
+      # uses the namespace-only form (e.g. '9970/19/'). See similar handling for
+      # `events` vs `siphon_events` above.
+      {
+        id: pipeline.id,
+        partition_id: pipeline.try(:partition_id) || 100,
+        project_id: project&.id || 0,
+        status: pipeline.status,
+        source: ::Ci::Pipeline.sources[pipeline.source.to_s],
+        ref: pipeline.ref,
+        duration: pipeline.duration,
+        committed_at: pipeline.committed_at,
+        created_at: pipeline.created_at,
+        started_at: pipeline.started_at,
+        finished_at: pipeline.finished_at,
+        traversal_path: project&.project_namespace&.traversal_path(with_organization: true) || '0/',
+        _siphon_replicated_at: replicated_at,
+        _siphon_deleted: deleted
+      }
+    end)
+
+    expect(result).to eq(true)
+  end
+
+  def insert_ci_stages_to_siphon(stages, replicated_at: Time.current, deleted: false)
+    result = clickhouse_fixture(:siphon_p_ci_stages, stages.map do |stage|
+      project = stage.project
+
+      {
+        id: stage.id,
+        partition_id: stage.try(:partition_id) || 100,
+        project_id: project&.id || 0,
+        pipeline_id: stage.pipeline_id,
+        name: stage.name,
+        status: stage.try(:status_value) || 0,
+        position: stage.try(:position),
+        created_at: stage.created_at,
+        updated_at: stage.try(:updated_at) || stage.created_at,
+        traversal_path: project&.project_namespace&.traversal_path(with_organization: true) || '0/',
+        _siphon_replicated_at: replicated_at,
+        _siphon_deleted: deleted
+      }
+    end)
+
+    expect(result).to eq(true)
   end
 
   def self.default_timezone

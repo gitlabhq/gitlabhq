@@ -18,6 +18,7 @@ const USER_ORDER = {
 };
 
 export default {
+  name: 'AssignedUsers',
   components: {
     GlIcon,
     GlButton,

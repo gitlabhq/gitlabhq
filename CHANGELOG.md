@@ -1055,6 +1055,58 @@ entry.
 - [Fix non-auto-correctable Naming/HeredocDelimiterNaming offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/4eae66671a6afc78181cb1f0e0690e0ab3ed55cb) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230057))
 - [Fix non-auto-correctable API/DescriptionSummary offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/b3eaf6e2b0537ed21ff2332896b45a760a0a9142) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224288))
 
+## 18.11.5 (2026-06-10)
+
+### Fixed (6 changes)
+
+- [Make CI cache limit per job configurable by admins](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bca974d217af37d624ea0f0a2dc39d2953f8558)
+- [Show ultimate_only agents when paid license is present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09c42f02794ac9184be66d44e2d9c300f65ac9df) **GitLab Enterprise Edition**
+- [Add fat manifest types to container registry Accept](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0200d30eec02d958cc6b5ecaafde5cab7165634)
+- [Fix MCP tools checkbox visibility for Premium groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7276f828549b4fa27679661c0c199928a9169801) **GitLab Enterprise Edition**
+- [Ensure uploads.id has the correct default](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14294e4b2668d038f09e529211169ea81c4fcf40)
+- [Patching deployment bigint swap for missing index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/872c91723d7f88a1dab3ac944ee69e25db7374ed)
+
+### Security (11 changes)
+
+- [[Backport for 18-11] Validate JSON body with no content-type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a82483b1e29b365cb4785090d9194e078a1ff66) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6246))
+- [Don't render dashboard panels when the schema fails validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/93ba14ce937dfe9601b666e07a0f28c581c79551) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6243))
+- [Fix Service Desk template placeholder re-entrance, from header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4babc73b49bc2c1be6c4098a06750056e5c4bbce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6237))
+- [Disallow style attribute in non_gfm_markdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a88327f56ad1a82dc7451c724b47195a7100513) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6241))
+- [18.11 Backport: Fix SAML identity takeover via trusted_extern_uid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fbc94d9af1d767940838cd34d5ff854aaac985c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6211))
+- [Security fix privilages escalation when sec module disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6abc15d8c3f8d444555721d1e82ffa49dd92786) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6205))
+- [Use encode_utf8_no_detect for diff file paths to handle binary filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d387dc575039fe0c5a072cbdf0659f4315270b81) by @garyh ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6179))
+- [Limit resource usage when parsing placeholder reassignment CSVs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c6d0e7260da3f3892c400c5b24c8f45a8204be5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6218))
+- [Prevent non admins from accessing banned user mrs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a8e0f7b716e62ceff643c29d68413e0d8feadc5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6165))
+- [HTML injection in audit events can lead to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a34f75870d96ec5d5b7d455ad62f860191e7ce57) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6187))
+- [Delete confidential-issue todos when issue has no assignee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f0c1ac3dd2e8fa4c1ff88c26de2da80cfa68f5b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6198))
+
+## 18.11.4 (2026-05-26)
+
+### Fixed (4 changes)
+
+- [Use primary DB connection for advanced search bulk indexer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/692a9797f145292710b2a1048a2905cae17f01e9) **GitLab Enterprise Edition**
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b4e5a4c42711a5fce94a9c9f2458f14a28de8ad) **GitLab Enterprise Edition**
+- [Send allowed endpoints to Workhorse for diagram proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc78abff17fe69fa83a78101a74484e5fdc23c8b)
+- [Fixes dropping successful builds](https://gitlab.com/gitlab-org/security/gitlab/-/commit/efae3ef9ccd78a53099a5536aac78b136860a785)
+
+### Changed (1 change)
+
+- [Add AI scopes to vulnerability findings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da0319b29ddcbf1dc1ae9c03541aeac2f47c5392) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Prevent blocked bot_users from authenticating](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5eb0c54c32757ca0dce66714b9a1904f5899178c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6173))
+- [Fix unauthorized project exposure via WorkItem GraphQL traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31cd80a9987d16b89b99d0d84a78807b5582b912) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6207))
+- [Enforce duo_foundational_flows_enabled in foundational flows execution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1a0290282becdc7bd2ca168b7fa12a4e247d0e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6035))
+- [Fix authorization bypass in Operations and Environments dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dee4c424d7f37ba6effdbf9ba2ef8002b203ab7e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6104))
+- [Backport of "Add size limit to redirects_yml in update_redirection_actions" into 18.11](https://gitlab.com/gitlab-org/security/gitlab/-/commit/18ea3ecd7e50f54c6042f17b86df2c12e3fdc219) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6155))
+- [Use vulnerability author identity for AI workflow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96648a1c80e73dc5c751c4c56a2f57c5fbeb096a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6159))
+- [Fix child pipeline ref type to match parent pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd3fff4d91e7ecf8b36f57d9ced38d47c988d429) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6041))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38a7dbaefc1d23f51fdc774d892ce0ab6157ed3c)
+
 ## 18.11.3 (2026-05-13)
 
 ### Fixed (3 changes)
@@ -1892,6 +1944,50 @@ entry.
 - [Switch remaining read call sites to project_push_rules table](https://gitlab.com/gitlab-org/gitlab/-/commit/7be661e7c389d4bcdbaef815143c400d2ac2a97c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225826))
 - [Fix non-auto-correctable Rails/AvoidTimeComparison offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/1cd97ca9d0b8b52a9d97be1258fb2bed245465bf) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226388))
 - [Remove ActionCable MultiStore post migration](https://gitlab.com/gitlab-org/gitlab/-/commit/b8dadec05bc546cb68be2596d84575fd601e0c91) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225457))
+
+## 18.10.8 (2026-06-10)
+
+### Fixed (4 changes)
+
+- [Make CI cache limit per job configurable by admins](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a02a71fd284441bb19cb4f3d549cde0d5f26b56c)
+- [Allow job token basic auth for generic package upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53c891252f43ae91c35d852185b407d029559fce)
+- [Fix MCP tools checkbox visibility for Premium groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/98770fdee0851af0a8bc25641a6ace888949991c) **GitLab Enterprise Edition**
+- [Add fat manifest types to container registry Accept](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b50b79363327ca9f08e599c49ebbe5ccba7fae0)
+
+### Security (11 changes)
+
+- [[Backport for 18-10] Validate JSON body with no content-type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00f309dcd6c00f979077bc8402c2e6a3e3039305) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6247))
+- [Don't render dashboard panels when the schema fails validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e333e86a350aeb158ee0f48eb72e04556eb85aea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6244))
+- [Fix Service Desk template placeholder re-entrance, from header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a59e3128e173742089210b63b4e24b9c9975f7d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6239))
+- [Disallow style attribute in non_gfm_markdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7dc4418a1f55b5bdba7e745592dcc79dd507450) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6242))
+- [18.10 Backport: Fix SAML identity takeover via trusted_extern_uid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d0de02ef3fa05ce4a76439e3645c26eaffc35d0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6212))
+- [Gate security/compliance abilities behind project feature toggle](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e09677d67a50571c6be5c4f9e38d949a346888be) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6215))
+- [Use encode_utf8_no_detect for diff file paths to handle binary filenames](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c7a55f42d10b01007ebff1f2fa384daf5cbd497) by @garyh ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6180))
+- [Limit resource usage when parsing placeholder reassignment CSVs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3615da8bbaec9f0bb185083135f31b5612896176) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6219))
+- [Prevent non admins from accessing banned user mrs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aaf83a5cfccb4dd569aacc7877cfa0d9e53daa81) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6166))
+- [HTML injection in audit events can lead to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56098da5e193c0994cd9038c8bab017ec50feb8c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6189))
+- [Delete confidential-issue todos when issue has no assignee](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c51856c97f13b125d56b9c92031583a377fe705) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6199))
+
+## 18.10.7 (2026-05-26)
+
+### Fixed (2 changes)
+
+- [Use primary DB connection for advanced search bulk indexer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/47102744a484988b6dc5cd92444182badc31e54b) **GitLab Enterprise Edition**
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/999822531f09c139794b417e92244703265e5b44) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Prevent blocked bot_users from authenticating](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3e6a898a7746863c93185d5df5dcc43b679beb4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6174))
+- [Fix unauthorized project exposure via WorkItem GraphQL traversal](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1661207c53118847e7d56c6f0c270c0f4a1aa691) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6206))
+- [Enforce duo_foundational_flows_enabled in foundational flows execution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b95e448d67ed49658bb3d49be515aa410a1c660d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6006))
+- [Fix authorization bypass in Operations and Environments dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8424cc318560f47eb229ca67a596f07a2b761651) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6105))
+- [Backport of "Add size limit to redirects_yml in update_redirection_actions" into 18.10](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd1e9450ad7ea67ff429c35c7c72dfd1f59ad650) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6156))
+- [Use vulnerability author identity for AI workflow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/43b0fd4b7a31ddc2932cd2785e842fd6ab9f3b03) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6160))
+- [Fix child pipeline ref type to match parent pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/afc6771ddca2be7982bfbd9a0c10acb79b716c6c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6043))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9c15b9ef6063ddb0188038cd15f01887081f2f55)
 
 ## 18.10.6 (2026-05-13)
 
@@ -2879,6 +2975,16 @@ No changes.
 ### change (1 change)
 
 - [Remove GitLab Credits from cards, update styles for cards](https://gitlab.com/gitlab-org/gitlab/-/commit/ebe6a63f6a2b10a52a3fb3c9000b95a83e2da1b7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225972)) **GitLab Enterprise Edition**
+
+## 18.9.8 (2026-05-25)
+
+### Fixed (1 change)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/6c944fe284f7a9b2417e30aef56926502a01d7d6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236084)) **GitLab Enterprise Edition**
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec tests](https://gitlab.com/gitlab-org/gitlab/-/commit/f0a9dc5cee7bdbede191cd94cf309e75b6ae33ff) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236519))
 
 ## 18.9.7 (2026-05-13)
 
@@ -4113,6 +4219,18 @@ No changes.
 - [Add missing feature category to epic fixture spec](https://gitlab.com/gitlab-org/gitlab/-/commit/d642e91e0cdf9a7e34b59dec37d344be5b5e9003) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217500)) **GitLab Enterprise Edition**
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ec8385f51e240397707634c2b25f2c2ec2b40425) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217112))
 
+## 18.8.10 (2026-05-25)
+
+### Fixed (3 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/b7cc91d0018b6ddb9982248342b0758f0cae4bb6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236078)) **GitLab Enterprise Edition**
+- [Fix PG::UniqueViolation in project_daily_statistics sync trigger](https://gitlab.com/gitlab-org/gitlab/-/commit/4449349ea08444b00de4176a6b43b83abe6d5a74) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227227))
+- [Handle RecordInvalid in runner authentication token reset service](https://gitlab.com/gitlab-org/gitlab/-/commit/9b6c2fbb3ea87c7da2b019d2a1fe35d2d9242f49) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229987))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec by scoping within pane](https://gitlab.com/gitlab-org/gitlab/-/commit/e4f795514572f9a107c5ffddae5ab8e5637d34a4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230428))
+
 ## 18.8.9 (2026-04-07)
 
 ### Security (12 changes)
@@ -4764,6 +4882,13 @@ No changes.
 - [Remove restrict_invites_for_comp_id_service_accounts FF](https://gitlab.com/gitlab-org/gitlab/-/commit/247ef39e46547a924893d44a8e77742af7456d6f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213353)) **GitLab Enterprise Edition**
 - [Fix 20 rubocop violations for Layout/ArrayAlignment](https://gitlab.com/gitlab-org/gitlab/-/commit/d7277a5392e541ddbfd436e762c6abd6411d2d77) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200147))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ac7c5c8ba97b3dd4fe6cda9c3deea0be0dfeea5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214950))
+
+## 18.7.7 (2026-05-25)
+
+### Fixed (2 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/91ee50d0b7f0722b4509b495561e3373c6977b16) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236532)) **GitLab Enterprise Edition**
+- [GLQL advanced finder, remove project_ids](https://gitlab.com/gitlab-org/gitlab/-/commit/54ecf5ebbb75e19ebabf25e36832e204fac82a15) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227278)) **GitLab Enterprise Edition**
 
 ## 18.7.6 (2026-03-10)
 
@@ -5603,6 +5728,16 @@ No changes.
 - [Change the urgency of Ci::CreateDownstreamPipelineWorker](https://gitlab.com/gitlab-org/gitlab/-/commit/3c9c6c78e20c58b0543652be65eb3d9c675f7c4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212782))
 - [Remove destroy_fork_network_on_archive feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/9ce139e5d9330c2bf3da3dcb2275df64ac672602) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212714))
 - [Loose Foreign Keys Cleanup Workers should use sticky connections](https://gitlab.com/gitlab-org/gitlab/-/commit/99ae4f5fca9bbcd8e156002c3dca8c6e259cd7e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212600))
+
+## 18.6.8 (2026-05-26)
+
+No changes.
+
+## 18.6.7 (2026-05-25)
+
+### Fixed (1 change)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/5570b7a7ddbabd1a5c67e77f0f785f5aad28e136) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236529)) **GitLab Enterprise Edition**
 
 ## 18.6.6 (2026-02-09)
 
@@ -6674,6 +6809,18 @@ No changes.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ea0dbba113b9dbc671b6db6fc4185cbbb6c856ec) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205312))
 - [Finalize BBM DeleteExpiredVulnerabilityExports](https://gitlab.com/gitlab-org/gitlab/-/commit/7a36276fe0a36b9e1a3080f25a66258e6ffa667b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203408))
 - [Finalize BBM RemoveOrphanedVulnerabilityNotesBatchedMigration](https://gitlab.com/gitlab-org/gitlab/-/commit/017bb7f2ba173211a05137f575a0ba8e83d0ee55) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197721))
+
+## 18.5.7 (2026-05-26)
+
+No changes.
+
+## 18.5.6 (2026-05-25)
+
+### Fixed (3 changes)
+
+- [Fix swimlane problem](https://gitlab.com/gitlab-org/gitlab/-/commit/8753172b6a6d599b7cb3b0e2926766ceb3c18d33) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235631)) **GitLab Enterprise Edition**
+- [Backport use upstream for DWS API requests in Workhorse](https://gitlab.com/gitlab-org/gitlab/-/commit/210aff6396a5a8d439df948f8ae2a1e9b7d3685a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216575)) **GitLab Enterprise Edition**
+- [Exclude Git HTTP requests from authenticated web throttle](https://gitlab.com/gitlab-org/gitlab/-/commit/ed5324f087c0b04644af08ed2d724872f111c9cc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213641))
 
 ## 18.5.5 (2026-01-07)
 

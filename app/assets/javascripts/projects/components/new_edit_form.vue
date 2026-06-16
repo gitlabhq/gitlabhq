@@ -66,6 +66,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input-field', 'submit'],
   data() {
     return {
       formValues: this.initialFormValues,

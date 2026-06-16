@@ -6,6 +6,7 @@ import { generateAgentRegistrationCommand } from '../clusters_util';
 import { I18N_AGENT_TOKEN, HELM_VERSION_POLICY_URL } from '../constants';
 
 export default {
+  name: 'AgentToken',
   i18n: I18N_AGENT_TOKEN,
   HELM_VERSION_POLICY_URL,
   components: {

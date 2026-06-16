@@ -115,6 +115,12 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cancelForm',
+    'handleFormUpdate',
+    'handleFormUpdateAddToReview',
+    'handleSuggestDismissed',
+  ],
   data() {
     return {
       updatedNoteBody: this.noteBody,

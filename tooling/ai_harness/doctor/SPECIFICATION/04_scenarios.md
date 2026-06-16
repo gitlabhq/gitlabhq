@@ -336,6 +336,16 @@ tracked by git
 **Then:** Forbidden files check shows `OK` — the file is intentionally
 committed project content.
 
+### forbidden: files under an allowlisted directory prefix are allowed
+
+**Given:** Multiple files under a directory listed as a prefix entry in
+`config.yml` (e.g. `.claude/skills/glab/`) are tracked by git
+
+**When:** `scripts/ai_harness/doctor`
+
+**Then:** Forbidden files check shows `OK` — the directory prefix matches
+every file beneath it.
+
 ### forbidden: allowed and personal files mixed
 
 **Given:** Both an allowlisted file and a non-allowlisted forbidden file

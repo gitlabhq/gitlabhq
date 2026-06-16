@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :clean_gitlab_r
 
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) do
+  let_it_be(:project, freeze: false) do
     create(
       :project, :in_group, :github_import,
       :import_user_mapping_enabled

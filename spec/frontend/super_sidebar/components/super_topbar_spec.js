@@ -1,4 +1,4 @@
-import { GlBadge, GlBreadcrumb } from '@gitlab/ui';
+import { GlBreadcrumb } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperTopbar from '~/super_sidebar/components/super_topbar.vue';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
@@ -29,7 +29,6 @@ describe('SuperTopbar', () => {
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
   const findSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
-  const findNextBadge = () => wrapper.findComponent(GlBadge);
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
   const findSearchButton = () => wrapper.findByTestId('super-topbar-search-button');
   const findSmallSearchButton = () => wrapper.findByTestId('super-topbar-search-button-xs');
@@ -262,23 +261,6 @@ describe('SuperTopbar', () => {
 
     it('renders BrandLogo component with correct props', () => {
       expect(findBrandLogo().props('logoUrl')).toBe(mockSidebarData.logo_url);
-    });
-
-    describe('GitLab Next badge', () => {
-      describe('when on canary', () => {
-        it('should render a badge to switch off GitLab Next', () => {
-          createComponent({ sidebarData: { ...mockSidebarData, gitlab_com_and_canary: true } });
-          expect(findNextBadge().text()).toBe('Next');
-          expect(findNextBadge().attributes('href')).toBe(mockSidebarData.canary_toggle_com_url);
-        });
-      });
-
-      describe('when not on canary', () => {
-        it('should not render the GitLab Next badge', () => {
-          createComponent({ sidebarData: { ...mockSidebarData, gitlab_com_and_canary: false } });
-          expect(findNextBadge().exists()).toBe(false);
-        });
-      });
     });
 
     it('renders UserMenu when user is logged in', () => {

@@ -23,8 +23,10 @@ module API
       end
     end
 
-    desc 'Import a BitBucket Server repository' do
-      detail 'This feature was introduced in GitLab 13.2.'
+    desc 'Import repository from Bitbucket Server' do
+      detail 'Imports a repository from Bitbucket Server to GitLab. The Bitbucket Project Key is only used for ' \
+        'finding the repository in Bitbucket. You must specify a `target_namespace` if you want to import the ' \
+        'repository to a GitLab group.'
       success ::ProjectEntity
       failure [
         { code: 400, message: 'Bad request' },

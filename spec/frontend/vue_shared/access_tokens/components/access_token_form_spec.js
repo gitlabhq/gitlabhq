@@ -126,6 +126,18 @@ describe('AccessTokenForm', () => {
 
       expect(datepicker.props('value')).toBeNull();
     });
+
+    it('hides the clear button when a max date is set', () => {
+      createComponent();
+
+      expect(findDatepicker().props('showClearButton')).toBe(false);
+    });
+
+    it('shows the clear button when no max date is set', () => {
+      createComponent({}, { accessTokenMaxDate: null });
+
+      expect(findDatepicker().props('showClearButton')).toBe(true);
+    });
   });
 
   it('contains scope checkboxes', () => {

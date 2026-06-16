@@ -28,7 +28,8 @@ To define a `token_field` attribute in your model, include the module and call `
 class User < ApplicationRecord
   include TokenAuthenticatable
 
-  add_authentication_token_field :token_field, encrypted: :required
+  add_authentication_token_field :token_field, encrypted: :required,
+    routable_token : { ... }
 end
 ```
 
@@ -52,6 +53,32 @@ By default, the `SHA256` digest of the tokens are stored in the database, if no 
 > [!note]
 > The `token_field_encrypted` column should always be indexed, because it is used to perform uniqueness checks and lookups on the token.
 
+### Routable token
+
+Use the `routable_token` option to encode routing information directly into the token.
+This allows the system to route requests to the correct cell or shard without additional database lookups.
+
+Routable tokens follow
+the [Routable Tokens design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/#proposal).
+
+Define the `routable_token:` option with a hash containing:
+
+- `if:`: A proc that receives the token owner record. The proc typically includes a feature flag check or other conditions.
+  If the proc returns `false`, a random token is generated using `Devise.friendly_token`.
+- `payload:`: A `{ key => proc }` hash that defines which routing information to encode in the token.
+  Each proc receives the token owner record and returns the value for that key.
+  At least one of Cell ID (`c`) or Organization ID (`o`) must be present in the final payload.
+  Supported keys are:
+  - `c`: Cell ID (included by default if `Gitlab.config.cell.id` is configured)
+  - `o`: Organization ID
+  - `g`: Group ID
+  - `p`: Project ID
+  - `u`: User ID
+  - `t`: Runner type (for example, `t:1` for instance type, `t:2` for group type, `t:3` for project type)
+
+For an example, see the
+[Routable Tokens design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/#integration-into-token-authenticatable).
+
 ### Other options
 
 - `unique: false`: Doesn't enforce token uniqueness and disables the generation of `find_by_token_field` (where `token_field` is the attribute name). Default is `true`.
@@ -60,14 +87,6 @@ By default, the `SHA256` digest of the tokens are stored in the database, if no 
 - `expires_at: :compute_token_expiration_time`: Allows to define a time when the token should expire.
   The `#compute_token_expiration_time` method needs to return a `Time` object. Default is no expiration.
 - `token_generator:` A proc that returns a token. If absent, a random token is generated using `Devise.friendly_token`.
-- `routable_token:`: A hash allowing to define "routable" parts that should be encoded in the token.
-  This follows the [Routable Tokens design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/#proposal).
-  Supported keys are:
-  - `if:`: a proc receiving the token owner record. The proc usually has a feature flag check, and/or other checks.
-    If the proc returns `false`, a random token is generated using `Devise.friendly_token`.
-  - `payload:`: A `{ key => proc }` hash with allowed keys `c`, `o`, `g`, `p`,`u` which
-    [complies with the specification](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/#meaning-of-fields).
-    See an example in the [Routable Tokens design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/#integration-into-token-authenticatable).
 - `require_prefix_for_validation:` (only for the `:encrypted` strategy): Checks that the token prefix matches the expected prefix. If the prefix doesn't match, it behaves as if the token isn't set. Default `false`.
 
 ## Accessing and manipulating tokens

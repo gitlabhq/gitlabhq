@@ -10,7 +10,7 @@ module Gitlab
           attr_reader :created_at, :type, :findings, :identifiers, :scanners
           attr_accessor :pipeline, :scanned_resources, :errors,
             :analyzer, :version, :schema_validation_status, :warnings,
-            :scan, :scanner
+            :scan, :scanner, :scanner_external_id
 
           delegate :project_id, to: :pipeline
           delegate :project, to: :pipeline

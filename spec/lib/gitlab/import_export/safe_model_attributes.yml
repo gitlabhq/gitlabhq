@@ -1110,10 +1110,6 @@ ApprovalProjectRulesProtectedBranch:
   - branch_name
 WorkItems::Type:
   - base_type
-WorkItems::Description:
-  - description
-  - last_edited_at
-  - last_edited_by_id
 TimeTracking::TimelogCategories:
   - id
   - name

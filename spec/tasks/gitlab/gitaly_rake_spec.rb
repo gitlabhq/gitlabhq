@@ -12,6 +12,12 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout, feature_cat
   let(:storage_path) { Rails.root.join('tmp/tests/repositories').to_s }
   let(:version) { File.read(Rails.root.join(Gitlab::GitalyClient::SERVER_VERSION_FILE)).chomp }
 
+  before do
+    # The CI environment may set GITALY_REPO_URL (e.g. to the security fork with a
+    # deploy token); unset it so the canonical default URL is used deterministically.
+    stub_env('GITALY_REPO_URL', nil)
+  end
+
   describe 'clone' do
     subject { run_rake_task('gitlab:gitaly:clone', clone_path, storage_path) }
 

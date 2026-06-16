@@ -48,6 +48,8 @@ Tier availability varies by agent. For details, see each agent's page.
   and visualization of platform data.
 - [CI Expert](ci_expert_agent.md), for creating,
   debugging, and optimizing GitLab CI/CD pipelines.
+- [Permissions Assistant](permissions_assistant.md), for selecting permissions
+  when creating a fine-grained personal access token.
 
 ## Duplicate an agent
 

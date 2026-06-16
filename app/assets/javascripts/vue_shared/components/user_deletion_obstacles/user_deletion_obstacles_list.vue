@@ -13,6 +13,7 @@ const OBSTACLE_TEXT = {
 };
 
 export default {
+  name: 'UserDeletionObstaclesList',
   components: {
     GlSprintf,
     GlLink,

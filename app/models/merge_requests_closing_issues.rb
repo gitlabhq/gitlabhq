@@ -3,12 +3,15 @@
 class MergeRequestsClosingIssues < ApplicationRecord
   include BulkInsertSafe
 
+  enum :link_type, { closes: 0, mentioned: 1, related: 2 }, prefix: true
+
   belongs_to :merge_request
   belongs_to :issue
   belongs_to :project
 
-  validates :merge_request_id, uniqueness: { scope: :issue_id }, presence: true
+  validates :merge_request_id, uniqueness: { scope: [:issue_id, :link_type] }, presence: true
   validates :issue_id, presence: true
+  validate :from_mr_description_only_for_closes
 
   scope :with_opened_merge_request, -> { joins(:merge_request).merge(MergeRequest.with_state(:opened)) }
   scope :from_mr_description, -> { where(from_mr_description: true) }
@@ -49,10 +52,19 @@ class MergeRequestsClosingIssues < ApplicationRecord
     private
 
     def closing_merge_requests(ids, current_user)
-      return with_issues(ids) if current_user&.admin?
-      return with_issues(ids).with_merge_requests_enabled if current_user.blank?
+      base = with_issues(ids).link_type_closes
+      return base if current_user&.admin?
+      return base.with_merge_requests_enabled if current_user.blank?
 
-      with_issues(ids).accessible_by(current_user)
+      base.accessible_by(current_user)
     end
+  end
+
+  private
+
+  def from_mr_description_only_for_closes
+    return unless from_mr_description && !link_type_closes?
+
+    errors.add(:from_mr_description, 'can only be true when link_type is closes')
   end
 end

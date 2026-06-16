@@ -1,10 +1,12 @@
 <script>
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
-import { buildStackedByDimension } from '../../../utils/chart_data';
+import { buildStackedByDimension, tooltipContentFromParams } from '../../../utils/chart_data';
+import { formatterFor, axisFormatterFor } from '../../../utils/value_format';
+import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 
 export default {
   name: 'TwoDimensionsColumnChart',
-  components: { GlStackedColumnChart },
+  components: { GlStackedColumnChart, FormattedTooltipContent },
   props: {
     data: {
       required: true,
@@ -32,6 +34,24 @@ export default {
         metric: this.metric,
       });
     },
+    metricFormatter() {
+      return formatterFor(this.metric?.key);
+    },
+    metricAxisFormatter() {
+      return axisFormatterFor(this.metric?.key);
+    },
+    chartOptions() {
+      // GlStackedColumnChart declares yAxis as an array; pass an array so the
+      // formatter merges in. Axis uses the compact variant for counts; tooltip
+      // keeps full-digit formatting via metricFormatter below.
+      return { yAxis: [{ axisLabel: { formatter: this.metricAxisFormatter } }] };
+    },
+  },
+  methods: {
+    formatTooltipValue(_label, value) {
+      return this.metricFormatter(value);
+    },
+    contentFromParams: tooltipContentFromParams,
   },
 };
 </script>
@@ -43,7 +63,15 @@ export default {
     :y-axis-title="metric.label"
     :group-by="chart.groups"
     :bars="chart.bars"
+    :option="chartOptions"
     presentation="stacked"
     :include-legend-avg-max="false"
-  />
+  >
+    <template #tooltip-content="{ params }">
+      <formatted-tooltip-content
+        :content="contentFromParams(params)"
+        :format-value="formatTooltipValue"
+      />
+    </template>
+  </gl-stacked-column-chart>
 </template>

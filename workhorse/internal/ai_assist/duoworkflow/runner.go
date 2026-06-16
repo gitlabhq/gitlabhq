@@ -49,11 +49,13 @@ const (
 	capabilityShellCommand         capability = "shell_command"
 	capabilityReadFileChunked      capability = "read_file_chunked"
 	capabilityCommandTimeout       capability = "command_timeout"
+	capabilityWebSearch            capability = "web_search"
 
 	// Server capabilities
-	capabilityAdvancedSearch     capability = "advanced_search"
-	capabilityToolCallApproval   capability = "tool_call_approval"
-	capabilityJobTracePagination capability = "job_trace_pagination"
+	capabilityAdvancedSearch          capability = "advanced_search"
+	capabilityToolCallApproval        capability = "tool_call_approval"
+	capabilityToolCallPatternApproval capability = "tool_call_pattern_approval"
+	capabilityJobTracePagination      capability = "job_trace_pagination"
 )
 
 // ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
@@ -69,10 +71,11 @@ var ClientCapabilities = []capability{
 	capabilityShellCommand,
 	capabilityReadFileChunked,
 	capabilityCommandTimeout,
+	capabilityWebSearch,
 }
 
 // ServerCapabilities defines the list of allowed server capabilities that
-// can be communicated to Duo Workflow Service. This whitelist ensures only
+// can be communicated to Duo Workflow Service. This allowlist ensures only
 // explicitly approved capabilities are sent.
 //
 // To add a new server capability:
@@ -82,6 +85,7 @@ var ClientCapabilities = []capability{
 var ServerCapabilities = []capability{
 	capabilityAdvancedSearch,
 	capabilityToolCallApproval,
+	capabilityToolCallPatternApproval,
 	capabilityJobTracePagination,
 }
 
@@ -140,25 +144,34 @@ type stopCoordinator struct {
 	// this before tearing down the gRPC stream so that a pending Recv can
 	// observe the DWS stop acknowledgment before the connection is destroyed.
 	agentDone sync.WaitGroup
+
+	// shutdownStarted is set to true at the start of Shutdown. Close only
+	// waits on shutdownDone when this is set, since Shutdown is only invoked
+	// during server shutdown and never in the normal request path.
+	shutdownStarted atomic.Bool
+
+	// shutdownDone is closed by Shutdown when it finishes. Close waits on
+	// this before calling closeWebSocketConnection so that Shutdown always
+	// gets to send CloseGoingAway (1001) before Close sends CloseNormalClosure
+	// (1000).
+	shutdownDone chan struct{}
 }
 
 type runner struct {
-	rails                     *api.API
-	backend                   http.Handler
-	token                     string
-	originalReq               *http.Request
-	marshalBuf                []byte
-	conn                      websocketConn
-	lockManager               *workflowLockManager
-	workflowID                string
-	mutex                     *redsync.Mutex
-	lockFlow                  bool
-	serverCapabilities        []string
-	streamManager             *streamManager
-	mcpManager                mcpManager
-	websocketClosed           atomic.Bool
-	shouldTimeoutHTTPRequests bool
-	stop                      stopCoordinator
+	originalReq         *http.Request
+	httpActionHandler   *runHTTPActionHandler
+	marshalBuf          []byte
+	conn                websocketConn
+	lockManager         *workflowLockManager
+	workflowID          string
+	mutex               *redsync.Mutex
+	lockFlow            bool
+	serverCapabilities  []string
+	streamManager       *streamManager
+	mcpManager          mcpManager
+	websocketClosed     atomic.Bool
+	stop                stopCoordinator
+	stopWorkflowTimeout time.Duration
 }
 
 func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
@@ -183,21 +196,26 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 		log.WithRequest(r).WithError(err).Info("failed to initialize MCP server(s)")
 	}
 
-	return &runner{
-		rails:                     rails,
+	httpActionHandler := &runHTTPActionHandler{
 		backend:                   backend,
 		token:                     cfg.Service.Headers["x-gitlab-oauth-token"],
-		originalReq:               r,
-		marshalBuf:                make([]byte, ActionResponseBodyLimit),
-		conn:                      conn,
-		lockManager:               newWorkflowLockManager(rdb),
-		lockFlow:                  lockFlow,
-		serverCapabilities:        cfg.ServerCapabilities,
-		streamManager:             streamManager,
-		mcpManager:                mcpManager,
 		shouldTimeoutHTTPRequests: cfg.TimeoutHTTPRequests,
+		originalReq:               r,
+	}
+
+	return &runner{
+		originalReq:        r,
+		httpActionHandler:  httpActionHandler,
+		marshalBuf:         make([]byte, ActionResponseBodyLimit),
+		conn:               conn,
+		lockManager:        newWorkflowLockManager(rdb),
+		lockFlow:           lockFlow,
+		serverCapabilities: cfg.ServerCapabilities,
+		streamManager:      streamManager,
+		mcpManager:         mcpManager,
 		stop: stopCoordinator{
-			acked: make(chan struct{}),
+			acked:        make(chan struct{}),
+			shutdownDone: make(chan struct{}),
 		},
 	}, nil
 }
@@ -354,6 +372,16 @@ func (r *runner) Close() error {
 	// (Unavailable) before the connection is torn down.
 	r.stop.agentDone.Wait()
 
+	// When a server shutdown is in progress, wait for Shutdown to finish before
+	// closing the WebSocket connection. Shutdown sends CloseGoingAway (1001) to
+	// signal the client to reconnect; if Close races ahead and sends
+	// CloseNormalClosure (1000) first, the client never sees the 1001 and won't
+	// reconnect to the new instance. In the normal request path Shutdown is
+	// never called, so we must not block on shutdownDone there.
+	if r.stop.shutdownStarted.Load() {
+		<-r.stop.shutdownDone
+	}
+
 	streamManagerCloseErr := r.logClose("stream manager", r.streamManager.Close())
 	wsCloseErr := r.logClose("websocket connection", r.closeWebSocketConnection())
 	mcpManagerCloseErr := r.logClose("mcp manager", r.mcpManager.Close())
@@ -478,16 +506,7 @@ func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error {
 	switch action.Action.(type) {
 	case *pb.Action_RunHTTPRequest:
-		handler := &runHTTPActionHandler{
-			rails:                     r.rails,
-			backend:                   r.backend,
-			token:                     r.token,
-			originalReq:               r.originalReq,
-			action:                    action,
-			shouldTimeoutHTTPRequests: r.shouldTimeoutHTTPRequests,
-		}
-
-		event, err := handler.Execute(ctx)
+		event, err := r.httpActionHandler.Execute(ctx, action)
 		if err != nil {
 			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
 		}
@@ -579,26 +598,40 @@ func (r *runner) stopWorkflow(reason string, closeErr error) error {
 		return fmt.Errorf("failed to send stop request: %v", err)
 	}
 
+	timeout := r.stopWorkflowTimeout
+	if timeout == 0 {
+		timeout = wsStopWorkflowTimeout
+	}
+
 	select {
 	case <-r.stop.acked:
 		return nil
-	case <-time.After(wsStopWorkflowTimeout):
+	case <-time.After(timeout):
 		return fmt.Errorf("workflow didn't stop on time")
 	}
 }
 
 // Shutdown gracefully stops the workflow runner during server shutdown.
-// It releases the distributed lock immediately to allow other instances to acquire it.
-// Then it waits for either the shutdown context or the request context to expire before
-// sending a stop workflow request to the agent platform.
+// It first waits for the workflow to finish naturally within the shutdown grace
+// period. If either the request context or the shutdown context expires before
+// the workflow completes, it sends a StopWorkflowRequest to DWS, releases the
+// distributed lock, and sends a CloseGoingAway frame to the WebSocket client so
+// the executor can reconnect to a new workhorse instance and resume from the
+// last DWS checkpoint.
 // Errors during shutdown are logged but not returned to allow other runners to proceed.
 func (r *runner) Shutdown(ctx context.Context) error {
-	if r.lockFlow {
-		r.lockManager.releaseLock(ctx, r.mutex, r.workflowID)
-	}
+	// Signal Close that a shutdown is in progress so it waits for shutdownDone
+	// before closing the WebSocket connection.
+	r.stop.shutdownStarted.Store(true)
+
+	// requestContextDone is set to true when the original request context fires
+	// first. In that case the client is already gone, so we skip sending
+	// CloseGoingAway — there is no one to receive it.
+	var requestContextDone bool
 
 	select {
 	case <-r.originalReq.Context().Done():
+		requestContextDone = true
 		log.WithRequest(r.originalReq).Info("Shutdown: request context done, sending stop workflow")
 	case <-ctx.Done():
 		log.WithRequest(r.originalReq).Info("Shutdown: shutdown context done, sending stop workflow")
@@ -612,6 +645,37 @@ func (r *runner) Shutdown(ctx context.Context) error {
 		log.WithRequest(r.originalReq).WithError(err).Info("Shutdown: failed to stop workflow gracefully")
 	} else {
 		log.WithRequest(r.originalReq).Info("Shutdown: workflow stopped gracefully")
+	}
+
+	// Always release the lock so the executor can acquire it on the new
+	// workhorse instance. Even if the stop request failed or timed out, the
+	// instance is going away and holding the lock would block reconnection
+	// for up to 2 hours (the lock TTL).
+	if r.lockFlow {
+		// Use a detached context because the request context may already be
+		// canceled during shutdown, but we still need to reach Redis.
+		r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID) // lint:allow context.Background
+	}
+
+	// Send CloseGoingAway (1001) to signal the client to reconnect. Skip this
+	// when the request context fired first — the client is already gone and
+	// there is no WebSocket connection to write to.
+	if !requestContextDone {
+		deadline := time.Now().Add(wsCloseTimeout)
+		closeMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, "server shutdown")
+		if wsErr := r.conn.WriteControl(websocket.CloseMessage, closeMsg, deadline); wsErr != nil {
+			log.WithRequest(r.originalReq).WithError(wsErr).Info("Shutdown: failed to send CloseGoingAway to client")
+		} else {
+			log.WithRequest(r.originalReq).Info("Shutdown: successfully sent CloseGoingAway to client")
+
+			// Mark the WebSocket as closed so that Close() skips sending
+			// CloseNormalClosure (1000) on top of the 1001 we just sent.
+			r.websocketClosed.Store(true)
+		}
+	}
+
+	if r.stop.shutdownDone != nil {
+		close(r.stop.shutdownDone)
 	}
 
 	return nil

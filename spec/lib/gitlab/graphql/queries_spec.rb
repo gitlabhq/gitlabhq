@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Graphql::Queries do
   end
 
   # Toy schema to validate queries against
-  let_it_be(:schema) do
+  let_it_be(:schema, freeze: false) do
     author = Class.new(GraphQL::Schema::Object) do
       graphql_name 'Author'
       field :name, GraphQL::Types::String, null: true
@@ -205,6 +205,36 @@ RSpec.describe Gitlab::Graphql::Queries do
 
       it 'has a complexity' do
         expect(subject.complexity(schema)).to be < 10
+      end
+    end
+
+    context 'a query with @skip and @include directives gated by the same variable' do
+      let(:path) { 'post_by_slug.with_directives.graphql' }
+
+      it_behaves_like 'a valid GraphQL query for the blog schema'
+
+      # The two branches are mutually exclusive at runtime - only one set of
+      # fields actually resolves for any given variable assignment. The
+      # complexity calculation should reflect the worst case (max), not the
+      # sum of both branches.
+      it 'returns the maximum complexity across the two directive scenarios' do
+        # if=true:  title is skipped; content + author{name, handle, verified} are included => 6
+        # if=false: title is included; content and author are skipped => 2
+        expect(subject.complexity(schema)).to eq(6)
+      end
+    end
+
+    context 'a query with directives gated by independent variables' do
+      let(:path) { 'post_by_slug.with_independent_directives.graphql' }
+
+      it_behaves_like 'a valid GraphQL query for the blog schema'
+
+      # Two variables, each controlling a different directive. The worst case
+      # is the mixed assignment, which the implementation must enumerate
+      # rather than assuming all `if` values move together.
+      it 'returns the maximum complexity across every variable combination' do
+        # skipFields=false, includeAuthor=true: title + content + author{name, handle, verified} => 7
+        expect(subject.complexity(schema)).to eq(7)
       end
     end
 

@@ -33,6 +33,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update'],
   apollo: {
     topics: {
       query: searchProjectTopics,

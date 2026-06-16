@@ -42,7 +42,7 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService, feature_cat
       let(:skip_check) { true }
 
       it 'returns true' do
-        expect(check_draft_status.skip?).to eq true
+        expect(check_draft_status.skip?).to be true
       end
     end
 
@@ -50,14 +50,14 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService, feature_cat
       let(:skip_check) { false }
 
       it 'returns false' do
-        expect(check_draft_status.skip?).to eq false
+        expect(check_draft_status.skip?).to be false
       end
     end
   end
 
   describe '#cacheable?' do
     it 'returns false' do
-      expect(check_draft_status.cacheable?).to eq false
+      expect(check_draft_status.cacheable?).to be false
     end
   end
 end

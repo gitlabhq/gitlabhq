@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトスニペット
 ---
 
@@ -12,68 +12,52 @@ title: プロジェクトスニペット
 
 {{< /details >}}
 
-プロジェクトスニペットAPIを使用して、スニペットを作成、管理、および削除します。
+このAPIを使用して、[プロジェクトスニペット](../user/snippets.md)を管理します。関連するAPIは、[個人スニペット](snippets.md)および[ストレージ間のスニペット移動](snippet_repository_storage_moves.md)に存在します。
 
-## スニペットの表示レベル {#snippet-visibility-level}
+## プロジェクトのすべてのスニペットを一覧表示 {#list-all-snippets-for-a-project}
 
-GitLabの[スニペット](project_snippets.md)は、非公開、内部、または公開にすることができます。スニペットの`visibility`フィールドで設定できます。
-
-スニペットの表示レベルの定数は次のとおりです:
-
-- **プライベート**: スニペットはプロジェクトメンバーのみに表示されます。
-- **内部**: スニペットは、[外部ユーザー](../administration/external_users.md)を除くすべての認証済みユーザーに表示されます。
-- **公開**: スニペットには、認証なしでアクセスできます。
-
-{{< alert type="note" >}}
-
-2019年7月以降、`Internal`の表示レベル設定は、GitLab.comの新しいプロジェクト、グループ、およびスニペットに対しては無効になっています。`Internal`表示レベル設定を使用している既存のプロジェクト、グループ、スニペットは、この設定を維持します。変更の詳細については、[関連するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/12388)を参照してください。
-
-{{< /alert >}}
-
-## スニペットの一覧表示 {#list-snippets}
-
-プロジェクトスニペットのリストを取得します。
+指定されたプロジェクトのすべてのスニペットを一覧表示します。
 
 ```plaintext
 GET /projects/:id/snippets
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
-| `author.created_at` | 文字列  | 作成者アカウントが作成された日時。 |
-| `author.email`      | 文字列  | スニペットの作成者のメールアドレス。 |
-| `author.id`         | 整数 | スニペットの作成者のID。 |
-| `author.name`       | 文字列  | スニペットの作成者の表示名。 |
+| `author.created_at` | 文字列  | 作成者アカウントが作成された日付と時刻。 |
+| `author.email`      | 文字列  | スニペット作成者のメールアドレス。 |
+| `author.id`         | 整数 | スニペット作成者のID。 |
+| `author.name`       | 文字列  | スニペット作成者の表示名。 |
 | `author.state`      | 文字列  | 作成者アカウントの状態。 |
-| `author.username`   | 文字列  | スニペットの作成者のユーザー名。 |
-| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日時。 |
+| `author.username`   | 文字列  | スニペット作成者のユーザー名。 |
+| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日付と時刻。 |
 | `description`       | 文字列  | スニペットの説明。 |
-| `file_name`         | 文字列  | スニペットファイルのファイル名。 |
+| `file_name`         | 文字列  | スニペットファイルの名前。 |
 | `id`                | 整数 | スニペットのID。 |
-| `imported`          | ブール値 | `true`の場合、スニペットはインポートされました。 |
+| `imported`          | ブール値 | `true`の場合、スニペットがインポートされました。 |
 | `imported_from`     | 文字列  | スニペットがインポートされた場合のインポート元。 |
 | `project_id`        | 整数 | スニペットを含むプロジェクトのID。 |
 | `raw_url`           | 文字列  | rawスニペットコンテンツへの直接URL。 |
 | `title`             | 文字列  | スニペットのタイトル。 |
-| `updated_at`        | 文字列  | スニペットが最後に更新された日時（ISO 8601形式）。 |
-| `web_url`           | 文字列  | GitLabのWebインターフェースでスニペットを表示するURL。 |
+| `updated_at`        | 文字列  | スニペットがISO 8601形式で最後に更新された日付と時刻。 |
+| `web_url`           | 文字列  | GitLabウェブインターフェースでスニペットを表示するためのURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -122,51 +106,51 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一のスニペットを取得 {#get-single-snippet}
+## スニペットを取得する {#retrieve-a-snippet}
 
-単一のプロジェクトスニペットを取得します。
+指定されたプロジェクトスニペットを取得する。
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `snippet_id` | 整数           | はい      | プロジェクトのスニペットのID。 |
+| `snippet_id` | 整数           | はい      | プロジェクトスニペットのID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
-| `author.created_at` | 文字列  | 作成者アカウントが作成された日時。 |
-| `author.email`      | 文字列  | スニペットの作成者のメールアドレス。 |
-| `author.id`         | 整数 | スニペットの作成者のID。 |
-| `author.name`       | 文字列  | スニペットの作成者の表示名。 |
+| `author.created_at` | 文字列  | 作成者アカウントが作成された日付と時刻。 |
+| `author.email`      | 文字列  | スニペット作成者のメールアドレス。 |
+| `author.id`         | 整数 | スニペット作成者のID。 |
+| `author.name`       | 文字列  | スニペット作成者の表示名。 |
 | `author.state`      | 文字列  | 作成者アカウントの状態。 |
-| `author.username`   | 文字列  | スニペットの作成者のユーザー名。 |
-| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日時。 |
+| `author.username`   | 文字列  | スニペット作成者のユーザー名。 |
+| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日付と時刻。 |
 | `description`       | 文字列  | スニペットの説明。 |
-| `file_name`         | 文字列  | スニペットファイルのファイル名。 |
+| `file_name`         | 文字列  | スニペットファイルの名前。 |
 | `id`                | 整数 | スニペットのID。 |
-| `imported`          | ブール値 | `true`の場合、スニペットはインポートされました。 |
+| `imported`          | ブール値 | `true`の場合、スニペットがインポートされました。 |
 | `imported_from`     | 文字列  | スニペットがインポートされた場合のインポート元。 |
 | `project_id`        | 整数 | スニペットを含むプロジェクトのID。 |
 | `raw_url`           | 文字列  | rawスニペットコンテンツへの直接URL。 |
 | `title`             | 文字列  | スニペットのタイトル。 |
-| `updated_at`        | 文字列  | スニペットが最後に更新された日時（ISO 8601形式）。 |
-| `web_url`           | 文字列  | GitLabのWebインターフェースでスニペットを表示するURL。 |
+| `updated_at`        | 文字列  | スニペットがISO 8601形式で最後に更新された日付と時刻。 |
+| `web_url`           | 文字列  | GitLabウェブインターフェースでスニペットを表示するためのURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -192,51 +176,51 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 新しいスニペットを作成 {#create-new-snippet}
+## スニペットを作成する {#create-a-snippet}
 
-新しいプロジェクトスニペットを作成します。ユーザーには、新しいスニペットを作成する権限が必要です。
+プロジェクトスニペットを作成します。ユーザーはスニペットを作成する権限を持っている必要があります。
 
 ```plaintext
 POST /projects/:id/snippets
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型              | 必須 | 説明 |
 |-------------------|-------------------|----------|-------------|
 | `files`           | ハッシュの配列   | はい      | スニペットファイルの配列。 |
 | `files:content`   | 文字列            | はい      | スニペットファイルの内容。 |
-| `files:file_path` | 文字列            | はい      | スニペットファイルのファイルパス。 |
+| `files:file_path` | 文字列            | はい      | スニペットファイルのパス。 |
 | `id`              | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `title`           | 文字列            | はい      | スニペットのタイトル。 |
-| `content`         | 文字列            | いいえ       | 非推奨: 代わりに`files`を使用してください。スニペットのコンテンツ。 |
+| `content`         | 文字列            | いいえ       | 非推奨: 代わりに`files`を使用してください。スニペットの内容。 |
 | `description`     | 文字列            | いいえ       | スニペットの説明。 |
 | `file_name`       | 文字列            | いいえ       | 非推奨: 代わりに`files`を使用してください。スニペットファイルの名前。 |
-| `visibility`      | 文字列            | いいえ       | スニペットの[表示レベル](#snippet-visibility-level)。 |
+| `visibility`      | 文字列            | いいえ       | スニペットの表示レベル。設定可能な値: `public`、`private`、および`internal`。GitLab.comでは、`internal`の値は利用できません。 |
 
-成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
-| `author.created_at` | 文字列  | 作成者アカウントが作成された日時。 |
-| `author.email`      | 文字列  | スニペットの作成者のメールアドレス。 |
-| `author.id`         | 整数 | スニペットの作成者のID。 |
-| `author.name`       | 文字列  | スニペットの作成者の表示名。 |
+| `author.created_at` | 文字列  | 作成者アカウントが作成された日付と時刻。 |
+| `author.email`      | 文字列  | スニペット作成者のメールアドレス。 |
+| `author.id`         | 整数 | スニペット作成者のID。 |
+| `author.name`       | 文字列  | スニペット作成者の表示名。 |
 | `author.state`      | 文字列  | 作成者アカウントの状態。 |
-| `author.username`   | 文字列  | スニペットの作成者のユーザー名。 |
-| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日時。 |
+| `author.username`   | 文字列  | スニペット作成者のユーザー名。 |
+| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日付と時刻。 |
 | `description`       | 文字列  | スニペットの説明。 |
-| `file_name`         | 文字列  | スニペットファイルのファイル名。 |
+| `file_name`         | 文字列  | スニペットファイルの名前。 |
 | `id`                | 整数 | スニペットのID。 |
-| `imported`          | ブール値 | `true`の場合、スニペットはインポートされました。 |
+| `imported`          | ブール値 | `true`の場合、スニペットがインポートされました。 |
 | `imported_from`     | 文字列  | スニペットがインポートされた場合のインポート元。 |
 | `project_id`        | 整数 | スニペットを含むプロジェクトのID。 |
 | `raw_url`           | 文字列  | rawスニペットコンテンツへの直接URL。 |
 | `title`             | 文字列  | スニペットのタイトル。 |
-| `updated_at`        | 文字列  | スニペットが最後に更新された日時（ISO 8601形式）。 |
-| `web_url`           | 文字列  | GitLabのWebインターフェースでスニペットを表示するURL。 |
+| `updated_at`        | 文字列  | スニペットがISO 8601形式で最後に更新された日付と時刻。 |
+| `web_url`           | 文字列  | GitLabウェブインターフェースでスニペットを表示するためのURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -246,7 +230,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -272,56 +256,56 @@ curl --request POST \
 }
 ```
 
-## スニペットの更新 {#update-snippet}
+## スニペットを更新 {#update-a-snippet}
 
-既存のプロジェクトスニペットを更新します。ユーザーには、既存のスニペットを変更する権限が必要です。
+指定されたプロジェクトスニペットを更新します。ユーザーは既存のスニペットを変更する権限を持っている必要があります。
 
-複数のファイルを含むスニペットへの更新では、`files`属性を使用する必要があります。
+複数のファイルを持つスニペットの更新では、`files`属性を使用する必要があります。
 
 ```plaintext
 PUT /projects/:id/snippets/:snippet_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性             | 型              | 必須      | 説明 |
-|-----------------------|-------------------|---------------|-------------|
+| --------------------- | ----------------- | ------------- | ----------- |
 | `id`                  | 整数または文字列 | はい           | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `snippet_id`          | 整数           | はい           | プロジェクトのスニペットのID。 |
-| `files:action`        | 文字列            | 条件付き | ファイルに対して実行するアクションの種類。次のいずれか: `create`、`update`、`delete`、`move`。`files`属性を使用する場合は必須。 |
-| `content`             | 文字列            | いいえ            | 非推奨: 代わりに`files`を使用してください。スニペットのコンテンツ。 |
+| `snippet_id`          | 整数           | はい           | プロジェクトスニペットのID。 |
+| `files:action`        | 文字列            | 条件付き | ファイルに対して実行するアクションのタイプ。次のいずれか: `create`、`update`、`delete`、`move`。`files`属性を使用する場合に必須です。 |
+| `content`             | 文字列            | いいえ            | 非推奨: 代わりに`files`を使用してください。スニペットの内容。 |
 | `description`         | 文字列            | いいえ            | スニペットの説明。 |
 | `file_name`           | 文字列            | いいえ            | 非推奨: 代わりに`files`を使用してください。スニペットファイルの名前。 |
 | `files`               | ハッシュの配列   | いいえ            | スニペットファイルの配列。 |
 | `files:content`       | 文字列            | いいえ            | スニペットファイルの内容。 |
-| `files:file_path`     | 文字列            | いいえ            | スニペットファイルのファイルパス。 |
+| `files:file_path`     | 文字列            | いいえ            | スニペットファイルのパス。 |
 | `files:previous_path` | 文字列            | いいえ            | スニペットファイルの以前のパス。 |
 | `title`               | 文字列            | いいえ            | スニペットのタイトル。 |
-| `visibility`          | 文字列            | いいえ            | スニペットの[表示レベル](#snippet-visibility-level)。 |
+| `visibility`      | 文字列            | いいえ       | スニペットの表示レベル。設定可能な値: `public`、`private`、および`internal`。GitLab.comでは、`internal`の値は利用できません。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
-| `author.created_at` | 文字列  | 作成者アカウントが作成された日時。 |
-| `author.email`      | 文字列  | スニペットの作成者のメールアドレス。 |
-| `author.id`         | 整数 | スニペットの作成者のID。 |
-| `author.name`       | 文字列  | スニペットの作成者の表示名。 |
+| `author.created_at` | 文字列  | 作成者アカウントが作成された日付と時刻。 |
+| `author.email`      | 文字列  | スニペット作成者のメールアドレス。 |
+| `author.id`         | 整数 | スニペット作成者のID。 |
+| `author.name`       | 文字列  | スニペット作成者の表示名。 |
 | `author.state`      | 文字列  | 作成者アカウントの状態。 |
-| `author.username`   | 文字列  | スニペットの作成者のユーザー名。 |
-| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日時。 |
+| `author.username`   | 文字列  | スニペット作成者のユーザー名。 |
+| `created_at`        | 文字列  | スニペットがISO 8601形式で作成された日付と時刻。 |
 | `description`       | 文字列  | スニペットの説明。 |
-| `file_name`         | 文字列  | スニペットファイルのファイル名。 |
+| `file_name`         | 文字列  | スニペットファイルの名前。 |
 | `id`                | 整数 | スニペットのID。 |
-| `imported`          | ブール値 | `true`の場合、スニペットはインポートされました。 |
+| `imported`          | ブール値 | `true`の場合、スニペットがインポートされました。 |
 | `imported_from`     | 文字列  | スニペットがインポートされた場合のインポート元。 |
 | `project_id`        | 整数 | スニペットを含むプロジェクトのID。 |
 | `raw_url`           | 文字列  | rawスニペットコンテンツへの直接URL。 |
 | `title`             | 文字列  | スニペットのタイトル。 |
-| `updated_at`        | 文字列  | スニペットが最後に更新された日時（ISO 8601形式）。 |
-| `web_url`           | 文字列  | GitLabのWebインターフェースでスニペットを表示するURL。 |
+| `updated_at`        | 文字列  | スニペットがISO 8601形式で最後に更新された日付と時刻。 |
+| `web_url`           | 文字列  | GitLabウェブインターフェースでスニペットを表示するためのURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -331,7 +315,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -357,22 +341,22 @@ curl --request PUT \
 }
 ```
 
-## スニペットの削除 {#delete-snippet}
+## スニペットを削除 {#delete-a-snippet}
 
-既存のプロジェクトスニペットを削除します。操作が成功した場合は`204 No Content`ステータスコード、リソースが見つからなかった場合は`404`を返します。
+指定されたプロジェクトスニペットを削除します。操作が成功した場合は`204 No Content`ステータスコード、リソースが見つからなかった場合は`404`を返します。
 
 ```plaintext
 DELETE /projects/:id/snippets/:snippet_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `snippet_id` | 整数           | はい      | プロジェクトのスニペットのID。 |
+| `snippet_id` | 整数           | はい      | プロジェクトスニペットのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -380,83 +364,83 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2"
 ```
 
-## スニペットコンテンツ {#snippet-content}
+## スニペットコンテンツを取得する {#retrieve-snippet-content}
 
-rawプロジェクトスニペットをプレーンテキストとして返します。
+rawプロジェクトスニペットをプレーンテキストとして取得する。
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/raw
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `snippet_id` | 整数           | はい      | プロジェクトのスニペットのID。 |
+| `snippet_id` | 整数           | はい      | プロジェクトスニペットのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/raw"
 ```
 
-## スニペットリポジトリファイルコンテンツ {#snippet-repository-file-content}
+## スニペットリポジトリファイルコンテンツを取得する {#retrieve-snippet-repository-file-content}
 
-rawファイルコンテンツをプレーンテキストとして返します。
+rawファイルコンテンツをプレーンテキストとして取得する。
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `file_path`  | 文字列            | はい      | たとえば、`snippet%2Erb`のようなファイルへのURLエンコードされたパス。 |
-| `ref`        | 文字列            | はい      | たとえば、`main`のような、ブランチ、タグ、またはコミットの名前。 |
-| `snippet_id` | 整数           | はい      | プロジェクトのスニペットのID。 |
+| `file_path`  | 文字列            | はい      | URLエンコードされたファイルへのパス (例: `snippet%2Erb`)。 |
+| `ref`        | 文字列            | はい      | ブランチ、タグ、またはコミットの名前 (例: `main`)。 |
+| `snippet_id` | 整数           | はい      | プロジェクトスニペットのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/raw"
 ```
 
-## ユーザーエージェントの詳細を取得する {#get-user-agent-details}
+## User agentの詳細を取得する {#retrieve-user-agent-details}
 
-管理者権限を持つユーザーのみが使用できます。
+指定されたスニペットのUser agentの詳細を取得する。管理者アクセスを持つユーザーのみ利用可能です。
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/user_agent_detail
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
 | `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `snippet_id` | 整数           | はい      | スニペットのID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
 | `akismet_submitted` | ブール値 | `true`の場合、スニペットはスパム検出のためにAkismetに送信されました。 |
 | `ip_address`        | 文字列  | スニペットを作成したユーザーのIPアドレス。 |
-| `user_agent`        | 文字列  | スニペットの作成に使用されたブラウザーのユーザーエージェント文字列。 |
+| `user_agent`        | 文字列  | スニペットを作成するために使用されたブラウザのUser agent文字列。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

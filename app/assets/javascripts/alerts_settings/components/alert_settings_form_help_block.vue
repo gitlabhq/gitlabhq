@@ -2,6 +2,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 
 export default {
+  name: 'AlertSettingsFormHelpBlock',
   components: {
     GlLink,
     GlSprintf,

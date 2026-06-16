@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 RSpec.describe "User creates issue", :js, feature_category: :team_planning do
   include DropzoneHelper
   include ListboxHelpers
 
-  let_it_be(:project) { create(:project_empty_repo, :public) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   context "when unauthenticated" do
     before do
@@ -102,7 +102,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       it 'saves with due date' do
         visit(new_project_issue_path(project))
 
-        date = Date.today.at_beginning_of_month
+        date = Date.current.at_beginning_of_month
 
         fill_in 'Title', with: 'bug 345'
         fill_in 'Description', with: 'bug description'
@@ -126,7 +126,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       it 'uploads file when dragging into textarea' do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page).to have_field("Description"), with: 'banana_sample'
+        expect(page).to have_field('Description', with: /banana_sample/)
       end
 
       it "doesn't add double newline to end of a single attachment markdown" do
@@ -170,7 +170,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     end
 
     context 'form create handles issue creation by default' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       before do
         visit new_project_issue_path(project)
@@ -182,7 +182,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     end
 
     context 'form create handles incident creation' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       before do
         visit new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
@@ -221,6 +221,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
         fill_in 'Description', with: 'bug description'
 
         click_button 'Create Issue'
+        expect(page).to have_content('bug 345')
       end
     end
 
@@ -241,7 +242,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
   end
 
   context 'when signed in as reporter' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     before_all do
       project.add_reporter(user)
@@ -266,7 +267,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
   end
 
   context 'when signed in as a maintainer' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     before_all do
       project.add_maintainer(user)
@@ -275,8 +276,6 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit(new_project_issue_path(project))
-
-      wait_for_all_requests
     end
 
     it_behaves_like 'rich text editor - autocomplete'

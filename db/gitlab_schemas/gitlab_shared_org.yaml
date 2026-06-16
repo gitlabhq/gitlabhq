@@ -10,3 +10,6 @@ require_sharding_key: true
 disallow_sequences: true
 sharding_root_tables:
   - organizations
+  - namespaces
+  - projects
+  - users

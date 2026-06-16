@@ -11,9 +11,9 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
   it { is_expected.to have_many(:last_usages).class_name('Ci::Catalog::Resources::Components::LastUsage') }
 
   it_behaves_like 'a BulkInsertSafe model', described_class do
-    let_it_be(:project) { create(:project, :readme, description: 'project description') }
+    let_it_be(:project, freeze: false) { create(:project, :readme, description: 'project description') }
     let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
-    let_it_be(:version) { create(:ci_catalog_resource_version, project: project) }
+    let_it_be(:version, freeze: false) { create(:ci_catalog_resource_version, project: project) }
 
     let(:valid_items_for_bulk_insertion) do
       build_list(:ci_catalog_resource_component, 10) do |component|

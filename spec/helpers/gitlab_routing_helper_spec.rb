@@ -165,9 +165,9 @@ RSpec.describe GitlabRoutingHelper do
   end
 
   context 'snippets' do
-    let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
+    let_it_be(:personal_snippet, freeze: false) { create(:personal_snippet, :repository) }
     let_it_be(:project_snippet) { create(:project_snippet, :repository) }
-    let_it_be(:note) { create(:note_on_personal_snippet, noteable: personal_snippet) }
+    let_it_be(:note, freeze: false) { create(:note_on_personal_snippet, noteable: personal_snippet) }
 
     describe '#gitlab_snippet_path' do
       it 'returns the personal snippet path' do

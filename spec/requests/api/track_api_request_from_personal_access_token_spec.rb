@@ -12,7 +12,7 @@ RSpec.describe API::TrackAPIRequestFromPersonalAccessToken, :request_store,
 
   let_it_be(:endpoint) { '/test_pat_middleware' }
   let_it_be(:forbidden_endpoint) { '/test_pat_middleware_forbidden' }
-  let_it_be(:app) do
+  let_it_be(:app, freeze: false) do
     Class.new(API::API).tap do |app|
       app.route_setting :authentication, job_token_allowed: true
       app.route_setting :authorization, skip_granular_token_authorization: true

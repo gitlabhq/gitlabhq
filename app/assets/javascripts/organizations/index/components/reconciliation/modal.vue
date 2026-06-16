@@ -38,6 +38,7 @@ export default {
     return {
       currentStep: 1,
       organizations: [],
+      initialDefaultOrgGroupIds: [],
     };
   },
   apollo: {
@@ -47,7 +48,10 @@ export default {
         return !this.visible || this.organizations.length > 0;
       },
       update(data) {
-        return data?.organizations?.nodes || [];
+        const nodes = data?.organizations?.nodes || [];
+        this.setInitialDefaultOrgGroups(nodes);
+
+        return nodes;
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -88,6 +92,13 @@ export default {
     },
   },
   methods: {
+    setInitialDefaultOrgGroups(nodes) {
+      const defaultOrg = nodes.find(isDefaultOrganization);
+
+      if (defaultOrg) {
+        this.initialDefaultOrgGroupIds = defaultOrg.groups.nodes.map((group) => group.id);
+      }
+    },
     updateModalVisibility(value) {
       this.$emit('change', value);
     },
@@ -128,7 +139,12 @@ export default {
           <template #totalSteps>{{ totalSteps }}</template>
         </gl-sprintf>
       </div>
-      <component :is="stepComponent" :organizations="stepOrganizations" @update="onUpdate" />
+      <component
+        :is="stepComponent"
+        :organizations="stepOrganizations"
+        :initial-default-org-group-ids="initialDefaultOrgGroupIds"
+        @update="onUpdate"
+      />
     </template>
     <template #modal-footer>
       <div class="gl-flex gl-w-full gl-justify-center gl-gap-3">

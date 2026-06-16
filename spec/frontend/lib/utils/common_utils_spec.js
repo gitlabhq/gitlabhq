@@ -1109,16 +1109,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('getDashPath', () => {
-    it('returns the path following /-/', () => {
-      expect(commonUtils.getDashPath('/some/-/url-with-dashes-/')).toEqual('url-with-dashes-/');
-    });
-
-    it('returns null when no path follows /-/', () => {
-      expect(commonUtils.getDashPath('/some/url')).toEqual(null);
-    });
-  });
-
   describe('convertArrayToCamelCase', () => {
     it('returns a new array with snake_case string elements converted camelCase', () => {
       const result = commonUtils.convertArrayToCamelCase(['hello', 'hello_world']);

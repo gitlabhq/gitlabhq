@@ -42,7 +42,7 @@ module Import
 
       # Merge with strategy's errors
       def errors
-        super.tap { _1.merge!(strategy.errors) }
+        super.tap { |errors_obj| errors_obj.merge!(strategy.errors) }
       end
 
       def read_attribute_for_validation(key)

@@ -8,6 +8,8 @@ module Mutations
       include Mutations::ResolvesGroup
 
       authorize :admin_group
+      authorize_granular_token permissions: :update_ci_cd_setting,
+        boundary_argument: :full_path, boundary_type: :group
 
       argument :full_path, GraphQL::Types::ID,
         required: true,

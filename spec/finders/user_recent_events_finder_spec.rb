@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe UserRecentEventsFinder do
-  let_it_be(:project_owner, reload: true) { create(:user) }
-  let_it_be(:current_user, reload: true)  { create(:user) }
+RSpec.describe UserRecentEventsFinder, feature_category: :user_profile do
+  let_it_be_with_reload(:project_owner) { create(:user) }
+  let_it_be_with_reload(:current_user)  { create(:user) }
   let_it_be(:private_project)  { create(:project, :private, creator: project_owner) }
   let_it_be(:internal_project) { create(:project, :internal, creator: project_owner) }
-  let_it_be(:public_project)   { create(:project, :public, creator: project_owner) }
+  let_it_be(:public_project, freeze: false) { create(:project, :public, creator: project_owner) }
   let_it_be(:private_event)   { create(:event, project: private_project, author: project_owner) }
   let_it_be(:internal_event)  { create(:event, project: internal_project, author: project_owner) }
   let_it_be(:public_event)    { create(:event, project: public_project, author: project_owner) }
@@ -35,6 +35,25 @@ RSpec.describe UserRecentEventsFinder do
       end
     end
 
+    context 'when exclude_transferred_events is enabled' do
+      let_it_be(:transferred_event) do
+        create(
+          :event,
+          :transferred,
+          project: public_project,
+          target: public_project,
+          target_type: 'Project',
+          author: project_owner
+        )
+      end
+
+      subject(:finder) { described_class.new(current_user, project_owner, nil, params, exclude_transferred_events: true) }
+
+      it 'does not include transferred events' do
+        expect(finder.execute).not_to include(transferred_event)
+      end
+    end
+
     it 'does not include the events if the user cannot read cross project' do
       allow(Ability).to receive(:allowed?).and_call_original
       expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
@@ -43,11 +62,11 @@ RSpec.describe UserRecentEventsFinder do
     end
 
     context 'events from multiple users' do
-      let_it_be(:second_user, reload: true) { create(:user) }
+      let_it_be_with_reload(:second_user) { create(:user) }
       let_it_be(:private_project_second_user) { create(:project, :private, creator: second_user) }
 
       let_it_be(:internal_project_second_user) { create(:project, :internal, creator: second_user) }
-      let_it_be(:public_project_second_user)   { create(:project, :public, creator: second_user) }
+      let_it_be(:public_project_second_user, freeze: false) { create(:project, :public, creator: second_user) }
       let_it_be(:private_event_second_user)   { create(:event, project: private_project_second_user, author: second_user) }
       let_it_be(:internal_event_second_user)  { create(:event, project: internal_project_second_user, author: second_user) }
       let_it_be(:public_event_second_user)    { create(:event, project: public_project_second_user, author: second_user) }
@@ -73,8 +92,8 @@ RSpec.describe UserRecentEventsFinder do
         let_it_be(:issue_event1) { create(:event, :created, project: public_project, target: issue, author: project_owner) }
         let_it_be(:issue_event2) { create(:event, :updated, project: public_project, target: issue, author: project_owner) }
         let_it_be(:issue_event3) { create(:event, :closed, project: public_project_second_user, target: issue, author: second_user) }
-        let_it_be(:wiki_event1) { create(:wiki_page_event, project: public_project, author: project_owner) }
-        let_it_be(:wiki_event2) { create(:wiki_page_event, project: public_project_second_user, author: second_user) }
+        let_it_be(:wiki_event1, freeze: false) { create(:wiki_page_event, project: public_project, author: project_owner) }
+        let_it_be(:wiki_event2, freeze: false) { create(:wiki_page_event, project: public_project_second_user, author: second_user) }
         let_it_be(:design_event1) { create(:design_event, project: public_project, author: project_owner) }
         let_it_be(:design_event2) { create(:design_updated_event, project: public_project_second_user, author: second_user) }
 
@@ -135,7 +154,7 @@ RSpec.describe UserRecentEventsFinder do
       let_it_be(:merge_event) { create(:event, :merged, project: public_project, author: project_owner) }
       let_it_be(:issue_event) { create(:event, :closed, project: public_project, target: issue, author: project_owner) }
       let_it_be(:comment_event) { create(:event, :commented, project: public_project, author: project_owner) }
-      let_it_be(:wiki_event) { create(:wiki_page_event, project: public_project, author: project_owner) }
+      let_it_be(:wiki_event, freeze: false) { create(:wiki_page_event, project: public_project, author: project_owner) }
       let_it_be(:design_event) { create(:design_event, project: public_project, author: project_owner) }
       let_it_be(:team_event) { create(:event, :joined, project: public_project, author: project_owner) }
 
@@ -329,6 +348,172 @@ RSpec.describe UserRecentEventsFinder do
 
         it 'returns events starting from the offset 0' do
           expect(finder.execute).to contain_exactly(public_event)
+        end
+      end
+    end
+
+    describe 'organization filtering', feature_category: :user_profile do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+
+      let_it_be(:org_project) do
+        create(:project, :public, organization: organization, creator: project_owner)
+      end
+
+      let_it_be(:other_org_project) do
+        create(:project, :public, organization: other_organization, creator: project_owner)
+      end
+
+      let_it_be(:org_event) do
+        create(:event, :created, project: org_project, author: project_owner)
+      end
+
+      let_it_be(:other_org_event) do
+        create(:event, :created, project: other_org_project, author: project_owner)
+      end
+
+      context 'when organization is provided' do
+        subject(:finder) do
+          described_class.new(current_user, project_owner, nil, params.merge(organization: organization))
+        end
+
+        it 'returns only events from the specified organization', :aggregate_failures do
+          events = finder.execute
+
+          expect(events).to include(org_event)
+          expect(events).not_to include(other_org_event)
+        end
+      end
+
+      context 'when organization is not provided' do
+        subject(:finder) do
+          described_class.new(current_user, project_owner, nil, params)
+        end
+
+        it 'returns events from all organizations', :aggregate_failures do
+          events = finder.execute
+
+          expect(events).to include(org_event)
+          expect(events).to include(other_org_event)
+        end
+      end
+
+      context 'with group events' do
+        let_it_be(:org_group) { create(:group, organization: organization) }
+        let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+
+        let_it_be(:org_group_event) do
+          create(:event, :created, group: org_group, project: nil, author: project_owner)
+        end
+
+        let_it_be(:other_org_group_event) do
+          create(:event, :created, group: other_org_group, project: nil, author: project_owner)
+        end
+
+        subject(:finder) do
+          described_class.new(current_user, project_owner, nil, params.merge(organization: organization))
+        end
+
+        it 'filters group events by organization', :aggregate_failures do
+          events = finder.execute
+
+          expect(events).to include(org_group_event)
+          expect(events).not_to include(other_org_group_event)
+        end
+      end
+
+      context 'with personal namespace events' do
+        let_it_be(:org_user) { create(:user, :with_namespace, organization: organization) }
+        let_it_be(:other_org_user) { create(:user, :with_namespace, organization: other_organization) }
+
+        let_it_be(:org_personal_event) do
+          create(:event, :joined, project: nil, group: nil, personal_namespace: org_user.namespace,
+            author: project_owner)
+        end
+
+        let_it_be(:other_org_personal_event) do
+          create(:event, :joined, project: nil, group: nil, personal_namespace: other_org_user.namespace,
+            author: project_owner)
+        end
+
+        subject(:finder) do
+          described_class.new(current_user, project_owner, nil, params.merge(organization: organization))
+        end
+
+        it 'filters personal namespace events by organization', :aggregate_failures do
+          events = finder.execute
+
+          expect(events).to include(org_personal_event)
+          expect(events).not_to include(other_org_personal_event)
+        end
+      end
+
+      context 'with multiple users' do
+        let_it_be(:second_user) { create(:user) }
+
+        let_it_be(:second_user_org_project) do
+          create(:project, :public, organization: organization, creator: second_user)
+        end
+
+        let_it_be(:second_user_other_org_project) do
+          create(:project, :public, organization: other_organization, creator: second_user)
+        end
+
+        let_it_be(:second_user_org_event) do
+          create(:event, :created, project: second_user_org_project, author: second_user)
+        end
+
+        let_it_be(:second_user_other_org_event) do
+          create(:event, :created, project: second_user_other_org_project, author: second_user)
+        end
+
+        context 'when organization is provided' do
+          subject(:finder) do
+            described_class.new(
+              current_user,
+              [project_owner, second_user],
+              nil,
+              params.merge(organization: organization)
+            )
+          end
+
+          it 'returns only events from the specified organization for all users', :aggregate_failures do
+            events = finder.execute
+
+            expect(events).to include(org_event, second_user_org_event)
+            expect(events).not_to include(other_org_event, second_user_other_org_event)
+          end
+        end
+
+        context 'when organization and event filter are both provided' do
+          let_it_be(:org_push_event) do
+            create(:push_event, project: org_project, author: project_owner)
+          end
+
+          let_it_be(:other_org_push_event) do
+            create(:push_event, project: other_org_project, author: project_owner)
+          end
+
+          let_it_be(:second_user_org_push_event) do
+            create(:push_event, project: second_user_org_project, author: second_user)
+          end
+
+          subject(:finder) do
+            described_class.new(
+              current_user,
+              [project_owner, second_user],
+              EventFilter.new(EventFilter::PUSH),
+              params.merge(organization: organization)
+            )
+          end
+
+          it 'filters by both organization and event type', :aggregate_failures do
+            events = finder.execute
+
+            expect(events).to include(org_push_event, second_user_org_push_event)
+            expect(events).not_to include(other_org_push_event)
+            expect(events).not_to include(org_event, second_user_org_event)
+          end
         end
       end
     end

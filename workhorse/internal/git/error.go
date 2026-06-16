@@ -32,14 +32,15 @@ func handleLimitErr(c context.Context, err error, w io.Writer, f func(w io.Write
 		return
 	}
 
-	if st, ok := status.FromError(statusErr); ok {
-		details := st.Details()
-		for _, detail := range details {
-			switch detail.(type) {
-			case *gitalypb.LimitError:
-				if err := f(w, correlation.ExtractFromContext(c)); err != nil {
-					log.WithError(fmt.Errorf("handling limit error: %w", err))
-				}
+	st, ok := status.FromError(statusErr)
+	if !ok {
+		return
+	}
+
+	for _, detail := range st.Details() {
+		if _, isLimitError := detail.(*gitalypb.LimitError); isLimitError {
+			if err := f(w, correlation.ExtractFromContext(c)); err != nil {
+				log.WithError(fmt.Errorf("handling limit error: %w", err))
 			}
 		}
 	}

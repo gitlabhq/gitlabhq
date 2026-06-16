@@ -18,8 +18,9 @@ module API
         end
         resource ':id/cluster_agents/:agent_id' do
           resource :tokens do
-            desc 'List tokens for an agent' do
-              detail 'This feature was introduced in GitLab 15.0. Returns a list of tokens for an agent.'
+            desc 'List all agent tokens' do
+              detail 'Lists all active tokens for an agent. You must have the Developer, Maintainer, or Owner role ' \
+                'to use this endpoint.'
               success Entities::Clusters::AgentTokenBasic
               tags %w[cluster_agents]
             end
@@ -34,8 +35,9 @@ module API
               present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
 
-            desc 'Get a single agent token' do
-              detail 'This feature was introduced in GitLab 15.0. Gets a single agent token.'
+            desc 'Retrieve an agent token' do
+              detail 'Retrieves a specified agent token. You must have the Developer, Maintainer, or Owner role to ' \
+                'use this endpoint. Returns a `404` if the agent token has been revoked.'
               success Entities::Clusters::AgentToken
               tags %w[cluster_agents]
             end
@@ -51,7 +53,8 @@ module API
             end
 
             desc 'Create an agent token' do
-              detail 'This feature was introduced in GitLab 15.0. Creates a new token for an agent.'
+              detail 'Creates a token for an agent. You must have the Maintainer or Owner role to use this endpoint. ' \
+                'An agent can have only two active tokens at one time.'
               success Entities::Clusters::AgentTokenWithToken
               tags %w[cluster_agents]
             end
@@ -79,7 +82,8 @@ module API
             end
 
             desc 'Revoke an agent token' do
-              detail 'This feature was introduced in GitLab 15.0. Revokes an agent token.'
+              detail 'Revokes an agent token. You must have the Maintainer or Owner role to use this endpoint.'
+              success code: 204, message: 'Resource deleted'
               tags %w[cluster_agents]
             end
             params do

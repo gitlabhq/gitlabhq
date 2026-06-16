@@ -220,7 +220,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
 
           it 'only truncates until the table specified' do
             expect { truncate_legacy_tables }
-              .to change(referencing_table_model, :count).by(-5)
+              .to change { referencing_table_model.count }.by(-5)
               .and not_change(referenced_table_model, :count)
           end
         end
@@ -354,7 +354,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
     end
 
     it 'truncates the unregistered table alongside the registered tables' do
-      expect { truncate_legacy_tables }.to change(ci_db_unregistered_model, :count).from(5).to(0)
+      expect { truncate_legacy_tables }.to change { ci_db_unregistered_model.count }.from(5).to(0)
     end
 
     context 'with a multi-hop FK chain (unregistered B -> unregistered A -> registered table)' do
@@ -378,8 +378,8 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
 
       it 'truncates all unregistered tables in the chain' do
         expect { truncate_legacy_tables }
-          .to change(ci_db_unregistered_model, :count).from(5).to(0)
-          .and change(ci_db_unregistered_model_b, :count).from(5).to(0)
+          .to change { ci_db_unregistered_model.count }.from(5).to(0)
+          .and change { ci_db_unregistered_model_b.count }.from(5).to(0)
       end
     end
   end

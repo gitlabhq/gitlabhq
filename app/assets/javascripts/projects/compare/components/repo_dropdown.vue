@@ -26,6 +26,7 @@ export default {
       default: false,
     },
   },
+  emits: ['selectProject'],
   data() {
     return {
       loadingProjects: false,

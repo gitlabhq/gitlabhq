@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failures,
   feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
+  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
 
   let(:container_registry_enabled) { true }
   let(:container_registry_enabled_on_project) { ProjectFeature::ENABLED }

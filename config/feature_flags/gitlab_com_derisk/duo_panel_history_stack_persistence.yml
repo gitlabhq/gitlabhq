@@ -1,0 +1,10 @@
+---
+name: duo_panel_history_stack_persistence
+description: Persist the AI panel router history stack to sessionStorage so the back button works after a full page reload.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601680
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238549
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601680
+milestone: '19.1'
+group: group::agent foundations
+type: gitlab_com_derisk
+default_enabled: false

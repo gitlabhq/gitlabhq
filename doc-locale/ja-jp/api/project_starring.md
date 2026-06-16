@@ -2,15 +2,15 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: APIエンドポイントは、Star付きプロジェクトの管理、Star付きプロジェクトのリスト表示、プロジェクトにStarを付けたユーザーのリスト表示、およびプロジェクトにStarを付けるまたはプロジェクトをスター解除することを含みます。
-title: プロジェクトStar付けAPI
+description: スターStar付きプロジェクトを管理するためのAPIエンドポイント。これには、Star付きプロジェクトの一覧表示、プロジェクトをStarしたユーザーの一覧表示、およびプロジェクトのStar付けまたはスター解除が含まれます。
+title: プロジェクトのStar付けAPI
 ---
 
-このAPIを使用して、Star付きプロジェクトを操作します。詳細については、[プロジェクトとStar](../user/project/working_with_projects.md)を参照してください。
+このAPIを使用して、スターStar付きプロジェクトとやり取りします。詳細については、[プロジェクトとStar](../user/project/working_with_projects.md)を参照してください。
 
-## ユーザーがStar付きにしたプロジェクトをリスト表示 {#list-projects-starred-by-a-user}
+## ユーザーがStarを付けたプロジェクトの一覧表示 {#list-projects-starred-by-a-user}
 
-指定されたユーザーがStar付きにした可視プロジェクトのリストを取得します。認証なしでアクセスした場合、公開プロジェクトのみが返されます。
+指定したユーザーがStarを付けたすべての可視プロジェクトを一覧表示します。認証なしでアクセスした場合、公開プロジェクトのみが返されます。
 
 ```plaintext
 GET /users/:user_id/starred_projects
@@ -21,16 +21,16 @@ GET /users/:user_id/starred_projects
 | 属性                     | 型     | 必須 | 説明 |
 |:------------------------------|:---------|:---------|:------------|
 | `user_id`                     | 文字列   | はい      | ユーザーのIDまたはユーザー名。 |
-| `archived`                    | ブール値  | いいえ       | アーカイブステータスで制限します。 |
+| `archived`                    | ブール値  | いいえ       | アーカイブ状態で制限します。 |
 | `membership`                  | ブール値  | いいえ       | 現在のユーザーがメンバーであるプロジェクトで制限します。 |
-| `min_access_level`            | 整数  | いいえ       | 現在のユーザーが指定されたアクセスレベル以上を持つプロジェクトに限定します。使用可能な値: `5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
+| `min_access_level`            | 整数  | いいえ       | 現在のユーザーが指定されたアクセスレベル以上を持つプロジェクトに限定します。使用可能な値: `5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
 | `order_by`                    | 文字列   | いいえ       | `id`、`name`、`path`、`created_at`、`updated_at`、`star_count`、または`last_activity_at`のフィールドで並べ替えられたプロジェクトを返します。デフォルトは`created_at`です。 |
 | `owned`                       | ブール値  | いいえ       | 現在のユーザーが明示的に所有するプロジェクトで制限します。 |
 | `search`                      | 文字列   | いいえ       | 検索条件に一致するプロジェクトのリストを返します。 |
 | `simple`                      | ブール値  | いいえ       | プロジェクトごとに制限されたフィールドのみを返します。認証がない場合、このオペレーションは何も行いません。単純なフィールドのみが返されます。 |
 | `sort`                        | 文字列   | いいえ       | `asc`または`desc`の順にソートされたプロジェクトを返します。デフォルトは`desc`です。 |
 | `starred`                     | ブール値  | いいえ       | 現在のユーザーがStar付きに登録したプロジェクトで制限します。 |
-| `statistics`                  | ブール値  | いいえ       | プロジェクトの統計を含めます。レポーター、デベロッパー、メンテナー、またはオーナーのロールを持つユーザーのみ利用可能です。 |
+| `statistics`                  | ブール値  | いいえ       | プロジェクトの統計を含めます。レポーター、デベロッパー、メンテナー、またはオーナーロールを持つユーザーのみが利用できます。 |
 | `updated_after`               | 日時 | いいえ       | 指定された時刻以降に最終更新が行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393979)されました。 |
 | `updated_before`              | 日時 | いいえ       | 指定された時刻以前に最終更新が行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393979)されました。 |
 | `visibility`                  | 文字列   | いいえ       | 表示レベル（`public`、`internal`、`private`）で制限します。 |
@@ -270,9 +270,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## プロジェクトにStar付きをしたユーザーをリスト表示 {#list-users-who-starred-a-project}
+## プロジェクトをStarしたユーザーの一覧表示 {#list-users-who-starred-a-project}
 
-プロジェクトにStar付きをしたユーザーをリスト表示します。
+指定したプロジェクトをStarしたすべてのユーザーを一覧表示します。
 
 ```plaintext
 GET /projects/:id/starrers
@@ -434,9 +434,9 @@ curl --request POST \
 }
 ```
 
-## プロジェクトをスター解除する {#unstar-a-project}
+## プロジェクトのスター解除 {#unstar-a-project}
 
-プロジェクトをスター解除します。
+プロジェクトのスター解除。
 
 ```plaintext
 POST /projects/:id/unstar
@@ -547,4 +547,4 @@ curl --request POST \
 }
 ```
 
-プロジェクトがStar付きではない場合、ステータスコード`304`が返されます。
+プロジェクトがStarされていない場合、ステータスコード`304`を返します。

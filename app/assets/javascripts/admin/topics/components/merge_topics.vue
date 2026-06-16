@@ -8,6 +8,7 @@ import TopicSelect from './topic_select.vue';
 const formId = 'merge-topics-form';
 
 export default {
+  name: 'MergeTopics',
   components: {
     GlAlert,
     GlButton,

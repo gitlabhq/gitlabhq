@@ -3,12 +3,13 @@
 RSpec.shared_examples 'snippet visibility' do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:author) { create(:user) }
-  let_it_be(:member) { create(:user) }
-  let_it_be(:external) { create(:user, :external) }
-  let_it_be(:non_member) { create(:user) }
+  let_it_be(:snippet_org) { create(:common_organization) }
+  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be(:member, freeze: false) { create(:user) }
+  let_it_be(:external, freeze: false) { create(:user, :external) }
+  let_it_be(:non_member, freeze: false) { create(:user) }
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :public).tap do |project|
       project.add_developer(author)
       project.add_developer(member)
@@ -27,9 +28,9 @@ RSpec.shared_examples 'snippet visibility' do
   let(:snippet) { snippets[snippet_visibility] }
 
   context "For project snippets" do
-    let_it_be(:private_snippet) { create(:project_snippet, :private, project: project, author: author) }
-    let_it_be(:public_snippet) { create(:project_snippet, :public, project: project, author: author) }
-    let_it_be(:internal_snippet) { create(:project_snippet, :internal, project: project, author: author) }
+    let_it_be(:private_snippet, freeze: false) { create(:project_snippet, :private, project: project, author: author) }
+    let_it_be(:public_snippet, freeze: false) { create(:project_snippet, :public, project: project, author: author) }
+    let_it_be(:internal_snippet, freeze: false) { create(:project_snippet, :internal, project: project, author: author) }
 
     let!(:users) do
       {
@@ -236,7 +237,7 @@ RSpec.shared_examples 'snippet visibility' do
           member = project.member(external)
 
           if project.private?
-            project.add_developer(external) unless member
+            project.add_developer(external) unless member # -- Does not work in before_all
           elsif member
             member.delete
           end
@@ -247,7 +248,7 @@ RSpec.shared_examples 'snippet visibility' do
         it 'returns proper outcome' do
           expect(can?(user, :read_snippet, snippet)).to eq(outcome)
 
-          results = described_class.new(user, project: project).execute
+          results = described_class.new(user, project: project, organization_id: project.organization_id).execute
 
           expect(results.include?(snippet)).to eq(outcome)
         end
@@ -255,7 +256,7 @@ RSpec.shared_examples 'snippet visibility' do
 
       context "Without a given project and #{params[:user_type]} users" do
         it 'returns proper outcome' do
-          results = described_class.new(user).execute
+          results = described_class.new(user, organization_id: project.organization_id).execute
 
           expect(results.include?(snippet)).to eq(outcome)
         end
@@ -293,15 +294,15 @@ RSpec.shared_examples 'snippet visibility' do
     end
 
     with_them do
-      let_it_be(:private_snippet) { create(:personal_snippet, :private, author: author) }
-      let_it_be(:public_snippet) { create(:personal_snippet, :public, author: author) }
-      let_it_be(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
+      let_it_be(:private_snippet, freeze: false) { create(:personal_snippet, :private, author: author) }
+      let_it_be(:public_snippet, freeze: false) { create(:personal_snippet, :public, author: author) }
+      let_it_be(:internal_snippet, freeze: false) { create(:personal_snippet, :internal, author: author) }
 
       context "For personal and #{params[:snippet_visibility]} snippets with #{params[:user_type]} user" do
         it 'returns proper outcome' do
           expect(can?(user, :read_snippet, snippet)).to eq(outcome)
 
-          results = described_class.new(user).execute
+          results = described_class.new(user, organization_id: snippet_org.id).execute
 
           expect(results.include?(snippet)).to eq(outcome)
         end
@@ -317,7 +318,7 @@ RSpec.shared_examples 'snippet visibility' do
       allow(Ability).to receive(:allowed?).and_call_original
       allow(Ability).to receive(:allowed?).with(author, :read_cross_project) { false }
 
-      service = described_class.new(author)
+      service = described_class.new(author, organization_id: snippet_org.id)
 
       expect(service).to receive(:personal_snippets).and_call_original
       expect(service).not_to receive(:snippets_of_visible_projects)

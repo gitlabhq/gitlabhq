@@ -39,6 +39,7 @@ export default {
       required: true,
     },
   },
+  emits: ['click'],
   computed: {
     isActionInProgress() {
       return Boolean(

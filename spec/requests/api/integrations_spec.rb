@@ -7,9 +7,9 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, creator_id: user.id, namespace: user.namespace, owners: [user]) }
+  let_it_be_with_reload(:project) { create(:project, creator_id: user.id, namespace: user.namespace, owners: [user]) }
   let_it_be(:project2) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let_it_be(:group, reload: true) { create(:group, owners: user) }
+  let_it_be_with_reload(:group) { create(:group, owners: user) }
 
   context "Project level integrations" do
     let_it_be(:available_integration_names) do
@@ -17,7 +17,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       Integration.available_integration_names(include_instance_specific: false) - excluded_integrations
     end
 
-    let_it_be(:project_integrations_map) do
+    let_it_be(:project_integrations_map, freeze: false) do
       available_integration_names.index_with do |name|
         # Activate Confluence so it appears in API response
         traits = (name == 'confluence' ? [] : [:inactive])
@@ -191,7 +191,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             params: params.merge(notify_only_broken_pipelines: true)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+          expect(json_response['properties']['notify_only_broken_pipelines']).to be(true)
         end
 
         it 'accepts `use_inherited_settings` for inheritance' do
@@ -201,7 +201,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           end.to change { project_integrations_map[integration_name.underscore].reload.inherit_from_id }.from(nil)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['inherited']).to eq(true)
+          expect(json_response['inherited']).to be(true)
         end
       end
 
@@ -269,7 +269,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           it 'returns boolean values for notify_only_broken_pipelines' do
             get api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user)
 
-            expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+            expect(json_response['properties']['notify_only_broken_pipelines']).to be(true)
           end
         end
       end
@@ -396,6 +396,32 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         expect(response_keys).not_to include(*integration.secret_fields) unless integration.secret_fields.empty?
       end
     end
+
+    describe 'granular token authorization' do
+      let(:boundary_object) { project }
+
+      # The `integrations` and backwards-compatible `services` paths share the same code.
+      %w[integrations services].each do |endpoint|
+        it_behaves_like 'authorizing granular token permissions', :read_integration do
+          let(:request) { get api("/projects/#{project.id}/#{endpoint}", personal_access_token: pat) }
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_integration do
+          let(:request) { get api("/projects/#{project.id}/#{endpoint}/mattermost", personal_access_token: pat) }
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :delete_integration do
+          let(:request) { delete api("/projects/#{project.id}/#{endpoint}/mattermost", personal_access_token: pat) }
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :update_integration do
+          let(:request) do
+            put api("/projects/#{project.id}/#{endpoint}/mattermost", personal_access_token: pat),
+              params: { webhook: 'https://example.com', username: 'test' }
+          end
+        end
+      end
+    end
   end
 
   context "Group level integrations" do
@@ -404,7 +430,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       Integration.available_integration_names(include_project_specific: false, include_instance_specific: false) - excluded_integrations
     end
 
-    let_it_be(:group_integrations_map) do
+    let_it_be(:group_integrations_map, freeze: false) do
       available_integration_names.index_with do |name|
         traits = (name == 'confluence' ? [] : [:inactive])
         create(integration_factory(name), *traits, :group, group: group)
@@ -484,6 +510,29 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             let(:integrations_map) { group_integrations_map }
           end
         end
+      end
+    end
+
+    describe 'granular token authorization' do
+      let(:boundary_object) { group }
+
+      it_behaves_like 'authorizing granular token permissions', :read_integration do
+        let(:request) { get api("/groups/#{group.id}/integrations", personal_access_token: pat) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_integration do
+        let(:request) { get api("/groups/#{group.id}/integrations/mattermost", personal_access_token: pat) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_integration do
+        let(:request) do
+          put api("/groups/#{group.id}/integrations/mattermost", personal_access_token: pat),
+            params: { webhook: 'https://example.com', username: 'test' }
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_integration do
+        let(:request) { delete api("/groups/#{group.id}/integrations/mattermost", personal_access_token: pat) }
       end
     end
   end

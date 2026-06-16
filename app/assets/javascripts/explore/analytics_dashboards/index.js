@@ -7,8 +7,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { observable } from '~/lib/utils/observable';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
+import createRouter from 'ee_else_ce/explore/analytics_dashboards/router';
 import App from './pages/app.vue';
-import createRouter from './router';
 
 export default () => {
   const el = document.getElementById('js-explore-analytics-dashboards');
@@ -29,8 +29,10 @@ export default () => {
   // This is a mini state to help the breadcrumb have the correct name
   const breadcrumbState = observable('explore_analytics_dashboards_breadcrumb', {
     name: '',
-    updateName(value) {
-      this.name = value;
+    slug: '',
+    update({ name, slug }) {
+      this.name = name;
+      this.slug = slug;
     },
   });
 
@@ -43,12 +45,15 @@ export default () => {
     apolloProvider,
     router,
     provide: {
-      currentUserId,
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
     },
     render(h) {
-      return h(App);
+      return h(App, {
+        props: {
+          currentUserId,
+        },
+      });
     },
   });
 };

@@ -51,7 +51,9 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
 
       before do
         allow(target_work_item).to receive(:get_widget).with(:notifications).and_return(true)
-        allow(work_item).to receive(:from_service_desk?).and_return(true)
+        # Class-level stub survives the reload/becomes churn in the data-sync; an instance stub does not.
+        allow_any_instance_of(work_item.work_item_type.class) # rubocop:disable RSpec/AnyInstanceOf -- see comment above
+          .to receive(:service_desk?).and_return(true)
       end
 
       context 'when moving work item', :aggregate_failures do
@@ -103,7 +105,8 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
 
       context 'when work item is not a service desk work item' do
         before do
-          allow(work_item).to receive(:from_service_desk?).and_return(false)
+          allow_any_instance_of(work_item.work_item_type.class) # rubocop:disable RSpec/AnyInstanceOf -- see service_desk? stub above
+            .to receive(:service_desk?).and_return(false)
         end
 
         it 'copies subscriptions but does not copy notifications' do

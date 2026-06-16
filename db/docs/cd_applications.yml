@@ -1,0 +1,14 @@
+---
+table_name: cd_applications
+classes:
+- Cd::Application
+feature_categories:
+- continuous_delivery
+description: Continuous Deployment Application
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237236
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

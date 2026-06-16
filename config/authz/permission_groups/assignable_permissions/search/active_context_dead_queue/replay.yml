@@ -1,0 +1,9 @@
+---
+name: replay_active_context_dead_queue
+description: Grants the ability to replay items from the ActiveContext dead queue
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - replay_active_context_dead_queue

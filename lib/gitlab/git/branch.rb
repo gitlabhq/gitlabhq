@@ -32,6 +32,11 @@ module Gitlab
       def cache_key
         "branch:" + Digest::SHA1.hexdigest([name, target, dereferenced_target&.sha].join(':'))
       end
+
+      def project
+        container = dereferenced_target&.repository&.container
+        container if container.is_a?(::Project)
+      end
     end
   end
 end

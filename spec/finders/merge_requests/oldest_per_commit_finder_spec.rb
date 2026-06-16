@@ -180,7 +180,7 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
 
     context 'when SHAs are only present in `merge_request_diff_commits` table' do
       before do
-        stub_feature_flags(merge_request_diff_commits_partition: false)
+        stub_feature_flags(mr_diff_commits_read_new_table: false)
       end
 
       it_behaves_like 'finder for oldest MR per commit'
@@ -192,7 +192,7 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
 
     context 'when SHAs are present in both tables' do
       before do
-        stub_feature_flags(merge_request_diff_commits_partition: false)
+        stub_feature_flags(mr_diff_commits_read_new_table: false)
       end
 
       it 'returns a Hash mapping commit SHAs to their oldest merge requests' do

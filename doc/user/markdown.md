@@ -13,7 +13,7 @@ description: Formatting, inline HTML, GitLab-specific references, diagrams, and 
 
 {{< /details >}}
 
-GitLab Flavored Markdown (GLFM) is a powerful markup language that formats text in the GitLab user interface.
+GitLab Flavored Markdown (GLFM) is a markup language that formats text in the GitLab user interface.
 GLFM:
 
 - Creates rich content with support for code, diagrams, math equations, and multimedia.
@@ -1418,7 +1418,7 @@ Python code block:
 def function():
     #indenting works just fine in the fenced code block
     s = "Python code"
-    print s
+    print(s)
 ```
 
 Markdown code block using 4 spaces:
@@ -1430,7 +1430,7 @@ Markdown code block using 4 spaces:
 JavaScript code block using tildes:
 
 ~~~javascript
-var s = "JavaScript syntax highlighting";
+const s = "JavaScript syntax highlighting";
 alert(s);
 ~~~
 ````
@@ -1443,7 +1443,7 @@ The three previous examples render as:
 > def function():
 >     #indenting works just fine in the fenced code block
 >     s = "Python code"
->     print s
+>     print(s)
 > ```
 >
 > Markdown code block using 4 spaces:
@@ -1457,7 +1457,7 @@ The three previous examples render as:
 > JavaScript code block using tildes:
 >
 > ```javascript
-> var s = "JavaScript syntax highlighting";
+> const s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
 
@@ -2051,7 +2051,7 @@ You can use the `::include` directive inside code blocks to add content from fil
 For example, if your repository contains a file `javascript_code.js`:
 
 ```javascript
-var s = "JavaScript syntax highlighting";
+const s = "JavaScript syntax highlighting";
 alert(s);
 ```
 
@@ -2070,7 +2070,7 @@ When rendered, the example looks similar to:
 > Our script contains:
 >
 > ```javascript
-> var s = "JavaScript syntax highlighting";
+> const s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
 

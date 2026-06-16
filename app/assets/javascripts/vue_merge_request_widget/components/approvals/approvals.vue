@@ -66,6 +66,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['toggle', 'clearError'],
   data() {
     return {
       hasApprovalAuthError: false,

@@ -137,22 +137,6 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
       end
     end
 
-    context 'when record is a WorkItems::Description' do
-      let(:record) { WorkItems::Description.new(work_item_id: 3, namespace_id: 4) }
-      let(:user_reference_column) { 'last_edited_by_id' }
-
-      it 'pushes a composite key' do
-        expected_result = [
-          { work_item_id: 3, namespace_id: 4 },
-          'WorkItems::Description', source_user.namespace_id, nil, source_user.id, user_reference_column, 1
-        ].to_json
-
-        expect(result).to be_success
-        expect(result.payload).to eq(serialized_reference: expected_result)
-        expect(set).to contain_exactly(expected_result)
-      end
-    end
-
     context 'when record does not respond to :id' do
       let(:record) { UserStatus.new }
 

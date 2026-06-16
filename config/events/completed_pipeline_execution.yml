@@ -11,6 +11,8 @@ additional_properties:
     description: Completion status (ie. success, failed, skipped, canceled)
   failure_reason:
     description: Pipeline failure reason (e.g. config_error, unknown_failure). Only present for failed pipelines.
+  author_source:
+    description: AI agent identifier that generated the project's CI config. Only present when an agent is on record; omitted otherwise. AI-vs-human authorship is observed on the per-commit commit_change_to_ciconfigfile and create_ci_config_file events.
 product_group: pipeline_execution
 product_categories:
 - pipeline_reports

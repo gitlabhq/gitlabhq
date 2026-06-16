@@ -25,14 +25,16 @@ describe('Import Project by URL Form', () => {
   const mockImportByUrlValidatePath = '/import/url/validate';
   const mockNewProjectPath = '/projects/new';
   const mockNewProjectFormPath = '/projects';
+  const mockNamespace = {
+    fullPath: 'john.doe',
+    id: 2,
+    visibility: 'internal',
+  };
   const defaultProps = {
-    namespace: {
-      id: '1',
-      fullPath: 'root',
-    },
+    namespace: mockNamespace,
   };
 
-  const createComponent = (options = {}) => {
+  const createComponent = (options = {}, mockProps = defaultProps) => {
     const { provide = {}, mountFn = shallowMountExtended } = options;
 
     wrapper = mountFn(ImportByUrlForm, {
@@ -43,7 +45,7 @@ describe('Import Project by URL Form', () => {
         hasRepositoryMirrorsFeature: false,
         ...provide,
       },
-      propsData: defaultProps,
+      propsData: mockProps,
       mocks: {
         $toast,
       },
@@ -100,10 +102,8 @@ describe('Import Project by URL Form', () => {
       expect(template.props('currentStep')).toBe(null);
     });
 
-    it('includes shared fields and passes namespace', () => {
-      const sharedFields = findSharedFields();
-      expect(sharedFields.exists()).toBe(true);
-      expect(sharedFields.props('namespace').id).toEqual(defaultProps.namespace.id);
+    it('passes the namespace prop through to shared fields', () => {
+      expect(findSharedFields().props('namespace')).toMatchObject(mockNamespace);
     });
 
     it('renders "Create project" button as disabled', () => {
@@ -129,14 +129,32 @@ describe('Import Project by URL Form', () => {
     });
   });
 
-  describe('url validation', () => {
+  describe('when parent namespace was pre-selected', () => {
+    beforeEach(() => {
+      createComponent(
+        {},
+        { namespace: { id: 'group-1', fullPath: 'my-group', visibility: 'public' } },
+      );
+    });
+
+    it('passes the pre-selected namespace to shared fields', () => {
+      expect(findSharedFields().props('namespace')).toMatchObject({
+        id: 'group-1',
+        fullPath: 'my-group',
+        visibility: 'public',
+      });
+    });
+  });
+
+  describe('validation', () => {
     const badUrl = 'nothing to see';
+    const fineUrl = 'https://foo.com/bar.git';
 
     beforeEach(() => {
       createComponent({ mountFn: mountExtended });
     });
 
-    it('validates the input on blur when url is invalid', async () => {
+    it('validates the URL input on blur when url is invalid', async () => {
       expect(findUrlInputWrapper().classes()).not.toContain('is-invalid');
       findUrlInput().vm.$emit('input', badUrl);
       await nextTick();
@@ -145,7 +163,7 @@ describe('Import Project by URL Form', () => {
       expect(findUrlInputWrapper().classes()).toContain('is-invalid');
     });
 
-    it('does not validate on blur when nothing is typed', async () => {
+    it('skips validating URL input on blur when nothing is typed', async () => {
       findUrlInput().vm.$emit('input', '');
       await nextTick();
       await findUrlInput().trigger('blur');
@@ -153,7 +171,7 @@ describe('Import Project by URL Form', () => {
       expect(findUrlInputWrapper().classes()).not.toContain('is-invalid');
     });
 
-    it('resets the invalid feedback when user refocuses and types', async () => {
+    it('resets the invalid URL feedback when user refocuses and types', async () => {
       findUrlInput().vm.$emit('input', badUrl);
       await nextTick();
       await findUrlInput().trigger('blur');
@@ -166,16 +184,35 @@ describe('Import Project by URL Form', () => {
     });
 
     it('enables the `create project` button when a reasonable git URL is entered', async () => {
+      findSharedFields().vm.$emit('on-validate-project-fields', true);
       findUrlInput().vm.$emit('input', badUrl);
       await nextTick();
       await findUrlInput().trigger('blur');
       await nextTick();
       expect(findImportButton().props('disabled')).toBe(true);
 
-      await findUrlInput().vm.$emit('input', 'https://foo.com/bar.git');
+      await findUrlInput().vm.$emit('input', fineUrl);
       await findUrlInput().trigger('blur');
       await nextTick();
       expect(findImportButton().props('disabled')).toBe(false);
+    });
+
+    it('enables the `create project` button when a valid namespace path is registered', async () => {
+      findSharedFields().vm.$emit('on-validate-project-fields', true);
+      findUrlInput().vm.$emit('input', fineUrl);
+      await nextTick();
+      await findUrlInput().trigger('blur');
+      await nextTick();
+      expect(findImportButton().props('disabled')).toBe(false);
+    });
+
+    it('disables the `create project` button when invalid namespace path is registered', async () => {
+      findSharedFields().vm.$emit('on-validate-project-fields', false);
+      findUrlInput().vm.$emit('input', fineUrl);
+      await nextTick();
+      await findUrlInput().trigger('blur');
+      await nextTick();
+      expect(findImportButton().props('disabled')).toBe(true);
     });
   });
 
@@ -255,20 +292,6 @@ describe('Import Project by URL Form', () => {
 
         expect($toast.show).toHaveBeenCalledWith(`Connection failed: ${errorMessage}`);
       });
-    });
-  });
-
-  describe('emits', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('onSelectNamespace event when shared fields emits it', () => {
-      const newNamespace = { id: '2', fullPath: 'new-namespace' };
-
-      findSharedFields().vm.$emit('onSelectNamespace', newNamespace);
-
-      expect(wrapper.emitted('onSelectNamespace')).toEqual([[newNamespace]]);
     });
   });
 });

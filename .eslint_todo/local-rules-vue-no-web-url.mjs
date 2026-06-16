@@ -86,7 +86,7 @@ export default {
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_flow_details.vue',
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_item_user_attribution.vue',
     'ee/app/assets/javascripts/ai/catalog/components/service_account_project_memberships.vue',
-    'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table/assignee_avatars.vue',
+    'app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table/assignee_avatars.vue',
     'ee/app/assets/javascripts/analytics/code_review_analytics/components/approvers_column.vue',
     'ee/app/assets/javascripts/analytics/code_review_analytics/components/merge_request_table.vue',
     'ee/app/assets/javascripts/boards/components/board_settings_list_types.vue',

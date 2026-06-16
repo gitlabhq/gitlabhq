@@ -73,6 +73,7 @@ export default {
     label-for="token-expiration"
     :invalid-feedback="error"
     :state="!error"
+    data-testid="expiration-date-field"
   >
     <template #description>
       <span v-if="maxExpirationDate">
@@ -91,6 +92,7 @@ export default {
 
     <gl-datepicker
       v-model="expirationDate"
+      input-id="token-expiration"
       :show-clear-button="!maxExpirationDate"
       :max-date="maxExpirationDate"
       :min-date="minExpirationDate"

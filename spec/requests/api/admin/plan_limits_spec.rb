@@ -295,4 +295,145 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
       end
     end
   end
+
+  describe 'column parity' do
+    let_it_be(:non_limit_columns) do
+      %w[
+        id
+        plan_id
+        plan_name_uid
+        updated_at
+      ].freeze
+    end
+
+    # Backlog of plan_limits columns that are not yet exposed through the admin
+    # Plan Limits API.
+    #
+    # Do not add to this list. Every new column on plan_limits must be exposed
+    # through the admin Plan Limits API. plan_limits is cell-scoped configuration
+    # and cells need a way to tune each limit independently.
+    #
+    # See:
+    #   - doc/development/application_limits.md
+    #   - https://gitlab.com/gitlab-org/gitlab/-/work_items/600205
+    let_it_be(:unexposed_columns) do
+      %w[
+        active_versioned_pages_deployments_limit_by_namespace
+        audit_events_amazon_s3_configurations
+        cargo_max_file_size
+        ci_daily_pipeline_schedule_triggers
+        ci_job_annotations_num
+        ci_job_annotations_size
+        ci_jobs_trace_size_limit
+        ci_max_artifact_size_accessibility
+        ci_max_artifact_size_annotations
+        ci_max_artifact_size_api_fuzzing
+        ci_max_artifact_size_archive
+        ci_max_artifact_size_browser_performance
+        ci_max_artifact_size_cluster_applications
+        ci_max_artifact_size_cluster_image_scanning
+        ci_max_artifact_size_cobertura
+        ci_max_artifact_size_codequality
+        ci_max_artifact_size_container_scanning
+        ci_max_artifact_size_coverage_fuzzing
+        ci_max_artifact_size_cyclonedx
+        ci_max_artifact_size_dast
+        ci_max_artifact_size_dependency_scanning
+        ci_max_artifact_size_dotenv
+        ci_max_artifact_size_jacoco
+        ci_max_artifact_size_junit
+        ci_max_artifact_size_license_management
+        ci_max_artifact_size_license_scanning
+        ci_max_artifact_size_load_performance
+        ci_max_artifact_size_lsif
+        ci_max_artifact_size_metadata
+        ci_max_artifact_size_metrics
+        ci_max_artifact_size_metrics_referee
+        ci_max_artifact_size_network_referee
+        ci_max_artifact_size_performance
+        ci_max_artifact_size_repository_xray
+        ci_max_artifact_size_requirements
+        ci_max_artifact_size_requirements_v2
+        ci_max_artifact_size_sarif
+        ci_max_artifact_size_sast
+        ci_max_artifact_size_secret_detection
+        ci_max_artifact_size_slsa_provenance_statement
+        ci_max_artifact_size_terraform
+        ci_max_artifact_size_trace
+        ci_pipeline_deployments
+        daily_invites
+        dashboard_limit_enabled_at
+        dast_profile_schedules
+        debian_max_file_size
+        external_audit_event_destinations
+        file_size_limit_mb
+        golang_max_file_size
+        google_cloud_logging_configurations
+        group_ci_variables
+        group_hooks
+        import_placeholder_user_limit_tier_1
+        import_placeholder_user_limit_tier_2
+        import_placeholder_user_limit_tier_3
+        import_placeholder_user_limit_tier_4
+        ml_model_max_file_size
+        offset_pagination_limit
+        pages_file_entries
+        pipeline_triggers
+        project_access_token_limit
+        project_ci_secure_files
+        project_ci_variables
+        project_feature_flags
+        project_hooks
+        pull_mirror_interval_seconds
+        repository_size
+        rpm_max_file_size
+        rubygems_max_file_size
+        security_policy_scan_execution_schedules
+      ].freeze
+    end
+
+    let_it_be(:put_params) do
+      route = API::Admin::PlanLimits.routes.find { |r| r.request_method == 'PUT' }
+      route.params.keys.map(&:to_s) - %w[plan_name]
+    end
+
+    let(:entity_attributes) { API::Entities::PlanLimit.root_exposures.map { |e| e.attribute.to_s } }
+    let(:api_exposed_columns) { (entity_attributes + put_params).uniq }
+    let(:limit_columns) { PlanLimits.column_names - non_limit_columns }
+
+    it 'exposes every plan_limits column in the admin Plan Limits API' do
+      missing = limit_columns - api_exposed_columns - unexposed_columns
+
+      expect(missing).to be_empty, <<~MSG
+        The following plan_limits columns are not exposed via the admin Plan Limits API:
+
+          #{missing.join("\n  ")}
+
+        plan_limits is cell-scoped configuration. Every column must be settable
+        per cell via the admin Plan Limits API. Either:
+
+          1. Expose the column in lib/api/admin/plan_limits.rb (PUT params) and
+             lib/api/entities/plan_limit.rb (GET response), OR
+          2. (Discouraged) Add the column to `unexposed_columns` with a comment
+             explaining the deferral.
+
+        See doc/development/application_limits.md and
+        https://gitlab.com/gitlab-org/gitlab/-/work_items/600205.
+      MSG
+    end
+
+    it 'keeps the unexposed columns allowlist tight' do
+      redundant = unexposed_columns & api_exposed_columns
+
+      expect(redundant).to be_empty,
+        "Remove from `unexposed_columns` (now exposed via the API): #{redundant.join(', ')}"
+    end
+
+    it 'has no stale columns in the allowlist' do
+      stale = unexposed_columns - PlanLimits.column_names
+
+      expect(stale).to be_empty,
+        "`unexposed_columns` references nonexistent plan_limits columns: #{stale.join(', ')}"
+    end
+  end
 end

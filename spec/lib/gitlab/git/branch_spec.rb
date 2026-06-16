@@ -138,6 +138,32 @@ RSpec.describe Gitlab::Git::Branch, feature_category: :source_code_management do
     end
   end
 
+  describe '#project' do
+    let(:branch) { repository.find_branch('master') }
+
+    context 'when the container is a Project' do
+      it 'returns the project' do
+        expect(branch.project).to eq(project)
+      end
+    end
+
+    context 'when the container is not a Project' do
+      before do
+        allow(branch.dereferenced_target.repository).to receive(:container).and_return(build(:group))
+      end
+
+      it { expect(branch.project).to be_nil }
+    end
+
+    context 'when dereferenced_target is nil' do
+      before do
+        allow(branch).to receive(:dereferenced_target).and_return(nil)
+      end
+
+      it { expect(branch.project).to be_nil }
+    end
+  end
+
   def create_commit
     repository.commit_files(
       user,

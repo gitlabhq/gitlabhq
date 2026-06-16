@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
   describe 'GET /merge_requests' do
     let_it_be_with_reload(:user) { create(:user, email: 'private1@example.com') }
-    let_it_be(:assignee) { create(:user, email: 'private2@example.com') }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [assignee]) }
-    let_it_be(:issuable) { merge_request } # "alias" for shared examples
+    let_it_be(:assignee, freeze: false) { create(:user, email: 'private2@example.com') }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, assignees: [assignee]) }
+    let_it_be(:issuable, freeze: false) { merge_request } # "alias" for shared examples
 
     before_all do
       project.add_developer(user)
@@ -32,7 +32,7 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
       it_behaves_like 'an authenticated merge request atom feed'
 
       context 'but the use can not see the project' do
-        let_it_be(:other_project) { create(:project) }
+        let_it_be(:other_project, freeze: false) { create(:project) }
 
         it 'renders 404 page' do
           visit project_issues_path(other_project, :atom)
@@ -82,9 +82,11 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
       end
 
       context 'and the project is public' do
-        let_it_be(:project) { create(:project, :public, :repository) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [assignee]) }
-        let_it_be(:issuable) { merge_request } # "alias" for shared examples
+        let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+        let_it_be(:merge_request, freeze: false) do
+          create(:merge_request, source_project: project, assignees: [assignee])
+        end
+        let_it_be(:issuable, freeze: false) { merge_request } # "alias" for shared examples
 
         it_behaves_like 'an authenticated issuable atom feed'
         it_behaves_like 'an authenticated merge request atom feed'
@@ -92,7 +94,7 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
     end
 
     context 'with potentially malicious description' do
-      let_it_be(:malicious_mr) do
+      let_it_be(:malicious_mr, freeze: false) do
         create(:merge_request,
           source_project: project,
           source_branch: 'fix',
@@ -101,7 +103,7 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
         )
       end
 
-      let_it_be(:issuable) { malicious_mr }
+      let_it_be(:issuable, freeze: false) { malicious_mr }
 
       before do
         visit project_merge_requests_path(project, :atom, feed_token: user.feed_token)
@@ -113,9 +115,9 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
 
   describe 'GET /groups/:group/-/merge_requests' do
     let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
     before_all do
       group.add_developer(user)
@@ -163,9 +165,9 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
       end
 
       context 'and the group is public' do
-        let_it_be(:group) { create(:group, :public) }
-        let_it_be(:project) { create(:project, :public, :repository, group: group) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+        let_it_be(:group, freeze: false) { create(:group, :public) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :repository, group: group) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
         before do
           visit merge_requests_group_path(group, :atom)

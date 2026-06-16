@@ -13,7 +13,7 @@ module Gitlab
           partition_foreign_key: :worker_partition,
           inverse_of: :jobs
 
-        belongs_to :organization
+        belongs_to :organization, class_name: '::Organizations::Organization'
       end
     end
   end

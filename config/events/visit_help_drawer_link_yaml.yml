@@ -2,6 +2,8 @@
 description: Tracks when a user clicks on the .gitlab-ci.yml syntax reference help link.
 action: visit_help_drawer_link_yaml
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 milestone: '15.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88258
 tiers:

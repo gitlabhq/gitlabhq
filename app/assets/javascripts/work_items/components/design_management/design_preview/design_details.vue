@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { MountingPortal } from 'portal-vue';
 import { isNull } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -52,6 +53,7 @@ export default {
     DesignScaler,
     DesignReplyForm,
     GlAlert,
+    MountingPortal,
   },
   inject: ['fullPath'],
   beforeRouteUpdate(to, from, next) {
@@ -71,6 +73,13 @@ export default {
     const pageEl = getPageLayoutElement();
     if (pageEl) {
       pageEl.classList.remove(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    }
+
+    // Restore focus to the element that opened the design view (typically the
+    // design link). Without this, focus reverts to <body> when the overlay
+    // closes, which is an accessibility issue.
+    if (this.previouslyFocused?.isConnected) {
+      this.previouslyFocused.focus();
     }
 
     next();
@@ -101,6 +110,7 @@ export default {
       prevCurrentUserTodos: null,
       maxScale: DEFAULT_MAX_SCALE,
       isSidebarOpen: true,
+      previouslyFocused: null,
     };
   },
   apollo: {
@@ -230,6 +240,14 @@ export default {
     },
   },
   mounted() {
+    if (document.activeElement && document.activeElement !== document.body) {
+      this.previouslyFocused = document.activeElement;
+    }
+    // Move focus into the overlay so keyboard users and screen readers can
+    // interact with it. $nextTick ensures the MountingPortal target is in the DOM.
+    this.$nextTick(() => {
+      this.$refs.root?.focus();
+    });
     Mousetrap.bind(keysFor(ISSUE_CLOSE_DESIGN), this.closeDesign);
   },
   methods: {
@@ -364,77 +382,81 @@ export default {
 </script>
 
 <template>
-  <div
-    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle lg:gl-flex-row"
-  >
-    <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
-      <design-toolbar
-        :design="design"
-        :design-filename="$route.params.id"
-        :is-loading="isLoading"
-        :is-sidebar-open="isSidebarOpen"
-        :is-latest-version="isLatestVersion"
-        :all-designs="allDesigns"
-        :current-user-design-todos="currentUserDesignTodos"
-        :can-update-design="canUpdateDesign"
-        @toggle-sidebar="toggleSidebar"
-        @archive-design="onArchiveDesign"
-        @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
-      />
-      <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
-        <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">
-          <div v-if="errorMessage" class="gl-p-5">
-            <gl-alert variant="danger" @dismiss="errorMessage = null">
-              {{ errorMessage }}
-            </gl-alert>
-          </div>
-          <design-presentation
-            :image="design.image"
-            :image-name="design.filename"
-            :discussions="discussions"
-            :is-annotating="isAnnotating"
-            :scale="scale"
-            :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-            :is-sidebar-open="isSidebarOpen"
-            :is-loading="isLoading"
-            :disable-commenting="!isSidebarOpen"
-            @openCommentForm="openCommentForm"
-            @moveNote="onMoveNote"
-            @setMaxScale="setMaxScale"
-          />
-        </div>
-        <div
-          class="design-scaler-wrapper gl-absolute gl-mb-6 gl-flex gl-items-center gl-justify-center"
-        >
-          <design-scaler :max-scale="maxScale" @scale="scale = $event" />
-        </div>
-        <design-sidebar
+  <mounting-portal mount-to="body" append>
+    <div
+      ref="root"
+      tabindex="-1"
+      class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle gl-@container/panel lg:gl-flex-row"
+    >
+      <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
+        <design-toolbar
           :design="design"
-          :design-variables="designVariables"
+          :design-filename="$route.params.id"
           :is-loading="isLoading"
-          :is-open="isSidebarOpen"
-          :markdown-preview-path="markdownPreviewPath"
-          :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-          :is-comment-form-present="isAnnotating"
-          @deleteNoteError="onDeleteNoteError"
-          @resolveDiscussionError="onResolveDiscussionError"
-          @toggleResolvedComments="toggleResolvedComments"
-        >
-          <template #reply-form>
-            <design-reply-form
-              v-if="isAnnotating"
-              ref="newDiscussionForm"
-              :design-note-mutation="$options.createImageDiffNoteMutation"
-              :mutation-variables="mutationVariables"
-              :markdown-preview-path="markdownPreviewPath"
-              :noteable-id="design.id"
-              :iid="iid"
-              @note-submit-complete="addImageDiffNoteToStore"
-              @cancel-form="closeCommentForm"
+          :is-sidebar-open="isSidebarOpen"
+          :is-latest-version="isLatestVersion"
+          :all-designs="allDesigns"
+          :current-user-design-todos="currentUserDesignTodos"
+          :can-update-design="canUpdateDesign"
+          @toggle-sidebar="toggleSidebar"
+          @archive-design="onArchiveDesign"
+          @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
+        />
+        <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
+          <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">
+            <div v-if="errorMessage" class="gl-p-5">
+              <gl-alert variant="danger" @dismiss="errorMessage = null">
+                {{ errorMessage }}
+              </gl-alert>
+            </div>
+            <design-presentation
+              :image="design.image"
+              :image-name="design.filename"
+              :discussions="discussions"
+              :is-annotating="isAnnotating"
+              :scale="scale"
+              :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+              :is-sidebar-open="isSidebarOpen"
+              :is-loading="isLoading"
+              :disable-commenting="!isSidebarOpen"
+              @openCommentForm="openCommentForm"
+              @moveNote="onMoveNote"
+              @setMaxScale="setMaxScale"
             />
-          </template>
-        </design-sidebar>
+          </div>
+          <div
+            class="design-scaler-wrapper gl-absolute gl-mb-6 gl-flex gl-items-center gl-justify-center"
+          >
+            <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+          </div>
+          <design-sidebar
+            :design="design"
+            :design-variables="designVariables"
+            :is-loading="isLoading"
+            :is-open="isSidebarOpen"
+            :markdown-preview-path="markdownPreviewPath"
+            :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+            :is-comment-form-present="isAnnotating"
+            @deleteNoteError="onDeleteNoteError"
+            @resolveDiscussionError="onResolveDiscussionError"
+            @toggleResolvedComments="toggleResolvedComments"
+          >
+            <template #reply-form>
+              <design-reply-form
+                v-if="isAnnotating"
+                ref="newDiscussionForm"
+                :design-note-mutation="$options.createImageDiffNoteMutation"
+                :mutation-variables="mutationVariables"
+                :markdown-preview-path="markdownPreviewPath"
+                :noteable-id="design.id"
+                :iid="iid"
+                @note-submit-complete="addImageDiffNoteToStore"
+                @cancel-form="closeCommentForm"
+              />
+            </template>
+          </design-sidebar>
+        </div>
       </div>
     </div>
-  </div>
+  </mounting-portal>
 </template>

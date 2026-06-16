@@ -46,7 +46,8 @@ module Mcp
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GraphqlGetSavedViewWorkItemsService,
         'search_labels' => ::Mcp::Tools::Labels::GraphqlSearchService,
-        'link_work_items' => ::Mcp::Tools::WorkItems::GraphqlLinkWorkItemsService
+        'link_work_items' => ::Mcp::Tools::WorkItems::GraphqlLinkWorkItemsService,
+        'get_work_item_types' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemTypesService
       }.freeze
 
       def initialize
@@ -74,9 +75,9 @@ module Mcp
 
         canonical_name = resolve_alias(name)
 
-        return get_custom_tool(canonical_name, version) if CUSTOM_TOOLS.key?(canonical_name)
+        return get_custom_tool(canonical_name, version) if custom_tools.key?(canonical_name)
 
-        return get_graphql_tool(canonical_name, version) if GRAPHQL_TOOLS.key?(canonical_name)
+        return get_graphql_tool(canonical_name, version) if graphql_tools.key?(canonical_name)
 
         return get_api_tool(canonical_name, version) if discover_api_tools.key?(canonical_name)
 
@@ -88,11 +89,11 @@ module Mcp
       private
 
       def get_custom_tool(name, version)
-        get_tool_from_registry(CUSTOM_TOOLS, name, version)
+        get_tool_from_registry(custom_tools, name, version)
       end
 
       def get_graphql_tool(name, version)
-        get_tool_from_registry(GRAPHQL_TOOLS, name, version)
+        get_tool_from_registry(graphql_tools, name, version)
       end
 
       def get_tool_from_registry(tool_registry, name, version)
@@ -146,11 +147,11 @@ module Mcp
         tools = {}
 
         # Build custom tools using their latest versions
-        CUSTOM_TOOLS.each do |name, tool_class|
+        custom_tools.each do |name, tool_class|
           tools[name] = tool_class.new(name: name)
         end
 
-        GRAPHQL_TOOLS.each do |name, tool_class|
+        graphql_tools.each do |name, tool_class|
           tools[name] = tool_class.new(name: name)
         end
 
@@ -211,6 +212,14 @@ module Mcp
             [klass.tool_name, klass.new(tools: tools)]
           end.freeze
         end
+      end
+
+      def custom_tools
+        CUSTOM_TOOLS
+      end
+
+      def graphql_tools
+        GRAPHQL_TOOLS
       end
     end
   end

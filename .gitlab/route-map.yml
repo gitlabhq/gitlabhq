@@ -1,6 +1,10 @@
 # English documentation
-- source: /doc/(.+?/)_index\.md/  # doc/administration/_index.md
+- source: /doc/(.+?/)_?index\.md/  # doc/administration/_index.md
   public: '\1'                    # administration/
+
+# Release note feature files
+- source: /doc/(releases/\d+/gitlab-[\d-]+-released/)[^/]+\.md/  # doc/releases/19/gitlab-19-1-released/example-feature-name.md
+  public: '\1'                                                   # releases/19/gitlab-19-1-released/
 - source: /doc/(.+?)\.md/         # doc/administration/page.md
   public: '\1/'                   # administration/page/
 

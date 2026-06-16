@@ -16,6 +16,7 @@ import { timelogQueries } from '../../queries/constants';
 import deleteTimelogMutation from '../../queries/delete_timelog.mutation.graphql';
 
 export default {
+  name: 'TimeTrackingReport',
   i18n: {
     deleteButtonText: s__('TimeTracking|Delete time spent'),
   },

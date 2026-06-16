@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/finder'
 
-RSpec.describe RuboCop::Cop::CodeReuse::Finder do
+RSpec.describe RuboCop::Cop::CodeReuse::Finder, feature_category: :tooling do
   it 'flags the use of a Finder inside another Finder' do
     allow(cop)
       .to receive(:in_finder?)

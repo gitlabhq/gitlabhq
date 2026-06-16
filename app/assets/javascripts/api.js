@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/no-hardcoded-urls -- REST API routes using Api.buildUrl is acceptable */
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { validateAdditionalProperties } from '~/tracking/utils';

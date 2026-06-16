@@ -5,6 +5,7 @@ query getUserAchievements($id: UserID!) {
       nodes {
         id
         createdAt
+        awardMessageHtml @gl_introduced(version: "19.1.0")
         achievement {
           id
           name

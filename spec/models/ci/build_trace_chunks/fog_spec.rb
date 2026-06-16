@@ -236,31 +236,4 @@ RSpec.describe Ci::BuildTraceChunks::Fog, feature_category: :continuous_integrat
       is_expected.to eq([[build.id, 0], [build.id, 1]])
     end
   end
-
-  describe '#delete_keys' do
-    subject { data_store.delete_keys(keys) }
-
-    let(:build) { create(:ci_build) }
-    let(:relation) { build.trace_chunks }
-    let(:keys) { data_store.keys(relation) }
-
-    before do
-      create(:ci_build_trace_chunk, :fog_with_data, chunk_index: 0, build: build)
-      create(:ci_build_trace_chunk, :fog_with_data, chunk_index: 1, build: build)
-    end
-
-    it 'deletes multiple data', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/456375' do
-      files = connection.directories.new(key: bucket).files
-
-      expect(files.count).to eq(2)
-      expect(files[0].body).to be_present
-      expect(files[1].body).to be_present
-
-      subject
-
-      files.reload
-
-      expect(files.count).to eq(0)
-    end
-  end
 end

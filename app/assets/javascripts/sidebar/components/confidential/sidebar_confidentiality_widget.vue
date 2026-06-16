@@ -18,6 +18,7 @@ const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
 });
 
 export default {
+  name: 'SidebarConfidentialityWidget',
   tracking: {
     event: Tracking.editEvent,
     label: Tracking.rightSidebarLabel,

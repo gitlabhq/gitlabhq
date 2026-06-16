@@ -6,6 +6,7 @@ import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '../../queries/constants';
 
 export default {
+  name: 'SidebarConfidentialityForm',
   i18n: {
     confidentialityOnWarning: __(
       'You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}.',

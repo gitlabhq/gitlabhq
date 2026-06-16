@@ -71,6 +71,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                   id
                   name
                   kind
+                  source
                   scheduled
                   scheduledAt
                   status: detailedStatus {

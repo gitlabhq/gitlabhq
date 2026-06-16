@@ -26,6 +26,23 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
       end
     end
 
+    context 'when a cross-project trigger:project resolves to a blank value' do
+      let(:bridge) do
+        create(:ci_bridge, status: :pending, options: bridge_options, pipeline: pipeline, user: user)
+      end
+
+      let(:bridge_options) { { trigger: { project: '$UNDEFINED_PROJECT_VAR' } } }
+
+      it 'drops the bridge without scheduling the downstream pipeline worker', :aggregate_failures do
+        expect { execute }.not_to change { ::Ci::CreateDownstreamPipelineWorker.jobs.size }
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_project_trigger_resolved_to_empty')
+        expect(execute).to be_error
+        expect(execute.message).to eq('The trigger:project value resolved to a blank value')
+      end
+    end
+
     # In these tests, we execute the service twice in succession
     describe 'rate limiting', :freeze_time, :clean_gitlab_redis_rate_limiting do
       shared_examples 'creates a log entry' do |downstream_type = 'multi-project'|

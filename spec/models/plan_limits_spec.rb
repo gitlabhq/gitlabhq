@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PlanLimits do
   let_it_be(:project) { create(:project) }
-  let_it_be(:plan_limits) { create(:plan_limits, :default_plan) }
+  let_it_be(:plan_limits, freeze: false) { create(:plan_limits, :default_plan) }
 
   let(:project_hooks_count) { 2 }
 

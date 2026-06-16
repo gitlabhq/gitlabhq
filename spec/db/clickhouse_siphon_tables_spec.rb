@@ -37,6 +37,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       cached_markdown_version
       secrets
       id_tokens
+      model_metadata_json
     )
   end
 

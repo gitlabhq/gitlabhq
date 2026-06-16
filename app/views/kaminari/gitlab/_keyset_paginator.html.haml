@@ -1,7 +1,7 @@
 - return unless paginator.has_previous_page? || paginator.has_next_page?
 
 .gl-pagination.gl-mt-3
-  %ul.pagination.justify-content-center
+  %ul{ class: "pagination !gl-justify-center" }
     - unless without_first_and_last_pages
       %li
         - first_page = url_for(page_params.merge(cursor: paginator.cursor_for_first_page))

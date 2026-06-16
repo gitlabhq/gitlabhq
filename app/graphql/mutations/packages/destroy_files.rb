@@ -11,6 +11,8 @@ module Mutations
       MAXIMUM_FILES = 100
 
       authorize :destroy_package
+      authorize_granular_token permissions: :delete_package,
+        boundary_argument: :project_path, boundary_type: :project
 
       argument :project_path,
         GraphQL::Types::ID,

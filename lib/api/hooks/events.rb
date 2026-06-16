@@ -6,8 +6,8 @@ module API
     class Events < ::Grape::API
       include PaginationParams
 
-      desc 'Get events for a given hook id' do
-        detail 'List web hook logs by hook id'
+      desc 'List all events' do
+        detail 'Lists all events for a specified webhook.'
         success code: 200
         failure [
           { code: 400, message: 'Bad request' },

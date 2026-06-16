@@ -2,7 +2,7 @@
 
 RSpec.shared_examples "multi_store_wrapper_shared_examples" do
   let(:config_file_name) { instance_specific_config_file }
-  let_it_be(:pool_name) { "#{described_class.store_name.underscore}_multi_store" }
+  let_it_be(:pool_name, freeze: false) { "#{described_class.store_name.underscore}_multi_store" }
 
   before do
     allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)

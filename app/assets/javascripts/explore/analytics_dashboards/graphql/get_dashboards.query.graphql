@@ -1,8 +1,8 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 # @feature_category: custom_dashboards_foundation
-query getDashboards($search: String, $scope: CustomDashboardScope = ALL) {
-  customDashboards(search: $search, scope: $scope) {
+query getDashboards($search: String, $scope: CustomDashboardScope = ALL, $createdById: UserID) {
+  customDashboards(search: $search, scope: $scope, createdById: $createdById) {
     nodes {
       id
       name
@@ -10,6 +10,7 @@ query getDashboards($search: String, $scope: CustomDashboardScope = ALL) {
       config
       createdAt
       system
+      slug
       ... on CustomDashboard {
         organization {
           id

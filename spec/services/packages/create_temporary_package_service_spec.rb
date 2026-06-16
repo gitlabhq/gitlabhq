@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Packages::CreateTemporaryPackageService, feature_category: :package_registry do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:params) { {} }
-  let_it_be(:package_name) { 'my-package' }
-  let_it_be(:package_type) { 'rubygems' }
-  let_it_be(:packages_class) { ::Packages::Rubygems::Package }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:params, freeze: false) { {} }
+  let_it_be(:package_name, freeze: false) { 'my-package' }
+  let_it_be(:package_type, freeze: false) { 'rubygems' }
+  let_it_be(:packages_class, freeze: false) { ::Packages::Rubygems::Package }
 
   describe '#execute' do
     subject { described_class.new(project, user, params).execute(packages_class, name: package_name) }

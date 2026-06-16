@@ -45,6 +45,7 @@ module API
       expose :iframe_rendering_enabled
       expose :iframe_rendering_allowlist
       expose :iframe_rendering_allowlist_raw
+      expose :email_otp_enabled
 
       # This field is deprecated and always returns true
       expose(:housekeeping_bitmaps_enabled) { |_settings, _options| true }

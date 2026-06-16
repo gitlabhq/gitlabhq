@@ -1,0 +1,10 @@
+---
+name: read_cd_application
+description: Grants the ability to read continuous deployment applications
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_cd_application

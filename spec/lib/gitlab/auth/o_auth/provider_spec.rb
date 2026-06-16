@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
   end
 
   describe '.label_for' do
-    subject { described_class.label_for(name) }
+    subject(:label_for) { described_class.label_for(name) }
 
     context 'when configuration specifies a custom label' do
       let(:name) { 'google_oauth2' }
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
       end
 
       it 'returns the custom label name' do
-        expect(subject).to eq(label)
+        expect(label_for).to eq(label)
       end
     end
 
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
         let(:name) { 'twitter' }
 
         it 'returns the titleized name' do
-          expect(subject).to eq(name.titleize)
+          expect(label_for).to eq(name.titleize)
         end
       end
     end
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
       let(:name) { 'gitlab' }
 
       it 'returns the mapped name' do
-        expect(subject).to eq('GitLab.com')
+        expect(label_for).to eq('GitLab.com')
       end
     end
   end

@@ -21,8 +21,8 @@ module API
           authorize_admin_project
         end
 
-        desc 'Get export status' do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc 'Retrieve the status of a project export' do
+          detail 'Retrieves the status of the most recent export for a specified project.'
           success code: 200, model: Entities::ProjectExportStatus
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -37,8 +37,8 @@ module API
           present user_project, with: Entities::ProjectExportStatus, current_user: current_user
         end
 
-        desc 'Download export' do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc 'Download a project export' do
+          detail 'Downloads the most recent export of a specified project.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -64,8 +64,9 @@ module API
           end
         end
 
-        desc 'Start export' do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc 'Export a project' do
+          detail 'Exports a project. Use the `upload` hash parameter to upload the exported project to a web server ' \
+            'or any S3-compatible platform.'
           success code: 202
           failure [
             { code: 400, message: 'Bad request' },
@@ -132,8 +133,8 @@ module API
           authorize_admin_project
         end
 
-        desc 'Start relations export' do
-          detail 'This feature was introduced in GitLab 14.4'
+        desc 'Schedule a relations export for a project' do
+          detail 'Schedules a relations export for a specified project.'
           success code: 202
           failure [
             { code: 400, message: 'Bad request' },
@@ -167,8 +168,8 @@ module API
           end
         end
 
-        desc 'Download relations export' do
-          detail 'This feature was introduced in GitLab 14.4'
+        desc 'Download a relations export for a project' do
+          detail 'Downloads a project relations export file.'
           success code: 200
           failure [
             { code: 400, message: 'Bad request' },
@@ -228,8 +229,8 @@ module API
           end
         end
 
-        desc 'Relations export status' do
-          detail 'This feature was introduced in GitLab 14.4'
+        desc 'Retrieve the status of an relations export for a project' do
+          detail 'Retrieves the status of a relations export for a project.'
           is_array true
           success code: 200, model: Entities::BulkImports::ExportStatus
           failure [

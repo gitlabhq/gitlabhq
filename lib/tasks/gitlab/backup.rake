@@ -142,6 +142,16 @@ namespace :gitlab do
         Tasks::Gitlab::Backup.restore_task('external_diffs')
       end
     end
+
+    namespace :agent_plan_content do
+      task create: :gitlab_environment do
+        Tasks::Gitlab::Backup.create_task('agent_plan_content')
+      end
+
+      task restore: :gitlab_environment do
+        Tasks::Gitlab::Backup.restore_task('agent_plan_content')
+      end
+    end
   end
   # namespace end: backup
 end

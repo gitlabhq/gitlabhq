@@ -13,6 +13,7 @@ import TableOfContents from './table_of_contents.vue';
 const TableOfContentsComponent = Vue.extend(TableOfContents);
 
 export default {
+  name: 'WikiContent',
   components: {
     GlSkeletonLoader,
     GlAlert,

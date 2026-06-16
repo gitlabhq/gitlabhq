@@ -353,36 +353,23 @@ to collect data on spec execution times. This is useful for analyzing the
 performance of the test suite itself, or seeing how the performance of a spec
 may have changed over time.
 
-To activate profiling in your local environment, run the following:
+To activate profiling in your local environment, run:
 
 ```shell
 export RSPEC_PROFILING=yes
-rake rspec_profiling:install
 ```
 
-This creates an SQLite3 database in `tmp/rspec_profiling`, into which statistics
-are saved every time you run specs with the `RSPEC_PROFILING` environment
-variable set.
+This creates CSV files in `rspec/profiling/`, with one timestamped file per test run.
+Each file records timing, query count, query time, request count, request time, and
+feature category for every spec in that session.
 
-Ad-hoc investigation of the collected results can be performed in an interactive
-shell:
-
-```shell
-$ rake rspec_profiling:console
-
-irb(main):001:0> results.count
-=> 231
-irb(main):002:0> results.last.attributes.keys
-=> ["id", "commit", "date", "file", "line_number", "description", "time", "status", "exception", "query_count", "query_time", "request_count", "request_time", "created_at", "updated_at"]
-irb(main):003:0> results.where(status: "passed").average(:time).to_s
-=> "0.211340155844156"
-```
+To use a different output directory, set `RSPEC_PROFILING_FOLDER_PATH`.
 
 ### Global runtime metrics
 
 All test execution metrics are also exported to an instance of ClickHouse database and visualized using `Grafana` dashboards.
 
-[Test Runtime Overview](https://dashboards.devex.gitlab.net/d/acv8mwl/test-file-runtime-overview) dashboard allows to slowest spec files and show runtime trends over time for particular spec files.
+[Test Runtime Overview](https://dashboards.gitlab.net/d/dx-test-file-runtime-overview/dx3a-test-file-runtime-overview) dashboard shows the slowest spec files and runtime trends over time for particular spec files.
 
 ## Memory optimization
 
@@ -704,8 +691,8 @@ bytes on x64) of memory.
 You can use the [memory profiler](#using-memory-profiler)
 to see which strings are allocated often and could potentially benefit from a `.freeze`.
 
-Strings are frozen by default in Ruby 3.0. To prepare our codebase for
-this eventuality, we are adding the following header to all Ruby files:
+To reduce string allocations and improve performance, add the following header to all Ruby files.
+RuboCop enforces this header to maintain consistency across the codebase:
 
 ```ruby
 # frozen_string_literal: true
@@ -939,7 +926,6 @@ do this by hand with SQL commands or using [Mass Inserting Rails Models](mass_in
 Assuming you are working with ActiveRecord models, you might also find these links helpful:
 
 - [Insert records in batches](database/insert_into_tables_in_batches.md)
-- [BulkInsert gem](https://github.com/jamis/bulk_insert)
 - [ActiveRecord::PgGenerateSeries gem](https://github.com/ryu39/active_record-pg_generate_series)
 
 ### Examples
@@ -951,7 +937,7 @@ You may find some useful examples in [this snippet](https://gitlab.com/gitlab-or
 `Gitlab::ExclusiveLease` is a Redis-based locking mechanism that lets developers achieve mutual exclusion across distributed servers. There are several wrappers available for developers to make use of:
 
 1. The `Gitlab::ExclusiveLeaseHelpers` module provides a helper method to block the process or thread until the lease can be expired.
-1. The `ExclusiveLease::Guard` module helps get an exclusive lease for a running block of code.
+1. The `ExclusiveLeaseGuard` module helps get an exclusive lease for a running block of code.
 
 You should not use `ExclusiveLease` in a database transaction because any slow Redis I/O could increase idle transaction duration. The `.try_obtain` method checks if the lease attempt is within any database transactions, and tracks an exception in Sentry and the `log/exceptions_json.log`.
 

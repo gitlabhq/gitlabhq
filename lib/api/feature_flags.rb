@@ -20,8 +20,9 @@ module API
     end
     resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags do
-        desc 'List feature flags for a project' do
-          detail 'Gets all feature flags of the requested project. This feature was introduced in GitLab 12.5.'
+        desc 'List all feature flags for a project' do
+          detail 'Lists all feature flags of the requested project. Use the `page` and `per_page` pagination ' \
+            'parameters to control the pagination of results.'
           success ::API::Entities::FeatureFlag
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -46,8 +47,8 @@ module API
           present_entity(paginate(feature_flags))
         end
 
-        desc 'Create a new feature flag' do
-          detail 'Creates a new feature flag. This feature was introduced in GitLab 12.5.'
+        desc 'Create a feature flag' do
+          detail 'Creates a feature flag for a specified project.'
           success ::API::Entities::FeatureFlag
           failure [
             { code: 400, message: 'Bad request' },
@@ -98,8 +99,8 @@ module API
         requires :feature_flag_name, type: String, desc: 'The name of the feature flag'
       end
       resource 'feature_flags/:feature_flag_name', requirements: FEATURE_FLAG_ENDPOINT_REQUIREMENTS do
-        desc 'Get a single feature flag' do
-          detail 'Gets a single feature flag. This feature was introduced in GitLab 12.5.'
+        desc 'Retrieve a feature flag' do
+          detail 'Retrieves a specified feature flag.'
           success ::API::Entities::FeatureFlag
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -116,7 +117,7 @@ module API
         end
 
         desc 'Update a feature flag' do
-          detail 'Updates a feature flag. This feature was introduced in GitLab 13.2.'
+          detail 'Updates a specified feature flag.'
           success ::API::Entities::FeatureFlag
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -168,7 +169,7 @@ module API
         end
 
         desc 'Delete a feature flag' do
-          detail 'Deletes a feature flag. This feature was introduced in GitLab 12.5.'
+          detail 'Deletes a specified feature flag.'
           success ::API::Entities::FeatureFlag
           failure [
             { code: 401, message: 'Unauthorized' },

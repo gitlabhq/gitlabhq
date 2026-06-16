@@ -4,7 +4,29 @@ module Import
   class BitbucketServerService < Import::BaseService
     attr_reader :client, :params, :current_user
 
+    # As a basic sanity check to prevent URL injection, restrict project
+    # repository input and repository slugs to allowed characters. For Bitbucket:
+    #
+    # Project keys must start with a letter and may only consist of ASCII letters,
+    # numbers and underscores (A-Z, a-z, 0-9, _).
+    #
+    # Repository names are limited to 128 characters. They must start with a
+    # letter or number and may contain spaces, hyphens, underscores, and periods.
+    # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
+    #
+    # Bitbucket Server starts personal project names with a tilde.
+    BITBUCKET_PROJECT_KEY_FORMAT = /\A~?[\w\-.\s]+\z/
+    BITBUCKET_REPO_SLUG_FORMAT = /\A[\w\-.\s]+\z/
+
     def execute(credentials)
+      unless project_key.present? && BITBUCKET_PROJECT_KEY_FORMAT.match?(project_key)
+        return log_and_return_error("Missing or invalid project key", :unprocessable_entity)
+      end
+
+      unless repo_slug.present? && BITBUCKET_REPO_SLUG_FORMAT.match?(repo_slug)
+        return log_and_return_error("Missing or invalid repository slug", :unprocessable_entity)
+      end
+
       if blocked_url?
         return log_and_return_error("Invalid URL: #{url}", :bad_request)
       end

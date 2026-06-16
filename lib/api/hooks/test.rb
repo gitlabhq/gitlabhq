@@ -9,10 +9,11 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the hook'
       end
-      desc 'Test a hook' do
-        detail 'Tests a webhook by triggering a test event'
+      desc 'Create a test run' do
+        detail 'Creates a test run for a webhook. Executes the webhook with mock data.'
         tags ['hooks']
       end
+      route_setting :authorization, permissions: :test_webhook, boundary_type: :instance
       post ":hook_id" do
         hook = find_hook
         data = configuration[:data].dup

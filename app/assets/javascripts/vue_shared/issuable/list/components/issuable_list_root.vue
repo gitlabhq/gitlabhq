@@ -1,11 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlKeysetPagination,
-  GlPagination,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -45,7 +39,6 @@ export default {
     ResourceListsLoadingStateList,
     LocalStorageSync,
     EmptyResult,
-    GlIntersectionObserver,
   },
   props: {
     namespace: {
@@ -252,10 +245,22 @@ export default {
       default: null,
     },
   },
+  emits: [
+    'click-tab',
+    'dismiss-alert',
+    'filter',
+    'next-page',
+    'page-change',
+    'page-size-change',
+    'previous-page',
+    'reorder',
+    'select-issuable',
+    'sort',
+    'update-legacy-bulk-edit',
+  ],
   data() {
     return {
       checkedIssuableIds: [],
-      isStickyHeaderVisible: false,
     };
   },
   computed: {
@@ -338,9 +343,6 @@ export default {
         getIdFromGraphQLId(issuable.id) === getIdFromGraphQLId(this.activeIssuable?.id),
       );
     },
-    toggleStickyHeader(isVisible) {
-      this.isStickyHeaderVisible = isVisible;
-    },
   },
   PAGE_SIZE_STORAGE_KEY,
 };
@@ -375,7 +377,7 @@ export default {
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
-      class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
+      class="row-content-block gl-top-0 gl-z-3 gl-grow gl-border-t-0 @sm/panel:gl-flex @md/panel:gl-sticky"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
@@ -385,41 +387,6 @@ export default {
         <slot name="user-preference"></slot>
       </template>
     </filtered-search-bar>
-    <gl-intersection-observer
-      @appear="toggleStickyHeader(false)"
-      @disappear="toggleStickyHeader(true)"
-    >
-      <transition name="issuable-header-slide">
-        <div
-          v-if="isStickyHeaderVisible"
-          class="sticky-filter gl-fixed gl-left-auto gl-right-auto gl-z-3 gl-hidden @md/panel:gl-block"
-        >
-          <filtered-search-bar
-            :namespace="namespace"
-            :recent-searches-storage-key="recentSearchesStorageKey"
-            :search-input-placeholder="searchInputPlaceholder"
-            :tokens="searchTokens"
-            :sort-options="sortOptions"
-            :initial-filter-value="initialFilterValue"
-            :initial-sort-by="initialSortBy"
-            :sync-filter-and-sort="syncFilterAndSort"
-            :show-checkbox="showBulkEditSidebar"
-            :checkbox-checked="allIssuablesChecked"
-            :show-friendly-text="showFilteredSearchFriendlyText"
-            terms-as-tokens
-            class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
-            data-testid="issuable-search-container"
-            @checked-input="handleAllIssuablesCheckedInput"
-            @onFilter="$emit('filter', $event)"
-            @onSort="$emit('sort', $event)"
-          >
-            <template #user-preference>
-              <slot name="user-preference"></slot>
-            </template>
-          </filtered-search-bar>
-        </div>
-      </transition>
-    </gl-intersection-observer>
     <gl-alert
       v-if="error && !searchTimeout"
       variant="danger"

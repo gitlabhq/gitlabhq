@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'issue discussions', feature_category: :team_planning do
   describe 'GET /:namespace/:project/-/issues/:iid/discussions' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:issue) { create(:issue, project: project) }
-    let_it_be(:note_author) { create(:user) }
-    let_it_be(:notes) { create_list(:note, 5, project: project, noteable: issue, author: note_author) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+    let_it_be(:note_author, freeze: false) { create(:user) }
+    let_it_be(:notes, freeze: false) { create_list(:note, 5, project: project, noteable: issue, author: note_author) }
 
     before_all do
       project.add_maintainer(user)

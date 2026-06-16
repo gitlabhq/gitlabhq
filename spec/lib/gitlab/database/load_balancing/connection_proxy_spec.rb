@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
+RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy, feature_category: :database do
   let(:config) { Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base) }
   let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new(config) }
   let(:proxy) { described_class.new(load_balancer) }

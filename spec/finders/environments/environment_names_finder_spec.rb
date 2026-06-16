@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Environments::EnvironmentNamesFinder do
   describe '#execute' do
-    let!(:group) { create(:group) }
-    let!(:public_project) { create(:project, :public, namespace: group) }
-    let_it_be_with_reload(:public_project_with_private_environments) { create(:project, :public) }
-    let!(:private_project) { create(:project, :private, namespace: group) }
-    let!(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:public_project) { create(:project, :public, namespace: group) }
+    let_it_be_with_reload(:public_project_with_private_environments) { create(:project, :public, namespace: group) }
+    let_it_be(:private_project) { create(:project, :private, namespace: group) }
+    let_it_be(:user) { create(:user) }
 
-    before do
+    before_all do
       create(:environment, name: 'gstg', project: public_project)
       create(:environment, name: 'gprd', project: public_project)
       create(:environment, name: 'gprd', project: private_project)
@@ -18,7 +18,6 @@ RSpec.describe Environments::EnvironmentNamesFinder do
       create(:environment, name: 'gprivprd', project: public_project_with_private_environments)
       create(:environment, name: 'gprivstg', project: public_project_with_private_environments)
 
-      public_project_with_private_environments.update!(namespace: group)
       public_project_with_private_environments.project_feature.update!(environments_access_level: Featurable::PRIVATE)
     end
 

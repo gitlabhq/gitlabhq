@@ -44,6 +44,8 @@ module Gitlab
         end
 
         def total
+          return if search.present?
+
           repository.branch_count
         end
 
@@ -100,11 +102,13 @@ module Gitlab
         def build_branches(refs)
           return [] if refs.empty?
 
+          page_refs = target_page_refs(refs)
+
           if include_commits
-            commits = Commit.batch_by_oid(repository, target_page_refs(refs).map(&:target).uniq).index_by(&:id)
-            refs.map { |ref| Branch.from_ref(repository, ref, commit: commits[ref.target]) }
+            commits = Commit.batch_by_oid(repository, page_refs.map(&:target).uniq).index_by(&:id)
+            page_refs.map { |ref| Branch.from_ref(repository, ref, commit: commits[ref.target]) }
           else
-            refs.map { |ref| Branch.from_ref(repository, ref) }
+            page_refs.map { |ref| Branch.from_ref(repository, ref) }
           end
         end
 
@@ -147,11 +151,10 @@ module Gitlab
         end
 
         # Page-number offset pagination support.
-        # These methods are a workaround to support ?page=N offset pagination
-        # via GitalyKeysetPager. When page > 1 and page_token is absent,
-        # we fetch per_page * page refs from Gitaly so that Kaminari can
-        # slice to the correct page, and only hydrate commits for the
-        # target page's refs to avoid unnecessary Gitaly calls.
+        # These methods support ?page=N offset pagination via GitalyKeysetPager.
+        # When page > 1 and page_token is absent, we fetch per_page * page refs
+        # from Gitaly and return only the target page subset. This avoids building
+        # unnecessary Branch objects and Gitaly commit lookups for non-target pages.
 
         def page
           params[:page]

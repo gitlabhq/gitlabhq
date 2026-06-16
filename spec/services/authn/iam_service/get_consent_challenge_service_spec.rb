@@ -3,100 +3,124 @@
 require 'spec_helper'
 
 RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: :system_access do
-  let(:iam_service_url) { 'https://iam.example.com' }
-  let(:iam_secret) { 'test-secret-token' }
+  using RSpec::Parameterized::TableSyntax
+
   let(:challenge) { 'a' * 64 }
 
-  let(:service) { described_class.new(challenge: challenge) }
+  let(:grpc_client) { instance_double(Authn::IamService::GrpcClient) }
+  let(:service) { described_class.new(challenge: challenge, client: grpc_client) }
 
   subject(:result) { service.execute }
 
-  before do
-    allow(Authn::IamAuthService).to receive_messages(
-      url: iam_service_url,
-      secret: iam_secret
-    )
-  end
-
   describe '#execute' do
-    let(:consent_response_body) do
+    let(:created_at_time) { Time.zone.parse('2025-01-01T00:00:00Z') }
+    let(:created_at_timestamp) { Google::Protobuf::Timestamp.new(seconds: created_at_time.to_i) }
+
+    let(:client_attrs) do
       {
-        skip: false,
-        subject: '123',
-        requested_scope: %w[openid profile],
-        client: { 'client_id' => 'test-app', 'client_name' => 'Test App' }
+        client_id: 'test-app',
+        client_name: 'Test App',
+        client_owner: 'GitLab User',
+        scopes: %w[openid profile email],
+        created_at: created_at_timestamp
       }
     end
 
-    let(:http_response) do
-      instance_double(Gitlab::HTTP::Response, success?: true, code: 200,
-        body: consent_response_body.to_json)
+    let(:response_attrs) do
+      {
+        skip: false,
+        subject: '123',
+        requested_scopes: %w[openid profile],
+        client: ::Auth::V1::Client.new(**client_attrs)
+      }
     end
+
+    let(:response) { ::Auth::V1::ConsentServiceGetResponse.new(**response_attrs) }
 
     before do
-      allow(Gitlab::HTTP).to receive(:get).and_return(http_response)
+      allow(grpc_client).to receive(:get_consent_challenge).and_return(response)
     end
 
-    context 'when the IAM service returns consent details' do
-      it 'returns a success response with the consent payload', :aggregate_failures do
+    context 'when the response is valid' do
+      it 'returns the flattened consent payload', :aggregate_failures do
         expect(result).to be_success
-        expect(result.payload[:skip]).to be(false)
-        expect(result.payload[:subject]).to eq('123')
-        expect(result.payload[:requested_scope]).to eq(%w[openid profile])
-        expect(result.payload[:client]).to eq({ 'client_id' => 'test-app', 'client_name' => 'Test App' })
+        expect(result.payload).to eq(
+          skip_consent: false,
+          subject: '123',
+          requested_scopes: %w[openid profile],
+          client_id: 'test-app',
+          client_name: 'Test App',
+          client_owner: 'GitLab User',
+          client_created_at: created_at_time,
+          client_scopes: %w[openid profile email]
+        )
       end
 
-      it 'sends the correct HTTP GET request to the IAM service' do
+      it 'sends the correct gRPC request' do
         result
 
-        expect(Gitlab::HTTP).to have_received(:get).with(
-          "#{iam_service_url}#{described_class::CONSENT_REQUEST_PATH}?consent_challenge=#{challenge}",
-          hash_including(
-            headers: { 'Content-Type' => 'application/json',
-                       Authn::IamAuthService::IAM_AUTH_TOKEN_HEADER => iam_secret },
-            timeout: Authn::IamService::HttpClient::TIMEOUT_SECONDS
-          )
+        expect(grpc_client).to have_received(:get_consent_challenge).with(challenge: challenge)
+      end
+    end
+
+    context 'when subject is an integer' do
+      let(:response) do
+        double( # rubocop:disable RSpec/VerifiedDoubles -- proto subject is string; integer coercion only reachable via stub
+          skip: false,
+          subject: 123,
+          requested_scopes: %w[openid profile],
+          client: ::Auth::V1::Client.new(**client_attrs)
         )
+      end
+
+      it 'coerces subject to a string in the payload' do
+        expect(result.payload[:subject]).to eq('123')
       end
     end
 
     context 'when skip is true' do
-      let(:consent_response_body) do
-        {
-          skip: true,
-          subject: '123',
-          requested_scope: %w[openid],
-          client: { 'client_id' => 'test-app' }
-        }
-      end
+      let(:response_attrs) { super().merge(skip: true) }
 
-      it 'returns skip as true in the payload', :aggregate_failures do
+      it 'returns skip_consent as true', :aggregate_failures do
         expect(result).to be_success
-        expect(result.payload[:skip]).to be(true)
+        expect(result.payload[:skip_consent]).to be(true)
       end
     end
 
-    context 'when the IAM service returns an HTTP error' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: false, code: 400,
-          body: { error: 'Invalid challenge' }.to_json)
+    context 'with a missing mandatory field' do
+      # Tests a representative subset of MANDATORY_FIELDS to exercise the validation
+      # logic. Full per-field coverage will be added alongside richer validation.
+      where(:client_overrides, :response_overrides, :missing_field) do
+        {}                   | { requested_scopes: [] } | 'requested_scopes'
+        { client_id: '' }    | {}                       | 'client_id'
+        { client_owner: '' } | {}                       | 'client_owner'
+        { scopes: [] }       | {}                       | 'client_scopes'
+      end
+
+      with_them do
+        let(:client_attrs)   { super().merge(client_overrides) }
+        let(:response_attrs) { super().merge(response_overrides) }
+
+        it 'returns an invalid_response error and logs the failure', :aggregate_failures do
+          allow(Gitlab::AuthLogger).to receive(:error)
+
+          expect(result).to be_error
+          expect(result.reason).to eq(:invalid_response)
+          expect(result.message).to eq("IAM consent response missing mandatory fields: #{missing_field}")
+          expect(Gitlab::AuthLogger).to have_received(:error)
+        end
+      end
+    end
+
+    context 'when the gRPC client raises a RequestError' do
+      before do
+        allow(grpc_client).to receive(:get_consent_challenge)
+          .and_raise(Authn::IamService::GrpcClient::RequestError, 'Failed to connect to IAM service')
       end
 
       include_examples 'iam service error response',
-        reason: :iam_request_failed,
-        message: 'IAM consent request failed: HTTP 400'
+        reason: :service_unavailable,
+        message: 'Failed to connect to IAM service'
     end
-
-    context 'when the response body is nil' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: true, code: 200, body: nil)
-      end
-
-      include_examples 'iam service error response',
-        reason: :invalid_response,
-        message: 'IAM consent request response has invalid body'
-    end
-
-    include_examples 'iam service transport failure', http_method: :get
   end
 end

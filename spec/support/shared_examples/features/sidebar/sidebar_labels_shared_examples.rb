@@ -4,10 +4,12 @@ RSpec.shared_examples 'labels sidebar widget' do
   context 'editing labels' do
     # Ensure support bot user is created so creation doesn't count towards query limit
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    let_it_be(:support_bot) { create(:support_bot) }
-    let_it_be(:development) { create(:group_label, group: group, name: 'Development') }
-    let_it_be(:stretch)     { create(:label, project: project, name: 'Stretch') }
-    let_it_be(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
+    let_it_be(:support_bot, freeze: false) { create(:support_bot) }
+    let_it_be(:development, freeze: false) { create(:group_label, group: group, name: 'Development') }
+    let_it_be(:stretch, freeze: false)     { create(:label, project: project, name: 'Stretch') }
+    let_it_be(:xss_label, freeze: false) do
+      create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;')
+    end
 
     let(:labels_widget) { find('[data-testid="sidebar-labels"]') }
 

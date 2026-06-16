@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ユーザートークンAPI
 ---
 
@@ -12,9 +12,9 @@ title: ユーザートークンAPI
 
 {{< /details >}}
 
-このAPIを使用して、パーソナルアクセストークンと代理トークンを操作します。詳細については、[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)と[代理トークン](rest/authentication.md#impersonation-tokens)を参照してください。
+このAPIを使用して、パーソナルアクセストークンと代理トークンを操作します。詳細については、[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)および[代理トークン](rest/authentication.md#impersonation-tokens)を参照してください。
 
-## ユーザーのパーソナルアクセストークンを作成する {#create-a-personal-access-token-for-a-user}
+## ユーザーのパーソナルアクセストークンを作成 {#create-a-personal-access-token-for-a-user}
 
 {{< history >}}
 
@@ -22,11 +22,11 @@ title: ユーザートークンAPI
 
 {{< /history >}}
 
-指定されたユーザーのパーソナルアクセストークンを作成します。
+指定したユーザーのパーソナルアクセストークンを作成します。
 
-トークン値は応答に含まれていますが、後で取得することはできません。
+トークン値はレスポンスに含まれますが、後で取得することはできません。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -34,17 +34,17 @@ title: ユーザートークンAPI
 POST /users/:user_id/personal_access_tokens
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型    | 必須 | 説明 |
 |:-------------|:--------|:---------|:------------|
-| `user_id`    | 整数 | はい      | ユーザーアカウントのID |
+| `user_id`    | 整数 | はい      | ユーザーアカウントのID。 |
 | `name`       | 文字列  | はい      | パーソナルアクセストークンの名前。 |
-| `description`| 文字列  | いいえ       | パーソナルアクセストークンの説明。最大値: 255文字 |
+| `description`| 文字列  | いいえ       | パーソナルアクセストークンの説明。最大: 255文字。 |
 | `expires_at` | 日付    | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
-| `scopes`     | 配列   | はい      | 承認されたスコープの配列。可能な値のリストについては、[パーソナルアクセストークンのスコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を参照してください。 |
+| `scopes`     | 配列   | はい      | 承認されたスコープの配列。使用可能な値のリストについては、[パーソナルアクセストークンのスコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を参照してください。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -54,7 +54,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -81,13 +81,13 @@ curl --request POST \
 
 {{< /history >}}
 
-アカウントのパーソナルアクセストークンを作成します。セキュリティ上の理由から、トークンは以下に制限されます:
+アカウントのパーソナルアクセストークンを作成します。セキュリティ上の理由から、トークンは次のようになります:
 
-- [`k8s_proxy`および`self_rotate`スコープに制限されています](../user/profile/personal_access_tokens.md#personal-access-token-scopes)。
+- [`k8s_proxy`および`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)に限定されます。
 
-トークン値は応答に含まれていますが、後で取得することはできません。
+トークン値はレスポンスに含まれますが、後で取得することはできません。
 
-前提要件: 
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -95,16 +95,16 @@ curl --request POST \
 POST /user/personal_access_tokens
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型   | 必須 | 説明 |
 |:-------------|:-------|:---------|:------------|
 | `name`       | 文字列 | はい      | パーソナルアクセストークンの名前。 |
-| `description`| 文字列 | いいえ       | パーソナルアクセストークンの説明。最大値: 255文字 |
+| `description`| 文字列 | いいえ       | パーソナルアクセストークンの説明。最大: 255文字。 |
 | `scopes`     | 配列  | はい      | 承認されたスコープの配列。`k8s_proxy`と`self_rotate`のみを受け入れます。 |
-| `expires_at` | 配列  | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
+| `expires_at` | 日付  | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -113,7 +113,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/user/personal_access_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -132,13 +132,13 @@ curl --request POST \
 }
 ```
 
-## ユーザーの代理トークンをすべてリスト表示する {#list-all-impersonation-tokens-for-a-user}
+## ユーザーのすべての代理トークンを一覧表示 {#list-all-impersonation-tokens-for-a-user}
 
-指定されたユーザーの代理トークンをすべてリスト表示します。
+指定したユーザーのすべての代理トークンを一覧表示します。
 
 結果をフィルタリングするには、`page`および`per_page` [ページネーションパラメータ](rest/_index.md#offset-based-pagination)を使用します。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -146,14 +146,14 @@ curl --request POST \
 GET /users/:user_id/impersonation_tokens
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `user_id` | 整数 | はい      | ユーザーアカウントのID |
-| `state`   | 文字列  | いいえ       | トークンを状態に基づいてフィルタリングします。使用可能な値: `all`、`active`、または`inactive`。 |
+| `state`   | 文字列  | いいえ       | 状態に基づいてトークンをフィルタリングします。使用可能な値: `all`、`active`、または`inactive`。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -161,7 +161,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -198,11 +198,11 @@ curl --request GET \
 ]
 ```
 
-## ユーザーの代理トークンを取得する {#get-an-impersonation-token-for-a-user}
+## ユーザーの代理トークンを取得する {#retrieve-an-impersonation-token-for-a-user}
 
-指定されたユーザーの代理トークンを取得します。
+指定したユーザーの代理トークンを取得する。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -210,14 +210,14 @@ curl --request GET \
 GET /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                | 型    | 必須 | 説明 |
 |:-------------------------|:--------|:---------|:------------|
 | `user_id`                | 整数 | はい      | ユーザーアカウントのID |
 | `impersonation_token_id` | 整数 | はい      | 代理トークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -225,7 +225,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -244,13 +244,13 @@ curl --request GET \
 }
 ```
 
-## 代理トークンを作成する {#create-an-impersonation-token}
+## 代理トークンを作成 {#create-an-impersonation-token}
 
-指定されたユーザーの代理トークンを作成します。これらのトークンは、ユーザーの代わりに行動するために使用され、APIコールだけでなく、Gitの読み取りと書き込みのアクションも実行できます。これらのトークンは、関連付けられたユーザーのプロフィールの設定ページには表示されません。
+指定したユーザーの代理トークンを作成します。これらのトークンは、ユーザーに代わって動作するために使用され、APIコール、Gitの読み取りおよび書き込みアクションを実行できます。これらのトークンは、関連付けられたユーザーのプロファイル設定ページには表示されません。
 
-トークン値は応答に含まれていますが、後で取得することはできません。
+トークン値はレスポンスに含まれますが、後で取得することはできません。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -258,17 +258,17 @@ curl --request GET \
 POST /users/:user_id/impersonation_tokens
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型    | 必須 | 説明 |
 |:-------------|:--------|:---------|:------------|
 | `user_id`    | 整数 | はい      | ユーザーアカウントのID |
 | `name`       | 文字列  | はい      | 代理トークンの名前 |
 | `description`| 文字列  | いいえ       | 代理トークンの説明 |
-| `expires_at` | 日付    | はい      | ISO形式(`YYYY-MM-DD`)の代理トークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
-| `scopes`     | 配列   | はい      | 承認されたスコープの配列。可能な値の一覧については、[パーソナルアクセストークンのスコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を参照してください。  |
+| `expires_at` | 日付    | はい      | 代理トークンの有効期限（ISO形式）（`YYYY-MM-DD`）。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
+| `scopes`     | 配列   | はい      | 承認されたスコープの配列。使用可能な値のリストについては、[パーソナルアクセストークンのスコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を参照してください。  |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -278,7 +278,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -298,11 +298,11 @@ curl --request POST \
 }
 ```
 
-## 代理トークンを失効させる {#revoke-an-impersonation-token}
+## 代理トークンを失効する {#revoke-an-impersonation-token}
 
-指定されたユーザーの代理トークンを失効させます。
+指定したユーザーの代理トークンを失効する。
 
-前提要件: 
+前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
@@ -310,14 +310,14 @@ curl --request POST \
 DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                | 型    | 必須 | 説明 |
 |:-------------------------|:--------|:---------|:------------|
 | `user_id`                | 整数 | はい      | ユーザーアカウントのID |
 | `impersonation_token_id` | 整数 | はい      | 代理トークンのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
-  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request) }
 
   let(:csv) { CSV.parse(subject.csv_data, headers: true).first }
 
@@ -25,7 +25,7 @@ RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
 
     describe 'assignees' do
       context 'when assigned' do
-        let_it_be(:merge_request) { create(:merge_request, assignees: create_list(:user, 2)) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, assignees: create_list(:user, 2)) }
 
         it 'contains the names of assignees' do
           expect(csv['Assignees'].split(', ')).to match_array(merge_request.assignees.map(&:name))
@@ -46,7 +46,7 @@ RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
 
     describe 'approvers' do
       context 'when approved' do
-        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request) }
 
         let(:approvers) { create_list(:user, 2) }
 
@@ -73,7 +73,7 @@ RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
 
     describe 'merged user' do
       context 'MR is merged' do
-        let_it_be(:merge_request) { create(:merge_request, :merged, :with_merged_metrics) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, :merged, :with_merged_metrics) }
 
         it 'is merged' do
           expect(csv['State']).to eq('merged')
@@ -95,7 +95,7 @@ RSpec.describe MergeRequests::ExportCsvService, feature_category: :importers do
 
     describe 'milestone' do
       context 'milestone is assigned' do
-        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request) }
         let_it_be(:milestone) { create(:milestone, :active, project: merge_request.project) }
 
         before do

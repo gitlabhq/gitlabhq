@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/except'
 
-RSpec.describe RuboCop::Cop::Gitlab::Except do
+RSpec.describe RuboCop::Cop::Gitlab::Except, feature_category: :tooling do
   it 'flags the use of Gitlab::SQL::Except.new' do
     expect_offense(<<~RUBY)
     Gitlab::SQL::Except.new([foo])

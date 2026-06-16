@@ -3,6 +3,7 @@ import { GlButton, GlCard, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import { FEATURE_DISABLED_TOOLTIP } from '~/security_configuration/constants';
 import FeatureCardBadge from './feature_card_badge.vue';
 
 export default {
@@ -79,6 +80,9 @@ export default {
     hyphenatedFeature() {
       return this.feature.type.replace(/_/g, '-');
     },
+    disabledTooltip() {
+      return this.feature.canUserConfigure ? null : FEATURE_DISABLED_TOOLTIP;
+    },
   },
   methods: {
     onError(message) {
@@ -143,14 +147,20 @@ export default {
 
     <div class="gl-mt-5 gl-flex gl-justify-between">
       <template v-if="available">
-        <gl-button
+        <span
           v-if="feature.configurationPath"
-          :disabled="!feature.canUserConfigure"
-          :data-testid="`${hyphenatedFeature}-enable-button`"
-          @click="configureViaUrl"
+          v-gl-tooltip
+          :title="disabledTooltip"
+          :data-testid="`${hyphenatedFeature}-enable-button-tooltip`"
         >
-          {{ configurationButton.text }}
-        </gl-button>
+          <gl-button
+            :disabled="!feature.canUserConfigure"
+            :data-testid="`${hyphenatedFeature}-enable-button`"
+            @click="configureViaUrl"
+          >
+            {{ configurationButton.text }}
+          </gl-button>
+        </span>
 
         <manage-via-mr
           v-else-if="showManageViaMr"

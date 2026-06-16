@@ -30,7 +30,7 @@ Both files are located in the [`gitlab-ai-gateway`](https://gitlab.com/gitlab-or
 
 Before adding a new model, ensure that:
 
-- Appropriate authentication/credentials are configured (if needed), on Runway. The access to most common providers is already configured. This includes OpenAI, Anthropic, and Vertex AI. But if you need to add a model from a completely new provider, you will need to add the credentials to Runway.
+- Appropriate authentication/credentials are configured (if needed), on Runway. The access to most common providers is already configured. This includes OpenAI, Anthropic, and Gemini Enterprise Agent Platform. But if you need to add a model from a completely new provider, you will need to add the credentials to Runway.
 - Appropriate authentication/credentials are configured (if needed), on the local GDK environment. Example, ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.
 - Prompt definitions for the model family exist under the specific feature's folder. These are located in the [`gitlab-ai-gateway`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts/definitions) repository.
 - Set the environment variable `FETCH_MODEL_SELECTION_DATA_FROM_LOCAL=true` in your GDK environment. This will ensure that the model selection data is fetched from the local `models.yml` and `unit_primitives.yml` files.

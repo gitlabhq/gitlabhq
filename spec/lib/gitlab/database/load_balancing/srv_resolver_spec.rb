@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::SrvResolver do
+RSpec.describe Gitlab::Database::LoadBalancing::SrvResolver, feature_category: :database do
   let(:resolver) { Net::DNS::Resolver.new(nameservers: '127.0.0.1', port: 8600, use_tcp: true) }
   let(:additional) { dns_response_packet_from_fixture('srv_with_a_rr_in_additional_section').additional }
 

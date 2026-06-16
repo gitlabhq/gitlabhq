@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { I18N_AGENTS_EMPTY_STATE } from '../constants';
 
 export default {
+  name: 'AgentEmptyState',
   i18n: I18N_AGENTS_EMPTY_STATE,
   agentDocsUrl: helpPagePath('user/clusters/agent/_index'),
   components: {

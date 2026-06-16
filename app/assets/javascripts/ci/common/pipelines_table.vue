@@ -161,9 +161,10 @@ export default {
       return pipeline?.failed_builds_count || pipeline?.failedJobsCount || 0;
     },
     getDownstreamPipelines(pipeline) {
-      const downstream = pipeline.triggered || pipeline?.downstream?.nodes;
-
-      return keepLatestDownstreamPipelines(downstream);
+      return keepLatestDownstreamPipelines(pipeline.triggered || pipeline?.downstream?.nodes || []);
+    },
+    getDownstreamCount(pipeline) {
+      return pipeline?.downstream?.count || 0;
     },
     getUpstreamPipeline(pipeline) {
       return pipeline.triggered_by || pipeline.upstream;
@@ -221,6 +222,7 @@ export default {
           Category: 'pipeline',
           Content: JSON.stringify({
             source_branch: this.currentBranch(item),
+            source: item?.source || '',
           }),
         },
       ];
@@ -288,6 +290,7 @@ export default {
         <pipeline-mini-graph
           v-else
           :downstream-pipelines="getDownstreamPipelines(item)"
+          :downstream-count="getDownstreamCount(item)"
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
           :upstream-pipeline="getUpstreamPipeline(item)"

@@ -30,6 +30,7 @@ import GoogleCloudRegistrationInstructions from './registration/google_cloud_reg
 import GkeRegistrationInstructions from './registration/gke_registration_instructions.vue';
 
 export default {
+  name: 'RunnerCreateWizardRegistration',
   components: {
     GlFormGroup,
     GlFormInputGroup,

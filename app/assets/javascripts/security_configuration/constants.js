@@ -48,6 +48,10 @@ export const CVS_CONTAINER_SCANNING = 'cvs_for_container_scanning';
 
 export const CVS_DEPENDENCY_SCANNING = 'cvs_for_dependency_scanning';
 
+export const FEATURE_DISABLED_TOOLTIP = s__(
+  'SecurityConfiguration|Only security managers, maintainers, and owners can toggle this feature.',
+);
+
 export const featureToMutationMap = {
   [REPORT_TYPE_SAST]: {
     mutationId: 'configureSast',
@@ -296,4 +300,13 @@ export const SCAN_PROFILE_SOURCE_LABELS = {
   duo_workflow: __('Duo workflow'),
   container_registry_push: __('Container registry push'),
   chat: __('Unknown'),
+};
+
+export const GRAPHQL_STATUS_MAP = {
+  NOT_CONFIGURED: SCAN_PROFILE_SCANNER_HEALTH_UNCONFIGURED,
+  PENDING: SCAN_PROFILE_SCANNER_HEALTH_PENDING,
+  ACTIVE: SCAN_PROFILE_SCANNER_HEALTH_ACTIVE,
+  WARNING: SCAN_PROFILE_SCANNER_HEALTH_WARNING,
+  FAILED: SCAN_PROFILE_SCANNER_HEALTH_FAILED,
+  STALE: SCAN_PROFILE_SCANNER_HEALTH_STALE,
 };

@@ -12,6 +12,12 @@ module Gitlab
           store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker,
             to: ::MergeRequests::DiscussionsResolvedEvent
           store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::MergeableEvent
+          # Only fire when no pipeline was produced. When a pipeline exists,
+          # Ci::Pipeline.after_transition re-enqueues AutoMergeProcessWorker
+          # on completion, so this subscription would be redundant.
+          store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker,
+            to: ::MergeRequests::PipelineCreationCompletedEvent,
+            if: ->(event) { event.data[:pipeline_id].nil? }
           store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
           store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
           store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent

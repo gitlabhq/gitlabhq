@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, feature_category: :code_review_workflow do
-  let_it_be(:diff_file) { build(:diff_file) }
+  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
   let(:instance) { described_class.new(diff_file: diff_file) }
   let(:virtual_rendering_params) { instance.virtual_rendering_params }
 
@@ -155,6 +155,23 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows limit message' do
         render_component
         expect(page).to have_text("Preview size limit exceeded, changes collapsed.")
+        verify_virtual_rendering_params
+      end
+    end
+
+    context 'when diff is collapsed because the file is generated' do
+      before do
+        allow(diff_file).to receive_messages(collapsed?: true, generated?: true)
+      end
+
+      it 'shows generated file collapsed message with .gitattributes hint and docs link', :aggregate_failures do
+        render_component
+        expect(page).to have_text(
+          'Generated files are collapsed by default. To change this behavior, ' \
+            'edit the .gitattributes file. Learn more.'
+        )
+        expect(page).to have_css('code', text: '.gitattributes')
+        expect(page).to have_link('Learn more.', href: /collapse-generated-files/)
         verify_virtual_rendering_params
       end
     end

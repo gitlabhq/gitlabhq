@@ -9,6 +9,8 @@ module Mutations
           description 'Deletes a container repository protection rule.'
 
           authorize :admin_container_image
+          authorize_granular_token permissions: :delete_container_repository_protection_rule,
+            boundary_argument: :id, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],

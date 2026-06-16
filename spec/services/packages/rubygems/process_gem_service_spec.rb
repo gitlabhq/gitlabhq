@@ -61,6 +61,12 @@ RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package
 
         expect(package_file.reload.file_name).to eq('package-0.0.1.gem')
       end
+
+      it 'enqueues spec file generation' do
+        expect(Packages::Rubygems::CreateSpecFilesWorker).to receive(:perform_async).with(package.project_id)
+
+        subject
+      end
     end
 
     context 'when the package already exists' do
@@ -82,6 +88,13 @@ RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package
         expect { subject }.to change { existing_package.package_files.count }.by(1)
 
         expect(package_file.reload.package).to eq(existing_package)
+      end
+
+      it 'enqueues spec file generation for the package project' do
+        expect(package).to receive(:destroy)
+        expect(Packages::Rubygems::CreateSpecFilesWorker).to receive(:perform_async).with(existing_package.project_id)
+
+        subject
       end
     end
 
@@ -142,6 +155,7 @@ RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package
         expect(Packages::Rubygems::MetadataExtractionService).not_to receive(:new)
         expect(Packages::Rubygems::CreateGemspecService).not_to receive(:new)
         expect(Packages::Rubygems::CreateDependenciesService).not_to receive(:new)
+        expect(Packages::Rubygems::CreateSpecFilesWorker).not_to receive(:perform_async)
 
         subject
 

@@ -1,8 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { MountingPortal } from 'portal-vue';
 
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -95,6 +97,7 @@ describe('DesignDetails', () => {
     routeArg = MOCK_ROUTE,
     props = {},
     data = {},
+    attachTo = null,
   } = {}) {
     wrapper = shallowMountExtended(DesignDetails, {
       apolloProvider: createMockApollo([
@@ -121,9 +124,15 @@ describe('DesignDetails', () => {
       },
       stubs: {
         RouterView: true,
+        // Render the portal's slot contents in place so child components and
+        // refs are accessible without actually teleporting to document.body.
+        MountingPortal: stubComponent(MountingPortal, { name: 'MountingPortal' }),
       },
+      ...(attachTo ? { attachTo } : {}),
     });
   }
+
+  const findMountingPortal = () => wrapper.findComponent(MountingPortal);
 
   it('sets loading state', () => {
     createComponent();
@@ -131,6 +140,14 @@ describe('DesignDetails', () => {
     expect(findDesignPresentation().props('isLoading')).toBe(true);
     expect(findDesignToolbar().props('isLoading')).toBe(true);
     expect(findDesignSidebar().props('isLoading')).toBe(true);
+  });
+
+  it('renders the overlay via MountingPortal mounted to body', () => {
+    createComponent();
+
+    expect(findMountingPortal().attributes()).toMatchObject({
+      'mount-to': 'body',
+    });
   });
 
   describe('when loaded', () => {
@@ -316,6 +333,41 @@ describe('DesignDetails', () => {
 
       await nextTick();
       expect(findDesignReplyForm().exists()).toBe(false);
+    });
+  });
+
+  describe('focus management', () => {
+    let trigger;
+
+    beforeEach(() => {
+      // Stand in for the design link the user clicked to open the overlay.
+      trigger = document.createElement('a');
+      trigger.href = '#';
+      document.body.appendChild(trigger);
+      trigger.focus();
+    });
+
+    afterEach(() => {
+      trigger.remove();
+    });
+
+    it('moves focus to the overlay root after mount', async () => {
+      createComponent({ attachTo: document.body });
+
+      await nextTick();
+
+      expect(document.activeElement).toBe(wrapper.vm.$refs.root);
+      expect(wrapper.vm.$refs.root.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('restores focus to the previously-focused element on route leave', async () => {
+      createComponent({ attachTo: document.body });
+      await nextTick();
+      const focusSpy = jest.spyOn(trigger, 'focus');
+
+      DesignDetails.beforeRouteLeave.call(wrapper.vm, {}, {}, jest.fn());
+
+      expect(focusSpy).toHaveBeenCalled();
     });
   });
 });

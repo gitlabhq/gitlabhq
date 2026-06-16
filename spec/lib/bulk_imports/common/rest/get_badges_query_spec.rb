@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Rest::GetBadgesQuery do
+RSpec.describe BulkImports::Common::Rest::GetBadgesQuery, feature_category: :importers do
   describe '.to_h' do
     shared_examples 'resource and page info query' do
       let(:tracker) { create(:bulk_import_tracker, entity: entity) }

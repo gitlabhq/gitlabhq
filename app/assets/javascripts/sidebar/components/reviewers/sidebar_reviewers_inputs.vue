@@ -3,6 +3,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 
 export default {
+  name: 'SidebarReviewersInputs',
   inject: ['issuableIid', 'projectPath'],
   apollo: {
     issuable: {

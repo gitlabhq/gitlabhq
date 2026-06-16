@@ -89,7 +89,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
 
     with_them do
-      let_it_be(:key) do
+      let_it_be(:key, freeze: false) do
         build(:personal_key)
       end
 

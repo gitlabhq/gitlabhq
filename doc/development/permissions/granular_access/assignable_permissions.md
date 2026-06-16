@@ -186,6 +186,14 @@ This requires a three-step process:
 1. In a later milestone, [finalize the batched background migration](../../database/batched_background_migrations.md#finalize-a-batched-background-migration)
    so that any remaining rows are migrated synchronously during upgrade.
 1. After the migration is finalized, create a follow-up merge request to remove the deprecated permission.
+   Use the Rake task to identify and delete all eligible files:
+
+   ```shell
+   bundle exec rake gitlab:permissions:assignable:cleanup_deprecated
+   ```
+
+   The task deletes every deprecated permission file whose rename migration was finalized in a
+   previous milestone. It prints each deleted path and exits silently if nothing is ready.
 
 <details><summary>Creating the rename migration</summary>
 

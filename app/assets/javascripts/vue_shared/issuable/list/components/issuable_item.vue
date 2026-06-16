@@ -123,6 +123,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['checked-input', 'select-issuable'],
   constants: {
     METADATA_KEYS,
   },

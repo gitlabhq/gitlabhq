@@ -37,6 +37,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       projectMemberships
       starredProjects
       contributedProjects
+      events
       callouts
       groupCallouts
       merge_request_interaction

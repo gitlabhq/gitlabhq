@@ -37,6 +37,27 @@ module DiffPositionableNote
 
       super(new_position)
     end
+
+    define_method(meth) do
+      super()
+    rescue Psych::SyntaxError => e
+      # A corrupt YAML column is read many times during a single request
+      # (cache_key, active?, reply_attributes, serializers, ...). Dedupe the
+      # Sentry event per (note, attribute) to avoid flooding ingest with
+      # identical events.
+      track_key = [:diff_positionable_note_yaml_error, id, meth]
+      Gitlab::SafeRequestStore.fetch(track_key) do
+        Gitlab::ErrorTracking.track_exception(
+          e,
+          note_id: id,
+          noteable_type: noteable_type,
+          noteable_id: noteable_id,
+          attribute: meth
+        )
+        true
+      end
+      nil
+    end
   end
 
   def should_update_position?
@@ -62,6 +83,7 @@ module DiffPositionableNote
   def active?(diff_refs = nil)
     return false unless supported?
     return true if for_commit?
+    return false unless position
 
     diff_refs ||= noteable.diff_refs
 
@@ -99,7 +121,7 @@ module DiffPositionableNote
   end
 
   def diff_refs_match_commit
-    return if self.original_position.diff_refs == commit&.diff_refs
+    return if original_position && original_position.diff_refs == commit&.diff_refs
 
     errors.add(:commit_id, 'does not match the diff refs')
   end
@@ -134,12 +156,14 @@ module DiffPositionableNote
   strong_memoize_attr :async_keep_around_refs?
 
   def shas
+    return [] unless original_position
+
     [
       original_position.base_sha,
       original_position.start_sha,
       original_position.head_sha
     ].tap do |a|
-      if position != original_position
+      if position && position != original_position
         a << position.base_sha
         a << position.start_sha
         a << position.head_sha

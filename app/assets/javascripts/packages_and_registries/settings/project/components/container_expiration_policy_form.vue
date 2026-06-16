@@ -29,6 +29,7 @@ import ExpirationRunText from './expiration_run_text.vue';
 import ExpirationToggle from './expiration_toggle.vue';
 
 export default {
+  name: 'ContainerExpirationPolicyForm',
   components: {
     GlButton,
     GlSprintf,

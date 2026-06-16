@@ -184,17 +184,16 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
           page.within invite_modal_selector do
             choose_options(role, nil)
-            find(member_dropdown_selector).set("#{user2.email} ")
+            find(member_dropdown_selector).set("user2 @example.org")
             wait_for_requests
 
-            expect(page).to have_content('No matches found')
-            expect(page).not_to have_button("#{user2.email} ")
+            expect(page).not_to have_content('Invite "user2 @example.org" by email')
           end
         end
       end
 
       context 'when there are multiple users invited with errors' do
-        let_it_be(:user3) { create(:user) }
+        let_it_be(:user3, freeze: false) { create(:user) }
 
         before do
           group.add_maintainer(user3)
@@ -300,10 +299,10 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
         it 'only shows the error for an invalid formatted email and does not display other member errors', :js do
           visit subentity_members_page_path
 
-          invite_member([user2.name, user3.name, 'bad@email'], role: role)
+          invite_member([user2.name, user3.name, 'bad@email..test'], role: role)
 
           invite_modal = page.find(invite_modal_selector)
-          expect(invite_modal).to have_text('email contains an invalid email address')
+          expect(invite_modal).to have_text('One or more email addresses or usernames are invalid')
           expect(invite_modal).not_to have_text("The following 2 members couldn't be invited")
           expect(invite_modal).not_to have_text("Review the invite errors and try again")
           expect(invite_modal).not_to have_text("#{user2.name}: Access level should be greater than or equal to")

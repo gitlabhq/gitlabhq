@@ -3,6 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ConfirmModal',
   components: {
     GlModal,
   },

@@ -204,7 +204,7 @@ You should see a `GET` request to `https://gitlab.com/-/jira_connect/installatio
 This request should return a `200 OK`, but it might return a `422 Unprocessable Entity` if there was a problem.
 You can check the response body for the error.
 
-If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
+If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://support.gitlab.com/) for assistance.
 Provide GitLab Support with:
 
 - Your GitLab Self-Managed instance URL.
@@ -409,4 +409,21 @@ To resolve this issue, ensure the **Trusted** and **Confidential** checkboxes ar
 the [OAuth application](jira_cloud_app.md#set-up-oauth-authentication) created for the app.
 If the error persists, see [issue 581765](https://gitlab.com/gitlab-org/gitlab/-/work_items/581765).
 
-If you use Google Chrome for the app, try using a different browser.
+### Chrome 142 and later blocks local network requests
+
+If your GitLab Self-Managed instance is on a local or private network, Chrome
+142 and later blocks the connection from Jira Cloud because of its
+[Local Network Access](https://developer.chrome.com/blog/local-network-access)
+policy. Chrome surfaces this as a `Failed to sign in to GitLab` message or as
+`ERR_BLOCKED_BY_PRIVATE_NETWORK_ACCESS_CHECKS` in the developer console.
+
+GitLab cannot work around this restriction from the GitLab side, because the
+parent iframe in Jira Cloud must grant the permission. To continue using the
+app while the limitation persists, use one of these workarounds:
+
+- Sign in from Firefox or Safari, which do not enforce Local Network Access.
+- Ask your administrator to deploy the Chrome enterprise policy
+  [`LocalNetworkAllowedForUrls`](https://chromeenterprise.google/policies/#LocalNetworkAllowedForUrls)
+  for `*.atlassian.net` so the prompt is bypassed.
+
+For tracking, see [issue 581765](https://gitlab.com/gitlab-org/gitlab/-/work_items/581765).

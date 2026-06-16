@@ -452,6 +452,7 @@
   min-width: 320px;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to ProseMirror paragraphs with marks
 .ProseMirror p:has(mark) {
   position: relative;
   z-index: 0;

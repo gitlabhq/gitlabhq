@@ -134,6 +134,24 @@ RSpec.describe Upload do
         expect(described_class.order_by_created_at_desc).to eq(uploads.reverse)
       end
     end
+
+    describe '.for_project' do
+      let_it_be(:project_upload) { create(:upload, model: project) }
+      let_it_be(:other_project_upload) { create(:upload, model: create(:project)) }
+      let_it_be(:snippet_upload) { create(:upload, :personal_snippet_upload) }
+
+      it 'returns only uploads for the given project' do
+        expect(described_class.for_project(project.id)).to contain_exactly(project_upload)
+      end
+
+      it 'restricts the scan to the project_uploads partition' do
+        plan = described_class.for_project(project.id).explain.inspect
+
+        expect(plan).to include('on project_uploads')
+        expect(plan).not_to include('on namespace_uploads')
+        expect(plan).not_to include('on user_uploads')
+      end
+    end
   end
 
   describe '#absolute_path' do

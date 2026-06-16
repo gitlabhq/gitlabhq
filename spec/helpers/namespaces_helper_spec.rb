@@ -5,22 +5,20 @@ require 'spec_helper'
 RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:admin) { create(:admin, organizations: [organization]) }
-  let!(:admin_project_creation_level) { nil }
-  let!(:admin_group) do
-    create(:group, :private, project_creation_level: admin_project_creation_level, organization: organization)
+  let_it_be(:admin_group) do
+    create(:group, :private, project_creation_level: nil, organization: organization)
   end
 
   let_it_be(:user) { create(:user, organizations: [organization]) }
-  let!(:user_project_creation_level) { nil }
-  let!(:user_group) do
-    create(:group, :private, project_creation_level: user_project_creation_level, organization: organization)
+  let_it_be(:user_group) do
+    create(:group, :private, project_creation_level: nil, organization: organization)
   end
 
-  let!(:subgroup1) do
+  let_it_be(:subgroup1) do
     create(:group, :private, parent: admin_group, project_creation_level: nil)
   end
 
-  let!(:subgroup2) do
+  let_it_be(:subgroup2) do
     create(
       :group,
       :private,
@@ -29,7 +27,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     )
   end
 
-  let!(:subgroup3) do
+  let_it_be(:subgroup3) do
     create(
       :group,
       :private,
@@ -38,15 +36,15 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     )
   end
 
-  let!(:project1) { build(:project, namespace: subgroup1) }
-  let!(:project2) do
+  let(:project1) { build(:project, namespace: subgroup1) }
+  let(:project2) do
     user.create_namespace!(path: user.username, name: user.name, organization: organization) unless user.namespace
     build(:project, namespace: user.namespace)
   end
 
   let_it_be(:attribute) { :math_rendering_limits_enabled }
 
-  before do
+  before_all do
     admin_group.add_owner(admin)
     user_group.add_owner(user)
   end

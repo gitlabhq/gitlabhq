@@ -101,22 +101,6 @@ RSpec.describe Gitlab::Sessions::CacheStore, feature_category: :cell do
 
           expect(write_session).to eq(session_id)
         end
-
-        context 'when throttle_session_writes is disabled' do
-          before do
-            stub_feature_flags(throttle_session_writes: false)
-          end
-
-          it 'writes the session with an updated timestamp' do
-            expect(redis_cache_store).to receive(:write).with(
-              session_id.private_id,
-              session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
-              expires_in: redis_expiry
-            )
-
-            expect(write_session).to eq(session_id)
-          end
-        end
       end
 
       context 'when last write was more than an hour ago' do

@@ -59,6 +59,8 @@ module Namespaces
     private
 
     def self_deletion_scheduled_deletion_created_on_legacy
+      return if is_a?(Group) && Feature.enabled?(:replace_group_deletion_schedule, self)
+
       try(:marked_for_deletion_on)
     end
   end

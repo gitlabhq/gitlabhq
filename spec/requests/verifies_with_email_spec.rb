@@ -8,6 +8,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
   include EmailHelpers
 
   let(:user) { create(:user) }
+  let(:remember_me_value) { nil }
 
   before do
     allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
@@ -95,6 +96,10 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       expect(request.session[:verifies_with_email_user_id]).to eq(user.id)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('devise/sessions/email_verification')
+    end
+
+    it 'stores the remember_me value in the session' do
+      expect(request.session[:remember_me_before_email_verification]).to eq(remember_me_value)
     end
   end
 
@@ -211,10 +216,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
+        it 'returns 429 Too Many Requests' do
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => "You've reached the maximum amount of tries. "\
                                      'Wait 10 minutes or send a new code and try again.')
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -223,10 +236,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'invalid_token' }))
         end
 
+        it 'returns 401 Unauthorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => s_('IdentityVerification|The code is incorrect. '\
                                         'Enter it again, or send a new code.'))
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -236,9 +257,17 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
+        it 'returns 401 Unauthorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => s_('IdentityVerification|The code has expired. Send a new code and try again.'))
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -273,6 +302,27 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
               expect { submit_token }
                 .to not_change { user.reload.email }
             end
+          end
+        end
+
+        context 'when remember_me was set before email verification' do
+          before do
+            stub_session(session_data: {
+              verifies_with_email_user_id: user.id,
+              remember_me_before_email_verification: true
+            })
+          end
+
+          it 'sets a remember_user_token cookie' do
+            submit_token
+            expect(response.cookies['remember_user_token']).to be_present
+          end
+        end
+
+        context 'when remember_me was not set before email verification' do
+          it 'does not set a remember_user_token cookie' do
+            submit_token
+            expect(response.cookies['remember_user_token']).to be_nil
           end
         end
       end
@@ -321,6 +371,27 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           expect(request.session[:verifies_with_email_user_id]).to be_nil
         end
 
+        context 'when remember_me was set before email verification' do
+          before do
+            stub_session(session_data: {
+              verifies_with_email_user_id: user.id,
+              remember_me_before_email_verification: true
+            })
+          end
+
+          it 'sets a remember_user_token cookie' do
+            submit_token
+            expect(response.cookies['remember_user_token']).to be_present
+          end
+        end
+
+        context 'when remember_me was not set before email verification' do
+          it 'does not set a remember_user_token cookie' do
+            submit_token
+            expect(response.cookies['remember_user_token']).to be_nil
+          end
+        end
+
         # Email-based OTP codes are valid for one hour. It is possible
         # they could get locked, in which case the user needs to enter
         # an unlock_token not an email_otp
@@ -358,10 +429,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
+        it 'returns 429 Too Many Requests' do
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => "You've reached the maximum amount of tries. "\
                                      'Wait 10 minutes or send a new code and try again.')
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -370,10 +449,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'invalid_token' }))
         end
 
+        it 'returns 401 Unauthorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => s_('IdentityVerification|The code is incorrect. '\
                                         'Enter it again, or send a new code.'))
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -383,9 +470,17 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
+        it 'returns 401 Unauthorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
         it 'adds a verification error message' do
           expect(json_response)
             .to include('message' => s_('IdentityVerification|The code has expired. Send a new code and try again.'))
+        end
+
+        it 'does not expose the internal reason key' do
+          expect(json_response).not_to have_key('reason')
         end
       end
 
@@ -477,6 +572,27 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           end
 
           it_behaves_like 'two factor prompt or successful login'
+        end
+
+        context 'when email_otp_enabled application setting is enabled' do
+          let(:last_sign_in) { 1.day.ago }
+          let(:user) do
+            create(:user,
+              last_sign_in_at: last_sign_in,
+              email_otp_required_after: 1.day.ago
+            )
+          end
+
+          let(:log_reason) { 'email_otp' }
+
+          before do
+            stub_feature_flags(email_based_mfa: false)
+            stub_application_setting(email_otp_enabled: true)
+            perform_enqueued_jobs { sign_in }
+          end
+
+          it_behaves_like 'sends verification instructions for email OTP'
+          it_behaves_like 'prompt for email verification'
         end
 
         context 'when email_otp_required_after is in the past and they have completed their first sign in' do
@@ -721,6 +837,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
               .and not_change { user.locked_at }
           end
 
+          it 'returns 422 Unprocessable Entity' do
+            request_resend
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+
           it 'adds a verification error message' do
             request_resend
             expect(json_response).to have_key('message')
@@ -806,6 +927,10 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
         end
+      end
+
+      it 'returns 429 Too Many Requests' do
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
 
       it 'does not lock the user' do
@@ -934,6 +1059,20 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           .to change { user.reload.last_activity_on }.to(Date.today)
       end
 
+      context 'when remember_me was set before email verification' do
+        before do
+          stub_session(session_data: {
+            verifies_with_email_user_id: user.id,
+            remember_me_before_email_verification: true
+          })
+        end
+
+        it 'sets a remember_user_token cookie' do
+          post(users_skip_verification_for_now_path(user: { login: user.username }))
+          expect(response.cookies['remember_user_token']).to be_present
+        end
+      end
+
       context 'when user signed in from an unknown remote IP' do
         let(:user) { create(:user, :with_sign_ins) }
         let(:malicious_ip) { '203.0.113.1' }
@@ -954,11 +1093,12 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     context 'when user is not permitted to skip email OTP in warning period' do
       let(:permitted_to_skip_email_otp_in_warning_period) { false }
 
-      it 'returne a 403 status code and does not remove verifies_with_email_user_id session key' do
+      it 'returns a 403 JSON response and does not remove verifies_with_email_user_id session key' do
         post(users_skip_verification_for_now_path(user: { login: user.username }))
 
         expect(request.session[:verifies_with_email_user_id]).to eq(user.id)
         expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).to eq('status' => 'failure')
       end
     end
 
@@ -1015,10 +1155,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           stub_session(session_data: {})
         end
 
-        it 'returns error and does not render the template' do
+        it 'returns 403 Forbidden and does not render the template' do
           get(users_skip_verification_confirmation_path)
 
           expect(response).not_to render_template('skip_verification_confirmation')
+          expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to eq('status' => 'failure')
         end
       end
@@ -1028,10 +1169,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           stub_feature_flags(email_based_mfa: false)
         end
 
-        it 'returns error and does not render the template' do
+        it 'returns 403 Forbidden and does not render the template' do
           get(users_skip_verification_confirmation_path)
 
           expect(response).not_to render_template('skip_verification_confirmation')
+          expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to eq('status' => 'failure')
         end
       end
@@ -1041,10 +1183,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           sign_out(user)
         end
 
-        it 'returns error and does not render the template' do
+        it 'returns 403 Forbidden and does not render the template' do
           get(users_skip_verification_confirmation_path)
 
           expect(response).not_to render_template('skip_verification_confirmation')
+          expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to eq('status' => 'failure')
         end
       end
@@ -1053,10 +1196,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     context 'when user is not permitted to skip email OTP' do
       let(:permitted_to_skip_email_otp_in_warning_period) { false }
 
-      it 'returns error and does not render the template' do
+      it 'returns 403 Forbidden and does not render the template' do
         get(users_skip_verification_confirmation_path)
 
         expect(response).not_to render_template('skip_verification_confirmation')
+        expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response).to eq('status' => 'failure')
       end
     end

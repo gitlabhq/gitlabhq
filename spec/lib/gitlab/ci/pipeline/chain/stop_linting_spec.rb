@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::StopLinting, feature_category: :pipeline_composition do
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline, reload: true) { create(:ci_pipeline, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(

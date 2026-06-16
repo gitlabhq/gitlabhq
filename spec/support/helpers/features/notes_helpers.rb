@@ -15,6 +15,7 @@ module Features
       if issuable_type == :issue
         fill_in 'Add a reply', with: text
         click_button 'Comment'
+        expect(page).to have_field('Add a reply', with: '')
       else
         perform_enqueued_jobs do
           page.within(".js-main-target-form") do

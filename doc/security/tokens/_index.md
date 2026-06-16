@@ -25,7 +25,7 @@ To keep your tokens secure:
   - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens for each scope.
     If one token leaks, it provides less access than a single token with a wide scope like full API access.
 - When creating a token:
-  - Choose a name following the [Token naming guidance](#token-naming-guidance) below.
+  - Choose a name following the [token naming guidance](#token-naming-guidance) below.
   - Consider setting a token that expires when your task is complete.
     For example, if you need to perform a one-time import, set the token to expire after a few hours.
   - Add a description that provides further context including any relevant URLs.
@@ -49,21 +49,14 @@ Do not:
 
 ### Token naming guidance
 
-A clear, consistent naming convention for access tokens helps you:
+A consistent naming convention makes it easier to audit access tokens, understand their purpose,
+and assess the impact of rotating or revoking each token.
 
-- Quickly identify a token's purpose and owner when auditing active tokens.
-- Determine whether a token is still needed before rotating or revoking it.
-- Reduce the risk of accidentally revoking a token that another process depends on.
+Naming conventions vary by team, but a useful convention answers these questions:
 
-#### Recommended naming format
-
-Use a name that answers three questions: **who** created the token, **what** it is used for, and **where** it is used.
-
-A practical format is:
-
-```plaintext
-<purpose>-<context>-<environment>
-```
+- What action does the token perform? For example, `ci-deploy` or `api-read`.
+- What resource or service does the token act on? For example, `gitlab` or `terraform`.
+- Which environment or owner is the token associated with? For example, `production` or `auth-team`.
 
 For example:
 
@@ -72,47 +65,22 @@ For example:
 | `ci-deploy-gitlab-production` | CI/CD deployment job for the GitLab project in production |
 | `api-read-reporting-dashboard` | Read-only API access for a reporting dashboard |
 | `automation-sync-vulnmapper-staging` | Automation script syncing data in staging |
-| `personal-local-dev-jsmith` | Personal token for local development by a specific user |
 
-#### Naming guidelines
-
-- **Be specific.** Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+- Be specific. Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
   These make it impossible to identify a token's purpose during an audit.
-- **Include the consuming system or tool.** If a token is used by a specific application,
+- Include the consuming system or tool. If a token is used by a specific application,
   script, or integration, include its name. For example: `terraform-state-backend` or
   `grafana-metrics-reader`.
-- **Include the environment.** Where applicable, indicate whether the token targets
+- Include the environment. Where applicable, indicate whether the token targets
   `production`, `staging`, or `development`. This prevents accidental use of a
   production token in a lower environment.
-- **Avoid embedding sensitive information.** Do not include usernames, email addresses,
+- Avoid embedding sensitive information. Do not include usernames, email addresses,
   or any other personally identifiable information (PII) in token names, as token names
   are visible in audit logs and the UI.
-- **Use lowercase and hyphens.** Consistent casing and separators make names easier to
-  read and search. For example, prefer `ci-deploy-production` over `CI_Deploy_Production`.
-- **Use the description field for additional context.** The token description field
-  (available in GitLab 17.7 and later) is a good place to add detail that does not fit
-  in the name, such as a link to the issue that requested the token or the team that
-  owns it.
-
-#### Tokens used in automation
-
-For tokens used in CI/CD pipelines, scripts, or other automated processes:
-
-- Prefix the name with the system or pipeline name. For example: `ci-`, `terraform-`, or `k8s-`.
-- Include the project or group the token operates on. For example:
-  `ci-deploy-my-project-production`.
-- Consider using [project access tokens](../../user/project/settings/project_access_tokens.md) or
-  [group access tokens](../../user/group/settings/group_access_tokens.md) instead of personal access
-  tokens for automation, as they are not tied to an individual user account.
-
-#### Tokens used for personal development
-
-For tokens used in local development or personal tooling:
-
-- Include your username or identifier so the token can be traced back to you during an audit.
-  For example: `local-dev-jsmith` or `vscode-gitlab-jsmith`.
-- Create separate tokens for separate tools or purposes rather than reusing a single
-  broad-scoped token.
+- Set standardized capitalization and punctuation rules. Using consistent capitalization and separators makes
+  it easier to read and search for tokens. For example, using hyphens (-) over underscores (_).
+- Use the description field. The token description field allows you to add additional details such as links
+  to related issues or names of team that uses the token.
 
 ### Tokens in CI/CD
 

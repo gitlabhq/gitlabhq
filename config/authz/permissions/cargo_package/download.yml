@@ -1,0 +1,3 @@
+---
+name: download_cargo_package
+description: Grants the ability to download Cargo packages

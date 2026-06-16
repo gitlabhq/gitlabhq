@@ -17,6 +17,7 @@ import DeploymentStatusLink from './deployment_status_link.vue';
 import Commit from './commit.vue';
 
 export default {
+  name: 'EnvironmentsDeployment',
   components: {
     ClipboardButton,
     Commit,

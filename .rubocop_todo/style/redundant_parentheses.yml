@@ -38,5 +38,4 @@ Style/RedundantParentheses:
     - 'spec/lib/gitlab/loop_helpers_spec.rb'
     - 'spec/lib/gitlab/repository_set_cache_spec.rb'
     - 'spec/lib/system_check/app/redis_version_check_spec.rb'
-    - 'spec/models/milestone_spec.rb'
     - 'spec/workers/pages/deactivated_deployments_delete_cron_worker_spec.rb'

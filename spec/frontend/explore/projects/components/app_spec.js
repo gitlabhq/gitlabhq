@@ -7,11 +7,7 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import { createRouter } from '~/explore/projects';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
-import {
-  EXPLORE_PROJECTS_TABS,
-  TRENDING_TAB,
-  FILTERED_SEARCH_TERM_KEY,
-} from '~/explore/projects/constants';
+import { EXPLORE_PROJECTS_TABS, FILTERED_SEARCH_TERM_KEY } from '~/explore/projects/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -87,26 +83,6 @@ describe('ExploreProjectsApp', () => {
         clickTopic: 'click_topic_on_explore_projects',
       },
       userPreferencesSortKey: 'projectsSort',
-    });
-  });
-
-  describe('when retireTrendingProjects feature is enabled', () => {
-    it('does not include trending tab', async () => {
-      await createComponent({
-        provide: { glFeatures: { retireTrendingProjects: true } },
-      });
-
-      expect(findTabsWithList().props('tabs')).not.toContainEqual(TRENDING_TAB);
-    });
-  });
-
-  describe('when retireTrendingProjects feature is disabled', () => {
-    it('includes trending tab', async () => {
-      await createComponent({
-        provide: { glFeatures: { retireTrendingProjects: false } },
-      });
-
-      expect(findTabsWithList().props('tabs')).toContainEqual(TRENDING_TAB);
     });
   });
 });

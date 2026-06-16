@@ -1,6 +1,10 @@
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import {
+  autocompleteMergeRequestTargetBranchesPath,
+  autocompleteMergeRequestSourceBranchesPath,
+} from '~/lib/utils/path_helpers/autocomplete';
+import {
   TOKEN_TYPE_APPROVED_BY,
   TOKEN_TYPE_MERGE_USER,
   TOKEN_TYPE_ASSIGNEE,
@@ -213,23 +217,24 @@ export default class AvailableDropdownMappings {
   }
 
   getMergeRequestTargetBranchesEndpoint() {
-    const targetBranchEndpointPath = '/-/autocomplete/merge_request_target_branches.json';
-    return this.getMergeRequestBranchesEndpoint(targetBranchEndpointPath);
+    return this.getMergeRequestBranchesEndpoint(
+      autocompleteMergeRequestTargetBranchesPath({ format: 'json' }),
+    );
   }
 
   getMergeRequestSourceBranchesEndpoint() {
-    const sourceBranchEndpointPath = '/-/autocomplete/merge_request_source_branches.json';
-    return this.getMergeRequestBranchesEndpoint(sourceBranchEndpointPath);
+    return this.getMergeRequestBranchesEndpoint(
+      autocompleteMergeRequestSourceBranchesPath({ format: 'json' }),
+    );
   }
 
   getMergeRequestBranchesEndpoint(endpointPath = '') {
-    const endpoint = `${gon.relative_url_root || ''}${endpointPath}`;
     const params = {
       group_id: this.getGroupId(),
       project_id: this.getProjectId(),
     };
 
-    return mergeUrlParams(params, endpoint);
+    return mergeUrlParams(params, endpointPath);
   }
 
   getEnvironmentsEndpoint() {

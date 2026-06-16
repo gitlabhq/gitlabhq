@@ -1,6 +1,6 @@
 ---
-stage: none
-group: Tutorials
+stage: AI-powered
+group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duo Chatの場所と、GitLab Duo Chatを使用してイシューに対応する方法。
 title: "チュートリアル: GitLab Duo Chatでイシューを管理する"

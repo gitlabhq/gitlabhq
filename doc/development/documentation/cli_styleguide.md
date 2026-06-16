@@ -300,7 +300,7 @@ They are overwritten each time `make gen-docs` runs.
 The canonical reference for all environment variables that affect `glab` behavior
 is the [environment variables section of the `gitlab-org/cli` README](https://gitlab.com/gitlab-org/cli/-/blob/main/README.md#environment-variables).
 This includes GitLab access variables (such as `GITLAB_TOKEN` and `GITLAB_HOST`),
-`glab` configuration variables (such as `BROWSER`, `NO_PROMPT`, and `GLAMOUR_STYLE`),
+`glab` configuration variables (such as `BROWSER`, `GLAB_NO_PROMPT`, and `GLAB_GLAMOUR_STYLE`),
 and their `config.yml` equivalents and defaults.
 
 Environment variables that affect `glab` behavior globally are documented on the
@@ -316,7 +316,13 @@ If `GITLAB_TOKEN`, `GITLAB_ACCESS_TOKEN`, or `OAUTH_TOKEN` are set,
 they take precedence over the stored credentials.
 ```
 
-## Deprecation messages
+For deprecation guidance, see [deprecated environment variables](#deprecated-environment-variables).
+
+## Deprecations
+
+Use the following guidance when deprecating flags or environment variables in `glab`.
+
+### Deprecated flags
 
 When you deprecate a flag with `MarkDeprecated`, Cobra prepends a fixed prefix to your message:
 
@@ -339,6 +345,16 @@ Avoid time-relative words like `now` or [`currently`](styleguide/word_list.md#cu
 
 This convention parallels the [REST API deprecation guidance](restful_api_styleguide.md#deprecations),
 adapted for Cobra's wrapper.
+
+### Deprecated environment variables
+
+When an environment variable is deprecated, update the `help:environment` annotation in `root.go`.
+Keep all entries in alphabetical order.
+
+1. Remove the deprecated variable entry.
+1. Add a new entry for the replacement variable with a full description.
+1. Run `make gen-docs` and commit the regenerated files.
+1. Apply the same updates to the variables section of the [README](https://gitlab.com/gitlab-org/cli/-/blob/main/README.md#environment-variables).
 
 ## GitLab version support
 

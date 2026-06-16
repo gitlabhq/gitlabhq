@@ -9,6 +9,7 @@ import { formatDate } from '~/lib/utils/datetime_utility';
 
 Raphael.prototype.commitTooltip = function commitTooltip(x, y, commit) {
   const boxWidth = 300;
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- prepending relative_url_root to a server-provided icon path
   const icon = this.image(gon.relative_url_root + commit.author.icon, x, y, 20, 20);
   const nameText = this.text(x + 25, y + 10, commit.author.name);
   const dateText = this.text(x, y + 35, formatDate(commit.date));

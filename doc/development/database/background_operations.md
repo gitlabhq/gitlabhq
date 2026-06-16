@@ -185,23 +185,22 @@ Key DSL methods:
 
 #### 2. Configure the cron job
 
-Add the cron schedule to `config/initializers/1_settings.rb`:
+Add an entry to `config/schedule.yml` (FOSS) or `ee/config/schedule.yml` (EE):
 
-```ruby
-Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary'] ||= {}
-Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['job_class'] = 'Database::BackgroundOperation::CronEnqueueWorker'
-Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['args'] = {
-  'job_class_name' => 'UsersDeleteUnconfirmedSecondaryEmails',
-  'table_name' => 'emails',
-  'column_name' => 'id'
-}
+```yaml
+bbo_users_delete_unconfirmed_secondary:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "0 * * * *"
+  args:
+    job_class_name: UsersDeleteUnconfirmedSecondaryEmails
+    table_name: emails
+    column_name: id
 ```
 
 Configuration fields:
 
+- `class`: Always `Database::BackgroundOperation::CronEnqueueWorker`.
 - `cron`: Standard cron expression for the schedule.
-- `job_class`: Always `Database::BackgroundOperation::CronEnqueueWorker`.
 - `args`: A hash containing:
   - `job_class_name`: The class name of your operation (without the
     `Gitlab::BackgroundOperation::` prefix).
@@ -219,7 +218,8 @@ Gitlab::Database::BackgroundOperation::Worker.enqueue(
   'target_table',
   'id',
   job_arguments: %w[arg1 arg2],
-  user: current_user
+  user: current_user,
+  organization: Current.organization
 )
 ```
 
@@ -232,8 +232,9 @@ Parameters:
 - `min_cursor` (optional): An array specifying the starting cursor position.
   When omitted, the framework resumes from the previous operation's last
   cursor or falls back to `MIN(column)`.
-- `user`: The user initiating the operation. Sets `user_id` and
-  `organization_id` on the record.
+- `user`: The user initiating the operation.
+- `organization`: Since this is a user triggered action, `Current.organization` will already be available and that has to
+  be passed along.
 
 The framework automatically checks for duplicates, estimates
 `total_tuple_count` via `pg_class`, sets default batch parameters, and resolves

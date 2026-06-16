@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActivityPub::InboxResolverService, feature_category: :integrations do
+RSpec.describe ActivityPub::InboxResolverService, feature_category: :release_orchestration do
   let_it_be(:project) { create(:project, :public) }
   let_it_be_with_reload(:existing_subscription) { create(:activity_pub_releases_subscription, project: project) }
   let(:service) { described_class.new(existing_subscription) }

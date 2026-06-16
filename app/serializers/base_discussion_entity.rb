@@ -33,7 +33,7 @@ class BaseDiscussionEntity < Grape::Entity
     discussion_path(discussion)
   end
 
-  with_options if: ->(d, _) { d.noteable.supports_resolvable_notes? } do
+  with_options if: ->(d, _) { d.noteable&.supports_resolvable_notes? } do
     expose :resolved?, as: :resolved
     expose :resolved_by_push?, as: :resolved_by_push
     expose :resolved_by, using: NoteUserEntity

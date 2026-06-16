@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a deployment job waiting for approval' do |factory_type|
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:job) { create(factory_type, :manual, environment: 'production', project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:job, freeze: false) { create(factory_type, :manual, environment: 'production', project: project) }
 
   subject { described_class.new(Gitlab::Ci::Status::Core.new(job, user)) }
 

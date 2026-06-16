@@ -20,7 +20,8 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
         click_button 'Reduce project visibility'
       end
 
-      wait_for_requests
+      # Wait for the success flash so project.reload does not race the full-page redirect.
+      expect(page).to have_content('successfully updated')
 
       expect(project.reload).to be_private
     end
@@ -35,7 +36,8 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
         click_button 'Save changes'
       end
 
-      wait_for_requests
+      # Wait for the success flash so project.reload does not race the full-page redirect.
+      expect(page).to have_content('successfully updated')
 
       expect(project.reload).to be_private
     end
@@ -73,7 +75,8 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
           click_button 'Save changes'
         end
 
-        wait_for_requests
+        # Wait for the success flash so project.reload does not race the full-page redirect.
+        expect(page).to have_content('successfully updated')
 
         expect(project.reload).to be_public
       end

@@ -8,7 +8,11 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Observable, feature_catego
       include Gitlab::Database::BackgroundOperation::Observable
 
       def id
-        [1, 100]
+        100
+      end
+
+      def partition
+        1
       end
 
       def job_class_name

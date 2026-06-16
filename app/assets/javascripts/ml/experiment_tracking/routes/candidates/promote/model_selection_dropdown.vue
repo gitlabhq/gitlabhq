@@ -22,6 +22,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   apollo: {
     project: {
       query: searchModelsQuery,

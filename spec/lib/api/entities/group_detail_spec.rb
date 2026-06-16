@@ -6,7 +6,7 @@ RSpec.describe API::Entities::GroupDetail, feature_category: :groups_and_project
   describe '#as_json' do
     subject { described_class.new(group, options).as_json }
 
-    let_it_be(:root_group) { create(:group) }
+    let_it_be(:root_group, freeze: false) { create(:group) }
     let_it_be(:subgroup) { create(:group, :nested) }
 
     let(:options) { {} }

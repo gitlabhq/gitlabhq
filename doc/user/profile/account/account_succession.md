@@ -122,4 +122,4 @@ To delete an account successor:
 ## Request access to a GitLab account
 
 If you are currently an account manager or account successor for a GitLab account,
-you can request access to that account by [contacting GitLab Support](https://about.gitlab.com/support/).
+you can request access to that account by [contacting GitLab Support](https://support.gitlab.com/).

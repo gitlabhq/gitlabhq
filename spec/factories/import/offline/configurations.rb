@@ -5,6 +5,7 @@ FactoryBot.define do
     offline_export { association(:offline_export) if bulk_import.nil? }
     organization
     bucket { 'gitlab-exports' }
+    source_hostname { 'https://offline.example.com' }
 
     aws_s3
 

@@ -16,7 +16,7 @@ RSpec.describe Users::ResetIncomingEmailTokenService, feature_category: :system_
   describe '#execute!' do
     let(:service) { described_class.new(current_user: current_user, user: user) }
 
-    let_it_be(:existing_user) { create(:user) }
+    let_it_be(:existing_user, freeze: false) { create(:user) }
 
     subject(:execute) { service.execute! }
 

@@ -7,6 +7,21 @@ RSpec.describe API::SystemHooks, feature_category: :webhooks do
   let_it_be(:admin) { create(:admin) }
   let_it_be_with_refind(:hook) { create(:system_hook, url: "http://example.com") }
 
+  describe 'POST /hooks/:hook_id' do
+    it_behaves_like 'authorizing granular token permissions', :test_webhook do
+      include StubRequests
+
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+
+      before do
+        stub_full_request(hook.url, method: :post).to_return(status: 200)
+      end
+
+      let(:request) { post api("/hooks/#{hook.id}", personal_access_token: pat) }
+    end
+  end
+
   it_behaves_like 'web-hook API endpoints', '' do
     let(:resource) { :instance }
     let(:user) { admin }

@@ -331,10 +331,13 @@ class GroupsController < Groups::ApplicationController
                                   .execute
                                   .includes(:namespace)
 
-    @events = EventCollection
-                .new(projects, offset: params[:offset].to_i, filter: event_filter, groups: groups)
-                .to_a
-                .map(&:present)
+    @events = EventCollection.new(
+      projects,
+      offset: params[:offset].to_i,
+      filter: event_filter,
+      groups: groups,
+      transfer_options: { current_group_id: @group.id }
+    ).to_a.map(&:present)
 
     Events::RenderService
       .new(current_user)
@@ -369,7 +372,9 @@ class GroupsController < Groups::ApplicationController
   end
 
   def groups
-    @group.self_and_descendants.public_or_visible_to_user(current_user) if @group.supports_events?
+    return unless @group.supports_events?
+
+    @group.self_and_descendants.public_or_visible_to_user(current_user)
   end
 
   override :resource_parent

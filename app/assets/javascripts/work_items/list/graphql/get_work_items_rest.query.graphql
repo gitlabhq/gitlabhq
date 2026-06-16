@@ -100,6 +100,7 @@ query getWorkItemsRest(
         createdAt
         hidden
         iid
+        userDiscussionsCount
         namespace {
           id
           fullPath
@@ -110,7 +111,7 @@ query getWorkItemsRest(
         updatedAt
         webPath
         state
-        widgets(onlyTypes: [LABELS, ASSIGNEES, MILESTONE, START_AND_DUE_DATE]) {
+        widgets(onlyTypes: [LABELS, ASSIGNEES, MILESTONE, START_AND_DUE_DATE, HIERARCHY]) {
           type
           ... on WorkItemWidgetLabels {
             allowsScopedLabels
@@ -144,6 +145,77 @@ query getWorkItemsRest(
           ... on WorkItemWidgetStartAndDueDate {
             dueDate
             startDate
+          }
+          ... on WorkItemWidgetHierarchy {
+            parent {
+              id
+              iid
+              title
+              confidential
+              webUrl
+              namespace {
+                id
+                fullPath
+              }
+              workItemType {
+                id
+                name
+                iconName
+              }
+            }
+          }
+        }
+        features {
+          labels {
+            allowsScopedLabels
+            labels {
+              nodes {
+                ...Label
+              }
+            }
+          }
+          assignees {
+            assignees {
+              nodes {
+                id
+                avatarUrl
+                name
+                username
+                webUrl
+                webPath
+              }
+            }
+          }
+          milestone {
+            milestone {
+              id
+              dueDate
+              startDate
+              title
+              webPath
+            }
+          }
+          startAndDueDate {
+            dueDate
+            startDate
+          }
+          hierarchy {
+            parent {
+              id
+              iid
+              title
+              confidential
+              webUrl
+              namespace {
+                id
+                fullPath
+              }
+              workItemType {
+                id
+                name
+                iconName
+              }
+            }
           }
         }
         workItemType {

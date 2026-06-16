@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'group and project boards query context' do
-  let_it_be(:user) { create :user }
+  let_it_be(:user, freeze: false) { create :user }
   let(:current_user) { user }
   let(:params) { '' }
   let(:board_parent_type) { board_parent.class.to_s.downcase }

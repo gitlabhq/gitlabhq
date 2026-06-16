@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package_registry do
-  let_it_be(:package, reload: true) { create(:nuget_package) }
+  let_it_be_with_reload(:package) { create(:nuget_package) }
   let_it_be(:metadata) do
     {
       authors: 'Package authors',
@@ -36,7 +36,7 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
     it_behaves_like 'saving metadatum attributes'
 
     context 'with existing nuget metadatum' do
-      let_it_be(:package) { create(:nuget_package, :with_metadatum) }
+      let_it_be(:package, freeze: false) { create(:nuget_package, :with_metadatum) }
 
       it 'does not create a nuget metadatum' do
         expect { subject }.to not_change { ::Packages::Nuget::Metadatum.count }

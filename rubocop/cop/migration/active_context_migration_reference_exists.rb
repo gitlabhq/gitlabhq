@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
+
 module RuboCop
   module Cop
     module Migration
@@ -43,6 +45,14 @@ module RuboCop
         end
 
         alias_method :on_csend, :on_send
+
+        def external_dependency_checksum
+          @external_dependency_checksum ||= begin
+            root = File.expand_path('../../..', __dir__)
+            paths = Dir.glob(File.join(root, MIGRATIONS_PATH, '*.rb'))
+            Digest::SHA256.hexdigest(paths.join("\n"))
+          end
+        end
 
         private
 

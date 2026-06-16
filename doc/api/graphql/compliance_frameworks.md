@@ -35,12 +35,10 @@ Manage compliance frameworks for top-level groups by using a GraphQL API.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16808) in GitLab 19.0
   [with a flag](../../administration/feature_flags/_index.md) named
   `compliance_framework_templates`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239045)
+  in GitLab 19.1. Feature flag `compliance_framework_templates` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Create a compliance framework from a predefined template. Templates include
 preconfigured requirements and controls aligned to common compliance standards.

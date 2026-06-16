@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
 export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () => {
   const diffDiscussions = useDiffDiscussions();
@@ -25,11 +26,16 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     diffDiscussions.addDiscussion(discussion);
   }
 
-  async function createLineDiscussion(formDiscussion, noteBody) {
+  async function createLineDiscussion({ discussion: formDiscussion, noteBody, showWhitespace }) {
+    const resolvedShowWhitespace = showWhitespace ?? useDiffsView().showWhitespace;
+    const position = {
+      ...formDiscussion.position,
+      ignore_whitespace_change: !resolvedShowWhitespace,
+    };
     const {
       data: { discussion },
     } = await axios.post(endpoint.value, {
-      note: { note: noteBody, position: formDiscussion.position },
+      note: { note: noteBody, position },
     });
     diffDiscussions.replaceDiscussionForm(formDiscussion, discussion);
   }

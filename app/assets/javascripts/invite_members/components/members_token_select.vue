@@ -3,12 +3,16 @@ import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@
 import { debounce, isEmpty } from 'lodash-es';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { isUserEmail } from '~/lib/utils/forms';
 import { memberName, searchUsers } from '../utils/member_utils';
 import {
   SEARCH_DELAY,
   VALID_TOKEN_BACKGROUND,
   WARNING_TOKEN_BACKGROUND,
   INVALID_TOKEN_BACKGROUND,
+  MAX_INVITES,
+  MIN_SEARCH_LENGTH,
+  NO_MATCHES_FOUND_TEXT,
 } from '../constants';
 
 export default {
@@ -28,7 +32,8 @@ export default {
     },
     ariaLabelledby: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     exceptionState: {
       type: Boolean,
@@ -61,9 +66,7 @@ export default {
   },
   computed: {
     emailIsValid() {
-      const regex = /^\S+@\S+$/;
-
-      return this.originalInput.match(regex) !== null;
+      return isUserEmail(this.originalInput);
     },
     placeholderText() {
       if (this.selectedTokens.length === 0) {
@@ -78,20 +81,26 @@ export default {
       return {
         'data-testid': 'members-token-select-input',
         id: this.inputId,
+        ...(this.hasReachedInviteCap ? { readonly: true } : {}),
       };
     },
     hasTextPendingTokenization() {
       return this.query.length > 0;
     },
+    hasReachedInviteCap() {
+      return this.selectedTokens.length >= MAX_INVITES;
+    },
+
+    hideDropdown() {
+      if (this.hasReachedInviteCap) {
+        return true;
+      }
+      return !this.emailIsValid && this.users.length === 0 && !this.loading;
+    },
   },
   watch: {
-    // We might not really want this to be *reactive* since we want the "class" state to be
-    // tied to the specific `selectedToken` such that if the token is removed and re-added, this
-    // state is reset.
-    // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90076#note_1027165312
     hasErrorOrWarning: {
       handler(newValue) {
-        // Only update tokens if we receive users with error or warning
         if (!newValue) {
           return;
         }
@@ -102,15 +111,28 @@ export default {
     hasTextPendingTokenization(newValue) {
       this.$emit('tokenization-state-change', newValue);
     },
+    hasReachedInviteCap(newValue) {
+      this.$emit('invite-cap-reached', newValue);
+    },
   },
   methods: {
     memberName,
     handleTextInput(inputQuery) {
       this.originalInput = inputQuery;
+
+      if (this.hasReachedInviteCap) {
+        return;
+      }
+
       this.query = inputQuery.trim();
 
-      this.loading = true;
-      this.retrieveUsers();
+      if (this.query.length >= MIN_SEARCH_LENGTH) {
+        this.loading = true;
+        this.retrieveUsers();
+      } else {
+        this.users = [];
+        this.loading = false;
+      }
     },
     updateTokenClasses() {
       this.selectedTokens = this.selectedTokens.map((token) => ({
@@ -145,17 +167,15 @@ export default {
         return WARNING_TOKEN_BACKGROUND;
       }
 
-      // assume success for this token
       return VALID_TOKEN_BACKGROUND;
     },
     handleInput(tokens) {
       this.selectedTokens = tokens;
       this.$emit('input', this.selectedTokens);
-    },
-    handleFocus() {
-      // Search for users when focused on the input
-      this.loading = true;
-      this.retrieveUsers();
+
+      if (this.hasReachedInviteCap) {
+        this.users = [];
+      }
     },
     handleTokenRemove(value) {
       if (this.selectedTokens.length) {
@@ -181,6 +201,7 @@ export default {
   },
   i18n: {
     inviteTextMessage: __('Invite "%{email}" by email'),
+    noMatchesFound: NO_MATCHES_FOUND_TEXT,
   },
 };
 </script>
@@ -188,6 +209,8 @@ export default {
 <template>
   <gl-token-selector
     ref="tokenSelector"
+    container-class="!gl-items-start gl-flex-wrap gl-min-h-13"
+    menu-class="gl-w-auto gl-min-w-full"
     :selected-tokens="selectedTokens"
     :state="exceptionState"
     :dropdown-items="users"
@@ -196,9 +219,9 @@ export default {
     :placeholder="placeholderText"
     :aria-labelledby="ariaLabelledby"
     :text-input-attrs="textInputAttrs"
+    :hide-dropdown-with-no-items="hideDropdown"
     @text-input="handleTextInput"
     @input="handleInput"
-    @focus="handleFocus"
     @token-remove="handleTokenRemove"
     @keydown.tab="handleTab"
   >
@@ -234,6 +257,10 @@ export default {
         :label="dropdownItem.name"
         :sub-label="dropdownItem.username"
       />
+    </template>
+
+    <template #no-results-content>
+      {{ $options.i18n.noMatchesFound }}
     </template>
 
     <template #user-defined-token-content="{ inputText: email }">

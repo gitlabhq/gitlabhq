@@ -44,12 +44,13 @@ Predefined variables become available at three different phases of pipeline exec
 | `CHAT_USER_ID`                                  | Pipeline     | The chat service's user ID of the user who triggered the [ChatOps](../chatops/_index.md) command. |
 | `CI`                                            | Pre-pipeline | Available for all jobs executed in CI/CD. `true` when available. |
 | `CI_API_V4_URL`                                 | Pre-pipeline | The GitLab API v4 root URL. |
-| `CI_API_GRAPHQL_URL`                            | Pre-pipeline | The GitLab API GraphQL root URL. Introduced in GitLab 15.11. |
+| `CI_API_GRAPHQL_URL`                            | Pre-pipeline | The GitLab API GraphQL root URL. |
 | `CI_BUILD_NETWORK_NAME`                         | Job-only     | The name of the network that the job created. Available only with the Docker executor when [`FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) is enabled. |
 | `CI_BUILDS_DIR`                                 | Job-only     | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                              | Pre-pipeline | The author of the commit in `Name <email>` format. |
 | `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, scheduled pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
+| `CI_COMMIT_DEFAULT_BRANCH_BASE_SHA`             | Pre-pipeline | The merge base between `CI_COMMIT_SHA` and the default branch. Available only in non-default branch pipelines. Introduced in GitLab 19.1. |
 | `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |
 | `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | Pre-pipeline | `true` if `CI_COMMIT_MESSAGE` is truncated to the size specified in the `GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES` system environment variable (default 100 KB) because the commit message is too long. Otherwise `false`. Introduced in GitLab 18.6. |
@@ -59,7 +60,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_COMMIT_SHA`                                 | Pre-pipeline | The commit revision the project is built for. |
 | `CI_COMMIT_SHORT_SHA`                           | Pre-pipeline | The first eight characters of `CI_COMMIT_SHA`. |
 | `CI_COMMIT_TAG`                                 | Pre-pipeline | The commit tag name. Available only in pipelines for tags. |
-| `CI_COMMIT_TAG_MESSAGE`                         | Pre-pipeline | The commit tag message. Available only in pipelines for tags. Introduced in GitLab 15.5. |
+| `CI_COMMIT_TAG_MESSAGE`                         | Pre-pipeline | The commit tag message. Available only in pipelines for tags. |
 | `CI_COMMIT_TIMESTAMP`                           | Pre-pipeline | The timestamp of the commit in the [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_COMMIT_TITLE`                               | Pre-pipeline | The title of the commit. The full first line of the message. |
 | `CI_COMMIT_USER_LOGIN`                          | Pre-pipeline | The GitLab username of the commit author if the author's profile and email are public and match the commit email, otherwise an empty string. Introduced in GitLab 18.10. |
@@ -68,7 +69,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_CONFIG_PATH`                                | Pre-pipeline | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
 | `CI_CONFIG_REF_URI`                             | Pipeline     | The fully qualified ref path to the top-level pipeline definition, for example `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. Not available when the pipeline source ref cannot be determined. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/593105) in GitLab 19.0. |
 | `CI_DEBUG_TRACE`                                | Pipeline     | `true` if [debug logging (tracing)](variables_troubleshooting.md#enable-debug-logging) is enabled. |
-| `CI_DEBUG_SERVICES`                             | Pipeline     | `true` if [service container logging](../services/_index.md#capturing-service-container-logs) is enabled. Introduced in GitLab 15.7. Requires GitLab Runner 15.7. |
+| `CI_DEBUG_SERVICES`                             | Pipeline     | `true` if [service container logging](../services/_index.md#capturing-service-container-logs) is enabled. |
 | `CI_DEFAULT_BRANCH`                             | Pre-pipeline | The name of the project's default branch. |
 | `CI_DEFAULT_BRANCH_SLUG`                        | Pre-pipeline | `CI_DEFAULT_BRANCH` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` | Pre-pipeline | The direct group image prefix for pulling images through the Dependency Proxy. |
@@ -93,10 +94,10 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_JOB_IMAGE`                                  | Job-only     | The name of the Docker image running the job. Only available when the job explicitly specifies a Docker image. |
 | `CI_JOB_MANUAL`                                 | Pipeline     | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                                   | Pipeline     | The name of the job. |
-| `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. Introduced in GitLab 15.4. |
+| `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
 | `CI_JOB_STAGE`                                  | Pipeline     | The name of the job's stage. |
 | `CI_JOB_STATUS`                                 | Job-only     | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/_index.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TIMEOUT`                                | Job-only     | The job timeout, in seconds. Introduced in GitLab 15.7. Requires GitLab Runner 15.7. |
+| `CI_JOB_TIMEOUT`                                | Job-only     | The job timeout, in seconds. |
 | `CI_JOB_TOKEN`                                  | Job-only     | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                                    | Job-only     | The job details URL. |
 | `CI_JOB_STARTED_AT`                             | Job-only     | The date and time when a job started, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
@@ -114,21 +115,21 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` for pipelines [triggered with a trigger token](../triggers/_index.md). For pipelines triggered with the [`trigger`](../yaml/_index.md#trigger) keyword, use [`CI_PIPELINE_SOURCE`](../jobs/job_rules.md#ci_pipeline_source-predefined-variable) instead. |
 | `CI_PIPELINE_URL`                               | Job-only     | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                        | Job-only     | The date and time when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
-| `CI_PIPELINE_NAME`                              | Pre-pipeline | The pipeline name defined in [`workflow:name`](../yaml/_index.md#workflowname). Introduced in GitLab 16.3. |
+| `CI_PIPELINE_NAME`                              | Pre-pipeline | The pipeline name defined in [`workflow:name`](../yaml/_index.md#workflowname). |
 | `CI_PIPELINE_SCHEDULE_DESCRIPTION`              | Pre-pipeline | The description of the pipeline schedule. Only available in scheduled pipelines. Introduced in GitLab 17.8. |
 | `CI_PROJECT_DIR`                                | Job-only     | The full path the repository is cloned to, and where the job runs from. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see the [Advanced GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section). |
 | `CI_PROJECT_ID`                                 | Pre-pipeline | The ID of the current project. This ID is unique across all projects on the GitLab instance. |
 | `CI_PROJECT_NAME`                               | Pre-pipeline | The name of the directory for the project. For example if the project URL is `gitlab.example.com/group-name/project-1`, `CI_PROJECT_NAME` is `project-1`. |
 | `CI_PROJECT_NAMESPACE`                          | Pre-pipeline | The project namespace (username or group name) of the job. |
-| `CI_PROJECT_NAMESPACE_ID`                       | Pre-pipeline | The project namespace ID of the job. Introduced in GitLab 15.7. |
-| `CI_PROJECT_NAMESPACE_SLUG`                     | Pre-pipeline | `$CI_PROJECT_NAMESPACE` in lowercase with characters that are not `a-z` or `0-9` replaced with - and shortened to 63 bytes. |
-| `CI_PROJECT_PATH_SLUG`                          | Pre-pipeline | `$CI_PROJECT_PATH` in lowercase with characters that are not `a-z` or `0-9` replaced with `-` and shortened to 63 bytes. Use in URLs and domain names. |
+| `CI_PROJECT_NAMESPACE_ID`                       | Pre-pipeline | The project namespace ID of the job. |
+| `CI_PROJECT_NAMESPACE_SLUG`                     | Pre-pipeline | `$CI_PROJECT_NAMESPACE` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. |
+| `CI_PROJECT_PATH_SLUG`                          | Pre-pipeline | `$CI_PROJECT_PATH` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs and domain names. |
 | `CI_PROJECT_PATH`                               | Pre-pipeline | The project namespace with the project name included. |
 | `CI_PROJECT_REPOSITORY_LANGUAGES`               | Pre-pipeline | A comma-separated, lowercase list of the languages used in the repository. For example `ruby,javascript,html,css`. The maximum number of languages is limited to 5. An issue [proposes to increase the limit](https://gitlab.com/gitlab-org/gitlab/-/issues/368925). |
 | `CI_PROJECT_ROOT_NAMESPACE`                     | Pre-pipeline | The root project namespace (username or group name) of the job. For example, if `CI_PROJECT_NAMESPACE` is `root-group/child-group/grandchild-group`, `CI_PROJECT_ROOT_NAMESPACE` is `root-group`. |
-| `CI_PROJECT_ROOT_NAMESPACE_SLUG`                | Pre-pipeline | `$CI_PROJECT_ROOT_NAMESPACE` in lowercase with characters that are not `a-z` or `0-9` replaced with - and shortened to 63 bytes. |
+| `CI_PROJECT_ROOT_NAMESPACE_SLUG`                | Pre-pipeline | `$CI_PROJECT_ROOT_NAMESPACE` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Introduced in GitLab 19.0. |
 | `CI_PROJECT_TITLE`                              | Pre-pipeline | The human-readable project name as displayed in the GitLab web interface. |
-| `CI_PROJECT_DESCRIPTION`                        | Pre-pipeline | The project description as displayed in the GitLab web interface. Introduced in GitLab 15.1. |
+| `CI_PROJECT_DESCRIPTION`                        | Pre-pipeline | The project description as displayed in the GitLab web interface. |
 | `CI_PROJECT_TOPICS`                             | Pre-pipeline | A comma-separated, lowercase list of [topics](../../user/project/project_topics.md) (limited to the first 20) assigned to the project. Introduced in GitLab 18.3 |
 | `CI_PROJECT_URL`                                | Pre-pipeline | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                         | Pre-pipeline | The project visibility. Can be `internal`, `private`, or `public`. |
@@ -137,7 +138,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_REGISTRY_IMAGE`                             | Pre-pipeline | Base address for the container registry to push, pull, or tag project's images, formatted as `<host>[:<port>]/<project_full_path>`. For example: `registry.gitlab.example.com/my_group/my_project`. Image names must follow the [container registry naming convention](../../user/packages/container_registry/_index.md#naming-convention-for-your-container-images). Only available if the container registry is enabled for the project. |
 | `CI_REGISTRY_PASSWORD`                          | Job-only     | The password to push containers to the GitLab project's container registry. Only available if the container registry is enabled for the project. This password value is the same as the `CI_JOB_TOKEN` and is valid only as long as the job is running. Use the `CI_DEPLOY_PASSWORD` for long-lived access to the registry |
 | `CI_REGISTRY_USER`                              | Job-only     | The username to push containers to the project's GitLab container registry. Only available if the container registry is enabled for the project. |
-| `CI_RELEASE_DESCRIPTION`                        | Pipeline     | The description of the release. Available only on pipelines for tags. Description length is limited to first 1024 characters. Introduced in GitLab 15.5. |
+| `CI_RELEASE_DESCRIPTION`                        | Pipeline     | The description of the release. Available only on pipelines for tags. Description length is limited to first 1024 characters. |
 | `CI_REPOSITORY_URL`                             | Job-only     | The full path to Git clone (HTTP) the repository with a [CI/CD job token](../jobs/ci_job_token.md), in the format `https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.example.com/my-group/my-project.git`. |
 | `CI_RUNNER_DESCRIPTION`                         | Job-only     | The description of the runner. |
 | `CI_RUNNER_EXECUTABLE_ARCH`                     | Job-only     | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
@@ -146,13 +147,13 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_RUNNER_SHORT_TOKEN`                         | Job-only     | The runner's unique ID, used to authenticate new job requests. The token contains a prefix, and the first 17 characters are used. |
 | `CI_RUNNER_TAGS`                                | Job-only     | A JSON array of runner tags. For example `["tag_1", "tag_2"]`. |
 | `CI_RUNNER_VERSION`                             | Job-only     | The version of the GitLab Runner running the job. |
-| `CI_SERVER_FQDN`                                | Pre-pipeline | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. Introduced in GitLab 16.10. |
+| `CI_SERVER_FQDN`                                | Pre-pipeline | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. |
 | `CI_SERVER_HOST`                                | Pre-pipeline | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
 | `CI_SERVER_NAME`                                | Pre-pipeline | The name of CI/CD server that coordinates jobs. |
 | `CI_SERVER_PORT`                                | Pre-pipeline | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                            | Pre-pipeline | The protocol of the GitLab instance URL, without host or port. For example `https`. |
-| `CI_SERVER_SHELL_SSH_HOST`                      | Pre-pipeline | The SSH host of the GitLab instance, used for access to Git repositories through SSH. For example `gitlab.com`. Introduced in GitLab 15.11. |
-| `CI_SERVER_SHELL_SSH_PORT`                      | Pre-pipeline | The SSH port of the GitLab instance, used for access to Git repositories through SSH. For example `22`. Introduced in GitLab 15.11. |
+| `CI_SERVER_SHELL_SSH_HOST`                      | Pre-pipeline | The SSH host of the GitLab instance, used for access to Git repositories through SSH. For example `gitlab.com`. |
+| `CI_SERVER_SHELL_SSH_PORT`                      | Pre-pipeline | The SSH port of the GitLab instance, used for access to Git repositories through SSH. For example `22`. |
 | `CI_SERVER_REVISION`                            | Pre-pipeline | GitLab revision that schedules jobs. |
 | `CI_SERVER_TLS_CA_FILE`                         | Pipeline     | File containing the TLS CA certificate to verify the GitLab server when `tls-ca-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section). |
 | `CI_SERVER_TLS_CERT_FILE`                       | Pipeline     | File containing the TLS certificate to verify the GitLab server when `tls-cert-file` set in [runner settings](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section). |
@@ -164,7 +165,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_SERVER_VERSION`                             | Pre-pipeline | The full version of the GitLab instance. |
 | `CI_SERVER`                                     | Job-only     | Available for all jobs executed in CI/CD. `yes` when available. |
 | `CI_SHARED_ENVIRONMENT`                         | Pipeline     | Only available if the job is executed in a shared environment (something that is persisted across CI/CD invocations, like the `shell` or `ssh` executor). `true` when available. |
-| `CI_TEMPLATE_REGISTRY_HOST`                     | Pre-pipeline | The host of the registry used by CI/CD templates. Defaults to `registry.gitlab.com`. Introduced in GitLab 15.3. |
+| `CI_TEMPLATE_REGISTRY_HOST`                     | Pre-pipeline | The host of the registry used by CI/CD templates. Defaults to `registry.gitlab.com`. |
 | `CI_TRIGGER_SHORT_TOKEN`                        | Job-only     | First 4 characters of the [trigger token](../triggers/_index.md#create-a-pipeline-trigger-token) of the current job. Only available if the pipeline was [triggered with a trigger token](../triggers/_index.md). For example, for a trigger token of `glptt-1234567890abcdefghij`, `CI_TRIGGER_SHORT_TOKEN` would be `1234`. Introduced in GitLab 17.0. <!-- gitleaks:allow --> |
 | `CI_UPSTREAM_JOB_ID`                            | Pre-pipeline | ID of the upstream trigger job that triggered the current pipeline in a multi-project or parent-child pipeline. Introduced in GitLab 18.9. |
 | `CI_UPSTREAM_PIPELINE_ID`                       | Pre-pipeline | ID of the upstream pipeline that triggered the current pipeline in a multi-project or parent-child pipeline. Introduced in GitLab 18.9. |
@@ -195,8 +196,8 @@ and the merge request must be open.
 | `CI_MERGE_REQUEST_DIFF_BASE_SHA`            | The base SHA of the merge request diff. |
 | `CI_MERGE_REQUEST_DIFF_ID`                  | The version of the merge request diff. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
-| `CI_MERGE_REQUEST_DESCRIPTION`              | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. Introduced in GitLab 16.7. |
-| `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long, otherwise `false`. Introduced in GitLab 16.8. |
+| `CI_MERGE_REQUEST_DESCRIPTION`              | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. |
+| `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long, otherwise `false`. |
 | `CI_MERGE_REQUEST_ID`                       | The instance-level ID of the merge request. The ID is unique across all projects on the GitLab instance. |
 | `CI_MERGE_REQUEST_IID`                      | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | Comma-separated label names of the merge request. Only available if the merge request has at least one label. |
@@ -206,14 +207,14 @@ and the merge request must be open.
 | `CI_MERGE_REQUEST_PROJECT_URL`              | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_REF_PATH`                 | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`       | The source branch name of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_PROTECTED`  | `true` when the source branch of the merge request is [protected](../../user/project/repository/branches/protected.md). Introduced in GitLab 16.4. |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_PROTECTED`  | `true` when the source branch of the merge request is [protected](../../user/project/repository/branches/protected.md). |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`        | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`        | The ID of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH`      | The path of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`       | The URL of the source project of the merge request. |
-| `CI_MERGE_REQUEST_SQUASH_ON_MERGE`          | `true` when the [squash on merge](../../user/project/merge_requests/squash_and_merge.md) option is set. Introduced in GitLab 16.4. |
+| `CI_MERGE_REQUEST_SQUASH_ON_MERGE`          | `true` when the [squash on merge](../../user/project/merge_requests/squash_and_merge.md) option is set. |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`       | The target branch name of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | `true` when the target branch of the merge request is [protected](../../user/project/repository/branches/protected.md). Introduced in GitLab 15.2. |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | `true` when the target branch of the merge request is [protected](../../user/project/repository/branches/protected.md). |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`        | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_TITLE`                    | The title of the merge request. |
 | `CI_MERGE_REQUEST_DRAFT`                    | `true` if the merge request is a draft. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275981) in GitLab 17.10. |

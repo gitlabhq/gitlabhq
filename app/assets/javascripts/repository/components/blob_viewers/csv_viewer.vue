@@ -2,6 +2,7 @@
 import CsvViewer from '~/blob/csv/csv_viewer.vue';
 
 export default {
+  name: 'RepositoryCsvViewer',
   components: {
     CsvViewer,
   },

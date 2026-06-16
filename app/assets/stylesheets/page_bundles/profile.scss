@@ -44,12 +44,6 @@ $profile-grid-flex: 1fr;
   }
 }
 
-.profile-readme-wrapper .read-more-trigger {
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
 .user-calendar-activities {
   direction: ltr;
 
@@ -85,7 +79,7 @@ $profile-grid-flex: 1fr;
 
     .profile-header {
       position: sticky;
-      top: $calc-application-header-height;
+      top: 0;
       height: $calc-application-viewport-height;
       padding-left: $gl-spacing-scale-2;
     }

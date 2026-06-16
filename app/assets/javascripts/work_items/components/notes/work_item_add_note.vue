@@ -6,6 +6,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import { ASC, DESC } from '~/notes/constants';
@@ -344,6 +345,7 @@ export default {
       this.$emit('cancel-editing');
     },
     showReplyForm() {
+      suppressShortcutsUntilInputFocus();
       this.isEditing = true;
       this.$emit('start-replying');
     },

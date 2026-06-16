@@ -1,6 +1,6 @@
 ---
-source_checksum: d8c986681e4fe92c
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 83bb66f8bff79c34
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -18,6 +18,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT mark a worker as both `urgency :high` and `worker_has_external_dependencies!`.
 - DO NOT mark a worker as both `urgency :high` and `worker_resource_boundary :memory`.
 - Prepend `::Geo::SkipSecondary` to workers that attempt database writes if they can be enqueued on Geo secondary sites.
+- Scope all Sidekiq jobs to a single organization; allow cross-organization jobs only when the job is both a recurring cron job and idempotent.
 
 ### Sharding
 
@@ -103,6 +104,10 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 ### Deduplication TTL
 
 - Configure a custom `ttl:` on `deduplicate` only for jobs that can tolerate some duplication; the default is 10 minutes, during which duplicate jobs are suppressed even if the first job never ran.
+
+### Pause Control
+
+- When removing a `pause_control` middleware from a worker, set the strategy to `:deprecated` first and wait until a required stop before removing it completely, to ensure all paused jobs are resumed correctly.
 
 ### Tests
 

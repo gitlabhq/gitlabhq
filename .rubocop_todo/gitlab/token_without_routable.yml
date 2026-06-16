@@ -1,0 +1,18 @@
+---
+Gitlab/TokenWithoutRoutable:
+  Details: grace period
+  Exclude:
+    - 'app/models/application_setting.rb'
+    - 'app/models/ci/build.rb'
+    - 'app/models/ci/trigger.rb'
+    - 'app/models/deploy_token.rb'
+    - 'app/models/group.rb'
+    - 'app/models/operations/feature_flags_client.rb'
+    - 'app/models/project.rb'
+    - 'app/models/user.rb'
+    - 'ee/app/models/ci/runner_controller_token.rb'
+    - 'ee/app/models/ee/group.rb'
+    - 'ee/app/models/group_scim_auth_access_token.rb'
+    - 'ee/app/models/scim_oauth_access_token.rb'
+    - 'lib/gitlab/background_migration/migrate_ci_triggers_token_to_token_encrypted.rb'
+    - 'lib/tasks/tokens.rake'

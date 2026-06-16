@@ -121,10 +121,8 @@ module Gitlab
         model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection,
           base_class: base_class)
         cursor_expression = Arel::Nodes::Grouping.new(cursor_columns.map { |column| model_class.arel_table[column] })
-        cursor_gteq_start = cursor_expression.gteq(arel_for_cursor(min_cursor, model_class.arel_table))
         cursor_lteq_end = cursor_expression.lteq(arel_for_cursor(max_cursor, model_class.arel_table))
-        where_condition = Arel::Nodes::And.new([cursor_gteq_start, cursor_lteq_end])
-        filter_batch(model_class.where(where_condition))
+        filter_batch(model_class.where(cursor_lteq_end))
       end
 
       def arel_for_cursor(cursor, arel_table)
@@ -140,7 +138,11 @@ module Gitlab
         model_class = define_batchable_model(batch_table, connection: connection, base_class: base_class)
         order = model_class.order(cursor_columns) # rubocop:disable CodeReuse/ActiveRecord -- To refactor in a follow up
         keyset_order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(order)
-        Gitlab::Pagination::Keyset::Iterator.new(scope: base_relation.order(keyset_order))
+        Gitlab::Database::Batch::InclusiveCursorIterator.new(
+          scope: base_relation.order(keyset_order),
+          cursor_columns: cursor_columns,
+          start_cursor: min_cursor
+        )
       end
 
       def fetch_primary_key

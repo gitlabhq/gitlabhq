@@ -6,6 +6,9 @@ module Mutations
       class Unlock < Base
         graphql_name 'TerraformStateUnlock'
 
+        authorize_granular_token permissions: :unlock_terraform_state, boundary_argument: :id,
+          boundary_type: :project
+
         def resolve(id:)
           state = authorized_find!(id: id)
           state.update(lock_xid: nil, locked_by_user: nil, locked_at: nil)

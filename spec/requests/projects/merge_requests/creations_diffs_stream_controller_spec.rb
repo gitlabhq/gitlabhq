@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_review_workflow do
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:source_branch) { 'fix' }
-  let_it_be(:target_branch) { 'master' }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:source_branch, freeze: false) { 'fix' }
+  let_it_be(:target_branch, freeze: false) { 'master' }
 
-  let_it_be(:compare) do
+  let_it_be(:compare, freeze: false) do
     CompareService.new(
       project,
       source_branch
@@ -18,8 +18,8 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
     )
   end
 
-  let_it_be(:offset) { 0 }
-  let_it_be(:diff_files) { compare.diffs.diff_files }
+  let_it_be(:offset, freeze: false) { 0 }
+  let_it_be(:diff_files, freeze: false) { compare.diffs.diff_files }
 
   before do
     sign_in(user)

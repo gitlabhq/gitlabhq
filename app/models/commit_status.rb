@@ -197,8 +197,8 @@ class CommitStatus < Ci::ApplicationRecord
       commit_status.started_at = Time.current
     end
 
-    before_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.finished_at = Time.current
+    before_transition any => [:success, :failed, :canceled] do |commit_status, transition|
+      commit_status.set_finished_at(transition)
     end
 
     before_transition any => :failed do |commit_status, transition|
@@ -299,6 +299,13 @@ class CommitStatus < Ci::ApplicationRecord
 
   def force_cancelable?
     false
+  end
+
+  # Override in subclasses (see Ci::Build) to anchor finished_at to a more
+  # accurate moment than Time.current, for example the time the runner first
+  # reported completion.
+  def set_finished_at(_transition = nil)
+    self.finished_at = Time.current
   end
 
   def archived?(...)

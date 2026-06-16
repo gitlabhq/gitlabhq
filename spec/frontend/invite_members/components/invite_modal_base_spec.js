@@ -196,9 +196,7 @@ describe('InviteModalBase', () => {
     it('renders description', () => {
       createComponent({ stubs: { GlFormGroup } });
 
-      expect(findMembersFormGroup().attributes('description')).toContain(
-        propsData.formGroupDescription,
-      );
+      expect(wrapper.findByTestId('label-description').text()).toBe(propsData.formGroupDescription);
     });
 
     describe('when users limit is reached', () => {

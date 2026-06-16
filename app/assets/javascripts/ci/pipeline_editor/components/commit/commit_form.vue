@@ -11,6 +11,7 @@ import {
 import { __ } from '~/locale';
 
 export default {
+  name: 'CommitForm',
   components: {
     GlButton,
     GlForm,

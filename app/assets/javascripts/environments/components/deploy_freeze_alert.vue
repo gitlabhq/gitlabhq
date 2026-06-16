@@ -7,6 +7,7 @@ import { s__ } from '~/locale';
 import deployFreezesQuery from '../graphql/queries/deploy_freezes.query.graphql';
 
 export default {
+  name: 'DeployFreezeAlert',
   components: {
     GlAlert,
     GlLink,

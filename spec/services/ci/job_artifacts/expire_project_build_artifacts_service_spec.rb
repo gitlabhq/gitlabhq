@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_category: :job_artifacts do
   let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline, reload: true) { create(:ci_pipeline, :unlocked, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :unlocked, project: project) }
 
   let(:expiry_time) { Time.current }
 
@@ -31,7 +31,7 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     subject(:execute) { described_class.new(project.id, expiry_time).execute }
 
     context 'with job containing erasable artifacts' do
-      let_it_be(:job, reload: true) { create(:ci_build, :erasable, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :erasable, pipeline: pipeline) }
 
       it 'unlocks erasable job artifacts' do
         execute
@@ -47,7 +47,7 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     end
 
     context 'with job containing trace artifacts' do
-      let_it_be(:job, reload: true) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it 'does not unlock trace artifacts' do
         execute
@@ -63,8 +63,8 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     end
 
     context 'with job from artifact locked pipeline' do
-      let_it_be(:job, reload: true) { create(:ci_build, pipeline: pipeline) }
-      let_it_be(:locked_artifact, reload: true) { create(:ci_job_artifact, :locked, job: job) }
+      let_it_be_with_reload(:job) { create(:ci_build, pipeline: pipeline) }
+      let_it_be_with_reload(:locked_artifact) { create(:ci_job_artifact, :locked, job: job) }
 
       before do
         pipeline.artifacts_locked!
@@ -84,9 +84,9 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     end
 
     context 'with job containing both erasable and trace artifacts' do
-      let_it_be(:job, reload: true) { create(:ci_build, pipeline: pipeline) }
-      let_it_be(:erasable_artifact, reload: true) { create(:ci_job_artifact, :archive, job: job) }
-      let_it_be(:trace_artifact, reload: true) { create(:ci_job_artifact, :trace, job: job) }
+      let_it_be_with_reload(:job) { create(:ci_build, pipeline: pipeline) }
+      let_it_be_with_reload(:erasable_artifact) { create(:ci_job_artifact, :archive, job: job) }
+      let_it_be_with_reload(:trace_artifact) { create(:ci_job_artifact, :trace, job: job) }
 
       it 'unlocks erasable artifacts' do
         execute
@@ -114,10 +114,10 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     end
 
     context 'with multiple pipelines' do
-      let_it_be(:job, reload: true) { create(:ci_build, :erasable, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :erasable, pipeline: pipeline) }
 
-      let_it_be(:pipeline2, reload: true) { create(:ci_pipeline, :unlocked, project: project) }
-      let_it_be(:job2, reload: true) { create(:ci_build, :erasable, pipeline: pipeline) }
+      let_it_be_with_reload(:pipeline2) { create(:ci_pipeline, :unlocked, project: project) }
+      let_it_be_with_reload(:job2) { create(:ci_build, :erasable, pipeline: pipeline) }
 
       it 'unlocks artifacts across pipelines' do
         execute
@@ -135,11 +135,11 @@ RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_cat
     end
 
     context 'with artifacts belonging to another project' do
-      let_it_be(:job, reload: true) { create(:ci_build, :erasable, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :erasable, pipeline: pipeline) }
 
-      let_it_be(:another_project, reload: true) { create(:project) }
-      let_it_be(:another_pipeline, reload: true) { create(:ci_pipeline, project: another_project) }
-      let_it_be(:another_job, reload: true) { create(:ci_build, :erasable, pipeline: another_pipeline) }
+      let_it_be_with_reload(:another_project) { create(:project) }
+      let_it_be_with_reload(:another_pipeline) { create(:ci_pipeline, project: another_project) }
+      let_it_be_with_reload(:another_job) { create(:ci_build, :erasable, pipeline: another_pipeline) }
 
       it 'does not unlock erasable artifacts in other projects' do
         execute

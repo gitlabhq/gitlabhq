@@ -2,6 +2,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 
 export default {
+  name: 'DropdownFooter',
   components: {
     GlDropdownItem,
   },

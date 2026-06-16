@@ -19,7 +19,7 @@ Prerequisites:
 - Your GitLab instance uses a certificate signed with a self-signed certificate authority (CA).
 - Your GitLab for VS Code version is 6.51.1 or later.
 - Your VS Code version is 1.101.2 (May 2025) or later.
-- The `gitlab.ca` VS Code setting is **not** in use.
+- The `gitlab.ca` VS Code setting is not in use.
 
 1. Ensure your CA certificate is correctly added to your system for the extension to work. VS Code reads
    the system certificate store, and changes all node `http` requests to trust the certificates:

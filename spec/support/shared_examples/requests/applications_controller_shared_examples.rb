@@ -42,7 +42,7 @@ RSpec.shared_examples 'applications controller - POST #create' do
   it "sets `@created` instance variable to `true`" do
     create_application
 
-    expect(assigns[:created]).to eq(true)
+    expect(assigns[:created]).to be(true)
   end
 end
 

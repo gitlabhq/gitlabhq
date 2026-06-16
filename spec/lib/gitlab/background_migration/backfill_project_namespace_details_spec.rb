@@ -15,10 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceDetails, fea
       id: 5,
       organization_id: organization.id,
       name: 'test1',
-      path: 'test1',
-      description: "Some description1",
-      description_html: "Some description html1",
-      cached_markdown_version: 4
+      path: 'test1'
     )
   end
 

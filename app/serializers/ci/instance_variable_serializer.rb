@@ -2,6 +2,6 @@
 
 module Ci
   class InstanceVariableSerializer < BaseSerializer
-    entity BasicVariableEntity
+    entity InstanceVariableEntity
   end
 end

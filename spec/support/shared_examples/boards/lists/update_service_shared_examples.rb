@@ -49,7 +49,7 @@ RSpec.shared_examples 'updating list preferences' do
 
       service.execute(list)
 
-      expect(list.preferences_for(user).collapsed).to eq(true)
+      expect(list.preferences_for(user).collapsed).to be(true)
     end
   end
 

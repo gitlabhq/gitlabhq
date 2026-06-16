@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Mutations::Timelogs::Delete do
   include GraphqlHelpers
 
-  let_it_be(:author) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:administrator) { create(:user, :admin) }
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be(:maintainer, freeze: false) { create(:user) }
+  let_it_be(:administrator, freeze: false) { create(:user, :admin) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be_with_reload(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }

@@ -4,7 +4,8 @@ classes:
 - Analytics::CycleAnalytics::Stage
 feature_categories:
 - value_stream_management
-description: TODO
+description: Stores custom value stream stages configured at the group level for cycle
+  analytics.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15061
 milestone: '12.2'
 gitlab_schema: gitlab_main_org

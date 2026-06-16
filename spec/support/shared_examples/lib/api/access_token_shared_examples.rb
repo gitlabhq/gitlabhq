@@ -17,7 +17,7 @@
 # isn't one of the `all_token_ids` below.
 RSpec.shared_examples 'an access token GET API with access token params' do
   let(:api_request) { api(path, personal_access_token: personal_access_token) }
-  let_it_be(:created_at_desc) { created_at_asc.reverse }
+  let_it_be(:created_at_desc, freeze: false) { created_at_asc.reverse }
 
   let(:params) { {} }
 

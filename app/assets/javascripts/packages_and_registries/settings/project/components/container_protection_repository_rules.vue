@@ -29,6 +29,7 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__(
 );
 
 export default {
+  name: 'ContainerProtectionRepositoryRules',
   components: {
     CrudComponent,
     ContainerProtectionRepositoryRuleForm,

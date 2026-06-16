@@ -6,7 +6,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   it { is_expected.to belong_to(:project) }
 

@@ -1,0 +1,10 @@
+---
+name: update_model_selection_allowlist
+description: Grants the ability to configure the model selection allowlist
+available_for:
+  - granular_access_token
+permissions:
+  - update_model_selection_allowlist
+boundaries:
+  - instance
+  - group

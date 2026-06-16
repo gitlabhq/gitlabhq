@@ -17,7 +17,7 @@ module Gitlab
                 keys = sharding_key_entry(table_name)
                 next unless keys
 
-                condition = build_condition(table_name, keys)
+                condition = Context.without_data_isolation { build_condition(table_name, keys) }
                 next unless condition
 
                 scoped_ast.where(condition)

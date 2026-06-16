@@ -206,9 +206,7 @@ describe('SetStatusForm', () => {
     beforeEach(async () => {
       await createComponent();
 
-      await wrapper
-        .findByRole('button', { name: SetStatusForm.i18n.clearStatusButtonLabel })
-        .trigger('click');
+      await wrapper.find('.js-clear-user-status-button').trigger('click');
     });
 
     it('clears emoji and message', () => {

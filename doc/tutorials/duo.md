@@ -14,10 +14,10 @@ Chat interactively and get immediate feedback.
 
 | Topic | Description | Good for beginners | Try it out |
 |-------|-------------|--------------------|------------|
-| [Getting started](https://about.gitlab.com/blog/getting-started-with-gitlab-duo-agentic-chat/) | Get set up to use Chat and try out some common use cases. | {{< icon name="star" >}} | [Explore the interface](https://gitlab.navattic.com/duo-agentic-chat) |
-| [Manage issues with GitLab Duo Chat](duo_chat_issues/_index.md) | Get familiar with the GitLab Duo Chat interface, and try out some issue management tasks. | {{< icon name="star" >}} | |
-| [Use GitLab Duo to make a web application](../user/gitlab_duo/tutorials/fix_code_python_shop.md) | Use Chat and Code Suggestions to build a Python web application. | {{< icon name="star" >}} | |
-| [Use GitLab Duo to fix a web application](../user/gitlab_duo/tutorials/duo_python_fix_errors.md) | Write and run test cases for your web application, and implement error handling and data validation. | | |
+| [Getting started](https://about.gitlab.com/blog/getting-started-with-gitlab-duo-agentic-chat/) | Get set up to use Chat and try out some common use cases. Estimated time: 5-10 minutes. | {{< icon name="star" >}} | [Explore the interface](https://gitlab.navattic.com/duo-agentic-chat) |
+| [Manage issues with GitLab Duo Chat](duo_chat_issues/_index.md) | Get familiar with the GitLab Duo Chat interface, and try out some issue management tasks. Estimated time: 15-20 minutes. | {{< icon name="star" >}} | |
+| [Use GitLab Duo to make a web application](../user/gitlab_duo/tutorials/fix_code_python_shop.md) | Use Chat and Code Suggestions to build a Python web application. Estimated time: 1 hour. | {{< icon name="star" >}} | |
+| [Use GitLab Duo to fix a web application](../user/gitlab_duo/tutorials/duo_python_fix_errors.md) | Write and run test cases for your web application, and implement error handling and data validation. Estimated time: 1 hour. | | |
 
 ## Work with agents and flows
 
@@ -25,8 +25,8 @@ Deploy AI assistants to complete tasks and handle complex workflows for you.
 
 | Topic | Description | Good for beginners | Try it out |
 |-------|-------------|--------------------|------------|
-| [Understanding agents: Foundational, custom, and external](https://about.gitlab.com/blog/understanding-agents-foundational-custom-external/) | Learn what the different types of agents do, and create your own custom agents. | {{< icon name="star" >}} | [Configure a custom agent](https://gitlab.navattic.com/custom-agents)|
-| [Understanding flows: Multi-agent workflows](https://about.gitlab.com/blog/understanding-flows-multi-agent-workflows/) | Learn about the types of flows, and create your own custom flows. | {{< icon name="star" >}} | [Configure a custom flow](https://gitlab.navattic.com/custom-flows)|
+| [Understanding agents: Foundational, custom, and external](https://about.gitlab.com/blog/understanding-agents-foundational-custom-external/) | Learn what the different types of agents do, and create your own custom agents. Estimated time: 15-20 minutes. | {{< icon name="star" >}} | [Configure a custom agent](https://gitlab.navattic.com/custom-agents)|
+| [Understanding flows: Multi-agent workflows](https://about.gitlab.com/blog/understanding-flows-multi-agent-workflows/) | Learn about the types of flows, and create your own custom flows. Estimated time: 15-20 minutes. | {{< icon name="star" >}} | [Configure a custom flow](https://gitlab.navattic.com/custom-flows)|
 
 ## Extend and integrate
 
@@ -34,5 +34,5 @@ Extend GitLab Duo capabilities by connecting with external tools.
 
 | Topic | Description | Good for beginners | Try it out |
 |-------|-------------|--------------------|------------|
-| [Model Context Protocol (MCP) integration](https://about.gitlab.com/blog/duo-agent-platform-with-mcp/) | Discover how MCP can help you connect GitLab Duo features to external sources, and connect AI tools to your GitLab instance. | | Explore the [client workflow](https://gitlab.navattic.com/mcp) and [server workflow](https://gitlab.navattic.com/gitlab-mcp-server)|
-| [Connect Claude Desktop to the GitLab MCP server](connect_claude_desktop_with_gitlab_mcp_server/_index.md) | Learn how to connect Claude Desktop to the GitLab MCP server, and interact with your GitLab instance. | {{< icon name="star" >}} | |
+| [Model Context Protocol (MCP) integration](https://about.gitlab.com/blog/duo-agent-platform-with-mcp/) | Discover how MCP can help you connect GitLab Duo features to external sources, and connect AI tools to your GitLab instance. Estimated time: 15-20 minutes. | | Explore the [client workflow](https://gitlab.navattic.com/mcp) and [server workflow](https://gitlab.navattic.com/gitlab-mcp-server)|
+| [Connect Claude Desktop to the GitLab MCP server](connect_claude_desktop_with_gitlab_mcp_server/_index.md) | Learn how to connect Claude Desktop to the GitLab MCP server, and interact with your GitLab instance. Estimated time: 15-20 minutes. | {{< icon name="star" >}} | |

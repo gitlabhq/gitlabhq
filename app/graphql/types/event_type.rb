@@ -37,6 +37,10 @@ module Types
       description: 'Target of the event.',
       calls_gitaly: true
 
+    field :push_event_payload, Types::Users::PushEventPayloadType,
+      description: 'Payload of the push event, when the event represents a push. `null` for non-push events.',
+      null: true
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end

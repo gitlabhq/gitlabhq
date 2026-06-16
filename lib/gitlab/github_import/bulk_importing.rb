@@ -84,6 +84,7 @@ module Gitlab
       def log_and_increment_counter(value, operation)
         Logger.info(
           project_id: project.id,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           importer: self.class.name,
           message: "#{value} #{object_type.to_s.pluralize} #{operation}"
         )
@@ -99,6 +100,7 @@ module Gitlab
       def log_error(github_identifiers, messages)
         Logger.error(
           project_id: project.id,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           importer: self.class.name,
           message: messages,
           external_identifiers: github_identifiers

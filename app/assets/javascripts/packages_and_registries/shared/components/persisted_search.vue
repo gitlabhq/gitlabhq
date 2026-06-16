@@ -8,6 +8,7 @@ import {
 } from '~/packages_and_registries/shared/utils';
 
 export default {
+  name: 'PersistedSearch',
   components: { RegistrySearch, UrlSync },
   props: {
     sortableFields: {

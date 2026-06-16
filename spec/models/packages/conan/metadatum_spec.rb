@@ -48,7 +48,7 @@ RSpec.describe Packages::Conan::Metadatum, type: :model, feature_category: :pack
     end
 
     describe '#ensure_username_with_channel' do
-      let_it_be(:package) { create(:conan_package) }
+      let_it_be(:package, freeze: false) { create(:conan_package) }
 
       let(:metadatum) { package.conan_metadatum }
 

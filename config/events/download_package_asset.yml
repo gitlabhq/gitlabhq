@@ -2,6 +2,8 @@
 description: Tracks when a user downloads a package asset.
 action: download_package_asset
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: '15.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90584
 tiers:

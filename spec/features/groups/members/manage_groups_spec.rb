@@ -41,7 +41,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
 
     let(:additional_link_attrs) { {} }
 
-    let_it_be(:group_link, refind: true) do
+    let_it_be_with_refind(:group_link) do
       create(
         :group_group_link,
         shared_group: shared_group,
@@ -118,7 +118,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
   end
 
   describe 'group search results' do
-    let_it_be(:group, refind: true) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
 
     it_behaves_like 'inviting groups search results' do
       let_it_be(:entity) { group }

@@ -291,7 +291,13 @@ module Gitlab
             alias_name = column_alias(metric_part)
             over_alias = dimension_alias_for(definition.over_dimension, plan)
 
-            definition.build_window_sql(context, alias_name, over_alias: over_alias)
+            partition_aliases = plan.dimensions
+              .reject { |d| d.definition.name == definition.over_dimension }
+              .map { |d| column_alias(d) }
+
+            definition.build_window_sql(context, alias_name,
+              over_alias: over_alias,
+              partition_aliases: partition_aliases)
           end
 
           def dimension_alias_for(over_dimension, plan)

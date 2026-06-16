@@ -16,6 +16,10 @@ RSpec.describe 'Pipeline analytics (JavaScript fixtures)', feature_category: :fl
 
     query_path = 'ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.query.graphql'
 
+    before do
+      stub_feature_flags(pipeline_analytics_siphon: false)
+    end
+
     it "graphql/ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.query.graphql.json" do
       insert_ci_pipelines_to_click_house(pipelines)
 

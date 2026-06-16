@@ -6,6 +6,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from './constants';
 
 export default {
+  name: 'UserAvatar',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

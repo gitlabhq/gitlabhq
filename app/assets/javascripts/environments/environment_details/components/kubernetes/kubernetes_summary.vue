@@ -9,6 +9,7 @@ import k8sDeploymentsQuery from '~/environments/graphql/queries/k8s_deployments.
 import KubernetesTreeItem from './kubernetes_tree_item.vue';
 
 export default {
+  name: 'KubernetesSummary',
   components: {
     GlTab,
     GlAlert,

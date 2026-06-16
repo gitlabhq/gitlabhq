@@ -28,7 +28,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
 
     described_class.new.perform(chunk.id)
 
-    expect(chunk.reload).to be_migrated
+    expect(chunk.reload).to be_flushed
   end
 
   # It's OK to remove this test in future if we need to load the associated Ci::Build for a legitimate reason.
@@ -46,7 +46,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
       it 'migrates build trace chunk to a safe store' do
         subject
 
-        expect(chunk.reload).to be_migrated
+        expect(chunk.reload).to be_flushed
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
 
         chunk.reload
         expect(chunk).to be_live
-        expect(chunk).not_to be_migrated
+        expect(chunk).not_to be_flushed
 
         redis_data = Ci::BuildTraceChunks::RedisTraceChunks.new.data(chunk)
         expect(redis_data).to eq(data)
@@ -75,7 +75,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
         described_class.new.perform(chunk.id)
 
         chunk.reload
-        expect(chunk).to be_migrated
+        expect(chunk).to be_flushed
         expect(chunk).not_to be_live
 
         redis_data = Ci::BuildTraceChunks::RedisTraceChunks.new.data(chunk)

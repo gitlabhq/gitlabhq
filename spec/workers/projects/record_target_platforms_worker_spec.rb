@@ -86,6 +86,6 @@ RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :activat
   end
 
   it 'overrides #lease_release? to return false' do
-    expect(worker.send(:lease_release?)).to eq false
+    expect(worker.send(:lease_release?)).to be false
   end
 end

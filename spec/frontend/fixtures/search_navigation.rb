@@ -6,9 +6,9 @@ RSpec.describe SearchHelper, 'search navigation (JavaScript fixtures)', :with_cu
   include ApplicationHelper
   include JavaScriptFixturesHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:group, freeze: false) { create(:group) }
 
   let(:objectives_type) { 'objective' }
   let(:issues_scope) { 'issues' }

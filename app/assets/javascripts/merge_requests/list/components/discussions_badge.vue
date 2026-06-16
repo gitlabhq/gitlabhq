@@ -3,6 +3,7 @@ import { GlBadge, GlSprintf, GlTooltipDirective as GlTooltip } from '@gitlab/ui'
 import { n__, sprintf } from '~/locale';
 
 export default {
+  name: 'DiscussionsBadge',
   components: { GlBadge, GlSprintf },
   directives: { GlTooltip },
   props: {

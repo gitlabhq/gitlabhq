@@ -19,15 +19,15 @@ RSpec.describe Projects::SquashOptionPolicy, feature_category: :source_code_mana
       ref(:maintainer) | :read_squash_option    | true
       ref(:maintainer) | :create_squash_option  | true
       ref(:maintainer) | :update_squash_option  | true
-      ref(:maintainer) | :destroy_squash_option | true
+      ref(:maintainer) | :delete_squash_option  | true
       ref(:developer)  | :read_squash_option    | false
       ref(:developer)  | :create_squash_option  | false
       ref(:developer)  | :update_squash_option  | false
-      ref(:developer)  | :destroy_squash_option | false
+      ref(:developer)  | :delete_squash_option  | false
       ref(:guest)      | :read_squash_option    | false
       ref(:guest)      | :create_squash_option  | false
       ref(:guest)      | :update_squash_option  | false
-      ref(:guest)      | :destroy_squash_option | false
+      ref(:guest)      | :delete_squash_option  | false
     end
 
     with_them do

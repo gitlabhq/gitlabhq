@@ -146,7 +146,16 @@ class BulkImport < ApplicationRecord
     Import::BulkImports::ConfigurationPurgeWorker.perform_in(PURGE_CONFIGURATION_DELAY, configuration.id)
   end
 
-  def offline?
-    offline_configuration.present?
+  # Returns the appropriate import source constant based on source_type.
+  # Note: source_type uses `offline_export` while the import source constant
+  # is SOURCE_OFFLINE_TRANSFER to match the user-facing feature name.
+  def import_source
+    if offline?
+      Import::SOURCE_OFFLINE_TRANSFER
+    else
+      Import::SOURCE_DIRECT_TRANSFER
+    end
   end
+
+  alias_method :offline?, :offline_export?
 end

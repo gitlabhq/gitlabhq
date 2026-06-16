@@ -52,7 +52,7 @@ module Gitlab
         table_name = update_stmt.relation.relname
 
         set_columns = update_stmt.target_list.map { |target| target.res_target.name }
-        return unless set_columns.include?('organization_id')
+        return unless set_columns.any? { |col| organization_column?(col) }
 
         @mutex.synchronize do
           record_table(table_name, location) if org_sharded_table?(table_name)
@@ -70,7 +70,14 @@ module Gitlab
 
       def org_sharded_table?(table_name)
         entry = Gitlab::Database::Dictionary.entry(table_name)
-        entry&.sharding_key.is_a?(Hash) && entry.sharding_key.key?('organization_id')
+        return false unless entry&.sharding_key.is_a?(Hash)
+
+        entry.sharding_key.keys.any? { |key| organization_column?(key) }
+      end
+
+      def organization_column?(column_name)
+        # this will catch organization_id and snippet_organization_id
+        column_name.end_with?('organization_id')
       end
 
       def partition_table_names(base_table_name)
@@ -98,7 +105,7 @@ module Gitlab
 
       def org_sharded_dictionary_entries
         Gitlab::Database::Dictionary.entries.select do |e|
-          e.sharding_key.is_a?(Hash) && e.sharding_key.key?('organization_id')
+          e.sharding_key.is_a?(Hash) && e.sharding_key.keys.any? { |key| organization_column?(key) }
         end
       end
 

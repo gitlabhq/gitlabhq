@@ -58,6 +58,7 @@ module Admin
     def integrations
       return not_found unless instance_level_integrations?
 
+      @hide_search_settings = true
       @integrations = Integration.find_or_initialize_all_non_project_specific(
         Integration.for_instance, include_instance_specific: true
       ).sort_by { |int| int.title.downcase }
@@ -88,7 +89,7 @@ module Admin
     def reset_registration_token
       ::Ci::Runners::ResetRegistrationTokenService.new(@application_setting, current_user).execute
 
-      flash[:notice] = _('New runners registration token has been generated!')
+      flash[:notice] = _('New runners registration token has been generated.')
       redirect_to admin_runners_path
     end
 
@@ -129,11 +130,12 @@ module Admin
     end
 
     def slack_app_manifest_share
-      redirect_to Slack::Manifest.share_url
+      redirect_to Slack::Manifest.share_url(duo_enabled: duo_enabled_for_manifest?)
     end
 
     def slack_app_manifest_download
-      send_data Slack::Manifest.to_json, type: :json, disposition: 'attachment', filename: 'slack_manifest.json'
+      send_data Slack::Manifest.to_json(duo_enabled: duo_enabled_for_manifest?),
+        type: :json, disposition: 'attachment', filename: 'slack_manifest.json'
     end
 
     private
@@ -141,6 +143,10 @@ module Admin
     def set_application_setting
       @application_setting = ApplicationSetting.current_without_cache
       @plans = Plan.all
+    end
+
+    def duo_enabled_for_manifest?
+      Feature.enabled?(:slack_duo_agent, current_user)
     end
 
     def disable_query_limiting
@@ -203,6 +209,7 @@ module Admin
             allowed_to_push: [:access_level]
           }
         ] },
+        { dependency_management_settings: [:security_update_scheduler_max_concurrency] },
         :lets_encrypt_notification_email,
         :lets_encrypt_terms_of_service_accepted,
         :domain_denylist_file,

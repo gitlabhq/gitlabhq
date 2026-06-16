@@ -110,6 +110,7 @@ export default {
       default: false,
     },
   },
+  emits: ['award', 'delete', 'resolve', 'startEditing', 'startReplying'],
   data() {
     return {
       abuseDrawerOpen: false,

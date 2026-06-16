@@ -33,7 +33,7 @@ module Packages
     # Event scopes whose legacy HLL counters (e.g. i_package_<scope>_user) have
     # been removed and are no longer registered as known events. Tracking these
     # would raise UnknownEvent in HLLRedisCounter.
-    REMOVED_UNIQUE_EVENT_SCOPES = %w[golang tag container].freeze
+    REMOVED_UNIQUE_EVENT_SCOPES = %w[cargo golang tag container].freeze
 
     # Remove some of the events, for now, so we don't hammer Redis too hard.
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/280770

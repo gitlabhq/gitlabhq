@@ -18,14 +18,20 @@ title: Customize review instructions for the Agent Platform
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
 - Feature flag `duo_code_review_custom_instructions` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802) in GitLab 18.3.
 - Feature flag `duo_code_review_custom_instructions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262) in GitLab 18.4.
+- Union patterns (for example, `{rb,ts}`) in `fileFilters` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952) in GitLab 19.1.
 
 {{< /history >}}
 
-Create custom merge request review instructions to ensure that GitLab Duo applies consistent and
-specific code review standards to your project.
+Create custom review instructions to provide standards for GitLab Duo to reference when reviewing merge requests.
 
-For example, you can enforce Ruby style conventions only on Ruby files, and Go style
-conventions on Go files.
+For example, you can guide GitLab Duo to focus on Ruby style conventions for Ruby files, and Go style
+conventions for Go files.
+
+> [!note]
+> Custom review instructions are guidance for the AI reviewer, not enforced policies.
+> GitLab Duo uses them as context to shape its review, but cannot guarantee every instruction
+> is applied in every case. Do not rely on custom instructions for security controls,
+> compliance obligations, or other requirements where consistent enforcement is needed.
 
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
@@ -38,17 +44,6 @@ To configure custom merge request review instructions:
 
 1. In the root of your repository, create a `.gitlab/duo` directory if one doesn't already exist.
 1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
-1. Optional. Ask [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
-   to analyze the codebase and documentation, and generate custom review instructions.
-
-   Example prompt:
-
-   ```plaintext
-   I need to create custom rules for GitLab Duo Code Review. When you look at the source code,
-   which languages are missing and need to be added to the mr-review-instructions.yaml
-   file?
-   ```
-
 1. Add your custom instructions using the following format:
 
    ```yaml
@@ -62,8 +57,9 @@ To configure custom merge request review instructions:
          <your_custom_review_instructions>
    ```
 
-   The `fileFilters` section is mandatory. Use glob patterns in this section to target specific
-   files for the custom review rules.
+   The `fileFilters` section is optional. Use glob patterns in this section to target the instruction
+   to specific files. If you omit `fileFilters` or leave it empty, GitLab Duo applies the
+   instruction to every file in the merge request.
 
    For example:
 
@@ -108,12 +104,24 @@ To configure custom merge request review instructions:
          2. Include error scenarios
          3. Use shared examples to reduce duplication
 
+     - name: Database Migrations
+       fileFilters:
+         - "db/migrate/**/*.rb"
+         - "db/post_migrate/**/*.rb"
+       instructions: |
+         1. Follow the migration safety guidelines in
+            https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/avoiding_downtime_in_migrations.md
+         2. Apply the team checklist in docs/migrations-checklist.md
+
      - name: All Files
        fileFilters:
          - "**/*"   # All files in the repository
        instructions: |
          1. Explain the "why" behind each suggestion
    ```
+
+   For details about referencing files in instructions, see
+   [reference files in instructions](#reference-files-in-instructions).
 
    For glob syntax examples, see the
    [file pattern reference](#file-pattern-reference).
@@ -131,7 +139,9 @@ To configure custom merge request review instructions:
 
    - GitLab Duo automatically applies your custom instructions when the file
      patterns match.
-   - Multiple instruction groups can apply to a single file.
+   - Multiple instruction groups can apply to a single file. When a file
+     matches the `fileFilters` of more than one group, Code Review Flow applies
+     the instructions from every matching group.
    - For review comments triggered by your custom instructions, GitLab Duo uses this format:
 
      ```plaintext
@@ -170,19 +180,99 @@ Prerequisites:
 To configure custom review instructions for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Under **Custom review instructions for groups**, select a project in your group.
+1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
+1. Under **Custom review instructions for groups**, select the project that contains the
+   `.gitlab/duo/mr-review-instructions.yaml` file with your group's review instructions.
 1. Select **Save changes**.
+
+## Reference files in instructions
+
+You can reference other files in custom instructions instead of duplicating content.
+Code Review Flow reads the referenced files during the pre-scan step
+and extracts relevant guidance.
+
+Custom instructions support two file reference patterns:
+
+- Files in the same project as the merge request: Use a repository-relative path,
+  such as `docs/security-checklist.md`.
+- Files in other projects on the same GitLab instance: Use a full
+  GitLab blob URL, such as
+  `https://gitlab.example.com/group/project/-/blob/main/docs/style-guide.md`.
+  The URL must point to the same GitLab instance as the merge request and
+  must use the `/-/blob/<ref>/<path>` format.
+
+For example:
+
+```yaml
+instructions:
+  - name: Database Migrations
+    fileFilters:
+      - "db/migrate/**/*.rb"
+    instructions: |
+      1. Follow the migration guidelines in
+         https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/avoiding_downtime_in_migrations.md
+      2. Reference the team checklist in docs/db-checklist.md
+```
+
+### Limitations of file references
+
+File reference resolution has the following constraints:
+
+- Same GitLab instance only. URLs that point to a different GitLab
+  instance, to public GitLab from a GitLab Self-Managed instance, or to any
+  non-GitLab site, such as Confluence or a public documentation site, are not
+  fetched.
+- Blob URLs only, formatted as `/-/blob/<ref>/<path>`. Wiki pages, issues,
+  raw URLs, and snippets are not fetched.
+- Same project for bare paths. A bare path such as `docs/security.md`
+  resolves against the same project as the merge request. Use a full GitLab
+  blob URL to reference a file in a different project.
+- Best effort, not guaranteed. Code Review Flow decides which references
+  to fetch based on the instruction text. A reference that fails to resolve,
+  such as a path that does not exist or a URL the parser rejects, is skipped
+  silently.
+- Code Review Flow uses a summary, not the original file. It summarizes the
+  fetched content during the pre-scan step and uses the summary during the
+  review. Two reviews of the same merge request can produce different
+  summaries.
+
+If you want Code Review Flow to use the exact file contents and not a summary,
+include it directly in the `instructions:` field instead of referencing the
+file. Inline instructions are used as written.
 
 ## Best practices
 
 When writing custom review instructions:
 
-- Be specific and actionable.
+- Be specific and actionable. Code Review Flow checks each rule against the
+  diff. For example, a concrete rule like "verify that public methods have YARD
+  documentation" produces useful comments, but abstract guidance like
+  "document your code well" does not.
 - Number your instructions for clarity.
-- Focus on the most important standards.
+- Focus on the most important standards. Every rule's text becomes part of
+  the review prompt, so long lists of low-value rules inflate the prompt
+  without adding signal.
 - Explain the "why" when helpful.
 - Start with straightforward instructions, and add complexity as needed.
+- Focus on project-specific standards that Code Review Flow wouldn't apply
+  by default. Custom instructions add to the standard review criteria instead
+  of replacing them. General advice like "add error handling" or "use
+  meaningful names" is usually already covered. Use custom instructions for
+  what only your project knows: internal APIs, architectural conventions,
+  domain-specific patterns.
+- Write instructions as guidance, not mandates. Instructions are hints that
+  shape review behavior, not policies that GitLab Duo is required to follow. Avoid
+  wording like "always flag" or "never allow". This phrasing can mislead collaborators into thinking the behavior is guaranteed.
+- Make file patterns reflect the actual scope of the rule. Code Review Flow
+  reads each instruction alongside each `fileFilters` reference and applies
+  the rule only to files that match those patterns. For example, a rule for "Rails
+  controllers" scoped to `**/*.rb` will apply to gems, scripts, and
+  tests, not just controllers. Use `app/controllers/**/*.rb` instead.
+- Only use external file references for instructions where exact wording
+  does not matter, otherwise include the details as a rule in the
+  `instructions:` field directly. Code Review Flow generates and uses
+  summaries for referenced files, but uses the exact wording defined in
+  `instructions`.
 
 For example:
 
@@ -211,7 +301,7 @@ For example, for a project that contains Ruby files:
 | `!**/*.test.rb` | Exclude all Ruby test files |
 | `!spec/**/*.rb` | Exclude all Ruby files in the `spec` directory and its subdirectories |
 | `!tests/**/*`   | Exclude all files in the `tests` directory and its subdirectories |
-| `**/*.{js,jsx}` | JavaScript and JSX files in all directories |
+| `**/*.{js,jsx}` | JavaScript and JSX files in all directories (GitLab 19.1 and later) |
 
 The following example shows the difference between `**/*.rb` and `*.rb`:
 
@@ -734,6 +824,108 @@ For more custom review instructions use cases, see the following production exam
 - [GitLab handbook](https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [GitLab website](https://gitlab.com/gitlab-com/marketing/digital-experience/about-gitlab-com/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [Developer Advocacy: Tanuki IoT Platform](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
+
+## Troubleshooting
+
+When working with `mr-review-instructions.yaml`, you might encounter the following issues.
+
+### Code Review Flow skips instructions or returns a generic review
+
+If Code Review Flow skips your custom instructions or returns a generic review,
+the file might have a structural problem. Use the custom instructions linter to
+identify any issues.
+
+#### Run the custom instructions linter
+
+The custom instructions linter helps you validate your `mr-review-instructions.yaml` file.
+
+The linter checks for:
+
+- Invalid YAML syntax.
+- Missing or unexpected top-level keys.
+- Missing or blank required fields (`name`, `instructions`).
+- Unknown keys in an instruction entry, such as `rules` instead of `instructions`.
+- `fileFilters` values that are not lists or contain non-string or blank entries.
+- Missing or empty `fileFilters`, which causes the instruction to apply to every file (info).
+- Duplicate `name` values across instruction entries.
+
+> [!note]
+> The linter reads the file only and does not modify it.
+> It has no GitLab or Rails dependencies and runs anywhere with Ruby installed.
+
+Prerequisites:
+
+- Ruby 3.0 or later.
+
+To run the linter as a Rake task on a GitLab server, replace `<path>` with the path to
+your `mr-review-instructions.yaml` file. For example:
+
+```shell
+sudo gitlab-rake "gitlab:duo:lint_review_instructions[<path>]"
+```
+
+To run the linter as a standalone script on any machine with Ruby installed:
+
+1. Download [`review_instructions_linter.rb`](https://gitlab.com/gitlab-org/gitlab/-/raw/master/ee/lib/gitlab/duo/administration/review_instructions_linter.rb).
+1. Run the linter. Replace `<path>` with the path to your `mr-review-instructions.yaml` file.
+
+   ```shell
+   ruby -r ./review_instructions_linter.rb -e '
+     linter = Gitlab::Duo::Administration::ReviewInstructionsLinter.new(ARGV[0]).run
+     linter.issues.each { |issue| puts issue }
+     exit(linter.valid? ? 0 : 1)
+   ' <path>
+   ```
+
+If you omit the path, the linter defaults to `.gitlab/duo/mr-review-instructions.yaml`
+in the working directory. The linter exits with status `0` if no errors are found, or
+`1` otherwise. Warnings and info messages do not cause a non-zero exit.
+
+For example, this invalid file uses `rules` instead of `instructions` and omits
+`fileFilters`:
+
+```yaml
+instructions:
+  - name: "General"
+    rules: "Do something"
+```
+
+The linter reports:
+
+```plaintext
+[ERROR E009] Field 'instructions' must be a non-empty string at instructions[0]
+[WARNING W003] Unknown keys: "rules"; expected name, instructions, fileFilters at instructions[0]
+[INFO I001] Missing 'fileFilters'; the instruction applies to every file at instructions[0]
+```
+
+Fix the reported errors and re-run the linter until it reports no errors.
+
+#### Linter message codes
+
+Each message includes a stable code that you can refer to when you ask for help.
+Codes that start with `E` are errors, codes that start with `W` are warnings, and
+codes that start with `I` are informational notes about valid but worth-knowing behavior.
+
+| Code | Description |
+| ---- | ----------- |
+| `E001` | The file does not exist at the given path. |
+| `E003` | The file contains invalid YAML syntax. |
+| `E004` | The top-level YAML value is not a mapping. |
+| `E005` | The top-level `instructions` key is missing. |
+| `E006` | The `instructions` value is not a list. |
+| `E007` | An entry under `instructions` is not a mapping. |
+| `E008` | An entry's `name` field is missing, blank, or not a string. |
+| `E009` | An entry's `instructions` field is missing, blank, or not a string. |
+| `E011` | An entry's `fileFilters` value is not a list. |
+| `E013` | An entry's `fileFilters` contains a non-string value, such as a number. |
+| `E014` | An entry's `fileFilters` contains a blank string. |
+| `W001` | The file contains an unknown top-level key. |
+| `W002` | The `instructions` list is empty, so no instructions apply. |
+| `W003` | An entry contains keys other than `name`, `instructions`, and `fileFilters`. |
+| `W004` | Two or more entries share the same `name`. |
+| `W007` | The file is empty, so no instructions apply. |
+| `I001` | An entry is missing the `fileFilters` field, so the instruction applies to every file. |
+| `I002` | An entry's `fileFilters` list is empty, so the instruction applies to every file. |
 
 ## Related topics
 

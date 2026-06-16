@@ -4,8 +4,8 @@ require 'uri'
 
 # This filter handles autolinking when a pipeline does not
 # use the MarkdownFilter, which handles it's own autolinking.
-# This happens in particular for the SingleLinePipeline and the
-# CommitDescriptionPipeline.
+# This happens in particular for the SingleLinePipeline,
+# CommitDescriptionPipeline, and org-mode markup rendering.
 #
 # rubocop:disable Rails/OutputSafety -- this is legacy/unused, no need fixing.
 # rubocop:disable Gitlab/NoCodeCoverageComment -- no coverage needed for a legacy filter
@@ -68,10 +68,16 @@ module Banzai
         '}' => '{'
       }.freeze
 
+      # Maximum length of a text node to process for autolinking.
+      # Longer text nodes are skipped to avoid O(N) position mapping
+      # overhead in StringRangeMarker. See https://gitlab.com/gitlab-org/gitlab/-/issues/598970
+      TEXT_LENGTH_LIMIT = 50.kilobytes
+
       def call
         if MarkdownFilter.glfm_markdown?(context) &&
             context[:pipeline] != :single_line &&
-            context[:pipeline] != :commit_description
+            context[:pipeline] != :commit_description &&
+            context[:pipeline] != :org_markup
           return doc
         end
 
@@ -81,6 +87,8 @@ module Banzai
 
         doc.xpath(TEXT_QUERY).each do |node|
           break if Banzai::Filter.filter_item_limit_exceeded?(@link_count, limit: Banzai::Filter::FILTER_ITEM_LIMIT)
+
+          next if node.content.bytesize > TEXT_LENGTH_LIMIT
 
           content = node.to_html
 

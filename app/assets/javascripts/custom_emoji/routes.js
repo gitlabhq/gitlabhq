@@ -10,6 +10,7 @@ export default [
   },
   {
     path: '/new',
+    name: 'new',
     component: NewComponent,
     async beforeEnter(to, from, next) {
       const {

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe MergeWorker, feature_category: :code_review_workflow do
   describe "remove source branch" do
@@ -103,6 +104,61 @@ RSpec.describe MergeWorker, feature_category: :code_review_workflow do
     it 'does not call MergeRequests::MergeService' do
       expect(MergeRequests::MergeService).not_to receive(:new)
       subject
+    end
+  end
+
+  describe 'immediate_web_merge UX SLI' do
+    let_it_be_with_reload(:merge_request) { create(:merge_request, source_branch: 'markdown') }
+    let(:user) { merge_request.author }
+
+    before do
+      merge_request.source_project.add_maintainer(user)
+    end
+
+    context 'when the experience was started by the web merge' do
+      before do
+        Labkit::UserExperienceSli.start(:immediate_web_merge)
+      end
+
+      it 'resumes and completes the experience on a successful merge', :sidekiq_inline, :aggregate_failures do
+        expect do
+          described_class.new.perform(
+            merge_request.id, user.id,
+            { commit_message: 'wow such merge', sha: merge_request.diff_head_sha })
+        end.to resume_user_experience(:immediate_web_merge)
+          .and complete_user_experience(:immediate_web_merge)
+
+        expect(merge_request.reload).to be_merged
+      end
+
+      it 'completes the experience with an error when the merge fails', :aggregate_failures do
+        allow_next_instance_of(MergeRequests::MergeService) do |service|
+          allow(service).to receive(:execute)
+        end
+        allow_next_found_instance_of(MergeRequest) do |found_mr|
+          allow(found_mr).to receive_messages(merged?: false, merge_error: 'Merge conflict')
+        end
+
+        expect do
+          described_class.new.perform(merge_request.id, user.id, {})
+        end.to resume_user_experience(:immediate_web_merge)
+          .and complete_user_experience(:immediate_web_merge, error: true)
+      end
+
+      it 'completes the experience with an error when the merge request is missing' do
+        expect do
+          described_class.new.perform(non_existing_record_id, user.id, {})
+        end.to resume_user_experience(:immediate_web_merge)
+          .and complete_user_experience(:immediate_web_merge, error: true)
+      end
+    end
+
+    context 'when the experience was not started (GraphQL or auto-merge)' do
+      it 'does not resume the experience' do
+        expect do
+          described_class.new.perform(non_existing_record_id, user.id, {})
+        end.not_to resume_user_experience(:immediate_web_merge)
+      end
     end
   end
 end

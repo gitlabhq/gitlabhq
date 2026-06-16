@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: SidekiqメトリクスAPI
 ---
@@ -13,11 +13,11 @@ title: SidekiqメトリクスAPI
 
 {{< /details >}}
 
-このAPIエンドポイントを使用すると、Sidekiqの現在の状態、ジョブ、キュー、およびプロセスに関する情報を取得できます。
+このAPIエンドポイントを使用すると、Sidekiqの現在の状態、そのジョブ、キュー、およびプロセスに関するいくつかの情報を取得することができます。
 
-## 現在のキューメトリクスを取得 {#get-the-current-queue-metrics}
+## すべてのジョブキューメトリクスを一覧表示する {#list-all-job-queue-metrics}
 
-登録されているすべてのキュー、そのバックログ、およびそのレイテンシーに関する情報を一覧表示します。
+すべてのSidekiqジョブキューに関する詳細を、バックログサイズとレイテンシーを含めて一覧表示します。
 
 ```plaintext
 GET /sidekiq/queue_metrics
@@ -29,7 +29,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/sidekiq/queue_metrics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -42,9 +42,9 @@ curl --request GET \
 }
 ```
 
-## 現在のプロセスメトリクスを取得 {#get-the-current-process-metrics}
+## すべてのSidekiqプロセスを一覧表示する {#list-all-sidekiq-processes}
 
-キューの処理のために登録されているすべてのSidekiqワーカーに関する情報を一覧表示します。
+登録されているすべてのSidekiqワーカープロセスに関する詳細を、ホスト名、プロセスID、キュー、および並行処理設定を含めて一覧表示します。
 
 ```plaintext
 GET /sidekiq/process_metrics
@@ -56,7 +56,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/sidekiq/process_metrics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -86,9 +86,9 @@ curl --request GET \
 }
 ```
 
-## 現在のジョブ統計を取得 {#get-the-current-job-statistics}
+## ジョブ完了メトリクスを取得する {#retrieve-job-completion-metrics}
 
-Sidekiqが実行したジョブに関する情報を一覧表示します。
+すべてのSidekiqジョブの完了ステータスに関する統計を取得する。
 
 ```plaintext
 GET /sidekiq/job_stats
@@ -100,7 +100,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/sidekiq/job_stats"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -113,9 +113,9 @@ curl --request GET \
 }
 ```
 
-## 以前に言及したすべてのメトリクスの複合応答を取得する {#get-a-compound-response-of-all-the-previously-mentioned-metrics}
+## すべてのSidekiqメトリクスを一覧表示する {#list-all-sidekiq-metrics}
 
-Sidekiqに関する現在利用可能なすべての情報を一覧表示します。
+キュー、プロセス、およびジョブの完了メトリクスを含む、すべてのSidekiqメトリクスを単一の応答で一覧表示します。
 
 ```plaintext
 GET /sidekiq/compound_metrics
@@ -127,7 +127,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/sidekiq/compound_metrics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -6,18 +6,18 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, :public, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:another_user) { create(:user, reporter_of: group) }
   let_it_be(:milestone1) { create(:milestone, project: project, due_date: 10.days.from_now) }
   let_it_be(:milestone2) { create(:milestone, project: project, due_date: 20.days.from_now) }
   let_it_be(:milestone3) { create(:milestone, project: project, due_date: 30.days.from_now) }
   let_it_be(:milestone4) { create(:milestone, project: project, due_date: 40.days.from_now) }
-  let_it_be(:priority1) { create(:label, project: project, priority: 1) }
-  let_it_be(:priority2) { create(:label, project: project, priority: 5) }
-  let_it_be(:priority3) { create(:label, project: project, priority: 10) }
+  let_it_be(:priority1, freeze: false) { create(:label, project: project, priority: 1) }
+  let_it_be(:priority2, freeze: false) { create(:label, project: project, priority: 5) }
+  let_it_be(:priority3, freeze: false) { create(:label, project: project, priority: 10) }
 
-  let_it_be(:issue_a) do
+  let_it_be(:issue_a, freeze: false) do
     create(
       :issue,
       project: project,
@@ -28,7 +28,7 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
     )
   end
 
-  let_it_be(:issue_b) do
+  let_it_be(:issue_b, freeze: false) do
     create(
       :issue,
       :with_alert,
@@ -77,7 +77,7 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
     create(:subscription, subscribable: issue_b, user: current_user, subscribed: false)
   end
 
-  let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
+  let_it_be_with_reload(:issues) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
 
   let(:issue_nodes_path) { %w[project issues nodes] }
   let(:issue_filter_params) { {} }

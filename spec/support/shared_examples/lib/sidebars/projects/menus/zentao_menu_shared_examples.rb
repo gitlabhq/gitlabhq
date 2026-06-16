@@ -17,7 +17,7 @@ RSpec.shared_examples 'ZenTao menu with CE version' do
       end
 
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.shared_examples 'ZenTao menu with CE version' do
       end
 
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
 
       it 'renders menu link' do

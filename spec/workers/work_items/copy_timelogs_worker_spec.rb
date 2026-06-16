@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::CopyTimelogsWorker, type: :worker, feature_category: :team_planning do
-  let_it_be(:from_issue) { create(:issue) }
+  let_it_be(:from_issue, freeze: false) { create(:issue) }
   let_it_be(:to_issue) { create(:issue) }
-  let_it_be(:timelog) { create(:timelog, issue: from_issue) }
+  let_it_be(:timelog, freeze: false) { create(:timelog, issue: from_issue) }
 
   it 'has the `until_executed` deduplicate strategy' do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)

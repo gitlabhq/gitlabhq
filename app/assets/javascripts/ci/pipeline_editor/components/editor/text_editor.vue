@@ -6,6 +6,7 @@ import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hu
 import { SOURCE_EDITOR_DEBOUNCE } from '../../constants';
 
 export default {
+  name: 'TextEditor',
   editorOptions: {
     // Quick suggestions is so that monaco can provide
     // autocomplete for keywords

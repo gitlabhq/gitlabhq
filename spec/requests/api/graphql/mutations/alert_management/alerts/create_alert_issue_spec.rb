@@ -7,7 +7,7 @@ RSpec.describe 'Create an alert issue from an alert', feature_category: :inciden
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, developers: user) }
-  let_it_be(:alert) { create(:alert_management_alert, project: project) }
+  let_it_be(:alert, freeze: false) { create(:alert_management_alert, project: project) }
 
   let(:mutation) do
     variables = {

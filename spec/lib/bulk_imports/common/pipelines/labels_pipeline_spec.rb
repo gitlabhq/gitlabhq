@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
-  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
-  let_it_be(:entity) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:filepath, freeze: false) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       group: group,
@@ -18,8 +18,8 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category:
     )
   end
 
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:tmpdir) { Dir.mktmpdir }
 

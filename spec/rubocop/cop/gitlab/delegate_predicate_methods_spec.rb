@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/delegate_predicate_methods'
 
-RSpec.describe RuboCop::Cop::Gitlab::DelegatePredicateMethods do
+RSpec.describe RuboCop::Cop::Gitlab::DelegatePredicateMethods, feature_category: :tooling do
   it 'registers offense for single predicate method with allow_nil:true' do
     expect_offense(<<~RUBY)
       delegate :is_foo?, :do_foo, to: :bar, allow_nil: true

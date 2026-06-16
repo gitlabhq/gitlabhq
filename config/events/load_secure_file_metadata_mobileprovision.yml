@@ -1,7 +1,9 @@
 ---
 description: Tracks the loading of secure file metadata for mobile provision files.
 action: load_secure_file_metadata_mobileprovision
-product_group: package_registry
+product_group: mobile_devops
+product_categories:
+- mobile_devops
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104162
 tiers:

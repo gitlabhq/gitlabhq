@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe FromSetOperator do
-  let_it_be(:from_set_operator) do
+  let_it_be(:from_set_operator, freeze: false) do
     Class.new do
       extend FromSetOperator
       define_set_operator Gitlab::SQL::Union
@@ -34,9 +34,9 @@ RSpec.describe FromSetOperator do
   end
 
   context 'with members' do
-    let_it_be(:group1) { create :group }
-    let_it_be(:group2) { create :group }
-    let_it_be(:groups) do
+    let_it_be(:group1, freeze: false) { create :group }
+    let_it_be(:group2, freeze: false) { create :group }
+    let_it_be(:groups, freeze: false) do
       [
         Group.where(id: group1),
         Group.where(id: group2)

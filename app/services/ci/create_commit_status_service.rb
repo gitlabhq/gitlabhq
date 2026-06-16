@@ -23,6 +23,8 @@ module Ci
         message: 'Another update to this commit status is in progress',
         reason: :conflict
       )
+    rescue Repository::AmbiguousRefError
+      bad_request('Ref is ambiguous - specify refs/heads/<name> or refs/tags/<name>')
     end
 
     private
@@ -97,7 +99,7 @@ module Ci
     def first_matching_pipeline
       limit = params[:pipeline_id] ? nil : DEFAULT_LIMIT_PIPELINES
       pipelines = project.ci_pipelines.newest_first(sha: sha, limit: limit)
-      pipelines = pipelines.not_archived
+      pipelines = pipelines.not_archived if ::Feature.enabled?(:ci_pipeline_archival_setting, project)
       pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
       pipelines = pipelines.id_in(params[:pipeline_id]) if params[:pipeline_id]
       pipelines.first

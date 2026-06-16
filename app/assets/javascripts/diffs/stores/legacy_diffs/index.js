@@ -41,6 +41,7 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
       latestDiff: true,
       virtualScrollerDisabled: false,
       linkedFileHash: null,
+      gitalyErrorMessage: null,
     };
   },
   actions: {

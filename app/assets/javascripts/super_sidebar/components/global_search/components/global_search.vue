@@ -100,6 +100,7 @@ export default {
     CommandsOverviewDropdown,
   },
   mixins: [trackingMixin, modalKeyboardNavigationMixin],
+  emits: ['hidden', 'shown'],
   data() {
     return {
       nextFocusedItemIndex: null,
@@ -178,16 +179,31 @@ export default {
     document.removeEventListener(EVENT_OPEN_GLOBAL_SEARCH, this.showModal);
   },
   methods: {
-    ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
+    ...mapActions([
+      'setSearch',
+      'setCommand',
+      'requestAutocomplete',
+      'fetchAutocompleteOptions',
+      'clearAutocomplete',
+    ]),
     showModal(event) {
       const searchText = event?.detail?.searchText;
       if (searchText) {
         this.searchText = searchText;
         this.$nextTick(() => {
+          if (!this.isCommandMode) {
+            this.requestAutocomplete();
+          }
           this.getAutocompleteOptions(searchText);
         });
       }
       this.$refs.modal?.show();
+    },
+    onSearchInput(searchTerm) {
+      if (!this.isCommandMode && searchTerm) {
+        this.requestAutocomplete();
+      }
+      this.getAutocompleteOptions(searchTerm);
     },
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
       if (this.isCommandMode) {
@@ -485,7 +501,7 @@ export default {
             :placeholder="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
             :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
             borderless
-            @input="getAutocompleteOptions"
+            @input="onSearchInput"
             @keydown="onKeydown"
           />
           <span :id="$options.SEARCH_INPUT_DESCRIPTION" class="gl-sr-only">

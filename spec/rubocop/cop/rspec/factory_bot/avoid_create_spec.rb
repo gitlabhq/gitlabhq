@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/avoid_create'
 
-RSpec.describe RuboCop::Cop::RSpec::FactoryBot::AvoidCreate do
+RSpec.describe RuboCop::Cop::RSpec::FactoryBot::AvoidCreate, feature_category: :tooling do
   shared_examples 'an offensive factory call' do |namespace|
     %i[create create_list].each do |forbidden_method|
       namespaced_forbidden_method = "#{namespace}#{forbidden_method}(:user)"

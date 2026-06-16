@@ -9,6 +9,12 @@ module Mutations
       include Mutations::SpamProtection
       include Gitlab::InternalEventsTracking
 
+      authorize_granular_token permissions: :update_snippet,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary: :user, boundary_type: :user }
+        ]
+
       argument :id, ::Types::GlobalIDType[::Snippet],
         required: true,
         description: 'Global ID of the snippet to update.'

@@ -19,6 +19,17 @@ RSpec.describe 'getting the terraform state protection rules linked to a project
 
   subject(:perform_request) { post_graphql(query, current_user: user) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_terraform_state] do
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql(
+        graphql_query_for(:project, { full_path: project.full_path },
+          query_nodes(:terraformStateProtectionRules, of: 'TerraformStateProtectionRule')),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   context 'with authorized user (maintainer)' do
     context 'with terraform state protection rule' do
       let_it_be(:protection_rule) do

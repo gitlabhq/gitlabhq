@@ -548,6 +548,60 @@ describe('Pipeline variables form group', () => {
     });
   });
 
+  describe('Read-only mode', () => {
+    const mockVariables = [
+      {
+        id: '1',
+        key: 'TEST_VAR_1',
+        value: 'test-value-1',
+        variableType: CI_VARIABLE_TYPE_ENV_VAR,
+        destroy: false,
+      },
+    ];
+
+    beforeEach(() => {
+      createComponent({
+        mountFn: mountExtended,
+        props: {
+          initialVariables: mockVariables,
+          editing: true,
+          readOnly: true,
+        },
+      });
+    });
+
+    it('does not append an empty trailing row', () => {
+      expect(findVariableRows()).toHaveLength(mockVariables.length);
+    });
+
+    it('disables the type, key, and value inputs', async () => {
+      findVariableSecurityBtn().vm.$emit('click');
+      await nextTick();
+
+      expect(findVariableTypes().at(0).props('disabled')).toBe(true);
+      expect(findKeyInputs().at(0).attributes('disabled')).toBeDefined();
+      expect(findValueInputs().at(0).attributes('disabled')).toBeDefined();
+    });
+
+    it('does not render remove buttons even when multiple variables exist', async () => {
+      await wrapper.setProps({
+        initialVariables: [
+          ...mockVariables,
+          {
+            id: '2',
+            key: 'TEST_VAR_2',
+            value: 'test-value-2',
+            variableType: CI_VARIABLE_TYPE_ENV_VAR,
+            destroy: false,
+          },
+        ],
+      });
+
+      expect(findRemoveButtonAt(0).exists()).toBe(false);
+      expect(findRemoveButtonDesktopAt(0).exists()).toBe(false);
+    });
+  });
+
   describe('description slot', () => {
     const descriptionContent = 'Custom description text';
     it('renders description slot content when provided', () => {

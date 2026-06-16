@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Project > Tags', :js, feature_category: :source_code_management do
   include DropzoneHelper
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:role) { :developer }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:role, freeze: false) { :developer }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   before do
     sign_in(user)

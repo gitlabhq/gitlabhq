@@ -1,0 +1,16 @@
+---
+description: Tracks when a user clicks the Register now CTA for GitLab Transcend in the What's New drawer
+internal_events: true
+status: active
+action: click_whats_new_transcend_register
+identifiers:
+- user
+product_group: acquisition
+product_categories:
+- acquisition
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236991
+tiers:
+- free
+- premium
+- ultimate

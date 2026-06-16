@@ -12,6 +12,8 @@ module Banzai
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,
           Filter::KrokiFilter,
+          Filter::MathFilter,
+          Filter::MermaidFilter,
           Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]
       end

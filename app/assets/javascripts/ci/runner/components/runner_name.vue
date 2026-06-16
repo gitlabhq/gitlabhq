@@ -2,6 +2,7 @@
 import { formatRunnerName } from '../utils';
 
 export default {
+  name: 'RunnerName',
   props: {
     runner: {
       type: Object,

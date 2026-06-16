@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
+  name: 'CiConfigMergedPreview',
   i18n: {
     viewOnlyMessage: s__('Pipelines|Full configuration is view only'),
   },

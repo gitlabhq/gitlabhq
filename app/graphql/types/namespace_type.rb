@@ -140,6 +140,13 @@ module Types
       experiment: { milestone: '17.2' },
       description: 'Work item types available to the namespace.'
 
+    field :work_item_move_targets, [Types::WorkItems::MoveTargetType],
+      null: true,
+      experiment: { milestone: '19.1' },
+      resolver: ::Resolvers::WorkItems::MoveTargetsResolver,
+      description: 'Valid target work item types and a suggested default for moving work items ' \
+        'of given source types into this namespace.'
+
     field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
       resolver: Resolvers::PagesDeploymentsResolver,
       connection: true,

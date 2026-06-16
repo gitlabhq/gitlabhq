@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'ImageViewer',
   props: {
     blob: {
       type: Object,

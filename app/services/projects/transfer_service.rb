@@ -14,6 +14,18 @@ module Projects
 
     TransferError = Class.new(StandardError)
 
+    # Shorter lock retry timing for Sidekiq context (~2 minutes worst case).
+    # Default WithLockRetries config retries for ~40 minutes which is too long.
+    LOCK_RETRY_TIMING = [
+      [0.5.seconds, 2.seconds],
+      [0.5.seconds, 2.seconds],
+      [1.second, 5.seconds],
+      [1.second, 5.seconds],
+      [2.seconds, 10.seconds],
+      [2.seconds, 15.seconds],
+      [5.seconds, 30.seconds]
+    ].freeze
+
     attr_reader :error
 
     def log_project_transfer_success(project, new_namespace)
@@ -28,6 +40,8 @@ module Projects
       ensure_allowed_transfer(new_namespace)
 
       project_namespace = project.project_namespace
+      cancel_stale_transfer_state(project_namespace)
+
       project_namespace.state_metadata[:transfer_target_parent_id] = new_namespace.id
 
       unless project_namespace.schedule_transfer(transition_user: current_user)
@@ -97,6 +111,23 @@ module Projects
       end
     end
 
+    # Note: There is a small window where a worker could acquire the lease between
+    # the lease check and cancel_transfer!. This is acceptable because the worker's own
+    # cancel_stale_transfer_state handles this as a safety net.
+    def cancel_stale_transfer_state(project_namespace)
+      return unless project_namespace.transfer_in_progress? || project_namespace.transfer_scheduled?
+
+      lease_key = Projects::TransferWorker.lease_key(project.id)
+      return if Gitlab::ExclusiveLease.get_uuid(lease_key)
+
+      Gitlab::AppLogger.warn(
+        message: 'Cancelling stale transfer state - no active worker lease found',
+        state: project_namespace.state,
+        project_id: project.id
+      )
+      project_namespace.cancel_transfer!
+    end
+
     def ensure_allowed_transfer(namespace)
       raise TransferError, s_('TransferProject|Please select a new namespace for your project.') if namespace.blank?
 
@@ -148,6 +179,10 @@ module Projects
       raise_error_due_to_tags_if_transfer_is_not_allowed
       raise_error_due_to_tags_if_not_in_same_root(project)
       raise_error_due_to_tags_if_transfer_dry_run_fails(project)
+    rescue Faraday::Error => e
+      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+      raise TransferError,
+        s_('TransferProject|Cannot transfer project: failed to connect to the container registry. Please try again later.')
     end
 
     def raise_error_due_to_tags_if_transfer_is_not_allowed
@@ -184,39 +219,46 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     def proceed_to_transfer
-      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-        %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424282'
-      ) do
-        Project.transaction do
-          project.expire_caches_before_rename(@old_path)
+      Gitlab::Database::WithLockRetries.new(
+        connection: ApplicationRecord.connection,
+        logger: Gitlab::AppLogger,
+        timing_configuration: LOCK_RETRY_TIMING,
+        klass: self.class
+      ).run(raise_on_exhaustion: true) do
+        Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+          %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424282'
+        ) do
+          Project.transaction do
+            project.expire_caches_before_rename(@old_path)
 
-          # Apply changes to the project
-          update_namespace_and_visibility(@new_namespace)
-          project.reconcile_shared_runners_setting!
-          project.save!
+            # Apply changes to the project
+            update_namespace_and_visibility(@new_namespace)
+            project.reconcile_shared_runners_setting!
+            project.save!
 
-          # Notifications
-          project.send_move_instructions(@old_path)
+            # Notifications
+            project.send_move_instructions(@old_path)
 
-          transfer_missing_group_resources(@old_group)
+            transfer_missing_group_resources(@old_group)
 
-          # Move uploads
-          move_project_uploads(project)
+            # Move uploads
+            move_project_uploads(project)
 
-          # Update Container Registry
-          if project.has_container_registry_tags?
-            transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
+            # Update Container Registry
+            if project.has_container_registry_tags?
+              transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
+            end
+
+            update_integrations
+
+            project.old_path_with_namespace = @old_path
+
+            update_repository_configuration
+
+            remove_issue_contacts
+
+            execute_system_hooks
           end
-
-          update_integrations
-
-          project.old_path_with_namespace = @old_path
-
-          update_repository_configuration
-
-          remove_issue_contacts
-
-          execute_system_hooks
         end
       end
 
@@ -244,6 +286,7 @@ module Projects
     def post_update_hooks(project, _old_group)
       ensure_personal_project_owner_membership(project)
       invalidate_personal_projects_counts
+      EventCreateService.new.transfer_project(project, current_user)
 
       publish_event
     end

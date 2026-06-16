@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'create todo mutation' do
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 

@@ -55,7 +55,7 @@ describe('NonGitlabMarkdown', () => {
     const markdownBlock = findMarkdownBlock();
     const element = markdownBlock.find('p');
     expect(markdownBlock.exists()).toBe(true);
-    expect(element.find('[class]').exists()).toBe(false);
+    expect(element.attributes('class')).toBeUndefined();
     expect(element.text()).toBe('styled text with class');
   });
 

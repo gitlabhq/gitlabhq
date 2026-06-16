@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../../rubocop/cop/rspec/factory_bot/strategy_in_callback'
 
-RSpec.describe RuboCop::Cop::RSpec::FactoryBot::StrategyInCallback do
+RSpec.describe RuboCop::Cop::RSpec::FactoryBot::StrategyInCallback, feature_category: :tooling do
   shared_examples 'an offensive factory call' do |namespace|
     described_class::FORBIDDEN_METHODS.each do |forbidden_method|
       namespaced_forbidden_method = "#{namespace}#{forbidden_method}(:ci_job_artifact, :archive)"

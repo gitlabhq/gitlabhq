@@ -109,12 +109,6 @@ the global fallback cache is fetched every time a cache is not found.
 
 ### Per-cache fallback keys
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
-
-{{< /history >}}
-
 Each cache entry supports up to five fallback keys with the [`fallback_keys` keyword](../yaml/_index.md#cachefallback_keys).
 When a job does not find a cache key, the job attempts to retrieve a fallback cache instead.
 Fallback keys are searched in order until a cache is found. If no cache is found,
@@ -228,7 +222,6 @@ For more information, see [`cache: policy`](../yaml/_index.md#cachepolicy).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
 - `-protected` suffix for Maintainer role and higher [introduced](https://about.gitlab.com/releases/2025/11/26/patch-release-gitlab-18-6-1-released/) in GitLab 18.4.5.
 
 {{< /history >}}
@@ -275,12 +268,6 @@ For example, if:
 | `1.1.1-rc1` | `feature` | `1.1.1-rc1-non_protected` | `1.1.1-rc1-protected`     |
 
 ### Use the same cache for all branches
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
-
-{{< /history >}}
 
 If you do not want to use [cache key names](#cache-key-names),
 you can have all branches (protected and unprotected) use the same cache.

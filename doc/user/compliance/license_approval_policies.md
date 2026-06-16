@@ -78,18 +78,6 @@ If a license is found that violates the license approval policy, it blocks the m
 
 ## Troubleshooting
 
-### The license compliance widget is stuck in a loading state
-
-A loading spinner is displayed in the following scenarios:
-
-- While the pipeline is in progress.
-- If the pipeline is complete, but still parsing the results in the background.
-- If the license scanning job is complete, but the pipeline is still running.
-
-The license compliance widget polls every few seconds for updated results. When the pipeline is complete, the first poll after pipeline completion triggers the parsing of the results. This can take a few seconds depending on the size of the generated report.
-
-The final state is when a successful pipeline run has been completed, parsed, and the licenses displayed in the widget.
-
 ### License approval policies block merge requests due to `unknown` licenses
 
 License approval policies can block merge requests due to `unknown` licenses in some

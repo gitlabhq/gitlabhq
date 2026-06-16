@@ -1,0 +1,8 @@
+---
+migration_job_name: DeleteOrphanedProjectRepositories
+description: Deletes project_repositories rows whose project_id has no matching projects row
+feature_category: geo_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235470
+milestone: '19.1'
+queued_migration_version: 20260604190000
+gitlab_schema: gitlab_main_org

@@ -1,8 +1,8 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: npm 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: NPM API
 ---
 
 {{< details >}}
@@ -12,23 +12,16 @@ title: npm
 
 {{< /details >}}
 
-このAPIを使用して、[npmパッケージマネージャー](../../user/packages/npm_registry/_index.md)クライアントとやり取りします。
+このAPIを使用して、[NPMパッケージマネージャークライアント](../../user/packages/npm_registry/_index.md)と対話します。
 
-{{< alert type="warning" >}}
+> [!warning]
+> このAPIは[NPMパッケージマネージャークライアント](https://docs.npmjs.com/)によって使用され、手動での利用を意図したものではありません。
 
-このAPIは、[npmパッケージマネージャー](https://docs.npmjs.com/)クライアントで使用され、手動で使用することを意図したものではありません。
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-これらのエンドポイントは、標準のAPI認証方式に準拠していません。サポートされているヘッダーとトークンの種類について詳しくは、[npmパッケージレジストリのドキュメント](../../user/packages/npm_registry/_index.md)を参照してください。文書化されていない認証方式は、将来削除される可能性があります。記載されていない認証方法は、将来削除される可能性があります。
-
-{{< /alert >}}
+これらのエンドポイントは、標準のAPI認証方法に準拠していません。サポートされているヘッダーおよびトークンの種類に関する詳細については、[NPMパッケージレジストリドキュメント](../../user/packages/npm_registry/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
 
 ## パッケージをダウンロードする {#download-a-package}
 
-npmパッケージをダウンロードします。このURLは、[メタデータエンドポイント](#metadata)によって提供されます。
+指定されたnpmパッケージをプロジェクトにダウンロードします。このURLは、[メタデータエンドポイント](#retrieve-package-metadata)によって提供されます。
 
 ```plaintext
 GET projects/:id/packages/npm/:package_name/-/:file_name
@@ -36,16 +29,16 @@ GET projects/:id/packages/npm/:package_name/-/:file_name
 
 | 属性         | 型   | 必須 | 説明 |
 | ----------------- | ------ | -------- | ----------- |
-| `id`              | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name`    | 文字列 | はい      | パッケージの名前。 |
-| `file_name`       | 文字列 | はい      | パッケージファイルの名前。 |
+| `id`              | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name`    | 文字列 | はい      | パッケージ名。 |
+| `file_name`       | 文字列 | はい      | パッケージファイル名。 |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/@myscope/my-pkg/-/@my-scope/my-pkg-0.0.1.tgz"
 ```
 
-ファイルに出力を書き込みます:
+出力をファイルに書き込みます:
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
@@ -54,9 +47,9 @@ curl --header "Authorization: Bearer <personal_access_token>" \
 
 これにより、ダウンロードされたファイルが現在のディレクトリの`@myscope/my-pkg-0.0.1.tgz`に書き込まれます。
 
-## パッケージファイルをアップロードします {#upload-a-package-file}
+## パッケージファイルをアップロードする {#upload-a-package-file}
 
-パッケージをアップロードします。
+指定されたプロジェクトのパッケージをアップロードします。
 
 ```plaintext
 PUT projects/:id/packages/npm/:package_name
@@ -64,9 +57,9 @@ PUT projects/:id/packages/npm/:package_name
 
 | 属性      | 型   | 必須 | 説明                         |
 |----------------|--------|----------|-------------------------------------|
-| `id`           | 文字列 | はい      | プロジェクトのIDまたはフルパス。 |
-| `package_name` | 文字列 | はい      | パッケージの名前。            |
-| `versions`     | 文字列 | はい      | パッケージのバージョン情報。        |
+| `id`           | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
+| `package_name` | 文字列 | はい      | パッケージ名。            |
+| `versions`     | 文字列 | はい      | パッケージバージョン情報。        |
 
 ```shell
 curl --request PUT
@@ -76,7 +69,7 @@ curl --request PUT
      --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/@myscope%2fmy-pkg"
 ```
 
-メタデータファイルの内容はnpmによって生成されますが、次のようになります:
+メタデータファイルのコンテンツはnpmによって生成されますが、次のようになります:
 
 ```json
 {
@@ -127,11 +120,11 @@ curl --request PUT
 
 ## ルートプレフィックス {#route-prefix}
 
-残りのルートには、それぞれ異なるスコープでリクエストを行う、同一のルートが2組あります:
+残りのルートには、それぞれ異なるスコープでリクエストを行う同一のルートが2セットあります:
 
-- インスタンスレベルのプレフィックスを使用して、インスタンス全体のスコープでリクエストを行います。
-- プロジェクトレベルのプレフィックスを使用して、単一プロジェクトのスコープでリクエストを行います。
-- グループレベルのプレフィックスを使用して、グループのスコープでリクエストを行います。
+- インスタンス全体のスコープでリクエストを行うには、インスタンスレベルのプレフィックスを使用します。
+- 単一プロジェクトのスコープでリクエストを行うには、プロジェクトレベルのプレフィックスを使用します。
+- グループのスコープでリクエストを行うには、グループレベルのプレフィックスを使用します。
 
 このドキュメントの例はすべて、プロジェクトレベルのプレフィックスを使用しています。
 
@@ -166,11 +159,11 @@ curl --request PUT
 
 | 属性 | 型   | 必須 | 説明 |
 | --------- | ------ | -------- | ----------- |
-| `id`      | 文字列 | はい      | グループIDまたはフルグループパス。 |
+| `id`      | 文字列 | はい      | グループIDまたはグループのフルパス。 |
 
-## メタデータ {#metadata}
+## パッケージメタデータを取得する {#retrieve-package-metadata}
 
-指定されたパッケージのメタデータを返します。
+指定されたパッケージのメタデータを取得します。
 
 ```plaintext
 GET <route-prefix>/:package_name
@@ -178,14 +171,14 @@ GET <route-prefix>/:package_name
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/@myscope/my-pkg"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -206,13 +199,13 @@ curl --header "Authorization: Bearer <personal_access_token>" \
 }
 ```
 
-レスポンス内のURLは、それらのリクエストに使用されたものと同じルートプレフィックスを持ちます。インスタンスレベルのルートでそれらをリクエストすると、返されるURLには`/api/v4/packages/npm`が含まれます。
+レスポンス内のURLは、それらをリクエストするために使用されたのと同じルートプレフィックスを持っています。インスタンスレベルのルートでそれらをリクエストすると、返されるURLには`/api/v4/packages/npm`が含まれます。
 
 ## Dist-タグ {#dist-tags}
 
-### タグをリストします {#list-tags}
+### すべてのDist-タグをリストする {#list-all-dist-tags}
 
-パッケージのdist-タグをリストします。
+指定されたパッケージのすべてのdist-タグをリスト表示します。
 
 ```plaintext
 GET <route-prefix>/-/package/:package_name/dist-tags
@@ -220,14 +213,14 @@ GET <route-prefix>/-/package/:package_name/dist-tags
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/-/package/@myscope/my-pkg/dist-tags"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -236,11 +229,11 @@ curl --header "Authorization: Bearer <personal_access_token>" \
 }
 ```
 
-レスポンス内のURLは、それらのリクエストに使用されたものと同じルートプレフィックスを持ちます。インスタンスレベルのルートでそれらをリクエストすると、返されるURLには`/api/v4/packages/npm`が含まれます。
+レスポンス内のURLは、それらをリクエストするために使用されたのと同じルートプレフィックスを持っています。インスタンスレベルのルートでそれらをリクエストすると、返されるURLには`/api/v4/packages/npm`が含まれます。
 
-### タグを作成または更新します {#create-or-update-a-tag}
+### Dist-タグを作成または更新する {#create-or-update-a-dist-tag}
 
-dist-タグを作成または更新します。
+指定されたパッケージのdist-タグを作成または更新します。
 
 ```plaintext
 PUT <route-prefix>/-/package/:package_name/dist-tags/:tag
@@ -248,7 +241,7 @@ PUT <route-prefix>/-/package/:package_name/dist-tags/:tag
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 | `tag`          | 文字列 | はい      | 作成または更新されるタグ。 |
 | `version`      | 文字列 | はい      | タグ付けされるバージョン。 |
 
@@ -257,11 +250,11 @@ curl --request PUT --header "Authorization: Bearer <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/-/package/@myscope/my-pkg/dist-tags/stable"
 ```
 
-このエンドポイントは、`204 No Content`で正常に応答します。
+このエンドポイントは`204 No Content`で正常に応答します。
 
-### タグを削除する {#delete-a-tag}
+### Dist-タグを削除する {#delete-a-dist-tag}
 
-ディストリビューションタグを削除します。
+指定されたパッケージのdist-タグを削除します。
 
 ```plaintext
 DELETE <route-prefix>/-/package/:package_name/dist-tags/:tag
@@ -269,7 +262,7 @@ DELETE <route-prefix>/-/package/:package_name/dist-tags/:tag
 
 | 属性      | 型   | 必須 | 説明 |
 | -------------- | ------ | -------- | ----------- |
-| `package_name` | 文字列 | はい      | パッケージの名前。 |
+| `package_name` | 文字列 | はい      | パッケージ名。 |
 | `tag`          | 文字列 | はい      | 作成または更新されるタグ。 |
 
 ```shell
@@ -277,4 +270,4 @@ curl --request DELETE --header "Authorization: Bearer <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/npm/-/package/@myscope/my-pkg/dist-tags/stable"
 ```
 
-このエンドポイントは、`204 No Content`で正常に応答します。
+このエンドポイントは`204 No Content`で正常に応答します。

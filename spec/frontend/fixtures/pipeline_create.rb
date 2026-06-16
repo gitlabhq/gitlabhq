@@ -8,9 +8,9 @@ RSpec.describe 'GraphQL Pipeline Mutations', type: :request, feature_category: :
   include JavaScriptFixturesHelpers
 
   # Project setup
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
+  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
 
   before_all do
     project.add_developer(user)
@@ -31,9 +31,9 @@ RSpec.describe 'GraphQL Pipeline Mutations', type: :request, feature_category: :
 
   describe GraphQL::Query do
     describe 'Pipeline Create Mutation' do
-      let_it_be(:query_file) { 'create_pipeline.mutation.graphql' }
-      let_it_be(:query_path) { "ci/pipeline_new/graphql/mutations/" }
-      let_it_be(:create_mutation) do
+      let_it_be(:query_file, freeze: false) { 'create_pipeline.mutation.graphql' }
+      let_it_be(:query_path, freeze: false) { "ci/pipeline_new/graphql/mutations/" }
+      let_it_be(:create_mutation, freeze: false) do
         get_graphql_query_as_string("#{query_path}#{query_file}")
       end
 

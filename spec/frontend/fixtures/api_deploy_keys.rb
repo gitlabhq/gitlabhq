@@ -6,17 +6,17 @@ RSpec.describe API::DeployKeys, '(JavaScript fixtures)', type: :request, feature
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:path) { "/deploy_keys" }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
-  let_it_be(:deploy_key) { create(:deploy_key, public: true) }
-  let_it_be(:deploy_key2) { create(:deploy_key, public: true) }
-  let_it_be(:deploy_key_without_fingerprint) { create(:deploy_key, :without_md5_fingerprint, public: true) }
-  let_it_be(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
-  let_it_be(:deploy_keys_project2) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key) }
-  let_it_be(:deploy_keys_project3) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key2) }
-  let_it_be(:deploy_keys_project4) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key2) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:path, freeze: false) { "/deploy_keys" }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project2, freeze: false) { create(:project) }
+  let_it_be(:deploy_key, freeze: false) { create(:deploy_key, public: true) }
+  let_it_be(:deploy_key2, freeze: false) { create(:deploy_key, public: true) }
+  let_it_be(:deploy_key_without_fingerprint, freeze: false) { create(:deploy_key, :without_md5_fingerprint, public: true) }
+  let_it_be(:deploy_keys_project, freeze: false) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
+  let_it_be(:deploy_keys_project2, freeze: false) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key) }
+  let_it_be(:deploy_keys_project3, freeze: false) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key2) }
+  let_it_be(:deploy_keys_project4, freeze: false) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key2) }
 
   it_behaves_like 'GET request permissions for admin mode'
 

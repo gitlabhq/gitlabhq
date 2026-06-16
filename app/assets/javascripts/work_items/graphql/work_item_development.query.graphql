@@ -1,14 +1,19 @@
 #import "ee_else_ce/work_items/graphql/work_item_development.fragment.graphql"
 
-query workItemDevelopment($id: WorkItemID!) {
+query workItemDevelopment($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItem(id: $id) {
     id
     iid
     namespace {
       id
     }
-    widgets {
+    widgets @skip(if: $useWorkItemFeatures) {
       ... on WorkItemWidgetDevelopment {
+        ...WorkItemDevelopmentFragment
+      }
+    }
+    features @include(if: $useWorkItemFeatures) {
+      development {
         ...WorkItemDevelopmentFragment
       }
     }

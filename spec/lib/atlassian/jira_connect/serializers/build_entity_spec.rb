@@ -9,7 +9,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::BuildEntity, feature_categor
   subject { described_class.represent(pipeline) }
 
   context 'when the pipeline does not belong to any Jira issue' do
-    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline) }
 
     describe '#issue_keys' do
       it 'is empty' do
@@ -50,7 +50,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::BuildEntity, feature_categor
     end
 
     context 'in the pipeline\'s commit message' do
-      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
       let(:commit_message) { "Merge branch 'staging' into 'master'\n\nFixes bug described in PROJ-1234" }
 
       before do

@@ -97,6 +97,21 @@ RSpec.describe Gitlab::Graphql::Authz::DirectiveFinder, feature_category: :permi
       let(:field) { create_base_field(type: return_type, owner: owner_without_directive) }
 
       it { is_expected.to contain_exactly(directive) }
+
+      context 'when both return type and owner have directives' do
+        let(:owner_directive) { create_directive(boundary: 'project', permissions: ['READ_PROJECT']) }
+        let(:owner_with_directive) do
+          Class.new(GraphQL::Schema::Object) { graphql_name 'DirectiveFinderOwnerWithDirective' }.tap do |type|
+            allow(type).to receive(:directives).and_return([owner_directive])
+          end
+        end
+
+        let(:field) { create_base_field(type: return_type, owner: owner_with_directive) }
+
+        it 'returns the owner directive (takes precedence over return type)' do
+          is_expected.to contain_exactly(owner_directive)
+        end
+      end
     end
   end
 end

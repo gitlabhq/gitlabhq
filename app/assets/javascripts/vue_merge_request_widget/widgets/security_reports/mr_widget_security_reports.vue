@@ -24,6 +24,7 @@ export default {
       required: true,
     },
   },
+  emits: ['loaded'],
   data() {
     return {
       hasError: false,
@@ -115,7 +116,7 @@ export default {
         'ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
       ),
       learnMorePath: helpPagePath('user/application_security/detect/security_scanning_results', {
-        anchor: 'merge-request-security-widget',
+        anchor: 'merge-request-reports',
       }),
     },
   },

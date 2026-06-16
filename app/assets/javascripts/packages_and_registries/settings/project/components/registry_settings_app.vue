@@ -10,6 +10,7 @@ import PackageRegistrySection from '~/packages_and_registries/settings/project/c
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 
 export default {
+  name: 'RegistrySettingsApp',
   components: {
     ContainerRegistrySection,
     GlAlert,

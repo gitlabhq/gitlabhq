@@ -1,6 +1,6 @@
 ---
-source_checksum: 3072e9456fed2439
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: d8c274f01e0056ff
+distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -24,6 +24,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT evaluate feature flags inside cycles where one flag's evaluation triggers another; always access values through `Feature.enabled?` and avoid `Feature.get`.
 - Assign the `~"feature flag"` label to MRs that introduce, update state of, or remove a feature flag.
 - Use the feature flag in the same MR that introduces it to avoid breaking the default branch (`rspec:feature-flags` job).
+- Enable feature flags only for a specific group/project/user before enabling broadly; DO NOT enable for a public project like `gitlab-org/gitlab` if there is no documentation.
 
 ### Naming
 
@@ -40,8 +41,10 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT define the same feature flag in both FOSS and EE; define it in one location only.
 - Set `default_enabled: false` for `gitlab_com_derisk`, `wip`, and `experiment` types (setting it to `true` has no effect or is forbidden for these types).
 - Document `beta` and `ops` type flags in the [All feature flags in GitLab](https://docs.gitlab.com/administration/feature_flags/list/) page.
+- Document `beta` and `ops` type flags in the [All feature flags in GitLab](https://docs.gitlab.com/administration/feature_flags/list/) page; for `ops` flags, also maintain an associated operational runbook describing when the flag can be used.
 - Create a rollout issue from the Feature Flag Roll Out template for `gitlab_com_derisk` and `beta` flags.
 - Optionally add a `.patch` file alongside the YAML to enable automated removal via `gitlab-housekeeper`.
+- Set `log_state_changes: true` in the YAML definition when you need to log feature flag state changes (searchable in Kibana via `json.feature_flag_states`).
 
 ### Type Selection
 
@@ -57,12 +60,19 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Pass an actor as the second argument to `Feature.enabled?` and `Feature.disabled?`.
 - Use `Project.actor_from_id(project_id)` instead of `Project.find(project_id)` when the model is only needed for the feature flag check.
 - For feature flags without a YAML definition (only `experiment`, `worker`, `undefined` types), pass `type:` explicitly to `Feature.enabled?`, `Feature.disabled?`, and `push_frontend_feature_flag`.
+- Include `FeatureGate` in any model that needs to be used as a feature flag actor.
 
 ### Frontend Usage
 
 - Use `push_frontend_feature_flag` in a `before_action` scoped to a project or user actor.
 - Check feature flag state in JavaScript using camelCase (`gon.features.vimBindings`), not snake_case.
 - Ensure a backend feature flag guards the underlying backend code whenever a frontend feature flag is used.
+
+### Feature Flag Events
+
+- Subscribe workers to specific feature flags using a conditional `if:` filter in `lib/gitlab/event_store/subscriptions/feature_subscriptions.rb`; DO NOT subscribe to all feature flag changes globally.
+- Ensure workers that subscribe to `FeatureFlagModifiedEvent` are idempotent, as multiple enable/disable calls with the same author may produce multiple events.
+- DO NOT rely on `FeatureFlagModifiedEvent` for percentage-based rollout methods (`Feature.enable_percentage_of_actors` and `Feature.enable_percentage_of_time`); only `Feature.enable` and `Feature.disable` publish events, and only when a state change occurs.
 
 ### Changelog
 
@@ -98,6 +108,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Ensure backfill migration and code changes using the new application setting are merged in the same milestone when migrating an `ops` flag to an application setting.
 - Match the application setting default to `default_enabled:` from the feature flag YAML definition.
 - Use `Gitlab::Database::MigrationHelpers::FeatureFlagMigratorHelpers` helpers in the migration; DO NOT use `Feature.enabled?` or `Feature.disabled?` inside migrations.
+- DO NOT assume migration helpers handle percentage or actor-specific flag states; they only migrate flags explicitly set to `true` or `false` — flags set for a percentage or specific actor will use the default value.
 
 ## Authoritative sources
 

@@ -81,6 +81,34 @@ RSpec.describe MergeRequests::Refresh::WebHooksService, feature_category: :code_
       end
     end
 
+    it 'does not perform N+1 queries for metrics', :request_store, :use_sql_query_cache do
+      create(:project_hook, project: project, merge_requests_events: true)
+
+      described_class.new(project: project, current_user: user).execute(oldrev, newrev, ref) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        described_class.new(project: project, current_user: user).execute(oldrev, newrev, ref)
+      end
+
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'master',
+        target_branch: 'extra-target-1',
+        target_project: project
+      )
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'master',
+        target_branch: 'extra-target-2',
+        target_project: project
+      )
+
+      expect { described_class.new(project: project, current_user: user).execute(oldrev, newrev, ref) }
+        .not_to exceed_query_limit(control).for_model(MergeRequest::Metrics)
+    end
+
     context 'with closed merge requests' do
       let_it_be(:closed_merge_request) do
         create(

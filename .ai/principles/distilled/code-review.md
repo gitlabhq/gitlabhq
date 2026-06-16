@@ -1,6 +1,6 @@
 ---
-source_checksum: 99b50b89f9d48318
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 0a8c6bd32b663c82
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -42,12 +42,12 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Target approximately 200 lines per MR to reduce cognitive load and review time.
 - Ensure UI with mocked data is behind a feature flag.
 - Use stacked diffs for sequential MRs; have dependent MR branches target each other instead of `master`.
+- Split MRs by CODEOWNERS section when an MR touches multiple sections, to minimize required approvals and parallelize reviews.
 
 ### Pre-Merge Checks
 
 - Resolve or justify warnings and errors from Danger bot, code quality, and other reports before merging; post a comment if merging with any failed job.
 - DO NOT merge when the default branch is broken, except for specific approved cases.
-- Start a new pipeline if the latest pipeline was created before the MR was approved (skip only if no backend changes).
 - DO NOT start a new pipeline if the latest merged results pipeline was created less than 16 hours ago (72 hours for stable branches).
 - Use Squash and merge only if the author has already set this option or the commit history is clearly messy; otherwise respect the author's setting.
 - Confirm all required approvers have approved before merging.
@@ -71,7 +71,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 ### Backwards Compatibility
 
 - Ensure changes are backwards compatible across updates, or explicitly document why this does not apply.
-- Ensure EE content is properly separated from FOSS.
+- Ensure EE content is properly separated from FOSS; consider running CI pipelines in a FOSS context.
 
 ### Observability and Instrumentation
 
@@ -81,6 +81,11 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 - Ensure changelog trailers are included or explicitly decided unnecessary.
 - Ensure documentation is added or updated, or explicitly decided unnecessary.
+
+### Security
+
+- Add the `~security` label and mention `@gitlab-com/gl-security/appsec` when the MR contains changes to credentials, tokens, authorization, authentication, or other security-sensitive areas.
+- Request an internal application security review when warranted; correct true-positive security scan findings before merging and ping `@gitlab-com/gl-security/appsec` for false positives or risk-acceptance discussions.
 
 ### Community Contributions
 
@@ -92,15 +97,24 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 ### Review Process
 
-- Use the Reviewer functionality in the sidebar; stay listed as Reviewer even after completing review.
-- Ensure open threads are resolved by the reviewer, not the author, unless fully addressed.
-- Push feedback-based commits as isolated commits; DO NOT squash until the branch is ready to merge.
 - Use Conventional Comment format to convey intent; decorate non-mandatory suggestions with `(non-blocking)`.
 - When only non-blocking suggestions remain, move the MR to the next stage rather than waiting.
 - DO NOT pick reviewers or maintainers who have OOO/PTO status or have reached their review limit.
 - Prefer domain-specific approvals before generic approvals for efficiency.
 - Ensure the MR author (or DRI) remains as the Assignee throughout the review lifecycle.
 - Address all GitLab Duo automated review comments before requesting human review; leave Duo discussion threads unresolved so reviewers can verify responses.
+- Push feedback-based commits as isolated commits; DO NOT squash until the branch is ready to merge.
+- Re-request review once all feedback has been addressed and the MR is ready for another round.
+- Post a summary note after each round of line comments (for example, "Looks good to me" or "Just a couple things to address").
+- Ensure open dependencies are resolved; set an MR dependency if blocked by open MRs.
+
+### MR Author Responsibilities
+
+- Add inline MR diff comments for added linting rules, added libraries, links to non-obvious parent classes or methods, benchmarking results, and potentially insecure code.
+- DO NOT add `TODO` comments to source code unless a reviewer requires it; if added, include a link to the relevant issue.
+- Request maintainer review only when tests pass; if tests are failing, explain why in a comment.
+- Ensure reviewers have access to any projects, snippets, or assets needed to validate the solution.
+- When assigning multiple reviewers, comment to specify which domain each reviewer should focus on.
 
 ## Authoritative sources
 

@@ -29,6 +29,7 @@ import RunnerKubernetesInstructions from './instructions/runner_kubernetes_instr
 import RunnerAwsInstructions from './instructions/runner_aws_instructions.vue';
 
 export default {
+  name: 'RunnerInstructionsModal',
   components: {
     GlAlert,
     GlButton,

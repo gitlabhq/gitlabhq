@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
+RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics, feature_category: :database do
   subject { described_class.new(observation, double("unused path"), connection) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new }

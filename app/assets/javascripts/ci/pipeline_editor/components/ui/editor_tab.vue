@@ -40,6 +40,7 @@ import { __, s__ } from '~/locale';
  */
 
 export default {
+  name: 'EditorTab',
   i18n: {
     invalid: __(
       'Your CI/CD configuration syntax is invalid. Select the Validate tab for more details.',

@@ -414,9 +414,9 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< /history >}}
 
-When [restricted access](../manage.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
+When [restricted access](../../../subscriptions/manage_seats.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
 
-For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../subscriptions/manage_seats.md#provisioning-behavior-with-saml-scim-and-ldap).
 
 ### Link SAML to your existing GitLab.com account
 

@@ -542,7 +542,7 @@ right-hand side pop up menu.
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Links: [Documentation](../../administration/settings/continuous_integration.md#set-cicd-limits) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/287669)
+- Links: [Documentation](../../administration/cicd/limits.md#maximum-number-of-jobs-in-a-pipeline) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/287669)
 
 {{< /details >}}
 

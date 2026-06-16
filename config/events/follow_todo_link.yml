@@ -12,6 +12,8 @@ additional_properties:
   source:
     description: The location from which the link was followed (e.g. personal_homepage)
 product_group: engagement
+product_categories:
+- notifications
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
 tiers:

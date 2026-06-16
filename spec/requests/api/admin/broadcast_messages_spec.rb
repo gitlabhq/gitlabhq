@@ -41,6 +41,14 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
       let(:params) { { message: 'Test message' } }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_broadcast_message do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { message: 'Test message' }
+      end
+    end
+
     it 'returns a 401 for anonymous users' do
       post api(path), params: attributes_for(:broadcast_message)
 
@@ -175,6 +183,14 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
       let(:params) { { message: 'Test message' } }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_broadcast_message do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: { message: 'Updated message' }
+      end
+    end
+
     it 'returns a 401 for anonymous users' do
       put api(path),
         params: attributes_for(:broadcast_message)
@@ -298,6 +314,12 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
     let_it_be(:path) { "#{path}/#{message.id}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_broadcast_message do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api(path, personal_access_token: pat) }
+    end
 
     it 'returns a 401 for anonymous users' do
       delete api(path),

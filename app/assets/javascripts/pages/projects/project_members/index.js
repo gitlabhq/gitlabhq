@@ -11,11 +11,13 @@ import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
+import { initSecurityManagerRoleBanner } from '~/security_manager_role_banner';
 
 initImportProjectMembersModal();
 initInviteGroupsModal();
 initInviteGroupTrigger();
 initImportProjectMembersTrigger();
+initSecurityManagerRoleBanner();
 
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), CONTEXT_TYPE.PROJECT, {

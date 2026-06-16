@@ -53,11 +53,25 @@
   - 1
 - - ai_catalog_flows_cascade_sync_foundational_flows
   - 1
+- - ai_catalog_flows_execute_code_conflict_ai_workflow_triggers
+  - 1
+- - ai_catalog_flows_execute_merge_request_approved_workflow_triggers
+  - 1
+- - ai_catalog_flows_execute_work_item_created_workflow_triggers
+  - 1
 - - ai_catalog_flows_sync_project_foundational_flows
+  - 1
+- - ai_catalog_item_consumers_bulk_create
+  - 1
+- - ai_duo_workflows_cancel_associated_pipelines
   - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
 - - ai_duo_workflows_generate_workflow_summary
+  - 1
+- - ai_duo_workflows_generate_workflow_title
+  - 1
+- - ai_duo_workflows_process_audit_events
   - 1
 - - ai_duo_workflows_sync_session_artifact
   - 1
@@ -300,24 +314,6 @@
 - - click_house_ci_finished_builds_sync
   - 1
 - - cluster_agent
-  - 1
-- - clusters_agents_auto_flow_merge_requests_closed_event
-  - 1
-- - clusters_agents_auto_flow_merge_requests_created_event
-  - 1
-- - clusters_agents_auto_flow_merge_requests_merged_event
-  - 1
-- - clusters_agents_auto_flow_merge_requests_reopened_event
-  - 1
-- - clusters_agents_auto_flow_merge_requests_updated_event
-  - 1
-- - clusters_agents_auto_flow_work_items_closed_event
-  - 1
-- - clusters_agents_auto_flow_work_items_created_event
-  - 1
-- - clusters_agents_auto_flow_work_items_reopened_event
-  - 1
-- - clusters_agents_auto_flow_work_items_updated_event
   - 1
 - - compliance_management_chain_of_custody_report
   - 1
@@ -671,6 +667,8 @@
   - 2
 - - mailers
   - 2
+- - mcp_namespace_access_cache_reset
+  - 1
 - - members_delete_pending_members
   - 1
 - - members_destroyer_clean_up_group_protected_branch_rules
@@ -805,7 +803,13 @@
   - 1
 - - onboarding_progress_tracking
   - 1
+- - onboarding_self_managed_create_welcome_product_interaction
+  - 1
+- - organizations_check_organization_isolation_status
+  - 1
 - - organizations_groups_transfer
+  - 1
+- - organizations_hard_delete
   - 1
 - - package_cleanup
   - 1
@@ -843,14 +847,6 @@
   - 5
 - - process_commit
   - 3
-- - product_analytics_initialize_snowplow_product_analytics
-  - 1
-- - product_analytics_move_funnels
-  - 1
-- - product_analytics_post_push
-  - 1
-- - product_analytics_sync_funnels
-  - 1
 - - project_cache
   - 1
 - - project_destroy
@@ -1017,6 +1013,10 @@
   - 1
 - - search_zoekt_indexing_task
   - 1
+- - search_zoekt_indexing_task_batch
+  - 1
+- - search_zoekt_indexing_task_delete
+  - 1
 - - search_zoekt_initial_indexing_event
   - 1
 - - search_zoekt_lost_node_event
@@ -1057,13 +1057,21 @@
   - 1
 - - secrets_management_provision_group_secrets_manager
   - 1
+- - secrets_management_provision_group_secrets_manager_task
+  - 1
 - - secrets_management_provision_project_secrets_manager
+  - 1
+- - secrets_management_provision_project_secrets_manager_task
+  - 1
+- - secrets_management_reconcile_namespace_secret_count
   - 1
 - - security_analyzer_namespace_statuses_adjustment
   - 1
 - - security_analyzer_namespace_statuses_process_group_deleted_events
   - 1
 - - security_analyzer_namespace_statuses_recalculate
+  - 1
+- - security_analyzers_status_ingestion_subscriber
   - 1
 - - security_analyzers_status_process_archived_events
   - 1
@@ -1103,8 +1111,6 @@
   - 1
 - - security_configuration_set_group_validity_checks
   - 1
-- - security_create_default_tracked_context
-  - 1
 - - security_create_security_policy_project
   - 1
 - - security_delete_approval_policy_rules
@@ -1129,7 +1135,11 @@
   - 1
 - - security_pipeline_analyzers_status_update
   - 1
+- - security_pipeline_execution_policies_cancel_policy_pipelines
+  - 1
 - - security_pipeline_execution_policies_run_schedule
+  - 1
+- - security_pipeline_execution_schedule_policies_create_test_run_pipeline
   - 1
 - - security_pipeline_execution_schedule_policies_test_run_completion
   - 1
@@ -1152,8 +1162,6 @@
 - - security_project_tracked_contexts_create_or_update_default_tracked_context
   - 1
 - - security_project_tracked_contexts_reindex_vulnerabilities_on_default_branch_change
-  - 1
-- - security_project_tracked_contexts_update_default_context
   - 1
 - - security_recreate_orchestration_configuration
   - 1
@@ -1300,6 +1308,8 @@
 - - users_drop_pipelines_for_blocked_user
   - 1
 - - users_experimental_communication_opt_in
+  - 1
+- - users_notify_dormant_user_blocked
   - 1
 - - users_track_namespace_visits
   - 1

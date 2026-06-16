@@ -30,6 +30,23 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       it { is_expected.not_to allow_value('https://www.github.com').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://bitbucket.org').for(:source_hostname) }
       it { is_expected.not_to allow_value('https://gitea.com').for(:source_hostname) }
+
+      it 'sanitizes embedded credentials before validation' do
+        export = build(:offline_export, source_hostname: 'https://user:secret@gitlab.example.com')
+
+        expect { export.validate }
+          .to change { export.source_hostname }
+          .from('https://user:secret@gitlab.example.com')
+          .to('https://gitlab.example.com')
+      end
+
+      it 'keeps unparseable source_hostname unchanged before validation', :aggregate_failures do
+        source_hostname = 'https://gitlab example.com'
+        export = build(:offline_export, source_hostname: source_hostname)
+
+        expect { export.validate }.not_to change { export.source_hostname }
+        expect(export.errors[:source_hostname]).to include('must contain only scheme and host')
+      end
     end
   end
 
@@ -57,7 +74,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'configuration purge' do
-    let_it_be(:export) { create(:offline_export, :started) }
+    let_it_be(:export, freeze: false) { create(:offline_export, :started) }
     let_it_be(:configuration) { create(:offline_configuration, offline_export: export) }
 
     describe 'after transitioning to finished' do
@@ -70,7 +87,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       end
 
       context 'when export has no configuration' do
-        let_it_be(:export_without_config) { create(:offline_export) }
+        let_it_be(:export_without_config, freeze: false) { create(:offline_export) }
 
         it 'does not schedule configuration purge worker' do
           expect(Import::Offline::ConfigurationPurgeWorker).not_to receive(:perform_in)
@@ -90,7 +107,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       end
 
       context 'when export has no configuration' do
-        let_it_be(:export_without_config) { create(:offline_export) }
+        let_it_be(:export_without_config, freeze: false) { create(:offline_export) }
 
         it 'does not schedule configuration purge worker' do
           export_without_config.start
@@ -104,7 +121,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'email notification' do
-    let_it_be(:export) { create(:offline_export, :started) }
+    let_it_be(:export, freeze: false) { create(:offline_export, :started) }
     let_it_be(:configuration) { create(:offline_configuration, offline_export: export) }
 
     describe 'after transitioning to finished' do
@@ -169,7 +186,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'included routes methods' do
-    let_it_be(:export) { create(:offline_export) }
+    let_it_be(:export, freeze: false) { create(:offline_export) }
     let_it_be(:included_project_1) { create(:project) }
     let_it_be(:included_project_2) { create(:project) }
     let_it_be(:excluded_project) { create(:project) }

@@ -207,15 +207,15 @@ RSpec.shared_examples 'CI build trace chunk redis' do |redis_store|
 
     it 'deletes multiple data' do
       redis_store.with do |redis|
-        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to eq(true)
-        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to eq(true)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to be(true)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to be(true)
       end
 
       subject
 
       redis_store.with do |redis|
-        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to eq(false)
-        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to eq(false)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to be(false)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to be(false)
       end
     end
   end

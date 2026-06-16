@@ -23,6 +23,10 @@ module Import
 
       attr_reader :bulk_import, :namespace, :force
 
+      def import_source
+        bulk_import.import_source
+      end
+
       def graphql_client
         @graphql_client ||= ::BulkImports::Clients::Graphql.new(
           url: bulk_import.configuration.url,
@@ -34,7 +38,7 @@ module Import
         Import::SourceUser.source_users_with_missing_information(
           namespace: namespace,
           source_hostname: Gitlab::UrlHelpers.normalized_base_url(bulk_import.configuration.url),
-          import_type: Import::SOURCE_DIRECT_TRANSFER
+          import_type: import_source
         )
       end
 
@@ -43,7 +47,7 @@ module Import
           source_user_identifier: source_user_identifier,
           namespace: namespace,
           source_hostname: Gitlab::UrlHelpers.normalized_base_url(bulk_import.configuration.url),
-          import_type: Import::SOURCE_DIRECT_TRANSFER
+          import_type: import_source
         )
       end
 
@@ -115,7 +119,7 @@ module Import
         if params.blank?
           logger.error(message: 'Missing source user information', user_data: user_data, source_user_id: source_user.id,
             bulk_import_id: bulk_import.id,
-            importer: Import::SOURCE_DIRECT_TRANSFER)
+            importer: import_source)
           return
         end
 
@@ -123,12 +127,12 @@ module Import
 
         if result.success?
           logger.info(message: 'Source user updated', source_user_id: source_user.id, bulk_import_id: bulk_import.id,
-            importer: Import::SOURCE_DIRECT_TRANSFER)
+            importer: import_source)
           return
         end
 
         logger.error(message: 'Failed to update source user', source_user_id: source_user.id, error: result.message,
-          bulk_import_id: bulk_import.id, importer: Import::SOURCE_DIRECT_TRANSFER)
+          bulk_import_id: bulk_import.id, importer: import_source)
       end
 
       def query

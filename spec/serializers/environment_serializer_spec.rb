@@ -6,7 +6,7 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :repository, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
 
   let(:json) do
     described_class

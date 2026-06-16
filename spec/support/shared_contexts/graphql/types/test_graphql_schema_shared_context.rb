@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with test GraphQL schema' do
-  let_it_be(:custom_auth) do
+  let_it_be(:custom_auth, freeze: false) do
     Class.new(::Gitlab::Graphql::Authorize::ObjectAuthorization) do
       def any?
         true
@@ -19,7 +19,7 @@ RSpec.shared_context 'with test GraphQL schema' do
 
   let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
 
-  let_it_be(:test_schema) do
+  let_it_be(:test_schema, freeze: false) do
     auth = custom_auth.new(nil)
 
     base_object = Class.new(described_class) do

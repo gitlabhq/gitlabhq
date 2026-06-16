@@ -500,7 +500,7 @@ This tab includes users who:
 
 - Have not yet accepted the invitation.
 - Are waiting for [approval from an administrator](../../administration/moderate_users.md).
-- [Exceed the group user cap](manage.md#user-cap-for-groups).
+- Exceed the group user cap.
 
 ### View users pending promotion
 

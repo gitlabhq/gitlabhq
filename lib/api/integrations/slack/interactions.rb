@@ -15,6 +15,7 @@ module API
             detail 'Processes interaction events from Slack'
             tags %w[integrations internal_operations]
           end
+          route_setting :authorization, skip_granular_token_authorization: :slack_signature_auth
           post :interactions, urgency: :low do
             service_params = Gitlab::Json.safe_parse(params[:payload]).deep_symbolize_keys!
             response = ::Integrations::SlackInteractionService.new(service_params).execute

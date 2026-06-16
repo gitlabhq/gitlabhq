@@ -88,6 +88,7 @@ describe('GlobalSearchModal', () => {
   const actionSpies = {
     setSearch: jest.fn(),
     setCommand: jest.fn(),
+    requestAutocomplete: jest.fn(),
     fetchAutocompleteOptions: jest.fn(),
     clearAutocomplete: jest.fn(),
   };
@@ -362,6 +363,10 @@ describe('GlobalSearchModal', () => {
 
           it('calls setCommand with search term', () => {
             expect(actionSpies.setCommand).toHaveBeenCalledWith(expect.any(Object), '');
+          });
+
+          it('calls requestAutocomplete immediately (before debounce)', () => {
+            expect(actionSpies.requestAutocomplete).toHaveBeenCalled();
           });
 
           it('calls fetchAutocompleteOptions', () => {

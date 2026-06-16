@@ -1,8 +1,9 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループアクセストークンAPI
+description: グループアクセストークンを一覧表示、取得、作成、ローテーション、自己ローテーション、および失効するAPI。
 ---
 
 {{< details >}}
@@ -14,7 +15,7 @@ title: グループアクセストークンAPI
 
 このAPIを使用して、グループアクセストークンを操作します。詳細については、[グループアクセストークン](../user/group/settings/group_access_tokens.md)を参照してください。
 
-## すべてのグループアクセストークンをリスト表示します {#list-all-group-access-tokens}
+## すべてのグループアクセストークンを一覧表示 {#list-all-group-access-tokens}
 
 {{< history >}}
 
@@ -22,7 +23,7 @@ title: グループアクセストークンAPI
 
 {{< /history >}}
 
-グループのすべてのグループアクセストークンをリスト表示します。
+指定したグループのすべてのグループアクセストークンを一覧表示します。
 
 ```plaintext
 GET /groups/:id/access_tokens
@@ -84,9 +85,9 @@ curl --request GET \
 ]
 ```
 
-## グループアクセストークンの詳細を取得します {#get-details-on-a-group-access-token}
+## グループアクセストークンの詳細を取得する {#retrieve-details-on-a-group-access-token}
 
-グループアクセストークンの詳細を取得します。
+指定したグループアクセストークンの詳細を取得します。
 
 ```plaintext
 GET /groups/:id/access_tokens/:token_id
@@ -128,11 +129,11 @@ curl --request GET \
 
 {{< /history >}}
 
-指定されたグループのグループアクセストークンを作成します。
+指定したグループのグループアクセストークンを作成します。
 
-前提要件: 
+前提条件: 
 
-- グループのオーナーロールを持っている必要があります。
+- グループのオーナーのロールを持っている必要があります。
 
 ```plaintext
 POST /groups/:id/access_tokens
@@ -142,9 +143,9 @@ POST /groups/:id/access_tokens
 | -------------- | ----------------- | -------- | ----------- |
 | `id`           | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`         | 文字列            | はい      | トークンの名前。 |
-| `description`  | 文字列            | いいえ       | グループアクセストークンの説明。最大値: 255文字 |
-| `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token)のリスト。 |
-| `access_level` | 整数           | いいえ       | トークンのロール。使用可能な値: `10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、および`50`（オーナー）。デフォルト値: `40`。 |
+| `description`  | 文字列            | いいえ       | グループアクセストークンの説明。最大: 255文字。 |
+| `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../user/group/settings/group_access_tokens.md#group-access-token-scopes)のリスト。 |
+| `access_level` | 整数           | いいえ       | トークンのロール。使用可能な値: `10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、および`50` (オーナー)。デフォルト値: `40`。 |
 | `expires_at`   | 日付              | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
 
 ```shell
@@ -183,14 +184,14 @@ curl --request POST \
 
 {{< /history >}}
 
-グループアクセストークンをローテーションします。これにより、以前のトークンが直ちに失効し、新しいトークンが作成されます。通常、このエンドポイントは、パーソナルアクセストークンで認証することで、特定のグループアクセストークンをローテーションします。グループアクセストークンを使用して、そのトークン自体をローテーションすることもできます。詳細については、[自己ローテーション](#self-rotate)を参照してください。
+指定したグループアクセストークンをローテーションします。これにより、以前のトークンが直ちに失効し、新しいトークンが作成されます。通常、このエンドポイントは、パーソナルアクセストークンで認証することにより、特定のグループアクセストークンをローテーションします。グループアクセストークンを使用して、それ自体をローテーションすることもできます。詳細については、[自己ローテーション](#self-rotate)を参照してください。
 
-このエンドポイントを使用して、以前に失効したトークンをローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。詳細については、[自動再利用の検出](personal_access_tokens.md#automatic-reuse-detection)を参照してください。
+このエンドポイントを使用して、以前に失効したトークンをローテーションしようとすると、同じトークンファミリーのアクティブなトークンはすべて失効します。詳細については、[自動再利用検知](personal_access_tokens.md#automatic-reuse-detection)を参照してください。
 
-前提要件: 
+前提条件: 
 
 - 別のグループアクセストークンをローテーションするには、[`api`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つパーソナルアクセストークンが必要です。
-- グループアクセストークンを[自己ローテーション](#self-rotate)するには、トークンが[`api`スコープまたは`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持っている必要があります。
+- [自己ローテーション](#self-rotate)でグループアクセストークンをローテーションするには、トークンに[`api`または`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)が必要です。
 
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate
@@ -208,7 +209,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -232,24 +233,24 @@ curl --request POST \
 その他の発生しうる応答:
 
 - ローテーションが正常に完了しなかった場合は`400: Bad Request`。
-- 次のいずれかの条件に該当する場合は`401: Unauthorized`:
+- 次のいずれかの条件に該当する場合は`401: Unauthorized`。
   - トークンが存在しない。
   - トークンの有効期限が切れた。
   - トークンが失効した。
   - 指定されたトークンへのアクセス権がない。
-  - 別のグループアクセストークンをローテーションするためにグループアクセストークンを使用しています。代わりに、[自己ローテーション](#self-rotate)を参照してください。
+  - 別のグループアクセストークンをローテーションするために、グループアクセストークンを使用しています。代わりに、[自己ローテーション](#self-rotate)を参照してください。
 - トークンがそれ自体をローテーションすることを許可されていない場合は`403: Forbidden`。
 - ユーザーが管理者であるにもかかわらずトークンが存在しない場合は`404: Not Found`。
-- `405: Method Not Allowed`トークンがアクセストークンでない場合。
+- `405: Method Not Allowed` (トークンがアクセストークンでない場合)。
 
 ### 自己ローテーション {#self-rotate}
 
-特定のグループアクセストークンをローテーションする代わりに、リクエストの認証に使用したものと同じグループアクセストークンをローテーションすることができます。グループアクセストークンを自己ローテーションするには、以下が必要です:
+特定のグループアクセストークンをローテーションする代わりに、リクエストの認証に使用したグループアクセストークン自体をローテーションできます。グループアクセストークンを自己ローテーションするには、以下を行う必要があります:
 
-- [`api`または`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)でグループアクセストークンをローテーションします。
+- [`api`または`self_rotate`スコープ](../user/profile/personal_access_tokens.md#personal-access-token-scopes)を持つグループアクセストークンをローテーションします。
 - リクエストURLで`self`キーワードを使用します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -259,7 +260,7 @@ curl --request POST \
 
 ## グループアクセストークンを失効する {#revoke-a-group-access-token}
 
-指定されたグループアクセストークンを失効します。
+指定したグループアクセストークンを失効します。
 
 ```plaintext
 DELETE /groups/:id/access_tokens/:token_id

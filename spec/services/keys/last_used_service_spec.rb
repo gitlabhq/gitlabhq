@@ -25,6 +25,18 @@ RSpec.describe Keys::LastUsedService, feature_category: :source_code_management 
         expect(key.reload.last_used_at).to be_like_time(time)
       end
     end
+
+    context 'when the key is frozen' do
+      let(:key) { create(:key, last_used_at: 1.year.ago) }
+
+      before do
+        key.freeze
+      end
+
+      it 'does not raise' do
+        expect { described_class.new(key).execute }.not_to raise_error
+      end
+    end
   end
 
   describe '#execute_async', :clean_gitlab_redis_shared_state do

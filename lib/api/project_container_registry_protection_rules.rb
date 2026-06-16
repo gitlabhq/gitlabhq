@@ -14,7 +14,8 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource ':id/registry/protection/repository/rules' do
-        desc 'Get list of container registry protection rules for a project' do
+        desc 'List all container repository protection rules' do
+          detail 'Lists all container repository protection rules for a specified project.'
           success Entities::Projects::ContainerRegistry::Protection::Rule
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -30,7 +31,9 @@ module API
             with: Entities::Projects::ContainerRegistry::Protection::Rule
         end
 
-        desc 'Create a container protection rule for a project' do
+        desc 'Create a container repository protection rule' do
+          detail 'Creates a container repository protection rule for a specified project to control who can push or ' \
+            'delete container images.'
           success Entities::Projects::ContainerRegistry::Protection::Rule
           failure [
             { code: 400, message: 'Bad Request' },
@@ -73,7 +76,8 @@ module API
             desc: 'The ID of the container protection rule'
         end
         resource ':protection_rule_id' do
-          desc 'Update a container protection rule for a project' do
+          desc 'Update a container repository protection rule' do
+            detail 'Updates a container repository protection rule for a specified project.'
             success Entities::Projects::ContainerRegistry::Protection::Rule
             failure [
               { code: 400, message: 'Bad Request' },
@@ -110,7 +114,8 @@ module API
               with: Entities::Projects::ContainerRegistry::Protection::Rule
           end
 
-          desc 'Delete container protection rule' do
+          desc 'Delete a container repository protection rule' do
+            detail 'Deletes a specified container repository protection rule.'
             success code: 204, message: '204 No Content'
             failure [
               { code: 400, message: 'Bad Request' },

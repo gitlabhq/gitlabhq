@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User views branches", :js, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
 
   before do
@@ -74,7 +74,7 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
   end
 
   context "protected branches" do
-    let_it_be(:protected_branch) { create(:protected_branch, project: project) }
+    let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project) }
 
     before do
       visit(project_protected_branches_path(project))

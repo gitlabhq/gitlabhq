@@ -15,10 +15,10 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature
   end
 
   describe '#value' do
-    let_it_be(:issue_1) { create(:issue) }
-    let_it_be(:issue_2) { create(:issue) }
-    let_it_be(:issue_3) { create(:issue) }
-    let_it_be(:issues) { Issue.all }
+    let_it_be(:issue_1, freeze: false) { create(:issue) }
+    let_it_be(:issue_2, freeze: false) { create(:issue) }
+    let_it_be(:issue_3, freeze: false) { create(:issue) }
+    let_it_be(:issues, freeze: false) { Issue.all }
 
     before do
       allow(Issue.connection).to receive(:transaction_open?).and_return(false)

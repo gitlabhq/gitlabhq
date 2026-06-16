@@ -6,8 +6,9 @@ module Gitlab
 
     MARKDOWN_EXTENSIONS = %w[mdown mkd mkdn md markdown rmd].freeze
     ASCIIDOC_EXTENSIONS = %w[adoc ad asciidoc].freeze
-    OTHER_EXTENSIONS = %w[textile rdoc org creole wiki mediawiki rst].freeze
-    EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + OTHER_EXTENSIONS
+    ORG_MODE_EXTENSIONS = %w[org].freeze
+    OTHER_EXTENSIONS = %w[textile rdoc creole wiki mediawiki rst].freeze
+    EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + ORG_MODE_EXTENSIONS + OTHER_EXTENSIONS
     PLAIN_FILENAMES = %w[readme index _index].freeze
 
     # Public: Determines if a given filename is compatible with GitHub::Markup.
@@ -36,6 +37,15 @@ module Gitlab
     # Returns boolean
     def asciidoc?(filename)
       ASCIIDOC_EXTENSIONS.include?(extension(filename))
+    end
+
+    # Public: Determines if the given filename has Org-mode extension.
+    #
+    # filename - Filename string to check
+    #
+    # Returns boolean
+    def org_mode?(filename)
+      ORG_MODE_EXTENSIONS.include?(extension(filename))
     end
 
     # Public: Determines if the given filename is plain text.

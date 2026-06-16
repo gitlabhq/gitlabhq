@@ -89,12 +89,9 @@ Use these features to set up webhooks that meet your specific requirements.
 
 - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
 - **Signing token** text box [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 For new webhooks, use a signing token instead of a secret token. The signing token computes
 an HMAC-SHA256 signature over the payload, so your endpoint can verify both the authenticity
@@ -132,12 +129,9 @@ To create a webhook:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1. Feature flag `webhook_signing_token` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use a signing token to verify that webhook payloads originate from GitLab and have not been tampered with.
 Unlike the secret token, the signing token is
@@ -644,14 +638,11 @@ The webhook is re-enabled if the test request returns a response code in the `2x
 - `Idempotency-Key` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388692) in GitLab 17.4.
 - `webhook-id` and `webhook-timestamp` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0.
 - `webhook-signature` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
 
 {{< /history >}}
 
 GitLab includes the following headers in webhook requests to your endpoint.
-
-> [!flag]
-> The availability of the `webhook-signature` header is controlled by a feature flag.
-> For more information, see the history.
 
 | Header                   | Description                                                                                                                                                     | Example |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|

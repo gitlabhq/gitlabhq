@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BoardsHelper do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:base_group) { create(:group, path: 'base') }
   let_it_be(:project) { create(:project, group: base_group) }
   let_it_be(:project_board) { create(:board, project: project) }

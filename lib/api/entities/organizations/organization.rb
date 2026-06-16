@@ -8,6 +8,7 @@ module API
         expose :name, documentation: { type: 'String', example: 'GitLab' }
         expose :path, documentation: { type: 'String', example: 'gitlab' }
         expose :description, documentation: { type: 'String', example: 'My description' }
+        expose :visibility, documentation: { type: 'String', example: 'public' }
         expose :created_at, documentation: { type: 'DateTime', example: '2022-02-24T20:22:30.097Z' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2022-02-24T20:22:30.097Z' }
         expose :web_url, documentation: { type: 'String', example: "https://example.com/o/gitlab/-/overview" }

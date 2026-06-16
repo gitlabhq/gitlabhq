@@ -41,16 +41,19 @@ export default {
       // eslint-disable-next-line import/extensions
       pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
       ({ getDocument, GlobalWorkerOptions } = pdfjs);
+      /* eslint-disable @gitlab/no-hardcoded-urls -- webpack public asset path configuration, not a navigable URL */
       GlobalWorkerOptions.workerSrc = joinPaths(
         gon.relative_url_root,
         process.env.PDF_JS_WORKER_PUBLIC_PATH,
       );
+      /* eslint-enable @gitlab/no-hardcoded-urls */
     },
     async load() {
       await this.loadPDFJS();
       this.pages = [];
       return getDocument({
         url: this.document,
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- webpack public asset path configuration, not a navigable URL (cMapUrl)
         cMapUrl: joinPaths(gon.relative_url_root, process.env.PDF_JS_CMAPS_PUBLIC_PATH),
         cMapPacked: true,
         isEvalSupported: true,

@@ -288,7 +288,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
       it 'does not update @diff_lines' do
         expect { diff_file.unfold_diff_lines(position) }
-          .not_to change(diff_file, :diff_lines)
+          .not_to change { diff_file.diff_lines }
       end
     end
   end
@@ -577,29 +577,6 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
         expect(diff_file.code_review_id).to eq(expected)
       end
     end
-
-    context 'when diff_blob_metadata_only_for_code_review_id is disabled' do
-      before do
-        stub_feature_flags(diff_blob_metadata_only_for_code_review_id: false)
-      end
-
-      it 'uses blob&.id directly' do
-        expected = Digest::SHA1.hexdigest("#{diff_file.file_identifier}-#{diff_file.blob&.id}")
-        expect(diff_file.code_review_id).to eq(expected)
-      end
-
-      context 'with a deleted file' do
-        let(:branch_name) { 'master' }
-        let(:diff_file) do
-          create_file('deleted_test_file.md', 'content')
-          delete_file('deleted_test_file.md')
-        end
-
-        it 'returns a valid hash' do
-          expect(diff_file.code_review_id).to match(/\A[0-9a-f]{40}\z/)
-        end
-      end
-    end
   end
 
   context 'diff file stats' do
@@ -622,12 +599,41 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       DIFF
     end
 
+    # Simulates what Gitaly returns for a rename with a single-line content change.
+    # stats reports the full file size (10 additions / 15 deletions) because Gitaly
+    # treats a rename+edit as a full rewrite, but diff_lines only sees the actual delta.
+    let(:renamed_diff) do
+      <<~DIFF
+        diff --git a/old_name.rb b/new_name.rb
+        similarity index 80%
+        rename from old_name.rb
+        rename to new_name.rb
+        --- a/old_name.rb
+        +++ b/new_name.rb
+        @@ -1,3 +1,3 @@
+         line1
+        -line2
+        +line2-modified
+         line3
+      DIFF
+    end
+
     describe '#added_lines' do
       context 'when stats argument given' do
         let(:stats) { double(Gitaly::DiffStats, additions: 10, deletions: 15) }
 
         it 'returns added lines from stats' do
           expect(diff_file.added_lines).to eq(stats.additions)
+        end
+
+        context 'when file is renamed' do
+          it 'ignores stats and parses diff lines instead' do
+            allow(diff_file).to receive(:renamed_file?).and_return(true)
+            allow(diff_file).to receive(:raw_diff) { renamed_diff }
+
+            # stats.additions is 10, but the actual diff has only 1 added line
+            expect(diff_file.added_lines).to eq(1)
+          end
         end
       end
 
@@ -648,6 +654,16 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
         it 'returns removed lines from stats' do
           expect(diff_file.removed_lines).to eq(stats.deletions)
+        end
+
+        context 'when file is renamed' do
+          it 'ignores stats and parses diff lines instead' do
+            allow(diff_file).to receive(:renamed_file?).and_return(true)
+            allow(diff_file).to receive(:raw_diff) { renamed_diff }
+
+            # stats.deletions is 15, but the actual diff has only 1 removed line
+            expect(diff_file.removed_lines).to eq(1)
+          end
         end
       end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Glql::PageInfo, feature_category: :integrations do
+RSpec.describe API::Entities::Glql::PageInfo, feature_category: :custom_dashboards_foundation do
   let(:page_info) do
     {
       endCursor: 'eyJpZCI6IjE3In0',

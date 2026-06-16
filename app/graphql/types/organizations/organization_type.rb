@@ -55,15 +55,21 @@ module Types
         null: false,
         description: 'Root path in the context of the organization.',
         experiment: { milestone: '18.5' }
+      field :soft_deleted_at,
+        Types::TimeType, null: true,
+        description: 'Timestamp when the organization was soft-deleted.' \
+          'Visible to admins and organization owners only.',
+        authorize: :delete_organization,
+        experiment: { milestone: '19.1' }
       field :state,
         Types::Organizations::OrganizationStateEnum,
         null: false,
         description: 'State of the organization.',
         experiment: { milestone: '19.0' }
       field :visibility,
-        GraphQL::Types::String,
+        Types::Organizations::VisibilityEnum,
         null: true,
-        description: 'Visibility level of the organization.'
+        description: 'Visibility of the organization.'
       field :web_path,
         GraphQL::Types::String,
         null: false,
@@ -88,6 +94,16 @@ module Types
 
       def web_path
         object.web_url(only_path: true)
+      end
+
+      def soft_deleted_at
+        BatchLoader::GraphQL.for(object).batch do |organizations, loader|
+          organization_ids = organizations.map(&:id)
+          details = ::Organizations::OrganizationDetail.with_organization_ids(organization_ids)
+          details.each do |detail|
+            loader.call(detail.organization, detail.soft_deleted_at)
+          end
+        end
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

@@ -3,6 +3,7 @@
   $fallback: 320px;
   $height: 39px;
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to read-more-container
   &:not(:has(.read-more-content)) {
     @include gl-container-width-down(lg, panel) {
       &:not(.is-expanded) {
@@ -17,6 +18,7 @@
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to read-more-container
   &:has(.read-more-content:not(.is-expanded)) {
     position: relative;
     max-height: var(--read-more-height, #{$fallback - $height});
@@ -34,5 +36,31 @@
     top: calc(var(--read-more-height, #{$fallback}) - #{$scrim} - #{$height});
     height: $scrim;
     background: linear-gradient(180deg, transparent, var(--gl-background-color-default));
+  }
+}
+
+.description-more {
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 3rem;
+    width: 100%;
+    background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-default) 100%);
+  }
+
+  .show-all-btn {
+    pointer-events: auto;
+    background-color: var(--gl-background-color-default);
+
+    &::before, &::after {
+      content: '';
+      height: 1px;
+      flex: 1;
+      border-top: 1px solid var(--gl-border-color-subtle);
+    }
   }
 }

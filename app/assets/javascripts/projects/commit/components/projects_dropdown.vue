@@ -14,6 +14,7 @@ export default {
   components: {
     GlCollapsibleListbox,
   },
+  emits: ['input'],
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
     projectHeaderTitle: I18N_PROJECT_HEADER,

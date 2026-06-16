@@ -6,12 +6,12 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   include GraphqlHelpers
 
   let(:user) { create(:user) }
-  let(:fallback_organization) { create(:organization) }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:destination_group) { create(:group, path: 'destination1') }
   let(:migrate_projects) { true }
   let(:migrate_memberships) { true }
   let_it_be(:parent_group) { create(:group, path: 'parent-group') }
+  let(:fallback_organization) { parent_group.organization }
   # note: destination_name and destination_slug are currently interchangable so we need to test for both possibilities
   let(:params) do
     [
@@ -334,7 +334,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           before do
-            create(:organization_user, user: user, organization: second_group.organization)
             second_group.add_owner(user)
           end
 
@@ -343,6 +342,106 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_success
+          end
+        end
+
+        describe 'cross-organization destination validation' do
+          let_it_be_with_reload(:request_organization) { create(:organization, path: 'request-org') }
+          let_it_be_with_reload(:other_organization) { create(:organization, path: 'other-org') }
+          let_it_be(:request_org_group) do
+            create(:group, organization: request_organization, path: 'request-org-group')
+          end
+
+          let_it_be(:other_org_group) do
+            create(:group, organization: other_organization, path: 'other-org-group')
+          end
+
+          let(:fallback_organization) { request_organization }
+          let(:params) do
+            [{
+              source_type: 'group_entity',
+              source_full_path: 'full/path/to/group1',
+              destination_slug: 'destination-group-1',
+              destination_namespace: destination_namespace,
+              migrate_projects: migrate_projects
+            }]
+          end
+
+          let(:destination_namespace) { other_org_group.path }
+
+          before do
+            create(:organization_user, user: user, organization: other_organization)
+            request_org_group.add_owner(user)
+            other_org_group.add_owner(user)
+
+            allow(service).to receive_messages(
+              validate_source_full_path!: true,
+              validate_setting_enabled!: true,
+              validate_import_destinations!: true
+            )
+            allow(service).to receive(:validate!).and_call_original
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+              allow(client).to receive_messages(
+                validate_instance_version!: true,
+                validate_import_scopes!: true,
+                instance_version: source_version[:version],
+                instance_enterprise: false
+              )
+            end
+          end
+
+          context 'when no fallback_organization is provided' do
+            let(:fallback_organization) { nil }
+            let(:destination_namespace) { parent_group.path }
+
+            it 'is a no-op and lets the import proceed' do
+              expect { service.execute }.to change { BulkImport.count }.by(1)
+            end
+          end
+
+          context 'when neither organization is isolated' do
+            it 'allows the cross-organization import (preserves today’s behavior)' do
+              expect(service.execute).to be_success
+            end
+          end
+
+          context 'when the destination resolves to the request organization' do
+            let(:destination_namespace) { request_org_group.path }
+
+            before do
+              request_organization.mark_as_isolated!
+            end
+
+            it 'allows the import to proceed' do
+              expect(service.execute).to be_success
+            end
+          end
+
+          context 'when the request organization is isolated' do
+            before do
+              request_organization.mark_as_isolated!
+            end
+
+            it 'rejects the import and does not create a BulkImport' do
+              result = nil
+              expect { result = service.execute }.not_to change { BulkImport.count }
+              expect(result).to be_error
+              expect(result.message).to include(other_org_group.path)
+              expect(result.message).to match(/belongs to a different organization than the current one/)
+            end
+          end
+
+          context 'when the destination organization is isolated' do
+            before do
+              other_organization.mark_as_isolated!
+            end
+
+            it 'rejects the import and does not create a BulkImport' do
+              result = nil
+              expect { result = service.execute }.not_to change { BulkImport.count }
+              expect(result).to be_error
+              expect(result.message).to include(other_org_group.path)
+            end
           end
         end
 

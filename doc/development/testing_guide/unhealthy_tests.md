@@ -285,10 +285,10 @@ The following patterns are the most common causes of test slowness identified
 during systematic improvement efforts. Each links to detailed guidance in the
 [testing best practices guide](best_practices.md).
 
-- **Waiting full timeout for expected-absent elements** — Capybara waits the full
-  default timeout before concluding an element is absent. Use `have_no_testid`
-  instead of `not_to have_testid`, and `wait: 0` for generic matchers inside
-  already-loaded containers. See [Avoid waiting for elements you expect to be absent](best_practices.md#avoid-waiting-for-elements-you-expect-to-be-absent).
+- **Using positive predicates for absence checks** - `page.has_link?(...)` waits
+  the full default timeout when the element is absent. Use the negative form
+  (`has_no_link?` or `expect(page).to have_no_link(...)`) instead. See
+  [Avoid waiting for elements you expect to be absent](best_practices.md#avoid-waiting-for-elements-you-expect-to-be-absent).
 
 - **Using `all()` instead of `find()`** — `all()` does not raise on missing
   elements and does not benefit from Capybara's smart waiting. Block iteration

@@ -28,6 +28,7 @@ module Gitlab
             job_arguments: [],
             gitlab_schema: nil,
             user: nil,
+            organization: nil,
             **options
           )
             # background operation workers will be stored in the same database (eg: main, ci)
@@ -38,7 +39,7 @@ module Gitlab
             Gitlab::Database::SharedModel.using_connection(operation_connection) do
               config = [job_class_name, table_name, column_name, job_arguments]
 
-              if unfinished_with_config(*config, org_id: user&.organization_id).exists?
+              if unfinished_with_config(*config, org_id: organization&.id).exists?
                 Gitlab::AppLogger.warn(
                   format(EXISTING_OPERATION_MSG, job_class_name, table_name, column_name, job_arguments.join(', '))
                 )
@@ -54,6 +55,7 @@ module Gitlab
                 job_arguments,
                 gitlab_schema,
                 user,
+                organization,
                 **options)
             end
           end
@@ -76,6 +78,7 @@ module Gitlab
             job_arguments,
             gitlab_schema,
             user,
+            organization,
             min_cursor: nil,
             max_cursor: nil,
             batch_size: DEFAULT_BATCH_VALUES[:batch_size],
@@ -91,7 +94,7 @@ module Gitlab
 
               unless job_class&.reset_cursor?
                 min_cursor = previous_max_cursor(
-                  job_class_name, table_name, column_name, job_arguments, org_id: user&.organization_id
+                  job_class_name, table_name, column_name, job_arguments, org_id: organization&.id
                 )
               end
 
@@ -121,7 +124,9 @@ module Gitlab
               total_tuple_count: total_tuple_count(connection, table_name)
             }
 
-            operation_attrs.merge!(user_id: user.id, organization_id: user.organization_id) if user.present?
+            if user.present? && organization.present?
+              operation_attrs.merge!(user_id: user.id, organization_id: organization.id)
+            end
 
             create!(operation_attrs)
           end

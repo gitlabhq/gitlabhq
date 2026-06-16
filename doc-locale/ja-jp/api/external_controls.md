@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 外部コントロールAPI
 ---
 
@@ -12,11 +12,11 @@ title: 外部コントロールAPI
 
 {{< /details >}}
 
-外部コントロールAPIを使用して、外部サービスを使用するチェックのステータスを設定します。
+外部サービスを使用するチェックのステータスを設定するには、外部コントロールAPIを使用します。
 
-定期的なping機能を使用して外部コントロールを設定できます。Pingが有効になっている場合（デフォルト）、GitLabはコントロールステータスを12時間ごとに自動的に`pending`にリセットします。Pingが無効になっている場合、コントロールステータスはAPIコールでのみ更新されます。
+外部コントロールは定期的なping機能で設定できます。pingが有効な場合（デフォルト）、GitLabはコントロールステータスを`pending`に12時間ごとに自動的にリセットします。pingが無効な場合、コントロールステータスはAPIコールによってのみ更新されます。
 
-## 外部コントロールのステータスを設定 {#set-status-of-an-external-control}
+## 外部コントロールのステータスを設定する {#set-status-of-an-external-control}
 
 {{< history >}}
 
@@ -24,13 +24,11 @@ title: 外部コントロールAPI
 
 {{< /history >}}
 
-単一の外部コントロールの場合、APIを使用して、コントロールが外部サービスによるチェックに合格または失敗したことをGitLabに通知します。
+指定された外部コントロールのステータスを設定します。この操作を使用して、コントロールが外部サービスによるチェックに合格したか失敗したかをGitLabに通知します。
 
-### 認証 {#authentication}
+前提条件
 
-外部コントロールAPIには、セキュリティのためにHMAC、タイムスタンプ、およびナンス認証が必要です。
-
-### エンドポイント {#endpoint}
+- セキュリティのため、HMAC、タイムスタンプ、およびNonceの認証を使用する必要があります。
 
 ```plaintext
 PATCH /api/v4/projects/:id/compliance_external_controls/:external_control_id/status
@@ -44,21 +42,30 @@ HTTPヘッダー:
 | `X-Gitlab-Nonce`      | 文字列  | はい      | リプレイ攻撃を防ぐためのランダムな文字列またはトークン。                                             |
 | `X-Gitlab-Hmac-Sha256`| 文字列  | はい      | リクエストのHMAC-SHA256署名。                                                         |
 
-サポートされている属性は以下のとおりです:
+HMAC-SHA256署名を計算するには:
+
+1. これらの値を次の順序で連結します:
+   - `X-Gitlab-Timestamp`
+   - `X-Gitlab-Nonce`
+   - リクエストの完全なパス
+   - `status`属性の値を、`status=<status>`の形式で指定します。
+1. 連結された文字列のHMAC-SHA256を、シークレットキーを使用して計算します。
+
+サポートされている属性は以下のとおりです: 
 
 | 属性                | 型    | 必須 | 説明                                                                                       |
 | ------------------------ | ------- | -------- |---------------------------------------------------------------------------------------------------|
 | `id`                     | 整数 | はい      | プロジェクトのID。                                                                                  |
 | `external_control_id`    | 整数 | はい      | 外部コントロールのID。                                                                        |
-| `status`                 | 文字列  | はい      | コントロールを合格としてマークするには`pass`に設定し、失敗させるには`fail`に設定します。                                |
+| `status`                 | 文字列  | はい      | コントロールを合格としてマークするには`pass`、失敗としてマークするには`fail`に設定します。                                |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                | 型     | 説明                                   |
 |--------------------------|----------|-----------------------------------------------|
-| `status`                 | 文字列   | コントロールに設定されているステータス。 |
+| `status`                 | 文字列   | コントロールに設定されたステータス。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH \
@@ -71,7 +78,7 @@ curl --request PATCH \
   --url "https://gitlab.example.com/api/v4/projects/<id>/compliance_external_controls/<external_control_id>/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -86,13 +86,13 @@ describe('AgentsConfigsTable', () => {
   });
 
   describe('register functionality', () => {
-    it('emits registerAgent event with correct agent name', async () => {
+    it('emits register-agent event with correct agent name', async () => {
       createComponent();
 
       const firstButton = findAllButtons().at(0);
-      await firstButton.vm.$emit('click');
+      await firstButton.trigger('click');
 
-      expect(wrapper.emitted('registerAgent')[0]).toEqual(['agent-1']);
+      expect(wrapper.emitted('register-agent')[0]).toEqual(['agent-1']);
     });
   });
 

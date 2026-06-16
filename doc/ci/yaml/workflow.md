@@ -49,7 +49,7 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "push"
 ```
 
-This example has strict rules, and pipelines do **not** run in any other case.
+This example has strict rules, and pipelines do not run in any other case.
 
 Alternatively, all of the rules can be `when: never`, with a final
 `when: always` rule. Pipelines that match the `when: never` rules do not run.

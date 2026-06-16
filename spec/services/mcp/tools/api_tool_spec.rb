@@ -296,15 +296,32 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
     end
 
-    context 'with invalid JSON response' do
+    context 'with plain text success response' do
       before do
-        allow(route).to receive(:exec).with(request_env).and_return([500, {}, ['invalid json']])
+        allow(route).to receive(:exec).with(request_env)
+          .and_return([200, {}, ["Running job...\nStep 1 complete\nDone."]])
       end
 
-      it 'returns JSON parsing error' do
+      it 'returns the plain text body as text content' do
         result = api_tool.execute(request: request, params: params)
 
-        expect(result[:content][0][:text]).to eq('Invalid JSON response')
+        expect(result[:isError]).to be(false)
+        expect(result[:content]).to match_array([{ type: 'text', text: "Running job...\nStep 1 complete\nDone." }])
+        expect(result[:structuredContent]).to eq({})
+      end
+    end
+
+    context 'with plain text error response' do
+      before do
+        allow(route).to receive(:exec).with(request_env).and_return([500, {}, ['Internal Server Error']])
+      end
+
+      it 'returns an error with the plain text body' do
+        result = api_tool.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content][0][:text]).to eq('HTTP 500')
+        expect(result[:structuredContent]).to eq({ error: { body: 'Internal Server Error' } })
       end
     end
 

@@ -158,6 +158,92 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangePartition, feature_catego
     end
   end
 
+  describe '#export_definition' do
+    it 'returns partition_name, from, and to as integers' do
+      partition = described_class.new('foo', 1, 100, partition_name: 'foo_1')
+
+      expect(partition.export_definition).to eq({ partition_name: 'foo_1', from: 1, to: 100 })
+    end
+  end
+
+  describe '.from_export_definition' do
+    let(:table) { 'foo' }
+    let(:partition_name) { 'foo_1' }
+
+    it 'parses symbol-key hash' do
+      partition = described_class.from_export_definition(table, partition_name, { from: 1, to: 100 })
+
+      expect(partition.from).to eq(1)
+      expect(partition.to).to eq(100)
+      expect(partition.partition_name).to eq(partition_name)
+    end
+
+    it 'parses string-key hash (JSON-parsed input)' do
+      partition = described_class.from_export_definition(table, partition_name, { 'from' => 1, 'to' => 100 })
+
+      expect(partition.from).to eq(1)
+      expect(partition.to).to eq(100)
+    end
+
+    it 'raises ArgumentError for non-integer from' do
+      expect { described_class.from_export_definition(table, partition_name, { from: 'abc', to: 100 }) }
+        .to raise_error(ArgumentError)
+    end
+
+    it 'raises for invalid bounds (from >= to)' do
+      expect { described_class.from_export_definition(table, partition_name, { from: 100, to: 50 }) }
+        .to raise_error(RuntimeError)
+    end
+
+    it 'roundtrips through export_definition' do
+      original = described_class.new(table, 1, 100, partition_name: partition_name)
+      restored = described_class.from_export_definition(table, partition_name, original.export_definition)
+
+      expect(restored.from).to eq(original.from)
+      expect(restored.to).to eq(original.to)
+    end
+  end
+
+  describe '#covers?' do
+    def make_partition(from, to)
+      described_class.new('foo', from, to, partition_name: "foo_#{from}")
+    end
+
+    let(:partition) { make_partition(100, 200) }
+
+    it 'returns true for exact same bounds' do
+      expect(partition.covers?(make_partition(100, 200))).to be(true)
+    end
+
+    it 'returns true when other is strictly contained' do
+      expect(partition.covers?(make_partition(110, 190))).to be(true)
+    end
+
+    it 'returns true when other has the same lower bound and a narrower upper bound' do
+      expect(partition.covers?(make_partition(100, 150))).to be(true)
+    end
+
+    it 'returns true when other has a wider lower bound and the same upper bound' do
+      expect(partition.covers?(make_partition(150, 200))).to be(true)
+    end
+
+    it 'returns false when other extends beyond the upper bound' do
+      expect(partition.covers?(make_partition(100, 201))).to be(false)
+    end
+
+    it 'returns false when other starts before the lower bound' do
+      expect(partition.covers?(make_partition(99, 200))).to be(false)
+    end
+
+    it 'returns false when ranges do not overlap' do
+      expect(partition.covers?(make_partition(200, 300))).to be(false)
+    end
+
+    it 'returns false when other completely contains self' do
+      expect(partition.covers?(make_partition(50, 300))).to be(false)
+    end
+  end
+
   describe 'Comparable, #<=>' do
     let(:table) { 'foo' }
 

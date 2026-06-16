@@ -3,51 +3,32 @@
 module Authn
   module IamService
     class AcceptLoginChallengeService
-      ACCEPT_PATH = '/oauth2/internal/auth/requests/login/accept'
-
-      def initialize(challenge:, user:, client: HttpClient.new)
+      def initialize(challenge:, user:, client: GrpcClient.new)
         @challenge = challenge
         @user = user
         @client = client
       end
 
       def execute
-        response = @client.put(
-          path: ACCEPT_PATH,
-          query_params: { challenge: @challenge },
-          body: request_body
+        response = @client.accept_login_challenge(
+          challenge: @challenge,
+          subject: @user.id.to_s,
+          name: @user.name,
+          email: @user.email
         )
 
-        return http_error(response) unless response.success?
-
-        redirect_to = Gitlab::Json.safe_parse(response.body)&.dig('redirect_to')
+        redirect_to = response.redirect_to
 
         return missing_redirect_error if redirect_to.blank?
         return invalid_redirect_error unless RedirectUrlValidator.valid?(redirect_to)
 
         ServiceResponse.success(payload: { redirect_to: redirect_to })
-      rescue HttpClient::RequestError => e
+      rescue GrpcClient::RequestError => e
+        log_failure(reason: 'grpc_error')
         ServiceResponse.error(message: e.message, reason: :service_unavailable)
       end
 
       private
-
-      def request_body
-        {
-          id: @user.id.to_s,
-          subject: @user.id.to_s,
-          name: @user.name,
-          email: @user.email
-        }
-      end
-
-      def http_error(response)
-        log_failure(reason: 'http_error', http_status: response.code)
-        ServiceResponse.error(
-          message: "IAM login accept failed: HTTP #{response.code}",
-          reason: :iam_request_failed
-        )
-      end
 
       def missing_redirect_error
         log_failure(reason: 'missing_redirect_to')
@@ -65,12 +46,11 @@ module Authn
         )
       end
 
-      def log_failure(reason:, http_status: nil)
+      def log_failure(reason:)
         Gitlab::AuthLogger.error(
           message: 'IAM login challenge accept failed',
           reason: reason,
-          Labkit::Fields::GL_USER_ID => @user.id,
-          Labkit::Fields::HTTP_STATUS_CODE => http_status
+          Labkit::Fields::GL_USER_ID => @user.id
         )
       end
     end

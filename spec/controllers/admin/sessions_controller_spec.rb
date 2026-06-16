@@ -237,6 +237,7 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
 
           authenticate_2fa(otp_attempt: 'invalid')
 
+          expect(response).to have_gitlab_http_status(:unauthorized)
           expect(response).to render_template('admin/sessions/two_factor')
           expect(controller.current_user_mode.admin_mode?).to be(false)
         end
@@ -284,6 +285,7 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
 
             authenticate_2fa(otp_attempt: 'invalid')
 
+            expect(response).to have_gitlab_http_status(:unauthorized)
             expect(response).to render_template('admin/sessions/two_factor')
             expect(controller.current_user_mode.admin_mode?).to be(false)
           end
@@ -352,6 +354,7 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
           controller.current_user_mode.request_admin_mode!
           authenticate_2fa(login: user.username, device_response: '{}')
 
+          expect(response).to have_gitlab_http_status(:unauthorized)
           expect(response).to render_template('admin/sessions/two_factor')
           expect(controller.current_user_mode.admin_mode?).to be(false)
         end

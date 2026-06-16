@@ -22,7 +22,7 @@ process and only uses a single core.
 ## Start multiple processes
 
 When starting multiple processes, the number of processes should at most equal
-(and **not** exceed) the number of CPU cores you want to dedicate to Sidekiq.
+(and not exceed) the number of CPU cores you want to dedicate to Sidekiq.
 The Sidekiq worker process uses no more than one CPU core.
 
 To start multiple processes, use the `sidekiq['queue_groups']` array setting to

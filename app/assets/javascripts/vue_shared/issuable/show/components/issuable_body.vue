@@ -84,6 +84,13 @@ export default {
       default: '',
     },
   },
+  emits: [
+    'edit-issuable',
+    'keydown-description',
+    'keydown-title',
+    'task-list-update-failure',
+    'task-list-update-success',
+  ],
   computed: {
     isUpdated() {
       return Boolean(this.issuable.updatedAt);

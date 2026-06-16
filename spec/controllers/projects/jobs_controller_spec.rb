@@ -127,9 +127,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   end
 
   describe 'GET show', :request_store do
-    let!(:job) { create(:ci_build, :failed, pipeline: pipeline) }
-    let!(:second_job) { create(:ci_build, :failed, pipeline: pipeline) }
-    let!(:third_job) { create(:ci_build, :failed) }
+    let_it_be(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let_it_be(:second_job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let_it_be(:third_job) { create(:ci_build, :failed) }
 
     context 'when requesting HTML' do
       context 'when job exists' do
@@ -155,7 +155,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       context 'when the job is a bridge' do
         context 'with a downstream pipeline' do
-          let!(:downstream_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+          let_it_be(:downstream_pipeline) { create(:ci_pipeline, child_of: pipeline) }
           let(:job) { downstream_pipeline.source_job }
 
           it 'redirects to the downstream pipeline page' do
@@ -657,7 +657,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       let(:user) { developer }
 
       context 'when the summary has been generated' do
-        let!(:report_result) { create(:ci_build_report_result, build: build, project: project) }
+        let_it_be(:report_result) { create(:ci_build_report_result, build: build, project: project) }
 
         before do
           get_test_report_summary
@@ -825,7 +825,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     context 'when trace artifact is in ObjectStorage' do
       let(:url) { 'http://object-storage/trace' }
       let(:file_path) { expand_fixture_path('trace/sample_trace') }
-      let!(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+      let_it_be(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
         allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?).and_return(false)
@@ -956,13 +956,13 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'with branch pipeline' do
-        let!(:job) { create(:ci_build, :retryable, tag: true, when: 'on_success', pipeline: pipeline) }
+        let_it_be(:job) { create(:ci_build, :retryable, tag: true, when: 'on_success', pipeline: pipeline) }
 
         it_behaves_like 'retried job has the same attributes'
       end
 
       context 'with tag pipeline' do
-        let!(:job) { create(:ci_build, :retryable, tag: false, when: 'on_success', pipeline: pipeline) }
+        let_it_be(:job) { create(:ci_build, :retryable, tag: false, when: 'on_success', pipeline: pipeline) }
 
         it_behaves_like 'retried job has the same attributes'
       end
@@ -981,9 +981,11 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     let(:variable_attributes) { [] }
     let(:user) { developer }
 
-    before do
+    before_all do
       create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
+    end
 
+    before do
       sign_in(user)
     end
 
@@ -1198,7 +1200,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when user is not authorized to cancel the build' do
-      let!(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
       let(:user) { guest }
 
@@ -1218,7 +1220,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when user is forbidden from cancelling the build' do
-      let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
       before do
         sign_in(user)
@@ -1246,7 +1248,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   end
 
   describe 'POST unschedule' do
-    before do
+    before_all do
       create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
     end
 
@@ -1504,7 +1506,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when the trace artifact is in ObjectStorage' do
-      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+      let_it_be(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       before do
         allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?).and_return(false)
@@ -1525,7 +1527,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     context 'when job exists' do
       context 'and it has a terminal' do
-        let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
+        let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
 
         it 'has a job' do
           get_terminal(id: job.id)
@@ -1536,7 +1538,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'and does not have a terminal' do
-        let!(:job) { create(:ci_build, :running, pipeline: pipeline, user: user) }
+        let(:job) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
         it 'returns not_found' do
           get_terminal(id: job.id)
@@ -1565,7 +1567,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   end
 
   describe 'GET #terminal_websocket_authorize' do
-    let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
+    let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
 
     let(:user) { developer }
 

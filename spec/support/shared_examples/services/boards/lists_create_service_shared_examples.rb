@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'board lists create service' do
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before_all do
       parent.add_developer(user)
@@ -14,7 +14,7 @@ RSpec.shared_examples 'board lists create service' do
       it 'creates a new list at beginning of the list' do
         response = service.execute(board)
 
-        expect(response.success?).to eq(true)
+        expect(response.success?).to be(true)
         expect(response.payload[:list].position).to eq 0
       end
     end
@@ -23,7 +23,7 @@ RSpec.shared_examples 'board lists create service' do
       it 'creates a new list at beginning of the list' do
         response = service.execute(board)
 
-        expect(response.success?).to eq(true)
+        expect(response.success?).to be(true)
         expect(response.payload[:list].position).to eq 0
       end
     end
@@ -35,7 +35,7 @@ RSpec.shared_examples 'board lists create service' do
 
         response = service.execute(board)
 
-        expect(response.success?).to eq(true)
+        expect(response.success?).to be(true)
         expect(response.payload[:list].position).to eq 2
       end
     end
@@ -58,7 +58,7 @@ RSpec.shared_examples 'board lists create service' do
 
         response = service.execute(board)
 
-        expect(response.success?).to eq(false)
+        expect(response.success?).to be(false)
         expect(response.errors).to include('Label not found')
       end
     end

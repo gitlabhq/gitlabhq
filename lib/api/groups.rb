@@ -290,7 +290,9 @@ module API
     resource :groups do
       include CustomAttributesEndpoints
 
-      desc 'Get a groups list' do
+      desc 'List all groups' do
+        detail 'Lists all visible groups for the authenticated user. Unauthenticated requests return only public ' \
+          'groups.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -307,7 +309,8 @@ module API
         present_groups_with_pagination_strategies params, groups
       end
 
-      desc 'Create a group. Available only for users who can create groups.' do
+      desc 'Create a group' do
+        detail 'Creates a project group. Available only for users who can create groups.'
         success Entities::Group
         tags %w[groups]
       end
@@ -379,6 +382,7 @@ module API
       end
 
       desc 'Archive a group' do
+        detail 'Archives a specified group. You must be an administrator or have the Owner role for the group.'
         success code: 200, model: Entities::Group
         failure [
           { code: 403, message: 'Unauthenticated' }
@@ -446,6 +450,7 @@ module API
       end
 
       desc 'Remove a group.' do
+        success code: 202, message: 'Accepted'
         tags %w[groups]
       end
       route_setting :authorization, permissions: :delete_group, boundary_type: :group
@@ -767,6 +772,7 @@ module API
       end
 
       desc 'Unshare a group with a group' do
+        success code: 204, message: 'Resource deleted'
         tags ['groups']
       end
       params do

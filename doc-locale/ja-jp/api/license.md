@@ -13,7 +13,7 @@ title: ライセンスAPI
 
 {{< /details >}}
 
-このAPIを使用して、ライセンスエンドポイントと対話します。詳細については、[ライセンスファイルまたはキーを使用してGitLab EEをアクティベートする](../administration/license_file.md)を参照してください。
+このAPIを使用してライセンスエンドポイントを操作します。詳細については、[GitLab EEをライセンスファイルまたはキーでアクティブ化する](../administration/license_file.md)を参照してください。
 
 前提条件: 
 
@@ -52,9 +52,9 @@ GET /license
 }
 ```
 
-## すべてのライセンスを一覧表示 {#list-all-licenses}
+## すべてのライセンスをリストする {#list-all-licenses}
 
-すべてのライセンスに関する情報を一覧表示します。
+すべてのライセンスに関する情報をリストします。
 
 ```plaintext
 GET /licenses
@@ -106,15 +106,15 @@ GET /licenses
 ]
 ```
 
-超過分は、請求対象ユーザー数とライセンスされたユーザー数との差です。これは、ライセンスの有効期限が切れているかどうかによって計算方法が異なります。
+超過は、請求対象ユーザー数とライセンスされたユーザー数の差です。これは、ライセンスの有効期限が切れているかどうかによって計算方法が異なります。
 
-- ライセンスの有効期限が切れている場合、過去最大の請求対象ユーザー数（`historical_max`）を使用します。
-- ライセンスの有効期限が切れていない場合、現在の請求対象ユーザー数を使用します。
+- ライセンスの有効期限が切れている場合、過去最大の請求対象ユーザー数 (`historical_max`) が使用されます。
+- ライセンスの有効期限が切れていない場合、現在の請求対象ユーザー数が使用されます。
 
 戻り値:
 
-- ライセンスをJSON形式で含む応答とともに`200 OK`。ライセンスがない場合、これは空のJSON配列です。
-- 現在のユーザーがライセンスの読み取りを許可されていない場合は`403 Forbidden`。
+- ライセンスをJSON形式で含むレスポンスと伴に`200 OK`。ライセンスがない場合、これは空のJSON配列です。
+- 現在のユーザーがライセンスを読み取る権限を持っていない場合、`403 Forbidden`。
 
 ## ライセンスを取得する {#retrieve-a-license}
 
@@ -132,15 +132,15 @@ GET /license/:id
 
 次のステータスコードが返されます:
 
-- `200 OK`: 応答にはJSON形式のライセンスが含まれます。
-- `404 Not Found`: リクエストされたライセンスは存在しません。
-- `403 Forbidden`: 現在のユーザーはライセンスの読み取りを許可されていません。
+- `200 OK`: レスポンスにはライセンスがJSON形式で含まれています。
+- `404 Not Found`: 要求されたライセンスは存在しません。
+- `403 Forbidden`: 現在のユーザーにはライセンスを読み取る権限がありません。
 
 リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id"
+  --url "https://gitlab.example.com/api/v4/license/:id"
 ```
 
 レスポンス例: 
@@ -184,8 +184,8 @@ POST /license
 
 ```shell
 curl --request POST \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
 ```
 
 レスポンス例: 
@@ -217,8 +217,8 @@ curl --request POST \
 
 戻り値:
 
-- ライセンスが正常に追加された場合は`201 Created`。
-- ライセンスを追加できなかった場合、その理由を説明するエラーメッセージとともに`400 Bad Request`。
+- ライセンスが正常に追加された場合、`201 Created`。
+- ライセンスを追加できなかった場合、理由を説明するエラーメッセージとともに`400 Bad Request`。
 
 ## ライセンスを削除する {#delete-a-license}
 
@@ -234,15 +234,15 @@ DELETE /license/:id
 
 ```shell
 curl --request DELETE \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/:id"
 ```
 
 戻り値:
 
-- ライセンスが正常に削除された場合は`204 No Content`。
-- 現在のユーザーがライセンスの削除を許可されていない場合は`403 Forbidden`。
-- 削除するライセンスが見つからなかった場合は`404 Not Found`。
+- ライセンスが正常に削除された場合、`204 No Content`。
+- 現在のユーザーがライセンスを削除する権限を持っていない場合、`403 Forbidden`。
+- 削除するライセンスが見つからなかった場合、`404 Not Found`。
 
 ## 請求対象ユーザーの再計算をトリガーする {#trigger-recalculation-of-billable-users}
 
@@ -258,8 +258,8 @@ PUT /license/:id/refresh_billable_users
 
 ```shell
 curl --request PUT \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/:id/refresh_billable_users"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/:id/refresh_billable_users"
 ```
 
 レスポンス例: 
@@ -272,26 +272,25 @@ curl --request PUT \
 
 戻り値:
 
-- 請求対象ユーザーの更新リクエストが正常に開始された場合は`202 Accepted`。
-- 現在のユーザーがライセンスの請求対象ユーザーを更新することが許可されていない場合は`403 Forbidden`。
-- ライセンスが見つからなかった場合は`404 Not Found`。
+- 請求対象ユーザーを更新するリクエストが正常に開始された場合、`202 Accepted`。
+- 現在のユーザーがライセンスの請求対象ユーザーを更新する権限を持っていない場合、`403 Forbidden`。
+- ライセンスが見つからなかった場合、`404 Not Found`。
 
 | 属性                    | 型          | 説明                               |
 |:-----------------------------|:--------------|:------------------------------------------|
-| `success`                    | ブール値       | リクエストが成功したかどうか。     |
+| `success`                    | ブール値       | このリクエストが成功したかどうか。     |
 
-## ライセンス使用状況情報を取得する {#retrieve-license-usage-information}
+## ライセンス使用情報を取得する {#retrieve-license-usage-information}
 
-現在のライセンスに関する使用状況情報を取得し、CSV形式でエクスポートします。
+現在のライセンスの使用情報を取得し、CSV形式でエクスポートします。
 
 ```plaintext
 GET /license/usage_export.csv
 ```
 
 ```shell
-curl --request GET \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/license/usage_export.csv"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/license/usage_export.csv"
 ```
 
 レスポンス例: 
@@ -314,5 +313,5 @@ Date,Billable User Count
 
 戻り値:
 
-- `200 OK`: 応答にはCSV形式のライセンス使用状況が含まれます。
-- 現在のユーザーがライセンス使用状況の表示を許可されていない場合は`403 Forbidden`。
+- `200 OK`: レスポンスには、ライセンス使用状況がCSV形式で含まれています。
+- 現在のユーザーがライセンス使用状況を表示する権限を持っていない場合、`403 Forbidden`。

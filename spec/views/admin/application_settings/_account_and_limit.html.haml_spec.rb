@@ -22,4 +22,23 @@ RSpec.describe 'admin/application_settings/_account_and_limit.html.haml', featur
       end
     end
   end
+
+  describe ':oauth_access_token_expires_in' do
+    it 'renders the oauth_access_token_expires_in attributes and text' do
+      render
+
+      expect(rendered).to have_field(
+        'application_setting[oauth_access_token_expires_in]', type: 'number', placeholder: '7200'
+      )
+      expect(rendered).to have_selector('input[name="application_setting[oauth_access_token_expires_in]"][min="300"]')
+      expect(rendered).to have_selector(
+        'input[name="application_setting[oauth_access_token_expires_in]"][max="7200"]'
+      )
+      expect(rendered).to have_text('Maximum allowable lifetime for OAuth access tokens')
+      expect(rendered).to have_text(
+        'Maximum lifetime of OAuth access tokens in seconds. Minimum 300 (5 minutes). ' \
+          'If blank, defaults to 7200 (2 hours). Does not change the lifetime of any existing tokens.'
+      )
+    end
+  end
 end

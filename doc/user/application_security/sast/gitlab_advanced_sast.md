@@ -220,6 +220,7 @@ By default, GitLab Advanced SAST scans the entire repository. You can tune code 
 the following methods:
 
 - Exclude repository paths to reduce the amount of code analyzed.
+- Exclude individual lines using inline comments to suppress specific findings.
 - Turn on diff-based scanning to analyze only the files modified in a merge request (and their
   dependent files).
 - Turn on incremental scanning, which caches the results of prior scanning and so reduces the
@@ -271,6 +272,32 @@ To exclude paths:
 - List the excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD
   variable.
 
+#### Exclude lines
+
+To suppress findings on a specific line, add `gitlab-advanced-sast-exclude` to your source code as a
+comment. The tag is case-insensitive and works with any comment syntax, for example `#`, `//`, or `--`.
+
+Place the comment either on the same line as the finding, or on the line immediately before it:
+
+```python
+# Suppress all findings on the next line (previous-line comment):
+# gitlab-advanced-sast-exclude
+result = db.execute(query)
+
+# Suppress all findings inline:
+result = db.execute(query)  # gitlab-advanced-sast-exclude
+```
+
+To suppress findings from specific rules only, append `:` or `=` followed by one or more rule IDs
+separated by commas:
+
+```python
+# gitlab-advanced-sast-exclude: rule-id-1, rule-id-2
+result = db.execute(query)
+```
+
+When no rule IDs are specified, all findings on that line are suppressed.
+
 #### Diff-based scanning
 
 {{< history >}}
@@ -302,7 +329,7 @@ When diff-based scanning is active:
   scanned.
 - The job log includes the output: `Running differential scan`. (If inactive, it outputs: `Running
   full scan`.)
-- In the merge request security widget, a dedicated **Diff-based** tab shows relevant scan findings.
+- In the merge request security scan report, a dedicated **Diff-based** tab shows relevant scan findings.
 - In the pipeline security tab, an alert labeled **Partial SAST report** indicates that only partial
   findings are included.
 
@@ -452,7 +479,7 @@ The cache is stored as a compressed CI/CD artifact. Artifact size limits apply:
 
 - GitLab.com: 1 GB maximum artifact size.
 - GitLab Self-Managed: 100 MB default maximum artifact size. An administrator can adjust this
-  limit in [CI/CD settings](../../../administration/settings/continuous_integration.md#set-maximum-artifacts-size).
+  limit in [CI/CD settings](../../../administration/cicd/limits.md#maximum-artifacts-size).
 
 ##### Store cache in external object storage
 
@@ -495,7 +522,7 @@ To store the cache in S3:
 1. For GitLab Self-Managed or GitLab Dedicated, replace `aud: https://gitlab.com` with your GitLab instance URL.
 1. Configure an [S3 lifecycle policy](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html)
    to auto-expire cache objects.
-   
+
    The expiry should be aligned with the `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD` value (default: 3 days) to avoid
    retaining stale cache files.
 
@@ -705,7 +732,7 @@ In some cases, Semgrep vulnerabilities may still appear as duplicates if the [de
 ## Request source code of LGPL-licensed components in GitLab Advanced SAST
 
 To request information about the source code of LGPL-licensed components in GitLab Advanced SAST,
-[contact GitLab Support](https://about.gitlab.com/support/).
+[contact GitLab Support](https://support.gitlab.com/).
 
 To ensure a quick response, include the GitLab Advanced SAST analyzer version in your request.
 

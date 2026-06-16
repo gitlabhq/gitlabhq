@@ -9,9 +9,8 @@ RSpec.shared_examples 'promote_to_incident quick action' do
         fill_in('Add a reply', with: '/promote_to_incident')
         click_button 'Comment'
 
-        expect(issue.reload.issue_type).to eq('incident')
-        # Page does full refresh, so check the work item type
         expect(page).to have_css('[data-testid="work-item-type-icon"]', text: 'Incident')
+        expect(issue.reload.issue_type).to eq('incident')
       end
     end
 
@@ -26,11 +25,9 @@ RSpec.shared_examples 'promote_to_incident quick action' do
     end
 
     context 'when user does not have permissions' do
-      let(:guest) { create(:user) }
-
       before do
-        sign_in(guest)
-        visit project_issue_path(project, issue)
+        membership = user.project_members.in_project(project).first
+        membership.update!(access_level: ProjectMember::GUEST)
       end
 
       it 'does not promote the issue' do

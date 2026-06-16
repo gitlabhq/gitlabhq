@@ -13,7 +13,7 @@ RSpec.describe 'Static Object External Storage Content Security Policy', feature
 
   it_behaves_like 'setting CSP', 'connect-src' do
     let_it_be(:allowlisted_url) { 'https://static-objects.test' }
-    let_it_be(:extended_controller_class) { IdeController }
+    let_it_be(:extended_controller_class, freeze: false) { IdeController }
 
     subject do
       visit ide_path

@@ -12,6 +12,7 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   FORM_TYPES,
@@ -57,6 +58,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath', 'reportAbusePath'],
   props: {
     issuableId: {
@@ -81,6 +83,7 @@ export default {
           id: this.issuableGid,
           pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
           endCursor: '',
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {

@@ -1,0 +1,9 @@
+---
+name: create_jira_connect_subscription
+description: Grants the ability to create Jira Connect subscriptions
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_jira_connect_subscription

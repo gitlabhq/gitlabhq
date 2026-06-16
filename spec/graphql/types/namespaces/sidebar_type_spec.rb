@@ -16,10 +16,6 @@ RSpec.describe GitlabSchema.types['NamespaceSidebar'], feature_category: :naviga
   describe '#open_work_items_count' do
     let_it_be(:user) { create(:user) }
 
-    before do
-      stub_feature_flags(show_work_items_sidebar_count: true)
-    end
-
     context 'when namespace is a Group' do
       let_it_be(:group) { create(:group) }
 

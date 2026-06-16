@@ -243,6 +243,7 @@ Payload example:
 - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
 - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../../group/epics/_index.md#epics-as-work-items) must be enabled.
 - Support for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
+- `start_date` field in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238048) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -332,6 +333,7 @@ Payload example:
     "confidential": false,
     "discussion_locked": true,
     "due_date": null,
+    "start_date": null,
     "moved_to_id": null,
     "duplicated_to_id": null,
     "time_estimate": 0,
@@ -965,6 +967,7 @@ The following fields are deprecated and included for backward compatibility only
 {{< history >}}
 
 - `actioned_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224849) in GitLab 18.10.
+- `merged_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235360) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -995,6 +998,7 @@ It includes the following fields:
 | `last_edited_at`                | String  | When the merge request was last edited. |
 | `last_edited_by_id`             | Integer | The ID of the user who last edited it. |
 | `merge_commit_sha`              | String  | The SHA of the merge commit. |
+| `merged_at`                     | String  | When the merge request was merged. `null` if not yet merged. |
 | `merge_error`                   | String  | Any merge error message. |
 | `merge_params`                  | Object  | Merge parameters. |
 | `merge_status`                  | String  | Status of the merge request. |
@@ -1242,6 +1246,7 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
     "last_edited_at": null,
     "last_edited_by_id": null,
     "merge_commit_sha": null,
+    "merged_at": null,
     "merge_error": null,
     "merge_params": {
       "force_remove_source_branch": "1"
@@ -2514,10 +2519,12 @@ An emoji event is triggered when an [emoji reaction](../../emoji_reactions.md) i
 - Issues
 - Merge requests
 - Project snippets
+- Wiki pages
 - Comments on:
   - Issues
   - Merge requests
   - Project snippets
+  - Wiki pages
   - Commits
 
 The available values for `object_attributes.action` in the payload are:

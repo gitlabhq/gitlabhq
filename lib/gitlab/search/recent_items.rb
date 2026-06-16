@@ -70,9 +70,17 @@ module Gitlab
       def query_items_by_ids(term, ids)
         return finder.new(user).klass.none if ids.empty?
 
-        finder.new(user, search: term, in: 'title', skip_full_text_search_project_condition: true)
-          .execute
-          .limit(SEARCH_LIMIT).without_order.id_in_ordered(ids)
+        query_items_with_ilike(term, ids)
+      end
+
+      def query_items_with_ilike(term, ids)
+        items = finder.new(user).execute.without_order.id_in_ordered(ids)
+        items = match_title(items, term) if term.present?
+        items.limit(SEARCH_LIMIT)
+      end
+
+      def match_title(items, term)
+        items.search(term)
       end
 
       def with_redis(&blk)

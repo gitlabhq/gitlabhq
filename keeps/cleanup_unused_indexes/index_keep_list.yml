@@ -1,0 +1,17 @@
+# Indexes that Keeps::CleanupUnusedIndexes must never propose for removal.
+#
+# When the Keep emits a removal MR for an index that turns out to be required
+# (for example, used by a self-managed-only feature path that gprd never
+# exercises), add an entry below and close the MR. The Keep will not propose
+# it again.
+#
+# Each entry must include reason, added_by, added_on. Example:
+#
+# ---
+# "public.index_namespaces_on_runners_token":
+#   reason: "Used by self-managed-only runner auth path; gprd has zero traffic."
+#   added_by: "@username"
+#   added_on: "2026-05-22"
+#   issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/12345"
+---
+{}

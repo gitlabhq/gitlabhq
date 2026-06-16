@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'graphql'
 
-RSpec.describe Gitlab::Graphql::Validators::ExactlyOneOfValidator, feature_category: :integrations do
+RSpec.describe Gitlab::Graphql::Validators::ExactlyOneOfValidator, feature_category: :api do
   let(:schema) do
     Class.new(GraphQL::Schema) do
       query(Class.new(GraphQL::Schema::Object) do

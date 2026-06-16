@@ -12,7 +12,7 @@ module API
           not_found!('Work item type') unless work_item_type
 
           create_params = build_create_work_item_params(work_item_type)
-          widget_params = extract_feature_params(resource_parent)
+          widget_params = extract_feature_params(work_item_type, resource_parent)
           validate_supported_widgets!(work_item_type, resource_parent, widget_params)
 
           ::WorkItems::CreateService.new(
@@ -50,10 +50,10 @@ module API
           create_params
         end
 
-        def extract_feature_params(_resource_parent)
+        def extract_feature_params(work_item_type, resource_parent)
           return {} unless params.key?(:features)
 
-          params[:features].to_h.deep_symbolize_keys.each_with_object({}) do |(key, value), hash|
+          widget_params = params[:features].to_h.deep_symbolize_keys.each_with_object({}) do |(key, value), hash|
             widget_key = :"#{key}_widget"
 
             if key == :hierarchy && value.key?(:parent_id)
@@ -65,6 +65,9 @@ module API
 
             hash[widget_key] = value
           end
+
+          strip_disabled_widget_params!(widget_params, work_item_type, resource_parent)
+          widget_params
         end
       end
     end

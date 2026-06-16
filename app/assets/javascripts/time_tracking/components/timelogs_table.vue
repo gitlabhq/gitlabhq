@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import TimelogSourceCell from './timelog_source_cell.vue';
 
 export default {
+  name: 'TimelogsTable',
   components: {
     GlTable,
     UserAvatarLink,

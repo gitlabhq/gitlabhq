@@ -8,8 +8,8 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
 
   include_context 'project navbar structure'
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: user.namespace) }
 
   before_all do
     project.update!(duo_remote_flows_enabled: true)
@@ -35,7 +35,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
   describe 'when hide_error_tracking_features is disabled' do
     before do
       stub_feature_flags(hide_error_tracking_features: false)
-      stub_feature_flags(work_item_configurable_types: false)
     end
 
     it_behaves_like 'verified navigation bar' do
@@ -83,7 +82,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     end
 
     context 'when harbor registry is available' do
-      let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
+      let_it_be(:harbor_integration, freeze: false) { create(:harbor_integration, project: project) }
 
       before do
         insert_harbor_registry_nav
@@ -110,7 +109,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
   describe 'when hide_error_tracking_features is enabled' do
     context 'when error tracking feature flag is enabled' do
       before do
-        stub_feature_flags(work_item_configurable_types: false)
         remove_nav_item(_('Error Tracking'))
 
         visit project_path(project)

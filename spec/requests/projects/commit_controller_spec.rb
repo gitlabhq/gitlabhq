@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CommitController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { project.owner }
 
   describe 'GET #discussions' do
-    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
-    let_it_be(:commit) { project.commit_by(oid: sha) }
+    let_it_be(:sha, freeze: false) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:commit, freeze: false) { project.commit_by(oid: sha) }
 
     let(:params) do
       {
@@ -128,8 +128,8 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
   end
 
   describe 'POST #create_discussions' do
-    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
-    let_it_be(:commit) { project.commit_by(oid: sha) }
+    let_it_be(:sha, freeze: false) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:commit, freeze: false) { project.commit_by(oid: sha) }
 
     let(:params) do
       {
@@ -276,7 +276,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       end
 
       context 'on a deleted line' do
-        let_it_be(:sha) { "d59c60028b053793cecfb4022de34602e1a9218e" }
+        let_it_be(:sha, freeze: false) { "d59c60028b053793cecfb4022de34602e1a9218e" }
         let(:diff_file) { commit.diffs.diff_files.find { |f| f.old_path == 'files/js/commit.js.coffee' } }
 
         let(:position_data) do
@@ -400,9 +400,9 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
   end
 
   describe '#show' do
-    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
-    let_it_be(:commit) { project.commit_by(oid: sha) }
-    let_it_be(:diff_view) { :inline }
+    let_it_be(:sha, freeze: false) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:commit, freeze: false) { project.commit_by(oid: sha) }
+    let_it_be(:diff_view, freeze: false) { :inline }
 
     let(:params) do
       { view: diff_view }
@@ -568,7 +568,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
       context 'without a signed in user' do
         it_behaves_like 'rate limited endpoint', rate_limit_key: :expanded_diff_files do
-          let_it_be(:project) { create(:project, :public, :repository) }
+          let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
           let(:request_ip) { '1.2.3.4' }
 
           def request
@@ -585,9 +585,9 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
   end
 
   describe 'GET #merge_requests' do
-    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:sha, freeze: false) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
 
-    let_it_be(:older_mr) do
+    let_it_be(:older_mr, freeze: false) do
       create(
         :merge_request,
         source_project: project,
@@ -597,7 +597,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       )
     end
 
-    let_it_be(:newer_mr) do
+    let_it_be(:newer_mr, freeze: false) do
       create(
         :merge_request, :merged,
         source_project: project,

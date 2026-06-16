@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::Presenters::Deploy do
-  let(:build) { create(:ci_build) }
+RSpec.describe Gitlab::SlashCommands::Presenters::Deploy, feature_category: :deployment_management do
+  let(:build) { build_stubbed(:ci_build) }
 
   describe '#present' do
     subject { described_class.new(build).present('staging', 'prod') }

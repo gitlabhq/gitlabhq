@@ -242,8 +242,13 @@ RSpec.describe Gitlab::Git::Finders::BranchesFinder, feature_category: :source_c
     context 'with page parameter' do
       let(:params) { { per_page: 5, page: 2 } }
 
-      it 'fetches per_page * page records to support offset pagination' do
-        expect(branches.count).to eq(10)
+      it 'returns only the requested page subset' do
+        expect(branches.count).to eq(5)
+      end
+
+      it 'returns different results than page 1' do
+        page1 = described_class.new(repository, { per_page: 5, page: 1 }).execute
+        expect(branches.map(&:name)).not_to include(*page1.map(&:name))
       end
     end
 
@@ -251,16 +256,11 @@ RSpec.describe Gitlab::Git::Finders::BranchesFinder, feature_category: :source_c
       let(:include_commits) { true }
       let(:params) { { per_page: 5, page: 2 } }
 
-      it 'only hydrates commits for the target page branches' do
+      it 'returns only the target page branches with hydrated commits' do
         results = finder.execute
 
-        # First 5 branches (page 1) should not have commits loaded
-        results[0, 5].each do |branch|
-          expect(branch.dereferenced_target).to be_nil
-        end
-
-        # Last 5 branches (page 2, the target page) should have commits
-        results[5, 5].each do |branch|
+        expect(results.count).to eq(5)
+        results.each do |branch|
           expect(branch.dereferenced_target).to be_present
         end
       end
@@ -338,6 +338,14 @@ RSpec.describe Gitlab::Git::Finders::BranchesFinder, feature_category: :source_c
     it 'returns the branch count' do
       expect(total).to be_an(Integer)
       expect(total).to eq(repository.branch_count)
+    end
+
+    context 'when search is active' do
+      let(:params) { { search: 'feature' } }
+
+      it 'returns nil' do
+        expect(total).to be_nil
+      end
     end
   end
 end

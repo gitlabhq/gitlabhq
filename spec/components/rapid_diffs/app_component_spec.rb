@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :code_review_workflow do
-  let_it_be(:diffs_slice) { Array.new(2, build(:diff_file)) }
+  let_it_be(:diffs_slice, freeze: false) { Array.new(2, build(:diff_file)) }
   let(:diffs_stream_url) { '/stream' }
   let(:reload_stream_url) { '/reload_stream' }
   let(:show_whitespace) { true }
@@ -18,6 +18,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:extra_prefetch_endpoints) { [] }
 
   let(:linked_file) { nil }
+  let(:empty_state_type) { nil }
+  let(:diff_collection) { linked_file ? [linked_file] : (diffs_slice || []) }
 
   let(:diff_presenter) do
     instance_double(
@@ -31,7 +33,9 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       sorted?: should_sort_metadata_files,
       environment: nil,
       lazy?: lazy,
-      linked_file: linked_file
+      linked_file: linked_file,
+      empty_state_type: empty_state_type,
+      diff_collection: diff_collection
     )
   end
 
@@ -78,6 +82,41 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(data['show_whitespace']).to eq(show_whitespace)
     expect(data['diff_view_type']).to eq(diff_view.to_s)
     expect(data['lazy']).to eq(lazy)
+    expect(data['file_by_file_mode']).to be(false)
+  end
+
+  context "when user has file by file mode enabled" do
+    let_it_be(:user) { build_stubbed(:user, view_diffs_file_by_file: true) }
+
+    before do
+      allow(component).to receive(:helpers).and_wrap_original do |original_method, *args|
+        helpers = original_method.call(*args)
+        allow(helpers).to receive_messages(
+          hide_whitespace?: !show_whitespace,
+          diff_view: diff_view,
+          api_v4_user_preferences_path: update_user_endpoint,
+          current_user: user
+        )
+        helpers
+      end
+    end
+
+    it "sets file_by_file_mode to true" do
+      render_component
+      app = page.find('[data-rapid-diffs]')
+      data = Gitlab::Json.parse(app['data-app-data'])
+      expect(data['file_by_file_mode']).to be(true)
+    end
+
+    it "does not render the stream container" do
+      render_component
+      expect(page).not_to have_css('[data-stream-remaining-diffs]')
+    end
+
+    it "does not add the stream preload to startup JS" do
+      render_component
+      expect(vc_test_controller.view_context.content_for?(:startup_js)).to be_falsey
+    end
   end
 
   context "with extra_app_data" do
@@ -242,11 +281,12 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     end
   end
 
-  context "when there are no diffs" do
+  context "when presenter reports a non-nil empty_state_type" do
+    let(:empty_state_type) { :no_changes }
     let(:diffs_slice) { [] }
     let(:diffs_stream_url) { nil }
 
-    it "renders empty state component" do
+    it "renders the default empty state component" do
       render_component
       expect(page).to have_text("There are no changes")
     end
@@ -254,31 +294,31 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     context 'when lazy loading' do
       let(:lazy) { true }
 
-      it "does not render empty state" do
+      it "does not render the empty state server-side" do
         render_component
         expect(page).not_to have_text("There are no changes")
       end
     end
-  end
 
-  context 'with custom empty_state slot' do
-    it 'renders slot content instead of default empty state' do
-      result = render_component do |c|
-        c.with_empty_state do
-          'custom empty state'
+    context 'with a custom empty_state slot' do
+      it 'renders slot content instead of default empty state' do
+        result = render_component do |c|
+          c.with_empty_state do
+            'custom empty state'
+          end
         end
+        expect(result).to have_text('custom empty state')
+        expect(result).not_to have_text('There are no changes')
       end
-      expect(result).to have_text('custom empty state')
-      expect(result).not_to have_text('There are no changes')
-    end
 
-    it 'does not render diff files' do
-      result = render_component do |c|
-        c.with_empty_state do
-          'custom empty state'
+      it 'does not render diff files' do
+        result = render_component do |c|
+          c.with_empty_state do
+            'custom empty state'
+          end
         end
+        expect(result).not_to have_css('diff-file')
       end
-      expect(result).not_to have_css('diff-file')
     end
   end
 

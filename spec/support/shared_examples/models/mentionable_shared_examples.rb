@@ -269,7 +269,7 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
 
     if [:epic, :issue].include?(mentionable_type)
       context 'and note is confidential' do
-        let_it_be(:guest) { create(:user) }
+        let_it_be(:guest, freeze: false) { create(:user) }
 
         let(:note_desc) { "#{guest.to_reference} and #{user2.to_reference} and #{user.to_reference}" }
 
@@ -293,10 +293,10 @@ end
 
 RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
   context 'load stored mentions' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:mentioned_user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:note_desc) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:mentioned_user, freeze: false) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:note_desc, freeze: false) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
 
     before do
       note.update!(note: note_desc)
@@ -323,7 +323,7 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
 
     if [:epic, :issue].include?(mentionable_type)
       context 'and note is confidential' do
-        let_it_be(:guest) { create(:user) }
+        let_it_be(:guest, freeze: false) { create(:user) }
 
         let(:note_desc) { "#{guest.to_reference} and #{mentioned_user.to_reference}" }
 

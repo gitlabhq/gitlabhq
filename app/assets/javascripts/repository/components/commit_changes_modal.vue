@@ -20,6 +20,7 @@ import { InternalEvents } from '~/tracking';
 import { COMMIT_MESSAGE_SUBJECT_MAX_LENGTH, COMMIT_MESSAGE_BODY_MAX_LENGTH } from '../constants';
 
 export default {
+  name: 'CommitChangesModal',
   csrf,
   components: {
     GlAlert,

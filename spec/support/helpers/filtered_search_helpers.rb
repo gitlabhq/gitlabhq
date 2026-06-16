@@ -197,8 +197,6 @@ module FilteredSearchHelpers
         end
 
         click_on token.to_s, match: :first
-
-        wait_for_requests
       end
     end
 

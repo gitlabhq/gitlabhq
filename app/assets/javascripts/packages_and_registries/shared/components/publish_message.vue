@@ -4,6 +4,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'PublishMessage',
   components: {
     GlLink,
     GlSprintf,

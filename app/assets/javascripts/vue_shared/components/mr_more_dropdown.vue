@@ -15,6 +15,7 @@ import MergeRequest from '~/merge_request';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 export default {
+  name: 'MrMoreDropdown',
   i18n: {
     edit: __('Edit'),
     copyReferenceText: __('Copy reference'),

@@ -220,6 +220,14 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       expect(mock_presenter).to have_received(:diff_files_for_streaming).once
     end
 
+    it 'writes server-timings element with metrics', :aggregate_failures do
+      controller_instance.send(:diffs_stream)
+      expect(response.stream).to have_received(:write).with(a_string_matching(/\A<server-timings /))
+      expect(response.stream).to have_received(:write).with(a_string_matching(/streaming="[\d.]+"/))
+      expect(response.stream).to have_received(:write).with(a_string_matching(/rpc="[\d.]+"/))
+      expect(response.stream).to have_received(:write).with(a_string_matching(/rendering="[\d.]+"/))
+    end
+
     context 'with non-sequential collapsed diffs' do
       let(:diff_files) do
         collapsed_diff = build(:diff_file)

@@ -8,9 +8,9 @@ ignore_in_report: true
 
 {{< details >}}
 
-- Tier: Ultimate
-- Offering: GitLab.com
-- Status: Experiment
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
@@ -20,22 +20,33 @@ ignore_in_report: true
 - Feature flag `ci_tanukey_ui` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/549940) in GitLab 18.4.
 - Made available to some users in a closed beta in GitLab 18.8.
 - Group secrets manager [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17904) and made available to closed beta users in 18.10 [with the flag](../../../development/feature_flags/_index.md) `group_secrets_manager`.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
 
 {{< /history >}}
-
-> [!warning]
-> This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
-> notice. Secrets stored in experiment or beta versions will not be kept when the Secrets Manager is released as generally available.
-> This feature is not ready for public testing or production use.
 
 Secrets represent sensitive information your CI/CD jobs need to function. Secrets could be access tokens,
 database credentials, private keys, or similar.
 
 Unlike CI/CD variables, which are always available to jobs by default, secrets must be explicitly requested by a job.
 
-Use the GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups.
+Use GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups.
 
-## Enable or disable the GitLab Secrets Manager
+GitLab Secrets Manager is free during public beta, but will consume GitLab credits when
+released as generally available. To avoid a service interruption, you will be notified
+before general availability to give you time to opt into on-demand billing for GitLab credits.
+
+For a click-through demo, see [GitLab Secrets Manager](https://click-through-demo-generator-27bd12.gitlab.io/demos/demo-20260506-094904/).
+<!-- Demo published on 2026-05-27 -->
+
+Share your feedback during the public beta in [feedback issue 598100](https://gitlab.com/gitlab-org/gitlab/-/work_items/598100).
+
+## Enable GitLab Secrets Manager
+
+When Secrets Manager is enabled for a top-level group, it is also available to all subgroups and projects in that group.
+
+On GitLab Self-Managed, an administrator must first [install and enable GitLab Secrets Manager](../../../administration/secrets_manager/_index.md)
+for the instance. After Secrets Manager is installed and enabled, you can enable it
+for specific groups and projects on the instance.
 
 ### For a project
 
@@ -106,21 +117,26 @@ After you create a secret, you can use it in the pipeline configuration or in jo
 
 ## Use secrets in job scripts
 
+By default, similar to [file type CI/CD variables](../../variables/_index.md#use-file-type-cicd-variables),
+a secret is made available in a job as a file with an associated environment variable:
+
+- The secret's key is the environment variable name.
+- The secret's value is saved to a temporary file. Unlike masked CI/CD variables, secrets can have spaces and newlines.
+- The path to the temporary file is the environment variable value.
+
+Use a secret in job scripts with commands that accept files as inputs, or optionally
+directly [use the secret as an environment variable](#use-a-secret-as-an-environment-variable-with-file-false).
+
+If a job outputs a secret's value, GitLab replaces the value in the job log with `[MASKED]`.
+
 ### For project secrets
 
 Prerequisites:
 
-- GitLab Runner 18.6 or later.
+- GitLab Runner 19.0 or later.
 
-To access secrets defined with the Secret Manager, use the [`secrets`](../../yaml/_index.md#secrets)
+To access secrets stored in the Secret Manager for a project, use the [`secrets`](../../yaml/_index.md#secrets)
 and `gitlab_secrets_manager` keywords.
-
-Similar to [file type variables](../../variables/_index.md#use-file-type-cicd-variables),
-the secret is made available as an environment variable with:
-
-- The secret's key as the environment variable name.
-- The secret's value saved to a temporary file. Unlike masked variables, secrets can have spaces and newlines.
-- The path to the temporary file as the environment variable value.
 
 For example:
 
@@ -134,32 +150,48 @@ job:
    - kubectl config set-cluster e2e --server="https://example.com" --certificate-authority="$KUBE_CA_PEM"
 ```
 
-If a job outputs a secret's value, for example by running `cat $KUBE_CA_PEM`,
-GitLab replaces the value in the job log with `[MASKED]`.
-
 ### For group secrets
 
 Prerequisites:
 
-- GitLab Runner 18.10 or later.
+- GitLab Runner 19.0 or later.
 
-To access group secrets:
+To access secrets stored in the Secret Manager for a group:
 
 - Use the [`secrets`](../../yaml/_index.md#secrets) and `gitlab_secrets_manager` keywords.
-- Specify the secret manager source with the `source` field with the format `group/<full-path-to-group>`.
+- Specify the group as a secret manager source with the `source` field with the format `group/<full-path-to-group>`.
 
 For example:
 
 ```yaml
 job:
   secrets:
-    TEST_SECRET:
+    KUBE_CA_PEM:
       gitlab_secrets_manager:
-        name: foo
-        source: group/<full-path-to-group>
+        name: kube-cert
+        source: group/my-group/my-subgroup
   script:
-   - cat $TEST_SECRET
+   - kubectl config set-cluster e2e --server="https://example.com" --certificate-authority="$KUBE_CA_PEM"
 ```
+
+### Use a secret as an environment variable with `file: false`
+
+To use a secret as an environment variable and not have it stored in a file,
+set `file: false` for the secret. For example:
+
+```yaml
+job:
+  secrets:
+    DEPLOY_SECRET:
+      gitlab_secrets_manager:
+        name: deploy-credentials
+      file: false
+  script:
+    - my_deploy_command --user username --pass $DEPLOY_SECRET
+```
+
+In this example, the secret is made available to the job as the `DEPLOY_SECRET` variable,
+which you can use like any other environment variable.
 
 ## Manage secrets permissions
 
@@ -242,7 +274,7 @@ This error happens when the secrets manager instance has not been provisioned ye
 that the secret is expected to belong to. The runner cannot configure authentication because no secrets
 manager role exists yet.
 
-To resolve this error, [enable the Secrets Manager](#enable-or-disable-the-gitlab-secrets-manager)
+To resolve this error, enable the Secrets Manager
 for your project or group.
 
 Wait for provisioning to complete and create the secret before re-running the pipeline.

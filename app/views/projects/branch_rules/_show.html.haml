@@ -1,11 +1,12 @@
 - expanded = expanded_by_default?
 - show_code_owners = @project.licensed_feature_available?(:code_owner_approval_required)
-- show_status_checks = @project.licensed_feature_available?(:external_status_checks)
-- show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
+- show_status_checks = @project.licensed_feature_available?(:external_status_checks) && can?(current_user, :read_external_status_check, @project)
+- show_approvers = @project.licensed_feature_available?(:merge_request_approvers) && can?(current_user, :read_approval_rule, @project)
 - show_enterprise_access_levels = @project.licensed_feature_available?(:protected_refs_for_users)
 - namespace = @project.root_ancestor
 - can_admin_group_protected_branches = namespace.is_a?(Group) && namespace.licensed_feature_available?(:group_protected_branches) && current_user.can?(:admin_group, namespace)
 - group_settings_repository_path = namespace.is_a?(Group) ? group_settings_repository_path(namespace, anchor: 'js-protected-branches-settings') : ''
+- can_create_branch_rule = can?(current_user, :create_branch_rule, @project)
 
 = render ::Layouts::SettingsBlockComponent.new(_('Branch rules'),
   id: 'branch-rules',
@@ -16,6 +17,6 @@
     = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
   - c.with_body do
     .gl-mb-5= render 'projects/settings/branch_rules_callout'
-    - data = { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s, can_admin_group_protected_branches: can_admin_group_protected_branches.to_s, group_settings_repository_path: group_settings_repository_path }
+    - data = { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s, can_admin_group_protected_branches: can_admin_group_protected_branches.to_s, group_settings_repository_path: group_settings_repository_path, can_create_branch_rule: can_create_branch_rule.to_s }
     - data[:security_policies_path] = security_policies_path(@project) if respond_to?(:security_policies_path)
     #js-branch-rules-listing{ data: data }

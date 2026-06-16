@@ -59,5 +59,15 @@ RSpec.describe 'Add a closing merge request to a work item', feature_category: :
         end.to change { MergeRequestsClosingIssues.count }.by(1)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_work_item do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:workItemAddClosingMergeRequest, input, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

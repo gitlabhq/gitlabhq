@@ -6,7 +6,7 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
   let(:forked_project) { fork_project(project, user, repository: true) }
 
@@ -149,6 +149,12 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
   end
 
   context 'on commits page' do
+    before do
+      # TODO: Remove stub once merge request button is implemented in refactored UI
+      # See: https://gitlab.com/gitlab-org/gitlab/-/work_items/598206
+      stub_feature_flags(project_commits_refactor: false)
+    end
+
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Create merge request' }
       let(:url) { project_commits_path(project, 'feature') }

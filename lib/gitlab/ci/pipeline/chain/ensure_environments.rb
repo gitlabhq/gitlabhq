@@ -6,7 +6,11 @@ module Gitlab
       module Chain
         class EnsureEnvironments < Chain::Base
           def perform!
-            pipeline.stages.flat_map(&:statuses).each(&method(:ensure_environment))
+            pipeline.stages.flat_map(&:statuses).each do |job|
+              next unless job.is_a?(::Ci::Processable) && job.has_environment_keyword?
+
+              ensure_environment(job)
+            end
           end
 
           def break?

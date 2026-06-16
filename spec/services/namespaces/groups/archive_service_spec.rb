@@ -193,7 +193,10 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
   end
 
   context 'when the group is scheduled for deletion' do
-    let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+    before do
+      group.schedule_deletion!(transition_user: user)
+      create(:group_deletion_schedule, group: group)
+    end
 
     it 'returns an error response' do
       response = service_response

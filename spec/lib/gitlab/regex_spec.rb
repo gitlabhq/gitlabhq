@@ -235,6 +235,30 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('foo/bar') }
   end
 
+  describe '.cd_name_regex' do
+    subject { described_class.cd_name_regex }
+
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('Foo') }
+    it { is_expected.to match('foo-bar') }
+    it { is_expected.to match('foo_bar') }
+    it { is_expected.to match('foo-bar-baz') }
+    it { is_expected.to match('FooBar') }
+    it { is_expected.to match('foo123') }
+    it { is_expected.to match('123foo') }
+    it { is_expected.to match('_foo') }
+    it { is_expected.to match('a') }
+    it { is_expected.to match('1') }
+    it { is_expected.not_to match('-foo') }
+    it { is_expected.not_to match('foo-') }
+    it { is_expected.not_to match('foo bar') }
+    it { is_expected.not_to match('foo/bar') }
+    it { is_expected.not_to match('foo.bar') }
+    it { is_expected.not_to match('foo!') }
+    it { is_expected.not_to match('foo@bar') }
+    it { is_expected.not_to match('') }
+  end
+
   describe '.kubernetes_dns_subdomain_regex' do
     subject { described_class.kubernetes_dns_subdomain_regex }
 

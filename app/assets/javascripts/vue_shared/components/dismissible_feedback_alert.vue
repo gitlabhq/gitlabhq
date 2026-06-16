@@ -4,6 +4,7 @@ import { slugifyWithUnderscore } from '~/lib/utils/text_utility';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
+  name: 'DismissibleFeedbackAlert',
   components: {
     GlAlert,
     LocalStorageSync,

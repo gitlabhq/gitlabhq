@@ -6,7 +6,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update, feature_category:
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let(:container_expiration_policy) { project.container_expiration_policy }
   let(:params) { { project_path: project.full_path, cadence: '3month', keep_n: 100, older_than: '14d' } }
@@ -95,7 +95,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update, feature_category:
     end
 
     context 'without existing container expiration policy' do
-      let_it_be(:project, reload: true) { create(:project, :without_container_expiration_policy) }
+      let_it_be_with_reload(:project) { create(:project, :without_container_expiration_policy) }
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the container expiration policy'

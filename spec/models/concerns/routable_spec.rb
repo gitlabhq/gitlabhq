@@ -20,7 +20,7 @@ RSpec.shared_examples 'routable resource' do
     end
 
     context 'with redirect routes' do
-      let_it_be(:redirect_route) { create(:redirect_route, source: record) }
+      let_it_be(:redirect_route, freeze: false) { create(:redirect_route, source: record) }
 
       context 'without follow_redirects option' do
         it 'does not find records by their redirected path' do
@@ -83,9 +83,9 @@ RSpec.shared_examples 'routable resource' do
     end
 
     context 'on the usage of `preload_routes` parameter' do
-      let_it_be(:klass) { record.class.to_s.downcase }
-      let_it_be(:record_3) { create(:"#{klass}") }
-      let_it_be(:record_4) { create(:"#{klass}") }
+      let_it_be(:klass, freeze: false) { record.class.to_s.downcase }
+      let_it_be(:record_3, freeze: false) { create(:"#{klass}") }
+      let_it_be(:record_4, freeze: false) { create(:"#{klass}") }
 
       context 'when preload_routes: true' do
         it 'includes route information when loading records' do
@@ -156,16 +156,16 @@ end
 
 RSpec.describe Group, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
   let_it_be_with_reload(:group) { create(:group, name: 'foo') }
-  let_it_be(:nested_group) { create(:group, parent: group) }
+  let_it_be(:nested_group, freeze: false) { create(:group, parent: group) }
 
   it_behaves_like 'routable resource' do
-    let_it_be(:record) { group }
-    let_it_be(:record_2) { nested_group }
+    let_it_be(:record, freeze: false) { group }
+    let_it_be(:record_2, freeze: false) { nested_group }
   end
 
   it_behaves_like 'routable resource with parent' do
-    let_it_be(:record) { nested_group }
-    let_it_be(:record_2) { group }
+    let_it_be(:record, freeze: false) { nested_group }
+    let_it_be(:record_2, freeze: false) { group }
   end
 
   describe 'Validations' do
@@ -228,13 +228,13 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache, feature_category: :gr
 end
 
 RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
-  let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:project) { create(:project, namespace: namespace) }
-  let_it_be(:project_2) { create(:project) }
+  let_it_be(:namespace, freeze: false) { create(:namespace) }
+  let_it_be(:project, freeze: false) { create(:project, namespace: namespace) }
+  let_it_be(:project_2, freeze: false) { create(:project) }
 
   it_behaves_like 'routable resource with parent' do
-    let_it_be(:record) { project }
-    let_it_be(:record_2) { project_2 }
+    let_it_be(:record, freeze: false) { project }
+    let_it_be(:record_2, freeze: false) { project_2 }
   end
 
   it 'creates route with namespace referencing project namespace' do
@@ -266,7 +266,7 @@ RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :
 end
 
 RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
 
   it 'skips route creation for the resource' do
     expect do

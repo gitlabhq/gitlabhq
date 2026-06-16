@@ -697,6 +697,15 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'db/post_migrate/*.rb'
     - 'ee/db/fixtures/**/*'
 
+Gitlab/AvoidGitlabDedicatedInstanceChecks:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+    - 'ee/db/fixtures/**/*'
+    - 'ee/elastic/migrate/*.rb'
+    - 'ee/lib/gitlab/dedicated.rb'
+
 Gitlab/EeOnlyClass:
   Enabled: true
   Include:
@@ -864,7 +873,6 @@ RSpec/AvoidConditionalStatements:
 
 RSpec/FeatureSpecMaxExamples:
   Enabled: true
-  Max: 25
   Include:
     - 'spec/features/**/*.rb'
     - 'ee/spec/features/**/*.rb'
@@ -1181,6 +1189,13 @@ RSpec/HaveGitlabHttpStatus:
   Include:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+RSpec/MissingMatchWhenNegated:
+  Enabled: true
+  Include:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+    - 'qa/**/*'
 
 RSpec/ContextWording:
   Prefixes:
@@ -1613,6 +1628,14 @@ Gitlab/Lookbook/NoUrlParamInPreview:
     - 'spec/components/previews/**/*'
 
 Gitlab/TokenWithoutPrefix:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'ee/app/**/*'
+    - 'ee/lib/**/*'
+
+Gitlab/TokenWithoutRoutable:
   Enabled: true
   Include:
     - 'app/**/*'

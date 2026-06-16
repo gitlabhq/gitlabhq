@@ -1,6 +1,8 @@
 import { GROUP_BADGE } from '~/badges/constants';
+import initDatePickers from '~/behaviors/date_picker';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
+import { initCheckboxControlledInput } from '~/pages/admin/application_settings/account_and_limits';
 import initTransferGroupForm from '~/groups/init_transfer_group_form';
 import { initGroupSelects } from '~/vue_shared/components/entity_select/init_group_selects';
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
@@ -29,6 +31,14 @@ initProjectSelects();
 
 initSearchSettings();
 initCascadingSettingsLockTooltips();
+
+initCheckboxControlledInput(
+  'group_enforce_granular_tokens',
+  'group_granular_tokens_enforced_after',
+  'group_granular_tokens_enforced_after_error',
+);
+
+initDatePickers();
 
 initGroupSettingsReadme();
 initArchiveSettings();

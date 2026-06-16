@@ -11,7 +11,10 @@ import {
   I18N_OAUTH_APPLICATION_ID_ERROR_MESSAGE,
   I18N_OAUTH_FAILED_TITLE,
   I18N_OAUTH_FAILED_MESSAGE,
+  I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE,
+  I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE,
   OAUTH_SELF_MANAGED_DOC_LINK,
+  OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK,
   OAUTH_WINDOW_OPTIONS,
   OAUTH_CALLBACK_MESSAGE_TYPE,
   PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM,
@@ -101,9 +104,13 @@ export default {
       if (!this.isGitlabCom) {
         const gitlabBasePathURL = new URL(this.gitlabBasePath);
         oauthAuthorizeURLWithChallenge.hostname = gitlabBasePathURL.hostname;
-        oauthAuthorizeURLWithChallenge.pathname = `${
-          gitlabBasePathURL.pathname === '/' ? '' : gitlabBasePathURL.pathname
-        }${oauthAuthorizeURLWithChallenge.pathname}`;
+        const basePathname = gitlabBasePathURL.pathname.replace(/\/+$/, '');
+        if (
+          basePathname &&
+          !oauthAuthorizeURLWithChallenge.pathname.startsWith(`${basePathname}/`)
+        ) {
+          oauthAuthorizeURLWithChallenge.pathname = `${basePathname}${oauthAuthorizeURLWithChallenge.pathname}`;
+        }
       }
 
       return oauthAuthorizeURLWithChallenge.toString();
@@ -160,13 +167,40 @@ export default {
         this.setAccessToken(accessToken);
         this.$emit('sign-in');
       } catch (e) {
-        this.handleError();
+        if (this.isLikelyLocalNetworkAccessError(e)) {
+          this.setAlert({
+            linkUrl: OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK,
+            title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE,
+            message: I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE,
+            variant: 'danger',
+          });
+        } else {
+          this.handleError();
+        }
       } finally {
         this.loading = false;
       }
     },
     handleError() {
       this.$emit('error');
+    },
+    // Chromium 142+ enforces Local Network Access: requests from the
+    // gitlab.com iframe (inside Jira Cloud) to a self-managed instance on a
+    // private network are blocked before any preflight. axios surfaces this
+    // as a network error with no response. We gate the dedicated alert on
+    // UA Client Hints reporting Chromium >= 142 so users on Firefox/Safari
+    // or older Chromium see the generic "failed to sign in" path instead
+    // of misleading LNA messaging. Browsers without UA-CH don't implement
+    // LNA, so absence is safe to treat as "not affected".
+    isLikelyLocalNetworkAccessError(error) {
+      return !this.isGitlabCom && error && !error.response && this.isChromium142Plus();
+    },
+    isChromium142Plus() {
+      const brands = navigator.userAgentData?.brands;
+      if (!Array.isArray(brands)) return false;
+      // Brand strings come from the UA-CH spec, not user-facing copy.
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return brands.some(({ brand, version }) => brand === 'Chromium' && Number(version) >= 142);
     },
     async getOAuthToken(code) {
       const { oauth_token_payload: oauthTokenPayload, oauth_token_path: oauthTokenPath } =

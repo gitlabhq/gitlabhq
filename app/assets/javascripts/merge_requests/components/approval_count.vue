@@ -3,6 +3,7 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 
 export default {
+  name: 'ApprovalCount',
   components: {
     GlBadge,
   },

@@ -47,6 +47,7 @@ Use it as the direct child of `MountingPortal`, with the `mount-to="#contextual-
 | Default | Main panel body content. |
 | `header` | Custom header markup. Takes precedence over the `header` prop. |
 | `actions` | Panel header actions. For more information, see [Panel actions](#panel-actions). |
+| `footer` | Panel footer content. The footer renders only when this slot has content. |
 
 **Events:**
 

@@ -5,7 +5,7 @@ RSpec.shared_examples 'roles_user_can_assign' do
 
   subject(:roles_user_can_assign) { resource.roles_user_can_assign(user, roles) }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let(:roles) { nil }
 
   context 'when user is not a member' do
@@ -40,9 +40,9 @@ RSpec.shared_examples 'roles_user_can_assign' do
 end
 
 RSpec.shared_examples 'a resource that has roles' do |resource_type|
-  let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:resource) { create(resource_type) } # rubocop: disable Rails/SaveBang -- there is no create! method in FactoryBot
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:resource, freeze: false) { create(resource_type) } # rubocop: disable Rails/SaveBang -- there is no create! method in FactoryBot
 
   before_all do
     resource.add_member(user, :reporter)

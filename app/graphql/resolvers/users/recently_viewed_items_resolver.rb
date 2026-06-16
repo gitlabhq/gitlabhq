@@ -17,11 +17,9 @@ module Resolvers
         available_types.each do |klass|
           recent_items_service = klass.new(user: current_user)
 
+          # Authorization is handled by each Search class (RecentWorkItems, RecentIssues, etc.)
           recent_items_service.latest_with_timestamps.each do |item, timestamp|
-            # Filter out items the user can no longer access (e.g., due to SAML expiry)
-            next unless authorized_to_read_item?(item)
-
-            all_items << RecentlyViewedItem.new(item, timestamp)
+            all_items << RecentlyViewedItem.new(item, timestamp) if authorized_to_read_item?(item)
           end
         end
 
@@ -32,26 +30,31 @@ module Resolvers
       private
 
       def available_types
-        types = [::Gitlab::Search::RecentIssues, ::Gitlab::Search::RecentMergeRequests]
-        types << ::Gitlab::Search::RecentWikiPages if wiki_pages_enabled?
-        types
+        issues_or_work_items = if ::Feature.enabled?(:work_items_autocomplete, current_user)
+                                 ::Gitlab::Search::RecentWorkItems
+                               else
+                                 ::Gitlab::Search::RecentIssues
+                               end
+
+        [issues_or_work_items, ::Gitlab::Search::RecentMergeRequests, ::Gitlab::Search::RecentWikiPages]
       end
 
+      # This method is overridden in EE to add Epic authorization.
+      # For CE items, we double-check authorization here as a safety layer.
       def authorized_to_read_item?(item)
         case item
+        when WorkItem
+          Ability.allowed?(current_user, :read_work_item, item)
         when Issue
           Ability.allowed?(current_user, :read_issue, item)
         when MergeRequest
           Ability.allowed?(current_user, :read_merge_request, item)
         when WikiPage::Meta
-          wiki_pages_enabled? && Ability.allowed?(current_user, :read_wiki, item)
+          Ability.allowed?(current_user, :read_wiki, item)
         else
+          # Unknown item types should be filtered out
           false
         end
-      end
-
-      def wiki_pages_enabled?
-        Feature.enabled?(:recently_viewed_wiki_pages, current_user)
       end
     end
   end

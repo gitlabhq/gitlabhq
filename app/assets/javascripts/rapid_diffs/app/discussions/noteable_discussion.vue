@@ -1,8 +1,10 @@
 <script>
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
+import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { s__, __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { createAlert } from '~/alert';
@@ -23,6 +25,10 @@ export default {
     NoteForm,
     DiscussionNotes,
     ResolveWithIssueButton,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
+    ResolveWithDuoDropdownItem: () =>
+      import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
   },
   inject: {
     store: {
@@ -30,6 +36,12 @@ export default {
     },
     userPermissions: {
       type: Object,
+    },
+    sourceBranch: {
+      default: '',
+    },
+    iid: {
+      default: null,
     },
   },
   props: {
@@ -57,10 +69,19 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cancelEditing',
+    'noteEdited',
+    'startEditing',
+    'startReplying',
+    'stopReplying',
+    'toggleDiscussionReplies',
+  ],
   data() {
     return {
       isLoggedIn: isLoggedIn(),
       isResolving: false,
+      isDuoLoading: false,
     };
   },
   computed: {
@@ -103,6 +124,24 @@ export default {
     showResolveDiscussionToggle() {
       return Boolean(this.toggleResolveNote) && this.resolvable && this.canResolve;
     },
+    canResolveDiscussionsWithAi() {
+      return Boolean(this.userPermissions.can_resolve_discussions_with_ai);
+    },
+    showSecondaryActionsDropdown() {
+      return (
+        this.discussion.resolvable && !this.discussion.resolved && this.canResolveDiscussionsWithAi
+      );
+    },
+    showIssueButton() {
+      return (
+        this.discussion.resolvable &&
+        !this.discussion.resolved &&
+        Boolean(this.resolveWithIssuePath)
+      );
+    },
+    resolveWithIssueItem() {
+      return { text: __('Resolve with new issue'), href: this.resolveWithIssuePath };
+    },
   },
   methods: {
     async toggleResolve() {
@@ -121,6 +160,7 @@ export default {
       }
     },
     showReplyForm(text) {
+      suppressShortcutsUntilInputFocus();
       this.$emit('startReplying');
       if (typeof text !== 'undefined') {
         this.$nextTick(() => {
@@ -258,8 +298,29 @@ export default {
                 :button-title="resolveButtonTitle"
                 @on-click="toggleResolve"
               />
+              <gl-disclosure-dropdown
+                v-if="showSecondaryActionsDropdown"
+                :icon="isDuoLoading ? undefined : 'chevron-down'"
+                category="secondary"
+                :toggle-text="__('More resolve options')"
+                :loading="isDuoLoading"
+                text-sr-only
+                no-caret
+              >
+                <gl-disclosure-dropdown-item
+                  v-if="resolveWithIssuePath"
+                  :item="resolveWithIssueItem"
+                />
+                <resolve-with-duo-dropdown-item
+                  :discussion="discussion"
+                  :source-branch="sourceBranch"
+                  :iid="iid"
+                  @triggering="isDuoLoading = true"
+                  @triggered="isDuoLoading = false"
+                />
+              </gl-disclosure-dropdown>
               <resolve-with-issue-button
-                v-if="discussion.resolvable && resolveWithIssuePath"
+                v-else-if="showIssueButton"
                 :url="resolveWithIssuePath"
                 class="!gl-w-auto"
               />

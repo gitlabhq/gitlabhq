@@ -11,16 +11,16 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
       user
     end
 
-    let_it_be(:assignee) do
+    let_it_be(:assignee, freeze: false) do
       user = create(:user, email: 'private2@example.com')
       public_email = create(:email, :confirmed, user: user, email: 'public2@example.com')
       user.update!(public_email: public_email.email)
       user
     end
 
-    let_it_be(:group)    { create(:group) }
-    let_it_be(:project)  { create(:project) }
-    let_it_be(:issue)    { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project, freeze: false)  { create(:project) }
+    let_it_be(:issue, freeze: false)    { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
     let_it_be(:issuable) { issue } # "alias" for shared examples
 
     before_all do
@@ -85,8 +85,8 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
       end
 
       context 'and the project is public' do
-        let_it_be(:project) { create(:project, :public) }
-        let_it_be(:issue) { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
+        let_it_be(:project, freeze: false) { create(:project, :public) }
+        let_it_be(:issue, freeze: false) { create(:issue, author: user, assignees: [assignee], project: project, due_date: Date.today) }
         let_it_be(:issuable) { issue } # "alias" for shared examples
 
         it_behaves_like 'an authenticated issuable atom feed'

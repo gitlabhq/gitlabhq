@@ -1,6 +1,7 @@
 import ClipboardJS from 'clipboard';
 import { DEBOUNCE_DROPDOWN_DELAY } from '~/sidebar/components/labels/labels_select_widget/constants';
 import toast from '~/vue_shared/plugins/global_toast';
+import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
 import Sidebar from '~/right_sidebar';
 import {
@@ -59,6 +60,7 @@ export default class ShortcutsIssuable {
   }
 
   static openSidebarDropdown(name) {
+    suppressShortcutsUntilInputFocus();
     Sidebar.instance.openDropdown(name);
     // Wait for the sidebar to trigger('click') open
     // so it doesn't cause our dropdown to close preemptively

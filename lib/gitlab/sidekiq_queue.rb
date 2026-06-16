@@ -25,7 +25,7 @@ module Gitlab
         search_metadata
           .stringify_keys
           .slice(*ALLOWED_KEYS)
-          .transform_keys(&method(:transform_key))
+          .transform_keys { |key| transform_key(key) }
           .compact
 
       raise NoMetadataError if job_search_metadata.empty?

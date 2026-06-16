@@ -5,6 +5,7 @@ import { escapeShellString } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
 export default {
+  name: 'MrWidgetHowToMergeModal',
   i18n: {
     steps: {
       step1: {

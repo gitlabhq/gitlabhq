@@ -8,15 +8,15 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
 
   include HttpIOHelpers
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :repository)
   end
 
-  let_it_be(:other_project, reload: true) do
+  let_it_be_with_reload(:other_project) do
     create(:project, :repository)
   end
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
@@ -31,7 +31,7 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
   end
 
   before do
-    project.add_developer(developer)
+    project.add_developer(developer) # -- Does not work in before_all
   end
 
   shared_examples 'authorization checks' do

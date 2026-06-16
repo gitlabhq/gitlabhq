@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Groups::Observability::AccessRequests", feature_category: :observability do
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:project) { create(:project, :empty_repo, group: group) }
 
   let(:service_instance) { instance_double(::Observability::AccessRequestService) }

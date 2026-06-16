@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::HookEnv do
+RSpec.describe Gitlab::Git::HookEnv, feature_category: :source_code_management do
   let(:relative_path) { 'snapshot/relative-path.git' }
   let(:gl_repository) { 'project-123' }
+  let(:manifest_sha) { '1234567890abcdef1234567890abcdef12345678' }
 
   describe ".set" do
     context 'with RequestStore disabled' do
@@ -34,6 +35,61 @@ RSpec.describe Gitlab::Git::HookEnv do
         expect(git_env[:PATH]).to be_nil
         expect(git_env[:bar]).to be_nil
       end
+
+      it 'allowlists GIT_MVCC_MANIFEST and pushes it onto the application context', :aggregate_failures do
+        expect(Gitlab::ApplicationContext).to receive(:push).with(mvcc_manifest: manifest_sha)
+
+        described_class.set(gl_repository, relative_path, GIT_MVCC_MANIFEST: manifest_sha)
+
+        expect(described_class.all(gl_repository)['GIT_MVCC_MANIFEST']).to eq(manifest_sha)
+      end
+
+      it 'does not push onto the application context when GIT_MVCC_MANIFEST is absent' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+        described_class.set(gl_repository, relative_path, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
+      end
+
+      it 'does not push a malformed GIT_MVCC_MANIFEST onto the application context' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+        described_class.set(gl_repository, relative_path, GIT_MVCC_MANIFEST: 'not-a-valid-sha')
+      end
+    end
+  end
+
+  describe ".pin_mvcc_manifest" do
+    it 'pushes a well-formed manifest onto the application context' do
+      expect(Gitlab::ApplicationContext).to receive(:push).with(mvcc_manifest: manifest_sha)
+
+      described_class.pin_mvcc_manifest(manifest_sha)
+    end
+
+    it 'logs and does not push a malformed manifest', :aggregate_failures do
+      expect(Gitlab::AppJsonLogger).to receive(:warn).with(message: 'Ignoring malformed MVCC manifest pin')
+      expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+      described_class.pin_mvcc_manifest('not-a-valid-sha')
+    end
+
+    it 'does nothing when the manifest is blank', :aggregate_failures do
+      expect(Gitlab::AppJsonLogger).not_to receive(:warn)
+      expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+      described_class.pin_mvcc_manifest(nil)
+      described_class.pin_mvcc_manifest('')
+    end
+  end
+
+  describe ".mvcc_manifest" do
+    it 'returns the mvcc_manifest from the application context' do
+      Gitlab::ApplicationContext.with_context(mvcc_manifest: manifest_sha) do
+        expect(described_class.mvcc_manifest).to eq(manifest_sha)
+      end
+    end
+
+    it 'returns nil when no mvcc_manifest is set' do
+      expect(described_class.mvcc_manifest).to be_nil
     end
   end
 

@@ -10,7 +10,7 @@ RSpec.describe 'Updating an existing release', feature_category: :release_orches
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
 
@@ -21,7 +21,7 @@ RSpec.describe 'Updating an existing release', feature_category: :release_orches
   let_it_be(:created_at) { '2018-11-05' }
   let_it_be(:milestones) { [milestone_12_3, milestone_12_4] }
 
-  let_it_be(:release) do
+  let_it_be(:release, freeze: false) do
     create(:release,
       project: project,
       tag: tag_name,
@@ -127,6 +127,17 @@ RSpec.describe 'Updating an existing release', feature_category: :release_orches
 
   context 'when the current user has access to update releases' do
     let(:current_user) { developer }
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_release do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:release_update,
+          { projectPath: project.full_path, tagName: tag_name }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
 
     context 'name' do
       context 'when a new name is provided' do

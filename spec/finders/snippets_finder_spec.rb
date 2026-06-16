@@ -6,25 +6,47 @@ RSpec.describe SnippetsFinder do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Allowable
 
+  let_it_be(:common_org) { create(:organization) }
+
   describe '#initialize' do
     it 'raises ArgumentError when a project and author are given' do
       user = build(:user)
       project = build(:project)
 
-      expect { described_class.new(user, author: user, project: project) }
+      expect { described_class.new(user, author: user, project: project, organization_id: common_org.id) }
         .to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError when organization_id is not provided' do
+      user = build(:user)
+
+      expect { described_class.new(user) }
+        .to raise_error(ArgumentError, /organization_id is a required parameter/)
+    end
+
+    it 'raises ArgumentError when organization_id is nil' do
+      user = build(:user)
+
+      expect { described_class.new(user, organization_id: nil) }
+        .to raise_error(ArgumentError, /organization_id is a required parameter/)
+    end
+
+    it 'does not raise when organization_id is provided' do
+      user = build(:user)
+
+      expect { described_class.new(user, organization_id: common_org.id) }.not_to raise_error
     end
   end
 
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, organization: common_org) }
     let_it_be(:admin) { create(:admin) }
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group) { create(:group, :public, organization: common_org) }
     let_it_be(:project) { create(:project, :public, group: group) }
 
-    let_it_be(:private_personal_snippet) { create(:personal_snippet, :private, author: user) }
-    let_it_be(:internal_personal_snippet) { create(:personal_snippet, :internal, author: user) }
-    let_it_be(:public_personal_snippet) { create(:personal_snippet, :public, author: user) }
+    let_it_be(:private_personal_snippet) { create(:personal_snippet, :private, author: user, organization: common_org) }
+    let_it_be(:internal_personal_snippet) { create(:personal_snippet, :internal, author: user, organization: common_org) }
+    let_it_be(:public_personal_snippet) { create(:personal_snippet, :public, author: user, organization: common_org) }
 
     let_it_be(:private_project_snippet) { create(:project_snippet, :private, project: project) }
     let_it_be(:internal_project_snippet) { create(:project_snippet, :internal, project: project) }
@@ -32,7 +54,7 @@ RSpec.describe SnippetsFinder do
 
     context 'filter by scope' do
       it "returns all snippets for 'all' scope" do
-        snippets = described_class.new(user, scope: :all).execute
+        snippets = described_class.new(user, scope: :all, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(
           private_personal_snippet, internal_personal_snippet, public_personal_snippet,
@@ -41,19 +63,19 @@ RSpec.describe SnippetsFinder do
       end
 
       it "returns all snippets for 'are_private' scope" do
-        snippets = described_class.new(user, scope: :are_private).execute
+        snippets = described_class.new(user, scope: :are_private, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet)
       end
 
       it "returns all snippets for 'are_internal' scope" do
-        snippets = described_class.new(user, scope: :are_internal).execute
+        snippets = described_class.new(user, scope: :are_internal, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_personal_snippet, internal_project_snippet)
       end
 
       it "returns all snippets for 'are_public' scope" do
-        snippets = described_class.new(user, scope: :are_public).execute
+        snippets = described_class.new(user, scope: :are_public, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(public_personal_snippet, public_project_snippet)
       end
@@ -62,7 +84,7 @@ RSpec.describe SnippetsFinder do
     context 'filter by author' do
       context 'when the author is a User object' do
         it 'returns all public and internal snippets' do
-          snippets = described_class.new(create(:user), author: user).execute
+          snippets = described_class.new(create(:user), author: user, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
         end
@@ -70,50 +92,50 @@ RSpec.describe SnippetsFinder do
 
       context 'when the author is the User id' do
         it 'returns all public and internal snippets' do
-          snippets = described_class.new(create(:user), author: user.id).execute
+          snippets = described_class.new(create(:user), author: user.id, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
         end
       end
 
       it 'returns internal snippets' do
-        snippets = described_class.new(user, author: user, scope: :are_internal).execute
+        snippets = described_class.new(user, author: user, scope: :are_internal, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_personal_snippet)
       end
 
       it 'returns private snippets' do
-        snippets = described_class.new(user, author: user, scope: :are_private).execute
+        snippets = described_class.new(user, author: user, scope: :are_private, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet)
       end
 
       it 'returns public snippets' do
-        snippets = described_class.new(user, author: user, scope: :are_public).execute
+        snippets = described_class.new(user, author: user, scope: :are_public, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(public_personal_snippet)
       end
 
       it 'returns all snippets' do
-        snippets = described_class.new(user, author: user).execute
+        snippets = described_class.new(user, author: user, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
 
       it 'returns only public snippets if unauthenticated user' do
-        snippets = described_class.new(nil, author: user).execute
+        snippets = described_class.new(nil, author: user, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(public_personal_snippet)
       end
 
       it 'returns all personal snippets for an admin in admin mode', :enable_admin_mode do
-        snippets = described_class.new(admin, author: user).execute
+        snippets = described_class.new(admin, author: user, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
 
       it 'returns all snippets (everything) for an admin when all_available="true" passed in', :enable_admin_mode do
-        snippets = described_class.new(admin, author: user, all_available: true).execute
+        snippets = described_class.new(admin, author: user, all_available: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(
           private_project_snippet,
@@ -125,20 +147,20 @@ RSpec.describe SnippetsFinder do
       end
 
       it 'returns all snippets for non-admin user, even when all_available="true" passed in' do
-        snippets = described_class.new(user, author: user, all_available: true).execute
+        snippets = described_class.new(user, author: user, all_available: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
 
       it 'returns all public and internal snippets for an admin without admin mode' do
-        snippets = described_class.new(admin, author: user).execute
+        snippets = described_class.new(admin, author: user, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
       end
 
       context 'when author is not valid' do
         it 'returns quickly' do
-          finder = described_class.new(admin, author: non_existing_record_id)
+          finder = described_class.new(admin, author: non_existing_record_id, organization_id: common_org.id)
 
           expect(finder).not_to receive(:init_collection)
           expect(Snippet).to receive(:none).and_call_original
@@ -150,7 +172,7 @@ RSpec.describe SnippetsFinder do
     context 'filter by project' do
       context 'when project is a Project object' do
         it 'returns public personal and project snippets for unauthorized user' do
-          snippets = described_class.new(nil, project: project).execute
+          snippets = described_class.new(nil, project: project, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(public_project_snippet)
         end
@@ -158,32 +180,32 @@ RSpec.describe SnippetsFinder do
 
       context 'when project is a Project id' do
         it 'returns public personal and project snippets for unauthorized user' do
-          snippets = described_class.new(nil, project: project.id).execute
+          snippets = described_class.new(nil, project: project.id, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(public_project_snippet)
         end
       end
 
       it 'returns public and internal snippets for non project members' do
-        snippets = described_class.new(user, project: project).execute
+        snippets = described_class.new(user, project: project, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_project_snippet, public_project_snippet)
       end
 
       it 'returns public snippets for non project members' do
-        snippets = described_class.new(user, project: project, scope: :are_public).execute
+        snippets = described_class.new(user, project: project, scope: :are_public, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(public_project_snippet)
       end
 
       it 'returns internal snippets for non project members' do
-        snippets = described_class.new(user, project: project, scope: :are_internal).execute
+        snippets = described_class.new(user, project: project, scope: :are_internal, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_project_snippet)
       end
 
       it 'does not return private snippets for non project members' do
-        snippets = described_class.new(user, project: project, scope: :are_private).execute
+        snippets = described_class.new(user, project: project, scope: :are_private, organization_id: common_org.id).execute
 
         expect(snippets).to be_empty
       end
@@ -191,7 +213,7 @@ RSpec.describe SnippetsFinder do
       it 'returns all snippets for project members' do
         project.add_developer(user)
 
-        snippets = described_class.new(user, project: project).execute
+        snippets = described_class.new(user, project: project, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_project_snippet, internal_project_snippet, public_project_snippet)
       end
@@ -199,33 +221,33 @@ RSpec.describe SnippetsFinder do
       it 'returns private snippets for project members' do
         project.add_developer(user)
 
-        snippets = described_class.new(user, project: project, scope: :are_private).execute
+        snippets = described_class.new(user, project: project, scope: :are_private, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_project_snippet)
       end
 
       it 'returns all snippets for an admin in admin mode', :enable_admin_mode do
-        snippets = described_class.new(admin, project: project).execute
+        snippets = described_class.new(admin, project: project, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(private_project_snippet, internal_project_snippet, public_project_snippet)
       end
 
       it 'returns public and internal snippets for an admin without admin mode' do
-        snippets = described_class.new(admin, project: project).execute
+        snippets = described_class.new(admin, project: project, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(internal_project_snippet, public_project_snippet)
       end
 
       context 'filter by author' do
-        let!(:other_user) { create(:user) }
-        let!(:other_private_project_snippet) { create(:project_snippet, :private, project: project, author: other_user) }
-        let!(:other_internal_project_snippet) { create(:project_snippet, :internal, project: project, author: other_user) }
-        let!(:other_public_project_snippet) { create(:project_snippet, :public, project: project, author: other_user) }
+        let_it_be(:other_user) { create(:user) }
+        let_it_be(:other_private_project_snippet) { create(:project_snippet, :private, project: project, author: other_user) }
+        let_it_be(:other_internal_project_snippet) { create(:project_snippet, :internal, project: project, author: other_user) }
+        let_it_be(:other_public_project_snippet) { create(:project_snippet, :public, project: project, author: other_user) }
 
         it 'returns all snippets for project members' do
           project.add_developer(user)
 
-          snippets = described_class.new(user, author: other_user).execute
+          snippets = described_class.new(user, author: other_user, organization_id: common_org.id).execute
 
           expect(snippets)
             .to contain_exactly(
@@ -238,7 +260,7 @@ RSpec.describe SnippetsFinder do
 
       context 'when project is not valid' do
         it 'returns quickly' do
-          finder = described_class.new(admin, project: non_existing_record_id)
+          finder = described_class.new(admin, project: non_existing_record_id, organization_id: common_org.id)
 
           expect(finder).not_to receive(:init_collection)
           expect(Snippet).to receive(:none).and_call_original
@@ -249,11 +271,11 @@ RSpec.describe SnippetsFinder do
 
     context 'filter by snippet type' do
       context 'when filtering by only_personal snippet', :enable_admin_mode do
-        let!(:admin_private_personal_snippet) { create(:personal_snippet, :private, author: admin) }
+        let_it_be(:admin_private_personal_snippet) { create(:personal_snippet, :private, author: admin, organization: common_org) }
         let(:user_without_snippets) { create :user }
 
         it 'returns all personal snippets for the admin' do
-          snippets = described_class.new(admin, only_personal: true).execute
+          snippets = described_class.new(admin, only_personal: true, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(
             admin_private_personal_snippet,
@@ -264,7 +286,7 @@ RSpec.describe SnippetsFinder do
         end
 
         it 'returns only personal snippets visible by user' do
-          snippets = described_class.new(user, only_personal: true).execute
+          snippets = described_class.new(user, only_personal: true, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(
             private_personal_snippet,
@@ -274,7 +296,7 @@ RSpec.describe SnippetsFinder do
         end
 
         it 'returns only internal or public personal snippets for user without snippets' do
-          snippets = described_class.new(user_without_snippets, only_personal: true).execute
+          snippets = described_class.new(user_without_snippets, only_personal: true, organization_id: common_org.id).execute
 
           expect(snippets).to contain_exactly(internal_personal_snippet, public_personal_snippet)
         end
@@ -285,7 +307,8 @@ RSpec.describe SnippetsFinder do
       it 'returns only personal snippet' do
         snippets = described_class.new(
           admin, ids: [private_personal_snippet.id,
-            internal_personal_snippet.id]
+            internal_personal_snippet.id],
+          organization_id: common_org.id
         ).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet)
@@ -294,13 +317,13 @@ RSpec.describe SnippetsFinder do
 
     context 'explore snippets' do
       it 'returns only public personal snippets for unauthenticated users' do
-        snippets = described_class.new(nil, explore: true).execute
+        snippets = described_class.new(nil, explore: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(public_personal_snippet)
       end
 
       it 'also returns internal personal snippets for authenticated users' do
-        snippets = described_class.new(user, explore: true).execute
+        snippets = described_class.new(user, explore: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(
           internal_personal_snippet, public_personal_snippet
@@ -308,7 +331,7 @@ RSpec.describe SnippetsFinder do
       end
 
       it 'returns all personal snippets for admins when in admin mode', :enable_admin_mode do
-        snippets = described_class.new(admin, explore: true).execute
+        snippets = described_class.new(admin, explore: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(
           private_personal_snippet, internal_personal_snippet, public_personal_snippet
@@ -316,7 +339,7 @@ RSpec.describe SnippetsFinder do
       end
 
       it 'also returns internal personal snippets for admins without admin mode' do
-        snippets = described_class.new(admin, explore: true).execute
+        snippets = described_class.new(admin, explore: true, organization_id: common_org.id).execute
 
         expect(snippets).to contain_exactly(
           internal_personal_snippet, public_personal_snippet
@@ -327,13 +350,14 @@ RSpec.describe SnippetsFinder do
     context 'filtering for snippets authored by banned users', feature_category: :insider_threat do
       let_it_be(:banned_user) { create(:user, :banned) }
 
-      let_it_be(:banned_public_personal_snippet) { create(:personal_snippet, :public, author: banned_user) }
+      let_it_be(:banned_public_personal_snippet) { create(:personal_snippet, :public, author: banned_user, organization: common_org) }
       let_it_be(:banned_public_project_snippet) { create(:project_snippet, :public, project: project, author: banned_user) }
 
       it 'returns banned snippets for admins when in admin mode', :enable_admin_mode do
         snippets = described_class.new(
           admin,
-          ids: [banned_public_personal_snippet.id, banned_public_project_snippet.id]
+          ids: [banned_public_personal_snippet.id, banned_public_project_snippet.id],
+          organization_id: common_org.id
         ).execute
 
         expect(snippets).to contain_exactly(
@@ -344,7 +368,8 @@ RSpec.describe SnippetsFinder do
       it 'does not return banned snippets for non-admin users' do
         snippets = described_class.new(
           user,
-          ids: [banned_public_personal_snippet.id, banned_public_project_snippet.id]
+          ids: [banned_public_personal_snippet.id, banned_public_project_snippet.id],
+          organization_id: common_org.id
         ).execute
 
         expect(snippets).to be_empty
@@ -358,12 +383,12 @@ RSpec.describe SnippetsFinder do
       end
 
       it 'returns only personal snippets when the user cannot read cross project' do
-        expect(described_class.new(user).execute).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
+        expect(described_class.new(user, organization_id: common_org.id).execute).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
 
       context 'when only project snippets are required' do
         it 'returns no records' do
-          expect(described_class.new(user, only_project: true).execute).to be_empty
+          expect(described_class.new(user, only_project: true, organization_id: common_org.id).execute).to be_empty
         end
       end
 
@@ -373,7 +398,7 @@ RSpec.describe SnippetsFinder do
         end
 
         it 'returns project snippets even without read_cross_project' do
-          snippets = described_class.new(user, project: project).execute
+          snippets = described_class.new(user, project: project, organization_id: common_org.id).execute
           expect(snippets).to contain_exactly(
             private_project_snippet,
             internal_project_snippet,
@@ -386,7 +411,7 @@ RSpec.describe SnippetsFinder do
     context 'when project snippets are disabled' do
       it 'returns quickly' do
         disabled_snippets_project = create(:project, :snippets_disabled)
-        finder = described_class.new(user, project: disabled_snippets_project.id)
+        finder = described_class.new(user, project: disabled_snippets_project.id, organization_id: common_org.id)
 
         expect(finder).not_to receive(:init_collection)
         expect(Snippet).to receive(:none).and_call_original
@@ -396,7 +421,7 @@ RSpec.describe SnippetsFinder do
 
     context 'no sort param is provided', :enable_admin_mode do
       it 'returns snippets sorted by id' do
-        snippets = described_class.new(admin).execute
+        snippets = described_class.new(admin, organization_id: common_org.id).execute
 
         expect(snippets.ids).to eq(Snippet.order_id_desc.ids)
       end
@@ -404,7 +429,7 @@ RSpec.describe SnippetsFinder do
 
     context 'sort param is provided', :enable_admin_mode do
       it 'returns snippets sorted by sort param' do
-        snippets = described_class.new(admin, sort: 'updated_desc').execute
+        snippets = described_class.new(admin, sort: 'updated_desc', organization_id: common_org.id).execute
 
         expect(snippets.ids).to eq(Snippet.order_updated_desc.ids)
       end
@@ -459,7 +484,7 @@ RSpec.describe SnippetsFinder do
 
       context 'when user is admin in admin mode', :enable_admin_mode do
         it 'returns all snippets with all_available flag' do
-          snippets = described_class.new(admin, all_available: true).execute
+          snippets = described_class.new(admin, all_available: true, organization_id: org1.id).execute
 
           expect(snippets).to include(snippet_org1_private, snippet_org1_public, snippet_org2_private, snippet_org2_public)
         end
@@ -470,24 +495,23 @@ RSpec.describe SnippetsFinder do
   it_behaves_like 'snippet visibility'
 
   context 'external authorization' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-    let!(:snippet) { create(:project_snippet, :public, project: project) }
-
-    before do
-      project.add_maintainer(user)
-    end
+    let_it_be(:org) { create(:organization) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, organization: org, maintainers: user) }
+    let_it_be(:snippet) { create(:project_snippet, :public, project: project) }
 
     it_behaves_like 'a finder with external authorization service' do
+      let(:org) { create(:organization) }
+      let(:project) { create(:project, organization: org) }
       let!(:subject) { create(:project_snippet, project: project) }
-      let(:execute) { described_class.new(user).execute }
-      let(:project_execute) { described_class.new(user, project: project).execute }
+      let(:execute) { described_class.new(user, organization_id: org.id).execute }
+      let(:project_execute) { described_class.new(user, project: project, organization_id: org.id).execute }
     end
 
     it 'includes the result if the external service allows access' do
       external_service_allow_access(user, project)
 
-      results = described_class.new(user, project: project).execute
+      results = described_class.new(user, project: project, organization_id: org.id).execute
 
       expect(results).to contain_exactly(snippet)
     end
@@ -495,7 +519,7 @@ RSpec.describe SnippetsFinder do
     it 'does not include any results if the external service denies access' do
       external_service_deny_access(user, project)
 
-      results = described_class.new(user, project: project).execute
+      results = described_class.new(user, project: project, organization_id: org.id).execute
 
       expect(results).to be_empty
     end

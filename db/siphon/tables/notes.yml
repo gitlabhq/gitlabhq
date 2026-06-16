@@ -7,6 +7,7 @@ ignored_columns:
 replication_targets:
   - name: clickhouse_main
     target: siphon_notes
+    dedup_by_columns_lookup_table: siphon_notes_pg_pkey_ordered
     dedup_by:
       - id
     reconcile:

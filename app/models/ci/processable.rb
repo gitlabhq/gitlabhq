@@ -60,6 +60,7 @@ module Ci
 
     accepts_nested_attributes_for :needs
     accepts_nested_attributes_for :job_definition_instance
+    accepts_nested_attributes_for :job_source
 
     scope :preload_needs, -> { preload(:needs) }
     scope :preload_job_definition_instances, -> { preload(:job_definition_instance) }
@@ -319,8 +320,12 @@ module Ci
 
     def job_dependencies_with_accessible_artifacts(all_dependencies)
       build_ids = all_dependencies.collect(&:id)
+      partition_ids = all_dependencies.collect(&:partition_id).uniq
 
-      Ci::Build.id_in(build_ids).builds_with_accessible_artifacts(self.project_id)
+      Ci::Build
+        .id_in(build_ids)
+        .in_partition(partition_ids)
+        .builds_with_accessible_artifacts(self.project_id)
     end
 
     def all_dependencies

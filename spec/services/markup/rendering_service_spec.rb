@@ -129,5 +129,27 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
         end
       end
     end
+
+    context 'with org-mode markup' do
+      let(:file_name) { 'foo.org' }
+      let(:text) do
+        <<~ORG
+          #+begin_src ruby
+          def hello
+            puts "world"
+          end
+          #+end_src
+        ORG
+      end
+
+      let(:rendered) { subject }
+
+      it 'renders with syntax highlighting' do
+        doc = Nokogiri::HTML.fragment(rendered)
+        pre = doc.css('pre').first
+        expect(pre).to be_present
+        expect(pre['data-canonical-lang']).to eq('ruby')
+      end
+    end
   end
 end

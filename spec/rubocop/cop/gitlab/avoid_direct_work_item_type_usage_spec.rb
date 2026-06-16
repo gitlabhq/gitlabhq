@@ -43,10 +43,4 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidDirectWorkItemTypeUsage, feature_categ
       SomeOtherModel.where(name: "Issue")
     RUBY
   end
-
-  it 'does not raise an offense for constant access' do
-    expect_no_offenses(<<~RUBY)
-      WorkItems::Type::TYPE_NAMES
-    RUBY
-  end
 end

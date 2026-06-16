@@ -7,7 +7,7 @@
 RSpec.shared_examples 'User deletes wiki page' do
   include WikiHelpers
 
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer, freeze: false) { create(:user) }
 
   let(:wiki_page) { create(:wiki_page, wiki: wiki) }
 

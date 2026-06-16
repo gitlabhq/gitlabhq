@@ -5,6 +5,7 @@ import { n__ } from '~/locale';
 import { isNotDiffable, stats } from '../utils/diff_file';
 
 export default {
+  name: 'DiffStats',
   components: { GlIcon, GlSprintf },
   props: {
     diffFile: {

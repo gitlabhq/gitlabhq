@@ -48,6 +48,7 @@ module API
       ]
     end
 
+    route_setting :authorization, skip_granular_token_authorization: :public_endpoint
     get 'web_commits/public_key' do
       handle_gitaly_unavailable if server_signature_error?
       handle_public_key_not_found if server_signature_public_key.empty?

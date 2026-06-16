@@ -62,6 +62,7 @@ export default {
       required: true,
     },
   },
+  emits: ['pagination-input'],
   computed: {
     emptyStateTitle() {
       return isCurrentUser(this.userId)

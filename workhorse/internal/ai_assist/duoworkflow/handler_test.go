@@ -224,6 +224,7 @@ func TestHandler_ShutdownWithActiveRunners(t *testing.T) {
 	defer apiServer.Close()
 
 	handler := NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}))
+	handler.stopWorkflowTimeout = 100 * time.Millisecond
 
 	httpServer := httptest.NewServer(handler.Build())
 	defer httpServer.Close()

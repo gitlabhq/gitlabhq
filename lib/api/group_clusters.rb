@@ -16,8 +16,8 @@ module API
       requires :id, type: String, desc: 'The ID of the group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List group clusters' do
-        detail 'This feature was introduced in GitLab 12.1. Returns a list of group clusters.'
+      desc 'List all group clusters' do
+        detail 'Lists all group clusters for a specified group.'
         success Entities::Cluster
         failure [
           { code: 403, message: 'Forbidden' }
@@ -35,8 +35,8 @@ module API
         present paginate(clusters_for_current_user), with: Entities::Cluster
       end
 
-      desc 'Get a single group cluster' do
-        detail 'This feature was introduced in GitLab 12.1. Gets a single group cluster.'
+      desc 'Retrieve a group cluster' do
+        detail 'Retrieves a specified group cluster.'
         success Entities::ClusterGroup
         failure [
           { code: 403, message: 'Forbidden' },
@@ -54,8 +54,8 @@ module API
         present cluster, with: Entities::ClusterGroup
       end
 
-      desc 'Add existing cluster to group' do
-        detail 'This feature was introduced in GitLab 12.1. Adds an existing Kubernetes cluster to the group.'
+      desc 'Create a group cluster' do
+        detail 'Creates a group cluster for a specified group by adding an existing Kubernetes cluster.'
         success Entities::ClusterGroup
         failure [
           { code: 400, message: 'Validation error' },
@@ -95,8 +95,8 @@ module API
         end
       end
 
-      desc 'Edit group cluster' do
-        detail 'This feature was introduced in GitLab 12.1. Updates an existing group cluster.'
+      desc 'Update a group cluster' do
+        detail 'Updates a specified group cluster.'
         success Entities::ClusterGroup
         failure [
           { code: 400, message: 'Validation error' },
@@ -134,8 +134,9 @@ module API
         end
       end
 
-      desc 'Delete group cluster' do
-        detail 'This feature was introduced in GitLab 12.1. Deletes an existing group cluster. Does not remove existing resources within the connected Kubernetes cluster.'
+      desc 'Delete a group cluster' do
+        detail 'Deletes a specified group cluster. Does not remove existing resources in the connected Kubernetes ' \
+          'cluster.'
         success Entities::ClusterGroup
         failure [
           { code: 403, message: 'Forbidden' },

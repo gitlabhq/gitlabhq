@@ -9,6 +9,7 @@ import ActionButtons from './action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 
 export default {
+  name: 'WidgetContentRow',
   components: {
     StatusIcon,
     HelpPopover,

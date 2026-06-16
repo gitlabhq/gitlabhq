@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
-  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: bulk_import) }
   let_it_be(:version_url) { 'https://gitlab.example/api/v4/version' }
 
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
@@ -126,9 +126,9 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
     end
 
     context 'when source supports batched migration' do
-      let_it_be(:bulk_import) { create(:bulk_import, source_version: BulkImport.min_gl_version_for_migration_in_batches) }
+      let_it_be(:bulk_import, freeze: false) { create(:bulk_import, source_version: BulkImport.min_gl_version_for_migration_in_batches) }
       let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-      let_it_be(:entity) { create(:bulk_import_entity, :project_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
+      let_it_be(:entity, freeze: false) { create(:bulk_import_entity, :project_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
 
       it 'requests relations export & schedules entity worker' do
         expected_url = "/projects/#{entity.source_xid}/export_relations?batched=true"

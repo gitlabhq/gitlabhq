@@ -23,8 +23,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     keys = [
-      'p_ci_build_tags.tag_id',                                     # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
-      'term_agreements.term_id',                                    # https://gitlab.com/gitlab-org/gitlab/-/issues/531367
+      'p_ci_build_tags.tag_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
       # https://gitlab.com/gitlab-org/gitlab/-/issues/560435
       'dingtalk_tracker_data.integration_id',
 

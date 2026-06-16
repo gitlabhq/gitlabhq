@@ -137,16 +137,6 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
           end
         end
 
-        context 'when there are no commits' do
-          before do
-            allow(resource).to receive(:commits_count).and_return(0)
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
         context 'when build feature is disabled' do
           before do
             project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)

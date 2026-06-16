@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/with_lock_retries_with_change'
 
-RSpec.describe RuboCop::Cop::Migration::WithLockRetriesWithChange do
+RSpec.describe RuboCop::Cop::Migration::WithLockRetriesWithChange, feature_category: :database do
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

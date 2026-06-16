@@ -15,6 +15,7 @@ export default {
       default: null,
     },
   },
+  emits: ['close', 'saved'],
   data() {
     return {
       targetPath: '',

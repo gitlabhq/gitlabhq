@@ -26,14 +26,16 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
+import downstreamPipelineStatusUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import { PIPELINE_ALIVE_STATUSES } from '~/ci/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
-import { updatePipelineNodes } from '../utils';
-import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
+import { createSubscriptionsCollection, updateDownstreamPipelineInList } from '../utils';
+import { MR_PIPELINE_TYPE_DETACHED, MR_PIPELINE_TYPE_MERGED_RESULT } from '../constants';
+
+const MAX_DOWNSTREAM_SUBSCRIPTIONS = 3;
 
 export default {
   name: 'PipelinesTableWrapper',
@@ -48,7 +50,6 @@ export default {
     PipelinesTable,
     RunPipelineButton,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
     errorStateSvgPath: {
@@ -78,7 +79,7 @@ export default {
   data() {
     return {
       hasError: false,
-      isRunningMergeRequestPipeline: false,
+      isCallingPostMergeRequestPipeline: false,
       pageInfo: {},
       pipelines: [],
       pipelinesCount: 0,
@@ -88,7 +89,8 @@ export default {
         after: '',
         before: '',
       },
-      pipelineSubscriptionHandles: new Map(), // Stores unsubscribe handles by pipeline GraphQL ID
+      forcedAliveParentIds: [],
+      forcedAliveDownstreamIds: [],
       pipelineCreationRequests: [],
       showCreationFailedAlert: false,
       isCreatingPipeline: false,
@@ -150,7 +152,6 @@ export default {
           this.pageInfo = pipelines.pageInfo;
           this.pipelinesCount = pipelines.count;
           this.updateBadgeCount(this.pipelinesCount);
-          this.subscribeToAlivePipelines();
           this.fetchDownstreamPipelines();
         }
       },
@@ -211,7 +212,7 @@ export default {
           ...pipeline,
           downstream: {
             ...pipeline.downstream,
-            nodes: this.enrichDownstreamNodes(
+            nodes: this.mergeDownstreamNodes(
               pipeline.downstream?.nodes || [],
               downstream.nodes || [],
             ),
@@ -235,14 +236,15 @@ export default {
       return !this.hasPipelines && !this.shouldRenderErrorState;
     },
     /**
-     * The "Run pipeline" button can only be rendered when:
-     * - In MR view -  we use `canCreatePipelineInTargetProject` for that purpose
-     * - If the latest pipeline has the `detached_merge_request_pipeline` flag
+     * The "Run pipeline" button is rendered when the latest pipeline is a
+     * merge request pipeline (detached or merged-results). When the latest
+     * pipeline is sourced from a push/branch, we hide the button to avoid
+     * suggesting an action the project's CI config may not support.
      *
      * @returns {Boolean}
      */
     canRenderPipelineButton() {
-      return this.latestPipelineDetachedFlag;
+      return this.isLatestPipelineDetachedOrMergeResultPipeline;
     },
     isForkMergeRequest() {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
@@ -258,16 +260,15 @@ export default {
       );
     },
     /**
-     * Checks if either `detached_merge_request_pipeline` or
-     * `merge_request_pipeline` are true in the first
-     * object in the pipelines array.
+     * Checks if the latest pipeline is a detached merge request pipeline
+     * or a merged-results pipeline.
      *
      * @returns {Boolean}
      */
-    latestPipelineDetachedFlag() {
-      return Boolean(
-        this.latestPipeline?.mergeRequestEventType &&
-          this.latestPipeline?.mergeRequestEventType === MR_PIPELINE_TYPE_DETACHED,
+    isLatestPipelineDetachedOrMergeResultPipeline() {
+      const eventType = this.latestPipeline?.mergeRequestEventType;
+      return (
+        eventType === MR_PIPELINE_TYPE_DETACHED || eventType === MR_PIPELINE_TYPE_MERGED_RESULT
       );
     },
     showPagination() {
@@ -277,16 +278,41 @@ export default {
         (this.pageInfo?.hasNextPage || this.pageInfo?.hasPreviousPage)
       );
     },
-    alivePipelines() {
-      return this.pipelines.filter((pipeline) => {
-        return PIPELINE_ALIVE_STATUSES.includes(pipeline.detailedStatus?.name);
-      });
+    aliveParentIds() {
+      const ids = new Set([
+        ...this.pipelines
+          .filter((p) => PIPELINE_ALIVE_STATUSES.includes(p.detailedStatus?.name))
+          .map((p) => p.graphqlId),
+        ...this.forcedAliveParentIds,
+      ]);
+      return [...ids].sort();
+    },
+    aliveDownstreamRefs() {
+      const refs = [];
+      const seenIds = new Set();
+      for (const pipeline of this.pipelinesWithDownstream) {
+        const downstreamNodes = (pipeline.downstream?.nodes || []).slice(
+          0,
+          MAX_DOWNSTREAM_SUBSCRIPTIONS,
+        );
+        for (const downstream of downstreamNodes) {
+          if (seenIds.has(downstream.id)) continue;
+          if (
+            PIPELINE_ALIVE_STATUSES.includes(downstream.detailedStatus?.name) ||
+            this.forcedAliveDownstreamIds.includes(downstream.id)
+          ) {
+            refs.push({ id: downstream.id, parentGraphqlId: pipeline.graphqlId });
+            seenIds.add(downstream.id);
+          }
+        }
+      }
+      return refs;
     },
     hasInProgressCreationRequests() {
       return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
     },
     showRunPipelineButtonLoader() {
-      return this.hasInProgressCreationRequests;
+      return this.isCallingPostMergeRequestPipeline || this.hasInProgressCreationRequests;
     },
   },
   watch: {
@@ -332,6 +358,67 @@ export default {
       deep: true,
       immediate: true,
     },
+    aliveParentIds(ids) {
+      this.parentSubscriptions.syncSubscriptions(ids, (id) => {
+        const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
+          document: mrPipelineStatusesUpdatedSubscription,
+          variables: { pipelineId: id },
+          updateQuery: (previousData, { subscriptionData }) => {
+            const updatedPipeline = subscriptionData?.data?.ciPipelineStatusUpdated;
+            if (!updatedPipeline) return previousData;
+
+            const index = this.pipelines.findIndex((p) => p.graphqlId === updatedPipeline.id);
+            if (index !== -1) {
+              const existing = this.pipelines[index];
+              this.pipelines.splice(index, 1, {
+                ...existing,
+                ...updatedPipeline,
+                id: existing.id,
+                graphqlId: existing.graphqlId,
+                mergeRequest: existing.mergeRequest,
+              });
+            }
+
+            return previousData;
+          },
+          onError: (error) => {
+            Sentry.captureException(error);
+          },
+        });
+        return unsubscribe;
+      });
+    },
+    aliveDownstreamRefs(refs) {
+      this.downstreamSubscriptions.syncSubscriptions(
+        refs.map((r) => r.id),
+        (id) => {
+          const ref = refs.find((r) => r.id === id);
+          const { parentGraphqlId } = ref;
+          const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
+            document: downstreamPipelineStatusUpdatedSubscription,
+            variables: { pipelineId: id },
+            updateQuery: (previousData, { subscriptionData }) => {
+              const updated = subscriptionData?.data?.ciPipelineStatusUpdated;
+              if (updated) {
+                this.pipelines = updateDownstreamPipelineInList(this.pipelines, {
+                  parentGraphqlId,
+                  updatedDownstream: updated,
+                });
+              }
+              return previousData;
+            },
+            onError: (error) => {
+              Sentry.captureException(error);
+            },
+          });
+          return unsubscribe;
+        },
+      );
+    },
+  },
+  created() {
+    this.parentSubscriptions = createSubscriptionsCollection();
+    this.downstreamSubscriptions = createSubscriptionsCollection();
   },
   mounted() {
     this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
@@ -342,74 +429,9 @@ export default {
   beforeUnmount() {
     clearTimeout(this.loaderTimeout);
     this.pollingVisibilityCleanup?.();
+    this.clearAllSubscriptions();
   },
   methods: {
-    /**
-     * Subscribe to status updates for all alive pipelines on the current page.
-     */
-    subscribeToAlivePipelines() {
-      this.alivePipelines.forEach((pipeline) => {
-        const pipelineGid = pipeline.graphqlId;
-
-        if (this.pipelineSubscriptionHandles.has(pipelineGid)) {
-          return;
-        }
-
-        const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
-          document: mrPipelineStatusesUpdatedSubscription,
-          variables: {
-            pipelineId: pipelineGid,
-          },
-          updateQuery: (previousData, { subscriptionData }) => {
-            const updatedPipeline = subscriptionData?.data?.ciPipelineStatusUpdated;
-            if (!updatedPipeline) {
-              return previousData;
-            }
-
-            const previousPipelines = previousData?.project?.mergeRequest?.pipelines?.nodes || [];
-
-            if (!previousPipelines.length) {
-              return previousData;
-            }
-
-            if (!PIPELINE_ALIVE_STATUSES.includes(updatedPipeline.detailedStatus?.name)) {
-              this.unsubscribeFromPipeline(updatedPipeline.id);
-            }
-
-            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
-
-            return {
-              ...previousData,
-              project: {
-                ...previousData.project,
-                mergeRequest: {
-                  ...previousData.project.mergeRequest,
-                  pipelines: {
-                    ...previousData.project.mergeRequest.pipelines,
-                    nodes: updatedNodes,
-                  },
-                },
-              },
-            };
-          },
-          onError: (error) => {
-            this.pipelineSubscriptionHandles.delete(pipelineGid);
-            Sentry.captureException(error, {
-              tags: { component: this.$options.name },
-            });
-          },
-        });
-
-        this.pipelineSubscriptionHandles.set(pipelineGid, unsubscribe);
-      });
-    },
-    unsubscribeFromPipeline(pipelineGid) {
-      const unsubscribe = this.pipelineSubscriptionHandles.get(pipelineGid);
-      if (unsubscribe) {
-        unsubscribe();
-        this.pipelineSubscriptionHandles.delete(pipelineGid);
-      }
-    },
     cancelPipeline(pipeline) {
       this.executePipelineAction({
         pipeline,
@@ -419,6 +441,7 @@ export default {
       });
     },
     retryPipeline(pipeline) {
+      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.graphqlId])];
       this.executePipelineAction({
         pipeline,
         mutation: retryPipelineMutation,
@@ -453,14 +476,10 @@ export default {
       }
     },
     clearAllSubscriptions() {
-      this.pipelineSubscriptionHandles.forEach((unsubscribe) => {
-        unsubscribe();
-      });
-      this.pipelineSubscriptionHandles.clear();
+      this.parentSubscriptions.unsubscribeAll();
+      this.downstreamSubscriptions.unsubscribeAll();
     },
-    // Enriches skeleton downstream nodes with full backfill details (name, path, project, etc.)
-    // while preserving existing fields (e.g. subscription-updated detailedStatus).
-    enrichDownstreamNodes(existingNodes, newNodes) {
+    mergeDownstreamNodes(existingNodes, newNodes) {
       return newNodes.map((newNode) => {
         const match = existingNodes.find((n) => n.id === newNode.id);
         return match ? { ...newNode, ...match } : newNode;
@@ -529,9 +548,7 @@ export default {
           this.mergePipelineUpdate(updatedPipeline);
         }
       } catch (error) {
-        Sentry.captureException(error, {
-          tags: { component: this.$options.name },
-        });
+        Sentry.captureException(error);
       }
     },
     mergePipelineUpdate(updatedPipeline) {
@@ -545,10 +562,18 @@ export default {
           mergeRequest: existing.mergeRequest || updatedPipeline.mergeRequest,
         };
         this.pipelines.splice(index, 1, mergedPipeline);
-        this.subscribeToAlivePipelines();
+        // watchers handle subscription reconciliation automatically
       }
     },
     onJobActionExecuted(pipeline) {
+      const downstreamIds = (pipeline.downstream?.nodes || [])
+        .slice(0, MAX_DOWNSTREAM_SUBSCRIPTIONS)
+        .map((d) => d.id);
+      if (downstreamIds.length) {
+        this.forcedAliveDownstreamIds = [
+          ...new Set([...this.forcedAliveDownstreamIds, ...downstreamIds]),
+        ];
+      }
       this.refetchSinglePipeline(pipeline.graphqlId);
       this.fetchDownstreamPipelines(pipeline.graphqlId);
     },
@@ -564,15 +589,17 @@ export default {
      */
 
     async onClickRunPipeline() {
+      if (this.isCallingPostMergeRequestPipeline) return;
+
       try {
-        this.isRunningMergeRequestPipeline = true;
+        this.isCallingPostMergeRequestPipeline = true;
         this.startDebouncedPipelineLoader();
 
         await Api.postMergeRequestPipeline(this.projectId, {
           mergeRequestId: this.mergeRequestId,
         });
       } catch (e) {
-        const unauthorized = e.response.status === HTTP_STATUS_UNAUTHORIZED;
+        const unauthorized = e.response?.status === HTTP_STATUS_UNAUTHORIZED;
         let errorMessage = __(
           'An error occurred while trying to run a new pipeline for this merge request.',
         );
@@ -588,9 +615,9 @@ export default {
             link: helpPagePath('ci/pipelines/merge_request_pipelines.md'),
           },
         });
+      } finally {
+        this.isCallingPostMergeRequestPipeline = false;
       }
-
-      this.isRunningMergeRequestPipeline = false;
     },
     tryRunPipeline() {
       if (!this.shouldShowSecurityWarning) {
@@ -611,6 +638,8 @@ export default {
     },
     nextPage() {
       this.downstreamData = {};
+      this.forcedAliveParentIds = [];
+      this.forcedAliveDownstreamIds = [];
       this.clearAllSubscriptions();
       this.pagination = {
         after: this.pageInfo?.endCursor || '',
@@ -622,6 +651,8 @@ export default {
 
     prevPage() {
       this.downstreamData = {};
+      this.forcedAliveParentIds = [];
+      this.forcedAliveDownstreamIds = [];
       this.clearAllSubscriptions();
       this.pagination = {
         after: '',

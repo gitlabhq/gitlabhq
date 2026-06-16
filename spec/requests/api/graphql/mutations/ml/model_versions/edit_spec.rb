@@ -60,6 +60,18 @@ RSpec.describe 'Editing of a machine learning model version', feature_category: 
         model_version.reload
         expect(model_version.description).to eq(new_description)
       end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_model_version do
+        let(:user) { current_user }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:ml_model_version_edit,
+            { project_path: project.full_path, model_id: model_id, version: version, description: new_description },
+            'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
 
     context 'when the model is not part of the project' do

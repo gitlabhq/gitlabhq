@@ -3,6 +3,7 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf, __ } from '~/locale';
 
 export default {
+  name: 'CiLintResultsParam',
   props: {
     stage: {
       type: String,

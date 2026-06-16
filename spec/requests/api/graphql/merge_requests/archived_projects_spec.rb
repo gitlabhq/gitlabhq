@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe 'getting current users merge requests from an archived project', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :archived, :public) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :archived, :public) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
-  let_it_be(:merge_request) do
+  let_it_be(:merge_request, freeze: false) do
     create(:merge_request, :unique_branches, source_project: project, assignees: [current_user])
   end
 

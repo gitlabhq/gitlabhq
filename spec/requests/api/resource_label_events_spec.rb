@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ResourceLabelEvents, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: user.namespace, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: user.namespace, developers: user) }
   let_it_be(:label) { create(:label, project: project) }
 
   context 'when eventable is an Issue' do

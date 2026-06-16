@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User sees pipelines triggered by merge request', :js, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include TestReportsHelper
+  using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
@@ -27,21 +28,23 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   let(:expected_detached_mr_tag) { 'merge request' }
 
-  before do
-    # rubocop:disable RSpec/AvoidConditionalStatements
-    stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
-    # rubocop:enable RSpec/AvoidConditionalStatements
-
-    project.update!(only_allow_merge_if_pipeline_succeeds: true)
-    stub_application_setting(auto_devops_enabled: false)
-    stub_ci_pipeline_yaml_file(YAML.dump(config))
-    project.add_maintainer(user)
-    sign_in(user)
+  where(:mr_pipelines_graphql) do
+    [true, false]
   end
 
-  context 'with feature flag `mr_pipelines_graphql turned off`' do
+  with_them do
     before do
-      stub_feature_flags(mr_pipelines_graphql: false)
+      # rubocop:disable RSpec/AvoidConditionalStatements
+      stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+      # rubocop:enable RSpec/AvoidConditionalStatements
+
+      stub_feature_flags(mr_pipelines_graphql: mr_pipelines_graphql)
+
+      project.update!(only_allow_merge_if_pipeline_succeeds: true)
+      stub_application_setting(auto_devops_enabled: false)
+      stub_ci_pipeline_yaml_file(YAML.dump(config))
+      project.add_maintainer(user)
+      sign_in(user)
     end
 
     context 'when a user created a merge request in the parent project' do
@@ -77,7 +80,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Created', count: 2)
+          expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Created', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
         end
       end
@@ -113,7 +116,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending', count: 4)
+            expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 4)
 
             expect(all('[data-testid="pipeline-url-link"]')[0])
               .to have_content("##{detached_merge_request_pipeline_2.id}")
@@ -211,7 +214,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees a branch pipeline in pipeline tab' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Created', count: 1)
+            expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Created', count: 1)
             expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{push_pipeline.id}")
           end
         end
@@ -264,7 +267,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending', count: 2)
+          expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
         end
       end
@@ -306,7 +309,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending', count: 4)
+            expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 4)
 
             expect(all('[data-testid="pipeline-url-link"]')[0])
               .to have_content("##{detached_merge_request_pipeline_2.id}")

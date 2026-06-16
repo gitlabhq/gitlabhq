@@ -8,6 +8,7 @@ module Import
       extend Forwardable
 
       StrategyError = Class.new(StandardError)
+      ExportNotReadyError = Class.new(StrategyError)
 
       private
 
@@ -46,6 +47,11 @@ module Import
         strategy_execute
 
         true
+      rescue ExportNotReadyError
+        # Re-raise so the calling worker (e.g. ParallelProjectExportWorker) can
+        # retry the whole export. Other StrategyError failures (e.g. a failed
+        # web upload) keep the existing notify-and-return-false behavior below.
+        raise
       rescue StandardError => e
         payload = { message: "After export strategy failed" }
         Gitlab::ExceptionLogFormatter.format!(e, payload)
@@ -65,21 +71,27 @@ module Import
 
       def ensure_export_ready!(current_user, max_retries: 5, base_delay: 1)
         retries = 0
+        diagnostics = {}
 
         loop do
-          if retries > 0
-            Project.uncached do
-              project.association(:import_export_uploads).reset
-            end
+          export_ready = Project.uncached do
+            project.association(:import_export_uploads).reset if retries > 0
+            ready = project.export_file_exists?(current_user)
+            diagnostics = capture_export_diagnostics(current_user) unless ready
+            ready
           end
 
-          return if project.export_file_exists?(current_user)
+          break if export_ready
 
           retries += 1
-          raise StrategyError if retries > max_retries
+          raise ExportNotReadyError if retries > max_retries
 
           delay = base_delay * (2**(retries - 1))
-          log_info({ message: "Export file not ready, retrying", retry_count: retries, backoff_seconds: delay })
+          log_info({
+            message: "Export file not ready, retrying",
+            retry_count: retries,
+            backoff_seconds: delay
+          }.merge(diagnostics))
           sleep(delay)
         end
       end
@@ -111,6 +123,29 @@ module Import
       end
 
       private
+
+      # TODO: Remove these diagnostic helpers once #329982 is resolved.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/329982
+      # rubocop:disable CodeReuse/ActiveRecord -- diagnostic-only query; removed with the rest of this code once #329982 is resolved
+      def capture_export_diagnostics(current_user)
+        upload = project.import_export_upload_by_user(current_user)
+
+        {
+          current_user_id: current_user.id,
+          upload_id: upload&.id,
+          upload_count_for_user: project.import_export_uploads.where(user_id: current_user.id).count,
+          export_file_column_present: !upload.nil? && upload[:export_file].present?,
+          export_file_exists: !!upload&.export_file_exists?,
+          export_archive_exists: safe_export_archive_exists?(upload)
+        }
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      def safe_export_archive_exists?(upload)
+        upload&.export_archive_exists?
+      rescue StandardError
+        nil
+      end
 
       def delete_export_file(current_user)
         return if locks_present? || !delete_export?

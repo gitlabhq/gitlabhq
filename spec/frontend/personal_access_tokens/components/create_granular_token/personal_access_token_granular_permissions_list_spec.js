@@ -23,11 +23,18 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     });
   };
 
-  const findCategory = (key) => wrapper.findByTestId(`category-${key}`);
-  const findCategoryHeading = (key) => findCategory(key).find('[data-testid="category-heading"]');
-  const findResourceName = (key) => findCategory(key).findAll('[data-testid="resource-name"]');
-  const findResourceDescription = (key) =>
-    findCategory(key).findAll('[data-testid="resource-description"]');
+  const findSelectedCategories = () => wrapper.findAll('[data-testid="selected-category"]');
+  const findSelectedCategory = (index) => findSelectedCategories().at(index);
+  const findCategoryHeading = (index) =>
+    findSelectedCategory(index).find('[data-testid="selected-category-heading"]');
+
+  const findResources = () => wrapper.findAll('[data-testid="selected-resource"]');
+  const findResource = (index) => findResources().at(index);
+  const findResourceName = (index) =>
+    findResource(index).find('[data-testid="selected-resource-name"]');
+  const findResourceDescription = (index) =>
+    findResource(index).find('[data-testid="selected-resource-description"]');
+
   const findListboxes = () => wrapper.findAllComponents(GlCollapsibleListbox);
   const findListbox = (index) => findListboxes().at(index);
   const findButtons = () => wrapper.findAllComponents(GlButton);
@@ -60,18 +67,17 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     });
 
     it('renders a row for each selected resource with category', () => {
-      expect(findCategoryHeading('groups_and_projects').text()).toBe('Groups and projects');
+      expect(findCategoryHeading(0).text()).toBe('Groups and projects');
+      expect(findCategoryHeading(1).text()).toBe('Merge request');
 
-      expect(findResourceName('groups_and_projects').at(0).text()).toBe('Project');
-      expect(findResourceDescription('groups_and_projects').at(0).text()).toBe(
-        'Project resource description',
-      );
+      expect(findResourceName(0).text()).toBe('Project');
+      expect(findResourceDescription(0).text()).toBe('Project resource description');
 
-      expect(findCategoryHeading('merge_request').text()).toBe('Merge request');
-      expect(findResourceName('merge_request').at(0).text()).toBe('Repository');
-      expect(findResourceDescription('merge_request').at(0).text()).toBe(
-        'Repository resource description',
-      );
+      expect(findResourceName(1).text()).toBe('Contributed project');
+      expect(findResourceDescription(1).text()).toBe('Contributed project resource description');
+
+      expect(findResourceName(2).text()).toBe('Repository');
+      expect(findResourceDescription(2).text()).toBe('Repository resource description');
     });
 
     it('renders a listbox for each selected resource', () => {

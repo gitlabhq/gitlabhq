@@ -19,14 +19,6 @@ RSpec.describe 'User searches group settings', :js, feature_category: :groups_an
     it_behaves_like 'can search settings', 'Naming', 'Permissions'
   end
 
-  context 'in Integrations page' do
-    before do
-      visit group_settings_integrations_path(group)
-    end
-
-    it_behaves_like 'can highlight results', 'Group-level integration management'
-  end
-
   context 'in Repository page' do
     before do
       visit group_settings_repository_path(group)

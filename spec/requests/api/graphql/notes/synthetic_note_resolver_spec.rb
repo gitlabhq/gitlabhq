@@ -9,7 +9,7 @@ RSpec.describe 'Query.synthetic_note(noteable_id, sha)', feature_category: :team
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:label_event, refind: true) do
+  let_it_be_with_refind(:label_event) do
     create(:resource_label_event, user: current_user, issue: issue, label: label, action: 'add', created_at: 2.days.ago)
   end
 

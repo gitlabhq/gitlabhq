@@ -1,7 +1,7 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ネームスペースAPI
 ---
 
@@ -14,23 +14,24 @@ title: ネームスペースAPI
 
 {{< history >}}
 
-- 課金関連フィールドの表示レベルは、`restrict_namespace_api_billing_fields`という[フラグ](../administration/feature_flags/_index.md)でGitLab 18.3で変更されました。デフォルトでは無効になっています。
+- GitLab 18.3で請求関連フィールドの表示レベルが変更されました。[フラグ](../administration/feature_flags/_index.md)名: `restrict_namespace_api_billing_fields`。デフォルトでは無効になっています。
+- GitLab 18.9で請求関連フィールドの表示レベルが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/565598)されました。機能フラグ`restrict_namespace_api_billing_fields`は削除されました。
 
 {{< /history >}}
 
-このAPIは、ユーザーとグループの編成に使用される特別なリソースカテゴリであるネームスペースを操作するために使用します。詳細については、[namespaces](../user/namespace/_index.md)を参照してください。
+このAPIを使用して、ネームスペースを操作します。ネームスペースは、ユーザーとグループを整理するために使用される特別なリソースカテゴリです。詳細については、[ネームスペース](../user/namespace/_index.md)を参照してください。
 
 このAPIは、[ページネーション](rest/_index.md#pagination)を使用して結果をフィルタリングします。
 
-## すべてのネームスペースをリスト表示 {#list-all-namespaces}
+## すべてのネームスペースを一覧表示 {#list-all-namespaces}
 
 {{< history >}}
 
-- `top_level_only`[導入](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) GitLab 16.8。
+- `top_level_only`はGitLab 16.8で[導入](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600)されました。
 
 {{< /history >}}
 
-現在のユーザーが利用できるすべてのネームスペースをリスト表示します。ユーザーが管理者の場合、このエンドポイントはインスタンス内のすべてのネームスペースを返します。
+現在のユーザーが利用可能なすべてのネームスペースを一覧表示します。ユーザーが管理者の場合、このエンドポイントはインスタンス内のすべてのネームスペースを返します。
 
 ```plaintext
 GET /namespaces
@@ -38,12 +39,12 @@ GET /namespaces
 
 | 属性          | 型    | 必須 | 説明                                                                             |
 |--------------------|---------|----------|-----------------------------------------------------------------------------------------|
-| `search`           | 文字列  | いいえ       | 名前またはパスに指定された値を含むネームスペースのみを返します。         |
+| `search`           | 文字列  | いいえ       | 指定された値が名前またはパスに含まれるネームスペースのみを返します。         |
 | `owned_only`       | ブール値 | いいえ       | `true`の場合、現在のユーザーによるネームスペースのみを返します。                                 |
-| `top_level_only`   | ブール値 | いいえ       | GitLab 16.8以降、`true`の場合、トップレベルのネームスペースのみを返します。                 |
-| `full_path_search` | ブール値 | いいえ       | `true`の場合、`search`パラメータはネームスペースの完全なパスに対して照合されます。 |
+| `top_level_only`   | ブール値 | いいえ       | GitLab 16.8以降では、`true`の場合、トップレベルのネームスペースのみを返します。                 |
+| `full_path_search` | ブール値 | いいえ       | `true`の場合、`search`パラメータはネームスペースのフルパスと照合されます。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -51,7 +52,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/namespaces"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -128,7 +129,7 @@ curl --request GET \
 ]
 ```
 
-## ネームスペースの詳細を取得 {#get-details-on-a-namespace}
+## ネームスペースの詳細を取得する {#retrieve-namespace-details}
 
 指定されたネームスペースの詳細を取得します。
 
@@ -138,9 +139,9 @@ GET /namespaces/:id
 
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい      | IDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)のネームスペース |
+| `id`      | 整数または文字列 | はい      | IDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)のネームスペース。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -148,7 +149,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/namespaces/2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -173,13 +174,14 @@ curl --request GET \
 }
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces/group1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/namespaces/group1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -205,7 +207,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## ネームスペースの可用性を確認 {#verify-namespace-availability}
 
-指定されたネームスペースがすでに存在するかどうかを確認します。ネームスペースが存在する場合、エンドポイントは代替名を提案します。
+指定されたネームスペースが存在するかどうかを確認します。ネームスペースが存在する場合、エンドポイントは代替名を提案します。
 
 ```plaintext
 GET /namespaces/:namespace/exists
@@ -216,7 +218,7 @@ GET /namespaces/:namespace/exists
 | `namespace` | 文字列  | はい      | ネームスペースのパス。 |
 | `parent_id` | 整数 | いいえ       | 親ネームスペースのID。指定されていない場合、トップレベルのネームスペースのみを返します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -224,7 +226,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/namespaces/my-group/exists?parent_id=1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

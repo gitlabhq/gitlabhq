@@ -2,7 +2,10 @@
 import { GlTableLite, GlBadge, GlLink, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
-import { CI_RESOURCE_DETAILS_PAGE_NAME } from '~/ci/catalog/router/constants';
+import {
+  CI_RESOURCE_DETAILS_PAGE_NAME,
+  CI_RESOURCE_DETAILS_USAGE_TAB,
+} from '~/ci/catalog/router/constants';
 
 export default {
   name: 'CiAnalyticsList',
@@ -27,6 +30,7 @@ export default {
         return {
           name: resource.name,
           detailsPath: this.getDetailsPath(resource),
+          usagePath: this.getUsagePath(resource),
           latestVersion: this.getLatestVersion(resource),
           usageStatistics: this.getUsageStatistics(resource),
           components: this.getComponents(resource),
@@ -39,6 +43,12 @@ export default {
       return {
         name: CI_RESOURCE_DETAILS_PAGE_NAME,
         params: { id: item?.fullPath },
+      };
+    },
+    getUsagePath(item) {
+      return {
+        ...this.getDetailsPath(item),
+        query: { tab: CI_RESOURCE_DETAILS_USAGE_TAB },
       };
     },
     getLatestVersion(item) {
@@ -89,6 +99,10 @@ export default {
     <template #cell(projects)="{ item }">
       <gl-link :to="item.detailsPath" class="!gl-text-default">{{ item.name }}</gl-link>
       <gl-badge variant="info">{{ item.latestVersion }}</gl-badge>
+    </template>
+
+    <template #cell(usageStatistics)="{ item }">
+      <gl-link :to="item.usagePath">{{ item.usageStatistics }}</gl-link>
     </template>
   </gl-table-lite>
 </template>

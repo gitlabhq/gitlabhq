@@ -62,7 +62,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, :silence_stdout, featur
 
     context 'when all permissions are valid' do
       it 'completes successfully' do
-        expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
+        expect { run }.to output(/Permission definitions are valid/).to_stdout
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, :silence_stdout, featur
       let(:enabled_permissions) { %i[missing_but_excluded] }
 
       it 'does not report a violation' do
-        expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
+        expect { run }.to output(/Permission definitions are valid/).to_stdout
       end
     end
 
@@ -397,7 +397,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, :silence_stdout, featur
         end
 
         it 'completes successfully' do
-          expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
+          expect { run }.to output(/Permission definitions are valid/).to_stdout
         end
       end
     end

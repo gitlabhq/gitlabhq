@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'AudioViewer',
   props: {
     blob: {
       type: Object,

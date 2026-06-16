@@ -4,7 +4,8 @@ classes:
 - Users::Callout
 feature_categories:
 - navigation
-description: TODO
+description: Records that a user has permanently dismissed a UI callout. One row per
+  user per feature_name enum value.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16735
 milestone: '10.5'
 gitlab_schema: gitlab_main_user

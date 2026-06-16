@@ -38,7 +38,7 @@ class Groups::GroupLinksController < Groups::ApplicationController
   private
 
   def group_link
-    @group_link ||= group.shared_with_group_links.find(params[:id])
+    @group_link ||= group.shared_with_group_links.find(params.permit(:id)[:id])
   end
 
   def group_link_params

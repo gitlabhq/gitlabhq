@@ -1,5 +1,5 @@
 export const GFM_POPOVER_SELECTOR =
-  '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone';
+  '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone, .gfm-commit';
 
 export const unrestrictedPages = [
   // Group wiki

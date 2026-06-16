@@ -1,0 +1,9 @@
+---
+name: create_branch_rule
+description: Grants the ability to create a branch rule
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_branch_rule

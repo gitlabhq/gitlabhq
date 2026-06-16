@@ -11,15 +11,18 @@ description: Automatic detection and filtering of false positives in secret dete
 - Tier: Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - Introduced in [epic 17885](https://gitlab.com/groups/gitlab-org/-/work_items/20152) in GitLab 18.10 as a [beta](../../../policy/development_stages_support.md#beta) feature with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_secret_detection_false_positive`. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227074).
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/21233) in GitLab 19.1.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Secret false positive detection is an opt-in feature. When you enable it, GitLab Duo analyzes each detected secret to determine the likelihood that it's a false positive. Detection is available for all secret types detected by [GitLab secret detection](../secret_detection/_index.md).
 
@@ -44,7 +47,7 @@ False positive detection runs automatically in the following scenarios:
 - The scan detects secrets.
 - GitLab Duo features are enabled for the project.
 
-The analysis runs in the background and results appear in the vulnerability report once processing is complete.
+The analysis runs in the background and results appear in the vulnerability report after processing is complete.
 
 ## Manual trigger
 
@@ -134,7 +137,7 @@ The false positive flag is removed and the FP confidence score reverts to 0. The
 
 ## Providing feedback
 
-False positive detection is a beta feature and we welcome your feedback. If you encounter issues or have suggestions for improvement, please provide feedback in [issue 592861](https://gitlab.com/gitlab-org/gitlab/-/work_items/592861).
+Share your feedback in [issue 592861](https://gitlab.com/gitlab-org/gitlab/-/work_items/592861).
 
 ## Related topics
 

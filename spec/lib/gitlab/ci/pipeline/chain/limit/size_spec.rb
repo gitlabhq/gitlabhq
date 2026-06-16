@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:project, reload: true) { create(:project, :repository, namespace: namespace) }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: namespace) }
   let_it_be(:default_plan) { create(:default_plan) }
   let_it_be(:user) { create(:user) }
 

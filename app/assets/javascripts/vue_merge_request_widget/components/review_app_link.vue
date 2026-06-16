@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'ReviewAppLink',
   components: {
     GlButton,
     GlIcon,

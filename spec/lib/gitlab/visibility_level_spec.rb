@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:klass) do
+  let_it_be(:klass, freeze: false) do
     Class.new(ApplicationRecord) do
       include Gitlab::VisibilityLevel
 
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
   end
 
   describe '.allowed_levels_for_user' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group) }
 
     subject { described_class.allowed_levels_for_user(user, group) }
 
@@ -214,8 +214,8 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
       end
 
       context 'with different organization and group visibilities' do
-        let_it_be(:private_organization) { create(:organization, :private) }
-        let_it_be(:public_organization) { create(:organization, :public) }
+        let_it_be(:private_organization, freeze: false) { create(:organization, :private) }
+        let_it_be(:public_organization, freeze: false) { create(:organization, :public) }
 
         # rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective -- For readability
         where(:organization, :group_visibility, :allowed_visibility_levels) do
@@ -301,9 +301,9 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
   end
 
   describe '.by_visibility_level' do
-    let_it_be(:private_record) { klass.create!(id: 1, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-    let_it_be(:internal_record) { klass.create!(id: 2, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let_it_be(:public_record) { klass.create!(id: 3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let_it_be(:private_record, freeze: false) { klass.create!(id: 1, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+    let_it_be(:internal_record, freeze: false) { klass.create!(id: 2, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let_it_be(:public_record, freeze: false) { klass.create!(id: 3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
     it 'returns records with the specified visibility level' do
       expect(klass.by_visibility_level(Gitlab::VisibilityLevel::PUBLIC)).to contain_exactly(public_record)

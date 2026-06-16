@@ -1,0 +1,14 @@
+---
+table_name: cd_version_sets
+classes:
+- Cd::VersionSet
+feature_categories:
+- continuous_delivery
+description: A curated set of Versions associated with an Application that are deployed together
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237437
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

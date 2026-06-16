@@ -65,7 +65,12 @@ module Mcp
         request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
         request.env[Rack::REQUEST_METHOD] = route.request_method
 
-        status, _, body = route.exec(request.env)
+        original_format = request.env['api.format']
+        begin
+          status, _, body = route.exec(request.env)
+        ensure
+          request.env['api.format'] = original_format
+        end
         process_response(status, Array(body)[0])
       end
 
@@ -106,8 +111,14 @@ module Mcp
           formatted_content = [{ type: 'text', text: body }]
           ::Mcp::Tools::Response.success(formatted_content, parsed_response)
         end
-      rescue JSON::ParserError => e
-        ::Mcp::Tools::Response.error('Invalid JSON response', { message: e.message })
+      rescue JSON::ParserError
+        if status >= 400
+          ::Mcp::Tools::Response.error("HTTP #{status}", { body: body })
+        else
+          # Plain text response (e.g. job trace); return as-is
+          formatted_content = [{ type: 'text', text: body }]
+          ::Mcp::Tools::Response.success(formatted_content)
+        end
       end
 
       def resource_not_found_message

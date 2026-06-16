@@ -14,8 +14,8 @@ module API
       end
 
       namespace 'admin' do
-        desc 'List instance clusters' do
-          detail 'This feature was introduced in GitLab 13.2. Returns a list of instance clusters.'
+        desc 'List all instance clusters' do
+          detail 'Lists all instance clusters for the instance.'
           success Entities::Cluster
           failure [
             { code: 403, message: 'Forbidden' }
@@ -29,8 +29,8 @@ module API
           present paginate(clusters_for_current_user), with: Entities::Cluster
         end
 
-        desc 'Get a single instance cluster' do
-          detail 'This feature was introduced in GitLab 13.2. Returns a single instance cluster.'
+        desc 'Retrieve a single instance cluster' do
+          detail 'Retrieves a specified instance cluster.'
           success Entities::Cluster
           failure [
             { code: 403, message: 'Forbidden' },
@@ -48,8 +48,8 @@ module API
           present cluster, with: Entities::Cluster
         end
 
-        desc 'Add existing instance cluster' do
-          detail 'This feature was introduced in GitLab 13.2. Adds an existing Kubernetes instance cluster.'
+        desc 'Create an instance cluster' do
+          detail 'Creates an instance cluster by adding an existing Kubernetes cluster.'
           success Entities::Cluster
           failure [
             { code: 400, message: 'Validation error' },
@@ -89,8 +89,8 @@ module API
           end
         end
 
-        desc 'Edit instance cluster' do
-          detail 'This feature was introduced in GitLab 13.2. Updates an existing instance cluster.'
+        desc 'Update an instance cluster' do
+          detail 'Updates an existing instance cluster.'
           success Entities::Cluster
           failure [
             { code: 400, message: 'Validation error' },
@@ -129,7 +129,8 @@ module API
         end
 
         desc 'Delete instance cluster' do
-          detail 'This feature was introduced in GitLab 13.2. Deletes an existing instance cluster. Does not remove existing resources within the connected Kubernetes cluster.'
+          detail 'Deletes an existing instance cluster. Does not remove existing resources in the connected ' \
+            'Kubernetes cluster.'
           success Entities::Cluster
           failure [
             { code: 403, message: 'Forbidden' },

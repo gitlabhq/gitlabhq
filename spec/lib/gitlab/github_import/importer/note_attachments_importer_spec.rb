@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_category: :importers do
   subject(:importer) { described_class.new(note_text, project, client) }
 
-  let_it_be(:project) { create(:project, import_source: 'nickname/public-test-repo') }
+  let_it_be(:project, freeze: false) { create(:project, import_source: 'nickname/public-test-repo') }
 
   let(:note_text) { Gitlab::GithubImport::Representation::NoteText.from_db_record(record) }
   let(:web_endpoint) { 'https://github.com' }

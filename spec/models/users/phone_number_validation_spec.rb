@@ -238,7 +238,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '#validated?' do
-    let_it_be(:phone_number_record) { create(:phone_number_validation, user: user) }
+    let_it_be(:phone_number_record, freeze: false) { create(:phone_number_validation, user: user) }
 
     context 'when phone number record is not validated' do
       it 'returns false' do
@@ -258,7 +258,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '.by_reference_id' do
-    let_it_be(:phone_number_record) { create(:phone_number_validation) }
+    let_it_be(:phone_number_record, freeze: false) { create(:phone_number_validation) }
 
     let(:ref_id) { phone_number_record.telesign_reference_xid }
 
@@ -274,7 +274,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '.sms_send_allowed_after' do
-    let_it_be(:record) { create(:phone_number_validation, sms_send_count: 0) }
+    let_it_be(:record, freeze: false) { create(:phone_number_validation, sms_send_count: 0) }
 
     subject(:result) { record.sms_send_allowed_after }
 

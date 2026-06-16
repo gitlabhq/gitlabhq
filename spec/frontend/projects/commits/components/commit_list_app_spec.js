@@ -131,6 +131,17 @@ describe('CommitListApp', () => {
     it('renders the commit header component', () => {
       expect(findCommitHeader().exists()).toBe(true);
     });
+
+    it('passes currentRef to the header component', () => {
+      expect(findCommitHeader().props('currentRef')).toBe('main');
+    });
+
+    it('updates currentRef passed to header after ref change', async () => {
+      findCommitHeader().vm.$emit('ref-change', 'develop');
+      await waitForPromises();
+
+      expect(findCommitHeader().props('currentRef')).toBe('develop');
+    });
   });
 
   describe('commits data', () => {
@@ -529,9 +540,9 @@ describe('CommitListApp', () => {
         await waitForPromises();
       });
 
-      it('does not render pagination controls', () => {
+      it('does not render pagination buttons but still shows page size selector', () => {
         expect(findPagination().exists()).toBe(false);
-        expect(findPageSizeSelector().exists()).toBe(false);
+        expect(findPageSizeSelector().exists()).toBe(true);
       });
     });
 
@@ -819,6 +830,185 @@ describe('CommitListApp', () => {
 
         expect(handler).toHaveBeenCalledWith(expect.objectContaining({ ref: 'feature/my-branch' }));
       });
+
+      it('resolves the full ref when escapedRef contains an unencoded slash', async () => {
+        // The backend sends escapedRef without encoding '/' (escape_path
+        // preserves it), so the static route contains literal slashes.
+        // syncRefFromRoute must use the injected escapedRef instead of
+        // parsing the route path segments.
+        const escapedRef = 'feature/my-branch';
+        const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+        const router = new VueRouter({
+          mode: 'abstract',
+          routes: [
+            { path: `/${escapedRef}/:path*`, name: 'commitsPath', component: CommitListApp },
+            {
+              path: `/${decodeURI(escapedRef)}/:path*`,
+              name: 'commitsPathDecoded',
+              component: CommitListApp,
+            },
+            { path: '/:ref/:path*', name: 'commitsAnyRef', component: CommitListApp },
+          ],
+        });
+        await router.push('/feature/my-branch/');
+
+        wrapper = shallowMountExtended(CommitListApp, {
+          apolloProvider: createMockApollo([[commitsQuery, handler]]),
+          provide: { ...defaultProvide, escapedRef },
+          router,
+        });
+        await waitForPromises();
+
+        // Must send the full ref, not just 'feature'
+        expect(handler).toHaveBeenCalledWith(expect.objectContaining({ ref: 'feature/my-branch' }));
+      });
+    });
+  });
+
+  describe('file path filtering', () => {
+    const createPathRouter = (filePath = '', routeQuery = {}) => {
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          { path: '/main/:path*', name: 'commitsPath', component: CommitListApp },
+          { path: '/:ref/:path*', name: 'commitsAnyRef', component: CommitListApp },
+          { path: '/:pathMatch(.*)*', redirect: '/main' },
+        ],
+      });
+      router.push({ path: filePath ? `/main/${filePath}` : '/main', query: routeQuery });
+      return router;
+    };
+
+    const createComponentWithPath = (handler, filePath = '', routeQuery = {}) => {
+      wrapper = shallowMountExtended(CommitListApp, {
+        apolloProvider: createMockApollo([[commitsQuery, handler]]),
+        provide: defaultProvide,
+        router: createPathRouter(filePath, routeQuery),
+      });
+    };
+
+    it('passes file path to GraphQL query', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ path: 'app/models/user.rb' }));
+    });
+
+    it('passes null path when no file path in route', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler);
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ path: null }));
+    });
+
+    it('preserves file path after ref change', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      handler.mockClear();
+      findCommitHeader().vm.$emit('ref-change', 'develop');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({ ref: 'develop', path: 'app/models/user.rb' }),
+      );
+    });
+
+    it('updates path when navigating via breadcrumbs', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      handler.mockClear();
+
+      await wrapper.vm.$router.push('/main/app/models');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ path: 'app/models' }));
+    });
+
+    it('preserves path when switching ref hits the wildcard fallback route', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      // Navigate to a different ref — matches the 'commitsAnyRef' wildcard route.
+      // The ref is a single segment so params.path is reliable.
+      await wrapper.vm.$router.push('/develop/app/models/user.rb');
+      await waitForPromises();
+
+      expect(wrapper.vm.currentPath).toBe('app/models/user.rb');
+    });
+
+    it('correctly parses ref with slashes via the wildcard fallback route', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      handler.mockClear();
+
+      // Refs containing '/' are encoded with encodeURIComponent so the
+      // ref becomes a single path segment (feature%2Ffoo).
+      await wrapper.vm.$router.push(`/${encodeURIComponent('feature/foo')}/app/models/user.rb`);
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({ ref: 'feature/foo', path: 'app/models/user.rb' }),
+      );
+    });
+
+    it('resolves ref on browser back to a previously visited slashed ref', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler);
+      await waitForPromises();
+
+      // Simulate switching to a slashed ref, then switching away, then
+      // navigating back (browser back).  The back navigation is a plain
+      // router.push without a ref-change emit — only the route watcher fires.
+      const refA = 'feature/foo';
+      const refB = 'bugfix/bar';
+
+      // Switch to refA (in-app: ref-change + router push)
+      findCommitHeader().vm.$emit('ref-change', refA);
+      await wrapper.vm.$router.push(`/${encodeURIComponent(refA)}/`);
+      await waitForPromises();
+
+      // Switch to refB
+      findCommitHeader().vm.$emit('ref-change', refB);
+      await wrapper.vm.$router.push(`/${encodeURIComponent(refB)}/`);
+      await waitForPromises();
+
+      // Verify we're on refB
+      expect(wrapper.vm.currentRef).toBe(refB);
+
+      handler.mockClear();
+
+      // Browser back to refA — only the route changes, no ref-change event.
+      // This is the scenario that broke before: syncRefFromRoute must parse
+      // the encoded ref from route.params.ref.
+      wrapper.vm.$router.back();
+      await waitForPromises();
+
+      expect(wrapper.vm.currentRef).toBe(refA);
+    });
+
+    it('resets pagination when route path changes', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponseWithNextPage);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      findPagination().vm.$emit('next');
+      await waitForPromises();
+
+      handler.mockClear();
+
+      await wrapper.vm.$router.push('/main/app');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ path: 'app', after: null }));
     });
   });
 });

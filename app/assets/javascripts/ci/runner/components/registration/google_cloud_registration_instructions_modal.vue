@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 
 export default {
+  name: 'GoogleCloudRegistrationInstructionsModal',
   components: {
     GlSprintf,
     GlModal,

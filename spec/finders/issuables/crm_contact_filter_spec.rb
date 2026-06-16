@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Issuables::CrmContactFilter do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
 
-  let_it_be(:contact1) { create(:contact, group: group) }
-  let_it_be(:contact2) { create(:contact, group: group) }
+  let_it_be(:contact1, freeze: false) { create(:contact, group: group) }
+  let_it_be(:contact2, freeze: false) { create(:contact, group: group) }
 
-  let_it_be(:contact1_issue1) { create(:issue, project: project) }
-  let_it_be(:contact1_issue2) { create(:issue, project: project) }
-  let_it_be(:contact2_issue1) { create(:issue, project: project) }
-  let_it_be(:issues) { Issue.where(id: [contact1_issue1.id, contact1_issue2.id, contact2_issue1.id]) }
+  let_it_be(:contact1_issue1, freeze: false) { create(:issue, project: project) }
+  let_it_be(:contact1_issue2, freeze: false) { create(:issue, project: project) }
+  let_it_be(:contact2_issue1, freeze: false) { create(:issue, project: project) }
+  let_it_be(:issues, freeze: false) { Issue.where(id: [contact1_issue1.id, contact1_issue2.id, contact2_issue1.id]) }
 
   let(:params) { {} }
 

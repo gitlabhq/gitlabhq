@@ -2,7 +2,6 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Review the GitLab 18 upgrade notes.
 title: GitLab 18 upgrade notes
 ---
 
@@ -45,6 +44,7 @@ apply only to that method. All other items apply to all installation methods.
 Before upgrading to GitLab 18.11, review the following:
 
 - [18.11.0 - 18.11.2] - [Geo blob sync failures with `log_error` NoMethodError on file storage](#geo-blob-sync-failures-with-log_error-nomethoderror-on-file-storage) (Geo)
+- [18.11.0 - 18.11.4] - [Geo container repository sync silently skips OCI image index tags](#geo-container-repository-sync-silently-skips-oci-image-index-tags) (Geo)
 - [18.11.0 - 18.11.1] - [CI job token regression pulling container images from internal and public projects](#ci-job-token-regression-pulling-container-images-from-internal-and-public-projects)
 - [18.11.0] - [Upgrading to 18.11 triggers a PostgreSQL 17.7 version upgrade](#postgresql-version-177-upgrade-on-gitlab-1811) (Linux package, Docker, Geo)
 - [18.11.0] - [Mattermost and Spamcheck removed from SLES 12.5 packages](#mattermost-and-spamcheck-removed-from-sles-125-packages) (Linux package)
@@ -55,10 +55,12 @@ Before upgrading to GitLab 18.10, review the following:
 
 - [18.10.0 - 18.10.3] - [SLES 12.5 RPM package installation failure](#sles-125-rpm-package-installation-failure) (Linux package)
 - [18.10.0 - 18.10.5] - [Geo blob sync failures with `log_error` NoMethodError on file storage](#geo-blob-sync-failures-with-log_error-nomethoderror-on-file-storage) (Geo)
+- [18.10.0 - 18.10.7] - [Geo container repository sync silently skips OCI image index tags](#geo-container-repository-sync-silently-skips-oci-image-index-tags) (Geo)
 - [18.10.0 - 18.10.3] - [Geo site URL blocked when using outbound filtering](#geo-site-url-blocked-when-using-outbound-filtering) (Geo)
 - [18.10.0 - 18.10.4] - [Geo blob download failures](#geo-blob-download-failures) (Geo)
 - [18.10.0 - 18.10.3] - [Geo secondary throttled jobs not draining](#geo-secondary-throttled-jobs-not-draining) (Geo)
 - [18.10.0 - 18.10.3] - [Sidekiq concurrency limiter causes job backlogs on Helm chart and Operator deployments](#sidekiq-concurrency-limiter-causes-job-backlogs-on-helm-chart-and-operator-deployments) (Helm chart, Operator)
+- [18.10.0] - [Custom webhook template with unquoted placeholders cannot be saved](#custom-webhook-template-with-unquoted-placeholders-cannot-be-saved)
 
 ### Upgrade to 18.9
 
@@ -69,6 +71,7 @@ Before upgrading to GitLab 18.9, review the following:
 - [18.9.0 - 18.9.5] - [Geo secondary throttled jobs not draining](#geo-secondary-throttled-jobs-not-draining) (Geo)
 - [18.9.0 - 18.9.5] - [Sidekiq concurrency limiter causes job backlogs on Helm chart and Operator deployments](#sidekiq-concurrency-limiter-causes-job-backlogs-on-helm-chart-and-operator-deployments) (Helm chart, Operator)
 - [18.9.0] - [Upgrade to 18.9 fails with PostgreSQL CheckViolation](#upgrade-to-189-fails-with-postgresql-checkviolation)
+- [18.9.0] - [Custom webhook template with unquoted placeholders cannot be saved](#custom-webhook-template-with-unquoted-placeholders-cannot-be-saved)
 
 ### Upgrade to 18.8
 
@@ -78,6 +81,7 @@ Before upgrading to GitLab 18.8, review the following:
 - [18.8.0] - [Batched background migration for merge request merge data](#batched-background-migration-for-merge-request-merge-data)
 - [18.8.0] - [ClickHouse dictionary creation error](#clickhouse-dictionary-creation-error)
 - [18.8.0] - [Batched background migration for CI data reintroduced](#batched-background-migration-for-ci-data-reintroduced)
+- [18.8.0] - [Custom webhook template with unquoted placeholders cannot be saved](#custom-webhook-template-with-unquoted-placeholders-cannot-be-saved)
 
 ### Upgrade to 18.7
 
@@ -188,6 +192,38 @@ Error while attempting to sync: undefined method `log_error' for an instance of 
 ```
 
 For more information, see [issue 598565](https://gitlab.com/gitlab-org/gitlab/-/work_items/598565).
+
+### Geo container repository sync silently skips OCI image index tags
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Geo (container registry)
+- Affected versions:
+
+  | Release     | Affected patch releases | Fixed patch level |
+  | ----------- | ----------------------- | ----------------- |
+  | 18.11       | 18.11.0 - 18.11.4       | 18.11.5           |
+  | 18.10       | 18.10.0 - 18.10.7       | 18.10.8           |
+  | 18.0 - 18.9 | All patch releases      | Not fixed         |
+
+On Geo secondary sites, container repository sync silently skipped tags whose
+manifest is an OCI image index (`application/vnd.oci.image.index.v1+json`).
+Multi-arch images and BuildKit cache tags commonly use this manifest type. No
+error was raised and tag counts matched, but `docker pull` of an affected tag
+from the secondary returned `manifest unknown`. The same root cause also left
+orphan tags on the secondary that sync could not remove.
+
+After you upgrade both the primary and secondary sites to a fixed version, newly
+synced tags are correct. Previously affected repositories converge on their next
+verification cycle, which can take up to the re-verification interval (90 days by
+default). To repair affected repositories immediately,
+[resync the container repositories on the secondary site](../../administration/geo/replication/container_registry.md#manually-trigger-a-container-registry-sync-event).
+
+For more information, see [issue 600486](https://gitlab.com/gitlab-org/gitlab/-/work_items/600486).
 
 ### CI job token regression pulling container images from internal and public projects
 
@@ -492,6 +528,29 @@ permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this err
 The [batched background migrations](../background_migrations.md) introduced in
 [CI builds metadata migration](#ci-builds-metadata-migration) had
 to be reintroduced to handle an edge case in the data structure and ensure that they would complete.
+
+### Custom webhook template with unquoted placeholders cannot be saved
+
+- Affects: All installation methods
+- Affected versions:
+
+  | Release | Affected patch releases | Fixed patch level |
+  | ------- | ----------------------- | ----------------- |
+  | 18.10   | All patch releases      | Not fixed         |
+  | 18.9    | All patch releases      | Not fixed         |
+  | 18.8    | All patch releases      | Not fixed         |
+
+In GitLab 18.8 through 18.10, [custom webhook templates](../../user/project/integrations/webhooks.md#custom-webhook-template)
+with unquoted payload fields cannot be saved. This issue was resolved in GitLab 18.11.
+
+As a workaround, wrap fields in quotes. For example,
+`{"value": {{id}}}` would become `{"value": "{{id}}"}`.
+
+Quoted fields produce string values instead of numeric values. If this is
+incompatible with your webhook, upgrade to GitLab 18.11 or later.
+
+For more information, see the
+[webhook troubleshooting documentation](../../user/project/integrations/webhooks_troubleshooting.md#custom-webhook-template-with-unquoted-placeholders-cannot-be-saved).
 
 ### CI builds metadata migration
 

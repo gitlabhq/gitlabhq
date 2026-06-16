@@ -185,8 +185,8 @@ RSpec.describe Commit, feature_category: :source_code_management do
     end
 
     context 'using eager loading' do
-      let!(:alice) { create(:user, email: 'alice@example.com') }
-      let!(:bob) { create(:user, email: 'hunter2@example.com') }
+      let_it_be(:alice) { create(:user, email: 'alice@example.com') }
+      let_it_be(:bob) { create(:user, email: 'hunter2@example.com') }
       let!(:jeff) { create(:user) }
 
       let(:alice_commit) do
@@ -216,7 +216,7 @@ RSpec.describe Commit, feature_category: :source_code_management do
         end
       end
 
-      let!(:commits) { [alice_commit, bob_commit, eve_commit, jeff_commit] }
+      let(:commits) { [alice_commit, bob_commit, eve_commit, jeff_commit] }
 
       before do
         create(:email, :confirmed, user: bob, email: 'bob@example.com')
@@ -314,7 +314,7 @@ RSpec.describe Commit, feature_category: :source_code_management do
     end
 
     context "when committer_email is the user's secondary email" do
-      let!(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       context 'when the user email is confirmed' do
         let!(:email) { create(:email, :confirmed, user: user, email: commit.committer_email) }
@@ -582,7 +582,11 @@ TEXT
     let(:data) { commit.hook_attrs(with_changed_files: true) }
 
     it { expect(data).to be_a(Hash) }
-    it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
+
+    it do
+      expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method')
+    end
+
     it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46+00:00') }
     it { expect(data[:added]).to contain_exactly("bar/branch-test.txt") }
     it { expect(data[:modified]).to eq([]) }
@@ -590,12 +594,14 @@ TEXT
   end
 
   describe '#cherry_pick_message' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     context 'of a regular commit' do
       let(:commit) { project.commit('video') }
 
-      it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
+      it do
+        expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)")
+      end
     end
 
     context 'of a merge commit' do
@@ -848,6 +854,12 @@ TEXT
     end
   end
 
+  describe '#has_agent_session?' do
+    it 'returns false' do
+      expect(commit.has_agent_session?).to be false
+    end
+  end
+
   describe '#draft?' do
     [
       'squash! ', 'fixup! ',
@@ -919,8 +931,8 @@ TEXT
   end
 
   describe '#has_been_reverted?' do
-    let(:user) { create(:user) }
-    let(:issue) { create(:issue, author: user, project: project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:issue) { create(:issue, author: user, project: project) }
 
     it 'returns true if the commit has been reverted' do
       create(
@@ -1027,7 +1039,9 @@ TEXT
 
       context 'with tipping refs excluded' do
         let(:excluded_refs) do
-          project.repository.refs_by_oid(oid: commit_sha, ref_patterns: [ref_prefix]).map { |n| n.delete_prefix(ref_prefix) }
+          project.repository.refs_by_oid(oid: commit_sha, ref_patterns: [ref_prefix]).map do |n|
+            n.delete_prefix(ref_prefix)
+          end
         end
 
         it 'returns branch names containing the commit without the one with the commit at tip' do
@@ -1047,7 +1061,11 @@ TEXT
 
       let(:ref_prefix) { Gitlab::Git::BRANCH_REF_PREFIX }
 
-      let(:ref_containing) { ->(limit: 0, excluded_tipped: false) { commit.branches_containing(exclude_tipped: excluded_tipped, limit: limit) } }
+      let(:ref_containing) do
+        ->(limit: 0, excluded_tipped: false) {
+          commit.branches_containing(exclude_tipped: excluded_tipped, limit: limit)
+        }
+      end
 
       it_behaves_like 'containing ref names'
     end
@@ -1060,7 +1078,11 @@ TEXT
       let(:ref_prefix) { Gitlab::Git::TAG_REF_PREFIX }
 
       let(:commit) { project.repository.commit(commit_sha) }
-      let(:ref_containing) { ->(limit: 0, excluded_tipped: false) { commit.tags_containing(exclude_tipped: excluded_tipped, limit: limit) } }
+      let(:ref_containing) do
+        ->(limit: 0, excluded_tipped: false) {
+          commit.tags_containing(exclude_tipped: excluded_tipped, limit: limit)
+        }
+      end
 
       it_behaves_like 'containing ref names'
     end
@@ -1100,7 +1122,7 @@ TEXT
 
   describe '#first_diffs_slice' do
     let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
-    let_it_be(:commit) { project.commit_by(oid: sha) }
+    let_it_be(:commit, freeze: false) { project.commit_by(oid: sha) }
     let_it_be(:limit) { 5 }
 
     subject(:first_diffs_slice) { commit.first_diffs_slice(limit) }

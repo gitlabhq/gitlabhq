@@ -1,0 +1,10 @@
+---
+name: ai_session_pills
+description: Show pinned active session pills above the Duo Agentic Chat input
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600965
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237876
+rollout_issue_url:
+milestone: '19.1'
+group: group::duo chat
+type: wip
+default_enabled: false

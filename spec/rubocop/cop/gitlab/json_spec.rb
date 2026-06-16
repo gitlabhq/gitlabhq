@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/json'
 
-RSpec.describe RuboCop::Cop::Gitlab::Json do
+RSpec.describe RuboCop::Cop::Gitlab::Json, feature_category: :tooling do
   context 'when ::JSON is called' do
     it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)

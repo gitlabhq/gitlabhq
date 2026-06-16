@@ -91,7 +91,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
     include_context 'fresh repository'
 
     context 'when merge request is mergeable' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when merge request is not mergeable' do
@@ -99,7 +99,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
         merge_request.update!(merge_status: 'cannot_be_merged')
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

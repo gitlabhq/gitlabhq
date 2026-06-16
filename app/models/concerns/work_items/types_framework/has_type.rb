@@ -18,11 +18,7 @@ module WorkItems
       delegate :icon_name, to: :work_item_type, allow_nil: true
 
       def exported_work_item_type
-        if ::Feature.enabled?(:work_item_configurable_types, namespace&.root_ancestor)
-          { 'name' => work_item_type&.name || ::WorkItems::TypesFramework::Provider.new.default_issue_type.name }
-        else
-          { 'base_type' => work_item_type&.base_type || 'issue' }
-        end
+        { 'name' => work_item_type&.name || ::WorkItems::TypesFramework::Provider.new.default_issue_type.name }
       end
 
       def work_item_type=(value)

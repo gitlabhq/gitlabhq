@@ -17,4 +17,18 @@ RSpec.describe Gitlab::Graphql::Representation::TreeEntry do
       expect(entries.first).to be_a(described_class)
     end
   end
+
+  describe '#project' do
+    let(:entry) { described_class.new(repository.tree.blobs.first, repository) }
+
+    it 'returns the project from the repository' do
+      expect(entry.project).to eq(project)
+    end
+
+    context 'when repository is nil' do
+      let(:entry) { described_class.new(repository.tree.blobs.first, nil) }
+
+      it { expect(entry.project).to be_nil }
+    end
+  end
 end

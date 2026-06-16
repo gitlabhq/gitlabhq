@@ -21,14 +21,14 @@ RSpec.describe Ci::JobArtifactReport, feature_category: :job_artifacts do
   describe 'partitioning' do
     context 'with job_artifact' do
       let_it_be(:job_artifact) { build(:ci_job_artifact, partition_id: ci_testing_partition_id) }
-      let_it_be(:job_artifact_report) { build(:ci_job_artifact_report, job_artifact: job_artifact) }
+      let_it_be(:job_artifact_report, freeze: false) { build(:ci_job_artifact_report, job_artifact: job_artifact) }
 
       it 'sets partition_id to the current partition value' do
         expect { job_artifact_report.valid? }.to change { job_artifact_report.partition_id }.to(ci_testing_partition_id)
       end
 
       context 'when it is already set' do
-        let_it_be(:job_artifact_report) { build(:ci_job_artifact_report, partition_id: 125) }
+        let_it_be(:job_artifact_report, freeze: false) { build(:ci_job_artifact_report, partition_id: 125) }
 
         it 'does not change the partition_id value' do
           expect { job_artifact_report.valid? }.not_to change { job_artifact_report.partition_id }

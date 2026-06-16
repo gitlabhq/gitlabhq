@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#index' do
     context 'user logged in' do
-      let_it_be(:project) { create(:project, name: 'Project 1') }
-      let_it_be(:project2) { create(:project, name: 'Project Two') }
+      let_it_be(:project, freeze: false) { create(:project, name: 'Project 1') }
+      let_it_be(:project2, freeze: false) { create(:project, name: 'Project Two') }
 
       let(:projects) { [project, project2] }
 
@@ -56,7 +56,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
     end
 
     describe '#index' do
-      let_it_be(:projects) { create_list(:project, 2, creator: user) }
+      let_it_be(:projects, freeze: false) { create_list(:project, 2, creator: user) }
 
       context 'project pagination' do
         before do

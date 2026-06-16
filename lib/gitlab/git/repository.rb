@@ -1166,7 +1166,8 @@ module Gitlab
         path: nil,
         committed_before: nil,
         committed_after: nil,
-        pagination_params: { page_token: nil, limit: 1000 }
+        pagination_params: { page_token: nil, limit: 1000 },
+        literal_pathspec: false
       )
         pagination_params[:limit] ||= 1000
 
@@ -1180,7 +1181,8 @@ module Gitlab
             before: committed_before,
             after: committed_after,
             reverse: false,
-            pagination_params: pagination_params
+            pagination_params: pagination_params,
+            literal_pathspec: literal_pathspec
           )
         end
       end

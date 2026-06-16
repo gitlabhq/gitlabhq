@@ -16,6 +16,7 @@ $crud-header-min-height: px-to-rem(40px);
   @apply gl-bg-transparent;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to crud-body element
 .crud-body:has(.gl-table) {
   margin: 0;
   padding: 0;
@@ -119,6 +120,7 @@ $crud-header-min-height: px-to-rem(40px);
   }
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to crud-body element
 .crud-body:has(.content-list) {
   margin: 0;
   padding: 0;
@@ -132,6 +134,7 @@ $crud-header-min-height: px-to-rem(40px);
 .crud-pagination {
   margin-top: -1px;
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to crud-pagination element
   &:not(:has(> .gl-pagination, > .crud-pagination-container)) {
     display: none;
   }

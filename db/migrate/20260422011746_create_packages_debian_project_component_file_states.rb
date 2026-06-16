@@ -3,7 +3,7 @@
 class CreatePackagesDebianProjectComponentFileStates < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
-  milestone '19.0'
+  milestone '19.1'
 
   VERIFICATION_STATE_INDEX_NAME = "index_pkg_deb_proj_comp_file_states_on_verification_state"
   PENDING_VERIFICATION_INDEX_NAME = "index_pkg_deb_proj_comp_file_states_pending_verification"
@@ -12,7 +12,7 @@ class CreatePackagesDebianProjectComponentFileStates < Gitlab::Database::Migrati
   VERIFICATION_STARTED_INDEX_NAME = "index_pkg_deb_proj_comp_file_states_on_verification_started"
 
   def up
-    create_table :packages_debian_project_component_file_states, if_not_exists: true do |t| # rubocop:disable Migration/EnsureFactoryForTable -- Will be added with the model in a subsequent MR
+    create_table :packages_debian_project_component_file_states, if_not_exists: true do |t|
       t.datetime_with_timezone :verification_started_at
       t.datetime_with_timezone :verification_retry_at
       t.datetime_with_timezone :verified_at

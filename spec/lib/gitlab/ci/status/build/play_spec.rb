@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Status::Build::Play, feature_category: :continuous_integration do
   let_it_be(:user, freeze: true) { create(:user) }
-  let_it_be(:project) { create(:project, :stubbed_repository) }
+  let_it_be(:project, freeze: false) { create(:project, :stubbed_repository) }
   let_it_be_with_refind(:build) { create(:ci_build, :manual, project: project) }
 
   let(:core_status) { Gitlab::Ci::Status::Core.new(build, user) }

@@ -188,7 +188,6 @@ Learn more about the [data types Geo replicates](geo/replication/datatypes.md#re
 GitLab provides support for GitLab Self-Managed through different channels.
 
 - Priority support: [Premium and Ultimate](https://about.gitlab.com/pricing/) GitLab Self-Managed customers receive priority support with tiered response times.
-  Learn more about [upgrading to priority support](https://about.gitlab.com/support/#upgrading-to-priority-support).
 - Live upgrade assistance: Get one-on-one expert guidance during a production upgrade. With your **priority support plan**,
   you're eligible for a live, scheduled screen-sharing session with a member of our support team.
 
@@ -196,7 +195,6 @@ To get help:
 
 - Use the GitLab documentation for self-service support.
 - Join the [GitLab Forum](https://forum.gitlab.com/) for community support.
-- Gather [your subscription information](https://about.gitlab.com/support/#for-self-managed-users) before submitting a ticket.
 - [Submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new).
 
 ## API and rate limits

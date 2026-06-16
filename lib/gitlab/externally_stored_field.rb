@@ -39,7 +39,7 @@ module Gitlab
       self.external_fields_loaded = false
 
       # The uploader caches the storage backend too, so we re-init it on next access.
-      remove_instance_variable(:@external_storage_uploader) if instance_variable_defined?(:@external_storage_uploader)
+      clear_cached_uploader
 
       super
     end
@@ -94,18 +94,24 @@ module Gitlab
 
         # Because we avoid using CarrierWave's `mount_uploader` -- it wants to store a filename
         # in our ActiveRecord record, but our filenames are deterministic so that's wasteful --
-        # we have to manually instantiate the uploader.
+        # we have to manually instantiate the uploader. We pass `:file` as `mounted_as` so that
+        # `ObjectStorage::Concern`'s `store_serialization_column` resolves to `:file_store`
+        # (matching the convention used by `FileStoreMounter`), letting the uploader read its
+        # target store from our column.
+        uploader = klass.new(self, :file)
+
         # `retrieve_from_store!` doesn't *actually* fetch anything from the store: it just sets
         # up the CarrierWave::Storage::Whatever instance so it's ready to be used.
         # `mount_uploader` would call this automatically if we were using it.
-        uploader = klass.new(self)
         uploader.retrieve_from_store!(uploader.filename) if persisted?
+
         uploader
       end
     end
 
     def read_external_payload
-      return unless external_storage_uploader.exists?
+      # The Fog backend will fail with NoMethodError (!) if it doesn't exist.
+      return unless external_storage_uploader.file&.exists?
 
       Gitlab::Json.safe_parse(external_storage_uploader.read)
     rescue JSON::ParserError
@@ -132,16 +138,32 @@ module Gitlab
       external_storage_uploader.store!(
         CarrierWaveStringFile.new(Gitlab::Json.dump(payload))
       )
+
+      # The cached uploader was built before the DB commit; its `@file` was created using
+      # whatever store was in effect at instantiation. Discard it so the next read
+      # re-instantiates against the now-current `file_store`.
+      clear_cached_uploader
     end
 
     # Set `file_store` as part of the normal AR save so it's committed atomically with
     # the rest of the record. The actual blob is written later in `after_commit`, so if
     # the process crashes between the DB commit and the blob upload, `file_store` will
     # reflect the intended storage backend even though the blob doesn't exist yet.
+    #
+    # We use the same predicate `ObjectStorage::Concern#store!` uses to decide where the
+    # blob will land (`direct_upload_to_object_store?`). Reading `object_store` from the
+    # uploader instead would defeat the point of this callback on first save, since
+    # `object_store` defaults to `LOCAL` when the column hasn't been set yet.
     def set_file_store_from_uploader_config
       return unless has_attribute?(:file_store)
 
-      self.file_store = external_storage_uploader.object_store
+      return unless new_record? || self.class.externally_stored_fields.any? { |f| attribute_changed?(f) }
+
+      self.file_store = if self.class.external_storage_uploader_class.direct_upload_to_object_store?
+                          ObjectStorage::Store::REMOTE
+                        else
+                          ObjectStorage::Store::LOCAL
+                        end
     end
 
     def persist_externally_stored_fields
@@ -154,6 +176,10 @@ module Gitlab
       external_storage_uploader.remove!
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
+    end
+
+    def clear_cached_uploader
+      remove_instance_variable(:@external_storage_uploader) if instance_variable_defined?(:@external_storage_uploader)
     end
   end
 end

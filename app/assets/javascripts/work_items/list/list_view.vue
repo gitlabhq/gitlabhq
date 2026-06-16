@@ -16,7 +16,7 @@ import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_
 import { convertToSearchQuery, getInitialPageParams } from 'ee_else_ce/work_items/list/utils';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
-import getWorkItemsRestQuery from '~/work_items/list/graphql/get_work_items_rest.query.graphql';
+import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
 import { STATUS_OPEN } from '~/issues/constants';
@@ -81,13 +81,14 @@ export default {
   inject: ['isGroup', 'workItemType'],
   apollo: {
     workItemsFull() {
-      return this.createWorkItemQuery(getWorkItemsQuery);
+      const query = this.createWorkItemQuery(getWorkItemsQuery);
+      if (this.useRestApi) {
+        return { ...query, skip: true };
+      }
+      return query;
     },
     workItemsSlim() {
-      const query =
-        this.glFeatures.workItemRestApiFrontendUsers && this.glFeatures.workItemRestApi
-          ? getWorkItemsRestQuery
-          : getWorkItemsSlimQuery;
+      const query = this.useRestApi ? getWorkItemsRestQuery : getWorkItemsSlimQuery;
       return this.createWorkItemQuery(query);
     },
   },
@@ -193,16 +194,20 @@ export default {
     };
   },
   computed: {
+    useRestApi() {
+      return (
+        this.glFeatures.workItemRestApiFrontendUsers &&
+        (this.glFeatures.workItemRestApiIndex || this.glFeatures.workItemRestApi)
+      );
+    },
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
     },
     workItems() {
-      const useRestApi =
-        this.glFeatures.workItemRestApiFrontendUsers && this.glFeatures.workItemRestApi;
       const combined = combineWorkItemLists(
         this.workItemsSlim,
         this.workItemsFull,
-        !useRestApi && Boolean(this.glFeatures.workItemFeaturesField),
+        !this.useRestApi && Boolean(this.glFeatures.workItemFeaturesField),
       );
       const sortKey = this.queryVariables.sort || CREATED_DESC;
       return getSortedWorkItems(combined, sortKey);
@@ -211,7 +216,7 @@ export default {
       return this.$apollo.queries.workItemsSlim.loading;
     },
     detailLoading() {
-      return this.$apollo.queries.workItemsFull.loading;
+      return this.useRestApi ? false : this.$apollo.queries.workItemsFull.loading;
     },
     skeletonItemCount() {
       const { workItemsCount, pageSize } = this;
@@ -343,6 +348,14 @@ export default {
 
       const params = JSON.parse(atob(queryParam));
       if (params.id) {
+        if (
+          this.activeItem &&
+          getIdFromGraphQLId(this.activeItem.id) === params.id &&
+          this.isIssuableActive(params)
+        ) {
+          return;
+        }
+
         const issue = this.workItems.find((i) => getIdFromGraphQLId(i.id) === params.id);
         if (issue) {
           this.$emit('set-active-item', {

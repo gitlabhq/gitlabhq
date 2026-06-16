@@ -60,6 +60,7 @@ Read how to [set up PostgreSQL replication and failover](replication_and_failove
 
 ## Related topics
 
+- [Manage PostgreSQL extensions](extensions.md)
 - [Working with the bundled PgBouncer service](pgbouncer.md)
 - [Database load balancing](database_load_balancing.md)
 - [Moving GitLab databases to a different PostgreSQL instance](moving.md)

@@ -13,7 +13,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model, feature_category: :job_artifa
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'UpdateProjectStatistics' do
-    let_it_be(:pipeline, reload: true) { create(:ci_pipeline) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline) }
 
     subject { build(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files, pipeline: pipeline) }
   end

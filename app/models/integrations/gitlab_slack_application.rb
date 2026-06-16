@@ -135,7 +135,7 @@ module Integrations
         payload.merge(channel: channel)
       )
 
-      log_error('Slack API error when notifying', api_response: response.parsed_response) unless response['ok']
+      log_error('Slack API error when notifying', api_response: response) unless response['ok']
 
       response['ok']
     rescue *Gitlab::HTTP::HTTP_ERRORS => e

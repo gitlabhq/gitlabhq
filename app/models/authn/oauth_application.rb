@@ -3,6 +3,7 @@
 module Authn
   class OauthApplication < Doorkeeper::Application
     include Doorkeeper::Concerns::TokenFallback
+    include FeatureGate
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
@@ -45,6 +46,10 @@ module Authn
         return true if fallback_strategy.secret_matches?(input, secret)
       end
       false
+    end
+
+    def iam_routing_enabled?
+      Feature.enabled?(:proxy_oauth_requests_to_iam_service, self)
     end
   end
 end

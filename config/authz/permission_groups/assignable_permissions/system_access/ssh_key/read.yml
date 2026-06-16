@@ -2,6 +2,7 @@
 name: read_ssh_key
 description: Grants the ability to view SSH keys
 boundaries:
+  - group
   - instance
   - user
 available_for:

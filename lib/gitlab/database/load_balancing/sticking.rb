@@ -169,29 +169,14 @@ module Gitlab
           end
         end
 
-        def set_write_location_for(namespace, id, location)
-          if atomic_sticking_enabled?
-            set_atomic_write_location_for(namespace, id, location)
-          else
-            with_redis do |redis|
-              redis.set(redis_key_for(namespace, id), location, ex: EXPIRATION)
-            end
-          end
-        end
-
-        def atomic_sticking_enabled?
-          Feature.enabled?(:db_load_balancing_atomic_sticking, Feature.current_request)
-        end
-
         # Atomically updates the stick LSN if the new value is higher, ensuring
         # clients always stick to the most recent write position. This prevents race conditions
         # that can cause LSN values to regress leading to stale reads from the replicas.
         #
         # Returns 1 if the LSN was updated, 0 if the value remains unchanged (just refresh the TTL)
-        def set_atomic_write_location_for(namespace, id, location)
+        def set_write_location_for(namespace, id, location)
           with_redis do |redis|
-            redis.eval(ATOMIC_STICK_SCRIPT, keys: [redis_key_for(namespace, id)],
-              argv: [location, EXPIRATION])
+            redis.eval(ATOMIC_STICK_SCRIPT, keys: [redis_key_for(namespace, id)], argv: [location, EXPIRATION])
           end
         end
 

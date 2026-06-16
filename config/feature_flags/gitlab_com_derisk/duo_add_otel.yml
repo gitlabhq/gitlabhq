@@ -1,0 +1,9 @@
+---
+name: duo_add_otel
+feature_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/57
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224631
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600746
+milestone: '18.10'
+type: gitlab_com_derisk
+group: group::embody
+default_enabled: false

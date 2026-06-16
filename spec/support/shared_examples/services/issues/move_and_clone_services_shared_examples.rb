@@ -13,7 +13,7 @@ RSpec.shared_examples 'copy or reset relative position' do
   end
 
   context 'when moved to a project in a different group hierarchy' do
-    let_it_be(:new_project) { create(:project, group: create(:group)) }
+    let_it_be(:new_project, freeze: false) { create(:project, group: create(:group)) }
 
     it 'does reset the relative_position' do
       expect(subject.relative_position).to be_nil

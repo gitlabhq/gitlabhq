@@ -8,8 +8,8 @@ RSpec.describe 'Dependency Proxy (JavaScript fixtures)', feature_category: :cont
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
 
-    let_it_be(:group) { create(:group, path: 'dependency-proxy-group') }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:group, freeze: false) { create(:group, path: 'dependency-proxy-group') }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:variables) do
       {

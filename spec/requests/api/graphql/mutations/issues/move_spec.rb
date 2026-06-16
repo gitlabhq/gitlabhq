@@ -68,6 +68,23 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
         expect(issue.reload.state).to eq('closed')
         expect(target_project.issues.find_by_title(issue.title)).to be_present
       end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :move_issue do
+        let(:boundary_object) { issue.project }
+        let(:mutation) do
+          graphql_mutation(
+            :issue_move,
+            {
+              project_path: issue.project.full_path,
+              target_project_path: target_project.full_path,
+              iid: issue.iid.to_s
+            },
+            'errors'
+          )
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
   end
 

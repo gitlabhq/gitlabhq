@@ -14,17 +14,17 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/work_items/589058
       'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
-      'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
       'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
       'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
-      'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
-      'supply_chain_attestation_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
+      'snippet_repository_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
     ]
   end
 
   # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) { [] }
+
+  let(:permanently_excluded_from_org_fk) { %w[loose_foreign_keys_organization_deleted_records] }
 
   # Tables with a multi-column `sharding_key` must enforce that exactly one of the sharding key columns is
   # non-null per row, via a `num_nonnulls(...) = 1` (or equivalent `<>`) check constraint. Tables that still
@@ -33,8 +33,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # use the strict, validated form.
   let(:allowed_to_have_loose_multi_column_sharding_constraint) do
     [
-      'dependency_list_export_uploads', # has `num_nonnulls(namespace_id, organization_id, project_id) > 0`
-      'dependency_list_exports', # has `num_nonnulls(group_id, organization_id, project_id) > 0`
       'events', # has `(group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL)`
       'labels', # constraint exists as `num_nonnulls(...) = 1` but is NOT VALID; tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/558353
       'notes', # has `num_nonnulls(namespace_id, organization_id, project_id) >= 1`
@@ -106,8 +104,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
       'p_knowledge_graph_code_indexing_tasks.project_id',
-      'merge_request_diff_commits_b5377a7a34.project_id'
       # No need for FK, rows will be deleted by the LFK to merge_request_diffs
+      'merge_request_diff_commits_b5377a7a34.project_id',
+      # Sharding key columns (organization_id, namespace_id, project_id, user_id) for LFK deleted records intentionally
+      # have no foreign key constraints. These tables track record deletions for async LFK cleanup.
+      # The referenced parent record may already be deleted by the time the LFK record is inserted or processed.
+      'loose_foreign_keys_organization_deleted_records.organization_id',
+      'loose_foreign_keys_namespace_deleted_records.namespace_id',
+      'loose_foreign_keys_project_deleted_records.project_id',
+      'loose_foreign_keys_user_deleted_records.user_id'
     ]
   end
 
@@ -132,6 +137,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # Cell-local table; organization_id is a plain ID column for namespace path resolution, not a sharding key.
       # No FK or LFK is intended - orphaned tasks are handled by the task service.
       "group_secrets_manager_maintenance_tasks" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/597219",
+      "group_secrets_managers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/583654",
       "import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
@@ -140,12 +146,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "namespace_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "project_import_export_relation_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "project_secrets_managers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/583654",
       "project_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "push_rules" => "https://gitlab.com/gitlab-org/gitlab/-/issues/476212",
       "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "uploads_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "user_permission_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "vulnerability_archive_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
@@ -285,7 +291,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     end
 
     # Step 3: Check foreign keys using Rails schema introspection
-    columns_to_check = organization_id_columns.reject { |column| allowed_organization_id_violations[column[0]] }
+    columns_to_check = organization_id_columns
+                         .reject { |column| allowed_organization_id_violations[column[0]] }
+                         .reject { |column| permanently_excluded_from_org_fk.include?(column[0]) }
     messages = columns_to_check.filter_map do |column|
       table_name = column[0]
       violations = column[1..].compact

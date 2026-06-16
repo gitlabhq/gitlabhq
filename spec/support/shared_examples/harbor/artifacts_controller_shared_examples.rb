@@ -2,8 +2,8 @@
 
 RSpec.shared_examples 'a harbor artifacts controller' do |args|
   include HarborHelper
-  let_it_be(:user) { create(:user) }
-  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:unauthorized_user, freeze: false) { create(:user) }
   let_it_be(:json_header) { { accept: 'application/json' } }
 
   let(:mock_artifacts) do

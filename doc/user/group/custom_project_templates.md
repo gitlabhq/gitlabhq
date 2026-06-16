@@ -30,7 +30,7 @@ You can [customize the list](../project/_index.md) of available templates, so
 that all projects in your group have the same list. To do this, you populate a subgroup with the projects you want to
 use as templates.
 
-You can also configure [custom templates for the instance](../../administration/custom_project_templates.md).
+You can also configure [custom templates for the instance](../../administration/project_templates.md).
 
 ## Set up project templates for a group
 

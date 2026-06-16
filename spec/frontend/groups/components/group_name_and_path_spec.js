@@ -104,6 +104,23 @@ describe('GroupNameAndPath', () => {
 
         expect(findGroupUrlField().element.value).toBe(mockGroupUrl);
       });
+
+      it('adds auto-generated class to `Group URL` field when name is typed', async () => {
+        createComponent();
+
+        await findGroupNameField().setValue(mockGroupName);
+
+        expect(findGroupUrlField().classes()).toContain('!gl-bg-feedback-info');
+      });
+
+      it('removes auto-generated class when user manually edits `Group URL`', async () => {
+        createComponent();
+
+        await findGroupNameField().setValue(mockGroupName);
+        await findGroupUrlField().setValue('custom-slug');
+
+        expect(findGroupUrlField().classes()).not.toContain('!gl-bg-feedback-info');
+      });
     });
 
     describe('when creating a new subgroup', () => {

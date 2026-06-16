@@ -983,6 +983,10 @@ RSpec.describe Trigger, feature_category: :tooling do
         it 'sets TOP_UPSTREAM_SOURCE_SHA to ci_merge_request_source_branch_sha' do
           expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq('ci_merge_request_source_branch_sha')
         end
+
+        it 'still sets UPSTREAM_TARGET_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['UPSTREAM_TARGET_SHA']).to eq(env['CI_COMMIT_SHA'])
+        end
       end
 
       context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set as empty' do
@@ -993,6 +997,10 @@ RSpec.describe Trigger, feature_category: :tooling do
         it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
           expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
         end
+
+        it 'sets UPSTREAM_TARGET_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['UPSTREAM_TARGET_SHA']).to eq(env['CI_COMMIT_SHA'])
+        end
       end
 
       context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is not set' do
@@ -1002,6 +1010,10 @@ RSpec.describe Trigger, feature_category: :tooling do
 
         it 'sets TOP_UPSTREAM_SOURCE_SHA to CI_COMMIT_SHA' do
           expect(subject.variables['TOP_UPSTREAM_SOURCE_SHA']).to eq(env['CI_COMMIT_SHA'])
+        end
+
+        it 'sets UPSTREAM_TARGET_SHA to CI_COMMIT_SHA' do
+          expect(subject.variables['UPSTREAM_TARGET_SHA']).to eq(env['CI_COMMIT_SHA'])
         end
       end
     end
@@ -1045,12 +1057,50 @@ RSpec.describe Trigger, feature_category: :tooling do
             env['CI_MERGE_REQUEST_IID']
           )
           .and_return(double(auto_paginate: mr_notes))
+
+        allow(com_gitlab_client).to receive(:update_commit_status)
       end
 
       it 'invokes the trigger with expected variables' do
         expect_run_trigger_with_params
 
         subject.invoke!
+      end
+
+      describe 'pending commit status' do
+        it 'posts a pending database-testing commit status against the upstream target SHA' do
+          expect_run_trigger_with_params
+          expect(com_gitlab_client).to receive(:update_commit_status)
+            .with(
+              env['CI_PROJECT_PATH'],
+              env['CI_COMMIT_SHA'],
+              'pending',
+              name: described_class::COMMIT_STATUS_NAME,
+              target_url: env['CI_JOB_URL'],
+              description: described_class::COMMIT_STATUS_DESCRIPTION
+            )
+
+          subject.invoke!
+        end
+
+        context 'when CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is set' do
+          before do
+            stub_env('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', 'ci_merge_request_source_branch_sha')
+          end
+
+          it 'still posts the commit status against CI_COMMIT_SHA' do
+            expect_run_trigger_with_params
+            expect(com_gitlab_client).to receive(:update_commit_status)
+              .with(
+                env['CI_PROJECT_PATH'],
+                env['CI_COMMIT_SHA'],
+                'pending',
+                hash_including(name: described_class::COMMIT_STATUS_NAME)
+              )
+
+            subject.invoke!
+          end
+        end
       end
 
       describe '#downstream_project_path' do

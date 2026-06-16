@@ -24,6 +24,11 @@ module Cells
   # * #trigger_transactional_callbacks?
   class TransactionRecord
     Error = Class.new(RuntimeError)
+    # Raised when the lease fails specifically because a claimed attribute is
+    # already held by another cell (gRPC ALREADY_EXISTS). A subclass of Error so
+    # that callers rescuing Cells::TransactionRecord::Error keep catching it,
+    # while callers that want to handle the collision distinctly can rescue this.
+    AlreadyClaimedError = Class.new(Error)
 
     module TransactionExtension
       attr_accessor :cells_current_transaction_record
@@ -112,7 +117,9 @@ module Cells
       end
     rescue GRPC::BadStatus => e
       raise_committing_error!(e)
-      raise Error, 'Failed to create lease'
+
+      already_claimed = e.code == GRPC::Core::StatusCodes::ALREADY_EXISTS
+      raise(already_claimed ? AlreadyClaimedError : Error, 'Failed to create lease')
     end
 
     def rolledback!(force_restore_state: false, should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface

@@ -1,0 +1,9 @@
+---
+name: update_branch_rule
+description: Grants the ability to update a branch rule
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_branch_rule

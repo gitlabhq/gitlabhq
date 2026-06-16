@@ -21,6 +21,15 @@ RSpec.describe Repositories::Tags::GpgSignature, feature_category: :source_code_
     it { is_expected.to validate_presence_of(:gpg_key_primary_keyid) }
   end
 
+  describe 'project deletion' do
+    it 'deletes associated tag gpg signatures when project is destroyed' do
+      project = create(:project)
+      create(:tag_gpg_signature, project: project, gpg_key: gpg_key)
+
+      expect { project.destroy! }.to change { described_class.count }.by(-1)
+    end
+  end
+
   it_behaves_like 'signature with type checking', :gpg
 
   describe 'accessing gpg_key' do

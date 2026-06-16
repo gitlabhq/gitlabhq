@@ -50,7 +50,6 @@ blog post.
 
 {{< history >}}
 
-- The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436565) from 10 to 30 in GitLab 16.9.
 - The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/569158) from 30 to 100 in GitLab 18.5.
 
 {{< /history >}}
@@ -215,12 +214,6 @@ might not be published in the CI/CD catalog, but could be used for testing.
 
 #### Partial semantic versions
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
-
-{{< /history >}}
-
 You can use partial semantic version numbers and the keyword `~latest` when referencing
 a CI/CD catalog component to select the latest published version that matches your specification.
 
@@ -272,7 +265,7 @@ To use component context in a component, you must:
 
 1. Declare which component context fields the component needs in the [`spec:component`](../yaml/_index.md#speccomponent) header.
    `spec:component` supports `name`, `sha`, `version`, and `reference` fields.
-1. Reference the context fields using the CI/CD expression `$[[ component.field-name ]]` in the component template.
+1. Reference the context fields using the CI/CD expression `$[[ component.field-name ]]` in the component template (outside the `spec` section).
 
 For example, a component that references a Docker image built with the same version:
 
@@ -667,7 +660,11 @@ Visibility of components in the CI/CD catalog follows the component source proje
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
 
-### View catalog resource analytics
+Each CI/CD Catalog project in the listing displays a usage count.
+This count represents the total number of unique projects that used any component
+from the Catalog project in a pipeline in the last 30 days.
+
+### View CI/CD Catalog project analytics
 
 {{< details >}}
 
@@ -729,6 +726,10 @@ You can use this information to:
 
 If you maintain CI/CD catalog component projects, you can view detailed component usage information to understand which projects use the components and which versions they use.
 This helps you plan upgrades, communicate deprecations, and identify projects that use outdated versions.
+
+The detail page also displays a usage count next to each component name.
+This count is version-specific and shows the number of unique projects that
+used that component version in the last 30 days.
 
 Prerequisites:
 
@@ -831,12 +832,6 @@ After the release job completes successfully, the release is created and the new
 is published to the CI/CD catalog.
 
 #### Semantic versioning
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) in GitLab 16.10.
-
-{{< /history >}}
 
 When tagging and [releasing new versions](#publish-a-new-release) of components to the Catalog,
 you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
@@ -1037,8 +1032,8 @@ version qualifier to reference a component hosted by a [catalog project](#set-a-
 This GitLab CI configuration is invalid: Component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found
 ```
 
-The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)
-in GitLab 16.10. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).
+The `~latest` qualifier refers to the latest semantic version of the catalog resource.
+To resolve this issue, [create a new release](#publish-a-new-release).
 
 ### Error: `Build component error: Spec must be a valid json schema`
 

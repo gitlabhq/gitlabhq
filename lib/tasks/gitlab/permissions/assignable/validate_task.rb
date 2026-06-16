@@ -399,7 +399,7 @@ module Tasks
           end
 
           def print_success_message
-            puts "Assignable permission definitions are up-to-date"
+            puts "Assignable permission definitions are valid"
           end
 
           def json_schema_file

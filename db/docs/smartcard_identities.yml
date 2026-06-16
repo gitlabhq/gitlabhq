@@ -4,7 +4,8 @@ classes:
 - SmartcardIdentity
 feature_categories:
 - system_access
-description: TODO
+description: Maps a user to the subject and issuer DNs of a client certificate, used
+  to authenticate that user when they present a matching smartcard certificate.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b6316689fdc2d142af85b17d511d39e50712b420
 milestone: '11.6'
 gitlab_schema: gitlab_main_user

@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Mutations::Boards::Destroy, feature_category: :portfolio_management do
   include GraphqlHelpers
 
-  let_it_be(:current_user, reload: true) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:current_user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:board) { create(:board, project: project) }
-  let_it_be(:other_board, refind: true) { create(:board, project: project) }
+  let_it_be_with_refind(:other_board) { create(:board, project: project) }
 
   let(:mutation) do
     variables = {

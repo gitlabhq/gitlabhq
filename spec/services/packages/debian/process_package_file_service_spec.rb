@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:distribution) { create(:debian_project_distribution, :with_file, suite: 'unstable') }
+  let_it_be(:distribution, freeze: false) { create(:debian_project_distribution, :with_file, suite: 'unstable') }
 
   let(:debian_file_metadatum) { package_file.debian_file_metadatum }
   let(:service) { described_class.new(package_file, distribution_name, component_name) }

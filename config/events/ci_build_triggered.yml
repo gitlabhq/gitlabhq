@@ -2,6 +2,8 @@
 description: CI build triggered
 action: ci_build_triggered
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 milestone: "18.8"
 internal_events: true
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215970

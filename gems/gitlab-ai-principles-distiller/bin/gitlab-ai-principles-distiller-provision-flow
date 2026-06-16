@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+
+require 'gitlab/principles_distiller/provision_flow'
+
+Gitlab::PrinciplesDistiller::ProvisionFlow.run

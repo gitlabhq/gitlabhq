@@ -297,7 +297,7 @@ job:
 ```
 
 This job does not run when `$CUSTOM_VARIABLE` is false, but it does run in all
-other pipelines, including **both** push (branch) and merge request pipelines. With
+other pipelines, including both push (branch) and merge request pipelines. With
 this configuration, every push to an open merge request's source branch
 causes duplicated pipelines.
 

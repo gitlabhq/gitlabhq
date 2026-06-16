@@ -4,9 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Group information', :js, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) do
-    create(:group_with_deletion_schedule, marked_for_deletion_on: Time.current, owners: user)
-  end
+  let_it_be(:group) { create(:group_with_deletion_schedule, :deletion_scheduled, owners: user) }
 
   let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
 

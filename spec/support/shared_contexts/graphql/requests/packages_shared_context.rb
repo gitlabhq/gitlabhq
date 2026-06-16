@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'package details setup' do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:package) { create(:generic_package, project: project) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:package, freeze: false) { create(:generic_package, project: project) }
 
   let(:package_global_id) { global_id_of(package) }
 

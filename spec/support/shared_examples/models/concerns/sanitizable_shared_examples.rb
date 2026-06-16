@@ -27,7 +27,7 @@ RSpec.shared_examples 'sanitizable' do |factory, fields|
 
     describe "##{field} validation" do
       context 'when input contains pre-escaped html entities' do
-        let_it_be(:input) { '&lt;script&gt;alert(1)&lt;/script&gt;' }
+        let_it_be(:input, freeze: false) { '&lt;script&gt;alert(1)&lt;/script&gt;' }
 
         subject { build(factory, attributes) }
 
@@ -40,7 +40,7 @@ RSpec.shared_examples 'sanitizable' do |factory, fields|
       end
 
       context 'when it contains a path component' do
-        let_it_be(:input) do
+        let_it_be(:input, freeze: false) do
           'main../../../../../../api/v4/projects/1/import_project_members/2'
         end
 

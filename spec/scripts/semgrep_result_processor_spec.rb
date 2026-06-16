@@ -44,6 +44,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
       expect(processor).to receive(:perform_allowlist_check)
       expect(processor).to receive(:get_sast_results)
       expect(processor).to receive(:filter_duplicate_findings).with(sample_results)
+      expect(processor).to receive(:triage_findings).with(unique_results)
       expect(processor).to receive(:create_inline_comments).with(unique_results)
 
       processor.execute
@@ -84,6 +85,76 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
       end
 
       it_behaves_like 'does not comment on MR with stop labels'
+    end
+  end
+
+  describe '#triage_findings' do
+    let(:findings) do
+      {
+        'fp1' => { path: 'a.rb', line: 1, message: 'm', check_id: 'c' }
+      }
+    end
+
+    context 'when SAST_TRIAGE_ENABLED is not set' do
+      before do
+        stub_env('SAST_TRIAGE_ENABLED', nil)
+      end
+
+      it 'does not invoke the classifier' do
+        expect(SastTriageClassifier).not_to receive(:new)
+
+        processor.triage_findings(findings)
+      end
+
+      it 'does not write the artifact' do
+        expect(File).not_to receive(:write).with(/gl-sast-triage-verdicts\.json/, any_args)
+
+        processor.triage_findings(findings)
+      end
+    end
+
+    context 'when SAST_TRIAGE_ENABLED is set to 1' do
+      let(:classifier) { instance_double(SastTriageClassifier) }
+      let(:verdicts) do
+        { 'fp1' => { verdict: 'fp', confidence: 0.9, rationale: 'safe', latency_ms: 100, error: nil } }
+      end
+
+      before do
+        stub_env('SAST_TRIAGE_ENABLED', '1')
+        stub_env('CI_PROJECT_DIR', '/tmp/fake_project_dir')
+        allow(SastTriageClassifier).to receive(:new).and_return(classifier)
+        allow(classifier).to receive(:classify).with(findings).and_return(verdicts)
+        allow(File).to receive(:write)
+      end
+
+      it 'invokes the classifier and writes verdicts to the artifact' do
+        expect(File).to receive(:write).with(
+          %r{/gl-sast-triage-verdicts\.json\z},
+          a_string_including('"verdict": "fp"', '"check_id": "c"')
+        )
+
+        processor.triage_findings(findings)
+      end
+
+      it 'is a no-op for an empty findings hash' do
+        expect(SastTriageClassifier).not_to receive(:new)
+
+        processor.triage_findings({})
+      end
+
+      it 'logs and swallows classifier exceptions so the pipeline continues' do
+        allow(classifier).to receive(:classify).and_raise(StandardError, 'boom')
+
+        expect { processor.triage_findings(findings) }
+          .to output(/Triage step failed/).to_stdout
+      end
+
+      it 'logs and swallows artifact-write exceptions' do
+        allow(File).to receive(:write).and_raise(Errno::EACCES, 'no perms')
+
+        expect { processor.triage_findings(findings) }
+          .to output(/Failed to write triage verdicts artifact/).to_stdout
+      end
     end
   end
 

@@ -1,18 +1,15 @@
-import { GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
-import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { IssuableAttributeType } from '~/sidebar/constants';
 import projectIssueMilestoneMutation from '~/sidebar/queries/project_issue_milestone.mutation.graphql';
 import projectIssueMilestoneQuery from '~/sidebar/queries/project_issue_milestone.query.graphql';
@@ -46,20 +43,10 @@ describe('SidebarDropdownWidget', () => {
 
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findDateTooltip = () => getBinding(findGlLink().element, 'gl-tooltip');
-  const findSidebarDropdown = () => wrapper.findComponent(SidebarDropdown);
-  const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
-  const findEditButton = () => findSidebarEditableItem().find('[data-testid="edit-button"]');
-  const findEditableLoadingIcon = () => findSidebarEditableItem().findComponent(GlLoadingIcon);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findEditButton = () => wrapper.findByTestId('milestone-edit');
+  const findLoadingIcon = () => wrapper.findByTestId('loading-icon');
   const findSelectedAttribute = () => wrapper.findByTestId('select-milestone');
-
-  const waitForDropdown = async () => {
-    // BDropdown first changes its `visible` property
-    // in a requestAnimationFrame callback.
-    // It then emits `shown` event in a watcher for `visible`
-    // Hence we need both of these:
-    await waitForPromises();
-    await nextTick();
-  };
 
   const waitForApollo = async () => {
     jest.runOnlyPendingTimers();
@@ -68,25 +55,16 @@ describe('SidebarDropdownWidget', () => {
 
   // Used with createComponentWithApollo which uses 'mount'
   const clickEdit = async () => {
-    await findEditButton().trigger('click');
+    findListbox().vm.$emit('shown');
 
-    await waitForDropdown();
-
-    // We should wait for attributes list to be fetched.
     await waitForApollo();
-  };
-
-  // Used with createComponent which shallow mounts components
-  const toggleDropdown = async () => {
-    wrapper.vm.$refs.editable.expand();
-
-    await waitForDropdown();
   };
 
   const createComponentWithApollo = async ({
     requestHandlers = [],
     projectMilestonesSpy = jest.fn().mockResolvedValue(mockProjectMilestonesResponse),
     currentMilestoneSpy = jest.fn().mockResolvedValue(noCurrentMilestoneResponse),
+    canUpdate = true,
   } = {}) => {
     Vue.use(VueApollo);
 
@@ -97,7 +75,7 @@ describe('SidebarDropdownWidget', () => {
     ]);
 
     wrapper = mountExtended(SidebarDropdownWidget, {
-      provide: { canUpdate: true },
+      provide: { canUpdate },
       apolloProvider: mockApollo,
       propsData: {
         workspacePath: mockIssue.projectPath,
@@ -117,9 +95,10 @@ describe('SidebarDropdownWidget', () => {
     mutationPromise = mutationSuccess,
     queries = {},
     issuableAttribute = IssuableAttributeType.Milestone,
+    canUpdate = true,
   } = {}) => {
     wrapper = shallowMountExtended(SidebarDropdownWidget, {
-      provide: { canUpdate: true },
+      provide: { canUpdate },
       data() {
         return data;
       },
@@ -143,13 +122,6 @@ describe('SidebarDropdownWidget', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
-      stubs: {
-        SidebarEditableItem,
-        GlSearchBoxByType,
-        SidebarDropdown: stubComponent(SidebarDropdown, {
-          methods: { show: jest.fn() },
-        }),
-      },
     });
   };
 
@@ -166,9 +138,6 @@ describe('SidebarDropdownWidget', () => {
             },
           },
         },
-        stubs: {
-          SidebarEditableItem,
-        },
       });
     });
 
@@ -181,7 +150,7 @@ describe('SidebarDropdownWidget', () => {
     });
 
     it('does not show a loading spinner next to the heading', () => {
-      expect(findEditableLoadingIcon().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('shows a loading spinner while fetching the current attribute', () => {
@@ -191,10 +160,10 @@ describe('SidebarDropdownWidget', () => {
         },
       });
 
-      expect(findEditableLoadingIcon().exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('shows the loading spinner and the title of the selected attribute while updating', () => {
+    it('shows the title of the selected attribute while updating', () => {
       createComponent({
         data: {
           updating: true,
@@ -205,7 +174,7 @@ describe('SidebarDropdownWidget', () => {
         },
       });
 
-      expect(findEditableLoadingIcon().exists()).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(false);
       expect(findSelectedAttribute().text()).toBe('Some milestone title');
     });
 
@@ -255,6 +224,38 @@ describe('SidebarDropdownWidget', () => {
     });
   });
 
+  describe('edit toggle button', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('preserves the shortcut-sidebar-dropdown-toggle class for keyboard shortcuts', () => {
+      expect(findEditButton().classes()).toContain('shortcut-sidebar-dropdown-toggle');
+    });
+
+    it('uses tracking attributes for analytics', () => {
+      expect(findEditButton().attributes()).toMatchObject({
+        'data-track-action': 'click_edit_button',
+        'data-track-label': 'right_sidebar',
+        'data-track-property': 'milestone',
+      });
+    });
+  });
+
+  describe('when a user cannot edit', () => {
+    beforeEach(() => {
+      createComponent({ canUpdate: false });
+    });
+
+    it('does not render the edit button', () => {
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('does not render the listbox', () => {
+      expect(findListbox().exists()).toBe(false);
+    });
+  });
+
   describe('when a user can edit', () => {
     describe('when user is editing', () => {
       describe('when rendering the dropdown', () => {
@@ -281,12 +282,10 @@ describe('SidebarDropdownWidget', () => {
                 ${'top-level error'}        | ${mutationError}             | ${'Failed to set milestone on this issue. Please try again.'}
                 ${'user-recoverable error'} | ${mutationSuccessWithErrors} | ${firstErrorMsg}
               `(`$description`, ({ mutationResp, expectedMsg }) => {
-                beforeEach(async () => {
+                beforeEach(() => {
                   bootstrapComponent(mutationResp);
 
-                  await toggleDropdown();
-
-                  findSidebarDropdown().vm.$emit('change', { id: 'error' });
+                  findListbox().vm.$emit('select', 'id');
                 });
 
                 it(`calls createAlert with "${expectedMsg}"`, async () => {
@@ -329,13 +328,32 @@ describe('SidebarDropdownWidget', () => {
         describe('when currentAttribute is not equal to attribute id', () => {
           describe('when update is successful', () => {
             it('calls setIssueAttribute mutation', () => {
-              findSidebarDropdown().vm.$emit('change', { id: mockMilestone2.id });
+              findListbox().vm.$emit('select', mockMilestone2.id);
 
               expect(milestoneMutationSpy).toHaveBeenCalledWith({
                 iid: mockIssue.iid,
                 attributeId: getIdFromGraphQLId(mockMilestone2.id),
                 fullPath: mockIssue.projectPath,
               });
+            });
+          });
+        });
+
+        it('exposes the listbox accessibilityAttributes on the toggle button', () => {
+          // The listbox's scoped #toggle slot provides accessibilityAttributes
+          // (e.g. aria-haspopup, aria-expanded). We spread them onto the Edit
+          // button so it is a proper ARIA combobox trigger.
+          expect(findEditButton().attributes('aria-haspopup')).toBeDefined();
+        });
+
+        describe('when reset (no milestone) is selected', () => {
+          it('calls the mutation with a null attribute id', () => {
+            findListbox().vm.$emit('reset');
+
+            expect(milestoneMutationSpy).toHaveBeenCalledWith({
+              iid: mockIssue.iid,
+              attributeId: null,
+              fullPath: mockIssue.projectPath,
             });
           });
         });

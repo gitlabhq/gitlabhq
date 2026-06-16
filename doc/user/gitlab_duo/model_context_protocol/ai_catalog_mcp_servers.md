@@ -8,8 +8,8 @@ title: MCP servers in the AI Catalog
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
 {{< /details >}}
@@ -46,8 +46,10 @@ at both the group and project level.
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
-- Be a member of a top-level group that has
+- On GitLab.com, be a member of a top-level group that has
   [turned on GitLab Duo experiment and beta features](../turn_on_off.md#on-gitlabcom-2).
+- On GitLab Self-Managed, your instance has
+  [GitLab Duo experiment and beta features turned on](../turn_on_off.md#on-gitlab-self-managed-2).
 - To add or edit MCP servers, you must be an instance administrator.
 - The MCP server must be a:
   - Vetted or partner MCP server. Arbitrary URLs are not allowed.

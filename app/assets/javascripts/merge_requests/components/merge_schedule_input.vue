@@ -7,6 +7,7 @@ const ANYTIME = 'anytime';
 const AFTER = 'after';
 
 export default {
+  name: 'MergeScheduleInput',
   components: {
     GlCollapsibleListbox,
     GlFormInput,

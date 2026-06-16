@@ -110,7 +110,7 @@ query getWorkItemsSlim(
         webUrl
         webPath
         state
-        widgets(onlyTypes: [LABELS]) {
+        widgets(onlyTypes: [LABELS]) @skip(if: $useWorkItemFeatures) {
           type
           ... on WorkItemWidgetLabels {
             allowsScopedLabels

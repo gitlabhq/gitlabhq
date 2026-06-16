@@ -1,0 +1,61 @@
+# Per-test coverage jest child pipeline, generated dynamically by
+# scripts/generate_jest_pipeline.rb. Triggered by per-test-coverage:trigger
+# in the parent maintenance schedule pipeline (see
+# .gitlab/ci/per_test_coverage.gitlab-ci.yml).
+#
+# Activates the jest per-test reporter via GLCI_PER_TEST_COVERAGE=true plus
+# Jest's --coverage flag (the reporter needs testResult.coverage populated).
+# jest_ci.js runs jest with --shard so each parallel instance runs its slice
+# of the queue. Each shard writes tmp/per-test-coverage-jest-{slug}-{hex}.json
+# as a regular job artifact, pulled by the parent pipeline's export job via
+# cross-pipeline `needs:` (see related team#663 work).
+
+include:
+  - local: .gitlab/ci/per_test_coverage/jest_test_base.gitlab-ci.yml
+
+default:
+  image: $DEFAULT_CI_IMAGE
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
+  interruptible: true
+
+stages:
+  - test-frontend
+
+workflow:
+  name: '$PIPELINE_NAME'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
+    - when: always
+
+jest per-test-coverage:
+  extends:
+    - .frontend-test-base
+  needs:
+  <% if repo_from_artifacts %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  <% end %>
+    # Required (not optional): the maintenance schedule pipeline always runs
+    # these, and GitLab rejects `optional` on cross-pipeline needs. The jest run
+    # needs the generated JS routes and fe-islands assets to pass.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: generate-js-routes
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-fe-islands
+    - pipeline: $PARENT_PIPELINE_ID
+      job: per-test-coverage:pipeline-generate
+  rules:
+    - when: always
+  variables:
+    GLCI_PER_TEST_COVERAGE: "true"
+  parallel: <%= parallelism %>
+  script:
+    - scripts/frontend/jest_ci.js --coverage --filter-file "${GLCI_PER_TEST_COVERAGE_QUEUE_JEST_PATH}"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/per-test-coverage-jest-*.json
+    when: always

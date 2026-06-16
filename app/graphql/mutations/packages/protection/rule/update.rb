@@ -10,6 +10,8 @@ module Mutations
             'You can prevent users without certain permissions from altering packages.'
 
           authorize :admin_package
+          authorize_granular_token permissions: :update_package_protection_rule,
+            boundary_argument: :id, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::Packages::Protection::Rule],

@@ -11,13 +11,13 @@ module API
         optional :state, type: String, desc: 'Filter tokens which are either active or not',
           values: %w[active inactive], documentation: { example: 'active' }
         optional :created_before, type: DateTime, desc: 'Filter tokens which were created before given datetime',
-          documentation: { example: '2022-01-01' }
+          documentation: { example: '2022-01-01T00:00:00Z' }
         optional :created_after, type: DateTime, desc: 'Filter tokens which were created after given datetime',
-          documentation: { example: '2021-01-01' }
+          documentation: { example: '2021-01-01T00:00:00Z' }
         optional :last_used_before, type: DateTime, desc: 'Filter tokens which were used before given datetime',
-          documentation: { example: '2021-01-01' }
+          documentation: { example: '2021-01-01T00:00:00Z' }
         optional :last_used_after, type: DateTime, desc: 'Filter tokens which were used after given datetime',
-          documentation: { example: '2022-01-01' }
+          documentation: { example: '2022-01-01T00:00:00Z' }
         optional :expires_before, type: Date, desc: 'Filter tokens which expire before given datetime',
           documentation: { example: '2022-01-01' }
         optional :expires_after, type: Date, desc: 'Filter tokens which expire after given datetime',

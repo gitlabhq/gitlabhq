@@ -1250,7 +1250,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     let_it_be(:user) { create :user }
 
     context 'when parent group is present' do
-      let_it_be(:group, reload: true) do
+      let_it_be_with_reload(:group) do
         create(:group) do |group|
           group.add_owner(user)
         end

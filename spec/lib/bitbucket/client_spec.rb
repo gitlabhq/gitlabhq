@@ -90,6 +90,27 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     end
   end
 
+  describe '#issues_available?' do
+    let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1" }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:http_status, :expected) do
+      200 | true
+      401 | true
+      404 | false
+      410 | false
+    end
+
+    with_them do
+      it 'returns expected availability' do
+        stub_request(:get, url).to_return(status: http_status, headers: headers, body: '{}')
+
+        expect(client.issues_available?(repo)).to eq(expected)
+      end
+    end
+  end
+
   describe '#last_issue' do
     let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL" }
 

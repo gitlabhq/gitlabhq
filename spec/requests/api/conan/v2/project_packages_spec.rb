@@ -9,6 +9,20 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   let(:project_id) { project.id }
   let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
 
+  shared_context 'with mixed v1 and v2 conan package data' do
+    let_it_be(:v1_reference) do
+      create(:conan_package_reference, package: package, recipe_revision: nil,
+        info: { 'settings' => { 'os' => 'v1Linux' } })
+    end
+
+    let_it_be(:v1_package_file) do
+      create(:conan_package_file, :conan_package, package: package,
+        conan_package_reference: v1_reference,
+        conan_recipe_revision: nil,
+        conan_package_revision: nil)
+    end
+  end
+
   shared_examples 'package without revisions returns not found' do |resource: 'Revision'|
     let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
 
@@ -699,8 +713,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
     end
 
-    context 'when recipe revision does not exist' do
-      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+    context 'when package has no revisions' do
+      let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+      let(:conan_package_reference) { package.conan_package_references.order(:id).first.reference }
 
       it 'returns default revision' do
         request
@@ -715,32 +732,90 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
         before do
           stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
+        end
+
+        it_behaves_like 'returns 404 when resource does not exist'
+      end
+
+      context 'when package reference is fabricated' do
+        let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
+
+        it_behaves_like 'returns 404 when resource does not exist'
+      end
+
+      context 'when recipe_revision is fabricated' do
+        let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+        it_behaves_like 'returns 404 when resource does not exist'
+      end
+
+      context 'when both recipe_revision and package reference are fabricated' do
+        let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+        let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
+
+        it_behaves_like 'returns 404 when resource does not exist'
+      end
+    end
+
+    context 'when recipe revision does not exist' do
+      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    context 'when package reference does not exist' do
+      let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    context 'when package has both v1 files and v2 recipe revisions' do
+      include_context 'with mixed v1 and v2 conan package data'
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+      context 'when querying the v1 reference' do
+        let(:conan_package_reference) { v1_reference.reference }
+
+        it 'returns default revision', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq(
+            'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
+            'time' => package.created_at.iso8601(3)
+          )
+        end
+      end
+
+      context 'when querying the v2 reference' do
+        let(:conan_package_reference) do
+          package.conan_package_references.where.not(recipe_revision_id: nil).order(:id).first.reference
         end
 
         it_behaves_like 'returns 404 when resource does not exist'
       end
     end
 
-    context 'when package reference does not exist' do
-      let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
-
-      it 'returns default revision' do
-        request
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(json_response).to eq(
-          'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
-          'time' => package.created_at.iso8601(3)
-        )
+    context 'when the only matching v1 file is not installable' do
+      let_it_be(:package) do
+        create(:conan_package, project: project, without_package_files: true, without_revisions: true,
+          without_package_references: true)
       end
 
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
+      let_it_be(:v1_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
 
-        it_behaves_like 'returns 404 when resource does not exist'
+      let_it_be(:pending_destruction_v1_file) do
+        create(:conan_package_file, :conan_package, :pending_destruction, package: package,
+          conan_package_reference: v1_reference,
+          conan_recipe_revision: nil,
+          conan_package_revision: nil)
       end
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+      let(:conan_package_reference) { v1_reference.reference }
+
+      it_behaves_like 'returns 404 when resource does not exist'
     end
 
     it_behaves_like 'enforcing read_packages job token policy'
@@ -812,6 +887,85 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     end
 
     it_behaves_like 'GET package references metadata endpoint', with_recipe_revision: true
+
+    context 'when package has no revisions' do
+      let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+      it 'returns package references metadata', :aggregate_failures do
+        reference = package.conan_package_references.order(:id).first
+
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(reference.reference => reference.info)
+      end
+
+      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
+        before do
+          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
+        end
+
+        it_behaves_like 'returning response status with message', status: :not_found,
+          message: '404 Revision Not Found'
+      end
+
+      context 'when recipe_revision is fabricated' do
+        let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+        it_behaves_like 'returning response status with message', status: :not_found,
+          message: '404 Revision Not Found'
+      end
+    end
+
+    context 'when querying default revision "0" on a v2 package without v1 files' do
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+      it_behaves_like 'returning response status with message', status: :not_found,
+        message: '404 Revision Not Found'
+    end
+
+    context 'when package has both v1 files and v2 recipe revisions' do
+      include_context 'with mixed v1 and v2 conan package data'
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+      it 'returns only v1 references and does not leak v2 refs', :aggregate_failures do
+        v2_reference = package.conan_package_references.where.not(recipe_revision_id: nil).order(:id).first
+
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(v1_reference.reference => v1_reference.info)
+        expect(json_response).not_to have_key(v2_reference.reference)
+      end
+    end
+
+    context 'when a v1 reference is orphaned' do
+      include_context 'with mixed v1 and v2 conan package data'
+
+      let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+      let_it_be(:orphaned_v1_reference) do
+        create(:conan_package_reference, package: package, recipe_revision: nil,
+          info: { 'settings' => { 'os' => 'orphanLinux' } })
+      end
+
+      let_it_be(:orphaned_v1_file) do
+        create(:conan_package_file, :conan_package, :pending_destruction, package: package,
+          conan_package_reference: orphaned_v1_reference, conan_recipe_revision: nil, conan_package_revision: nil)
+      end
+
+      it 'returns only references backed by installable files', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(v1_reference.reference => v1_reference.info)
+        expect(json_response).not_to have_key(orphaned_v1_reference.reference)
+      end
+    end
+
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
   end

@@ -7,6 +7,7 @@ module Mutations
       description 'Stop an environment.'
 
       authorize :stop_environment
+      authorize_granular_token permissions: :stop_environment, boundary_argument: :id, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::Environment],

@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Ci::PipelineAnalyticsResolver, :click_house, feature_c
 
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public) }
-  let_it_be(:project) { create(:project, :private, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :private, group: group) }
   let_it_be(:guest) { create(:user, guest_of: [project, public_project, group]) }
   let_it_be(:reporter) { create(:user, reporter_of: [project, public_project, group]) }
 

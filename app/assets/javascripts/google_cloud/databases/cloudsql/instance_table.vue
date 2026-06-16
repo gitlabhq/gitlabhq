@@ -39,6 +39,7 @@ export default {
 
       return setUrlParams(
         { project: id },
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- external Google Cloud Console URL
         { url: `https://console.cloud.google.com/sql/instances/${saferName}/overview` },
       );
     },

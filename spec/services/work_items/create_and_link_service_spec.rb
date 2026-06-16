@@ -6,7 +6,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user, developer_of: project) }
-  let_it_be(:related_work_item, refind: true) { create(:work_item, project: project) }
+  let_it_be_with_refind(:related_work_item) { create(:work_item, project: project) }
   let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
   let(:link_params) { {} }

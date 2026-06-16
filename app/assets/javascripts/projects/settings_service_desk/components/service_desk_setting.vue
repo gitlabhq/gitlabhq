@@ -142,6 +142,7 @@ export default {
       default: false,
     },
   },
+  emits: ['save', 'toggle'],
   data() {
     return {
       selectedTemplate: this.initialSelectedTemplate,

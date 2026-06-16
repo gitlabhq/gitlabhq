@@ -114,7 +114,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       context 'project is private' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         context 'for unauthenticated user' do
           it_behaves_like 'rejects packages access', :project, :no_type, :not_found
@@ -468,7 +468,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       context 'project is private' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         it 'returns 404 for non authenticated user' do
           get api(package_url)
@@ -905,7 +905,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       context 'project is private' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         before do
           expect(::Packages::Maven::Metadata::SyncWorker).not_to receive(:perform_async)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:guest) { create_user(:guest) }
   let_it_be(:reporter) { create_user(:reporter) }
@@ -673,8 +673,8 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
         it 'creates records in the current partition' do
           expect { post api(post_url, developer), params: { state: 'running' } }
-            .to change(CommitStatus, :count).by(1)
-            .and change(Ci::Pipeline, :count).by(1)
+            .to change { CommitStatus.count }.by(1)
+            .and change { Ci::Pipeline.count }.by(1)
 
           status = CommitStatus.find(json_response['id'])
 

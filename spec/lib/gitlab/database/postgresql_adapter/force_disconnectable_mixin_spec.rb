@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :d
     end
 
     it 'calls the force disconnect callback on checkin' do
-      connection = pool.connection
+      connection = pool.lease_connection
 
       expect(pool.active_connection?).to be_truthy
       expect(connection).to receive(:force_disconnect_if_old!).and_call_original
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :d
   end
 
   describe 'disconnecting from the database' do
-    let(:connection) { ActiveRecord::Base.connection_pool.connection }
+    let(:connection) { ActiveRecord::Base.connection_pool.lease_connection }
     let(:timer) { connection.force_disconnect_timer }
 
     context 'when the timer is expired' do

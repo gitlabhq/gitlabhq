@@ -40,13 +40,13 @@ RSpec.shared_examples_for 'a pipeline analytics service' do
   end
 
   context 'when user is a guest' do
-    let_it_be(:current_user) { create(:user, guest_of: project1) }
+    let_it_be(:current_user, freeze: false) { create(:user, guest_of: project1) }
 
     include_examples 'returns Not allowed error'
   end
 
   context 'when project has analytics disabled' do
-    let_it_be(:project) { create(:project, :analytics_disabled) }
+    let_it_be(:project, freeze: false) { create(:project, :analytics_disabled) }
 
     include_examples 'returns Not allowed error'
   end

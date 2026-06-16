@@ -2,5 +2,5 @@
 - nav "group"
 - add_page_specific_style 'page_bundles/settings'
 
-- enable_search_settings locals: { container_class: 'gl-my-5' }
+- enable_search_settings locals: { container_class: 'gl-my-5' } unless @hide_search_settings
 = render template: "layouts/group"

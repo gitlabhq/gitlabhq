@@ -222,6 +222,7 @@ The following API resources are available outside of project and group contexts 
 | [To-dos](todos.md)                                                                           | `/todos` |
 | [Token information](admin/token.md)                                                          | `/admin/token` |
 | [Topics](topics.md)                                                                          | `/topics` |
+| [User applications](user_applications.md)                                                    | `/user/applications` |
 | [Users](users.md)                                                                            | `/users` |
 | [Web commits](web_commits.md)                                                                | `/web_commits/public_key` |
 

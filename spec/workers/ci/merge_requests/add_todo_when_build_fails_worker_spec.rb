@@ -6,7 +6,7 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category:
   describe '#perform' do
     let_it_be(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline) }
-    let_it_be(:job) { create(:ci_build, project: project, pipeline: pipeline, status: :failed) }
+    let_it_be(:job, freeze: false) { create(:ci_build, project: project, pipeline: pipeline, status: :failed) }
 
     let(:job_args) { job.id }
 

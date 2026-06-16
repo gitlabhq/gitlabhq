@@ -6,6 +6,7 @@ import { SHORT_DATE_FORMAT } from '~/vue_shared/constants';
 import { formatDate, newDate } from '~/lib/utils/datetime_utility';
 
 export default {
+  name: 'ListItemDescription',
   i18n: {
     showMore: __('Show more'),
     showLess: __('Show less'),

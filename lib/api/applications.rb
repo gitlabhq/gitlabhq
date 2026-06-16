@@ -14,6 +14,11 @@ module API
       desc 'Create a new application' do
         detail 'This feature was introduced in GitLab 10.5'
         success code: 200, model: Entities::ApplicationWithSecret
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' }
+        ]
         tags ['applications']
       end
       params do
@@ -32,7 +37,7 @@ module API
       end
       route_setting :authorization, permissions: :create_oauth_application, boundary_type: :instance
       post do
-        application = Authn::OauthApplication.new(declared_params)
+        application = ::Authn::OauthApplication.new(declared_params)
         application.organization = Current.organization
 
         if application.save
@@ -46,6 +51,10 @@ module API
         detail 'List all registered applications'
         success Entities::Application
         is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' }
+        ]
         tags ['applications']
       end
       route_setting :authorization, permissions: :read_oauth_application, boundary_type: :instance
@@ -57,6 +66,11 @@ module API
       desc 'Delete an application' do
         detail 'Delete a specific application'
         success code: 204
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
         tags ['applications']
       end
       params do
@@ -75,6 +89,11 @@ module API
       desc 'Renew an application secret' do
         detail 'Renew the secret of a specific application'
         success code: 200, model: Entities::ApplicationWithSecret
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
         tags ['applications']
       end
       params do

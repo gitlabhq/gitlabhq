@@ -30,7 +30,7 @@ using specific load balancer or infrastructure capabilities. These techniques de
 infrastructure capabilities.
 
 For any additional information reach out to your GitLab representative or the
-[Support team](https://about.gitlab.com/support/).
+[Support team](https://support.gitlab.com/).
 
 ### Requirements
 
@@ -199,6 +199,14 @@ For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a 
 > Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 > In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
 
+When upgrading an instance that uses Gitaly Cluster (Praefect), upgrade components in this order:
+
+1. Praefect PostgreSQL database. The Linux package does not offer HA for this database, so this step
+   requires downtime unless you use a third-party HA database solution.
+1. Gitaly nodes. Upgrade these sequentially by using the [Gitaly upgrade steps](#upgrade-gitaly-nodes).
+1. Praefect nodes. Upgrade as described below, with one node designated as the deploy node running
+   database migrations.
+
 Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
 migrations should run on only one Praefect node. To do this, designate a **Praefect deploy node** that runs the migrations:
 
@@ -218,6 +226,14 @@ migrations should run on only one Praefect node. To do this, designate a **Praef
       ```shell
       sudo gitlab-ctl reconfigure
       ```
+
+   1. Verify that all Praefect database migrations have been applied before proceeding:
+
+      ```shell
+      sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status
+      ```
+
+      All migrations should show as applied. Do not proceed to the remaining Praefect nodes until this is confirmed.
 
 1. On all **remaining Praefect nodes**:
 

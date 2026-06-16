@@ -175,7 +175,8 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
           diff_file: diff_file_double,
           parallel_view: false,
           plain_view: nil,
-          environment: nil
+          environment: nil,
+          extra_file_data: {}
         )
         expect(controller_instance).to have_received(:render).with(component_double, layout: false)
       end
@@ -241,7 +242,7 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
         instance_double(Gitlab::Diff::File, whitespace_only?: false, blob: blob_double)
       end
 
-      it 'refetches the diff file without ignoring whitespace' do
+      before do
         call_count = 0
         allow(presenter_double).to receive(:diff_files) do
           call_count += 1
@@ -251,12 +252,32 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
             [non_whitespace_diff_file]
           end
         end
+      end
 
+      it 'refetches the diff file without ignoring whitespace' do
         controller_instance.diff_file
 
-        expect(call_count).to eq(2)
+        expect(presenter_double).to have_received(:diff_files).twice
         expect(RapidDiffs::DiffFileComponent).to have_received(:new).with(
           hash_including(diff_file: non_whitespace_diff_file)
+        )
+      end
+
+      it 'passes show_whitespace: true via extra_file_data to the component' do
+        controller_instance.diff_file
+
+        expect(RapidDiffs::DiffFileComponent).to have_received(:new).with(
+          hash_including(extra_file_data: { show_whitespace: true })
+        )
+      end
+    end
+
+    context 'when file is not whitespace_only' do
+      it 'passes empty extra_file_data to the component' do
+        controller_instance.diff_file
+
+        expect(RapidDiffs::DiffFileComponent).to have_received(:new).with(
+          hash_including(extra_file_data: {})
         )
       end
     end

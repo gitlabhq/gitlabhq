@@ -26,6 +26,7 @@ RSpec.describe Gitlab::HookData::IssueBuilder, feature_category: :webhooks do
         description
         discussion_locked
         due_date
+        start_date
         id
         iid
         last_edited_at

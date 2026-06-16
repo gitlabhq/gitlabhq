@@ -57,7 +57,7 @@ export default {
       default: false,
     },
   },
-  emits: ['customDateRangeSelected', 'selected'],
+  emits: ['custom-date-range-selected', 'selected'],
   data() {
     return {
       selectedValue: this.selected || this.dateRangeOptions[0].value,
@@ -109,7 +109,7 @@ export default {
       this.selectedValue = value;
 
       if (this.isCustomDateRangeSelected) {
-        this.$emit('customDateRangeSelected');
+        this.$emit('custom-date-range-selected');
       } else {
         this.$emit('selected', { value, ...this.selectedDateRange });
       }

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require 'parser/current'
 require_relative '../../rubocop/qa_helpers'
 
-RSpec.describe RuboCop::QAHelpers do
+RSpec.describe RuboCop::QAHelpers, feature_category: :test_platform do
   def build_and_parse_source(source, path = 'foo.rb')
     buffer = Parser::Source::Buffer.new(path)
     buffer.source = source

@@ -5,6 +5,12 @@ module Mutations
     class Destroy < Base
       graphql_name 'DestroySnippet'
 
+      authorize_granular_token permissions: :delete_snippet,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary: :user, boundary_type: :user }
+        ]
+
       ERROR_MSG = 'Error deleting the snippet'
 
       argument :id, ::Types::GlobalIDType[::Snippet],

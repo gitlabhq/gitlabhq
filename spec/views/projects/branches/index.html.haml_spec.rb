@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/branches/index.html.haml', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   let(:branches) { repository.branches }
   let(:active_branch) { branches.find { |b| b.name == 'master' } }

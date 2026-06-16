@@ -7,6 +7,7 @@ const ASCENDING_ORDER = 'asc';
 const DESCENDING_ORDER = 'desc';
 
 export default {
+  name: 'RegistrySearch',
   components: {
     GlSorting,
     GlFilteredSearch,

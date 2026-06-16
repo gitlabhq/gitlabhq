@@ -59,14 +59,12 @@ module WorkItems
       private
 
       def counts_by_state(work_item_type)
-        open_count = counts_by_type_and_state.fetch(
-          [work_item_type.id, WorkItem.available_states[:opened]],
-          0
-        )
-        closed_count = counts_by_type_and_state.fetch(
-          [work_item_type.id, WorkItem.available_states[:closed]],
-          0
-        )
+        open_state = WorkItem.available_states[:opened]
+        closed_state = WorkItem.available_states[:closed]
+        id = work_item_type.persistable_id
+
+        open_count = counts_by_type_and_state.fetch([id, open_state], 0)
+        closed_count = counts_by_type_and_state.fetch([id, closed_state], 0)
 
         {
           all: open_count + closed_count,

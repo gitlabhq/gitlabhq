@@ -78,6 +78,8 @@ compile-test-assets:
   extends:
     - .compile-assets-base
     - .frontend:rules:compile-test-assets
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
   artifacts:
     expire_in: 7d
     paths:
@@ -207,7 +209,6 @@ rspec-all frontend_fixture clickhouse:
     - .frontend:rules:frontend_fixture
   script:
     - !reference [.clickhouse-setup, script]
-    - !reference [.frontend-fixtures-base, script]
     - rspec_parallelized_job "--tag click_house"
 
 # Uploads fixtures to package registry if running in canonical project
@@ -284,6 +285,7 @@ upload-graphql-schema-dump:
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
+    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
@@ -312,6 +314,8 @@ jest-build-cache:
     # Propagate exit code correctly. See https://gitlab.com/groups/gitlab-org/-/epics/6074.
     FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
     FORCE_COLOR: '1'
+    # skip reporting metrics from no-op tests
+    GLCI_EXPORT_TEST_METRICS: "false"
   allow_failure:
     # In merge requests, failures exit with 2, so fail the pipeline. Otherwise,
     # they exit with 1, so as not to break master and other pipelines.
@@ -406,6 +410,8 @@ jest vue3:
   needs:
     - !reference [.frontend-test-base, needs]
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
+  variables:
+    GLCI_TEST_METRICS_RUN_TYPE: frontend-jest-tests-vue3
   artifacts:
     name: vue3-mr-junit
     expire_in: 31d
@@ -561,6 +567,8 @@ jest-msw-integration vue3:
   extends:
     - jest-msw-integration
     - .vue3
+  # We do not allow new specs that aren't Vue3 compatible to avoid increased debt.
+  allow_failure: false
 
 jest-integration:
   extends:
@@ -723,7 +731,6 @@ test-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
-  allow_failure: true
   timeout: 60m
   artifacts:
     name: storybook-test-results
@@ -735,7 +742,8 @@ test-storybook:
   script:
     - yarn_install_script_storybook
     - yarn --cwd ./storybook playwright install --with-deps chromium
-    - yarn run storybook:start &
+    - yarn run storybook:build  # Build a static Storybook so stories are pre-compiled (avoids dev-server on-demand compile timeouts)
+    - yarn --cwd ./storybook run serve &
     - STORYBOOK_PID=$!
     - until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done  # Wait for Storybook to start
     - yarn run storybook:dev:test

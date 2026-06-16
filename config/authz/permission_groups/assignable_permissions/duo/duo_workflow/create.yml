@@ -1,0 +1,9 @@
+---
+name: create_duo_workflow
+description: Grants the ability to create duo workflows
+available_for:
+  - granular_access_token
+permissions:
+  - create_duo_workflow
+boundaries:
+  - user

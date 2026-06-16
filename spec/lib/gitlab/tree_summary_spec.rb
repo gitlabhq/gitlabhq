@@ -9,7 +9,7 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
   let(:project) { create(:project, :empty_repo) }
   let(:repo) { project.repository }
   let(:commit) { repo.head_commit }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let(:path) { nil }
   let(:offset) { nil }
@@ -300,8 +300,8 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
   end
 
   describe 'References in commit messages' do
-    let_it_be(:project) { create(:project, :empty_repo) }
-    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
     let(:entries) { summary.summarize }
     let(:entry) { entries.find { |entry| entry[:file_name] == 'issue.txt' } }

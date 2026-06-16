@@ -122,4 +122,5 @@ end
 def add_comment(quick_action)
   fill_in 'Add a reply', with: "#{quick_action} "
   click_button 'Comment'
+  expect(page).to have_field('Add a reply', with: '')
 end

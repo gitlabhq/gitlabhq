@@ -54,6 +54,15 @@ export default {
       default: () => ({}),
     },
   },
+  emits: [
+    'mouseleave',
+    'mouseover',
+    'nav-item-keydown-esc',
+    'nav-link-click',
+    'nav-pin-keydown-esc',
+    'pin-add',
+    'pin-remove',
+  ],
   data() {
     return {
       currentMouseX: 0,

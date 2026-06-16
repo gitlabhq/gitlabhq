@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: イベントの送信に使用されるカスタムHTTPコールバック
 title: Webhookのトラブルシューティング
 ---
@@ -13,30 +13,27 @@ title: Webhookのトラブルシューティング
 
 {{< /details >}}
 
-GitLab Webhookに関する一般的なイシューのトラブルシューティングと解決を行います。
+GitLabのWebhookに関する一般的な問題をトラブルシューティングして解決します。
 
-## デバッグWebhook {#debug-webhooks}
+## Webhookをデバッグする {#debug-webhooks}
 
-次の方法で、GitLab Webhookをデバッグし、ペイロードをキャプチャします:
+GitLab Webhookをデバッグし、ペイロードをキャプチャするには、次の方法を使用します:
 
-- [パブリックWebhook検査ツール](#use-public-webhook-inspection-tools)
-- [Webhook](webhooks.md#inspect-request-and-response-details)リクエストと応答の詳細を調べる
-- [GitLab Development Kit（GDK）](#use-the-gitlab-development-kit-gdk)
-- [プライベートWebhookレシーバー](#create-a-private-webhook-receiver)
+- [Public Webhook inspection tools](#use-public-webhook-inspection-tools)
+- [Webhook request and response details](webhooks.md#inspect-request-and-response-details)
+- [GitLab Development Kit (GDK)](#use-the-gitlab-development-kit-gdk)
+- [Private Webhookレシーバー](#create-a-private-webhook-receiver)
 
-WebhookイベントとJSONペイロードについては、[Webhookイベント](webhook_events.md)を参照してください。
+WebhookイベントとJSONペイロードの詳細については、[webhook events](webhook_events.md)を参照してください。
 
-### パブリックWebhook検査ツールを使用する {#use-public-webhook-inspection-tools}
+### 公開のWebhook検査ツールを使用する {#use-public-webhook-inspection-tools}
 
-パブリックツールを使用して、Webhookのペイロードを検査およびテストします。これらのツールは、HTTPリクエストに対するキャッチオールエンドポイントを提供し、`200 OK`ステータスコードで応答します。
+公開ツールを使用してWebhookペイロードを検査およびテストします。これらのツールは、HTTPリクエストのキャッチオールエンドポイントを提供し、`200 OK`ステータスコードで応答します。
 
-{{< alert type="warning" >}}
+> [!warning]
+> 公開ツールを使用する際は、機密データが外部サービスに送信される可能性があるため、注意してください。テストトークンを使用し、誤って第三者に送信されたシークレットをローテーションしてください。プライバシーを強化するために、[private Webhookレシーバーを作成します](#create-a-private-webhook-receiver)。
 
-パブリックツールを使用する際は、機密データを外部サービスに送信する可能性があるため、注意してください。テストトークンを使用し、サードパーティに誤って送信されたシークレットをローテーションします。プライバシーを強化するには、[プライベートWebhookレシーバーを作成](#create-a-private-webhook-receiver)します。
-
-{{< /alert >}}
-
-パブリックWebhook検査ツールには、次のものがあります:
+公開のWebhook検査ツールには、次のものが含まれます:
 
 <!-- vale gitlab_base.Spelling = NO -->
 - [Beeceptor](https://beeceptor.com): 一時的なHTTPSエンドポイントを作成し、受信ペイロードを検査します。
@@ -44,19 +41,19 @@ WebhookイベントとJSONペイロードについては、[Webhookイベント]
 - [Webhook.site](https://webhook.site): 受信ペイロードをレビューします。
 - [Webhook Tester](https://webhook-test.com): 受信ペイロードを検査およびデバッグします。
 
-### GitLab Development Kit（GDK）を使用する {#use-the-gitlab-development-kit-gdk}
+### GitLab Development Kit (GDK)を使用する {#use-the-gitlab-development-kit-gdk}
 
-より安全な開発環境を実現するには、[GitLab Development Kit（GDK）](https://gitlab.com/gitlab-org/gitlab-development-kit)を使用して、ローカルでGitLab Webhookを操作します。GDKを使用して、ローカルのGitLabインスタンスからマシン上のWebhookレシーバーにWebhookを送信します。
+より安全な開発環境のために、GitLab Webhookをローカルで操作するには、[GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit)を使用します。GDKを使用して、ローカルのGitLabインスタンスからマシンのWebhookレシーバーにWebhookを送信します。
 
-このアプローチを使用するには、GDKをインストールして構成します。
+このアプローチを使用するには、GDKをインストールして設定します。
 
 ### プライベートWebhookレシーバーを作成する {#create-a-private-webhook-receiver}
 
-[パブリックレシーバー](#use-public-webhook-inspection-tools)にWebhookのペイロードを送信できない場合は、独自のプライベートWebhookレシーバーを作成します。
+[公開Webhookレシーバー](#use-public-webhook-inspection-tools)にWebhookペイロードを送信できない場合は、独自のプライベートWebhookレシーバーを作成します。
 
-前提要件: 
+前提条件: 
 
-- Rubyがシステムにインストールされている。
+- システムにRubyがインストールされています。
 
 プライベートWebhookレシーバーを作成するには:
 
@@ -76,14 +73,14 @@ WebhookイベントとJSONペイロードについては、[Webhookイベント]
    server.start
    ```
 
-1. 未使用のポート（例: `8000`）を選択して、スクリプトを開始します:
+1. 未使用のポート (例: `8000`) を選択し、スクリプトを開始します:
 
    ```shell
    ruby print_http_body.rb 8000
    ```
 
-1. GitLabで、レシーバーのURL（例: `http://receiver.example.com:8000/`）を使用して[Webhookを構成](webhooks.md#configure-webhooks)します。
-1. **テスト**を選択します。次のような出力が表示されます:
+1. GitLabで、[Webhook](webhooks.md#configure-webhooks)をレシーバーのURL (例: `http://receiver.example.com:8000/`) で設定します。
+1. **Test**を選択します。次のような出力が表示されます:
 
    ```plaintext
    {"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
@@ -91,37 +88,49 @@ WebhookイベントとJSONペイロードについては、[Webhookイベント]
    - -> /
    ```
 
-{{< alert type="note" >}}
+> [!note]
+> このレシーバーを追加するには、[ローカルネットワーク](../../../security/webhooks.md)へのリクエストを許可する必要がある場合があります。
 
-このレシーバーを追加するには、[ローカルネットワークへのリクエストを許可する](../../../security/webhooks.md)必要がある場合があります。
+## SSL証明書検証エラーを解決する {#resolve-ssl-certificate-verification-errors}
 
-{{< /alert >}}
-
-## SSL証明書の検証エラーを解決する {#resolve-ssl-certificate-verification-errors}
-
-SSL検証が有効になっている場合、GitLabは次のエラーでWebhookエンドポイントのSSL証明書の検証に失敗する可能性があります:
+SSL検証が有効になっている場合、GitLabはWebhookエンドポイントのSSL証明書の検証に失敗し、次のエラーが発生する可能性があります:
 
 ```plaintext
 unable to get local issuer certificate
 ```
 
-このエラーは通常、ルート証明書が[認証局](http://www.cacert.org/)によって発行されていない場合に発生します。
+このエラーは通常、ルート証明書が[CAcert.org](http://www.cacert.org/)によって決定された信頼できる認証局によって発行されていない場合に発生します。
 
-この問題を解決するには、以下を実行します:
+この問題を解決するには、次の手順に従います:
 
-1. [SSLチェッカー](https://www.sslshopper.com/ssl-checker.html)を使用して、特定のエラーを特定します。
-1. 検証失敗の一般的な原因である、中間証明書がないか確認してください。
+1. 特定のエラーを特定するには、[SSL Checker](https://www.sslshopper.com/ssl-checker.html)を使用します。
+1. 検証失敗の一般的な原因である、中間証明書の欠落を確認します。
 
 ## Webhookがトリガーされない {#webhook-not-triggered}
 
 {{< history >}}
 
-- サイレントモードでトリガーされないWebhookは、GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393639)されました。
+- Silent ModeでWebhookがトリガーされない件は、GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393639)されました。
 
 {{< /history >}}
 
-Webhookがトリガーされない場合は、以下を確認してください:
+Webhookがトリガーされない場合は、以下を確認します:
 
-- Webhookが[自動的に無効](webhooks.md#auto-disabled-webhooks)になっていないこと。
-- GitLabインスタンスが[サイレントモード](../../../administration/silent_mode/_index.md)になっていないこと。
-- **Push event activities limit**（プッシュイベントアクティビティー制限）および**Push event hooks limit**（プッシュイベントフック制限）の設定が[**管理者**エリア](../../../administration/settings/push_event_activities_limit.md)で`0`より大きい値に設定されていること。
+- そのWebhookが[自動的に無効化](webhooks.md#auto-disabled-webhooks)されていない。
+- GitLabインスタンスが[Silent Mode](../../../administration/silent_mode/_index.md)ではない。
+- **Push event activities limit**と**Push event hooks limit**設定が、[**管理者**エリア](../../../administration/settings/push_event_activities_limit.md)で`0`より大きい値に設定されている。
+
+## エラー: `Webhook rate limit exceeded` {#error-webhook-rate-limit-exceeded}
+
+Webhookはレート制限のために失敗する可能性があります。GitLab.comは、トップレベルネームスペースごとに、毎分のWebhook呼び出しの総数を制限します。詳細については、[レート制限](../../gitlab_com/_index.md#rate-limits)を参照してください。
+
+レート制限が問題であるかどうかを確認するには:
+
+1. メッセージ`Webhook rate limit exceeded`について、GitLabログを確認してください。
+1. Webhookをトリガーするイベントの数を減らすか、GitLabサポートに連絡して、レート制限の要件について話し合ってください。
+
+## 引用符なしのプレースホルダーを持つカスタムWebhookテンプレートは保存できません {#custom-webhook-template-with-unquoted-placeholders-cannot-be-saved}
+
+GitLab 18.8から18.10では、引用符なしのペイロードフィールドを持つ[カスタムWebhookテンプレート](webhooks.md#custom-webhook-template)を保存できません。この問題はGitLab 18.11で解決されました。回避策として、フィールドを引用符で囲むか、GitLab 18.11以降にアップグレードしてください。たとえば、`{"value": {{id}}}`は`{"value": "{{id}}"}`になります。
+
+引用符で囲まれたフィールドは、数値ではなく文字列値を生成します。これがWebhookと互換性がなく、変更を加える必要がある場合は、アップグレードをお勧めします。

@@ -6,8 +6,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
   include GitlabShellHelpers
   include APIInternalBaseHelpers
 
-  let_it_be(:project, reload: true) { create(:project, :repository, :wiki_repo) }
-  let_it_be(:user, reload: true) { create(:user, organizations: [project.organization]) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :wiki_repo) }
+  let_it_be_with_reload(:user) { create(:user, organizations: [project.organization]) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
   let_it_be(:max_pat_access_token_lifetime) do
@@ -269,7 +269,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
   describe "POST /internal/lfs_authenticate" do
     before do
       stub_lfs_setting(enabled: true)
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
     end
 
     context 'user key' do
@@ -546,7 +546,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       shared_context 'with env passed as a JSON' do
@@ -921,7 +921,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     context "access denied" do
       before do
-        project.add_guest(user)
+        project.add_guest(user) # -- Does not work in before_all
       end
 
       context "git pull" do
@@ -983,7 +983,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       let(:custom_action_result) { Gitlab::GitAccessResult::CustomAction.new(payload, console_messages) }
 
       before do
-        project.add_guest(user)
+        project.add_guest(user) # -- Does not work in before_all
 
         expect_next_instance_of(Gitlab::GitAccess,
           key,
@@ -1018,7 +1018,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     context "console message" do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
       end
 
       context 'git pull' do
@@ -1118,7 +1118,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     context "archived project" do
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
@@ -1363,7 +1363,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       let!(:repository) { project.repository }
 
       before do
-        project.add_developer(user)
+        project.add_developer(user) # -- Does not work in before_all
         project.path = 'new_path'
         project.save!
       end
@@ -1435,7 +1435,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
           context 'is member of the project' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # -- Does not work in before_all
             end
 
             it_behaves_like 'pushes succeed for ssh and http'
@@ -1449,7 +1449,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         context 'with a regular user' do
           context 'is member of the project' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # -- Does not work in before_all
             end
 
             it_behaves_like 'pushes succeed for ssh and http'
@@ -1471,7 +1471,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
           context 'is member of the project' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # -- Does not work in before_all
             end
 
             it_behaves_like 'pushes succeed for ssh and http'
@@ -1485,7 +1485,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         context 'with a regular user' do
           context 'is member of the project' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # -- Does not work in before_all
             end
 
             it_behaves_like 'pushes succeed for ssh and http'
@@ -1579,7 +1579,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     subject { post api('/internal/post_receive'), params: valid_params, headers: gitlab_shell_internal_api_request_header }
 
     before do
-      project.add_developer(user)
+      project.add_developer(user) # -- Does not work in before_all
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 
@@ -1627,6 +1627,67 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
               'type' => 'basic'
             }
           ]
+        end
+      end
+    end
+
+    context 'with an MVCC manifest pin' do
+      let(:manifest_sha) { '1234567890abcdef1234567890abcdef12345678' }
+      let(:valid_params) do
+        {
+          gl_repository: gl_repository,
+          identifier: identifier,
+          changes: changes,
+          push_options: push_options,
+          mvcc_manifest: manifest_sha
+        }
+      end
+
+      it 'pushes the MVCC manifest pin onto the application context', :aggregate_failures do
+        allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
+        expect(Gitlab::ApplicationContext).to receive(:push).with(mvcc_manifest: manifest_sha).and_call_original
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when no MVCC manifest pin is present' do
+        let(:valid_params) do
+          {
+            gl_repository: gl_repository,
+            identifier: identifier,
+            changes: changes,
+            push_options: push_options
+          }
+        end
+
+        it 'does not push an MVCC manifest pin onto the application context', :aggregate_failures do
+          expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the MVCC manifest pin is malformed' do
+        let(:valid_params) do
+          {
+            gl_repository: gl_repository,
+            identifier: identifier,
+            changes: changes,
+            push_options: push_options,
+            mvcc_manifest: 'not-a-valid-sha'
+          }
+        end
+
+        it 'does not push the malformed pin onto the application context', :aggregate_failures do
+          expect(Gitlab::ApplicationContext).not_to receive(:push).with(hash_including(:mvcc_manifest))
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

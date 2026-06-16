@@ -94,8 +94,15 @@ module.exports = (path, options = {}) => {
       },
     ]);
 
+    reporters.push(['@gitlab/jest-metrics-exporter', {}]);
     reporters.push(['<rootDir>/scripts/frontend/jest_json_reporter.js', {}]);
     reporters.push(['<rootDir>/scripts/frontend/jest_test_map_reporter.js', {}]);
+
+    // Per-test coverage capture. Off unless the caller sets GLCI_PER_TEST_COVERAGE;
+    // standard MR/master jest runs do not.
+    if (process.env.GLCI_PER_TEST_COVERAGE === 'true') {
+      reporters.push(['<rootDir>/scripts/frontend/per_test_coverage_reporter.js', {}]);
+    }
   }
 
   const glob = `${path}/**/*@([._])spec.js`;

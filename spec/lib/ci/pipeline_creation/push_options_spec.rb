@@ -8,6 +8,27 @@ RSpec.describe Ci::PipelineCreation::PushOptions, feature_category: :pipeline_co
 
   subject(:push_options) { described_class.new(ci_push_options) }
 
+  describe '#get' do
+    let(:ci_push_options) { { security_policy: { bypass_reason: 'Emergency fix' }, ci: { skip: true } } }
+
+    it 'digs into the parsed push options like Gitlab::PushOptions#get', :aggregate_failures do
+      expect(push_options.get(:security_policy)).to eq({ bypass_reason: 'Emergency fix' })
+      expect(push_options.get(:security_policy, :bypass_reason)).to eq('Emergency fix')
+    end
+
+    it 'returns nil for absent keys' do
+      expect(push_options.get(:merge_request)).to be_nil
+    end
+
+    context 'when no push options are provided' do
+      let(:ci_push_options) { {} }
+
+      it 'returns nil' do
+        expect(push_options.get(:security_policy)).to be_nil
+      end
+    end
+  end
+
   describe '#skips_ci?' do
     context 'when there is no ci skip push option' do
       it 'returns false' do

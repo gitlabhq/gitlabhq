@@ -25,6 +25,7 @@ import DeleteAgentButton from './delete_agent_button.vue';
 import ConnectToAgentModal from './connect_to_agent_modal.vue';
 
 export default {
+  name: 'AgentTable',
   i18n: {
     ...I18N_AGENT_TABLE,
     connectActionText: s__('ClusterAgents|Connect to %{agentName}'),

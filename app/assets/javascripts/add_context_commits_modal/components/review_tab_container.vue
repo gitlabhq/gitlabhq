@@ -4,6 +4,7 @@ import CommitItem from '~/diffs/components/commit_item.vue';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ReviewTabContainer',
   components: {
     GlLoadingIcon,
     GlAlert,

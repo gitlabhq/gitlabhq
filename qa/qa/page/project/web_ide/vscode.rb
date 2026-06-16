@@ -234,7 +234,12 @@ module QA
             within_vscode_editor do
               click_continue_with_existing_branch
             end
-            raise "failed to push_to_existing_branch" unless commit_shows_message?(message)
+
+            raise "failed to push_to_existing_branch" unless Support::Waiter.wait_until(
+              max_duration: 30,
+              retry_on_exception: true,
+              message: "Waiting for commit success message after push to existing branch"
+            ) { commit_shows_message?(message) }
           end
 
           def push_to_new_branch
@@ -245,9 +250,11 @@ module QA
               send_keys(:enter)
             end
 
-            return if commit_shows_message?(COMMIT_SUCCESS_MESSAGE)
-
-            raise "failed to push_to_new_branch"
+            raise "failed to push_to_new_branch" unless Support::Waiter.wait_until(
+              max_duration: 30,
+              retry_on_exception: true,
+              message: "Waiting for commit success message after push to new branch"
+            ) { commit_shows_message?(COMMIT_SUCCESS_MESSAGE) }
           end
 
           def create_merge_request

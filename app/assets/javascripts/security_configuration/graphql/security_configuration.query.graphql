@@ -6,6 +6,7 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     autoDevopsPath
     canEnableAutoDevops
     containerScanningForRegistryEnabled
+    licenseScanningForCyclonedxEnabled
     features {
       type
       configured

@@ -32,6 +32,10 @@ module Gitlab
         included do |worker_class|
           include ::Gitlab::Utils::StrongMemoize
 
+          # Setting this lets ActiveRecord look up records by scalar 'id' (unique across partitions)
+          worker_class.primary_key = :id
+          worker_class.query_constraints :id, :partition
+
           # Partition should not be changed once the record is created
           attr_readonly :partition
 
@@ -42,11 +46,13 @@ module Gitlab
           validates :pause_ms, numericality: { greater_than_or_equal_to: MINIMUM_PAUSE_MS }
 
           scope :for_partition, ->(partition) { where(partition: partition) }
-          scope :unfinished, -> { with_statuses(:queued, :active, :paused) }
+          scope :unfinished, -> { with_statuses(:queued, :active, :paused, :stopped) }
           scope :completed, -> { with_statuses(:finished, :failed) }
           scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison
           scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
           scope :for_gitlab_schema, ->(gitlab_schema) { where(gitlab_schema: gitlab_schema) }
+          scope :for_job_class, ->(job_class_name) { where(job_class_name: job_class_name) }
+          scope :ordered_by_created_at_desc, -> { order(created_at: :desc) }
 
           scope :executable, -> do
             with_statuses(:queued, :active, :paused).not_on_hold
@@ -97,6 +103,7 @@ module Gitlab
             state :paused, value: 2
             state :finished, value: 3
             state :failed, value: 4
+            state :stopped, value: 5
 
             event :finish do
               transition [:queued, :paused, :finished, :active] => :finished
@@ -114,6 +121,14 @@ module Gitlab
               transition any => :active
             end
 
+            event :stop do
+              transition [:queued, :active, :paused] => :stopped
+            end
+
+            event :restart do
+              transition stopped: :active
+            end
+
             before_transition any => [:paused] do |worker|
               worker.on_hold_until = RETRY_DELAY.from_now
 
@@ -129,8 +144,16 @@ module Gitlab
               migration.finished_at = Time.current
             end
 
-            before_transition any => :active do |migration|
+            before_transition except_from: :stopped, to: :active do |migration|
               migration.started_at = Time.current
+            end
+
+            before_transition any => :stopped do |worker|
+              worker.on_hold_until = nil
+            end
+
+            before_transition stopped: :active do |worker|
+              worker.on_hold_until = nil
             end
 
             after_transition any => any do |worker, transition|
@@ -220,6 +243,11 @@ module Gitlab
 
           def migrated_tuple_count
             jobs.with_status(:succeeded).sum(:batch_size)
+          end
+
+          # Format <worker_type:partition_id:id>
+          def external_id
+            "#{self.class::WORKER_TYPE}:#{partition}:#{id}"
           end
 
           private

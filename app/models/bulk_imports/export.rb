@@ -9,6 +9,7 @@ module BulkImports
     FINISHED = 1
     FAILED = -1
     IN_PROGRESS_STATUSES = [PENDING, STARTED].freeze
+    MAX_CONCURRENT_RELATION_EXPORTS = 5
 
     self.table_name = 'bulk_import_exports'
 
@@ -32,6 +33,9 @@ module BulkImports
     scope :for_offline_export, ->(offline_export) { where(offline_export: offline_export) }
     scope :for_offline_export_and_relation, ->(offline_export, relation) do
       where(offline_export: offline_export, relation: relation)
+    end
+    scope :for_offline_export_in_progress, ->(offline_export) do
+      where(offline_export: offline_export, status: IN_PROGRESS_STATUSES)
     end
 
     scope :group_exports, -> { where.not(group_id: nil) }
@@ -117,6 +121,14 @@ module BulkImports
 
     def offline?
       offline_export_id.present?
+    end
+
+    def import_source
+      if offline?
+        Import::SOURCE_OFFLINE_TRANSFER
+      else
+        Import::SOURCE_DIRECT_TRANSFER
+      end
     end
 
     def flag_failure_on_offline_export

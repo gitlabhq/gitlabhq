@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_access do
-  let_it_be(:user) { create(:user, :with_namespace) }
+  let_it_be(:user, freeze: false) { create(:user, :with_namespace) }
   let(:expected_title) { s_('EmailOTP|Enhanced authentication coming soon') }
 
   before do

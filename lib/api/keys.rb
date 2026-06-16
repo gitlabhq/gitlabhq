@@ -8,9 +8,8 @@ module API
     feature_category :system_access
 
     resource :keys do
-      desc 'Get single ssh key by id. Only available to admin users' do
-        detail 'Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID\
-        of an SSH key'
+      desc 'Retrieve user by SSH key ID' do
+        detail 'Retrieves user by SSH key ID. Administrators only.'
         success Entities::SSHKeyWithUser
         tags ['keys']
       end
@@ -26,10 +25,9 @@ module API
         present key, with: Entities::SSHKeyWithUser, current_user: current_user
       end
 
-      desc 'Get user by fingerprint of SSH key' do
+      desc 'Retrieve user by SSH key fingerprint' do
+        detail 'Retrieves user by SSH key fingerprint. Administrators only.'
         success Entities::UserWithAdmin
-        detail 'You can search for a user that owns a specific SSH key. Note only administrators can lookup SSH key\
-        with the fingerprint of an SSH key'
         tags ['keys']
       end
       params do

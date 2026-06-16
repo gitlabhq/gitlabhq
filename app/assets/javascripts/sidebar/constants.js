@@ -171,4 +171,10 @@ export const INCIDENTS_I18N = {
 export const MR_WORK_ITEM_RELATIONSHIP_TYPES = {
   closing: 'CLOSES',
   mentioned: 'MENTIONED',
+  related: 'RELATED',
 };
+
+export const MR_WORK_ITEM_RELATIONSHIP_OPTIONS = [
+  { value: MR_WORK_ITEM_RELATIONSHIP_TYPES.closing, text: s__('WorkItem|Closes') },
+  { value: MR_WORK_ITEM_RELATIONSHIP_TYPES.related, text: s__('WorkItem|Relates to') },
+];

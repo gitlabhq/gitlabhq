@@ -196,11 +196,20 @@ class EventCreateService
     create_record_event(merge_request, current_user, :approved)
   end
 
+  def transfer_project(project, current_user)
+    create_record_event(project, current_user, :transferred)
+  end
+
+  def transfer_group(group, current_user)
+    create_record_event(group, current_user, :transferred)
+  end
+
   private
 
   def create_record_event(record, current_user, status, fingerprint = nil)
+    resource_parent = record.try(:resource_parent) || record
     create_event(
-      record.resource_parent,
+      resource_parent,
       current_user,
       status,
       fingerprint: fingerprint,

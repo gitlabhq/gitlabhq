@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :navigation do
   let_it_be(:organization) { build(:organization) }
   let_it_be(:user) { build(:user) }
-  let_it_be(:context) do
+  let_it_be(:context, freeze: false) do
     Sidebars::Context.new(
       current_user: user,
       container: organization
@@ -28,7 +28,7 @@ RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :na
     end
 
     it "is exposed as a renderable menu" do
-      expect(subject.instance_variable_get(:@menus).map(&:class)).to eq(category_menu)
+      expect(subject.instance_variable_get(:@menus).map(&:class)).to include(*category_menu)
     end
   end
 

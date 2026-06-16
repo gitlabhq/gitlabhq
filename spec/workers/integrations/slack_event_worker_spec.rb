@@ -11,14 +11,14 @@ RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
       where(:event) { %w[app_home_opened app_mention] }
 
       with_them do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
     context 'when event is not known' do
       let(:event) { 'foo' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

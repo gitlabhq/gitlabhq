@@ -4,6 +4,15 @@ query RecentlyViewedItems {
     recentlyViewedItems {
       viewedAt
       item {
+        ... on WorkItem {
+          id
+          title
+          webUrl
+          workItemType {
+            id
+            name
+          }
+        }
         ... on Issue {
           id
           title

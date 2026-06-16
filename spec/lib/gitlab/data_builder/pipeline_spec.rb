@@ -6,7 +6,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
   include Ci::PipelineVariableHelpers
 
   let_it_be(:user) { create(:user, :public_email) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline,

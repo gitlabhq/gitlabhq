@@ -44,7 +44,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       end
 
       context 'when organization has multiple owners' do
-        let_it_be(:other_owner) { create(:organization_owner, organization: owner.organization) }
+        let_it_be(:other_owner, freeze: false) { create(:organization_owner, organization: owner.organization) }
 
         it 'does not raise validation error' do
           expect { owner.update!(access_level: 'default') }.not_to raise_error
@@ -107,8 +107,8 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     describe '.in_organization' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:organization_users) { create_pair(:organization_user, organization: organization) }
+      let_it_be(:organization, freeze: false) { create(:organization) }
+      let_it_be(:organization_users, freeze: false) { create_pair(:organization_user, organization: organization) }
 
       before do
         create(:organization_user)
@@ -120,8 +120,12 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     describe '#with_active_users' do
-      let_it_be(:active_organization_user) { create(:organization_user) }
-      let_it_be(:inactive_organization_user) { create(:organization_user) { |org_user| org_user.user.block! } }
+      let_it_be(:active_organization_user, freeze: false) { create(:organization_user) }
+      let_it_be(:inactive_organization_user, freeze: false) do
+        create(:organization_user) do |org_user|
+          org_user.user.block!
+        end
+      end
 
       subject(:active_user) { described_class.with_active_users }
 
@@ -129,11 +133,11 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     describe '.by_user' do
-      let_it_be(:user) { create(:user, organizations: []) }
-      let_it_be(:another_user) { create(:user, organizations: []) }
-      let_it_be(:organization_1) { create(:organization, users: [user]) }
-      let_it_be(:organization_2) { create(:organization, users: [user, another_user]) }
-      let_it_be(:organization_3) { create(:organization, users: [another_user]) }
+      let_it_be(:user, freeze: false) { create(:user, organizations: []) }
+      let_it_be(:another_user, freeze: false) { create(:user, organizations: []) }
+      let_it_be(:organization_1, freeze: false) { create(:organization, users: [user]) }
+      let_it_be(:organization_2, freeze: false) { create(:organization, users: [user, another_user]) }
+      let_it_be(:organization_3, freeze: false) { create(:organization, users: [another_user]) }
 
       subject(:scope_by_user) { described_class.by_user(user) }
 
@@ -148,9 +152,9 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
   it_behaves_like 'having unique enum values'
 
   describe '.update_home_organization_record_for' do
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:user) { create(:user, organization: organization, organizations: []) }
-    let_it_be(:user_id) { user.id }
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:user, freeze: false) { create(:user, organization: organization, organizations: []) }
+    let_it_be(:user_id, freeze: false) { user.id }
     let(:user_is_admin) { false }
 
     subject(:update_home_organization_record) do
@@ -165,7 +169,9 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'when entry already exists' do
-      let_it_be(:organization_user) { create(:organization_user, user: user, organization: organization) }
+      let_it_be(:organization_user, freeze: false) do
+        create(:organization_user, user: user, organization: organization)
+      end
 
       it 'does not create or update existing record' do
         expect { update_home_organization_record }.not_to change { described_class.count }
@@ -202,17 +208,17 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
   end
 
   describe '.create_organization_record_for' do
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:user) { create(:user, organizations: []) }
-    let_it_be(:user_id) { user.id }
-    let_it_be(:organization_id) { organization.id }
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:user, freeze: false) { create(:user, organizations: []) }
+    let_it_be(:user_id, freeze: false) { user.id }
+    let_it_be(:organization_id, freeze: false) { organization.id }
 
     subject(:create_organization_record) do
       described_class.create_organization_record_for(user_id, organization_id)
     end
 
     context 'when record already exists' do
-      let_it_be(:existing_record) do
+      let_it_be(:existing_record, freeze: false) do
         create(:organization_user, :owner, organization_id: organization_id, user_id: user_id)
       end
 
@@ -250,15 +256,15 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'when user is the owner' do
-      let_it_be(:organization_user, reload: true) { create(:organization_owner) }
-      let_it_be(:organization) { organization_user.organization }
+      let_it_be_with_reload(:organization_user) { create(:organization_owner) }
+      let_it_be(:organization, freeze: false) { organization_user.organization }
 
       context 'when another owner does not exist' do
         it { is_expected.to eq(true) }
       end
 
       context 'when another owner exists' do
-        let_it_be(:another_owner, reload: true) { create(:organization_owner, organization: organization) }
+        let_it_be_with_reload(:another_owner) { create(:organization_owner, organization: organization) }
 
         where(:current_owner_active?, :another_owner_active?, :last_owner?) do
           true  | true  | false

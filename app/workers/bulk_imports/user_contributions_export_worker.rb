@@ -121,7 +121,7 @@ module BulkImports
     strong_memoize_attr :user_contributions_export
 
     def log_error(message)
-      log_base_data = { importer: 'gitlab_migration', offline_export_id: offline_export_id }
+      log_base_data = { importer: user_contributions_export.import_source, offline_export_id: offline_export_id }
       log_base_data.merge!(Gitlab::ImportExport::LogUtil.exportable_to_log_payload(portable))
 
       Gitlab::Export::Logger.error(message: message, **log_base_data)

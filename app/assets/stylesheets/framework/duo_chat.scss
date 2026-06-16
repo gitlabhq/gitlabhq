@@ -1,10 +1,57 @@
 @import 'framework/variables';
 @import 'framework/variables_overrides';
 
+/**
+ * CSS Custom properties
+ */
+:root {
+  --duo-chat-bubble-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
+  --duo-chat-bubble-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
+}
+
+:root.gl-dark {
+  --duo-chat-bubble-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
+  --duo-chat-bubble-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s calc(l + 20) / 25%);
+}
+
 .duo-chat-layout {
   z-index: #{$zindex-modal-backdrop - 1};
 }
 
 .duo-chat-message a.anchor {
  @apply gl-hidden;
+}
+
+.duo-chat-message-container {
+  // stylelint-disable-next-line gitlab/no-has -- scoped to chat message element
+  .duo-chat-message:has(.error-icon) {
+    @apply gl-bg-subtle;
+  }
+}
+
+/**
+ * Your messages styles
+ */
+
+// stylelint-disable-next-line gitlab/no-has -- scoped to chat message container
+.duo-chat-message-container:has(.duo-chat-message .gl-avatar) {
+  @apply gl-justify-end;
+
+  .duo-chat-message {
+    background-color: var(--duo-chat-bubble-background-color-default);
+    @apply gl-rounded-bl-[1rem];
+    @apply gl-rounded-br-none;
+  }
+}
+
+// stylelint-disable-next-line gitlab/no-has -- scoped to chat message container
+.duo-chat-message-container:has(.duo-chat-message.gl-text-feedback-info) {
+  // stylelint-disable-next-line gitlab/no-has -- scoped to chat message element
+  .duo-chat-message:not(:has(.error-icon)) {
+    background-color: var(--duo-chat-bubble-background-color-default);
+
+    p {
+      color: var(--duo-chat-bubble-foreground-color-default);
+    }
+  }
 }

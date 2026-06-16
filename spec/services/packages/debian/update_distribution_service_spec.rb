@@ -55,7 +55,7 @@ RSpec.describe Packages::Debian::UpdateDistributionService, feature_category: :p
   RSpec.shared_examples 'Debian Update Distribution Service' do |container_type, can_freeze|
     context "with a Debian #{container_type} distribution" do
       let_it_be(:container, freeze: can_freeze) { create(container_type) } # rubocop:disable Rails/SaveBang
-      let_it_be(:distribution, reload: true) { create("debian_#{container_type}_distribution", container: container) }
+      let_it_be_with_reload(:distribution) { create("debian_#{container_type}_distribution", container: container) }
       let_it_be(:component1) { create("debian_#{container_type}_component", distribution: distribution, name: 'component1') }
       let_it_be(:component2) { create("debian_#{container_type}_component", distribution: distribution, name: 'component2') }
       let_it_be(:architecture0) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }

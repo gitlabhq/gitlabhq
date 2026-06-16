@@ -8,6 +8,9 @@ module Types
       include ::API::Helpers::RelatedResourcesHelpers
 
       authorize :read_terraform_state
+      authorize_granular_token permissions: :read_terraform_state,
+        boundary: :project,
+        boundary_type: :project
 
       field :id, GraphQL::Types::ID,
         null: false,

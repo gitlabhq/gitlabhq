@@ -201,6 +201,7 @@ export default {
       variables() {
         return {
           id: this.workItemId,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {
@@ -221,6 +222,7 @@ export default {
         variables() {
           return {
             id: this.workItem.id,
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           };
         },
         skip() {

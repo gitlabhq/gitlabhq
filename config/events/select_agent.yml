@@ -2,6 +2,8 @@
 description: Tracks when a user selects an item or option in the clusters section.
 action: select_agent
 product_group: environments
+product_categories:
+- environment_management
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75223
 tiers:

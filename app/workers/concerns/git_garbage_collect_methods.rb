@@ -3,6 +3,8 @@
 module GitGarbageCollectMethods
   extend ActiveSupport::Concern
 
+  HousekeepingInProgressError = Class.new(StandardError)
+
   included do
     include ApplicationWorker
 
@@ -43,6 +45,11 @@ module GitGarbageCollectMethods
     # In case pack files are deleted, release libgit2 cache and open file
     # descriptors ASAP instead of waiting for Ruby garbage collection
     resource.cleanup
+  rescue HousekeepingInProgressError
+    Gitlab::GitLogger.warn(
+      Labkit::Fields::LOG_MESSAGE => "Housekeeping already running for repository, skipping",
+      Labkit::Fields::CLASS_NAME => self.class.name
+    )
   ensure
     cancel_lease(lease_key, lease_uuid) if lease_key.present? && lease_uuid.present?
   end
@@ -90,6 +97,8 @@ module GitGarbageCollectMethods
     else
       client.optimize_repository(eager: task == :eager)
     end
+  rescue GRPC::AlreadyExists
+    raise HousekeepingInProgressError, 'housekeeping already running for repository'
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")
     raise Gitlab::Git::Repository::NoRepository, e

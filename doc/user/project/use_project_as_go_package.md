@@ -94,10 +94,10 @@ To use this script:
    chmod +x gitlab_goauth.sh
    ```
 
-1. Set the `GOAUTH` environment variable to use your command:
+1. Set the `GOAUTH` environment variable to the absolute path of your command:
 
    ```shell
-   export GOAUTH="command <absolute_path_to_your_command>"
+   export GOAUTH="<absolute_path_to_your_command>"
    ```
 
 Alternatively, to use your existing `.netrc` file with `GOAUTH`:

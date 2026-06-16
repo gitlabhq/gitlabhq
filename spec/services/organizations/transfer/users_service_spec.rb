@@ -195,18 +195,6 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         end
       end
 
-      context 'when new organization is internal' do
-        let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-
-        it 'sets private_profile to true on users' do
-          service.execute
-
-          expect(user1.reload.private_profile).to be true
-          expect(user2.reload.private_profile).to be true
-          expect(user3.reload.private_profile).to be true
-        end
-      end
-
       context 'when new organization is private' do
         let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
@@ -435,6 +423,167 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'with parentless todo organization_id updates' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:project) { create(:project, namespace: group, organization: old_organization) }
+      let_it_be_with_refind(:issue) { create(:issue, project: project) }
+
+      before_all do
+        group.add_developer(user1)
+        group.add_developer(user2)
+      end
+
+      def create_parentless_todo(user:)
+        key = create(:key, user: user)
+        create(:todo,
+          user: user,
+          author: user,
+          target: key,
+          action: Todo::SSH_KEY_EXPIRED,
+          project: nil
+        )
+      end
+
+      it 'updates organization_id for parentless todos of transferred users' do
+        parentless_todo1 = create_parentless_todo(user: user1)
+        parentless_todo2 = create_parentless_todo(user: user2)
+
+        service.execute
+
+        expect(parentless_todo1.reload.organization_id).to eq(new_organization.id)
+        expect(parentless_todo2.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update parentless todos for users not in the group' do
+        non_group_todo = create_parentless_todo(user: non_group_user)
+
+        expect { service.execute }.not_to change { non_group_todo.reload.organization_id }
+      end
+
+      it 'does not update project-scoped todos (organization_id is NULL)' do
+        project_todo = create(:todo, user: user1, target: issue, project: project)
+
+        service.execute
+
+        expect(project_todo.reload.organization_id).to be_nil
+      end
+    end
+
+    context 'with import failure organization_id updates' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_developer(user1)
+      end
+
+      it 'updates organization_id for user-scoped import failures of transferred users' do
+        import_failure = create(:import_failure, user: user1, project: nil, organization: old_organization)
+
+        service.execute
+
+        expect(import_failure.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update import failures for users not in the group' do
+        non_group_failure = create(:import_failure, user: non_group_user, project: nil,
+          organization: old_organization)
+
+        expect { service.execute }.not_to change { non_group_failure.reload.organization_id }
+      end
+    end
+
+    context 'with personal snippet associated records' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:personal_snippet) do
+        create(:personal_snippet, author: user1, organization: old_organization)
+      end
+
+      let_it_be_with_refind(:non_group_snippet) do
+        create(:personal_snippet, author: non_group_user, organization: old_organization)
+      end
+
+      before_all do
+        group.add_developer(user1)
+        Users::Internal.in_organization(old_organization).ghost
+      end
+
+      before do
+        service.prepare_bots
+      end
+
+      context 'for snippet repositories' do
+        it 'updates snippet_organization_id for personal snippet repositories of transferred users' do
+          snippet_repo = create(:snippet_repository, snippet: personal_snippet)
+
+          service.execute
+
+          expect(snippet_repo.reload.snippet_organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update snippet repositories for users not in the group' do
+          non_group_repo = create(:snippet_repository, snippet: non_group_snippet)
+
+          expect { service.execute }.not_to change { non_group_repo.reload.snippet_organization_id }
+        end
+      end
+
+      context 'for snippet statistics' do
+        it 'updates snippet_organization_id for personal snippet statistics of transferred users' do
+          snippet_stats = create(:snippet_statistics, snippet: personal_snippet)
+
+          service.execute
+
+          expect(snippet_stats.reload.snippet_organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update snippet statistics for users not in the group' do
+          non_group_stats = create(:snippet_statistics, snippet: non_group_snippet)
+
+          expect { service.execute }.not_to change { non_group_stats.reload.snippet_organization_id }
+        end
+      end
+
+      context 'for snippet repository storage moves' do
+        it 'updates snippet_organization_id for personal snippet storage moves of transferred users' do
+          storage_move = create(:snippet_repository_storage_move, container: personal_snippet)
+
+          service.execute
+
+          expect(storage_move.reload.snippet_organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update snippet storage moves for users not in the group' do
+          non_group_move = create(:snippet_repository_storage_move, container: non_group_snippet)
+
+          expect { service.execute }.not_to change { non_group_move.reload.snippet_organization_id }
+        end
+      end
+
+      context 'for snippet user mentions' do
+        it 'updates snippet_organization_id for personal snippet user mentions of transferred users' do
+          note = create(:note_on_personal_snippet, noteable: personal_snippet, organization: old_organization)
+          mention = SnippetUserMention.create!(snippet: personal_snippet, note: note, mentioned_users_ids: [user1.id])
+
+          service.execute
+
+          expect(mention.reload.snippet_organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update snippet user mentions for users not in the group' do
+          note = create(:note_on_personal_snippet, noteable: non_group_snippet, organization: old_organization)
+          non_group_mention = SnippetUserMention.create!(
+            snippet: non_group_snippet, note: note, mentioned_users_ids: [non_group_user.id]
+          )
+
+          expect { service.execute }.not_to change { non_group_mention.reload.snippet_organization_id }
+        end
+      end
+    end
+
     context 'with associated organization_id updates', :aggregate_failures do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
@@ -660,7 +809,6 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::EventsCount",
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
-            "Dependencies::DependencyListExport",
             "LDAPKey",
             "RemoteDevelopment::OrganizationClusterAgentMapping",
             "Vulnerabilities::Export"
@@ -686,7 +834,8 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'Snippet',
               'ImportFailure',
               'Clusters::Cluster',
-              'AntiAbuse::Event'
+              'AntiAbuse::Event',
+              'Dependencies::DependencyListExport'
             ]
           end
 

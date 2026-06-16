@@ -7,11 +7,11 @@ RSpec.shared_context 'for terraform modules api setup' do
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group) }
-  let_it_be(:package) { create(:terraform_module_package, :with_metadatum, project:) }
-  let_it_be(:personal_access_token) { create(:personal_access_token) }
-  let_it_be(:user) { personal_access_token.user }
-  let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
-  let_it_be(:deploy_token) do
+  let_it_be(:package, freeze: false) { create(:terraform_module_package, :with_metadatum, project:) }
+  let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token) }
+  let_it_be(:user, freeze: false) { personal_access_token.user }
+  let_it_be(:job, freeze: false) { create(:ci_build, :running, user: user, project: project) }
+  let_it_be(:deploy_token, freeze: false) do
     create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
   end
 

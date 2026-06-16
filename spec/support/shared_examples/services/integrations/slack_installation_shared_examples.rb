@@ -77,7 +77,7 @@ RSpec.shared_examples_for Integrations::SlackInstallation::BaseService do
   end
 
   context 'when user is unauthorized' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:response) { {} }
 

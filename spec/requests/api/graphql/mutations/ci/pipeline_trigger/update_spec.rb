@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe 'PipelineTriggerUpdate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { build(:user) }
-  let_it_be(:project) { build(:project) }
+  let_it_be(:current_user, freeze: false) { build(:user) }
+  let_it_be(:project, freeze: false) { build(:project) }
 
   let(:mutation) { graphql_mutation(:pipeline_trigger_update, params) }
   let_it_be(:old_description) { "Boring old description." }
   let(:new_description) { 'Awesome new description!' }
-  let_it_be(:trigger) { create(:ci_trigger, owner: current_user, project: project, description: old_description) }
+  let_it_be(:trigger, freeze: false) do
+    create(:ci_trigger, owner: current_user, project: project, description: old_description)
+  end
 
   let(:params) do
     {
@@ -29,6 +31,17 @@ RSpec.describe 'PipelineTriggerUpdate', feature_category: :continuous_integratio
   context 'when authorized' do
     before_all do
       project.add_owner(current_user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_trigger do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:pipeline_trigger_update, { id: trigger.to_global_id.to_s, description: new_description },
+          'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
 
     context 'when the params are invalid' do

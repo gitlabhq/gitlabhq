@@ -8,6 +8,7 @@ module AuthHelper
     azure_activedirectory_v2
     azure_oauth2
     bitbucket
+    chatgpt
     github
     gitlab
     google_oauth2
@@ -382,9 +383,7 @@ module AuthHelper
         delete_path: expose_path(api_v4_users_path)
       },
       access_token: {
-        **expires_at_for_service_access_tokens(
-          ::Gitlab::CurrentSettings.current_application_settings.service_access_tokens_expiration_enforced
-        ),
+        **expires_at_for_service_access_tokens(admin_sa_token_expiry_enforced?),
         available_scopes: filter_sort_scopes(scopes, sources).to_json,
         create: expose_path(api_v4_users_personal_access_tokens_path(user_id: ':id')),
         revoke: expose_path(api_v4_personal_access_tokens_path),
@@ -409,7 +408,7 @@ module AuthHelper
         delete_path: expose_path(api_v4_groups_service_accounts_path(id: group.id))
       },
       access_token: {
-        **expires_at_for_service_access_tokens(group.namespace_settings.service_access_tokens_expiration_enforced),
+        **expires_at_for_service_access_tokens(group_sa_token_expiry_enforced?(group)),
         available_scopes: filter_sort_scopes(scopes, sources).to_json,
         create: expose_path(api_v4_groups_service_accounts_personal_access_tokens_path(id: group.id, user_id: ':id')),
         revoke: expose_path(api_v4_groups_service_accounts_personal_access_tokens_path(id: group.id, user_id: ':id')),
@@ -434,8 +433,7 @@ module AuthHelper
         delete_path: expose_path(api_v4_projects_service_accounts_path(id: project.id))
       },
       access_token: {
-        **expires_at_for_service_access_tokens(
-          project.root_namespace.namespace_settings.service_access_tokens_expiration_enforced),
+        **expires_at_for_service_access_tokens(project_sa_token_expiry_enforced?(project)),
         available_scopes: filter_sort_scopes(scopes, sources).to_json,
         create: expose_path(api_v4_projects_service_accounts_personal_access_tokens_path(id: project.id,
           user_id: ':id')),
@@ -447,6 +445,18 @@ module AuthHelper
           api_v4_projects_service_accounts_personal_access_tokens_path(id: project.id, user_id: ':id'))
       }
     }
+  end
+
+  def admin_sa_token_expiry_enforced?
+    ::Gitlab::CurrentSettings.require_personal_access_token_expiry?
+  end
+
+  def group_sa_token_expiry_enforced?(_group)
+    ::Gitlab::CurrentSettings.require_personal_access_token_expiry?
+  end
+
+  def project_sa_token_expiry_enforced?(_project)
+    ::Gitlab::CurrentSettings.require_personal_access_token_expiry?
   end
 
   extend self

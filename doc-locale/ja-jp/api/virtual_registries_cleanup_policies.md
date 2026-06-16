@@ -1,8 +1,8 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: 仮想レジストリのクリーンアップポリシーAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: 仮想レジストリクリーンアップポリシーAPI
 ---
 
 {{< details >}}
@@ -19,23 +19,20 @@ title: 仮想レジストリのクリーンアップポリシーAPI
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> これらのエンドポイントの可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。使用する前に、ドキュメントを注意深く確認してください。
 
-これらのエンドポイントの可用性は、機能フラグによって制御されます。詳細については、履歴を参照してください。使用する前に、ドキュメントを注意深く確認してください。
+このAPIを使用して、以下を行います:
 
-{{< /alert >}}
+- 仮想レジストリクリーンアップポリシーを作成管理します。
+- クリーンアップポリシーのスケジュールと保持設定を構成します。
+- 未使用のキャッシュエントリを自動的にクリーンアップします。
 
-このAPIを使用して以下を行います:
+## クリーンアップポリシーの管理 {#manage-cleanup-policies}
 
-- 仮想レジストリのクリーンアップポリシーを作成および管理します。
-- クリーンアップポリシーのスケジュールと保持を設定します。
-- 未使用のキャッシュエントリを自動的にクリーンアップポリシーします。
+仮想レジストリクリーンアップポリシーの作成と管理には、次のエンドポイントを使用します。各グループには1つのクリーンアップポリシーのみ設定できます。
 
-## クリーンアップポリシーを管理 {#manage-cleanup-policies}
-
-仮想レジストリのクリーンアップポリシーを作成および管理するには、次のエンドポイントを使用します。各グループが持つことができるクリーンアップポリシーは1つのみです。
-
-### グループのクリーンアップポリシーを取得します {#get-the-cleanup-policy-for-a-group}
+### グループのクリーンアップポリシーを取得する {#retrieve-the-cleanup-policy-for-a-group}
 
 {{< history >}}
 
@@ -43,19 +40,19 @@ title: 仮想レジストリのクリーンアップポリシーAPI
 
 {{< /history >}}
 
-グループのクリーンアップポリシーを取得します。各グループが持つことができるクリーンアップポリシーは1つのみです。
+指定されたグループのクリーンアップポリシーを取得する。各グループには1つのクリーンアップポリシーのみ設定できます。
 
 ```plaintext
 GET /groups/:id/-/virtual_registries/cleanup/policy
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
-| `id` | 文字列または整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列または整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -63,7 +60,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/cleanup/policy"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -76,6 +73,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {
     "maven": {
@@ -96,7 +95,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-グループのクリーンアップポリシーを作成します。各グループが持つことができるクリーンアップポリシーは1つのみです。
+指定されたグループのクリーンアップポリシーを作成します。各グループには1つのクリーンアップポリシーのみ設定できます。
 
 ```plaintext
 POST /groups/:id/-/virtual_registries/cleanup/policy
@@ -104,12 +103,14 @@ POST /groups/:id/-/virtual_registries/cleanup/policy
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列または整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
-| `cadence` | 整数 | いいえ | クリーンアップポリシーの実行頻度。次のいずれかである必要があります: `1`（毎日）、`7`（毎週）、`14`（隔週）、`30`（毎月）、`90`（四半期ごと）。 |
+| `id` | 文字列または整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
+| `cadence` | 整数 | いいえ | クリーンアップポリシーを実行する頻度。次のいずれかである必要があります: `1` (毎日)、`7` (毎週)、`14` (隔週)、`30` (毎月)、`90` (四半期ごと)。 |
 | `enabled` | ブール値 | いいえ | クリーンアップポリシーを有効または無効にします。 |
-| `keep_n_days_after_download` | 整数 | いいえ | 未使用のキャッシュエントリをクリーンアップポリシーするまでの日数。1～365の間である必要があります。 |
+| `keep_n_days_after_download` | 整数 | いいえ | 未使用のキャッシュエントリがクリーンアップされるまでの日数。1から365の間である必要があります。 |
+| `notify_on_success` | ブール値 | いいえ | クリーンアップポリシーの実行が成功した場合にグループオーナーに通知します。 |
+| `notify_on_failure` | ブール値 | いいえ | クリーンアップポリシーの実行が失敗した場合にグループオーナーに通知します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -120,7 +121,7 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/cleanup/policy"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -133,6 +134,8 @@ curl --request POST \
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {},
   "created_at": "2024-05-30T12:28:27.855Z",
@@ -148,7 +151,7 @@ curl --request POST \
 
 {{< /history >}}
 
-グループのクリーンアップポリシーを更新します。
+指定されたグループのクリーンアップポリシーを更新します。
 
 ```plaintext
 PATCH /groups/:id/-/virtual_registries/cleanup/policy
@@ -156,18 +159,17 @@ PATCH /groups/:id/-/virtual_registries/cleanup/policy
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列または整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
-| `cadence` | 整数 | いいえ | クリーンアップポリシーの実行頻度。次のいずれかである必要があります: `1`（毎日）、`7`（毎週）、`14`（隔週）、`30`（毎月）、`90`（四半期ごと）。 |
+| `id` | 文字列または整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
+| `cadence` | 整数 | いいえ | クリーンアップポリシーを実行する頻度。次のいずれかである必要があります: `1` (毎日)、`7` (毎週)、`14` (隔週)、`30` (毎月)、`90` (四半期ごと)。 |
 | `enabled` | ブール値 | いいえ | ポリシーを有効/無効にするブール値。 |
-| `keep_n_days_after_download` | 整数 | いいえ | 未使用のキャッシュエントリをクリーンアップポリシーするまでの日数。1～365の間である必要があります。 |
+| `keep_n_days_after_download` | 整数 | いいえ | 未使用のキャッシュエントリがクリーンアップされるまでの日数。1から365の間である必要があります。 |
+| `notify_on_success` | ブール値 | いいえ | クリーンアップポリシーの実行が成功した場合にグループオーナーに通知します。 |
+| `notify_on_failure` | ブール値 | いいえ | クリーンアップポリシーの実行が失敗した場合にグループオーナーに通知します。 |
 
-{{< alert type="note" >}}
+> [!note]
+> リクエストには、オプションのパラメータを少なくとも1つ指定する必要があります。
 
-少なくとも1つのオプションパラメータをリクエストで指定する必要があります。
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH \
@@ -177,7 +179,7 @@ curl --request PATCH \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/cleanup/policy"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -190,6 +192,8 @@ curl --request PATCH \
   "status": "scheduled",
   "cadence": 7,
   "enabled": true,
+  "notify_on_success": false,
+  "notify_on_failure": false,
   "failure_message": null,
   "last_run_detailed_metrics": {
     "maven": {
@@ -202,7 +206,7 @@ curl --request PATCH \
 }
 ```
 
-### クリーンアップポリシーを削除 {#delete-a-cleanup-policy}
+### クリーンアップポリシーを削除する {#delete-a-cleanup-policy}
 
 {{< history >}}
 
@@ -210,7 +214,7 @@ curl --request PATCH \
 
 {{< /history >}}
 
-グループのクリーンアップポリシーを削除します。
+指定されたグループのクリーンアップポリシーを削除します。
 
 ```plaintext
 DELETE /groups/:id/-/virtual_registries/cleanup/policy
@@ -218,9 +222,9 @@ DELETE /groups/:id/-/virtual_registries/cleanup/policy
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列または整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列または整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \

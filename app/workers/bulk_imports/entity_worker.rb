@@ -99,7 +99,7 @@ module BulkImports
 
           if Import::BulkImports::EphemeralData.new(entity.bulk_import.id).importer_user_mapping_enabled?
             Import::LoadPlaceholderReferencesWorker.perform_async(
-              Import::SOURCE_DIRECT_TRANSFER,
+              entity.bulk_import.import_source,
               entity.bulk_import.id
             )
           end

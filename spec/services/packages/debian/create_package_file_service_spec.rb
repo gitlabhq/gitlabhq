@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Debian::CreatePackageFileService, feature_category: :package_registry do
   include WorkhorseHelpers
 
-  let_it_be(:package) { create(:debian_incoming, without_package_files: true) }
+  let_it_be(:package, freeze: false) { create(:debian_incoming, without_package_files: true) }
   let_it_be(:current_user) { create(:user) }
 
   describe '#execute' do

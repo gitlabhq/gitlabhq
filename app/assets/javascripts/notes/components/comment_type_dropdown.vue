@@ -55,6 +55,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change', 'click'],
   computed: {
     dropdownCommentButtonTitle() {
       const { comment, internalComment } = this.$options.i18n.submitButton;

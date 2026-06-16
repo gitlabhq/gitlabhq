@@ -40,7 +40,6 @@ tree:
       - design_versions:
         - actions:
           - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
-      - :work_item_description
       - :issue_assignees
       - :zoom_meetings
       - :sentry_issue
@@ -150,6 +149,7 @@ included_attributes:
     - :public_email
     - :username
   user_contributions:
+    - :id
     - :public_email
     - :username
     - :name
@@ -710,7 +710,6 @@ included_attributes:
     - :description
     - :disable_overriding_approvers_per_merge_request
     - :external_authorization_classification_label
-    - :has_external_issue_tracker
     - :has_external_wiki
     - :issues_template
     - :jobs_cache_index
@@ -789,10 +788,6 @@ included_attributes:
     - :source_commit
     - :close_after_error_tracking_resolve
     - :close_auto_resolve_prometheus_alert
-  work_item_description:
-    - :description
-    - :last_edited_at
-    - :last_edited_by_id
   note_diff_file:
     - :new_file
     - :renamed_file
@@ -870,6 +865,7 @@ excluded_attributes:
     - :enforce_auth_checks_on_uploads
     - :services
     - :exported_protected_branches
+    - :has_external_issue_tracker
     - :repository_size_limit
     - :external_webhook_token
     - :incident_management_issuable_escalation_statuses

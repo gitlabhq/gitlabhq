@@ -66,8 +66,7 @@ module Gitlab
       end
 
       def should_update_signature?(cached_signature)
-        check_for_mailmapped_commit_emails? &&
-          verified_system_or_x509?(cached_signature) &&
+        verified_system_or_x509?(cached_signature) &&
           committer_email_missing?(cached_signature)
       end
 
@@ -80,10 +79,6 @@ module Gitlab
 
       def verified_system_or_x509?(cached_signature)
         cached_signature.verified_system? || cached_signature.x509?
-      end
-
-      def check_for_mailmapped_commit_emails?
-        Feature.enabled?(:check_for_mailmapped_commit_emails, @commit.project)
       end
 
       def signature_class

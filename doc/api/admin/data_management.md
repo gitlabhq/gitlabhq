@@ -46,6 +46,7 @@ The `:model_name` parameter must be one of:
 - `group_wiki_repositories`
 - `lfs_objects`
 - `merge_request_diffs`
+- `packages_debian_project_component_files`
 - `packages_nuget_symbols`
 - `packages_package_files`
 - `pages_deployments`

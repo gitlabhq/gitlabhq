@@ -28,6 +28,14 @@ module Packages
       validate :ensure_info_size
 
       scope :pluck_reference_and_info, -> { limit(MAX_PLUCK).pluck(:reference, :info) }
+      scope :without_recipe_revision, -> { where(recipe_revision_id: nil) }
+      scope :with_installable_package_files, -> do
+        where_exists(
+          ::Packages::PackageFile.installable
+            .joins(:conan_file_metadatum)
+            .where(::Packages::Conan::FileMetadatum.arel_table[:package_reference_id].eq(arel_table[:id]))
+        )
+      end
 
       def self.for_package_id_and_reference(package_id, reference)
         where(package_id: package_id, reference: reference)

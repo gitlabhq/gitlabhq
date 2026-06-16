@@ -11,15 +11,15 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       user
     end
 
-    let_it_be(:assignee) do
+    let_it_be(:assignee, freeze: false) do
       user = create(:user, email: 'private2@example.com')
       public_email = create(:email, :confirmed, user: user, email: 'public2@example.com')
       user.update!(public_email: public_email.email)
       user
     end
 
-    let_it_be(:group) { create(:group, :private) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:group, freeze: false) { create(:group, :private) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
 
     let!(:work_item) { create(:work_item, author: user, project: project) }
 
@@ -99,7 +99,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
     end
 
     context 'with multiple work items from different projects' do
-      let_it_be(:other_project) { create(:project, group: group) }
+      let_it_be(:other_project, freeze: false) { create(:project, group: group) }
 
       let!(:work_item1) do
         create(
@@ -121,7 +121,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
 
       context 'when the user has full permission to see work items in both projects' do
         before do
-          other_project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- Does not work in before_all
+          other_project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- `user` is a `let!`, not `let_it_be`, so `before_all` cannot access it
         end
 
         it 'renders both work items' do

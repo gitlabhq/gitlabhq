@@ -14,7 +14,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
     described_class.new(user, project, uploader)
   end
 
-  let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+  let_it_be(:issue_type, freeze: false) { build(:work_item_system_defined_type, :issue) }
 
   let(:work_items) { ::WorkItems::WorkItemsFinder.new(user, project: project).execute }
   let(:email_method) { :import_work_items_csv_email }
@@ -54,7 +54,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
             expect(result[:success]).to eq(2)
             expect(result[:error_lines]).to eq([])
             expect(result[:type_errors]).to be_nil
-            expect(result[:parse_error]).to eq(false)
+            expect(result[:parse_error]).to be(false)
           end
         end
 
@@ -70,7 +70,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
 
             expect(result[:success]).to eq(0)
             expect(result[:error_lines]).to be_empty # there are problematic lines detailed below
-            expect(result[:parse_error]).to eq(false)
+            expect(result[:parse_error]).to be(false)
 
             skip unless Gitlab.ee?
 
@@ -96,7 +96,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
 
             expect(result[:success]).to eq(2)
             expect(result[:error_lines]).to be_empty
-            expect(result[:parse_error]).to eq(false)
+            expect(result[:parse_error]).to be(false)
             expect(result[:type_errors]).to be_nil
           end
         end
@@ -140,7 +140,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
           expect(result[:success]).to eq(0)
           expect(result[:error_lines]).to eq([1])
           expect(result[:type_errors]).to be_nil
-          expect(result[:parse_error]).to eq(true)
+          expect(result[:parse_error]).to be(true)
         end
 
         it 'creates no work items' do

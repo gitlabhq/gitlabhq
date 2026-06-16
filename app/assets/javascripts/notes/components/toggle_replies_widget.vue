@@ -43,6 +43,7 @@ export default {
       required: false,
     },
   },
+  emits: ['toggle'],
   computed: {
     lastReply() {
       return this.replies[this.replies.length - 1];

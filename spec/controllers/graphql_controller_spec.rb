@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GraphqlController, feature_category: :integrations do
+RSpec.describe GraphqlController, feature_category: :api do
   include GraphqlHelpers
   include Auth::DpopTokenHelper
 

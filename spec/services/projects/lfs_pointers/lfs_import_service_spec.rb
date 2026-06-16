@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::LfsPointers::LfsImportService, feature_category: :source_code_management do
-  let(:project) { create(:project) }
+  let(:project) { build_stubbed(:project) }
   let(:user) { project.creator }
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
   let(:oid_download_links) do

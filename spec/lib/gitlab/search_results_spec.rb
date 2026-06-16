@@ -7,7 +7,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
   include SearchHelpers
 
   let_it_be(:user) { create(:user, username: 'foobar') }
-  let_it_be(:project) { create(:project, name: 'foo') }
+  let_it_be_with_refind(:project) { create(:project, name: 'foo') }
   let_it_be(:issue) { create(:issue, project: project, title: 'foo') }
   let_it_be(:milestone) { create(:milestone, project: project, title: 'foo') }
 
@@ -216,12 +216,24 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
 
       context 'with filtering' do
-        let_it_be(:closed_result) { create(:closed_merge_request, source_project: project, title: 'foo') }
-        let_it_be(:opened_result) { create(:reopened_merge_request, source_project: project, title: 'foo') }
+        let_it_be(:closed_result) do
+          create(:closed_merge_request, source_project: project, title: 'foo')
+        end
+
+        let_it_be(:opened_result) do
+          create(:reopened_merge_request, source_project: project, title: 'foo')
+        end
+
         let_it_be(:archived_project) { create(:project, :public, :archived) }
         let_it_be(:unarchived_project) { create(:project, :public) }
-        let_it_be(:archived_result) { create(:merge_request, source_project: archived_project, title: 'foo') }
-        let_it_be(:unarchived_result) { create(:merge_request, source_project: unarchived_project, title: 'foo') }
+        let_it_be(:archived_result) do
+          create(:merge_request, source_project: archived_project, title: 'foo')
+        end
+
+        let_it_be(:unarchived_result) do
+          create(:merge_request, source_project: unarchived_project, title: 'foo')
+        end
+
         let_it_be(:query) { 'foo' }
 
         include_examples 'search results filtered by state'
@@ -291,10 +303,16 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       context 'with filtering' do
         let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
         let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo open') }
-        let_it_be(:confidential_result) { create(:issue, :confidential, project: project, title: 'foo confidential') }
+        let_it_be(:confidential_result) do
+          create(:issue, :confidential, project: project, title: 'foo confidential')
+        end
+
         let_it_be(:unarchived_project) { project }
         let_it_be(:archived_project) { create(:project, :public, :archived) }
-        let_it_be(:unarchived_result) { create(:issue, project: unarchived_project, title: 'foo unarchived') }
+        let_it_be(:unarchived_result) do
+          create(:issue, project: unarchived_project, title: 'foo unarchived')
+        end
+
         let_it_be(:archived_result) { create(:issue, project: archived_project, title: 'foo archived') }
 
         include_examples 'search results filtered by state'
@@ -303,31 +321,61 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
 
       context 'with ordering' do
-        let_it_be(:old_result) { create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago) }
-        let_it_be(:new_result) { create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago) }
-        let_it_be(:very_old_result) { create(:issue, project: project, title: 'sorted old2', created_at: 1.year.ago) }
-
-        let_it_be(:old_updated) { create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago) }
-        let_it_be(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
-        let_it_be(:very_old_updated) { create(:issue, project: project, title: 'updated old2', updated_at: 1.year.ago) }
-
-        let_it_be(:less_popular_result) { create(:issue, project: project, title: 'less popular', upvotes_count: 10) }
-        let_it_be(:popular_result) { create(:issue, project: project, title: 'popular', upvotes_count: 100) }
-        let_it_be(:non_popular_result) { create(:issue, project: project, title: 'non popular', upvotes_count: 1) }
-
-        include_examples 'search results sorted' do
-          let(:results_created) do
-            described_class.new(user, 'sorted', Project.order(:id), sort: sort, filters: filters)
-          end
-
-          let(:results_updated) do
-            described_class.new(user, 'updated', Project.order(:id), sort: sort, filters: filters)
-          end
+        let_it_be(:old_result) do
+          create(:issue, project: project, title: 'sorted old', created_at: 1.month.ago)
         end
 
-        include_examples 'search results sorted by popularity' do
-          let(:results_popular) do
-            described_class.new(user, 'popular', Project.order(:id), sort: sort, filters: filters)
+        let_it_be(:new_result) do
+          create(:issue, project: project, title: 'sorted recent', created_at: 1.day.ago)
+        end
+
+        let_it_be(:very_old_result) do
+          create(:issue, project: project, title: 'sorted old2', created_at: 1.year.ago)
+        end
+
+        let_it_be(:old_updated) do
+          create(:issue, project: project, title: 'updated old', updated_at: 1.month.ago)
+        end
+
+        let_it_be(:new_updated) do
+          create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago)
+        end
+
+        let_it_be(:very_old_updated) do
+          create(:issue, project: project, title: 'updated old2', updated_at: 1.year.ago)
+        end
+
+        let_it_be(:less_popular_result) do
+          create(:issue, project: project, title: 'less popular', upvotes_count: 10)
+        end
+
+        let_it_be(:popular_result) do
+          create(:issue, project: project, title: 'popular', upvotes_count: 100)
+        end
+
+        let_it_be(:non_popular_result) do
+          create(:issue, project: project, title: 'non popular', upvotes_count: 1)
+        end
+
+        %w[issues work_items].each do |searched_scope|
+          context "when scope is #{searched_scope}" do
+            let(:scope) { searched_scope }
+
+            include_examples 'search results sorted' do
+              let(:results_created) do
+                described_class.new(user, 'sorted', Project.order(:id), sort: sort, filters: filters)
+              end
+
+              let(:results_updated) do
+                described_class.new(user, 'updated', Project.order(:id), sort: sort, filters: filters)
+              end
+            end
+
+            include_examples 'search results sorted by popularity' do
+              let(:results_popular) do
+                described_class.new(user, 'popular', Project.order(:id), sort: sort, filters: filters)
+              end
+            end
           end
         end
       end
@@ -371,6 +419,21 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
             expect(results.objects('projects')).to eq([unarchived_result])
           end
         end
+
+        context 'when the autocomplete filter is added' do
+          let(:filters) { { autocomplete: true } }
+          let_it_be(:member_project) { create(:project, :public, name: 'Test member', developers: user) }
+          let_it_be(:unrelated_public_project) { create(:project, :public, name: 'Test unrelated') }
+          let(:limit_projects) { Project.id_in([member_project.id, unrelated_public_project.id]) }
+
+          it 'returns only projects visible to the user' do
+            expect(results.objects('projects')).to include(member_project)
+          end
+
+          it 'does not return projects the user cannot see' do
+            expect(results.objects('projects')).not_to include(unrelated_public_project)
+          end
+        end
       end
     end
 
@@ -378,8 +441,8 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       subject(:user_search_result) { results.objects('users') }
 
       let_it_be(:another_user) { create(:user, username: 'barfoo') }
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be_with_refind(:parent_group) { create(:group) }
+      let_it_be_with_refind(:group) { create(:group, parent: parent_group) }
 
       it 'does not call the UsersFinder when the current_user is not allowed to read users list' do
         allow(Ability).to receive(:allowed?).and_return(false)
@@ -464,11 +527,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
             end
 
             context 'when the current_user belongs to a child of the group' do
-              let_it_be(:child_group) { create(:group, parent: group) }
-
-              before_all do
-                child_group.add_developer(user)
-              end
+              let_it_be(:child_group) { create(:group, parent: group, developers: user) }
 
               it 'includes the other user' do
                 expect(user_search_result).to match_array([user, another_user])
@@ -477,11 +536,9 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           end
 
           context 'when another user is a guest of a private group' do
-            let_it_be(:public_parent_group) { create(:group, :public) }
-            let_it_be(:private_group) { create(:group, :private, parent: public_parent_group) }
-
-            before_all do
-              private_group.add_guest(another_user)
+            let_it_be_with_refind(:public_parent_group) { create(:group, :public) }
+            let_it_be_with_refind(:private_group) do
+              create(:group, :private, parent: public_parent_group, guests: another_user)
             end
 
             it 'does not include the other user' do
@@ -528,17 +585,29 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
     let_it_be(:project_3) { create(:project, :internal) }
     let_it_be(:project_4) { create(:project, :internal) }
     let_it_be(:query) { 'foo' }
-    let_it_be(:limit_projects) { Project.id_in([project_1.id, project_2.id, project_3.id]) }
+    let(:limit_projects) { Project.id_in([project_1.id, project_2.id, project_3.id]) }
     let_it_be(:author) { create(:user) }
-    let_it_be(:assignee) { create(:user) }
+    let_it_be_with_reload(:assignee) { create(:user) }
     let_it_be(:non_member) { create(:user) }
     let_it_be(:member) { create(:user) }
     let_it_be(:admin) { create(:admin) }
     let_it_be(:issue) { create(:issue, project: project_1, title: 'foo') }
-    let_it_be(:hidden_issue1) { create(:issue, :confidential, project: project_1, title: 'foo', author: author) }
-    let_it_be(:hidden_issue2) { create(:issue, :confidential, title: 'foo', project: project_1, assignees: [assignee]) }
-    let_it_be(:hidden_issue3) { create(:issue, :confidential, project: project_2, title: 'foo', author: author) }
-    let_it_be(:hidden_issue4) { create(:issue, :confidential, project: project_3, title: 'foo', assignees: [assignee]) }
+    let_it_be(:hidden_issue1) do
+      create(:issue, :confidential, project: project_1, title: 'foo', author: author)
+    end
+
+    let_it_be(:hidden_issue2) do
+      create(:issue, :confidential, title: 'foo', project: project_1, assignees: [assignee])
+    end
+
+    let_it_be(:hidden_issue3) do
+      create(:issue, :confidential, project: project_2, title: 'foo', author: author)
+    end
+
+    let_it_be(:hidden_issue4) do
+      create(:issue, :confidential, project: project_3, title: 'foo', assignees: [assignee])
+    end
+
     let_it_be(:hidden_issue5) { create(:issue, :confidential, project: project_4, title: 'foo') }
 
     it 'does not list confidential issues for non project members' do
@@ -626,15 +695,30 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
   context 'for milestones' do
     let_it_be(:archived_project) { create(:project, :public, :archived) }
-    let_it_be(:private_project_1) { create(:project, :private) }
+    let_it_be(:private_project_1) { create(:project, :private, developers: user) }
     let_it_be(:private_project_2) { create(:project, :private) }
     let_it_be(:internal_project) { create(:project, :internal) }
     let_it_be(:public_project_1) { create(:project, :public) }
-    let_it_be(:public_project_2) { create(:project, :public, :issues_disabled, :merge_requests_disabled) }
-    let_it_be(:hidden_milestone_1) { create(:milestone, project: private_project_2, title: 'milestone 1') }
-    let_it_be(:hidden_milestone_2) { create(:milestone, project: public_project_2, title: 'milestone 2') }
-    let_it_be(:hidden_milestone_3) { create(:milestone, project: archived_project, title: 'Milestone 3') }
-    let_it_be(:milestone_1) { create(:milestone, :closed, project: private_project_1, title: 'milestone 4') }
+    let_it_be(:public_project_2) do
+      create(:project, :public, :issues_disabled, :merge_requests_disabled)
+    end
+
+    let_it_be(:hidden_milestone_1) do
+      create(:milestone, project: private_project_2, title: 'milestone 1')
+    end
+
+    let_it_be(:hidden_milestone_2) do
+      create(:milestone, project: public_project_2, title: 'milestone 2')
+    end
+
+    let_it_be(:hidden_milestone_3) do
+      create(:milestone, project: archived_project, title: 'Milestone 3')
+    end
+
+    let_it_be(:milestone_1) do
+      create(:milestone, :closed, project: private_project_1, title: 'milestone 4')
+    end
+
     let_it_be(:milestone_2) { create(:milestone, project: internal_project, title: 'milestone 5') }
     let_it_be(:milestone_3) { create(:milestone, project: public_project_1, title: 'milestone 6') }
 
@@ -643,10 +727,6 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
     let(:limit_projects) { ProjectsFinder.new(current_user: user).execute }
     let(:query) { 'milestone' }
     let(:scope) { 'milestones' }
-
-    before_all do
-      private_project_1.add_developer(user)
-    end
 
     it 'returns correct set of milestones' do
       expect(results.objects(scope)).to match_array([milestone_1, milestone_2, milestone_3])
@@ -686,8 +766,8 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
     context 'when filtering work_items by work_item_type_ids' do
       let(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
 
-      let!(:task_work_item) { create(:work_item, :task, project: project, title: 'foo task') }
-      let!(:issue_work_item) { create(:work_item, project: project, title: 'foo issue') }
+      let_it_be(:task_work_item) { create(:work_item, :task, project: project, title: 'foo task') }
+      let_it_be(:issue_work_item) { create(:work_item, project: project, title: 'foo issue') }
 
       before_all do
         project.add_developer(user)

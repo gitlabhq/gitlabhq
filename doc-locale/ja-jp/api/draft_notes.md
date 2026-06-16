@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GitLabのドラフトノート（未公開コメント）のREST APIに関するドキュメントです。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: ドラフトノート（未公開コメント）用のREST APIに関するGitLabのドキュメント。
 title: ドラフトノートAPI
 ---
 
@@ -13,13 +13,13 @@ title: ドラフトノートAPI
 
 {{< /details >}}
 
-このAPIを使用して、ドラフトノートを管理します。これらのノートは、マージリクエストに関する保留中の未公開コメントです。ドラフトノートはディスカッションを開始したり、既存のディスカッションへの返信として継続したりできます。
+このAPIを使用してドラフトノートを管理します。これらのノートは、マージリクエストで保留中の未公開コメントです。ドラフトノートは、ディスカッションを開始したり、既存のディスカッションへの返信として続行したりできます。
 
-公開するまで、ドラフトノートは作成者のみに表示されます。
+公開する前は、ドラフトノートは作成者にのみ表示されます。
 
-## すべてのマージリクエストドラフトノートを一覧表示 {#list-all-merge-request-draft-notes}
+## すべてのマージリクエストのドラフトノートを一覧表示します {#list-all-merge-request-draft-notes}
 
-単一のマージリクエストのすべてのドラフトノートのリストを取得します。
+すべてのマージリクエストのドラフトノートを一覧表示します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
@@ -61,9 +61,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
 ```
 
-## 単一のドラフトノートを取得 {#get-a-single-draft-note}
+## ドラフトノートを取得する {#retrieve-a-draft-note}
 
-指定されたマージリクエストの単一のドラフトノートを返します。
+マージリクエストのドラフトノートを取得する。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -106,9 +106,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
-## ドラフトノートを作成 {#create-a-draft-note}
+## ドラフトノートを作成する {#create-a-draft-note}
 
-指定されたマージリクエストのドラフトノートを作成します。
+マージリクエストのドラフトノートを作成します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
@@ -119,19 +119,19 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `id`                        | 整数または文字列 | はい         | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`         | 整数           | はい         | プロジェクトマージリクエストのIID。 |
 | `note`                      | 文字列            | はい         | ノートのコンテンツ。 |
-| `commit_id`                 | 文字列            | いいえ          | ドラフトノートを関連付けるコミットのSHA。 |
+| `commit_id`                 | 文字列            | いいえ          | ドラフトノートに関連付けるコミットのSHA。 |
 | `in_reply_to_discussion_id` | 文字列            | いいえ          | ドラフトノートが返信するディスカッションのID。 |
-| `resolve_discussion`        | ブール値           | いいえ          | 関連付けられたディスカッションは解決されるはずです。 |
-| `position`                  | ハッシュ              | いいえ          | 差分ノートを作成する際の位置。省略した場合、通常のディスカッションノートが作成されます。 |
+| `resolve_discussion`        | ブール値           | いいえ          | 関連するディスカッションは解決されるべきです。 |
+| `position`                  | ハッシュ              | いいえ          | 差分ノートを作成する際のポジション。省略した場合、通常のディスカッションノートが作成されます。 |
 | `position[base_sha]`        | 文字列            | はい（`position`が指定されている場合） | ソースブランチのベースコミットSHA。 |
 | `position[head_sha]`        | 文字列            | はい（`position`が指定されている場合） | このマージリクエストのHEADを参照するSHA。 |
 | `position[start_sha]`       | 文字列            | はい（`position`が指定されている場合） | ターゲットブランチのコミットを参照するSHA。 |
-| `position[new_path]`        | 文字列            | はい（position typeが`text`の場合） | 変更後のファイルパス。 |
-| `position[old_path]`        | 文字列            | はい（position typeが`text`の場合） | 変更前のファイルパス。 |
-| `position[position_type]`   | 文字列            | はい（`position`が指定されている場合） | 位置参照のタイプ。許可される値：`text`、`image`、または`file`。`file`は、GitLab 16.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/423046)。 |
+| `position[new_path]`        | 文字列            | はい（ポジションタイプが`text`の場合） | 変更後のファイルパス。 |
+| `position[old_path]`        | 文字列            | はい（ポジションタイプが`text`の場合） | 変更前のファイルパス。 |
+| `position[position_type]`   | 文字列            | はい（`position`が指定されている場合） | ポジション参照のタイプ。許可される値: `text`、`image`、または`file`。`file`はGitLab 16.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/423046)。 |
 | `position[new_line]`        | 整数           | いいえ          | `text`差分ノートの場合、変更後の行番号。 |
 | `position[old_line]`        | 整数           | いいえ          | `text`差分ノートの場合、変更前の行番号。 |
-| `position[line_range]`      | ハッシュ              | いいえ          | 複数行の差分ノートの行範囲。 |
+| `position[line_range]`      | ハッシュ              | いいえ          | 複数行差分ノートの行範囲。 |
 | `position[width]`           | 整数           | いいえ          | `image`差分ノートの場合、画像の幅。 |
 | `position[height]`          | 整数           | いいえ          | `image`差分ノートの場合、画像の高さ。 |
 | `position[x]`               | 浮動小数点数             | いいえ          | `image`差分ノートの場合、X座標。 |
@@ -142,9 +142,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes?note=note"
 ```
 
-## 既存のドラフトノートを変更 {#modify-existing-draft-note}
+## ドラフトノートを更新する {#update-a-draft-note}
 
-指定されたマージリクエストのドラフトノートを変更します。
+マージリクエストのドラフトノートを更新します。
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -156,16 +156,16 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `draft_note_id`           | 整数           | はい      | ドラフトノートのID。 |
 | `merge_request_iid`       | 整数           | はい      | プロジェクトマージリクエストのIID。 |
 | `note`                    | 文字列            | いいえ       | ノートのコンテンツ。 |
-| `position`                | ハッシュ              | いいえ       | 差分ノートを作成する際の位置。 |
+| `position`                | ハッシュ              | いいえ       | 差分ノートを作成する際のポジション。 |
 | `position[base_sha]`      | 文字列            | はい（`position`が指定されている場合） | ソースブランチのベースコミットSHA。 |
 | `position[head_sha]`      | 文字列            | はい（`position`が指定されている場合） | このマージリクエストのHEADを参照するSHA。 |
 | `position[start_sha]`     | 文字列            | はい（`position`が指定されている場合） | ターゲットブランチのコミットを参照するSHA。 |
-| `position[new_path]`      | 文字列            | はい（position typeが`text`の場合） | 変更後のファイルパス。 |
-| `position[old_path]`      | 文字列            | はい（position typeが`text`の場合） | 変更前のファイルパス。 |
-| `position[position_type]` | 文字列            | はい（`position`が指定されている場合） | 位置参照のタイプ。許可される値：`text`、`image`、または`file`。`file`は、GitLab 16.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/423046)。 |
+| `position[new_path]`      | 文字列            | はい（ポジションタイプが`text`の場合） | 変更後のファイルパス。 |
+| `position[old_path]`      | 文字列            | はい（ポジションタイプが`text`の場合） | 変更前のファイルパス。 |
+| `position[position_type]` | 文字列            | はい（`position`が指定されている場合） | ポジション参照のタイプ。許可される値: `text`、`image`、または`file`。`file`はGitLab 16.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/423046)。 |
 | `position[new_line]`      | 整数           | いいえ       | `text`差分ノートの場合、変更後の行番号。 |
 | `position[old_line]`      | 整数           | いいえ       | `text`差分ノートの場合、変更前の行番号。 |
-| `position[line_range]`    | ハッシュ              | いいえ       | 複数行の差分ノートの行範囲。 |
+| `position[line_range]`    | ハッシュ              | いいえ       | 複数行差分ノートの行範囲。 |
 | `position[width]`         | 整数           | いいえ       | `image`差分ノートの場合、画像の幅。 |
 | `position[height]`        | 整数           | いいえ       | `image`差分ノートの場合、画像の高さ。 |
 | `position[x]`             | 浮動小数点数             | いいえ       | `image`差分ノートの場合、X座標。 |
@@ -177,9 +177,9 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
-## ドラフトノートを削除 {#delete-a-draft-note}
+## ドラフトノートを削除する {#delete-a-draft-note}
 
-指定されたマージリクエストの既存のドラフトノートを削除します。
+マージリクエストのドラフトノートを削除します。
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
@@ -197,9 +197,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
-## ドラフトノートを公開 {#publish-a-draft-note}
+## ドラフトノートを公開する {#publish-a-draft-note}
 
-指定されたマージリクエストの既存のドラフトノートを公開します。
+マージリクエストのドラフトノートを公開します。
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish
@@ -217,9 +217,9 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
 ```
 
-## 保留中のすべてのドラフトノートを公開 {#publish-all-pending-draft-notes}
+## 保留中のすべてのドラフトノートを公開する {#publish-all-pending-draft-notes}
 
-指定されたマージリクエストの、ユーザーに属する既存のすべてのドラフトノートを一括公開します。
+ユーザーに属するマージリクエストの、保留中のすべてのドラフトノートを公開します。
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish

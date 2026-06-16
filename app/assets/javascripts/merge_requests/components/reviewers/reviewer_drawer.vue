@@ -5,6 +5,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import getMergeRequestReviewers from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 
 export default {
+  name: 'ReviewerDrawer',
   apollo: {
     reviewers: {
       query: getMergeRequestReviewers,

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Tree, feature_category: :source_code_management do
   subject(:tree) { described_class.new(repository, '54fcc214') }
 
-  let_it_be(:repository) { create(:project, :repository).repository }
+  let_it_be(:repository, freeze: false) { create(:project, :repository).repository }
 
   describe '#readme' do
     subject { tree.readme }
@@ -69,6 +69,20 @@ RSpec.describe Tree, feature_category: :source_code_management do
     subject { tree.cursor }
 
     it { is_expected.to be_an_instance_of(Gitaly::PaginationCursor) }
+  end
+
+  describe '#project' do
+    it 'returns the project from the repository' do
+      expect(tree.project).to eq(repository.project)
+    end
+
+    context 'when repository is nil' do
+      before do
+        tree.repository = nil
+      end
+
+      it { expect(tree.project).to be_nil }
+    end
   end
 
   private

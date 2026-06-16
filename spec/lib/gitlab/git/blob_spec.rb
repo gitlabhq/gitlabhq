@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Blob do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   describe 'initialize' do
     let(:blob) { described_class.new(name: 'test') }

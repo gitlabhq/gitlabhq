@@ -37,6 +37,9 @@ module Enums
           no_updates_canceling: 28,
           server_timeout_running: 29,
           server_timeout_canceling: 30,
+          runner_configuration_error: 31,
+          runner_external_dependency_failure: 32,
+          runner_interrupted: 33,
           protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
@@ -52,7 +55,9 @@ module Enums
           reached_downstream_pipeline_trigger_rate_limit: 1_012,
           duo_workflow_not_allowed: 1_013,
           job_router_failure: 1_014,
-          job_token_expired: 1_015
+          job_token_expired: 1_015,
+          id_token_burned_project_path: 1_016,
+          downstream_project_trigger_resolved_to_empty: 1_017
         }
       end
 

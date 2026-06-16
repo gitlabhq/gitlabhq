@@ -119,6 +119,37 @@ describe('WorkItemParentToken', () => {
         expect(findBaseToken().props('suggestionsLoading')).toBe(true);
       });
 
+      describe('when allowedParentTypes has not yet resolved', () => {
+        it('waits for allowedParentTypes before calling searchWorkItemParentQuery with populated workItemTypeIds', async () => {
+          let resolveAllowedParentTypes;
+          const deferredAllowedParentTypes = jest.fn().mockReturnValue(
+            new Promise((resolve) => {
+              resolveAllowedParentTypes = resolve;
+            }),
+          );
+
+          createComponent({ allowedParentTypesQueryHandler: deferredAllowedParentTypes });
+
+          findBaseToken().vm.$emit('fetch-suggestions', 'animals');
+          await waitForPromises();
+
+          expect(searchProjectWorkItemsParentQueryHandler).not.toHaveBeenCalled();
+
+          resolveAllowedParentTypes(allowedParentTypesResponse);
+          await waitForPromises();
+
+          expect(searchProjectWorkItemsParentQueryHandler).toHaveBeenCalledWith(
+            expect.objectContaining({
+              workItemTypeIds: [
+                'gid://gitlab/WorkItems::Type/8',
+                'gid://gitlab/WorkItems::Type/6',
+                'gid://gitlab/WorkItems::Type/1',
+              ],
+            }),
+          );
+        });
+      });
+
       describe('when request is successful', () => {
         const searchTerm = 'animals';
 

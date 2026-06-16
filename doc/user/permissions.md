@@ -23,7 +23,8 @@ perform any action.
 {{< history >}}
 
 - Planner role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482733) in GitLab 17.7.
-- Security Manager role [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20123) in GitLab 18.11.
+- Security Manager role [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20123) as a [beta](../policy/development_stages_support.md#beta) in GitLab 18.11. Disabled by default. 
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/594930) in GitLab 18.11.
 
 {{< /history >}}
 

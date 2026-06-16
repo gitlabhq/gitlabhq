@@ -51,7 +51,7 @@ To create a pipeline schedule:
    - **Interval Pattern**: Select one of the preconfigured intervals, or enter a custom
      interval in [cron notation](../../topics/cron/_index.md). You can use any cron value,
      but scheduled pipelines cannot run more frequently than the instance's
-     [maximum scheduled pipeline frequency](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency).
+     [maximum scheduled pipeline frequency](../../administration/cicd/limits.md#maximum-scheduled-pipeline-frequency).
    - **Target branch or tag**: Select the branch or tag for the pipeline.
    - **Inputs**: Set values for any [inputs](../inputs/_index.md) defined in your pipeline's `spec:inputs` section.
      These input values are used every time the scheduled pipeline runs. A schedule can have a maximum of 20 inputs.
@@ -60,7 +60,7 @@ To create a pipeline schedule:
      and not in any other pipeline run. Inputs are recommended for pipeline configuration instead of variables
      because they offer improved security and flexibility.
 
-If the project has reached the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
+If the project has reached the [maximum number of pipeline schedules](../../administration/cicd/limits.md#number-of-pipeline-schedules),
 delete unused schedules before adding another.
 
 ## Edit a pipeline schedule

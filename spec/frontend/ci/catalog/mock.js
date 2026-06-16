@@ -564,7 +564,7 @@ export const catalogSinglePageResponse = {
                   __typename: 'UserCore',
                   name: 'author',
                   username: 'author-username',
-                  webUrl: '/user/1',
+                  webPath: '/user/1',
                 },
                 createdAt: '2024-01-26T19:40:03Z',
                 name: '1.0.0',
@@ -647,7 +647,7 @@ export const catalogSharedDataMock = {
             author: {
               __typename: 'UserCore',
               id: 'gid://gitlab/User/1',
-              webUrl: 'profile/1',
+              webPath: 'profile/1',
               name: 'username',
               state: 'active',
             },
@@ -687,7 +687,7 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
             author: {
               __typename: 'UserCore',
               id: 1,
-              webUrl: 'profile/1',
+              webPath: 'profile/1',
               name: 'username',
             },
           },

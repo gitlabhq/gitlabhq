@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
-  let_it_be(:project, refind: true) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }

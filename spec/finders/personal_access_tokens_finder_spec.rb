@@ -14,14 +14,14 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
   end
 
   describe '#execute' do
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:admin) { create(:admin, organizations: [organization]) }
-    let_it_be(:user) { create(:user, organizations: [organization]) }
-    let_it_be(:other_user) { create(:user) }
-    let_it_be(:project_bot) { create(:user, :project_bot) }
-    let_it_be(:first_organization) { create(:organization) }
-    let_it_be(:second_organization) { create(:organization) }
-    let_it_be(:group) { create(:group) }
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:admin, freeze: false) { create(:admin, organizations: [organization]) }
+    let_it_be(:user, freeze: false) { create(:user, organizations: [organization]) }
+    let_it_be(:other_user, freeze: false) { create(:user) }
+    let_it_be(:project_bot, freeze: false) { create(:user, :project_bot) }
+    let_it_be(:first_organization, freeze: false) { create(:organization) }
+    let_it_be(:second_organization, freeze: false) { create(:organization) }
+    let_it_be(:group, freeze: false) { create(:group) }
 
     let_it_be(:tokens, freeze: false) do
       {
@@ -38,14 +38,14 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       }
     end
 
-    let_it_be(:tokens_from_other_organizations) do
+    let_it_be(:tokens_from_other_organizations, freeze: false) do
       {
         with_first_organization: create(:personal_access_token, organization: first_organization),
         with_second_organization: create(:personal_access_token, organization: second_organization)
       }
     end
 
-    let_it_be(:all_tokens) { tokens.merge(tokens_from_other_organizations) }
+    let_it_be(:all_tokens, freeze: false) { tokens.merge(tokens_from_other_organizations) }
 
     let(:tokens_keys) { tokens.keys }
 

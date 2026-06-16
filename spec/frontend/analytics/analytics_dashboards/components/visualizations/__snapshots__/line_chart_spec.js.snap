@@ -1,0 +1,141 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LineChart Visualization chart tooltip default should render formatted tooltip 1`] = `
+<div
+  class="gl-overflow-hidden"
+  data-testid="dashboard-visualization-line-chart"
+  responsive=""
+>
+  May
+  <div
+    class="gl-flex gl-justify-between gl-leading-24 gl-min-w-30"
+    data-testid="chart-tooltip-item"
+  >
+    <gl-chart-series-label-stub
+      class="gl-mr-7 gl-text-sm"
+      color="red"
+      type="solid"
+    >
+      Deployment Frequency
+    </gl-chart-series-label-stub>
+    <span
+      class="gl-font-bold"
+      data-testid="chart-tooltip-value"
+    >
+      10
+    </span>
+  </div>
+</div>
+`;
+
+exports[`LineChart Visualization chart tooltip default should render formatted tooltip 2`] = `
+<div
+  class="gl-overflow-hidden"
+  data-testid="dashboard-visualization-line-chart"
+  responsive=""
+>
+  Nov 12, 2023 5:43pm UTC
+  <div
+    class="gl-flex gl-justify-between gl-leading-24 gl-min-w-30"
+    data-testid="chart-tooltip-item"
+  >
+    <gl-chart-series-label-stub
+      class="gl-mr-7 gl-text-sm"
+      color="green"
+      type="solid"
+    >
+      Change Failure Rate
+    </gl-chart-series-label-stub>
+    <span
+      class="gl-font-bold"
+      data-testid="chart-tooltip-value"
+    >
+      1
+    </span>
+  </div>
+</div>
+`;
+
+exports[`LineChart Visualization chart tooltip default should render formatted tooltip 3`] = `
+<div
+  class="gl-overflow-hidden"
+  data-testid="dashboard-visualization-line-chart"
+  responsive=""
+>
+  June
+  <div
+    class="gl-flex gl-justify-between gl-leading-24 gl-min-w-30"
+    data-testid="chart-tooltip-item"
+  >
+    <gl-chart-series-label-stub
+      class="gl-mr-7 gl-text-sm"
+      color="yellow"
+      type="solid"
+    >
+      Time to restore service
+    </gl-chart-series-label-stub>
+    <span
+      class="gl-font-bold"
+      data-testid="chart-tooltip-value"
+    >
+      50
+    </span>
+  </div>
+</div>
+`;
+
+exports[`LineChart Visualization chart tooltip default should render formatted tooltip 4`] = `
+<div
+  class="gl-overflow-hidden"
+  data-testid="dashboard-visualization-line-chart"
+  responsive=""
+>
+  July
+  <div
+    class="gl-flex gl-justify-between gl-leading-24 gl-min-w-30"
+    data-testid="chart-tooltip-item"
+  >
+    <gl-chart-series-label-stub
+      class="gl-mr-7 gl-text-sm"
+      color="yellow"
+      type="solid"
+    >
+      Lead time for changes
+    </gl-chart-series-label-stub>
+    <span
+      class="gl-font-bold"
+      data-testid="chart-tooltip-value"
+    >
+      5,328
+    </span>
+  </div>
+</div>
+`;
+
+exports[`LineChart Visualization chart tooltip default should render formatted tooltip 5`] = `
+<div
+  class="gl-overflow-hidden"
+  data-testid="dashboard-visualization-line-chart"
+  responsive=""
+>
+  August
+  <div
+    class="gl-flex gl-justify-between gl-leading-24 gl-min-w-30"
+    data-testid="chart-tooltip-item"
+  >
+    <gl-chart-series-label-stub
+      class="gl-mr-7 gl-text-sm"
+      color="yellow"
+      type="solid"
+    >
+      Contributions
+    </gl-chart-series-label-stub>
+    <span
+      class="gl-font-bold"
+      data-testid="chart-tooltip-value"
+    >
+      No data
+    </span>
+  </div>
+</div>
+`;

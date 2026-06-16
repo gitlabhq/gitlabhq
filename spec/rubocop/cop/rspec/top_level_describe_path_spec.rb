@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/top_level_describe_path'
 
-RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath do
+RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath, feature_category: :tooling do
   context 'when the file ends in _spec.rb' do
     it 'registers no offenses' do
       expect_no_offenses(<<~RUBY, 'spec/foo_spec.rb')

@@ -20,6 +20,7 @@ RSpec.describe 'Database schema',
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
+      cd_version_sets: %w[environment_id],
       search_namespace_index_assignments: [%w[search_index_id index_type]]
     }.with_indifferent_access.freeze
   end
@@ -65,6 +66,7 @@ RSpec.describe 'Database schema',
       award_emoji: %w[awardable_id user_id],
       aws_roles: %w[role_external_id],
       boards: %w[milestone_id iteration_id],
+      burned_project_routes: %w[project_id], # No FK constraint: tombstones must outlive the project they reference.
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
@@ -186,7 +188,6 @@ RSpec.describe 'Database schema',
       timelogs: %w[user_id],
       todos: %w[target_id commit_id],
       uploads: %w[model_id],
-      uploads_archived: %w[model_id organization_id namespace_id project_id],
       abuse_report_uploads: %w[model_id],
       achievement_uploads: %w[model_id],
       ai_vectorizable_file_uploads: %w[model_id],
@@ -231,7 +232,7 @@ RSpec.describe 'Database schema',
       vulnerability_representation_information: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_user_mentions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_state_transitions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
-      security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
+      security_scans: %w[pipeline_id project_id scanner_external_id], # pipeline_id/project_id: ci_pipeline table moving to different db; scanner_external_id: denormalized text identifier, no FK target
       dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
       vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
       backup_finding_evidences: %w[finding_id], # having a FK on this table prevents partitions from being detached
@@ -261,6 +262,8 @@ RSpec.describe 'Database schema',
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
       project_secrets_manager_maintenance_tasks: %w[user_id project_id root_namespace_id parent_group_id], # plain ID columns for task service path resolution, no FK needed
       group_secrets_manager_maintenance_tasks: %w[user_id group_id root_namespace_id organization_id], # plain ID columns for task service path resolution, no FK needed
+      project_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed
+      group_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
@@ -295,7 +298,13 @@ RSpec.describe 'Database schema',
       lfs_objects_projects: %w[lfs_object_id], # Referential integrity will be handled by application code
       project_repositories: %w[shard_id], # Referential integrity will be handled by application code
       group_wiki_repositories: %w[shard_id], # Referential integrity will be handled by application code
-      enabled_foundational_flow_check_results: %w[check_id] # checks are not persisted in the DB and come from ActiveRecord::FixedItemsModel::Model
+      enabled_foundational_flow_check_results: %w[check_id], # checks are not persisted in the DB and come from ActiveRecord::FixedItemsModel::Model
+      # Sharding key columns (organization_id, namespace_id, project_id, user_id) for LFK deleted records intentionally have no foreign key constraints.
+      # These tables track record deletions for async LFK cleanup. The referenced parent record may already be deleted by the time the LFK record is inserted or processed.
+      loose_foreign_keys_organization_deleted_records: %w[organization_id],
+      loose_foreign_keys_namespace_deleted_records: %w[namespace_id],
+      loose_foreign_keys_project_deleted_records: %w[project_id],
+      loose_foreign_keys_user_deleted_records: %w[user_id]
     }.with_indifferent_access.freeze
   end
 
@@ -312,14 +321,14 @@ RSpec.describe 'Database schema',
       namespaces: 24,
       notes: 16,
       p_ci_builds: 24,
-      p_ci_pipelines: 24,
+      p_ci_pipelines: 25,
       packages_package_files: 16,
       packages_packages: 28,
       project_type_ci_runners: 16,
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
-      vulnerability_reads: 25 # Increased by one for tmp index on BBM https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224292
+      vulnerability_reads: 24 # Decremented by 1 after removal of tmp index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230081
     }.with_indifferent_access.freeze
   end
 
@@ -462,6 +471,59 @@ RSpec.describe 'Database schema',
                 ERROR
                 raise error_message
               end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  context 'for partition foreign keys' do
+    # Validates that foreign keys on partitions have supporting indexes.
+    # This catches cases where add_concurrent_partitioned_foreign_key creates FKs
+    # on partitions only (before validation), which the main table check misses.
+    Gitlab::Database::EachDatabase.each_connection do |connection, _|
+      Gitlab::Database::PostgresPartition.all.find_each do |partition|
+        # Get non-inherited FKs on this partition (inherited FKs are covered by parent table check)
+        partition_fks = Gitlab::Database::PostgresForeignKey
+          .by_constrained_table_identifier(partition.identifier)
+          .not_inherited
+          .to_a
+
+        next if partition_fks.empty?
+
+        describe partition.identifier do
+          let(:partition_indexes) do
+            schema, table_name = partition.identifier.split('.')
+            # A partial index is not suitable for a foreign key column, unless
+            # the only condition is for the presence of the first column itself.
+            # This matches the Ruby logic at line 372 for parent tables.
+            connection.execute(<<~SQL).map { |row| row['column_names'].split(',') }
+              SELECT string_agg(a.attname, ',' ORDER BY array_position(i.indkey, a.attnum)) AS column_names
+              FROM pg_index i
+              JOIN pg_class c ON c.oid = i.indrelid
+              JOIN pg_namespace n ON n.oid = c.relnamespace
+              JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)
+              WHERE n.nspname = '#{schema}'
+                AND c.relname = '#{table_name}'
+                AND (
+                  i.indpred IS NULL
+                  OR pg_get_expr(i.indpred, i.indrelid) = '(' || (
+                    SELECT a2.attname FROM pg_attribute a2
+                    WHERE a2.attrelid = c.oid AND a2.attnum = i.indkey[0]
+                  ) || ' IS NOT NULL)'
+                )
+              GROUP BY i.indexrelid
+            SQL
+          end
+
+          let(:foreign_keys) { to_foreign_keys(partition_fks) }
+
+          it 'has indexes for all foreign keys', :aggregate_failures do
+            required_fks = foreign_keys.reject { |fk| ci_partitioned_foreign_key?(fk) }
+
+            required_fks.each do |fk| # rubocop:disable RSpec/IteratedExpectation -- We want to aggregate all failures
+              expect(fk).to be_indexed_by(partition_indexes)
             end
           end
         end

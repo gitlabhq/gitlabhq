@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Users::ServiceAccounts::UpdateService, feature_category: :user_management do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:service_account_user) { create(:user, :service_account) }
+  let_it_be(:service_account_user, freeze: false) { create(:user, :service_account) }
   let_it_be(:regular_user) { create(:user) }
 
-  let_it_be(:user) { service_account_user }
+  let_it_be(:user, freeze: false) { service_account_user }
 
   let_it_be(:params) do
     {

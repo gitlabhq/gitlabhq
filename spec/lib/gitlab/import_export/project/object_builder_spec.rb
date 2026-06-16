@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
-  let!(:organization_id) { create(:organization).id }
-  let!(:group) { create(:group, :private, organization_id: organization_id) }
-  let!(:subgroup) { create(:group, :private, parent: group, organization_id: organization_id) }
-  let!(:project) do
+  let_it_be(:organization_id) { create(:organization).id }
+  let_it_be(:group) { create(:group, :private, organization_id: organization_id) }
+  let_it_be(:subgroup) { create(:group, :private, parent: group, organization_id: organization_id) }
+  let_it_be(:project) do
     create(
       :project,
       :repository,

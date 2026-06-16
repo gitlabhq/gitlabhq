@@ -7,22 +7,22 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
   include SortingHelper
   include MrResolverHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:other_project) { create(:project, :repository) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
   let_it_be(:other_user) { create(:user) }
-  let_it_be(:common_attrs) { { author: current_user, source_project: project, target_project: project } }
-  let_it_be(:merge_request_1) { create(:merge_request, :simple, reviewers: create_list(:user, 2), **common_attrs) }
-  let_it_be(:merge_request_2) { create(:merge_request, :rebased, reviewers: [current_user], **common_attrs) }
-  let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, assignees: [current_user], **common_attrs) }
-  let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
-  let_it_be(:merge_request_5) { create(:merge_request, :simple, :locked, **common_attrs) }
-  let_it_be(:merge_request_6) do
+  let_it_be(:common_attrs, freeze: false) { { author: current_user, source_project: project, target_project: project } }
+  let_it_be(:merge_request_1, freeze: false) { create(:merge_request, :simple, reviewers: create_list(:user, 2), **common_attrs) }
+  let_it_be(:merge_request_2, freeze: false) { create(:merge_request, :rebased, reviewers: [current_user], **common_attrs) }
+  let_it_be(:merge_request_3, freeze: false) { create(:merge_request, :unique_branches, assignees: [current_user], **common_attrs) }
+  let_it_be(:merge_request_4, freeze: false) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
+  let_it_be(:merge_request_5, freeze: false) { create(:merge_request, :simple, :locked, **common_attrs) }
+  let_it_be(:merge_request_6, freeze: false) do
     create(:labeled_merge_request, :unique_branches, **common_attrs, labels: create_list(:label, 2, project: project))
   end
 
-  let_it_be(:merge_request_with_milestone) do
+  let_it_be(:merge_request_with_milestone, freeze: false) do
     create(:merge_request, :unique_branches, **common_attrs, milestone: milestone)
   end
 
@@ -349,8 +349,8 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
     end
 
     context 'with release argument' do
-      let_it_be(:release_in_project) { create(:release, :with_milestones, project: merge_request_1.project) }
-      let_it_be(:milestone) { release_in_project.milestones.last }
+      let_it_be(:release_in_project, freeze: false) { create(:release, :with_milestones, project: merge_request_1.project) }
+      let_it_be(:milestone, freeze: false) { release_in_project.milestones.last }
 
       before_all do
         merge_request_1.update!(milestone: milestone)
@@ -585,7 +585,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       let_it_be(:issuable1) { create(:merge_request, :unique_branches, title: 'first created', **common_attrs) }
       let_it_be(:issuable2) { create(:merge_request, :unique_branches, title: 'second created', description: 'text 1', **common_attrs) }
       let_it_be(:issuable3) { create(:merge_request, :unique_branches, title: 'third', description: 'text 2', **common_attrs) }
-      let_it_be(:issuable4) { create(:merge_request, :unique_branches, **common_attrs) }
+      let_it_be(:issuable4, freeze: false) { create(:merge_request, :unique_branches, **common_attrs) }
 
       let_it_be(:finder_class) { MergeRequestsFinder }
       let_it_be(:optimization_param) { :attempt_project_search_optimizations }
@@ -777,7 +777,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
 
       context 'when sorting by title' do
-        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
         let_it_be(:mr1) { create(:merge_request, :unique_branches, title: 'foo', source_project: project) }
         let_it_be(:mr2) { create(:merge_request, :unique_branches, title: 'bar', source_project: project) }
         let_it_be(:mr3) { create(:merge_request, :unique_branches, title: 'baz', source_project: project) }

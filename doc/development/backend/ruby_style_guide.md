@@ -479,6 +479,18 @@ scope :order_by_updated_at, ->(direction = :asc) { order(updated_at: direction) 
 Project.order_by_updated_at(:desc)
 ```
 
+### Prefer `excluding` for records already loaded in memory
+
+When you exclude specific records that you already have loaded in memory, prefer
+[`excluding`](https://api.rubyonrails.org/classes/ActiveRecord/QueryMethods.html#method-i-excluding)
+(alias `without`) over a hand-written `where.not(id: record)`, for example
+`collection.excluding(self)`. It expresses the intent more clearly.
+
+Do not use it as a replacement for `where.not(id: relation)`. Passing a relation loads its IDs with
+a separate query and excludes them as a literal list, which wastes memory and can return stale
+results. To exclude the result of a query, use `where.not(id: relation)`, which runs as a single
+subquery.
+
 ### Avoid application logic at class load time
 
 Do not call application logic when defining class-level constants.

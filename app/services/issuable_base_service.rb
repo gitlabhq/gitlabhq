@@ -91,6 +91,7 @@ class IssuableBaseService < ::BaseContainerService
       params.delete(:add_assignee_ids)
       params.delete(:remove_assignee_ids)
       params.delete(:due_date)
+      params.delete(:start_date)
       params.delete(:canonical_issue_id)
       params.delete(:project)
       params.delete(:discussion_locked)

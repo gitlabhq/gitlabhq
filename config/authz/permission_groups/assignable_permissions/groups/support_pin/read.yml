@@ -2,6 +2,7 @@
 name: read_support_pin
 description: Grants the ability to read support PINs
 boundaries:
+  - instance
   - user
 available_for:
   - granular_access_token

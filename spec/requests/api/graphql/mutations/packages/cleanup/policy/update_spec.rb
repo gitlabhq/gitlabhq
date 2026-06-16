@@ -6,7 +6,7 @@ RSpec.describe 'Updating the packages cleanup policy', feature_category: :packag
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:params) do
@@ -105,6 +105,21 @@ RSpec.describe 'Updating the packages cleanup policy', feature_category: :packag
         end
 
         it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_cleanup_policy do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:update_packages_cleanup_policy,
+          { project_path: project.full_path, keep_n_duplicated_package_files: 'TWENTY_PACKAGE_FILES' },
+          'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before_all do
+        project.add_maintainer(user)
       end
     end
   end

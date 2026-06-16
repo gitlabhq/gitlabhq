@@ -8,7 +8,7 @@ RSpec.describe Subscriptions::WorkItemUpdated, feature_category: :team_planning 
 
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:task) { create(:work_item, :task, project: project) }
+  let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
 
   let(:current_user) { nil }
   let(:subscribe) { work_item_subscription('workItemUpdated', task, current_user) }

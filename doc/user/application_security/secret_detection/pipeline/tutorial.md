@@ -115,7 +115,7 @@ Next, let's complicate the output of the job by "leaking" a fake secret in a mer
 
      In this example, the secret is on line 97 of the file `README.md`.
 
-### Using the merge request security widget
+### Using merge request reports
 
 {{< details >}}
 
@@ -126,14 +126,14 @@ Next, let's complicate the output of the job by "leaking" a fake secret in a mer
 A secret detected on a non-default branch is called a "finding."
 When a finding is merged to the default branch, it becomes a "vulnerability."
 
-The merge request security widget displays a list of findings that could become vulnerabilities
+The merge request **Reports** tab displays security scan findings that could become vulnerabilities
 if the merge request is merged.
 
-To view the widget:
+To view the findings:
 
 1. Select the merge request you created in the previous step.
-1. Find the merge request security widget, which starts with **Security scanning**.
-1. On the widget, select **Show details** ({{< icon name="chevron-down" >}}).
+1. Select the **Reports** tab.
+1. Select **Security scan**.
 1. Review the displayed information. You should see **Secret detection detected 1 new potential vulnerability**.
 
 For a detailed view of all the findings in a merge request, select **View all pipeline findings**.

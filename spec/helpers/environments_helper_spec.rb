@@ -7,7 +7,7 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
 
   folder_name = 'env_folder'
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:environment) { create(:environment, :with_folders, folder: folder_name, project: project) }
 
   describe '#environments_folder_list_view_data' do

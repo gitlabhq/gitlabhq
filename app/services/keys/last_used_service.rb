@@ -27,6 +27,9 @@ module Keys
 
     def update?
       return false if ::Gitlab::Database.read_only?
+      # No-op on frozen records: production records are never frozen,
+      # so this only guards frozen shared test fixtures from a lazy write.
+      return false if key.frozen?
 
       last_used = key.last_used_at
       last_used.blank? || last_used <= TIMEOUT.ago

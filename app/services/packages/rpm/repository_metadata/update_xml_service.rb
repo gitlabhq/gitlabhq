@@ -51,7 +51,7 @@ module Packages
         def remove_existing_packages
           case filename
           when :primary
-            xml.search("checksum:contains('#{data[:pkgid]}')").each { _1.parent&.remove }
+            xml.search("checksum:contains('#{data[:pkgid]}')").each { |node| node.parent.remove }
           else
             xml.search("[pkgid='#{data[:pkgid]}']").each(&:remove)
           end

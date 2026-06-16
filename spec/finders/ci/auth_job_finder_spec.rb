@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
-  let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:job, refind: true) { create(:ci_build, status: :running, user: user) }
-  let_it_be(:canceling_job, refind: true) { create(:ci_build, :canceling, user: user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_refind(:job) { create(:ci_build, status: :running, user: user) }
+  let_it_be_with_refind(:canceling_job) { create(:ci_build, :canceling, user: user) }
 
   let(:token) { job.token }
 

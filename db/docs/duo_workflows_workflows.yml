@@ -4,7 +4,8 @@ classes:
 - Ai::DuoWorkflows::Workflow
 feature_categories:
 - duo_agent_platform
-description:
+description: Stores individual Duo Workflow runs initiated by users, tracking goal,
+  status, environment, agent privileges, and links to issues, merge requests, or projects.
 introduced_by_url:
 milestone: '17.2'
 gitlab_schema: gitlab_main_org

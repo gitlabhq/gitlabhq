@@ -132,6 +132,11 @@ export default {
       required: false,
       default: false,
     },
+    hideModeSwitcher: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -363,7 +368,7 @@ export default {
             <template #header-buttons>
               <slot name="header-buttons"></slot>
               <editor-mode-switcher
-                v-if="immersive"
+                v-if="immersive && !hideModeSwitcher"
                 size="small"
                 value="richText"
                 @switch="handleEditorModeChanged"
@@ -394,7 +399,12 @@ export default {
         data-testid="content-editor-footer"
         class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-default gl-px-2"
       >
-        <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />
+        <editor-mode-switcher
+          v-if="!hideModeSwitcher"
+          size="small"
+          value="richText"
+          @switch="handleEditorModeChanged"
+        />
         <slot name="toolbar"></slot>
         <gl-button
           v-gl-tooltip

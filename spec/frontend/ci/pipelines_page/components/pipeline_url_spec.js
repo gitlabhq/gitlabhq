@@ -3,6 +3,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineUrlComponent from '~/ci/pipelines_page/components/pipeline_url.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
 import {
   mockPipeline,
@@ -27,6 +28,7 @@ describe('Pipeline Url Component', () => {
   const findCommitIcon = () => wrapper.findByTestId('commit-icon');
   const findCommitIconType = () => wrapper.findByTestId('commit-icon-type');
   const findCommitRefName = () => wrapper.findByTestId('commit-ref-name');
+  const findCommitPopover = () => wrapper.findComponent(CommitPopover);
 
   const defaultProps = { ...mockPipeline(projectPath) };
 
@@ -165,6 +167,24 @@ describe('Pipeline Url Component', () => {
     });
   });
 
+  describe('commit popover', () => {
+    beforeEach(() => createComponent({ props: { pipeline: mockBranchPipeline } }));
+
+    it('renders CommitPopover when pipeline has a commit', () => {
+      expect(findCommitPopover().exists()).toBe(true);
+    });
+
+    it('passes pipeline.commit to CommitPopover', () => {
+      expect(findCommitPopover().props('commit')).toEqual(mockBranchPipeline.commit);
+    });
+
+    it('passes popoverTargetId matching the commit SHA link id', () => {
+      const popoverId = findCommitPopover().props('popoverTargetId');
+      expect(findCommitShortSha().attributes('id')).toBe(popoverId);
+      expect(popoverId).toBe(`pipeline-commit-popover-${mockBranchPipeline.commit.sha}`);
+    });
+  });
+
   it('should render commit icon tooltip', () => {
     createComponent();
 
@@ -244,17 +264,41 @@ describe('Pipeline Url Component', () => {
         label: TRACKING_CATEGORIES.table,
       });
     });
+  });
 
-    describe('GraphQL', () => {
-      it('formats ref URL correctly', () => {
-        createComponent({
-          props: {
-            pipeline: { ...mockBranchPipeline, merge_request: null },
-          },
-        });
-
-        expect(findCommitRefName().attributes('href')).toBe('commits/main');
+  describe('commit links', () => {
+    it('formats ref URL correctly', () => {
+      createComponent({
+        props: {
+          pipeline: { ...mockBranchPipeline, merge_request: null },
+        },
       });
+
+      expect(findCommitRefName().attributes('href')).toBe('commits/main');
+    });
+
+    it('renders commit SHA link with webPath from GraphQL data', () => {
+      createComponent({
+        props: {
+          pipeline: { ...mockBranchPipeline, merge_request: null },
+        },
+      });
+
+      expect(findCommitShortSha().attributes('href')).toBe(
+        '/root/ci-project/-/commit/de80f1042526e0374ba1cfdca7c1d6595406e949',
+      );
+    });
+
+    it('renders commit title link with webPath from GraphQL data', () => {
+      createComponent({
+        props: {
+          pipeline: { ...mockBranchPipeline, merge_request: null, name: null },
+        },
+      });
+
+      expect(findPipelineIdentifierLink().attributes('href')).toBe(
+        '/root/ci-project/-/commit/de80f1042526e0374ba1cfdca7c1d6595406e949',
+      );
     });
   });
 });

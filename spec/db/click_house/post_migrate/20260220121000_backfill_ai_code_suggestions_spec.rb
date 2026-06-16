@@ -7,8 +7,7 @@ require Rails.root.join 'db/click_house/post_migrate/main/20260220121000_backfil
 RSpec.describe BackfillAiCodeSuggestions, :click_house, feature_category: :database do
   include ClickHouseHelpers
 
-  let_it_be(:connection) { ::ClickHouse::Connection.new(:main) }
-
+  let(:connection) { ::ClickHouse::Connection.new(:main) }
   let(:migration) { described_class.new(connection) }
 
   before do

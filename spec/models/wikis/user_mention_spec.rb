@@ -11,5 +11,6 @@ RSpec.describe Wikis::UserMention, feature_category: :wiki do
   it_behaves_like 'has user mentions' do
     let_it_be(:mentionable_key) { 'wiki_page_meta_id' }
     let_it_be(:mentionable) { create(:wiki_page_meta, container: create(:group)) }
+    let_it_be(:notes_factory) { :note_on_wiki_page }
   end
 end

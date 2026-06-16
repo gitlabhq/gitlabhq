@@ -11,16 +11,17 @@ module Gitlab
 
           self.table_name = table_name
           self.inheritance_column = :_type_disabled
+        end
 
-          # The method is used by ActiveRecord for its schema cache.
-          # We need to override this to point to our given connection.
-          def self.connection_pool
-            connection.pool
-          end
+        klass.define_singleton_method(:connection) { connection }
+
+        klass.define_singleton_method(:connection_pool) { connection.pool }
+
+        klass.define_singleton_method(:with_connection) do |**kwargs, &block|
+          connection.pool.with_connection(**kwargs, &block)
         end
 
         klass.primary_key = primary_key if connection.primary_keys(table_name).length > 1
-        klass.connection = connection
         klass
       end
       module_function :define_batchable_model

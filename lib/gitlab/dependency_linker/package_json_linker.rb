@@ -8,7 +8,7 @@ module Gitlab
       private
 
       def link_dependencies
-        link_json('license', &method(:license_url))
+        link_json('license') { |link| license_url(link) }
         link_json(%w[homepage url], URL_REGEX, &:itself)
 
         link_packages

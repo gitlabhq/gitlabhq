@@ -32,6 +32,7 @@ RSpec.describe 'value stream analytics events', feature_category: :value_stream_
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['events'].first['url']).to include('issues')
     end
 
     it 'lists the plan events' do
@@ -39,14 +40,15 @@ RSpec.describe 'value stream analytics events', feature_category: :value_stream_
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+      expect(json_response['events'].first['url']).to include('issues')
     end
 
     it 'lists the code events' do
       get project_cycle_analytics_code_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty
-
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['events'].first['url']).to include('merge_requests')
     end
 
     it 'lists the test events', :sidekiq_inline do
@@ -55,6 +57,7 @@ RSpec.describe 'value stream analytics events', feature_category: :value_stream_
       expect(json_response['events']).not_to be_empty
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['events'].first['url']).to include('merge_requests')
     end
 
     it 'lists the review events' do
@@ -63,14 +66,20 @@ RSpec.describe 'value stream analytics events', feature_category: :value_stream_
       expect(json_response['events']).not_to be_empty
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
+      expect(json_response['events'].first['url']).to include('merge_requests')
     end
 
-    it 'lists the staging events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444510' do
+    it 'lists the staging events' do
       get project_cycle_analytics_staging_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty
 
-      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
+      # All 3 MRs are deployed in a single deploy_master call, so they share
+      # the same end_event_timestamp. Order is non-deterministic - use include
+      # rather than eq(first_mr_iid) to avoid a latent flake.
+      mr_iids = project.merge_requests.pluck(:iid).map(&:to_s)
+      expect(mr_iids).to include(json_response['events'].first['iid'])
+      expect(json_response['events'].first['url']).to include('merge_requests')
     end
 
     context 'with private project and builds' do

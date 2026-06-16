@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'WorkItemsFinder context' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:project1, reload: true) { create(:project, group: group) }
-  let_it_be(:project2, reload: true) { create(:project) }
-  let_it_be(:project3, reload: true) { create(:project, group: subgroup) }
-  let_it_be(:release) { create(:release, project: project1, tag: 'v1.0.0') }
-  let_it_be(:milestone) { create(:milestone, project: project1, releases: [release]) }
-  let_it_be(:label) { create(:label, project: project2) }
-  let_it_be(:label2) { create(:label, project: project2) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+  let_it_be_with_reload(:project1) { create(:project, group: group) }
+  let_it_be_with_reload(:project2) { create(:project) }
+  let_it_be_with_reload(:project3) { create(:project, group: subgroup) }
+  let_it_be(:release, freeze: false) { create(:release, project: project1, tag: 'v1.0.0') }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project1, releases: [release]) }
+  let_it_be(:label, freeze: false) { create(:label, project: project2) }
+  let_it_be(:label2, freeze: false) { create(:label, project: project2) }
   let_it_be_with_reload(:item1) do
     create(
       :work_item,
@@ -63,7 +63,7 @@ RSpec.shared_context 'WorkItemsFinder context' do
     )
   end
 
-  let_it_be(:group_level_item) do
+  let_it_be(:group_level_item, freeze: false) do
     create(
       :work_item,
       namespace: group,
@@ -71,7 +71,7 @@ RSpec.shared_context 'WorkItemsFinder context' do
     )
   end
 
-  let_it_be(:group_level_confidential_item) do
+  let_it_be(:group_level_confidential_item, freeze: false) do
     create(
       :work_item,
       :confidential,
@@ -80,9 +80,9 @@ RSpec.shared_context 'WorkItemsFinder context' do
     )
   end
 
-  let_it_be(:award_emoji1) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: item1) }
-  let_it_be(:award_emoji2) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user2, awardable: item2) }
-  let_it_be(:award_emoji3) { create(:award_emoji, name: AwardEmoji::THUMBS_DOWN, user: user, awardable: item3) }
+  let_it_be(:award_emoji1, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: item1) }
+  let_it_be(:award_emoji2, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user2, awardable: item2) }
+  let_it_be(:award_emoji3, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_DOWN, user: user, awardable: item3) }
 
   let(:items_model) { WorkItem }
 end

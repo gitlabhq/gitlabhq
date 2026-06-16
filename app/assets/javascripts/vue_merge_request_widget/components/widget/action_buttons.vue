@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 
 export default {
+  name: 'ActionButtons',
   components: {
     GlButton,
     GlDisclosureDropdown,
@@ -23,6 +24,7 @@ export default {
       required: true,
     },
   },
+  emits: ['clickedAction'],
   data() {
     return {
       timeout: null,

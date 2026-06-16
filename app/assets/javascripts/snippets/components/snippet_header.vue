@@ -85,7 +85,6 @@ export default {
       canCreateSnippet: false,
       isDeleteModalVisible: false,
       isDropdownShown: false,
-      embedDropdown: false,
     };
   },
   computed: {
@@ -149,7 +148,7 @@ export default {
       );
     },
     hasPersonalSnippetActions() {
-      return this.showActionDropdown || this.embedDropdown || this.canBeCloned;
+      return this.showActionDropdown || this.canBeCloned;
     },
     editLink() {
       return `${this.snippet.webUrl}/edit`;
@@ -312,7 +311,7 @@ export default {
           @hidden="onHideDropdown"
         >
           <template #toggle="{ accessibilityAttributes }">
-            <div class="gl-min-h-7 gl-w-full">
+            <div class="gl-min-h-7 gl-w-full" tabindex="0" role="button">
               <gl-button
                 v-bind="accessibilityAttributes"
                 class="gl-new-dropdown-toggle gl-w-full @sm/panel:!gl-hidden"
@@ -336,7 +335,10 @@ export default {
           </template>
           <gl-disclosure-dropdown-item v-if="hasUpdateSnippetPermission" :item="editItem" />
           <gl-disclosure-dropdown-item v-if="canCreateSnippet" :item="newSnippetItem" />
-          <gl-disclosure-dropdown-group bordered>
+          <gl-disclosure-dropdown-group
+            v-if="canReportSpaCheck || hasAdminSnippetPermission"
+            bordered
+          >
             <gl-disclosure-dropdown-item v-if="canReportSpaCheck" :item="spamItem" />
             <gl-disclosure-dropdown-item v-if="hasAdminSnippetPermission" :item="deleteItem" />
           </gl-disclosure-dropdown-group>

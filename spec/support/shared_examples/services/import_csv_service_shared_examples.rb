@@ -14,7 +14,7 @@ RSpec.shared_examples 'correctly handles invalid files' do
   shared_examples_for 'invalid file' do
     it 'returns invalid file error' do
       expect(subject[:success]).to eq(0)
-      expect(subject[:parse_error]).to eq(true)
+      expect(subject[:parse_error]).to be(true)
     end
   end
 

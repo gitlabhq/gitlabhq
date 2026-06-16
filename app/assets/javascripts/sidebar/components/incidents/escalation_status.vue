@@ -11,6 +11,7 @@ import { getStatusLabel } from '../../utils';
 const STATUS_LIST = [STATUS_TRIGGERED, STATUS_ACKNOWLEDGED, STATUS_RESOLVED];
 
 export default {
+  name: 'EscalationStatus',
   i18n,
   STATUS_LIST,
   components: {

@@ -10,6 +10,8 @@ describe('OfflineTransferApp', () => {
 
   it('renders', () => {
     createComponent();
-    expect(wrapper.findComponent(OfflineTransferApp).exists()).toBe(true);
+    expect(wrapper.findByTestId('offline-transfer-subheading').text()).toBe(
+      'Move groups and their contents to any GitLab instance, even with no network connection between this and the destination instance. With offline transfer you can export groups to an object storage you control, then import the files into the destination instance.',
+    );
   });
 });

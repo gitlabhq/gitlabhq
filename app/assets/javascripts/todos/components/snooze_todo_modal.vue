@@ -19,6 +19,7 @@ export default {
     GlFormDate,
   },
   mixins: [Tracking.mixin()],
+  emits: ['primary', 'submit'],
   data() {
     return {
       fields: {

@@ -185,7 +185,7 @@ ul.related-merge-requests > li gl-emoji {
   left: 0;
   right: var(--application-bar-right);
   width: auto;
-  top: $calc-application-header-height;
+  top: 0;
 
   .right-sidebar-collapsed & {
     padding-right: $right-sidebar-collapsed-width;
@@ -196,12 +196,6 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.work-item-detail-panel .gl-drawer-header-sticky,
-.issue-sticky-header {
-  @include translucent-glass-background;
-}
-
 .limit-container-width {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
@@ -209,11 +203,7 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 .issue-sticky-header-text {
-  padding: 0 $container-margin;
-
-  @include gl-container-width-up(xl, panel) {
-    padding: 0 $container-margin-xl;
-  }
+  padding: 0 var(--container-padding-x);
 }
 
 // These are composite classes for use with Vue Transition
@@ -259,6 +249,7 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 // Issue markdown header if no sticky header is present
+// stylelint-disable-next-line gitlab/no-has -- scoped to work-item-detail element
 .work-item-detail:not(:has(.issue-sticky-header)) .md-header {
   top: 0;
 }

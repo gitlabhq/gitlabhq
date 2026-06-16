@@ -5,6 +5,7 @@ import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.
 import { PLACEHOLDERS } from '../constants';
 
 export default {
+  name: 'SupportedPlaceholders',
   components: { GlSprintf, HelpPageLink },
   PLACEHOLDERS,
   i18n: {

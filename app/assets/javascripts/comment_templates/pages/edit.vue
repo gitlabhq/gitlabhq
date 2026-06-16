@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
@@ -8,6 +7,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CreateForm from '../components/form.vue';
 
 export default {
+  name: 'CommentTemplatesEdit',
   components: {
     GlLoadingIcon,
     CreateForm,

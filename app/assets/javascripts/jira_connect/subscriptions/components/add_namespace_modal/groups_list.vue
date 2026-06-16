@@ -8,6 +8,7 @@ import {
   GlSearchBoxByType,
   GlFormCheckbox,
 } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import {
   DEFAULT_GROUPS_PER_PAGE,
@@ -79,8 +80,12 @@ export default {
           this.totalItems = total;
           this.groups = response.data;
         })
-        .catch(() => {
-          this.errorMessage = s__('JiraConnect|Failed to load groups. Please try again.');
+        .catch((error) => {
+          this.errorMessage =
+            error?.response?.data?.errors ||
+            error?.response?.data?.message ||
+            s__('JiraConnect|Failed to load groups. Please try again.');
+          Sentry.captureException(error);
         })
         .finally(() => {
           this.isLoadingMore = false;

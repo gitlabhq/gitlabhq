@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_review_workflow do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project, refind: true)  { create :project, :repository }
-  let_it_be(:resource, refind: true) { create(:merge_request, source_project: project, target_project: project) }
-  let_it_be(:user)     { create(:user) }
+  let_it_be_with_refind(:project)  { create :project, :repository }
+  let_it_be_with_refind(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:user) { create(:user) }
 
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
@@ -267,7 +267,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
       let(:scheduled_pipeline) { create(:ci_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha, source: :schedule) }
 
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -282,7 +282,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'when user cannot read pipelines on target project' do
-        before do
+        before_all do
           project.add_guest(user)
         end
 

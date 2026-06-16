@@ -16,11 +16,11 @@ RSpec.shared_context 'with mocked cosign execution' do
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
-  let_it_be(:signature_bundle) { File.read(SLSA_ATTESTATION_BUNDLE) }
-  let_it_be(:expected_stderr) { "expected stderr outuput string" }
-  let_it_be(:expected_stdout) { "expected stderr outuput string" }
-  let_it_be(:expected_duration) { 1.33337 }
-  let_it_be(:expected_predicate_type) { SupplyChain::Slsa::ProvenanceStatement::PREDICATE_TYPE_V1 }
+  let_it_be(:signature_bundle, freeze: false) { File.read(SLSA_ATTESTATION_BUNDLE) }
+  let_it_be(:expected_stderr, freeze: false) { "expected stderr outuput string" }
+  let_it_be(:expected_stdout, freeze: false) { "expected stderr outuput string" }
+  let_it_be(:expected_duration, freeze: false) { 1.33337 }
+  let_it_be(:expected_predicate_type, freeze: false) { SupplyChain::Slsa::ProvenanceStatement::PREDICATE_TYPE_V1 }
   let(:expected_predicate) { SupplyChain::Slsa::ProvenanceStatement::Predicate.from_build(build).to_json }
   let(:popen_success) { true }
   let(:process_status) do

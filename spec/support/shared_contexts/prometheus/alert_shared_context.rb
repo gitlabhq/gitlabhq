@@ -4,7 +4,7 @@
 # It is expected that these contexts are used to create an
 # alert.
 RSpec.shared_context 'self-managed prometheus alert attributes' do
-  let_it_be(:environment) { create(:environment, project: project, name: 'production') }
+  let_it_be(:environment, freeze: false) { create(:environment, project: project, name: 'production') }
 
   let(:starts_at) { '2018-03-12T09:06:00Z' }
   let(:title) { 'title' }

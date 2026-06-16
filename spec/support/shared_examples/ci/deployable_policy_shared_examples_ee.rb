@@ -3,8 +3,8 @@
 RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
 
   let(:user) { create(:user) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -63,9 +63,9 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
       it 'returns true for ci_build' do
         # Currently, we allow users to delete normal jobs only.
         if factory_type == :ci_build
-          is_expected.to eq(true)
+          is_expected.to be(true)
         else
-          is_expected.to eq(false)
+          is_expected.to be(false)
         end
       end
 
@@ -74,7 +74,7 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
           create(:protected_environment, name: environment.name, project: project)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

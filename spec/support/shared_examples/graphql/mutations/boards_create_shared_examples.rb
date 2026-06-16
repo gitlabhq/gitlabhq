@@ -38,7 +38,7 @@ RSpec.shared_examples 'boards create mutation' do
         it 'returns the board with correct hide_backlog_list field' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['board']['hideBacklogList']).to eq(true)
+          expect(mutation_response['board']['hideBacklogList']).to be(true)
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.shared_examples 'boards create mutation' do
         it 'returns the board with correct hide_closed_list field' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['board']['hideClosedList']).to eq(true)
+          expect(mutation_response['board']['hideClosedList']).to be(true)
         end
       end
 

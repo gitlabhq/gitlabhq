@@ -1,0 +1,9 @@
+---
+name: restore_ai_catalog_item
+description: Grants the ability to restore an AI catalog item version as the new latest version
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - restore_ai_catalog_item

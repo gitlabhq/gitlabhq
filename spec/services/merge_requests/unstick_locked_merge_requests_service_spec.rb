@@ -70,7 +70,16 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
       end
 
       it 'logs updated stuck merge job ids and errored MRs' do
-        allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(%w[123 456 789])
+        allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(%w[100 123 456 789])
+
+        merged_mr = create(
+          :merge_request,
+          :locked,
+          source_project: project,
+          merge_jid: '100',
+          merge_commit_sha: 'abc123',
+          source_branch: 'improve/awesome'
+        )
 
         mr_1 = create(
           :merge_request,
@@ -91,15 +100,43 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
         broken_mr = create(:merge_request, :locked, source_project: project, merge_jid: '789')
         broken_mr.update_attribute(:title, '')
 
+        merged_mr.add_to_locked_set
         mr_1.add_to_locked_set
         mr_2.add_to_locked_set
         broken_mr.add_to_locked_set
 
-        expect(Gitlab::AppLogger).to receive(:info)
-          .with('Updated state of locked merge jobs. JIDs: 123, 456, 789')
+        expect(Gitlab::AppJsonLogger).to receive(:info)
+          .with(
+            class: described_class.name,
+            message: 'Marked locked merge request as merged',
+            merge_request_id: merged_mr.id,
+            merge_jid: '100'
+          )
 
-        expect(Gitlab::AppLogger).to receive(:info)
-          .with("Errors:\nTitle can't be blank - IDS: 789|#{broken_mr.id}\n")
+        expect(Gitlab::AppJsonLogger).to receive(:info)
+          .with(
+            class: described_class.name,
+            message: 'Reopened locked merge request',
+            merge_request_id: mr_1.id,
+            merge_jid: '123'
+          )
+
+        expect(Gitlab::AppJsonLogger).to receive(:info)
+          .with(
+            class: described_class.name,
+            message: 'Reopened locked merge request',
+            merge_request_id: mr_2.id,
+            merge_jid: '456'
+          )
+
+        expect(Gitlab::AppJsonLogger).to receive(:error)
+          .with(
+            class: described_class.name,
+            message: 'Failed to unlock locked merge request',
+            merge_request_id: broken_mr.id,
+            merge_jid: '789',
+            errors: ["Title can't be blank"]
+          )
 
         service.execute
 
@@ -128,6 +165,21 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
         service.execute
 
         expect(Gitlab::MergeRequests::LockedSet.all).to be_empty
+      end
+
+      it 'logs the stale removal' do
+        merge_request.add_to_locked_set
+
+        expect(Gitlab::AppJsonLogger).to receive(:info)
+          .with(
+            class: described_class.name,
+            message: 'Removed already-unlocked merge request from locked set',
+            merge_request_id: merge_request.id,
+            merge_jid: merge_request.merge_jid,
+            state: merge_request.state
+          )
+
+        service.execute
       end
     end
 
@@ -158,11 +210,14 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
 
         broken_mr.add_to_locked_set
 
-        expect(Gitlab::AppLogger).to receive(:info)
-          .with("Updated state of locked MRs without JIDs. IDs: #{broken_mr.id}")
-
-        expect(Gitlab::AppLogger).to receive(:info)
-          .with("Errors:\nTitle can't be blank - IDS: #{broken_mr.id}\n")
+        expect(Gitlab::AppJsonLogger).to receive(:error)
+          .with(
+            class: described_class.name,
+            message: 'Failed to unlock locked merge request',
+            merge_request_id: broken_mr.id,
+            merge_jid: nil,
+            errors: ["Title can't be blank"]
+          )
 
         service.execute
 

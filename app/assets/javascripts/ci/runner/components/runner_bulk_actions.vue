@@ -8,6 +8,7 @@ import BulkRunnerPause from '../graphql/list/bulk_runner_pause.mutation.graphql'
 import { RUNNER_TYPENAME } from '../constants';
 
 export default {
+  name: 'RunnerBulkActions',
   components: {
     GlButton,
     GlModal,

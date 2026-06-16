@@ -15,7 +15,11 @@ module API
           documentation: { example: 18 }
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Trigger a GitLab project pipeline' do
+        desc 'Trigger a pipeline with a token' do
+          detail 'Triggers a pipeline with a token. With a CI/CD job token, the triggered pipeline is a ' \
+            'multi-project pipeline. The job that authenticates the request becomes associated with the upstream ' \
+            'pipeline, which is visible on the pipeline graph. If you use a trigger token in a job, the job ' \
+            'is not associated with the upstream pipeline.'
           tags ['ci_triggers']
           success code: 201, model: Entities::Ci::Pipeline
           failure [
@@ -59,7 +63,8 @@ module API
           end
         end
 
-        desc 'Get trigger tokens list' do
+        desc 'List all project trigger tokens' do
+          detail 'Lists all pipeline trigger tokens for a specified project.'
           tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
@@ -81,7 +86,8 @@ module API
 
           present paginate(triggers), with: Entities::Trigger, current_user: current_user
         end
-        desc 'Get specific trigger token of a project' do
+        desc 'Retrieve trigger token details' do
+          detail 'Retrieves details of a pipeline trigger token for a project.'
           tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
@@ -105,6 +111,7 @@ module API
         end
 
         desc 'Create a trigger token' do
+          detail 'Creates a pipeline trigger token for a project.'
           tags ['ci_triggers']
           success code: 201, model: Entities::Trigger
           failure [
@@ -142,7 +149,8 @@ module API
           end
         end
 
-        desc 'Update a trigger token' do
+        desc 'Update a pipeline trigger token' do
+          detail 'Updates a pipeline trigger token for a project.'
           tags ['ci_triggers']
           success code: 200, model: Entities::Trigger
           failure [
@@ -179,7 +187,8 @@ module API
           end
         end
 
-        desc 'Delete a trigger token' do
+        desc 'Delete a pipeline trigger token' do
+          detail 'Deletes a pipeline trigger token for a project.'
           tags ['ci_triggers']
           success code: 204
           failure [

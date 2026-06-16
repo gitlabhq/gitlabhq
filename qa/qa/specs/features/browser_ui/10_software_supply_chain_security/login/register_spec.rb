@@ -31,10 +31,6 @@ module QA
         end
 
         context "with basic registration",
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/39940',
-            type: :investigating
-          },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
           it 'allows the user to register and login' do
             Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -50,7 +46,9 @@ module QA
         end
 
         context "with user deletion" do
-          let(:user) { create(:user) }
+          # Hard delete so the record (and its username/email) is removed rather than ghosted,
+          # which lets the recreation test reliably reuse the same credentials. See gitlab-org/gitlab#594514.
+          let(:user) { create(:user, :hard_delete) }
 
           it "allows to delete user account",
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500258' do
@@ -64,17 +62,16 @@ module QA
             expect(page).to have_text("Account scheduled for removal.")
           end
 
-          it "allows to recreate deleted user with same credeintials",
-            quarantine: {
-              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24016',
-              type: :investigating
-            },
+          it "allows to recreate deleted user with same credentials",
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500257' do
             user.remove_via_api!
-            # make sure user is deleted
-            Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) { !user.exists? }
+            # make sure user is deleted - async deletion can exceed two minutes under CI load
+            Support::Waiter.wait_until(max_duration: 180, sleep_interval: 3) { !user.exists? }
 
-            Flow::Login.sign_in(as: user, skip_page_validation: true)
+            # The user was just deleted, so this sign-in is expected to be rejected. Pass
+            # raise_on_invalid_login: false so the flow surfaces the rejection on the page for us to
+            # assert on, instead of raising InvalidCredentialsError. See gitlab-org/gitlab#594514.
+            Flow::Login.sign_in(as: user, skip_page_validation: true, raise_on_invalid_login: false)
             expect(page).to have_text("Invalid login or password")
 
             Resource::User.fabricate_via_browser_ui! do |resource|
@@ -110,17 +107,21 @@ module QA
           with_application_settings(require_admin_approval_after_user_signup: true) { example.run }
         end
 
-        it 'allows user login after approval', quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6479',
-          type: :flaky
-        } do
+        it 'allows user login after approval' do
           user # sign up user
 
           expect(page).to have_text(signed_up_waiting_approval_text)
 
-          Flow::Login.sign_in(as: user, skip_page_validation: true)
-
-          expect(page).to have_text(pending_approval_blocked_text)
+          # The pending-approval alert is rendered after a blocked sign-in attempt, but it can be
+          # lost while the sign-in flow runs its post-login processing (onboarding checks, etc.),
+          # leaving a bare login page. Retry the blocked sign-in until the alert is reliably
+          # present before asserting on it. See gitlab-org/gitlab#594514.
+          Support::Retrier.retry_until(
+            max_attempts: 3, sleep_interval: 1, message: 'Expected pending-approval blocked message'
+          ) do
+            Flow::Login.sign_in(as: user, skip_page_validation: true)
+            page.has_text?(pending_approval_blocked_text)
+          end
 
           approve_user(user)
 

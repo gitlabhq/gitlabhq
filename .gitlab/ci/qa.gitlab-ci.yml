@@ -165,7 +165,6 @@ e2e:test-on-omnibus-ee:
     - .qa:rules:test-on-omnibus-ee
   needs:
     - compile-production-assets
-    - build-qa-image
     - e2e-test-pipeline-generate
     - job: coverage-frontend
       optional: true

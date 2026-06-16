@@ -63,7 +63,7 @@ RSpec.shared_examples 'diff file entity' do
     context 'when it is a whitespace only change' do
       it 'has whitespace_only true' do
         expect(subject[:viewer][:whitespace_only])
-          .to eq(true)
+          .to be(true)
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.shared_examples 'diff file entity' do
 
       it 'has whitespace_only nil' do
         expect(subject[:viewer][:whitespace_only])
-          .to eq(nil)
+          .to be_nil
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.shared_examples 'diff file entity' do
 
       it 'has whitespace_only false' do
         expect(subject[:viewer][:whitespace_only])
-          .to eq(false)
+          .to be(false)
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.shared_examples 'diff file entity' do
 
       it 'has whitespace_only false' do
         expect(subject[:viewer][:whitespace_only])
-          .to eq(false)
+          .to be(false)
       end
     end
   end

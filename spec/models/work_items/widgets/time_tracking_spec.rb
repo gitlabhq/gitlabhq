@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Widgets::TimeTracking, feature_category: :team_planning do
-  let_it_be(:work_item) { create(:work_item, time_estimate: 12.hours) }
-  let_it_be(:timelog1) { create(:timelog, issue: work_item, time_spent: 1.hour.to_i) }
+  let_it_be(:work_item, freeze: false) { create(:work_item, time_estimate: 12.hours) }
+  let_it_be(:timelog1, freeze: false) { create(:timelog, issue: work_item, time_spent: 1.hour.to_i) }
   let_it_be(:timelog2) { create(:timelog, issue: work_item, time_spent: 2.hours.to_i) }
 
   describe '.quick_action_params' do

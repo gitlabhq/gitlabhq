@@ -1,4 +1,4 @@
-import { GlForm, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlForm, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -23,6 +23,7 @@ import {
   createScheduleMutationResponse,
   updateScheduleMutationResponse,
   mockSinglePipelineScheduleNode,
+  mockSinglePipelineScheduleNodeNoVars,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -109,6 +110,7 @@ describe('Pipeline schedules form', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
   const findPipelineVariables = () => wrapper.findComponent(VariablesForm);
+  const findReadOnlyVariablesAlert = () => wrapper.findComponent(GlAlert);
 
   const emitInputEvents = (updateData) => {
     findPipelineInputsForm().vm.$emit('update-inputs', updateData);
@@ -193,15 +195,18 @@ describe('Pipeline schedules form', () => {
       expect(findPipelineVariables().props()).toMatchObject({
         initialVariables: [],
         editing: false,
+        readOnly: false,
       });
+      expect(findReadOnlyVariablesAlert().exists()).toBe(false);
     });
 
-    it('does not display variable list when the user has no permissions', () => {
+    it('does not display variable list when creating a new schedule and the user has no permissions', () => {
       createComponent({
         canSetPipelineVariables: false,
       });
 
       expect(findPipelineVariables().exists()).toBe(false);
+      expect(findReadOnlyVariablesAlert().exists()).toBe(false);
     });
 
     it('displays the submit and cancel buttons', () => {
@@ -555,6 +560,68 @@ describe('Pipeline schedules form', () => {
       await nextTick();
 
       expect(findSubmitButton().props('disabled')).toBe(!state);
+    });
+  });
+
+  describe('when the user cannot set pipeline variables on an existing schedule', () => {
+    const noVarsQueryHandler = jest.fn().mockResolvedValue(mockSinglePipelineScheduleNodeNoVars);
+
+    it('renders a read-only variables form with a banner when variables exist', async () => {
+      createComponent({
+        editing: true,
+        canSetPipelineVariables: false,
+        requestHandlers: [[getPipelineSchedulesQuery, querySuccessHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(findPipelineVariables().exists()).toBe(true);
+      expect(findPipelineVariables().props('readOnly')).toBe(true);
+      expect(findPipelineVariables().props('initialVariables')).toHaveLength(variables.length);
+      expect(findReadOnlyVariablesAlert().exists()).toBe(true);
+    });
+
+    it('omits variables from the update mutation payload', async () => {
+      createComponent({
+        editing: true,
+        canSetPipelineVariables: false,
+        requestHandlers: [
+          [getPipelineSchedulesQuery, querySuccessHandler],
+          [updatePipelineScheduleMutation, updateMutationHandlerSuccess],
+        ],
+      });
+
+      await waitForPromises();
+
+      findForm().vm.$emit('submit', { preventDefault });
+
+      await waitForPromises();
+
+      expect(updateMutationHandlerSuccess).toHaveBeenCalledWith({
+        input: {
+          active: schedule.active,
+          cron: schedule.cron,
+          cronTimezone: schedule.cronTimezone,
+          id: schedule.id,
+          ref: schedule.ref,
+          description: schedule.description,
+          variables: [],
+          inputs: [],
+        },
+      });
+    });
+
+    it('does not render the variables form when the schedule has no variables', async () => {
+      createComponent({
+        editing: true,
+        canSetPipelineVariables: false,
+        requestHandlers: [[getPipelineSchedulesQuery, noVarsQueryHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(findPipelineVariables().exists()).toBe(false);
+      expect(findReadOnlyVariablesAlert().exists()).toBe(false);
     });
   });
 });

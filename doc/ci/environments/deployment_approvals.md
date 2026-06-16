@@ -55,13 +55,6 @@ The environments in your project require approval before deployment.
 
 ### Add multiple approval rules
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
-- UI configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378445) in GitLab 15.11.
-
-{{< /history >}}
-
 Add multiple approval rules to control who can approve and execute deployment jobs.
 
 To add multiple approval rules, you must have the Developer role for the project.
@@ -80,13 +73,6 @@ even if the user is a member of multiple approver groups. [Issue 457541](https:/
 After a deployment job is approved, you must [run the job manually](../jobs/job_control.md#run-a-manual-job).
 
 ### Allow self-approval
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
-- Automatic approval [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124638) in GitLab 16.2 due to [usability issues](https://gitlab.com/gitlab-org/gitlab/-/issues/391258).
-
-{{< /history >}}
 
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.
 

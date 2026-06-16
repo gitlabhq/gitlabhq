@@ -133,14 +133,22 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
 
+    commits_count = @merge_request.commits_count
+
     recent_commits = @merge_request.recent_commits(
       load_from_gitaly: true
     ).with_latest_pipeline(@merge_request.source_branch)
 
     @commits = set_commits_for_rendering(
       recent_commits,
-      commits_count: @merge_request.commits_count
+      commits_count: commits_count
     )
+
+    @commits_count_label = if commits_count > MergeRequestDiff::COMMITS_SAFE_SIZE
+                             "#{MergeRequestDiff::COMMITS_SAFE_SIZE}+"
+                           else
+                             commits_count
+                           end
 
     @commit = @merge_request.diff_head_commit
 

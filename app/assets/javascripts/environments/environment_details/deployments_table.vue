@@ -9,6 +9,7 @@ import DeploymentActions from './components/deployment_actions.vue';
 import { ENVIRONMENT_DETAILS_TABLE_FIELDS } from './constants';
 
 export default {
+  name: 'DeploymentsTable',
   components: {
     DeploymentTriggerer,
     DeploymentActions,

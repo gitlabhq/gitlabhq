@@ -1,4 +1,9 @@
-import { formatIssueInput, filterVariables, FiltersInfo } from '~/boards/boards_util';
+import {
+  formatIssueInput,
+  filterVariables,
+  FiltersInfo,
+  getBoardListTitleId,
+} from '~/boards/boards_util';
 import { FilterFields } from '~/boards/constants';
 
 describe('formatIssueInput', () => {
@@ -212,5 +217,16 @@ describe('filterVariables', () => {
     });
 
     expect(result).toEqual(expected);
+  });
+});
+
+describe('getBoardListTitleId', () => {
+  it('returns null when listId is not provided', () => {
+    expect(getBoardListTitleId(undefined)).toBeNull();
+    expect(getBoardListTitleId(null)).toBeNull();
+  });
+
+  it('returns a sanitized id string for a valid listId', () => {
+    expect(getBoardListTitleId('gid://gitlab/List/1')).toBe('board-list-title-gid---gitlab-List-1');
   });
 });

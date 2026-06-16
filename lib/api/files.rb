@@ -201,7 +201,8 @@ module API
       requires :id, type: String, desc: 'The project ID', documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
-      desc 'Get blame file metadata from repository' do
+      desc 'Retrieve file blame metadata' do
+        detail 'Retrieves blame metadata for lines in a specified file.'
         success code: 200
         tags %w[files]
       end
@@ -218,7 +219,9 @@ module API
         set_http_headers(blob_data)
       end
 
-      desc 'Get blame file from the repository' do
+      desc 'Retrieve file blame history from a repository' do
+        detail 'Retrieves blame history for a specified file in a repository. Each blame range contains lines and ' \
+          'their corresponding commit information.'
         success [Entities::BlameRange]
         tags %w[files]
       end
@@ -246,7 +249,8 @@ module API
         present blame_ranges, with: Entities::BlameRange
       end
 
-      desc 'Get raw file contents from the repository' do
+      desc 'Retrieve a raw file from a repository' do
+        detail 'Retrieves the raw file contents for a specified file in a repository.'
         success File
         tags %w[files]
       end
@@ -278,7 +282,8 @@ module API
         end
       end
 
-      desc 'Get file metadata from repository' do
+      desc 'Retrieve file metadata' do
+        detail 'Retrieves metadata for a specified file in a repository.'
         success code: 200
         tags %w[files]
       end
@@ -295,7 +300,9 @@ module API
         set_http_headers(blob_data)
       end
 
-      desc 'Get a file from the repository' do
+      desc 'Retrieve a file from a repository' do
+        detail 'Retrieves information about a specified file in a repository. This includes information like the ' \
+          'name, size, and the file contents. File content is Base64 encoded.'
         success code: 200
         tags %w[files]
       end
@@ -340,7 +347,9 @@ module API
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Create new file in repository' do
+      desc 'Create a file in a repository' do
+        detail 'Creates a file in a specified repository. Use the Commits API to create multiple files with a ' \
+          'single request.'
         success code: 201
         tags %w[files]
       end
@@ -383,7 +392,9 @@ module API
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Update existing file in repository' do
+      desc 'Update a file in a repository' do
+        detail 'Updates a specified file in a repository. Use the Commits API to update multiple files with a ' \
+          'single request.'
         success code: 200
         tags %w[files]
       end
@@ -415,7 +426,9 @@ module API
         end
       end
 
-      desc 'Delete an existing file in repository' do
+      desc 'Delete a file in a repository' do
+        detail 'Deletes a specified file in a repository. Use the Commits API to delete multiple files with a ' \
+          'single request.'
         success code: 204
         tags %w[files]
       end

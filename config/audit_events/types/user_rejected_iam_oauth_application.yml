@@ -1,0 +1,10 @@
+---
+name: user_rejected_iam_oauth_application
+description: User rejected an IAM OAuth application
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/589572
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235073
+feature_category: authorization
+milestone: '19.1'
+saved_to_database: true
+streamed: true
+scope: [User]

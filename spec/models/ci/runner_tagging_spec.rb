@@ -109,14 +109,14 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
   describe 'partitioning' do
     context 'with runner' do
       let_it_be(:runner) { FactoryBot.build(:ci_runner, :group, groups: [group]) }
-      let_it_be(:runner_tagging) { FactoryBot.build(:ci_runner_tagging, runner: runner) }
+      let_it_be(:runner_tagging, freeze: false) { FactoryBot.build(:ci_runner_tagging, runner: runner) }
 
       it 'sets runner_type to the current partition value' do
         expect { runner_tagging.valid? }.to change { runner_tagging.runner_type }.to('group_type')
       end
 
       context 'when it is already set' do
-        let_it_be(:runner_tagging) { FactoryBot.build(:ci_runner_tagging, runner_type: :project_type) }
+        let_it_be(:runner_tagging, freeze: false) { FactoryBot.build(:ci_runner_tagging, runner_type: :project_type) }
 
         it 'does not change the runner_type value' do
           expect { runner_tagging.valid? }.not_to change { runner_tagging.runner_type }
@@ -173,7 +173,7 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
     describe '.for_runner' do
       subject(:for_runner) { described_class.for_runner(runner_ids) }
 
-      let_it_be(:runners) { create_list(:ci_runner, 3, :group, groups: [group]) }
+      let_it_be(:runners, freeze: false) { create_list(:ci_runner, 3, :group, groups: [group]) }
 
       before_all do
         runners.first.update!(tag_list: 'a')

@@ -29,6 +29,7 @@ describe('SecurityConfigurationProvider', () => {
     autoDevopsPath: '/autodevops',
     canEnableAutoDevops: true,
     containerScanningForRegistryEnabled: false,
+    licenseScanningForCyclonedxEnabled: true,
     features: [],
     gitlabCiHistoryPath: '/ci/history',
     gitlabCiPresent: true,

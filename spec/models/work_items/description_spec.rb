@@ -23,7 +23,10 @@ RSpec.describe WorkItems::Description, feature_category: :team_planning do
     end
 
     context 'for description length' do
-      let(:description_record) { build(:work_item_description, description: description) }
+      let(:work_item) { create(:work_item) }
+      let(:description_record) do
+        described_class.new(work_item: work_item, namespace: work_item.namespace, description: description)
+      end
 
       before do
         allow(Gitlab::CurrentSettings).to receive(:description_and_note_max_size).and_return(100)

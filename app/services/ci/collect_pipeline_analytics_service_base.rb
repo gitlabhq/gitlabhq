@@ -49,6 +49,8 @@ module Ci
     end
 
     def clickhouse_model
+      return ::ClickHouse::Finders::Ci::SiphonPipelinesFinder if Feature.enabled?(:pipeline_analytics_siphon, container)
+
       if ::ClickHouse::Models::Ci::FinishedPipelinesHourly.time_window_valid?(from_time, to_time)
         return ::ClickHouse::Models::Ci::FinishedPipelinesHourly
       end

@@ -16,6 +16,7 @@ const variantCssColorMap = {
 };
 
 export default {
+  name: 'DiffStatsDropdown',
   i18n,
   components: {
     GlDisclosureDropdown,

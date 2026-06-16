@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::IntegrationsController, :with_current_organization, :enable_admin_mode, feature_category: :integrations do
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
 
   before do
     sign_in(admin)

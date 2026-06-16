@@ -24,6 +24,14 @@ module QA
           base.view 'app/assets/javascripts/wikis/components/wiki_sidebar_toggle.vue' do
             element 'wiki-sidebar-toggle'
           end
+
+          base.view 'app/assets/javascripts/wikis/components/wiki_more_dropdown.vue' do
+            element 'wiki-more-dropdown'
+          end
+
+          base.view 'app/assets/javascripts/wikis/components/delete_wiki_modal.vue' do
+            element 'page-delete-button'
+          end
         end
 
         def click_create_your_first_page
@@ -42,6 +50,12 @@ module QA
 
         def click_edit
           click_element('wiki-edit-button')
+        end
+
+        def delete_page
+          click_element('wiki-more-dropdown')
+          click_element('page-delete-button', Page::Modal::DeleteWiki)
+          Page::Modal::DeleteWiki.perform(&:confirm_deletion)
         end
 
         def has_title?(title)

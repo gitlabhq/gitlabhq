@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Geo blob replication
 ---
 
-Blobs such as [uploads](../uploads/_index.md), LFS objects, and CI job artifacts, are replicated to the **secondary** site
+Blobs such as [uploads](../uploads/_index.md), LFS objects, and CI job artifacts, are replicated to the secondary site
 with the [Self-Service Framework](framework.md). To track the state of syncing, each model has a corresponding registry table,
 for example `Upload` has `Geo::UploadRegistry` in the [PostgreSQL Geo Tracking Database](../geo.md#tracking-database).
 

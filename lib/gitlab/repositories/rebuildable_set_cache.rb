@@ -6,13 +6,13 @@
 module Gitlab
   module Repositories
     class RebuildableSetCache < Gitlab::SetCache
-      # TTL for pending events queue during cache rebuilds.
-      # This value is arbitrary and can be adjusted based on observed behavior.
-      PENDING_EVENT_TTL = 1.hour
-
       # TTL for rebuild lock flag (prevents stuck rebuilds).
       # This value is arbitrary and can be adjusted based on observed behavior.
       REBUILD_FLAG_TTL = 10.minutes
+
+      # TTL for pending events queue during cache rebuilds.
+      # Matches REBUILD_FLAG_TTL so orphaned events expire before the next rebuild.
+      PENDING_EVENT_TTL = REBUILD_FLAG_TTL
 
       # TTL for trust flag (cache self-heals when expired).
       # This value is arbitrary and can be adjusted based on observed behavior.
@@ -32,20 +32,30 @@ module Gitlab
       # Lua script for atomic SADD only if key exists.
       # Prevents race condition where key expires between EXISTS check and SADD,
       # which would create a partial cache with only one element.
+      #
+      # Returns:
+      #   -1: key does not exist (SADD was not attempted)
+      #    0: key exists, element was already a member (no-op)
+      #    1: key exists, element was added
       SADD_IF_EXISTS_SCRIPT = <<~LUA
         if redis.call('EXISTS', KEYS[1]) == 1 then
           return redis.call('SADD', KEYS[1], ARGV[1])
         end
-        return 0
+        return -1
       LUA
 
       # Lua script for atomic SREM only if key exists.
       # Prevents race condition where key expires between EXISTS check and SREM.
+      #
+      # Returns:
+      #   -1: key does not exist (SREM was not attempted)
+      #    0: key exists, element was not a member (no-op)
+      #    1: key exists, element was removed
       SREM_IF_EXISTS_SCRIPT = <<~LUA
         if redis.call('EXISTS', KEYS[1]) == 1 then
           return redis.call('SREM', KEYS[1], ARGV[1])
         end
-        return 0
+        return -1
       LUA
 
       attr_reader :repository, :namespace, :expires_in
@@ -185,7 +195,7 @@ module Gitlab
           end
         end
 
-        if exists && is_trusted
+        if is_trusted
           log_event(:cache_hit, key, count: smembers.size)
           return smembers
         end
@@ -203,15 +213,32 @@ module Gitlab
         full_key = cache_key(key)
 
         with do |redis|
-          exists, is_trusted = redis.pipelined do |pipeline|
-            pipeline.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
-            pipeline.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
-          end
+          is_trusted = redis.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
 
-          write(key, yield) unless exists && is_trusted
+          write(key, yield) unless is_trusted
 
           redis.sscan_each(full_key, match: pattern)
         end
+      end
+
+      # Override to add trust-awareness.
+      # Returns [false, false] when the cache is untrusted, causing the
+      # caller (RepositoryCacheAdapter) to fall through to a full lookup
+      # which triggers a cache rebuild via #fetch.
+      def try_include?(key, value)
+        full_key = cache_key(key)
+
+        result, exists, is_trusted = with do |redis|
+          redis.multi do |multi|
+            multi.sismember(full_key, value.to_s)
+            multi.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+            multi.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          end
+        end
+
+        return [false, false] unless is_trusted
+
+        [result, exists]
       end
 
       private
@@ -226,9 +253,9 @@ module Gitlab
 
         with do |redis|
           if deleted
-            redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+            remove_if_cache_exists(redis, full_key, ref_name)
           else
-            redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+            add_if_cache_exists(redis, key, full_key, ref_name)
           end
         end
       rescue ::Redis::BaseError => e
@@ -260,9 +287,9 @@ module Gitlab
           end
 
           if deleted
-            redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+            remove_if_cache_exists(redis, full_key, ref_name)
           else
-            redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+            add_if_cache_exists(redis, key, full_key, ref_name)
           end
         end
       rescue ::Redis::BaseError => e
@@ -271,6 +298,27 @@ module Gitlab
           error_message: e.message)
         mark_untrusted(key)
         raise
+      end
+
+      # Atomically add ref to the cache set only if the set key exists.
+      # Marks cache untrusted when the key is absent (SADD was skipped),
+      # so the next fetch triggers a full rebuild.
+      # @param redis [Redis] Redis connection
+      # @param key [String] Cache key (e.g., :branch_names)
+      # @param full_key [String] Full Redis key for the set
+      # @param ref_name [String] Short ref name (e.g., "main")
+      def add_if_cache_exists(redis, key, full_key, ref_name)
+        result = redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+        mark_untrusted(key) if result == -1
+      end
+
+      # Atomically remove ref from the cache set only if the set key exists.
+      # Unlike add, removal from a non-existent set is harmless - no untrust needed.
+      # @param redis [Redis] Redis connection
+      # @param full_key [String] Full Redis key for the set
+      # @param ref_name [String] Short ref name (e.g., "main")
+      def remove_if_cache_exists(redis, full_key, ref_name)
+        redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
       end
 
       def suffixed_cache_key(type, suffix)

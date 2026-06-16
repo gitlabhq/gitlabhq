@@ -7,6 +7,11 @@ module Mutations
       description "Deletes a work item."
 
       authorize :delete_work_item
+      authorize_granular_token permissions: :delete_work_item,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary_type: :group }
+        ]
 
       argument :id, ::Types::GlobalIDType[::WorkItem],
         required: true,

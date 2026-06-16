@@ -227,12 +227,9 @@ Prerequisites:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19260) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `render_gpg_signed_tags_verification_status`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/560619) in GitLab 19.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/599765) in GitLab 19.1. Feature flag `render_gpg_signed_tags_verification_status` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 After you [associate your GPG key with Git](#associate-your-gpg-key-with-git),
 you can sign your tags:

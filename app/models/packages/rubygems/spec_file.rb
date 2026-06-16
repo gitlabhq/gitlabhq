@@ -21,6 +21,13 @@ module Packages
       before_validation :set_object_storage_key, on: :create
       attr_readonly :object_storage_key
 
+      def self.find_or_build(project_id:, file_name:)
+        find_or_initialize_by(
+          project_id: project_id,
+          file_name: file_name
+        )
+      end
+
       private
 
       def set_object_storage_key

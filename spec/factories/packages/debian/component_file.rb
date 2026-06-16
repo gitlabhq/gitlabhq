@@ -47,6 +47,16 @@ FactoryBot.define do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end
 
+    # Persist the upstream chain (component, distribution, project) so a
+    # subsequent `build(:debian_project_component_file, :with_persisted_chain).save!`
+    # mirrors production, where the component is loaded from the DB and only
+    # the file itself is the new record. The default cascade-build pattern
+    # leaves `distribution.project_id` nil at validation time, which can
+    # matter for callbacks that read sharding keys in memory.
+    trait :with_persisted_chain do
+      component { association(:debian_project_component, strategy: :create) }
+    end
+
     trait(:empty) do
       file_sha256 { 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' }
       file_fixture { nil }

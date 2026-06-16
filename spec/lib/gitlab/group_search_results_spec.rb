@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
   # group creation calls GroupFinder, so need to create the group
   # before so expect(GroupsFinder) check works
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, group: group) }
 
@@ -52,10 +52,10 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
   end
 
   describe 'milestones search' do
-    let!(:unarchived_project) { create(:project, :public, group: group) }
-    let!(:archived_project) { create(:project, :public, :archived, group: group) }
-    let!(:unarchived_result) { create(:milestone, project: unarchived_project, title: 'foo') }
-    let!(:archived_result) { create(:milestone, project: archived_project, title: 'foo') }
+    let_it_be(:unarchived_project) { create(:project, :public, group: group) }
+    let_it_be(:archived_project) { create(:project, :public, :archived, group: group) }
+    let_it_be(:unarchived_result) { create(:milestone, project: unarchived_project, title: 'foo') }
+    let_it_be(:archived_result) { create(:milestone, project: archived_project, title: 'foo') }
     let(:query) { 'foo' }
     let(:scope) { 'milestones' }
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     context 'when user cannot read milestones on the group' do
       let_it_be(:private_group) { create(:group, :private) }
       let_it_be(:private_project) { create(:project, :private, group: private_group) }
-      let!(:milestone) { create(:milestone, project: private_project, title: 'foo secret') }
+      let_it_be(:milestone) { create(:milestone, project: private_project, title: 'foo secret') }
       let(:query) { 'foo' }
       let(:limit_projects) do
         projects = ::ProjectsFinder.new(current_user: user).execute.preload(:topics, :project_topics, :route)
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     end
 
     context 'with group milestones' do
-      let!(:group_milestone) { create(:milestone, group: group, title: 'foo group milestone') }
+      let_it_be(:group_milestone) { create(:milestone, group: group, title: 'foo group milestone') }
       let(:query) { 'foo' }
 
       it 'includes group milestones in search results' do
@@ -97,9 +97,9 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
       let_it_be(:parent_group) { create(:group) }
       let_it_be(:child_group) { create(:group, parent: parent_group) }
       let_it_be(:child_project) { create(:project, :public, group: child_group) }
-      let!(:parent_milestone) { create(:milestone, group: parent_group, title: 'foo parent') }
-      let!(:child_milestone) { create(:milestone, group: child_group, title: 'foo child') }
-      let!(:project_milestone) { create(:milestone, project: child_project, title: 'foo project') }
+      let_it_be(:parent_milestone) { create(:milestone, group: parent_group, title: 'foo parent') }
+      let_it_be(:child_milestone) { create(:milestone, group: child_group, title: 'foo child') }
+      let_it_be(:project_milestone) { create(:milestone, project: child_project, title: 'foo project') }
       let(:query) { 'foo' }
 
       subject(:results) { described_class.new(user, query, Project.all, group: child_group, filters: filters) }
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     let(:query) { 'Test' }
 
     describe 'filtering' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group, freeze: false) { create(:group) }
       let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
       let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
@@ -241,8 +241,8 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     context 'when filtering by work_item_type_ids' do
       let(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
 
-      let!(:task_work_item) { create(:work_item, :task, project: project, title: 'test task') }
-      let!(:issue_work_item) { create(:work_item, project: project, title: 'test issue wi') }
+      let_it_be(:task_work_item) { create(:work_item, :task, project: project, title: 'test task') }
+      let_it_be(:issue_work_item) { create(:work_item, project: project, title: 'test issue wi') }
 
       before_all do
         project.add_developer(user)

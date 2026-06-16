@@ -319,4 +319,32 @@ describe('BoardContent', () => {
 
     expect(findBoardColumns().at(0).props('draggedItemId')).toBe('gid://gitlab/WorkItems::Type/1');
   });
+
+  describe('keyboard navigation', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('sets focused=true on the first column by default', () => {
+      expect(findBoardColumns().at(0).props('focused')).toBe(true);
+      expect(findBoardColumns().at(1).props('focused')).toBe(false);
+    });
+
+    it('moves focus to the next column when focus-adjacent is emitted with direction 1', async () => {
+      findBoardColumns().at(0).vm.$emit('focus-adjacent', 1);
+      await nextTick();
+
+      expect(findBoardColumns().at(0).props('focused')).toBe(false);
+      expect(findBoardColumns().at(1).props('focused')).toBe(true);
+    });
+
+    it('does not move focus beyond the last column', async () => {
+      findBoardColumns().at(0).vm.$emit('focus-adjacent', 1);
+      await nextTick();
+      findBoardColumns().at(1).vm.$emit('focus-adjacent', 1);
+      await nextTick();
+
+      expect(findBoardColumns().at(1).props('focused')).toBe(true);
+    });
+  });
 });

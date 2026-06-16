@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/group_public_or_visible_to_user'
 
-RSpec.describe RuboCop::Cop::GroupPublicOrVisibleToUser do
+RSpec.describe RuboCop::Cop::GroupPublicOrVisibleToUser, feature_category: :tooling do
   let(:msg) do
     "`Group.public_or_visible_to_user` should be used with extreme care. " \
     "Please ensure that you are not using it on its own and that the amount of rows being filtered is reasonable."

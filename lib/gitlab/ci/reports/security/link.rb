@@ -20,7 +20,7 @@ module Gitlab
           end
 
           def ==(other)
-            name == other.name && url == other.url
+            other.is_a?(self.class) && name == other.name && url == other.url
           end
         end
       end

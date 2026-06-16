@@ -10,6 +10,7 @@ import {
 import { getImageName } from '../utils';
 
 export default {
+  name: 'DeleteModal',
   components: {
     GlModal,
     GlSprintf,

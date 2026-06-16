@@ -11,6 +11,7 @@ import {
 import { i18n, HELP_PATHS } from '../constants';
 
 export default {
+  name: 'ServicesItem',
   i18n,
   helpPath: HELP_PATHS.servicesHelpPath,
   placeholderText: i18n.ENTRYPOINT_PLACEHOLDER_TEXT,

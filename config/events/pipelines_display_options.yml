@@ -2,6 +2,8 @@
 description: Tracks changes to the display options for pipelines in the application.
 action: pipelines_display_options
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134685
 tiers:

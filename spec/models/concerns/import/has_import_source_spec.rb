@@ -9,6 +9,7 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
   let_it_be(:merge_request_imported_bb_cloud) { create(:project_snippet, imported_from: :bitbucket) }
   let_it_be(:merge_request_imported_github) { create(:project_snippet, imported_from: :github) }
   let_it_be(:merge_request_imported_gitea) { create(:project_snippet, imported_from: :gitea) }
+  let_it_be(:snippet_imported_offline_transfer) { create(:project_snippet, imported_from: :offline_transfer) }
 
   describe '#imported?' do
     it 'returns the correct imported state' do
@@ -18,6 +19,7 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
       expect(merge_request_imported_bb_cloud.imported?).to eq(true)
       expect(merge_request_imported_github.imported?).to eq(true)
       expect(merge_request_imported_gitea.imported?).to eq(true)
+      expect(snippet_imported_offline_transfer.imported?).to eq(true)
     end
   end
 
@@ -39,6 +41,8 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
       expect(merge_request_imported.imported_from_gitlab_migration?).to eq(false)
       expect(merge_request_imported_github.imported_from_gitlab_project?).to eq(false)
       expect(merge_request_imported_gitea.imported_from_gitea?).to eq(true)
+      expect(snippet_imported_offline_transfer.imported_from_offline_transfer?).to eq(true)
+      expect(snippet_imported_offline_transfer.imported_from_gitlab_migration?).to eq(false)
     end
   end
 end

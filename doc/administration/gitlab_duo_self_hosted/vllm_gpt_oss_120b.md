@@ -67,8 +67,6 @@ Maximum concurrency for Y tokens per request: Nx
 
 Choose the option that matches your environment:
 
-The version numbers listed below are the minimum required to serve GPT OSS 120B. Using the latest vLLM release is recommended, as it includes performance improvements, bug fixes, and expanded hardware support.
-
 - Installation script: A fresh Ubuntu or Debian machine without CUDA or GPU drivers installed.
 - vLLM only: CUDA and drivers are already present (NVIDIA Deep Learning VM on GCP, AWS Deep Learning AMI, or existing GPU machine).
 - Docker: Skip all host-level setup entirely.
@@ -77,7 +75,9 @@ If you have different hardware, see [GPT OSS - vLLM Recipes](https://docs.vllm.a
 
 ### Option 1: Installation script (from scratch)
 
-When you update the stack, use the following versions for each variable:
+When you update the stack, use the following versions for each variable. The versions are
+the minimum required to serve GPT OSS 120B. You should use the latest vLLM release,
+as it includes performance improvements, bug fixes, and expanded hardware support.
 
 | Variable | Version |
 |---|---|

@@ -25,7 +25,7 @@ RSpec.describe Organizations::OrganizationUsers::UpdateService, feature_category
     end
 
     context 'when user has permission' do
-      let_it_be(:organization_owner) { create(:organization_owner, organization: organization) }
+      let_it_be(:organization_owner, freeze: false) { create(:organization_owner, organization: organization) }
 
       let(:current_user) { organization_owner.user }
 

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker, fe
     let(:import_state) { build_stubbed(:import_state, :started) }
 
     let(:project) do
-      instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state)
+      instance_double('Project', full_path: 'foo/bar', id: 1, organization_id: 1, import_state: import_state)
     end
 
     let(:client) { instance_double('Gitlab::GithubImport::Client') }

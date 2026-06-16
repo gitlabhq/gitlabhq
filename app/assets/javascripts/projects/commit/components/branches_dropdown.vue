@@ -21,6 +21,7 @@ export default {
       default: '',
     },
   },
+  emits: ['input'],
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
     branchHeaderTitle: I18N_BRANCH_HEADER,

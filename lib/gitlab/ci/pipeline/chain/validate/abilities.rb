@@ -8,6 +8,7 @@ module Gitlab
           class Abilities < Chain::Base
             include Gitlab::Allowable
             include Chain::Helpers
+            include Gitlab::Utils::StrongMemoize
 
             GL_BUILD_ID_KEY = "glBuildId"
 
@@ -57,8 +58,6 @@ module Gitlab
             end
 
             def allowed_to_write_ref?
-              access = Gitlab::UserAccess.new(current_user, container: project)
-
               # This scenarios is when we have a MR from fork but the user has permissions to run
               # a pipeline on the target project. In this case the pipeline is created using the MR ref.
               # We skip the check because MR refs are created internally and there is no ref protection rules
@@ -67,15 +66,20 @@ module Gitlab
               if @command.merge_request_ref? && @command.merge_request&.for_fork?
                 true
               elsif @command.merge_request_ref? && @command.merge_request&.for_same_project?
-                access.can_run_pipeline_on_branch?(@command.merge_request.source_branch)
+                user_access.can_run_pipeline_on_branch?(@command.merge_request.source_branch)
               elsif @command.branch?
-                access.can_run_pipeline_on_branch?(@command.ref)
+                user_access.can_run_pipeline_on_branch?(@command.ref)
               elsif @command.tag?
-                access.can_create_tag?(@command.ref)
+                user_access.can_create_tag?(@command.ref)
               else
                 true # Allow it for now and we'll reject when we check ref existence
               end
             end
+
+            def user_access
+              Gitlab::UserAccess.new(current_user, container: project)
+            end
+            strong_memoize_attr :user_access
 
             def push_from_ci?
               command.gitaly_context&.dig(GL_BUILD_ID_KEY).present?

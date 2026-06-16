@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :consumables_cost_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   subject(:request) { get group_usage_quotas_path(group) }
 

@@ -7,7 +7,7 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService,
   let(:service) { described_class.new }
 
   describe '#execute' do
-    let_it_be(:resource) { create(:ci_catalog_resource) }
+    let_it_be(:resource) { create(:ci_catalog_resource, :published) }
     let_it_be(:component_a) { create(:ci_catalog_resource_component, catalog_resource: resource) }
     let_it_be(:component_b) { create(:ci_catalog_resource_component, catalog_resource: resource) }
     let_it_be(:project1) { create(:project) }
@@ -83,6 +83,41 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService,
 
         expect(component_a.reload.last_30_day_usage_count).to eq(2)
         expect(resource.reload.last_30_day_usage_count).to eq(2)
+      end
+    end
+
+    context 'with published and unpublished resources' do
+      let_it_be(:published_resource) { create(:ci_catalog_resource, :published) }
+      let_it_be(:unpublished_resource) { create(:ci_catalog_resource) }
+      let_it_be(:published_component) do
+        create(:ci_catalog_resource_component, catalog_resource: published_resource)
+      end
+
+      let_it_be(:unpublished_component) do
+        create(:ci_catalog_resource_component, catalog_resource: unpublished_resource)
+      end
+
+      before do
+        create(:catalog_resource_component_last_usage,
+          component: published_component,
+          used_by_project_id: project1.id,
+          last_used_date: 5.days.ago.to_date
+        )
+        create(:catalog_resource_component_last_usage,
+          component: unpublished_component,
+          used_by_project_id: project1.id,
+          last_used_date: 5.days.ago.to_date
+        )
+
+        service.execute
+      end
+
+      it 'updates last_30_day_usage_count for published resources' do
+        expect(published_resource.reload.last_30_day_usage_count).to eq(1)
+      end
+
+      it 'does not update last_30_day_usage_count for unpublished resources' do
+        expect(unpublished_resource.reload.last_30_day_usage_count).to eq(0)
       end
     end
 

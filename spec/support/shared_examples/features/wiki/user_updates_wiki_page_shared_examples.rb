@@ -82,7 +82,7 @@ RSpec.shared_examples 'User updates wiki page' do
     end
 
     it 'does not show comments when editing' do
-      expect(page).not_to have_content('Comments')
+      expect(page).to have_no_content('Comments')
     end
 
     it 'updates entry in redirects.yml file on changing page path' do

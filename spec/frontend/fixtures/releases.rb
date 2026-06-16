@@ -6,11 +6,11 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, path: 'releases-namespace') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'releases-project') }
-  let_it_be(:user) { create(:user, email: 'user@example.gitlab.com', username: 'user1') }
+  let_it_be(:namespace, freeze: false) { create(:namespace, path: 'releases-namespace') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'releases-project') }
+  let_it_be(:user, freeze: false) { create(:user, email: 'user@example.gitlab.com', username: 'user1') }
 
-  let_it_be(:milestone_12_3) do
+  let_it_be(:milestone_12_3, freeze: false) do
     create(
       :milestone,
       id: 123,
@@ -22,7 +22,7 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:milestone_12_4) do
+  let_it_be(:milestone_12_4, freeze: false) do
     create(
       :milestone,
       id: 124,
@@ -34,23 +34,23 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:open_issues_12_3) do
+  let_it_be(:open_issues_12_3, freeze: false) do
     create_list(:issue, 2, milestone: milestone_12_3, project: project)
   end
 
-  let_it_be(:closed_issues_12_3) do
+  let_it_be(:closed_issues_12_3, freeze: false) do
     create_list(:issue, 3, :closed, milestone: milestone_12_3, project: project)
   end
 
-  let_it_be(:open_issues_12_4) do
+  let_it_be(:open_issues_12_4, freeze: false) do
     create_list(:issue, 3, milestone: milestone_12_4, project: project)
   end
 
-  let_it_be(:closed_issues_12_4) do
+  let_it_be(:closed_issues_12_4, freeze: false) do
     create_list(:issue, 1, :closed, milestone: milestone_12_4, project: project)
   end
 
-  let_it_be(:release) do
+  let_it_be(:release, freeze: false) do
     create(
       :release,
       milestones: [milestone_12_3, milestone_12_4],
@@ -64,11 +64,11 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:evidence) do
+  let_it_be(:evidence, freeze: false) do
     create(:evidence, release: release, collected_at: Time.zone.parse('2018-12-03'))
   end
 
-  let_it_be(:other_link) do
+  let_it_be(:other_link, freeze: false) do
     create(
       :release_link,
       id: 10,
@@ -79,7 +79,7 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:runbook_link) do
+  let_it_be(:runbook_link, freeze: false) do
     create(
       :release_link,
       id: 11,
@@ -90,7 +90,7 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:package_link) do
+  let_it_be(:package_link, freeze: false) do
     create(
       :release_link,
       id: 12,
@@ -101,7 +101,7 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:image_link) do
+  let_it_be(:image_link, freeze: false) do
     create(
       :release_link,
       id: 13,
@@ -112,7 +112,7 @@ RSpec.describe 'Releases (JavaScript fixtures)', feature_category: :release_orch
     )
   end
 
-  let_it_be(:another_release) do
+  let_it_be(:another_release, freeze: false) do
     create(
       :release,
       project: project,

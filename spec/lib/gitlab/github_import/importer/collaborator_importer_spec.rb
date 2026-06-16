@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_category: :importers do
   subject(:importer) { described_class.new(collaborator, project, client) }
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) do
     create(

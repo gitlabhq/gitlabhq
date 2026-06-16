@@ -42,6 +42,16 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
       end
     end
 
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows access' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
       let(:boundary_object) { project }
       let(:request) do
@@ -121,6 +131,16 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
         expect(Rails.cache.fetch(expected_unidiff_key)).to be_present
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.dig('diffs', 0, 'diff')).to eq(expected_unidiff)
+      end
+    end
+
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'allows access' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

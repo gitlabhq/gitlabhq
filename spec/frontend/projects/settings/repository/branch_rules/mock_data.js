@@ -189,6 +189,7 @@ export const createBranchRuleMockResponse = {
 export const appProvideMock = {
   projectPath: 'some/project/path',
   branchRulesPath: 'settings/repository/branch_rules',
+  canCreateBranchRule: true,
 };
 
 export const branchRuleProvideMock = {

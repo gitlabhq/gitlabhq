@@ -22,7 +22,7 @@ RSpec.describe 'User creates confidential merge request on issue page', :js, fea
     end
 
     it 'shows that user has no fork available' do
-      click_button 'Create merge request'
+      find('button:not([aria-disabled="true"])', text: 'Create merge request').click
 
       within_modal do
         expect(page).to have_content('No forks are available to you')
@@ -41,7 +41,7 @@ RSpec.describe 'User creates confidential merge request on issue page', :js, fea
     end
 
     it 'create merge request in fork', :sidekiq_might_not_need_inline do
-      click_button 'Create merge request'
+      find('button:not([aria-disabled="true"])', text: 'Create merge request').click
 
       within_modal do
         expect(page).to have_button(forked_project.full_path)

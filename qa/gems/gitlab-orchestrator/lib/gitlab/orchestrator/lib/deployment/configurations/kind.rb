@@ -7,6 +7,10 @@ module Gitlab
         # Configuration for performing deployment setup on local kind cluster
         #
         class Kind < Base
+          VALKEY_RELEASE_SUFFIX = "valkey"
+          CNPG_CLUSTER_SUFFIX = "cnpg"
+          GARAGE_RELEASE_SUFFIX = "garage"
+
           # @return [String] secret name for initial admin password
           ADMIN_PASSWORD_SECRET = "gitlab-initial-root-password"
           # @return [String] configmap name for pre-receive hook
@@ -50,6 +54,7 @@ module Gitlab
           #
           # @return [void]
           def run_pre_deployment_setup
+            install_external_services
             create_initial_root_password
             create_pre_receive_hook
             create_oauth_secret if oauth_enabled?
@@ -87,9 +92,69 @@ module Gitlab
                       configmap: PRE_RECEIVE_HOOK_CONFIGMAP_NAME
                     }
                   }
+                },
+                ingress: {
+                  enabled: true,
+                  configureCertmanager: false,
+                  tls: { enabled: false }
+                },
+                minio: { enabled: false },
+                gatewayApi: { enabled: false, configureCertmanager: false, installEnvoy: false },
+                psql: {
+                  host: @cnpg.host,
+                  password: {
+                    secret: @cnpg.password_secret_name,
+                    key: @cnpg.password_secret_key
+                  }
+                },
+                redis: {
+                  host: @valkey.host,
+                  auth: {
+                    secret: @valkey.auth_secret_name,
+                    key: @valkey.auth_secret_key
+                  }
+                },
+                appConfig: {
+                  object_store: {
+                    enabled: true,
+                    proxy_download: true,
+                    connection: {
+                      secret: @garage.object_storage_secret_name,
+                      key: "config"
+                    }
+                  },
+                  artifacts: { bucket: "gitlab-artifacts" },
+                  lfs: { bucket: "git-lfs" },
+                  uploads: { bucket: "gitlab-uploads" },
+                  packages: { bucket: "gitlab-packages" },
+                  externalDiffs: { enabled: true, bucket: "gitlab-mr-diffs" },
+                  terraformState: { enabled: true, bucket: "gitlab-terraform-state" },
+                  ciSecureFiles: { enabled: true, bucket: "gitlab-ci-secure-files" },
+                  dependencyProxy: { enabled: true, bucket: "gitlab-dependency-proxy" }
                 }
               },
+              gitlab: {
+                toolbox: {
+                  backups: {
+                    objectStorage: {
+                      config: {
+                        secret: @garage.s3cmd_secret_name,
+                        key: "config"
+                      }
+                    }
+                  }
+                }
+              },
+              registry: {
+                storage: {
+                  secret: @garage.registry_storage_secret_name,
+                  key: "config",
+                  redirect: { disable: true }
+                }
+              },
+              certmanager: { install: false },
               "nginx-ingress": {
+                enabled: true,
                 controller: {
                   replicaCount: 1,
                   minAavailable: 1,
@@ -121,6 +186,36 @@ module Gitlab
             :host_ssh_port,
             :host_registry_port,
             :resource_preset
+
+          def helm
+            @helm ||= Helm::Client.new
+          end
+
+          def install_external_services
+            log("Installing external services", :info, bright: true)
+
+            @valkey = Services::Valkey.new(
+              kubeclient: kubeclient, helm: helm, namespace: namespace,
+              release_name: VALKEY_RELEASE_SUFFIX
+            )
+            @valkey.install
+
+            @cnpg = Services::CloudNativePG.new(
+              kubeclient: kubeclient, helm: helm, namespace: namespace,
+              cluster_name: CNPG_CLUSTER_SUFFIX
+            )
+            @cnpg.install
+
+            @garage = Services::Garage.new(
+              kubeclient: kubeclient, helm: helm, namespace: namespace,
+              release_name: GARAGE_RELEASE_SUFFIX
+            )
+            @garage.install
+          rescue StandardError => e
+            log("External service installation failed: #{e.message}", :error)
+            log("To clean up partial resources, run: bundle exec orchestrator destroy deployment kind", :info)
+            raise
+          end
 
           # Token seed script for root user
           #

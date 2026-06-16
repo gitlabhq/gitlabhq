@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { subscriptionsDropdownOptions } from '../../constants';
 
 export default {
+  name: 'SubscriptionsDropdown',
   subscriptionsDropdownOptions,
   i18n: {
     defaultDropdownText: __('Select subscription'),

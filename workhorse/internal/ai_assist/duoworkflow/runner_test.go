@@ -2,6 +2,7 @@ package duoworkflow
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -306,11 +307,10 @@ func Test_newRunner(t *testing.T) {
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
-	require.Equal(t, "oauth-token-123", runner.token)
+	require.Equal(t, "oauth-token-123", runner.httpActionHandler.token)
 	require.Equal(t, req, runner.originalReq)
 	require.Equal(t, mockConn, runner.conn)
 	require.NotNil(t, runner.streamManager)
-	require.Equal(t, apiClient, runner.rails)
 
 	runner.Close()
 }
@@ -525,16 +525,15 @@ func TestRunner_Execute(t *testing.T) {
 				blockCh:     tt.wfBlockCh,
 			}
 
-			testURL, _ := url.Parse("http://example.com")
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
-				rails: &api.API{
-					Client: &http.Client{},
-					URL:    testURL,
-				},
-				token:       "test-token",
 				originalReq: req,
 				conn:        mockConn,
+				httpActionHandler: &runHTTPActionHandler{
+					backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+					token:       "test-token",
+					originalReq: req,
+				},
 				streamManager: &streamManager{
 					wf:          mockWf,
 					originalReq: req,
@@ -783,6 +782,24 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			serverCapabilities: []string{"advanced_search", "tool_call_approval"},
 			expectedErrMsg:     "",
 		},
+		{
+			name:               "start request with web_search client capability",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["web_search"]}}`),
+			clientCapabilities: []string{"web_search"},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with web_search and other client capabilities",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "web_search"]}}`),
+			clientCapabilities: []string{"shell_command", "web_search"},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with unknown web_search variant is filtered out",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["web_search_unknown"]}}`),
+			clientCapabilities: []string{},
+			expectedErrMsg:     "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -793,16 +810,15 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 
 			rdb := initRdb(t)
 
-			testURL, _ := url.Parse("http://example.com")
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
-				rails: &api.API{
-					Client: &http.Client{},
-					URL:    testURL,
-				},
-				token:       "test-token",
 				originalReq: req,
 				conn:        &mockWebSocketConn{},
+				httpActionHandler: &runHTTPActionHandler{
+					backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+					token:       "test-token",
+					originalReq: req,
+				},
 				streamManager: &streamManager{
 					wf:          mockWf,
 					originalReq: req,
@@ -1019,9 +1035,6 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			}))
 			defer server.Close()
 
-			serverURL, err := url.Parse(server.URL)
-			require.NoError(t, err)
-
 			mockConn := &mockWebSocketConn{
 				writeError: tt.wsWriteError,
 			}
@@ -1031,14 +1044,13 @@ func TestRunner_handleAgentAction(t *testing.T) {
 
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
-				rails: &api.API{
-					Client: server.Client(),
-					URL:    serverURL,
-				},
-				backend:     createBackendHandler(server.Client()),
-				token:       "test-token",
 				originalReq: req,
 				conn:        mockConn,
+				httpActionHandler: &runHTTPActionHandler{
+					backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
+					token:       "test-token",
+					originalReq: req,
+				},
 				streamManager: &streamManager{
 					wf:          mockWf,
 					originalReq: req,
@@ -1047,7 +1059,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			}
 
 			ctx := context.Background()
-			err = r.handleAgentAction(ctx, tt.action)
+			err := r.handleAgentAction(ctx, tt.action)
 
 			if tt.expectedErrMsg != "" {
 				require.EqualError(t, err, tt.expectedErrMsg)
@@ -1314,12 +1326,7 @@ func TestRunner_sendActionToWs(t *testing.T) {
 				clearDeadlineError: tt.clearDeadlineError,
 			}
 
-			testURL, _ := url.Parse("http://example.com")
 			r := &runner{
-				rails: &api.API{
-					Client: &http.Client{},
-					URL:    testURL,
-				},
 				conn: mockConn,
 			}
 
@@ -1337,6 +1344,42 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Regression guard: the agent_context_usage field is only re-marshaled to the
+// webSocket client if the pinned gopb proto client defines it.
+func TestRunner_sendActionToWs_NewCheckpointAgentContextUsage(t *testing.T) {
+	mockConn := &mockWebSocketConn{}
+	r := &runner{conn: mockConn}
+
+	action := &pb.Action{
+		RequestID: "req-checkpoint",
+		Action: &pb.Action_NewCheckpoint{
+			NewCheckpoint: &pb.NewCheckpoint{
+				Status: "running",
+				AgentContextUsage: map[string]*pb.TokenBreakdown{
+					"chat": {TotalTokens: 1234, MaxTokens: 200000},
+				},
+			},
+		},
+	}
+
+	require.NoError(t, r.sendActionToWs(action))
+	require.Len(t, mockConn.writeMessages, 1)
+
+	var payload struct {
+		NewCheckpoint struct {
+			AgentContextUsage map[string]struct {
+				TotalTokens int `json:"total_tokens"`
+				MaxTokens   int `json:"max_tokens"`
+			} `json:"agent_context_usage"`
+		} `json:"newCheckpoint"`
+	}
+	require.NoError(t, json.Unmarshal(mockConn.writeMessages[0], &payload))
+
+	require.Contains(t, payload.NewCheckpoint.AgentContextUsage, "chat")
+	assert.Equal(t, 1234, payload.NewCheckpoint.AgentContextUsage["chat"].TotalTokens)
+	assert.Equal(t, 200000, payload.NewCheckpoint.AgentContextUsage["chat"].MaxTokens)
 }
 
 func Test_intersectServerCapabilities(t *testing.T) {
@@ -1366,9 +1409,9 @@ func Test_intersectServerCapabilities(t *testing.T) {
 			expected:   []string{},
 		},
 		{
-			name:       "all whitelisted capabilities pass through",
-			fromServer: []string{"advanced_search"},
-			expected:   []string{"advanced_search"},
+			name:       "all allowlisted capabilities pass through",
+			fromServer: []string{"advanced_search", "tool_call_approval", "tool_call_pattern_approval", "job_trace_pagination"},
+			expected:   []string{"advanced_search", "tool_call_approval", "tool_call_pattern_approval", "job_trace_pagination"},
 		},
 	}
 
@@ -1380,56 +1423,57 @@ func Test_intersectServerCapabilities(t *testing.T) {
 	}
 }
 
+func Test_intersectClientCapabilities(t *testing.T) {
+	tests := []struct {
+		name       string
+		fromClient []string
+		expected   []string
+	}{
+		{
+			name:       "returns empty when no matches",
+			fromClient: []string{"unknown_capability"},
+			expected:   []string{},
+		},
+		{
+			name:       "empty input returns empty",
+			fromClient: []string{},
+			expected:   []string{},
+		},
+		{
+			name:       "nil input returns empty",
+			fromClient: nil,
+			expected:   []string{},
+		},
+		{
+			name:       "web_search capability passes through",
+			fromClient: []string{"web_search"},
+			expected:   []string{"web_search"},
+		},
+		{
+			name:       "web_search combined with other capabilities",
+			fromClient: []string{"shell_command", "web_search"},
+			expected:   []string{"shell_command", "web_search"},
+		},
+		{
+			name:       "unknown web_search variant is filtered out",
+			fromClient: []string{"web_search_unknown"},
+			expected:   []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := intersectClientCapabilities(tt.fromClient)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestRunner_Shutdown(t *testing.T) {
-	t.Run("shutdown with canceled request context sends stop and releases lock", func(t *testing.T) {
+	t.Run("waits for context then sends stop and releases lock on ack", func(t *testing.T) {
 		rdb := initRdb(t)
 		mockWf := &mockWorkflowStream{}
-
-		ctx, cancel := context.WithCancel(context.Background())
-		cancel() // cancel immediately so originalReq context is already done
-
-		req := httptest.NewRequest("GET", "/duo", nil)
-		req = req.WithContext(ctx)
-
-		r := &runner{
-			originalReq: req,
-			lockFlow:    true,
-			streamManager: &streamManager{
-				wf:          mockWf,
-				originalReq: req,
-			},
-			lockManager: newWorkflowLockManager(rdb),
-			workflowID:  "shutdown-lock-test-123",
-			stop: stopCoordinator{
-				acked: make(chan struct{}),
-			},
-		}
-
-		// Acquire lock first
-		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
-		require.NoError(t, err)
-		r.mutex = mutex
-
-		// Verify lock is held before shutdown
-		lockExists := rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
-		require.Equal(t, int64(1), lockExists)
-
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer shutdownCancel()
-
-		// Shutdown should still attempt to send stop even though request context is done.
-		// The send will fail (context canceled), but Shutdown always returns nil.
-		err = r.Shutdown(shutdownCtx)
-		require.NoError(t, err)
-
-		// Verify lock is released after shutdown
-		lockExists = rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
-		require.Equal(t, int64(0), lockExists)
-	})
-
-	t.Run("shutdown context done sends stop workflow and returns nil on ack", func(t *testing.T) {
-		rdb := initRdb(t)
-		mockWf := &mockWorkflowStream{}
+		mockConn := &mockWebSocketConn{}
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 		req := httptest.NewRequest("GET", "/duo", nil)
@@ -1437,6 +1481,7 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		r := &runner{
 			originalReq: req,
+			conn:        mockConn,
 			lockFlow:    true,
 			streamManager: &streamManager{
 				wf:          mockWf,
@@ -1449,26 +1494,28 @@ func TestRunner_Shutdown(t *testing.T) {
 			},
 		}
 
-		// Acquire lock first
+		// Pre-acquire the lock so we can verify it gets released
 		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
 		require.NoError(t, err)
 		r.mutex = mutex
 
-		// Verify lock is held before shutdown
-		lockExists := rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
-		require.Equal(t, int64(1), lockExists)
-
+		shutdownDone := make(chan error, 1)
 		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
 		defer shutdownCancel()
 
-		shutdownDone := make(chan error, 1)
 		go func() {
 			shutdownDone <- r.Shutdown(shutdownCtx)
 		}()
 
-		// give time for lock to be cleaned
-		time.Sleep(100 * time.Millisecond)
+		// Verify Shutdown blocks while contexts are alive
+		select {
+		case <-shutdownDone:
+			t.Fatal("Shutdown should not return before a context expires")
+		case <-time.After(50 * time.Millisecond):
+			// expected: still waiting
+		}
 
+		// Cancel the shutdown context to unblock
 		shutdownCancel()
 
 		require.Eventually(t, func() bool {
@@ -1481,37 +1528,171 @@ func TestRunner_Shutdown(t *testing.T) {
 		err = <-shutdownDone
 		require.NoError(t, err)
 
-		// Verify lock is released after shutdown
-		lockExists = rdb.Exists(context.Background(), workflowLockPrefix+r.workflowID).Val()
-		require.Equal(t, int64(0), lockExists)
-
 		sendEvents := mockWf.getSendEvents()
 		require.Len(t, sendEvents, 1)
 		stopEvent := sendEvents[0].GetStopWorkflow()
 		require.NotNil(t, stopEvent)
 		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
+
+		// Verify the lock was released: acquiring it again should succeed
+		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		require.NoError(t, lockErr)
+		require.NotNil(t, newMutex)
+		r.lockManager.releaseLock(context.Background(), newMutex, r.workflowID)
 	})
 
-	t.Run("shutdown always returns nil even when stop times out", func(t *testing.T) {
+	t.Run("sends CloseGoingAway to websocket when shutdown context fires", func(t *testing.T) {
 		mockWf := &mockWorkflowStream{}
+		controlMessages := []struct {
+			msgType int
+			data    []byte
+		}{}
+		mockConn := &mockWebSocketConn{}
+		wrappedConn := &shutdownTrackingConn{
+			mockWebSocketConn: mockConn,
+			controlMessages:   &controlMessages,
+		}
+
+		// Use a live request context so the shutdown context fires first (not the request context).
 		req := httptest.NewRequest("GET", "/duo", nil)
 
+		stopAcked := make(chan struct{})
 		r := &runner{
 			originalReq: req,
+			conn:        wrappedConn,
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
 			},
 			stop: stopCoordinator{
-				acked: make(chan struct{}),
+				acked: stopAcked,
 			},
 		}
 
-		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
-		shutdownCancel() // cancel immediately to trigger shutdown
+		go func() {
+			for len(mockWf.getSendEvents()) == 0 {
+				time.Sleep(5 * time.Millisecond)
+			}
+			close(stopAcked)
+		}()
 
+		// Cancel the shutdown context immediately so it fires first.
+		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
+		shutdownCancel()
 		err := r.Shutdown(shutdownCtx)
+		require.NoError(t, err)
+
+		// Verify a CloseGoingAway frame was sent
+		require.Len(t, controlMessages, 1)
+		require.Equal(t, websocket.CloseMessage, controlMessages[0].msgType)
+		expectedMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, "server shutdown")
+		require.Equal(t, expectedMsg, controlMessages[0].data)
+	})
+
+	t.Run("skips CloseGoingAway when request context fires first", func(t *testing.T) {
+		mockWf := &mockWorkflowStream{}
+		controlMessages := []struct {
+			msgType int
+			data    []byte
+		}{}
+		mockConn := &mockWebSocketConn{}
+		wrappedConn := &shutdownTrackingConn{
+			mockWebSocketConn: mockConn,
+			controlMessages:   &controlMessages,
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // cancel immediately so originalReq context is already done
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		stopAcked := make(chan struct{})
+		r := &runner{
+			originalReq: req,
+			conn:        wrappedConn,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
+			stopWorkflowTimeout: 10 * time.Millisecond,
+			stop: stopCoordinator{
+				acked: stopAcked,
+			},
+		}
+
+		// Use a live shutdown context so only the request context fires.
+		err := r.Shutdown(context.Background())
+		require.NoError(t, err)
+
+		// CloseGoingAway must NOT be sent when the request context fired first.
+		require.Empty(t, controlMessages, "CloseGoingAway should not be sent when request context is done")
+	})
+
+	t.Run("returns nil even when stop times out", func(t *testing.T) {
+		mockWf := &mockWorkflowStream{}
+		mockConn := &mockWebSocketConn{}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // cancel immediately to unblock the select
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+			conn:        mockConn,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
+			stopWorkflowTimeout: 10 * time.Millisecond,
+			stop: stopCoordinator{
+				acked: make(chan struct{}), // never closed = timeout
+			},
+		}
+
+		err := r.Shutdown(context.Background())
 		require.NoError(t, err, "Shutdown should always return nil")
+	})
+
+	t.Run("releases lock even when stop fails", func(t *testing.T) {
+		rdb := initRdb(t)
+		mockWf := &mockWorkflowStream{}
+		mockConn := &mockWebSocketConn{}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // cancel immediately to unblock the select
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+			conn:        mockConn,
+			lockFlow:    true,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
+			lockManager:         newWorkflowLockManager(rdb),
+			workflowID:          "shutdown-no-release-test",
+			stopWorkflowTimeout: 10 * time.Millisecond,
+			stop: stopCoordinator{
+				acked: make(chan struct{}), // never closed = timeout
+			},
+		}
+
+		// Pre-acquire the lock
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		require.NoError(t, err)
+		r.mutex = mutex
+
+		err = r.Shutdown(context.Background())
+		require.NoError(t, err)
+
+		// Lock should have been released even though stop timed out,
+		// so the executor can reconnect to a new workhorse instance.
+		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		require.NoError(t, lockErr, "lock should be released even when stop fails")
+		r.lockManager.releaseLock(context.Background(), newMutex, r.workflowID)
 	})
 }
 
@@ -1704,6 +1885,81 @@ func TestRunner_Close_waitsForAgentDone(t *testing.T) {
 	}
 }
 
+func TestRunner_Close_shutdownCoordination(t *testing.T) {
+	newRunnerForClose := func(t *testing.T) *runner {
+		t.Helper()
+		server := setupTestServer(t)
+
+		mainClient, err := NewClient(&api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		}, "test-agent", "")
+		require.NoError(t, err)
+
+		return &runner{
+			conn: &mockWebSocketConn{},
+			streamManager: &streamManager{
+				wf:     &mockWorkflowStream{},
+				client: mainClient,
+			},
+			mcpManager: &mockMcpManager{},
+			stop: stopCoordinator{
+				acked:        make(chan struct{}),
+				shutdownDone: make(chan struct{}),
+			},
+		}
+	}
+
+	t.Run("returns without waiting for shutdownDone when no shutdown is in progress", func(t *testing.T) {
+		r := newRunnerForClose(t)
+		// shutdownStarted is false and shutdownDone is never closed, simulating
+		// the normal request path where Shutdown is never invoked. Close must
+		// not block on shutdownDone.
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should not block on shutdownDone when no shutdown is in progress")
+		}
+	})
+
+	t.Run("waits for shutdownDone before closing when a shutdown is in progress", func(t *testing.T) {
+		r := newRunnerForClose(t)
+		// Simulate a shutdown in progress: shutdownStarted is set but
+		// shutdownDone has not been closed yet.
+		r.stop.shutdownStarted.Store(true)
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		// Close should block until shutdownDone is closed.
+		select {
+		case <-closeDone:
+			t.Fatal("Close should not return before shutdownDone is closed")
+		case <-time.After(100 * time.Millisecond):
+			// expected: Close is still waiting
+		}
+
+		// Signal that Shutdown has finished.
+		close(r.stop.shutdownDone)
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should return after shutdownDone is closed")
+		}
+	})
+}
+
 func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 	rdb := initRdb(t)
 	mockConn1 := &mockWebSocketConn{}
@@ -1721,16 +1977,14 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 		blockCh: make(chan bool),
 	}
 
-	testURL, _ := url.Parse("http://example.com")
-
 	req1 := httptest.NewRequest("GET", "/", nil)
 	r1 := &runner{
-		rails: &api.API{
-			Client: &http.Client{},
-			URL:    testURL,
-		},
 		originalReq: req1,
 		conn:        mockConn1,
+		httpActionHandler: &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+			originalReq: req1,
+		},
 		streamManager: &streamManager{
 			wf:          mockWf1,
 			originalReq: req1,
@@ -1742,12 +1996,12 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 
 	req2 := httptest.NewRequest("GET", "/", nil)
 	r2 := &runner{
-		rails: &api.API{
-			Client: &http.Client{},
-			URL:    testURL,
-		},
 		originalReq: req2,
 		conn:        mockConn2,
+		httpActionHandler: &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+			originalReq: req2,
+		},
 		streamManager: &streamManager{
 			wf:          mockWf2,
 			originalReq: req2,
@@ -1784,15 +2038,14 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 	mockConn := &mockWebSocketConn{}
 	mockWf := &mockWorkflowStream{}
 
-	testURL, _ := url.Parse("http://example.com")
 	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
-		rails: &api.API{
-			Client: &http.Client{},
-			URL:    testURL,
-		},
 		originalReq: req,
 		conn:        mockConn,
+		httpActionHandler: &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+			originalReq: req,
+		},
 		streamManager: &streamManager{
 			wf:          mockWf,
 			originalReq: req,
@@ -1827,15 +2080,14 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 		blockCh: make(chan bool),
 	}
 
-	testURL, _ := url.Parse("http://example.com")
 	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
-		rails: &api.API{
-			Client: &http.Client{},
-			URL:    testURL,
-		},
 		originalReq: req,
 		conn:        mockConn,
+		httpActionHandler: &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+			originalReq: req,
+		},
 		streamManager: &streamManager{
 			wf:          mockWf,
 			originalReq: req,
@@ -1933,12 +2185,7 @@ func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
 	mockConn := &mockWebSocketConn{}
 	mockWf := &mockWorkflowStream{}
 
-	testURL, _ := url.Parse("http://example.com")
 	r := &runner{
-		rails: &api.API{
-			Client: &http.Client{},
-			URL:    testURL,
-		},
 		originalReq: httptest.NewRequest("GET", "/", nil),
 		conn:        mockConn,
 		streamManager: &streamManager{
@@ -1974,13 +2221,8 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 			},
 		}
 
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 			streamManager: &streamManager{
@@ -2029,13 +2271,8 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		mockConn := &mockWebSocketConn{}
 		mockWf := &mockWorkflowStream{}
 
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 			streamManager: &streamManager{
@@ -2070,13 +2307,8 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 			sendError: errors.New("send failed"),
 		}
 
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 			streamManager: &streamManager{
@@ -2111,13 +2343,8 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 			recvError: errors.New("recv failed"),
 		}
 
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 			streamManager: &streamManager{
@@ -2150,13 +2377,8 @@ func TestRunner_pingWebSocket(t *testing.T) {
 	t.Run("sends ping and sets read deadline", func(t *testing.T) {
 		mockConn := &mockWebSocketConn{}
 
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 		}
@@ -2197,14 +2419,9 @@ func TestRunner_pingWebSocket(t *testing.T) {
 
 	t.Run("pong handler resets read deadline", func(t *testing.T) {
 		mockConn := &mockWebSocketConn{}
-		testURL, _ := url.Parse("http://example.com")
 		req := httptest.NewRequest("GET", "/duo", nil)
 
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        mockConn,
 		}
@@ -2244,16 +2461,11 @@ func TestRunner_pingWebSocket(t *testing.T) {
 		}
 		mockWf := &mockWorkflowStream{}
 
-		testURL, _ := url.Parse("http://example.com")
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 		req, _ := http.NewRequestWithContext(ctx, "GET", "/duo", nil)
 		stopAcked := make(chan struct{})
 		r := &runner{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    testURL,
-			},
 			originalReq: req,
 			conn:        wrappedConn,
 			streamManager: &streamManager{
@@ -2289,6 +2501,28 @@ func TestRunner_pingWebSocket(t *testing.T) {
 			t.Fatal("timed out waiting for pingWebSocket to return")
 		}
 	})
+}
+
+// shutdownTrackingConn wraps mockWebSocketConn and records WriteControl calls
+// so tests can verify the close frame sent during Shutdown.
+type shutdownTrackingConn struct {
+	*mockWebSocketConn
+	controlMessages *[]struct {
+		msgType int
+		data    []byte
+	}
+}
+
+func (s *shutdownTrackingConn) WriteControl(msgType int, data []byte, deadline time.Time) error {
+	*s.controlMessages = append(*s.controlMessages, struct {
+		msgType int
+		data    []byte
+	}{msgType: msgType, data: data})
+	return s.mockWebSocketConn.WriteControl(msgType, data, deadline)
+}
+
+func (s *shutdownTrackingConn) SetPongHandler(h func(string) error) {
+	s.mockWebSocketConn.SetPongHandler(h)
 }
 
 // pingTrackingConn wraps mockWebSocketConn and calls onPing when WriteControl

@@ -76,7 +76,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     });
   }
 
-  async function createLineDiscussion(discussion, noteBody) {
+  async function createLineDiscussion({ discussion, noteBody, showWhitespace }) {
     const { diffRefs } = useMergeRequestVersions();
     await notes.saveNote(
       buildLineDiscussionData({
@@ -85,12 +85,13 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
         noteableData: notes.noteableData,
         viewConfig: useDiffsView(),
         diffRefs,
+        showWhitespace,
       }),
     );
     diffDiscussions.removeNewLineDiscussionForm(discussion);
   }
 
-  async function createFileDiscussion(discussion, noteBody) {
+  async function createFileDiscussion({ discussion, noteBody, showWhitespace }) {
     const { diffRefs } = useMergeRequestVersions();
     await notes.saveNote(
       buildLineDiscussionData({
@@ -99,6 +100,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
         noteableData: notes.noteableData,
         viewConfig: useDiffsView(),
         diffRefs,
+        showWhitespace,
       }),
     );
     diffDiscussions.removeNewFileDiscussionForm(discussion);
@@ -147,25 +149,27 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     });
   }
 
-  async function createDraftNote(discussion, noteBody) {
+  async function createDraftNote({ discussion, noteBody, showWhitespace }) {
     const { draftsPath } = notes.notesData;
-    const { diffRefs } = useMergeRequestVersions();
+    const { diffRefs, sourceHeadSha } = useMergeRequestVersions();
     const data = buildDraftLineDiscussionData({
       discussion,
       noteBody,
       viewConfig: useDiffsView(),
       diffRefs,
+      showWhitespace,
+      sourceHeadSha,
     });
     await draftNotes.createNewDraft({ endpoint: draftsPath, data });
   }
 
-  async function createDraftLineDiscussion(discussion, noteBody) {
-    await createDraftNote(discussion, noteBody);
+  async function createDraftLineDiscussion({ discussion, noteBody, showWhitespace }) {
+    await createDraftNote({ discussion, noteBody, showWhitespace });
     diffDiscussions.removeNewLineDiscussionForm(discussion);
   }
 
-  async function createDraftFileDiscussion(discussion, noteBody) {
-    await createDraftNote(discussion, noteBody);
+  async function createDraftFileDiscussion({ discussion, noteBody, showWhitespace }) {
+    await createDraftNote({ discussion, noteBody, showWhitespace });
     diffDiscussions.removeNewFileDiscussionForm(discussion);
   }
 
@@ -217,7 +221,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
   }
 
   const findDiscussionsForFile = computed(() => {
-    const { diffRefs } = versions;
+    const { diffRefs, sourceHeadSha, isLatestVersion } = versions;
     return ({ oldPath, newPath }) => {
       const all = diffDiscussions
         .findAllDiscussionsForFile({ oldPath, newPath })
@@ -225,13 +229,18 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
       if (!allCommentsReady.value) return all;
       return [
         ...all.map(withDraftReplies),
-        ...draftNotes.findDraftsAsDiscussionsForFile({ oldPath, newPath }),
+        ...draftNotes.findDraftsAsDiscussionsForFile({
+          oldPath,
+          newPath,
+          sourceHeadSha,
+          isLatestVersion,
+        }),
       ];
     };
   });
 
   const findLinePositionsForFile = computed(() => {
-    const { diffRefs } = versions;
+    const { diffRefs, sourceHeadSha, isLatestVersion } = versions;
     return ({ oldPath, newPath }) => {
       const positions = diffDiscussions
         .findAllDiscussionsForFile({ oldPath, newPath })
@@ -242,14 +251,19 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
       return [
         ...positions,
         ...draftNotes
-          .findDraftsAsLineDiscussionsForFile({ oldPath, newPath })
+          .findDraftsAsLineDiscussionsForFile({
+            oldPath,
+            newPath,
+            sourceHeadSha,
+            isLatestVersion,
+          })
           .map((discussion) => discussion.position),
       ];
     };
   });
 
   const findLineDiscussionsForPosition = computed(() => {
-    const { diffRefs } = versions;
+    const { diffRefs, sourceHeadSha, isLatestVersion } = versions;
     return ({ oldPath, newPath, oldLine, newLine }) => {
       const linePos = { oldPath, newPath, oldLine, newLine };
       const all = diffDiscussions
@@ -263,7 +277,14 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
       const enriched = all.map((discussion) =>
         discussion.isForm ? discussion : withDraftReplies(discussion),
       );
-      const drafts = draftNotes.findDraftsForPosition({ oldPath, newPath, oldLine, newLine });
+      const drafts = draftNotes.findDraftsForPosition({
+        oldPath,
+        newPath,
+        oldLine,
+        newLine,
+        sourceHeadSha,
+        isLatestVersion,
+      });
       if (!drafts.length) return enriched;
       const discussions = enriched.filter((discussion) => !discussion.isForm);
       const forms = enriched.filter((discussion) => discussion.isForm);
@@ -272,7 +293,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
   });
 
   const findAllFileDiscussionsForFile = computed(() => {
-    const { diffRefs } = versions;
+    const { diffRefs, sourceHeadSha, isLatestVersion } = versions;
     return ({ oldPath, newPath }) => {
       const all = diffDiscussions
         .findAllDiscussionsForFile({ oldPath, newPath })
@@ -280,13 +301,18 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
       if (!allCommentsReady.value) return all;
       return [
         ...all.map(withDraftReplies),
-        ...draftNotes.findDraftsAsFileDiscussionsForFile({ oldPath, newPath }),
+        ...draftNotes.findDraftsAsFileDiscussionsForFile({
+          oldPath,
+          newPath,
+          sourceHeadSha,
+          isLatestVersion,
+        }),
       ];
     };
   });
 
   const findAllImageDiscussionsForFile = computed(() => {
-    const { diffRefs } = versions;
+    const { diffRefs, sourceHeadSha, isLatestVersion } = versions;
     return (oldPath, newPath) => {
       const all = diffDiscussions
         .findAllImageDiscussionsForFile(oldPath, newPath)
@@ -294,7 +320,12 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
       if (!allCommentsReady.value) return all;
       return [
         ...all.map(withDraftReplies),
-        ...draftNotes.findDraftsAsImageDiscussionsForFile({ oldPath, newPath }),
+        ...draftNotes.findDraftsAsImageDiscussionsForFile({
+          oldPath,
+          newPath,
+          sourceHeadSha,
+          isLatestVersion,
+        }),
       ];
     };
   });

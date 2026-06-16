@@ -14,6 +14,7 @@ import {
 import ListItemDescription from './list_item_description.vue';
 
 export default {
+  name: 'ListItem',
   i18n: {
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),

@@ -16,7 +16,7 @@ module Organizations
       {
         organization: organization.slice(:name, :path),
         can_read_artifact_registry: can?(current_user, :read_artifact_registry, organization),
-        can_admin_organization: can?(current_user, :admin_organization, organization) # rubocop:disable Gitlab/Authz/PermissionCheck -- organizations does not yet have fine-grained permissions
+        can_admin_organization: can?(current_user, :update_organization, organization)
       }.to_json
     end
 

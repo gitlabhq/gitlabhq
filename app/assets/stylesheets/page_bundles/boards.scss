@@ -7,6 +7,17 @@ $focus-mode-z-index: 9000;
   pointer-events: none;
 }
 
+.issue-boards-page .panel-content {
+  @apply gl-pb-0;
+}
+
+.issue-boards-page .panel-content-inner {
+  // Override scrollbar-gutter to `auto` (from `stable`):
+  // boards only scroll horizontally
+  // vertical scrolling is handled per list
+  scrollbar-gutter: auto;
+}
+
 .boards-app {
   height: var(--panel-content-inner-height);
   display: flex;

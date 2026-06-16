@@ -219,9 +219,9 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      const { hasCI, mergeRequestAddCiConfigPath } = this.mr;
+      const { hasCI, mergeRequestAddCiConfigPath, commitsCount } = this.mr;
 
-      return !hasCI && mergeRequestAddCiConfigPath;
+      return !hasCI && Boolean(mergeRequestAddCiConfigPath) && commitsCount > 0;
     },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;

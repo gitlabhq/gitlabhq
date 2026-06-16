@@ -2,7 +2,6 @@ import { nextTick } from 'vue';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import initFileTreeBrowser from '~/repository/file_tree_browser/index';
 import createRouter from '~/repository/router';
-import createMockApollo from 'helpers/mock_apollo_helper';
 
 jest.mock('~/repository/file_tree_browser/file_tree_browser.vue', () => ({
   props: jest.requireActual('~/repository/file_tree_browser/file_tree_browser.vue').default.props,
@@ -36,8 +35,6 @@ describe('initFileTreeBrowser', () => {
     ${'projectRoot'}     | ${false}
   `('visibility logic when route is $routeName', ({ routeName, expectedVisible }) => {
     it(`${expectedVisible ? 'shows' : 'hides'} file tree browser`, async () => {
-      const apolloProvider = createMockApollo([]);
-
       const options = {
         projectPath: 'gitlab-org/gitlab',
         ref: 'main',
@@ -47,7 +44,7 @@ describe('initFileTreeBrowser', () => {
       const router = createRouter();
       await router.push({ name: routeName });
 
-      await initFileTreeBrowser(router, options, apolloProvider);
+      await initFileTreeBrowser(router, options);
       await nextTick();
 
       const component = getFileTreeBrowserComponent();

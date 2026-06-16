@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
-  let_it_be(:project, refind: true) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:merge_request) do

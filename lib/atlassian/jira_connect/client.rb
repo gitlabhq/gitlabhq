@@ -83,11 +83,7 @@ module Atlassian
 
         deployment_hashes = items.map do |item|
           hash = item.as_json.deep_symbolize_keys
-          if Feature.enabled?(:truncate_jira_deployment_associations, project)
-            truncate_associations_if_needed(hash)
-          else
-            hash
-          end
+          truncate_associations_if_needed(hash)
         end
 
         r = post('/rest/deployments/0.1/bulk', { deployments: deployment_hashes })

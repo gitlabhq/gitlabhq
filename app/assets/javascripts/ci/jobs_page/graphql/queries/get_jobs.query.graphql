@@ -74,6 +74,23 @@ query getJobs(
             webPath
             avatarUrl
           }
+          ... on Pipeline {
+            commit {
+              id
+              shortId
+              sha
+              title
+              webPath
+              authoredDate
+              authorName
+              authorGravatar
+              author {
+                id
+                name
+                avatarUrl
+              }
+            }
+          }
         }
         stage {
           id

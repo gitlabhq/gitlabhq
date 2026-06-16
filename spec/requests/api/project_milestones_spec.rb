@@ -9,7 +9,7 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   let_it_be_with_reload(:project) { create(:project, namespace: user.namespace, reporters: user) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }
-  let_it_be(:milestone) do
+  let_it_be(:milestone, freeze: false) do
     create(:milestone, project: project, title: 'version2', description: 'open milestone', updated_at: 5.days.ago)
   end
 
@@ -194,7 +194,7 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
       expect do
         put api(path, user), params: { state_event: 'close' }
-      end.to change(Event, :count).by(1)
+      end.to change { Event.count }.by(1)
     end
   end
 

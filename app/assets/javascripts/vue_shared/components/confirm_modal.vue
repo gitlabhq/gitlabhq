@@ -7,6 +7,7 @@ import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from './confirm_modal_eventhub';
 import DomElementListener from './dom_element_listener.vue';
 
 export default {
+  name: 'ConfirmModal',
   components: {
     GlAlert,
     GlModal,

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ::AutocompleteController, '(JavaScript fixtures)', type: :controller, feature_category: :team_planning do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'frontend-fixtures') }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group, name: 'frontend-fixtures') }
 
   let(:project) { create(:project, namespace: group, path: 'autocomplete-project') }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }

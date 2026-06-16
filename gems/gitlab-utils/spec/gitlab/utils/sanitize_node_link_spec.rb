@@ -75,6 +75,66 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
         expect(object.permit_url?('http://example:wrong_port.com', remove_invalid_links: false)).to be true
       end
     end
+
+    context 'with a URL containing invalid UTF-8 bytes in the host' do
+      let(:invalid_url) { (+"http://ex\xC3ample.com/").force_encoding('UTF-8') }
+
+      it 'rejects the URL when remove_invalid_links is true' do
+        expect(object.permit_url?(invalid_url, remove_invalid_links: true)).to be false
+      end
+
+      it 'permits the URL when remove_invalid_links is false' do
+        expect(object.permit_url?(invalid_url, remove_invalid_links: false)).to be true
+      end
+    end
+
+    context 'when normalize raises ArgumentError for invalid UTF-8 bytes' do
+      let(:parsed) { instance_double(Addressable::URI) }
+
+      before do
+        allow(Addressable::URI).to receive(:parse).and_return(parsed)
+        allow(parsed).to receive(:normalize).and_raise(ArgumentError, 'invalid byte sequence in UTF-8')
+      end
+
+      it 'rejects the URL when remove_invalid_links is true' do
+        expect(object.permit_url?('http://example.com', remove_invalid_links: true)).to be false
+      end
+
+      it 'permits the URL when remove_invalid_links is false' do
+        expect(object.permit_url?('http://example.com', remove_invalid_links: false)).to be true
+      end
+    end
+
+    context 'when normalize raises an unrelated ArgumentError' do
+      let(:parsed) { instance_double(Addressable::URI) }
+
+      before do
+        allow(Addressable::URI).to receive(:parse).and_return(parsed)
+        allow(parsed).to receive(:normalize).and_raise(ArgumentError, 'something unrelated')
+      end
+
+      it 're-raises the error rather than silently masking it' do
+        expect { object.permit_url?('http://example.com') }
+          .to raise_error(ArgumentError, 'something unrelated')
+      end
+    end
+
+    context 'when normalize raises Encoding::CompatibilityError' do
+      let(:parsed) { instance_double(Addressable::URI) }
+
+      before do
+        allow(Addressable::URI).to receive(:parse).and_return(parsed)
+        allow(parsed).to receive(:normalize).and_raise(Encoding::CompatibilityError)
+      end
+
+      it 'rejects the URL when remove_invalid_links is true' do
+        expect(object.permit_url?('http://example.com', remove_invalid_links: true)).to be false
+      end
+
+      it 'permits the URL when remove_invalid_links is false' do
+        expect(object.permit_url?('http://example.com', remove_invalid_links: false)).to be true
+      end
+    end
   end
 
   describe '#remove_unsafe_links' do

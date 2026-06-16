@@ -4,7 +4,8 @@ classes:
 - Review
 feature_categories:
 - code_review_workflow
-description: TODO
+description: Groups a reviewer's draft comments on a merge request so they can be
+  submitted together as a single review.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8442
 milestone: '11.6'
 gitlab_schema: gitlab_main_org

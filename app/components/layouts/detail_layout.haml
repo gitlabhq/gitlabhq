@@ -17,8 +17,14 @@
     = render ::Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-detail-layout-loading-icon',  data: { testid: 'detail-layout-loading-icon' } )
   - else
     .gl-detail-layout-container{ class: class_names('gl-detail-layout-container-has-sidebar': sidebar?), data: { testid: 'detail-layout-container' } }
-      %div{ data: { testid: 'detail-layout-content' } }
+      .gl-detail-layout-content{ data: { testid: 'detail-layout-content' } }
         = content
       - if sidebar?
-        %div{ data: { testid: 'detail-layout-sidebar' } }
+        .gl-detail-layout-sidebar{ data: { testid: 'detail-layout-sidebar' } }
           = sidebar
+      - if widgets?
+        .gl-detail-layout-widgets{ data: { testid: 'detail-layout-widgets' } }
+          = widgets
+      - if activity?
+        .gl-detail-layout-activity{ data: { testid: 'detail-layout-activity' } }
+          = activity

@@ -34,8 +34,8 @@ module Bitbucket
 
     WORKSPACE_PAGE_LENGTH = 100
 
-    def initialize(options = {})
-      @connection = Connection.new(options)
+    def initialize(options = {}, refresh_strategy: nil)
+      @connection = Connection.new(options, refresh_strategy: refresh_strategy)
     end
 
     # Fetches data from the Bitbucket API and yields a Page object for every page
@@ -68,6 +68,10 @@ module Bitbucket
           args.push(options)
         end
       end
+    end
+
+    def issues_available?(repo)
+      [404, 410].exclude?(connection.get_response_code("/repositories/#{repo}/issues?pagelen=1"))
     end
 
     def last_issue(repo)

@@ -7,7 +7,7 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
 
   let_it_be(:guest) { create(:user) }
   let_it_be_with_reload(:non_group_member) { create(:user) }
-  let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only, guests: guest) }
+  let_it_be_with_refind(:group) { create(:group, :private, :owner_subgroup_creation_only, guests: guest) }
   let_it_be(:current_user) { guest }
 
   describe 'dependency proxy' do

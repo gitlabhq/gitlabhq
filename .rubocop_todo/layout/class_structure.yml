@@ -67,7 +67,6 @@ Layout/ClassStructure:
     - 'app/models/issue.rb'
     - 'app/models/jira_connect/public_key.rb'
     - 'app/models/lfs_object.rb'
-    - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request/metrics.rb'
     - 'app/models/milestone.rb'

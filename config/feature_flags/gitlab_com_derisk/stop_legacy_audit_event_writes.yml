@@ -1,0 +1,10 @@
+---
+name: stop_legacy_audit_event_writes
+description: When enabled, stops writing audit events to the legacy audit_events table. Events will only be written to the new scoped tables (project_audit_events, group_audit_events, instance_audit_events, user_audit_events).
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591414
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226222
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595672
+milestone: '19.1'
+group: group::compliance
+type: gitlab_com_derisk
+default_enabled: false

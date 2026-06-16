@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project settings > repositories > Branch names', :js, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
   let(:user) { create(:user) }
 
   before do

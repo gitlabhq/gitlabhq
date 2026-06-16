@@ -22,6 +22,7 @@ import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue'
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
 
 export default {
+  name: 'KubernetesPods',
   components: {
     GlTab,
     GlLoadingIcon,

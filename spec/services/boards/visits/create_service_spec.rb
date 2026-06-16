@@ -7,18 +7,18 @@ RSpec.describe Boards::Visits::CreateService, feature_category: :portfolio_manag
     let(:user) { create(:user) }
 
     context 'when a project board' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:board)   { create(:board, project: project) }
+      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be(:board, freeze: false)   { create(:board, project: project) }
 
-      let_it_be(:model) { BoardProjectRecentVisit }
+      let_it_be(:model, freeze: false) { BoardProjectRecentVisit }
 
       it_behaves_like 'boards recent visit create service'
     end
 
     context 'when a group board' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:board) { create(:board, group: group) }
-      let_it_be(:model) { BoardGroupRecentVisit }
+      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be(:board, freeze: false) { create(:board, group: group) }
+      let_it_be(:model, freeze: false) { BoardGroupRecentVisit }
 
       it_behaves_like 'boards recent visit create service'
     end

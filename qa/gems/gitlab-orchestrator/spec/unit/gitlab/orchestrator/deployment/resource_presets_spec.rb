@@ -82,33 +82,11 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           }
         }
       },
-      minio: {
-        resources: {
-          requests: { cpu: "50m", memory: "32Mi" },
-          limits: { cpu: "50m", memory: "32Mi" }
-        }
-      },
       "nginx-ingress": {
         controller: {
           resources: {
             requests: { cpu: "30m", memory: "256Mi" },
             limits: { cpu: "30m", memory: "256Mi" }
-          }
-        }
-      },
-      postgresql: {
-        primary: {
-          resources: {
-            requests: { cpu: "600m", memory: "1536Mi" },
-            limits: { cpu: "600m", memory: "1536Mi" }
-          }
-        }
-      },
-      redis: {
-        master: {
-          resources: {
-            requests: { cpu: "100m", memory: "16Mi" },
-            limits: { cpu: "100m", memory: "16Mi" }
           }
         }
       }
@@ -175,33 +153,11 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           }
         }
       },
-      minio: {
-        resources: {
-          requests: { cpu: "30m", memory: "32Mi" },
-          limits: { cpu: "30m", memory: "32Mi" }
-        }
-      },
       "nginx-ingress": {
         controller: {
           resources: {
             requests: { cpu: "30m", memory: "256Mi" },
             limits: { cpu: "30m", memory: "256Mi" }
-          }
-        }
-      },
-      postgresql: {
-        primary: {
-          resources: {
-            requests: { cpu: "400m", memory: "1Gi" },
-            limits: { cpu: "400m", memory: "1Gi" }
-          }
-        }
-      },
-      redis: {
-        master: {
-          resources: {
-            requests: { cpu: "50m", memory: "16Mi" },
-            limits: { cpu: "50m", memory: "16Mi" }
           }
         }
       }
@@ -213,16 +169,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
   end
 
   it "returns performance resources values preset" do
-    expect(described_class.resource_values(described_class::PERFORMANCE)).to eq(high_preset.deep_merge({
-      redis: {
-        master: {
-          resources: {
-            requests: { cpu: "200m", memory: "128Mi" },
-            limits: { cpu: "200m", memory: "128Mi" }
-          }
-        }
-      }
-    }))
+    expect(described_class.resource_values(described_class::PERFORMANCE)).to eq(high_preset)
   end
 
   it "raises an error when an invalid preset name is provided" do

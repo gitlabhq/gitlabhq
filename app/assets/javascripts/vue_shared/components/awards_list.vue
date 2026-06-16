@@ -15,6 +15,7 @@ const TOOLTIP_NAME_COUNT = 10;
 const insertYou = (index) => (index === 0 ? __('You') : __('you'));
 
 export default {
+  name: 'AwardsList',
   components: {
     GlButton,
     EmojiPicker,

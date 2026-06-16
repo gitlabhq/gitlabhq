@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: DebianグループディストリビューションAPI
 ---
 
@@ -14,29 +14,26 @@ title: DebianグループディストリビューションAPI
 
 {{< history >}}
 
-- [機能フラグ](../../administration/feature_flags/_index.md)の背後にデプロイされ、デフォルトでは無効になっています。
+- [機能フラグの背後にデプロイ済み](../../administration/feature_flags/_index.md)で、デフォルトでは無効になっています。
 
 {{< /history >}}
 
-このAPIを使用して、[Debianグループディストリビューション](../../user/packages/debian_repository/_index.md)を管理します。このAPIはデフォルトで無効になっている機能フラグの背後にあります。このAPIを使用するには、[有効にする](#enable-the-debian-group-api)必要があります。
+このAPIを使用して、[Debianグループディストリビューション](../../user/packages/debian_repository/_index.md)を管理します。このAPIは、デフォルトで無効になっている機能フラグの背後にあります。このAPIを使用するには、[有効にする](#enable-the-debian-group-api)必要があります。
 
-{{< alert type="warning" >}}
-
-このAPIは開発中であり、本番環境での使用を意図したものではありません。
-
-{{< /alert >}}
+> [!warning]
+> このAPIは開発中であり、本番環境での使用を意図していません。
 
 ## DebianグループAPIを有効にする {#enable-the-debian-group-api}
 
-Debianグループリポジトリのサポートは、まだ開発中です。デフォルトで無効になっている機能フラグの背後にゲートがあります。[GitLab RailsコンソールにアクセスできるGitLab管理者](../../administration/feature_flags/_index.md)は、それを有効にすることを選択できます。それを有効にするには、[DebianグループAPIを有効にする](../../user/packages/debian_repository/_index.md#enable-the-debian-group-api)の手順に従ってください。
+Debianグループリポジトリのサポートはまだ開発中です。デフォルトで無効になっている機能フラグの背後でゲートされています。[GitLab管理者（GitLab Railsコンソールへのアクセス権を持つ）](../../administration/feature_flags/_index.md)は、これを有効にすることを選択できます。有効にするには、[DebianグループAPIを有効にする](../../user/packages/debian_repository/_index.md#enable-the-debian-group-api)の手順に従ってください。
 
-## DebianディストリビューションAPIへの認証 {#authenticate-to-the-debian-distributions-apis}
+## DebianディストリビューションAPIに認証する {#authenticate-to-the-debian-distributions-apis}
 
-[DebianディストリビューションAPIへの認証](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-distributions-apis)を参照してください。
+[DebianディストリビューションAPIに認証する](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-distributions-apis)を参照してください。
 
 ## グループ内のすべてのDebianディストリビューションをリストする {#list-all-debian-distributions-in-a-group}
 
-指定されたグループ内のDebianディストリビューションをリストします。
+指定されたグループのすべてのDebianディストリビューションをリストします。
 
 ```plaintext
 GET /groups/:id/-/debian_distributions
@@ -45,15 +42,15 @@ GET /groups/:id/-/debian_distributions
 | 属性  | 型            | 必須 | 説明 |
 | ---------- | --------------- | -------- | ----------- |
 | `id`       | 整数または文字列  | はい      | グループのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
-| `codename` | 文字列          | いいえ       | 特定の`codename`でフィルタリングします。 |
-| `suite`    | 文字列          | いいえ       | 特定の`suite`でフィルタリングします。 |
+| `codename` | 文字列          | いいえ       | 特定の`codename`でフィルターします。 |
+| `suite`    | 文字列          | いいえ       | 特定の`suite`でフィルターします。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -77,9 +74,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一のDebianグループディストリビューション {#single-debian-group-distribution}
+## Debianグループディストリビューションを取得する {#retrieve-a-debian-group-distribution}
 
-単一のDebianグループディストリビューションを取得します。
+指定されたグループのDebianグループディストリビューションを取得します。
 
 ```plaintext
 GET /groups/:id/-/debian_distributions/:codename
@@ -95,7 +92,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -117,9 +114,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 単一のDebianグループディストリビューションキー {#single-debian-group-distribution-key}
+## Debianグループディストリビューションキーを取得する {#retrieve-a-debian-group-distribution-key}
 
-単一のDebianグループディストリビューションキーを取得します。
+指定されたグループのDebianグループディストリビューションキーを取得します。
 
 ```plaintext
 GET /groups/:id/-/debian_distributions/:codename/key.asc
@@ -135,7 +132,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable/key.asc"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```plaintext
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -157,7 +154,7 @@ DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
 
 ## Debianグループディストリビューションを作成する {#create-a-debian-group-distribution}
 
-Debianグループディストリビューションを作成します。
+指定されたグループのDebianグループディストリビューションを作成します。
 
 ```plaintext
 POST /groups/:id/-/debian_distributions
@@ -172,9 +169,9 @@ POST /groups/:id/-/debian_distributions
 | `label`                       | 文字列         | いいえ       | 新しいDebianディストリビューションのラベル。 |
 | `version`                     | 文字列         | いいえ       | 新しいDebianディストリビューションのバージョン。 |
 | `description`                 | 文字列         | いいえ       | 新しいDebianディストリビューションの説明。 |
-| `valid_time_duration_seconds` | 整数        | いいえ       | 新しいDebianディストリビューションの有効期間（秒）。 |
-| `components`                  | 文字列配列   | いいえ       | 新しいDebianディストリビューションのコンポーネントのリスト。 |
-| `architectures`               | 文字列配列   | いいえ       | 新しいDebianディストリビューションのアーキテクチャのリスト。 |
+| `valid_time_duration_seconds` | 整数        | いいえ       | 新しいDebianディストリビューションの有効期間（秒単位）。 |
+| `components`                  | 文字列配列   | いいえ       | 新しいDebianディストリビューションのコンポーネントリスト。 |
+| `architectures`               | 文字列配列   | いいえ       | 新しいDebianディストリビューションのアーキテクチャリスト。 |
 
 ```shell
 curl --request POST \
@@ -182,7 +179,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions?codename=sid"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -206,7 +203,7 @@ curl --request POST \
 
 ## Debianグループディストリビューションを更新する {#update-a-debian-group-distribution}
 
-Debianグループディストリビューションを更新します。
+指定されたグループのDebianグループディストリビューションを更新します。
 
 ```plaintext
 PUT /groups/:id/-/debian_distributions/:codename
@@ -221,9 +218,9 @@ PUT /groups/:id/-/debian_distributions/:codename
 | `label`                       | 文字列         | いいえ       | Debianディストリビューションの新しいラベル。 |
 | `version`                     | 文字列         | いいえ       | Debianディストリビューションの新しいバージョン。 |
 | `description`                 | 文字列         | いいえ       | Debianディストリビューションの新しい説明。 |
-| `valid_time_duration_seconds` | 整数        | いいえ       | Debianディストリビューションの新しい有効期間（秒）。 |
-| `components`                  | 文字列配列   | いいえ       | Debianディストリビューションの新しいコンポーネントのリスト。 |
-| `architectures`               | 文字列配列   | いいえ       | Debianディストリビューションの新しいアーキテクチャのリスト。 |
+| `valid_time_duration_seconds` | 整数        | いいえ       | Debianディストリビューションの新しい有効期間（秒単位）。 |
+| `components`                  | 文字列配列   | いいえ       | Debianディストリビューションの新しいコンポーネントリスト。 |
+| `architectures`               | 文字列配列   | いいえ       | Debianディストリビューションの新しいアーキテクチャリスト。 |
 
 ```shell
 curl --request PUT \
@@ -231,7 +228,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -255,7 +252,7 @@ curl --request PUT \
 
 ## Debianグループディストリビューションを削除する {#delete-a-debian-group-distribution}
 
-Debianグループディストリビューションを削除します。
+指定されたグループのDebianグループディストリビューションを削除します。
 
 ```plaintext
 DELETE /groups/:id/-/debian_distributions/:codename

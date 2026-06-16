@@ -527,7 +527,9 @@ To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/s
 - Specify the `DOCKER_HOST` that the Docker CLI communicates with.
 - Set the `DOCKER_DRIVER` variable to empty.
 
-Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
+To wait for the Docker daemon to fully boot up,
+[set the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services),
+or use the `before_script` section.
 
 ```yaml
 include:

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/active_record_association_reload'
 
-RSpec.describe RuboCop::Cop::ActiveRecordAssociationReload do
+RSpec.describe RuboCop::Cop::ActiveRecordAssociationReload, feature_category: :database do
   context 'when using ActiveRecord::Base' do
     it 'registers an offense on reload usage' do
       expect_offense(<<~RUBY)

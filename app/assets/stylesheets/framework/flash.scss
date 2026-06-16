@@ -11,7 +11,7 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
   &.sticky {
     position: sticky;
-    top: $calc-application-header-height;
+    top: 0;
     z-index: 251;
   }
 
@@ -23,6 +23,7 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     margin: 0;
   }
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to flash container
   &:has(.gl-alert) {
     @apply gl-mt-3;
   }

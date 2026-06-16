@@ -7,6 +7,7 @@ import { clearDraft, getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
+import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { s__, __, sprintf } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -222,6 +223,7 @@ export default {
     ]),
     ...mapActions(useLegacyDiffs, ['getLinesForDiscussion']),
     showReplyForm(text) {
+      suppressShortcutsUntilInputFocus();
       this.isReplying = true;
 
       if (!this.discussion.expanded) {
@@ -386,6 +388,11 @@ export default {
                     :resolve-button-title="resolveButtonTitle"
                     :resolve-with-issue-path="resolveWithIssuePath"
                     :should-show-jump-to-next-discussion="shouldShowJumpToNextDiscussion"
+                    :source-branch="getNoteableData.source_branch"
+                    :iid="getNoteableData.iid"
+                    :can-resolve-discussions-with-ai="
+                      getNoteableData.can_resolve_discussions_with_ai
+                    "
                     @showReplyForm="showReplyForm"
                     @resolve="resolveHandler"
                   />

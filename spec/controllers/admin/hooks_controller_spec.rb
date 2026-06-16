@@ -123,37 +123,19 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
     context 'with signing_token', :aggregate_failures do
       let(:valid_signing_token) { "whsec_#{Base64.strict_encode64('a' * 32)}" }
 
-      context 'when webhook_signing_token feature flag is enabled' do
-        before do
-          stub_feature_flags(webhook_signing_token: true)
-        end
+      it 'sets the signing token' do
+        put :update, params: { id: hook.id, hook: { url: 'http://example.com', signing_token: valid_signing_token } }
 
-        it 'sets the signing token' do
-          put :update, params: { id: hook.id, hook: { url: 'http://example.com', signing_token: valid_signing_token } }
-
-          expect(hook.reload.signing_token).to eq(valid_signing_token)
-        end
-
-        context 'when signing_token is the secret mask' do
-          let_it_be(:hook) { create(:system_hook, :signing_token) }
-
-          it 'does not change the signing token' do
-            expect do
-              put :update, params: { id: hook.id, hook: { signing_token: WebHook::SECRET_MASK, url: 'http://example.com' } }
-            end.not_to change { hook.reload.signing_token }
-          end
-        end
+        expect(hook.reload.signing_token).to eq(valid_signing_token)
       end
 
-      context 'when webhook_signing_token feature flag is disabled' do
-        before do
-          stub_feature_flags(webhook_signing_token: false)
-        end
+      context 'when signing_token is the secret mask' do
+        let_it_be(:hook) { create(:system_hook, :signing_token) }
 
-        it 'ignores the signing token param' do
-          put :update, params: { id: hook.id, hook: { url: 'http://example.com', signing_token: valid_signing_token } }
-
-          expect(hook.reload.signing_token).to be_nil
+        it 'does not change the signing token' do
+          expect do
+            put :update, params: { id: hook.id, hook: { signing_token: WebHook::SECRET_MASK, url: 'http://example.com' } }
+          end.not_to change { hook.reload.signing_token }
         end
       end
     end

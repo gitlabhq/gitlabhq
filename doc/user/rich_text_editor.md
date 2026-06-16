@@ -23,9 +23,9 @@ title: Rich text editor
 
 {{< /history >}}
 
-The Rich text editor is the default text editor for new users in GitLab.
+The rich text editor is the default text editor for new users in GitLab.
 
-Rich text editor is available in:
+You can use the rich text editor in:
 
 - [Wikis](project/wiki/_index.md)
 - Issues

@@ -16,7 +16,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
   describe '.for_partition', :freeze_time do
     subject(:scope) { described_class.for_partition(partition) }
 
-    let_it_be(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
+    let_it_be(:partition_manager, freeze: false) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
     around do |example|
       Gitlab::Database::SharedModel.using_connection(Ci::ApplicationRecord.connection) do
@@ -183,16 +183,16 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
   end
 
   context 'with existing events' do
-    let_it_be(:event3) do
+    let_it_be(:event3, freeze: false) do
       described_class.create!(pipeline_id: 3, pipeline_finished_at: 2.hours.ago, project_namespace_id: 1,
         processed: true)
     end
 
-    let_it_be(:event1) do
+    let_it_be(:event1, freeze: false) do
       described_class.create!(pipeline_id: 1, pipeline_finished_at: 1.hour.ago, project_namespace_id: 1)
     end
 
-    let_it_be(:event2) do
+    let_it_be(:event2, freeze: false) do
       described_class.create!(pipeline_id: 2, pipeline_finished_at: 1.hour.ago, project_namespace_id: 1,
         processed: true)
     end

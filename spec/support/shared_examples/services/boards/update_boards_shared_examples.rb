@@ -6,7 +6,7 @@ RSpec.shared_examples 'board update service' do
   it 'updates the board with valid params' do
     result = described_class.new(group, user, name: 'Engineering').execute(board)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
     expect(board.reload.name).to eq('Engineering')
   end
 
@@ -15,7 +15,7 @@ RSpec.shared_examples 'board update service' do
 
     result = described_class.new(group, user, name: nil).execute(board)
 
-    expect(result).to eq(false)
+    expect(result).to be(false)
     expect(board.reload.name).to eq(orig_name)
   end
 

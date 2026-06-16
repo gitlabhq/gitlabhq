@@ -59,7 +59,7 @@ module BulkImports
       return true unless importer_user_mapping_enabled?
 
       store = Import::PlaceholderReferences::Store.new(
-        import_source: Import::SOURCE_DIRECT_TRANSFER,
+        import_source: bulk_import.import_source,
         import_uid: bulk_import.id
       )
 

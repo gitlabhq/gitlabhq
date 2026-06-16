@@ -90,7 +90,7 @@ RSpec.describe Event, feature_category: :user_profile do
   describe 'validations' do
     describe 'action' do
       context 'for a design' do
-        let_it_be(:author) { create(:user) }
+        let_it_be(:author, freeze: false) { create(:user) }
 
         where(:action, :valid) do
           valid = described_class::DESIGN_ACTIONS.map(&:to_s).to_set
@@ -110,6 +110,73 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'scopes' do
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+
+      # Projects and groups in different organizations
+      let_it_be(:project_in_org) { create(:project, organization: organization) }
+      let_it_be(:project_other_org) { create(:project, organization: other_organization) }
+      let_it_be(:group_in_org) { create(:group, organization: organization) }
+      let_it_be(:group_other_org) { create(:group, organization: other_organization) }
+
+      # User with personal namespace in organization
+      let_it_be(:user_in_org) { create(:user, organization: organization) }
+      let_it_be(:user_other_org) { create(:user, organization: other_organization) }
+
+      # Events in the target organization
+      let_it_be(:project_event_in_org) { create(:event, :for_issue, project: project_in_org) }
+      let_it_be(:group_event_in_org) { create(:event, :created, group: group_in_org, project: nil) }
+      let_it_be(:personal_event_in_org) do
+        create(:event, :joined, project: nil, group: nil, personal_namespace: user_in_org.namespace)
+      end
+
+      # Events in other organization
+      let_it_be(:project_event_other_org) { create(:event, :for_issue, project: project_other_org) }
+      let_it_be(:group_event_other_org) { create(:event, :created, group: group_other_org, project: nil) }
+      let_it_be(:personal_event_other_org) do
+        create(:event, :joined, project: nil, group: nil, personal_namespace: user_other_org.namespace)
+      end
+
+      subject(:events_in_organization) { described_class.in_organization(organization) }
+
+      it 'returns project events for the specified organization' do
+        expect(events_in_organization).to include(project_event_in_org)
+      end
+
+      it 'does not return project events from other organizations' do
+        expect(events_in_organization).not_to include(project_event_other_org)
+      end
+
+      it 'returns group events for the specified organization' do
+        expect(events_in_organization).to include(group_event_in_org)
+      end
+
+      it 'does not return group events from other organizations' do
+        expect(events_in_organization).not_to include(group_event_other_org)
+      end
+
+      it 'returns personal namespace events for the specified organization' do
+        expect(events_in_organization).to include(personal_event_in_org)
+      end
+
+      it 'does not return personal namespace events from other organizations' do
+        expect(events_in_organization).not_to include(personal_event_other_org)
+      end
+
+      it 'returns only events belonging to the organization' do
+        expect(events_in_organization).to contain_exactly(
+          project_event_in_org,
+          group_event_in_org,
+          personal_event_in_org
+        )
+      end
+
+      it 'returns none when nil is passed' do
+        expect(described_class.in_organization(nil)).to be_empty
+      end
+    end
+
     describe '.for_issue' do
       let(:issue_event) { create(:event, :for_issue, project: project) }
       let(:work_item_event) { create(:event, :for_work_item, project: project) }
@@ -139,21 +206,21 @@ RSpec.describe Event, feature_category: :user_profile do
       subject { described_class.for_project }
 
       context 'when target_type is Project' do
-        let_it_be(:event) { create(:event, target: project) }
+        let_it_be(:event, freeze: false) { create(:event, target: project) }
 
         it { is_expected.to contain_exactly(event) }
       end
 
       context 'when target_type is nil' do
         context 'with project actions' do
-          let_it_be(:project_action_events) do
+          let_it_be(:project_action_events, freeze: false) do
             described_class::PROJECT_ACTIONS.map do |action|
               factory = action == :pushed ? :push_event : :event
               create(factory, target: nil, action: action, project: project)
             end
           end
 
-          let_it_be(:orphaned_project_action_events) do
+          let_it_be(:orphaned_project_action_events, freeze: false) do
             described_class::PROJECT_ACTIONS
               .excluding(:pushed) # PushEvent has a presence validation requirement for Project.
               .map { |action| create(:event, target: nil, action: action, project: nil) }
@@ -166,8 +233,8 @@ RSpec.describe Event, feature_category: :user_profile do
         end
 
         context 'with non-project actions' do
-          let_it_be(:non_project_action_event) { create(:event, target: nil, action: :closed, project: project) }
-          let_it_be(:orphaned_non_project_action_event) { create(:event, target: nil, action: :closed, project: nil) }
+          let_it_be(:non_project_action_event, freeze: false) { create(:event, target: nil, action: :closed, project: project) }
+          let_it_be(:orphaned_non_project_action_event, freeze: false) { create(:event, target: nil, action: :closed, project: nil) }
 
           it 'excludes all non-project action events regardless of project presence' do
             is_expected.not_to include(non_project_action_event, orphaned_non_project_action_event)
@@ -176,9 +243,28 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'when target_type is not Project' do
-        let_it_be(:non_project_event) { create(:event, :for_issue) }
+        let_it_be(:non_project_event, freeze: false) { create(:event, :for_issue) }
 
         it { is_expected.not_to include(non_project_event) }
+      end
+    end
+
+    describe '.excluding_transferred' do
+      let_it_be(:transferred_event, freeze: false) do
+        create(
+          :event,
+          :transferred,
+          project: project,
+          target: project,
+          target_type: 'Project'
+        )
+      end
+
+      let_it_be(:non_transferred_event, freeze: false) { create(:event, :created, project: project) }
+
+      it 'excludes transferred events' do
+        expect(described_class.excluding_transferred).to include(non_transferred_event)
+        expect(described_class.excluding_transferred).not_to include(transferred_event)
       end
     end
 
@@ -236,7 +322,7 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     describe '.for_fingerprint' do
-      let_it_be(:with_fingerprint) { create(:event, fingerprint: 'aaa', project: project) }
+      let_it_be(:with_fingerprint, freeze: false) { create(:event, fingerprint: 'aaa', project: project) }
 
       before_all do
         create(:event, project: project)
@@ -490,14 +576,14 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe '#visible_to_user?' do
-    let_it_be(:non_member) { create(:user) }
-    let_it_be(:member) { create(:user) }
-    let_it_be(:guest) { create(:user) }
-    let_it_be(:author) { create(:author) }
-    let_it_be(:assignee) { create(:user) }
-    let_it_be(:admin) { create(:admin) }
-    let_it_be(:public_project) { create(:project, :public) }
-    let_it_be(:private_project) { create(:project, :private) }
+    let_it_be(:non_member, freeze: false) { create(:user) }
+    let_it_be(:member, freeze: false) { create(:user) }
+    let_it_be(:guest, freeze: false) { create(:user) }
+    let_it_be(:author, freeze: false) { create(:author) }
+    let_it_be(:assignee, freeze: false) { create(:user) }
+    let_it_be(:admin, freeze: false) { create(:admin) }
+    let_it_be(:public_project, freeze: false) { create(:project, :public) }
+    let_it_be(:private_project, freeze: false) { create(:project, :private) }
 
     let(:project) { public_project }
     let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
@@ -582,7 +668,7 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     context 'commit note event' do
-      let_it_be(:project) { create(:project, :public, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
       let(:target) { note_on_commit }
 
       include_context 'with member and guest added to project'
@@ -592,7 +678,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'private project' do
-        let_it_be(:project) { create(:project, :private, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
 
         include_context 'with member and guest added to project'
 
@@ -745,7 +831,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on public project with private issue tracker and merge requests' do
-        let_it_be(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :issues_private, :merge_requests_private) }
 
         include_context 'with member and guest added to project'
 
@@ -763,7 +849,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on private project' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         include_context 'with member and guest added to project'
 
@@ -785,7 +871,7 @@ RSpec.describe Event, feature_category: :user_profile do
       let(:event) { create(:wiki_page_event, project: project) }
 
       context 'on private project', :aggregate_failures do
-        let_it_be(:project) { create(:project, :wiki_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
 
         include_context 'with member and guest added to project'
 
@@ -803,7 +889,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'wiki-page event on public project', :aggregate_failures do
-        let_it_be(:project) { create(:project, :public, :wiki_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :wiki_repo) }
 
         include_context 'with member and guest added to project'
 
@@ -817,7 +903,7 @@ RSpec.describe Event, feature_category: :user_profile do
       let(:event) { create(:event, :for_wiki_page_note, project: project) }
 
       context 'on private project', :aggregate_failures do
-        let_it_be(:project) { create(:project, :wiki_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
 
         include_context 'with member and guest added to project'
 
@@ -835,7 +921,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'wiki-page event on public project', :aggregate_failures do
-        let_it_be(:project) { create(:project, :public, :wiki_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :wiki_repo) }
 
         include_context 'with member and guest added to project'
 
@@ -853,7 +939,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on public project with private snippets' do
-        let_it_be(:project) { create(:project, :public, :snippets_private) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :snippets_private) }
 
         include_context 'with member and guest added to project'
 
@@ -876,7 +962,7 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       context 'on private project' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         include_context 'with member and guest added to project'
 
@@ -989,7 +1075,7 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'wiki_page predicate scopes' do
-    let_it_be(:events) do
+    let_it_be(:events, freeze: false) do
       [
         create(:push_event),
         create(:closed_issue_event),
@@ -1031,8 +1117,8 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'categorization' do
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:all_valid_events) do
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:all_valid_events, freeze: false) do
       # mapping from factory name to whether we need to supply the project
       valid_target_factories = {
         issue: true,
@@ -1120,8 +1206,8 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe '.limit_recent' do
-    let_it_be(:event1) { create(:closed_issue_event) }
-    let_it_be(:event2) { create(:closed_issue_event) }
+    let_it_be(:event1, freeze: false) { create(:closed_issue_event) }
+    let_it_be(:event2, freeze: false) { create(:closed_issue_event) }
 
     describe 'without an explicit limit' do
       subject { described_class.limit_recent }
@@ -1401,13 +1487,13 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   context 'with snippet note' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, author: user) }
-    let_it_be(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: user) }
-    let_it_be(:other_note) { create(:note_on_issue, author: user) }
-    let_it_be(:personal_snippet_event) { create(:event, :commented, project: nil, target: note_on_personal_snippet, author: user) }
-    let_it_be(:project_snippet_event) { create(:event, :commented, project: note_on_project_snippet.project, target: note_on_project_snippet, author: user) }
-    let_it_be(:other_event) { create(:event, :commented, project: other_note.project, target: other_note, author: user) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:note_on_project_snippet, freeze: false) { create(:note_on_project_snippet, author: user) }
+    let_it_be(:note_on_personal_snippet, freeze: false) { create(:note_on_personal_snippet, author: user) }
+    let_it_be(:other_note, freeze: false) { create(:note_on_issue, author: user) }
+    let_it_be(:personal_snippet_event, freeze: false) { create(:event, :commented, project: nil, target: note_on_personal_snippet, author: user) }
+    let_it_be(:project_snippet_event, freeze: false) { create(:event, :commented, project: note_on_project_snippet.project, target: note_on_project_snippet, author: user) }
+    let_it_be(:other_event, freeze: false) { create(:event, :commented, project: other_note.project, target: other_note, author: user) }
 
     describe '#snippet_note?' do
       it 'returns true for a project snippet event' do
@@ -1488,6 +1574,7 @@ RSpec.describe Event, feature_category: :user_profile do
         :destroyed | 'destroyed'
         :expired   | 'removed due to membership expiration from'
         :approved  | 'approved'
+        :transferred | 'transferred'
       end
 
       with_them do
@@ -1496,6 +1583,30 @@ RSpec.describe Event, feature_category: :user_profile do
 
           expect(event.action_name).to eq(action_name)
         end
+      end
+    end
+
+    context 'for transferred events' do
+      it 'returns true for a transferred project action' do
+        event = build(:event, :transferred, target: project, target_type: 'Project')
+
+        expect(event.transferred_project_action?).to be(true)
+      end
+
+      it 'uses the group as the permission object for target_type-backed transferred group events', :aggregate_failures do
+        group = create(:group)
+        event = create(:event, :transferred, group: group, project: nil, target: group, target_type: 'Group')
+
+        expect(event.transferred_group_action?).to be(true)
+        expect(event.send(:permission_object)).to eq(group)
+      end
+
+      it 'does not treat targetless transferred events as group transfer actions', :aggregate_failures do
+        group = create(:group)
+        event = create(:event, :transferred, group: group, project: nil, target_type: nil, target_id: nil)
+
+        expect(event.transferred_group_action?).to be(false)
+        expect(event.send(:permission_object)).to be_nil
       end
     end
 
@@ -1566,7 +1677,7 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     context 'when target_id is set' do
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
       let(:event) { build(:event, target_type: issue.class.name, target_id: issue.id) }
 
@@ -1598,8 +1709,8 @@ RSpec.describe Event, feature_category: :user_profile do
 
   context 'with loose foreign key on events.author_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:user) }
-      let_it_be(:model) { create(:event, author: parent) }
+      let_it_be(:parent, freeze: false) { create(:user) }
+      let_it_be(:model, freeze: false) { create(:event, author: parent) }
     end
   end
 end

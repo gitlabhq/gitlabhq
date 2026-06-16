@@ -78,6 +78,19 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
     end
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :validate_ci_config do
+    let(:boundary_object) { project }
+    let(:mutation_without_config) do
+      graphql_mutation(:ci_lint, { project_path: project.full_path, content: content, ref: ref, dry_run: dry_run }) do
+        <<~FIELDS
+        errors
+        FIELDS
+      end
+    end
+
+    let(:request) { post_graphql_mutation(mutation_without_config, token: { personal_access_token: pat }) }
+  end
+
   it 'returns the correct structure' do
     post_mutation
 

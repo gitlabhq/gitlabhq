@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 
 export default {
+  name: 'ArtifactsList',
   components: {
     GlLink,
   },

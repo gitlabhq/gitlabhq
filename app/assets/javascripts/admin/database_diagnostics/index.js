@@ -11,6 +11,7 @@ export const initDatabaseDiagnosticsApp = () => {
     collationCheckResultsUrl,
     runSchemaCheckUrl,
     schemaCheckResultsUrl,
+    databaseInformation,
   } = el.dataset;
 
   return new Vue({
@@ -21,6 +22,13 @@ export const initDatabaseDiagnosticsApp = () => {
       collationCheckResultsUrl,
       runSchemaCheckUrl,
       schemaCheckResultsUrl,
+      databaseInformation: (() => {
+        try {
+          return JSON.parse(databaseInformation);
+        } catch {
+          return { databases: {} };
+        }
+      })(),
     },
     render(createElement) {
       return createElement(CombinedDiagnostics);

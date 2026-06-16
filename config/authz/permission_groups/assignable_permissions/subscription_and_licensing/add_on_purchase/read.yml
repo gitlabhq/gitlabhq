@@ -1,0 +1,9 @@
+---
+name: read_add_on_purchase
+description: Grants the ability to read add-on purchases
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_add_on_purchase

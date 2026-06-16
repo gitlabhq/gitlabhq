@@ -65,27 +65,38 @@ access any allowed resources in the current project.
 
 CI/CD job tokens can access the following REST API endpoints:
 
+### Badges endpoints
+
+| Permission | API endpoint | Permission name | Scope |
+| ---------- | ------------ | --------------- | ----- |
+| Get a badge of a project. | `GET /projects/:id/badges/:badge_id` | `READ_BADGES` | Read |
+| List project badges. | `GET /projects/:id/badges` | `READ_BADGES` | Read |
+| Add a badge to a project. | `POST /projects/:id/badges` | `ADMIN_BADGES` | Read and write |
+| Preview a badge from a project. | `GET /projects/:id/badges/render` | `ADMIN_BADGES` | Read and write |
+| Remove a badge from the project. | `DELETE /projects/:id/badges/:badge_id` | `ADMIN_BADGES` | Read and write |
+| Update a badge of a project. | `PUT /projects/:id/badges/:badge_id` | `ADMIN_BADGES` | Read and write |
+
 ### Deployments endpoints
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get a specific deployment | `GET /projects/:id/deployments/:deployment_id` | `READ_DEPLOYMENTS` | Read |
-| List of merge requests associated with a deployment | `GET /projects/:id/deployments/:deployment_id/merge_requests` | `READ_DEPLOYMENTS` | Read |
-| List project deployments | `GET /projects/:id/deployments` | `READ_DEPLOYMENTS` | Read |
-| Approve or reject a blocked deployment | `POST /projects/:id/deployments/:deployment_id/approval` | `ADMIN_DEPLOYMENTS` | Read and write |
+| List all merge requests associated with a deployment | `GET /projects/:id/deployments/:deployment_id/merge_requests` | `READ_DEPLOYMENTS` | Read |
+| List all project deployments | `GET /projects/:id/deployments` | `READ_DEPLOYMENTS` | Read |
+| Retrieve a deployment | `GET /projects/:id/deployments/:deployment_id` | `READ_DEPLOYMENTS` | Read |
+| Approve or reject a deployment | `POST /projects/:id/deployments/:deployment_id/approval` | `ADMIN_DEPLOYMENTS` | Read and write |
 | Create a deployment | `POST /projects/:id/deployments` | `ADMIN_DEPLOYMENTS`, `ADMIN_ENVIRONMENTS` | Read and write |
-| Delete a specific deployment | `DELETE /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | Read and write |
+| Delete a deployment | `DELETE /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | Read and write |
 | Update a deployment | `PUT /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | Read and write |
 
 ### Environments endpoints
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get a specific environment | `GET /projects/:id/environments/:environment_id` | `READ_ENVIRONMENTS` | Read |
-| List environments | `GET /projects/:id/environments` | `READ_ENVIRONMENTS` | Read |
-| Create a new environment | `POST /projects/:id/environments` | `ADMIN_ENVIRONMENTS` | Read and write |
+| List all environments | `GET /projects/:id/environments` | `READ_ENVIRONMENTS` | Read |
+| Retrieve an environment | `GET /projects/:id/environments/:environment_id` | `READ_ENVIRONMENTS` | Read |
+| Create an environment | `POST /projects/:id/environments` | `ADMIN_ENVIRONMENTS` | Read and write |
 | Delete an environment | `DELETE /projects/:id/environments/:environment_id` | `ADMIN_ENVIRONMENTS` | Read and write |
-| Delete multiple stopped review apps | `DELETE /projects/:id/environments/review_apps` | `ADMIN_ENVIRONMENTS` | Read and write |
+| Schedule multiple stopped review apps for deletion | `DELETE /projects/:id/environments/review_apps` | `ADMIN_ENVIRONMENTS` | Read and write |
 | Stop an environment | `POST /projects/:id/environments/:environment_id/stop` | `ADMIN_ENVIRONMENTS` | Read and write |
 | Stop stale environments | `POST /projects/:id/environments/stop_stale` | `ADMIN_ENVIRONMENTS` | Read and write |
 | Update an existing environment | `PUT /projects/:id/environments/:environment_id` | `ADMIN_ENVIRONMENTS` | Read and write |
@@ -97,11 +108,11 @@ CI/CD job tokens can access the following REST API endpoints:
 | Download a specific file from artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | Read |
 | Download a specific file from artifacts archive from a ref | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | Read |
 | Download the artifacts archive from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
-| Download the artifacts archive from a job | `GET /projects/:id/jobs/artifacts/:ref_name/download` | `READ_JOBS` | Read |
 | Download the artifacts file for job | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
-| Get a projects jobs | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
-| Get pipeline jobs | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
-| List all files in the artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
+| List all files in an artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
+| List all jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
+| List all jobs for a project | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
+| Retrieve job artifacts | `GET /projects/:id/jobs/artifacts/:ref_name/download` | `READ_JOBS` | Read |
 
 ### Merge requests endpoints
 
@@ -145,6 +156,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Get the list of package revisions | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions` | `READ_PACKAGES` | Read |
 | Get the list of revisions | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | `READ_PACKAGES` | Read |
 | List | `GET /projects/:id/packages/go/*module_name/@v/list` | `READ_PACKAGES` | Read |
+| List all packages for a project | `GET /projects/:id/packages/pypi/simple` | `READ_PACKAGES` | Read |
 | List package files | `GET /projects/:id/packages/:package_id/package_files` | `READ_PACKAGES` | Read |
 | List package files | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files` | `READ_PACKAGES` | Read |
 | List recipe files | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | `READ_PACKAGES` | Read |
@@ -171,7 +183,6 @@ CI/CD job tokens can access the following REST API endpoints:
 | Recipe Snapshot | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `READ_PACKAGES` | Read |
 | Recipe Upload Urls | `POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | Read |
 | Recipe Upload Urls | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | Read |
-| The PyPi Simple Project Index Endpoint | `GET /projects/:id/packages/pypi/simple` | `READ_PACKAGES` | Read |
 | The PyPi Simple Project Package Endpoint | `GET /projects/:id/packages/pypi/simple/*package_name` | `READ_PACKAGES` | Read |
 | The PyPi package download endpoint | `GET /projects/:id/packages/pypi/files/:sha256/*file_identifier` | `READ_PACKAGES` | Read |
 | Version metadata | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | `READ_PACKAGES` | Read |
@@ -181,7 +192,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Create or Update the given tag for the given NPM package and version | `PUT /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
 | Create or Update the given tag for the given NPM package and version | `PUT /packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
 | Create or Update the given tag for the given NPM package and version | `PUT /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
-| Create or deprecate NPM package | `PUT /projects/:id/packages/npm/:package_name` | `ADMIN_PACKAGES` | Read and write |
+| Create or deprecate an NPM package | `PUT /projects/:id/packages/npm/:package_name` | `ADMIN_PACKAGES` | Read and write |
 | Delete Package | `DELETE /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | Read and write |
 | Delete Package | `DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | Read and write |
 | Delete a package file | `DELETE /projects/:id/packages/:package_id/package_files/:package_file_id` | `ADMIN_PACKAGES` | Read and write |
@@ -191,7 +202,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Deletes the given tag | `DELETE /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
 | Deletes the given tag | `DELETE /packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
 | Deletes the given tag | `DELETE /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |
-| The PyPi Package upload endpoint | `POST /projects/:id/packages/pypi` | `ADMIN_PACKAGES` | Read and write |
+| Upload a package | `POST /projects/:id/packages/pypi` | `ADMIN_PACKAGES` | Read and write |
 | Upload package file | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `ADMIN_PACKAGES` | Read and write |
 | Upload package files | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `ADMIN_PACKAGES` | Read and write |
 | Upload package files | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `ADMIN_PACKAGES` | Read and write |
@@ -213,11 +224,11 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get all Pipelines of the project | `GET /projects/:id/pipelines` | `READ_PIPELINES` | Read |
-| Get pipeline bridge jobs | `GET /projects/:id/pipelines/:pipeline_id/bridges` | `READ_PIPELINES` | Read |
 | Get the pipelines for a single project package | `GET /projects/:id/packages/:package_id/pipelines` | `READ_PIPELINES` | Read |
-| Gets a specific pipeline for the project | `GET /projects/:id/pipelines/:pipeline_id` | `READ_PIPELINES` | Read |
-| Updates pipeline metadata | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | `ADMIN_PIPELINES` | Read and write |
+| List all project pipelines | `GET /projects/:id/pipelines` | `READ_PIPELINES` | Read |
+| List all trigger jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/bridges` | `READ_PIPELINES` | Read |
+| Retrieve a pipeline | `GET /projects/:id/pipelines/:pipeline_id` | `READ_PIPELINES` | Read |
+| Update pipeline metadata | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | `ADMIN_PIPELINES` | Read and write |
 
 ### Releases endpoints
 
@@ -225,16 +236,16 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | Download a project release asset file | `GET /projects/:id/releases/:tag_name/downloads/*direct_asset_path` | `READ_RELEASES` | Read |
 | Generates a changelog section for a release and returns it | `GET /projects/:id/repository/changelog` | `READ_RELEASES` | Read |
-| Get a release by a tag name | `GET /projects/:id/releases/:tag_name` | `READ_RELEASES` | Read |
-| Get a release link | `GET /projects/:id/releases/:tag_name/assets/links/:link_id` | `READ_RELEASES` | Read |
 | Get the latest project release | `GET /projects/:id/releases/permalink/latest(/)(*suffix_path)` | `READ_RELEASES` | Read |
-| List Releases | `GET /projects/:id/releases` | `READ_RELEASES` | Read |
-| List links of a release | `GET /projects/:id/releases/:tag_name/assets/links` | `READ_RELEASES` | Read |
-| Collect release evidence | `POST /projects/:id/releases/:tag_name/evidence` | `ADMIN_RELEASES` | Read and write |
+| List all release links | `GET /projects/:id/releases/:tag_name/assets/links` | `READ_RELEASES` | Read |
+| List all releases in a project | `GET /projects/:id/releases` | `READ_RELEASES` | Read |
+| Retrieve a release by tag name | `GET /projects/:id/releases/:tag_name` | `READ_RELEASES` | Read |
+| Retrieve a release link | `GET /projects/:id/releases/:tag_name/assets/links/:link_id` | `READ_RELEASES` | Read |
 | Create a release | `POST /projects/:id/releases` | `ADMIN_RELEASES` | Read and write |
 | Create a release link | `POST /projects/:id/releases/:tag_name/assets/links` | `ADMIN_RELEASES` | Read and write |
 | Delete a release | `DELETE /projects/:id/releases/:tag_name` | `ADMIN_RELEASES` | Read and write |
 | Delete a release link | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | Read and write |
+| Generate release evidence | `POST /projects/:id/releases/:tag_name/evidence` | `ADMIN_RELEASES` | Read and write |
 | Publish a new component project release as version to the CI/CD catalog | `POST /projects/:id/catalog/publish` | `ADMIN_RELEASES` | Read and write |
 | Update a release | `PUT /projects/:id/releases/:tag_name` | `ADMIN_RELEASES` | Read and write |
 | Update a release link | `PUT /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | Read and write |
@@ -243,22 +254,22 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get Merge Requests associated with a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
-| Get a project repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
 | Get a project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
 | Get a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
-| Get a specific commit of a project | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
-| Get raw file contents from the repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
+| List all merge requests for a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
+| List all repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
+| Retrieve a commit | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
+| Retrieve a raw file from a repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
 
 ### Secure files endpoints
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Download secure file | `GET /projects/:id/secure_files/:secure_file_id/download` | `READ_SECURE_FILES` | Read |
-| Get list of secure files in a project | `GET /projects/:id/secure_files` | `READ_SECURE_FILES` | Read |
-| Get the details of a specific secure file in a project | `GET /projects/:id/secure_files/:secure_file_id` | `READ_SECURE_FILES` | Read |
+| Download a secure file | `GET /projects/:id/secure_files/:secure_file_id/download` | `READ_SECURE_FILES` | Read |
+| List all secure files for a project | `GET /projects/:id/secure_files` | `READ_SECURE_FILES` | Read |
+| Retrieve details of a secure file | `GET /projects/:id/secure_files/:secure_file_id` | `READ_SECURE_FILES` | Read |
 | Create a secure file | `POST /projects/:id/secure_files` | `ADMIN_SECURE_FILES` | Read and write |
-| Remove a secure file | `DELETE /projects/:id/secure_files/:secure_file_id` | `ADMIN_SECURE_FILES` | Read and write |
+| Delete a secure file | `DELETE /projects/:id/secure_files/:secure_file_id` | `ADMIN_SECURE_FILES` | Read and write |
 
 ### Terraform state endpoints
 
@@ -294,10 +305,10 @@ CI/CD job tokens cannot access the following endpoints:
 | Composer packages endpoint at group level | `GET /group/:id/-/packages/composer/packages` |
 | NPM registry metadata endpoint | `GET /groups/:id/-/packages/npm/*package_name` |
 | Download a package file from a group | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` |
-| The PyPi Simple Group Index Endpoint | `GET /groups/:id/-/packages/pypi/simple` |
+| List all packages for a group | `GET /groups/:id/-/packages/pypi/simple` |
 | The PyPi Simple Group Package Endpoint | `GET /groups/:id/-/packages/pypi/simple/*package_name` |
-| Get current job using job token | `GET /job` |
-| Get current agents | `GET /job/allowed_agents` |
+| Retrieve a job by job token | `GET /job` |
+| List all GitLab agents for Kubernetes by job token | `GET /job/allowed_agents` |
 | Search for packages | `GET /packages/conan/v1/conans/search` |
 | Ping the Conan API | `GET /packages/conan/v1/ping` |
 | Authenticate user against conan CLI | `GET /packages/conan/v1/users/authenticate` |
@@ -314,3 +325,4 @@ CI/CD job tokens cannot access the following endpoints:
 | List tags of a repository | `GET /projects/:id/registry/repositories/:repository_id/tags` |
 | Get details about a repository tag | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
 | Transitions a DAST site validation to a new state. | `POST /internal/dast/site_validations/:id/transition` |
+| Issue a short-lived JWT for a single modular-service audience | `POST /token_exchange` |

@@ -13,7 +13,7 @@ module QA
       end
 
       class << self
-        delegate :collect, :write_to_file, :resources, to: :instance
+        delegate :collect, :write_to_file, :resources, :load_prior_resources, to: :instance
       end
 
       # @return [Hash<String, Array>]
@@ -44,6 +44,32 @@ module QA
           http_method: http_method,
           timestamp: Time.now.to_s
         }
+      end
+
+      # Load resources from prior CI job attempts preserved via CI cache
+      #
+      # @return [void]
+      def load_prior_resources
+        return unless Runtime::Env.running_in_ci?
+
+        resource_dir = File.join(Runtime::Path.qa_root, 'tmp')
+        return unless Dir.exist?(resource_dir)
+
+        files = Dir.glob(File.join(resource_dir, '*test-resources-*.json'))
+        return if files.empty?
+
+        Runtime::Logger.info("CI job retry detected. " \
+          "Loading #{files.size} prior resource file(s) from cache.")
+
+        files.each do |file|
+          data = JSON.parse(File.read(file))
+          data.each do |type, resource_list|
+            resources[type].concat(Array(resource_list).map(&:deep_symbolize_keys))
+          end
+          Runtime::Logger.info("Loaded prior resources from #{File.basename(file)}")
+        rescue JSON::ParserError => e
+          Runtime::Logger.warn("Failed to parse prior resource file #{file}: #{e.message}")
+        end
       end
 
       # If JSON file exists and not empty, read and load file content

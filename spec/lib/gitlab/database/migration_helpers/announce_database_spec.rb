@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers::AnnounceDatabase do
+RSpec.describe Gitlab::Database::MigrationHelpers::AnnounceDatabase, feature_category: :database do
   let(:migration) do
     ActiveRecord::Migration.new('MyMigration', 1111).extend(described_class)
   end

@@ -94,6 +94,29 @@ To render an OpenAPI file:
 > When `displayOperationId` is present in the query string and has any value, it
 > evaluates to `true`. This behavior matches the default behavior of Swagger.
 
+## Print a Markdown file as PDF
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/414692) in GitLab 19.1 [with a feature flag](../../../../administration/feature_flags/_index.md) named `blob_markdown_pdf_download`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Print a Markdown file as a PDF to save its rendered content for sharing or archiving.
+When you view a Markdown file, the **Download** action is a dropdown list with two options:
+**Download as Markdown** and **Print as PDF**.
+
+To print a Markdown file as a PDF:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Go to the Markdown file you want to print.
+1. In the upper right, select **Download** ({{< icon name="download" >}}) > **Print as PDF**.
+1. In your browser's print dialog, save the file as a PDF.
+
 ## View Git records for a file
 
 Historical information about files in your repository is available in the GitLab UI:

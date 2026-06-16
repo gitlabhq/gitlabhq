@@ -19,10 +19,10 @@
                                         "track_property" => 'search_result' },
                                 title: _('View blame') }
                   = sprite_icon('git')
-              %span.diff-line-num.flex-grow-1.gl-pr-3
+              %span{ class: "diff-line-num !gl-grow gl-pr-3" }
                 %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: '!gl-flex gl-items-center gl-justify-end' }
                   = i
-          %pre.code.highlight.flex-grow-1
+          %pre{ class: "code highlight !gl-grow" }
             %code
               = line.html_safe
 

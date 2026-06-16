@@ -37,10 +37,6 @@ module MergeRequests
       project = Project.find_by_id(project_id)
       return unless project
 
-      if Feature.disabled?(:ci_bulk_insert_pipeline_records, project)
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
-      end
-
       user = User.find_by_id(user_id)
       return unless user
 
@@ -88,8 +84,25 @@ module MergeRequests
       GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
     end
 
-    def after_perform(_merge_request)
-      # overridden in EE
+    def after_perform(merge_request)
+      publish_pipeline_creation_completed_event(merge_request)
+    end
+
+    # Publish AFTER `update_head_pipeline` has run in `perform`, so
+    # `merge_request.diff_head_pipeline` reflects whether a pipeline was
+    # persisted for the current diff head. Subscribers (e.g.
+    # ProcessAutoMergeFromEventWorker) use the `pipeline_id` field to
+    # distinguish "no pipeline created" from "pipeline created".
+    def publish_pipeline_creation_completed_event(merge_request)
+      return unless ::Feature.enabled?(:trigger_auto_merge_after_pipeline_creation, merge_request.project)
+
+      ::Gitlab::EventStore.publish(
+        ::MergeRequests::PipelineCreationCompletedEvent.new(data: {
+          merge_request_id: merge_request.id,
+          project_id: merge_request.project_id,
+          pipeline_id: merge_request.diff_head_pipeline&.id
+        }.compact)
+      )
     end
   end
 end

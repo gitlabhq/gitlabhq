@@ -22,8 +22,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815') do
         initial_wiki.visit!
 
-        Page::Project::Wiki::Show.perform(&:click_edit)
-        Page::Project::Wiki::Edit.perform(&:delete_page)
+        Page::Project::Wiki::Show.perform(&:delete_page)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_no_page
@@ -45,8 +44,7 @@ module QA
           push.new_branch = false
         end.visit!
 
-        Page::Project::Wiki::Show.perform(&:click_edit)
-        Page::Project::Wiki::Edit.perform(&:delete_page)
+        Page::Project::Wiki::Show.perform(&:delete_page)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_title("Home")

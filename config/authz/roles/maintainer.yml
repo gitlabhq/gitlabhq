@@ -73,6 +73,7 @@ project:
   - create_ai_catalog_third_party_flow
   - create_ai_catalog_third_party_flow_item_consumer
   - create_ai_foundational_flow_item_consumer
+  - create_approval_rule
   - create_ascp_component
   - create_ascp_scan
   - create_ascp_security_context
@@ -80,6 +81,7 @@ project:
   - create_cluster
   - create_deploy_token
   - create_environment_terminal
+  - create_external_status_check
   - create_freeze_period
   - create_pipeline_subscription
   - create_protected_branch
@@ -89,11 +91,14 @@ project:
   - create_service_account
   - create_squash_option
   - create_web_ide_terminal
+  - delete_approval_rule
   - delete_branch_rule
+  - delete_external_status_check
   - delete_freeze_period
   - delete_job_artifact
   - delete_protected_tag
   - delete_service_account
+  - delete_squash_option
   - delete_timelog
   - destroy_deploy_token
   - destroy_deployment
@@ -101,7 +106,6 @@ project:
   - destroy_protected_branch
   - destroy_release
   - destroy_resource_access_tokens
-  - destroy_squash_option
   - destroy_upload
   - enable_container_scanning_for_registry
   - enable_secret_push_protection
@@ -125,6 +129,7 @@ project:
   - provision_gke_runner
   - push_code_to_protected_branches
   - push_to_delete_protected_branch
+  - read_ai_tool_rule
   - read_any_audit_event
   - read_approvers
   - read_branch_rule
@@ -158,13 +163,19 @@ project:
   - read_work_item_setting
   - remove_pages
   - rename_project
+  - restore_ai_catalog_item
   - set_license_information_source
   - stop_environment
+  - toggle_license_scanning_for_cyclonedx
+  - update_ai_tool_rule
+  - update_approval_rule
   - update_approvers
   - update_branch_rule
   - update_cluster
   - update_cvs_for_container_scanning
   - update_cvs_for_dependency_scanning
+  - update_duo_setting
+  - update_external_status_check
   - update_freeze_period
   - update_pages
   - update_pipeline_variable_override_setting
@@ -172,10 +183,12 @@ project:
   - update_protected_branch
   - update_protected_tags
   - update_runners_registration_token
+  - update_sec_ai_workflow_settings
   - update_secret_detection_validity_check
   - update_security_setting
   - update_snippet
   - update_squash_option
+  - update_terraform_state_protection_rule
   - update_work_item_type_visibility
   - use_protected_cache
   - view_edit_page
@@ -211,10 +224,13 @@ group:
   - create_ai_catalog_item_consumer
   - create_ai_catalog_third_party_flow_item_consumer
   - create_ai_foundational_flow_item_consumer
+  - create_cd_application
+  - create_cd_environment
   - create_cluster
   - create_jira_connect_subscription
   - create_project_fork
   - create_protected_branch
+  - create_subgroup
   - create_virtual_registry
   - create_work_item_type
   - delete_custom_emoji
@@ -229,6 +245,8 @@ group:
   - provision_cloud_runner
   - provision_gke_runner
   - read_any_audit_event
+  - read_cd_application
+  - read_cd_environment
   - read_ci_namespace_settings
   - read_deploy_token
   - read_group_all_available_runners
@@ -245,6 +263,7 @@ group:
   - read_security_configuration
   - read_work_item_setting
   - start_trial
+  - transfer_projects
   - update_ci_namespace_settings
   - update_cluster
   - update_product_analytics_settings

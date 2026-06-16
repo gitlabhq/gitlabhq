@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import GlobalUserSelect from '~/vue_shared/components/user_select/global_user_select.vue';
@@ -14,6 +14,7 @@ export default {
   components: {
     GlButton,
     GlFormGroup,
+    GlFormInput,
     GlModal,
     GlSprintf,
     GlobalUserSelect,
@@ -32,6 +33,7 @@ export default {
     return {
       loading: false,
       usersToAward: [],
+      awardMessage: '',
     };
   },
   methods: {
@@ -40,6 +42,7 @@ export default {
       await Promise.all(this.usersToAward.map((user) => this.award(user)));
       await this.$apollo.getClient().refetchQueries({ include: [getGroupAchievements] });
       this.loading = false;
+      this.resetModal();
     },
     async award(user) {
       const userId = convertToGraphQLId(TYPENAME_USER, user.id);
@@ -51,12 +54,17 @@ export default {
             input: {
               achievementId: this.achievementId,
               userId,
+              ...(this.awardMessage ? { awardMessage: this.awardMessage } : {}),
             },
           },
         })
         .catch((e) => {
           logError(e);
         });
+    },
+    resetModal() {
+      this.usersToAward = [];
+      this.awardMessage = '';
     },
     openModal() {
       this.$refs.modal.show();
@@ -73,7 +81,7 @@ export default {
       modal-id="award-achievement-modal"
       :title="s__('Achievements|Award achievements')"
       @primary="awardAll"
-      @canceled="usersToAward = []"
+      @canceled="resetModal"
     >
       <div class="gl-mb-4">
         <gl-sprintf
@@ -86,6 +94,22 @@ export default {
       </div>
       <gl-form-group :label="__('Users')" class="gl-mb-2" label-for="global_users_input">
         <global-user-select v-model="usersToAward" input-id="global_users_input" class="gl-mb-2" />
+      </gl-form-group>
+      <gl-form-group
+        :label="s__('Achievements|Award message')"
+        label-for="award_message_input"
+        :description="
+          s__(
+            'Achievements|Optional message shown on the recipient\'s profile (maximum 200 characters).',
+          )
+        "
+      >
+        <gl-form-input
+          id="award_message_input"
+          v-model="awardMessage"
+          :maxlength="200"
+          :placeholder="s__('Achievements|For example, Awarded for outstanding contribution')"
+        />
       </gl-form-group>
     </gl-modal>
   </span>

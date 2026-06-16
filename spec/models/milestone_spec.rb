@@ -6,7 +6,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create_default(:project, :public) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
   describe 'modules' do
     context 'with a project' do
@@ -159,7 +159,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '.predefined_id?' do
-    let_it_be(:milestone) { create(:milestone, project: project) }
+    let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
 
     it 'returns true for a predefined Milestone ID' do
       expect(described_class.predefined_id?(described_class::Upcoming.id)).to be true
@@ -257,7 +257,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '.search' do
-    let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
+    let_it_be(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
     it 'returns milestones with a matching title' do
       expect(described_class.search(milestone.title)).to eq([milestone])
@@ -287,7 +287,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '#search_title' do
-    let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
+    let_it_be(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
     it 'returns milestones with a matching title' do
       expect(described_class.search_title(milestone.title)).to eq([milestone])
@@ -390,25 +390,33 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
     let_it_be(:project_3) { create(:project) }
     let_it_be(:projects) { [project_1, project_2, project_3] }
 
-    let!(:current_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current - 1.day) }
-    let!(:future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 1.day) }
-    let!(:other_future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 2.days) }
+    let_it_be(:current_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current - 1.day) }
+    let_it_be(:future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 1.day) }
+    let_it_be(:other_future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 2.days) }
 
-    let!(:current_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current - 1.day) }
-    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, start_date: Time.current + 1.day) }
-    let!(:future_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current + 2.days) }
+    let_it_be(:current_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current - 1.day) }
+    let_it_be(:closed_milestone_group_2) do
+      create(:milestone, :closed, group: group_2, start_date: Time.current + 1.day)
+    end
 
-    let!(:current_milestone_group_3) { create(:milestone, group: group_3, start_date: Time.current - 1.day) }
+    let_it_be(:future_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current + 2.days) }
 
-    let!(:current_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current - 1.day) }
-    let!(:future_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current + 1.day) }
-    let!(:other_future_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current + 2.days) }
+    let_it_be(:current_milestone_group_3) { create(:milestone, group: group_3, start_date: Time.current - 1.day) }
 
-    let!(:current_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current - 1.day) }
-    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, start_date: Time.current + 1.day) }
-    let!(:future_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current + 2.days) }
+    let_it_be(:current_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current - 1.day) }
+    let_it_be(:future_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current + 1.day) }
+    let_it_be(:other_future_milestone_project_1) do
+      create(:milestone, project: project_1, start_date: Time.current + 2.days)
+    end
 
-    let!(:current_milestone_project_3) { create(:milestone, project: project_3, start_date: Time.current - 1.day) }
+    let_it_be(:current_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current - 1.day) }
+    let_it_be(:closed_milestone_project_2) do
+      create(:milestone, :closed, project: project_2, start_date: Time.current + 1.day)
+    end
+
+    let_it_be(:future_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current + 2.days) }
+
+    let_it_be(:current_milestone_project_3) { create(:milestone, project: project_3, start_date: Time.current - 1.day) }
 
     def milestone_ids(legacy_filtering_logic: false)
       described_class.upcoming_ids(projects, groups, legacy_filtering_logic: legacy_filtering_logic).map(&:id)
@@ -435,25 +443,36 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
     end
 
     context 'when legacy_filtering_logic is true' do
-      let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
-      let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
-      let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 2.days) }
+      let_it_be(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
+      let_it_be(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
+      let_it_be(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 2.days) }
 
-      let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current - 1.day) }
-      let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.current + 1.day) }
-      let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current + 2.days) }
+      let_it_be(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current - 1.day) }
+      let_it_be(:closed_milestone_group_2) do
+        create(:milestone, :closed, group: group_2, due_date: Time.current + 1.day)
+      end
 
-      let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
+      let_it_be(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current + 2.days) }
 
-      let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
-      let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 1.day) }
-      let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 2.days) }
+      let_it_be(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
 
-      let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current - 1.day) }
-      let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.current + 1.day) }
-      let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current + 2.days) }
+      let_it_be(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
+      let_it_be(:current_milestone_project_1) do
+        create(:milestone, project: project_1, due_date: Time.current + 1.day)
+      end
 
-      let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.current - 1.day) }
+      let_it_be(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 2.days) }
+
+      let_it_be(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current - 1.day) }
+      let_it_be(:closed_milestone_project_2) do
+        create(:milestone, :closed, project: project_2, due_date: Time.current + 1.day)
+      end
+
+      let_it_be(:current_milestone_project_2) do
+        create(:milestone, project: project_2, due_date: Time.current + 2.days)
+      end
+
+      let_it_be(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.current - 1.day) }
 
       it 'returns the next upcoming open milestone ID for each project and group' do
         expect(milestone_ids(legacy_filtering_logic: true)).to contain_exactly(
@@ -470,8 +489,14 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
     let_it_be(:milestone_no_start_date) { create(:milestone, due_date: Time.current + 2.days) }
     let_it_be(:milestone_no_due_date) { create(:milestone, start_date: Time.current - 2.days) }
     let_it_be(:milestone_no_start_or_due_date) { create(:milestone) }
-    let_it_be(:current_milestone) { create(:milestone, start_date: Time.current - 2.days, due_date: Time.current + 2.days) }
-    let_it_be(:previous_milestone) { create(:milestone, start_date: Time.current - 4.days, due_date: Time.current - 2.days) }
+    let_it_be(:current_milestone) do
+      create(:milestone, start_date: Time.current - 2.days, due_date: Time.current + 2.days)
+    end
+
+    let_it_be(:previous_milestone) do
+      create(:milestone, start_date: Time.current - 4.days, due_date: Time.current - 2.days)
+    end
+
     let_it_be(:milestone_start_after_current_date) { create(:milestone, start_date: Time.current + 2.days) }
     let_it_be(:milestone_due_before_current_date) { create(:milestone, due_date: Time.current - 2.days) }
     let_it_be(:milestone_ending_today) { create(:milestone, due_date: Time.current) }
@@ -580,7 +605,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '.sort_with_expired_last' do
-    let_it_be(:milestone) { create(:milestone, title: 'Due today', due_date: Date.current) }
+    let_it_be(:milestone, freeze: false) { create(:milestone, title: 'Due today', due_date: Date.current) }
     let_it_be(:milestone_1) { create(:milestone, title: 'Current 1',  due_date: Date.current + 1.day) }
     let_it_be(:milestone_2) { create(:milestone, title: 'Current 2',  due_date: Date.current + 2.days) }
     let_it_be(:milestone_3) { create(:milestone, title: 'Without due date') }
@@ -590,7 +615,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
 
     context 'ordering by due_date ascending' do
       it 'sorts by due date in ascending order (ties broken by id in desc order)', :aggregate_failures do
-        expect(milestone_3.id).to be < (milestone_6.id)
+        expect(milestone_3.id).to be < milestone_6.id
         expect(described_class.sort_with_expired_last(:expired_last_due_date_asc))
           .to eq([milestone, milestone_1, milestone_2, milestone_6, milestone_3, milestone_4, milestone_5])
       end
@@ -598,7 +623,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
 
     context 'ordering by due_date descending' do
       it 'sorts by due date in descending order (ties broken by id in desc order)', :aggregate_failures do
-        expect(milestone_3.id).to be < (milestone_6.id)
+        expect(milestone_3.id).to be < milestone_6.id
         expect(described_class.sort_with_expired_last(:expired_last_due_date_desc))
           .to eq([milestone_2, milestone_1, milestone, milestone_6, milestone_3, milestone_5, milestone_4])
       end
@@ -803,7 +828,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '#lock_version' do
-    let_it_be(:milestone) { create(:milestone, project: project) }
+    let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
 
     it 'ensures that lock_version and optimistic locking is enabled' do
       expect(milestone.lock_version).to be_present

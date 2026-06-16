@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobViewer::Markup do
+RSpec.describe BlobViewer::Markup, feature_category: :markdown do
   include FakeBlobHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { build_stubbed(:project) }
   let(:blob) { fake_blob(path: 'CHANGELOG.md') }
 
   subject { described_class.new(blob) }

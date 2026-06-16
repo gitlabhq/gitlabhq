@@ -13,6 +13,11 @@ module Mutations
       description "Creates a work item."
 
       authorize :create_work_item
+      authorize_granular_token permissions: :create_work_item,
+        boundaries: [
+          { boundary_argument: :namespace_path, boundary_type: :project },
+          { boundary_argument: :namespace_path, boundary_type: :group }
+        ]
 
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
 

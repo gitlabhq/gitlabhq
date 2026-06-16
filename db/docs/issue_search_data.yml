@@ -4,7 +4,8 @@ classes:
 - Issues::SearchData
 feature_categories:
 - global_search
-description: TODO
+description: Stores denormalized search data for issues to improve full-text search
+  performance.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913
 milestone: '14.9'
 gitlab_schema: gitlab_main_org

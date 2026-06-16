@@ -2,10 +2,10 @@
 
 RSpec.shared_examples 'inviting groups search results' do
   context 'with instance admin considerations' do
-    let_it_be(:group_to_invite) { create(:group) }
+    let_it_be(:group_to_invite, freeze: false) { create(:group) }
 
     context 'when user is an admin' do
-      let_it_be(:admin) { create(:admin) }
+      let_it_be(:admin, freeze: false) { create(:admin) }
 
       before do
         sign_in(admin)
@@ -78,7 +78,7 @@ RSpec.shared_examples 'inviting groups search results' do
   end
 
   context 'when user is not an admin and there are hierarchy considerations' do
-    let_it_be(:group_outside_hierarchy) { create(:group) }
+    let_it_be(:group_outside_hierarchy, freeze: false) { create(:group) }
 
     before_all do
       group.add_owner(user)

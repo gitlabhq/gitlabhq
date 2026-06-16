@@ -13,7 +13,7 @@ title: Selective synchronization
 {{< /details >}}
 
 Geo supports selective synchronization, which allows administrators to choose
-which projects should be synchronized by **secondary** sites.
+which projects should be synchronized by secondary sites.
 A subset of projects can be chosen, either by group or by storage shard. The
 former is ideal for reducing transfer and storage costs by replicating data
 belonging to only a subset of users. The latter is more suited to progressively
@@ -24,17 +24,17 @@ rolling out Geo to a large GitLab instance.
 
 Selective synchronization:
 
-1. Does not restrict permissions from **secondary** sites.
+1. Does not restrict permissions from secondary sites.
 1. Does not prevent users from viewing, interacting with, cloning, and pushing to project repositories that are not included in the selective sync.
    - For more details, see [Geo proxying for secondary sites](../secondary_proxy/_index.md).
-1. Does not hide project metadata from **secondary** sites.
+1. Does not hide project metadata from secondary sites.
    - Because Geo relies on PostgreSQL replication, all project metadata
-     gets replicated to **secondary** sites, but repositories that have not been
+     gets replicated to secondary sites, but repositories that have not been
      selected will not exist on the secondary site.
 1. Does not reduce the number of events generated for the Geo event log.
-   - The **primary** site generates events as long as any **secondary** sites are present.
-     Selective synchronization restrictions are implemented on the **secondary** sites,
-     not the **primary** site.
+   - The primary site generates events as long as any secondary sites are present.
+     Selective synchronization restrictions are implemented on the secondary sites,
+     not the primary site.
 
 ## Enable selective synchronization
 
@@ -50,7 +50,7 @@ By default, selective synchronization is disabled. To enable it:
 ## Promoting a secondary site with selective synchronization enabled
 
 > [!warning]
-> Promoting a **secondary** site with selective synchronization enabled to become the **primary** site
+> Promoting a secondary site with selective synchronization enabled to become the primary site
 > results in **permanent data loss** for all data that was not replicated to that secondary site.
 
 When selective synchronization is configured on a secondary site, only a subset of data is replicated:
@@ -62,7 +62,7 @@ When selective synchronization is configured on a secondary site, only a subset 
 All other data remains only on the original primary site. If you promote a secondary site with
 selective synchronization to become the new primary:
 
-- Data that was **not** selected for replication becomes permanently inaccessible.
+- Data that was not selected for replication becomes permanently inaccessible.
 - Users lose access to projects, repositories, and associated data that were excluded from selective sync.
 - This data cannot be recovered unless you still have access to the original primary site.
 
@@ -88,7 +88,7 @@ If you must promote a secondary with selective sync enabled (for example, in an 
 ## Git operations on unreplicated repositories
 
 Git clone, pull, and push operations over HTTP(S) and SSH are supported for repositories that
-exist on the **primary** site but not on **secondary** sites. This situation can occur
+exist on the primary site but not on secondary sites. This situation can occur
 when:
 
 - Selective synchronization does not include the project attached to the repository.

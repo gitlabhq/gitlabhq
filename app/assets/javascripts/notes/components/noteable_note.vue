@@ -111,6 +111,14 @@ export default {
       default: 'note',
     },
   },
+  emits: [
+    'cancelForm',
+    'handleDeleteNote',
+    'handleEdit',
+    'handleUpdateNote',
+    'start-replying',
+    'updateSuccess',
+  ],
   data() {
     return {
       isEditingLocal: false,

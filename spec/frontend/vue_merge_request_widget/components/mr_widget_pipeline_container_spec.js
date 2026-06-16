@@ -3,6 +3,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -19,6 +21,7 @@ import mrPipelineUpdatedSubscription from '~/vue_merge_request_widget/subscripti
 import { mockStore, mockMergePipelineQueryResponse, mockPipelineSubscription } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(PiniaVuePlugin);
 jest.mock('~/alert');
 
 describe('MrWidgetPipelineContainer', () => {
@@ -54,6 +57,7 @@ describe('MrWidgetPipelineContainer', () => {
           ...props,
         },
         apolloProvider,
+        pinia: createTestingPinia({ stubActions: false }),
       }),
     );
 

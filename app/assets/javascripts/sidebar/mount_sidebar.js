@@ -16,6 +16,7 @@ import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import { pinia } from '~/pinia/instance';
+import { ISSUE_MR_CHANGE_MILESTONE } from '~/behaviors/shortcuts/keybindings';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
@@ -252,7 +253,7 @@ function mountSidebarMilestoneWidget() {
     return null;
   }
 
-  const { canEdit, projectPath, issueIid } = el.dataset;
+  const { canEdit, projectPath, iid } = el.dataset;
 
   return new Vue({
     el,
@@ -260,18 +261,16 @@ function mountSidebarMilestoneWidget() {
     apolloProvider,
     provide: {
       canUpdate: parseBoolean(canEdit),
-      isClassicSidebar: true,
+      isClassicSidebar: isInIssuePage() || isInIncidentPage(),
+      keybinding: ISSUE_MR_CHANGE_MILESTONE,
     },
     render: (createElement) =>
       createElement(SidebarDropdownWidget, {
         props: {
           attrWorkspacePath: projectPath,
           workspacePath: projectPath,
-          iid: issueIid,
-          issuableType:
-            isInIssuePage() || isInIncidentPage() || isInDesignPage()
-              ? TYPE_ISSUE
-              : TYPE_MERGE_REQUEST,
+          iid,
+          issuableType: isInIssuePage() || isInIncidentPage() ? TYPE_ISSUE : TYPE_MERGE_REQUEST,
           issuableAttribute: IssuableAttributeType.Milestone,
           icon: 'milestone',
         },

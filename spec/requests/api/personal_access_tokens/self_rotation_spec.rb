@@ -13,6 +13,12 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
   describe 'POST /personal_access_tokens/self/rotate' do
     subject(:rotate_token) { post(api(path, personal_access_token: token), params: params) }
 
+    it_behaves_like 'authorizing granular token permissions', :rotate_personal_access_token do
+      let(:boundary_object) { :user }
+      let(:user) { current_user }
+      let(:request) { post api(path, personal_access_token: pat) }
+    end
+
     shared_examples 'rotating token succeeds' do
       it 'rotate token', :aggregate_failures do
         rotate_token

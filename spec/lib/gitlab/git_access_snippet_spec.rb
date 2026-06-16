@@ -10,9 +10,9 @@ RSpec.describe Gitlab::GitAccessSnippet do
   include_context 'ProjectPolicyTable context'
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be_with_reload(:snippet) { create(:project_snippet, :public, :repository, project: project) }
 
   let(:repository) { snippet.repository }
   let(:actor) { user }

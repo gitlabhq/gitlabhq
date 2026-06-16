@@ -278,7 +278,7 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
     end
 
     context 'for bot-users from external namespaces' do
-      let_it_be(:external_bot) { create(:user, :project_bot) }
+      let_it_be(:external_bot, freeze: false) { create(:user, :project_bot) }
 
       context 'for external group bot-user' do
         before do

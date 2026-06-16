@@ -1,6 +1,31 @@
+:root {
+  --container-padding-x: #{$gl-spacing-scale-4};
+}
+
 html {
+  // Scroll bars styles
+  scrollbar-color: var(--gl-color-neutral-400) transparent;
+
+  @media (forced-colors: active) {
+    scrollbar-color: var(--gl-color-neutral-950) transparent;
+  }
+
   &.touch .tooltip {
     display: none !important;
+  }
+}
+
+.application-chrome {
+  // Fix page height
+  &, body {
+    @apply gl-h-full;
+  }
+
+  body {
+    @apply gl-flex;
+    @apply gl-flex-col;
+    // Application chrome background
+    background-color: var(--body-background-color);
   }
 }
 
@@ -28,6 +53,113 @@ html {
 .layout-page {
   @apply gl-pt-0;
   @apply gl-pb-3;
+}
+
+.page-with-panels .layout-page {
+  @apply gl-flex;
+  @apply gl-flex-1;
+  @apply gl-flex-col;
+  @apply lg:gl-flex-row;
+  @apply gl-items-stretch;
+  @apply gl-justify-start;
+  @apply lg:gl-justify-center;
+  @apply gl-gap-0;
+  @apply lg:gl-gap-3;
+  @apply gl-min-h-0;
+  @apply sm:gl-px-3;
+}
+
+.panels-container {
+  @apply gl-relative;
+  @apply gl-grow;
+  @apply gl-flex;
+  @apply gl-pr-0;
+  @apply gl-pb-0;
+  @apply gl-min-h-0;
+  // Inside the panels container, everything that calculates an offset from
+  // the top needs to ignore application header height, system header height,
+  // performance bar height, header height and top bar height, since these
+  // all lie outside of the panels. Note that the `px` IS REQUIRED here for
+  // these variables to function properly.
+  --application-header-height: 0px; // stylelint-disable-line length-zero-no-unit
+  --system-header-height: 0px; // stylelint-disable-line length-zero-no-unit
+  --performance-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
+  --header-height: 0px; // stylelint-disable-line length-zero-no-unit
+  --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
+
+  .panel-content-inner,
+  .vue-portal-target .work-item-detail-panel-content {
+    // Hide alert wrapper if it's empty
+    // stylelint-disable-next-line gitlab/no-has -- scoped to direct alert-wrapper child
+    > .alert-wrapper:not(:has(*)) {
+      @apply gl-hidden;
+    }
+  }
+}
+
+// Smoothly animate the panels container and super sidebar when they expand
+// or collapse. `width: auto` can't normally be transitioned, so we use
+// `calc-size()` together with `interpolate-size: allow-keywords` to make the
+// intrinsic width animatable.
+@supports (width: calc-size(auto, size)) {
+  .panels-container,
+  .super-sidebar.super-sidebar-toggled-manually {
+    width: calc-size(auto, size);
+    /* stylelint-disable-next-line property-no-unknown */
+    interpolate-size: allow-keywords;
+    transition: width .25s $gl-easing-out-cubic,
+                transform .25s $gl-easing-out-cubic !important;
+  }
+}
+
+.ai-panels {
+  overflow: inherit;
+  --ai-panel-width: clamp(25rem, 20vw, 35rem);
+  --ai-navigation-rail-size: #{$gl-button-small-size};
+
+  @include media-breakpoint-up(xl) {
+    min-width: var(--ai-navigation-rail-size);
+  }
+}
+
+.ai-navigation-rail {
+  @apply gl-flex;
+  @apply gl-flex-1;
+  @apply lg:gl-flex-col;
+  @apply gl-items-center;
+  @apply gl-gap-5;
+  @apply lg:gl-gap-4;
+  @apply gl-mt-3;
+  @apply gl-px-3;
+  @apply lg:gl-px-0;
+  @apply lg:gl-py-3;
+  @apply lg:gl-mt-0;
+  @apply gl-h-[var(--ai-navigation-rail-size)];
+  @apply lg:gl-h-full;
+  @apply lg:gl-w-[var(--ai-navigation-rail-size)];
+}
+
+// When the AI panel is maximized
+.layout-page.ai-panel-maximized {
+  .ai-panels {
+    flex-grow: 1;
+  }
+
+  // Hiding all other panels when DAP is maximized
+  .panels-container {
+    display: none;
+  }
+
+  // Preserving other panels when DAP is maximized on bigger screens
+  @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
+    .ai-panels {
+      width: auto;
+    }
+
+    .panels-container {
+      display: flex;
+    }
+  }
 }
 
 .content-wrapper {
@@ -92,12 +224,6 @@ html {
       margin-top: $gl-padding-8;
     }
   }
-}
-
-.gl--flex-full {
-  display: flex;
-  align-items: stretch;
-  overflow: hidden;
 }
 
 .fullscreen-layout {

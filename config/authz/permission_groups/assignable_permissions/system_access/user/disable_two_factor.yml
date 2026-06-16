@@ -1,0 +1,9 @@
+---
+name: disable_two_factor_user
+description: Grants the ability to disable two-factor authentication for a user
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - disable_two_factor_user

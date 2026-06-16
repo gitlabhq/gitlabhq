@@ -93,7 +93,7 @@ RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base, fea
           end
 
           group.reload
-        end.to change(group, :updated_at)
+        end.to change { group.updated_at }
       end
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a webhook log policy' do
-  let_it_be(:web_hook_log) { create(:web_hook_log, web_hook: web_hook) }
+  let_it_be(:web_hook_log, freeze: false) { create(:web_hook_log, web_hook: web_hook) }
 
   context 'when the user is authorized' do
     subject(:policy) { described_class.new(authorized_user, web_hook_log) }

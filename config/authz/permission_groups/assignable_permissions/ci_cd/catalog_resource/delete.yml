@@ -1,0 +1,9 @@
+---
+name: delete_catalog_resource
+description: Grants the ability to delete a CI catalog resource
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_catalog_resource

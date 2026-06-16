@@ -459,4 +459,102 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
       end
     end
   end
+
+  describe '#job_name_mappings' do
+    around do |example|
+      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
+        example.run
+      end
+    end
+
+    subject(:job_name_mappings) { described_class.new(config).job_name_mappings }
+
+    context 'with parallel:matrix jobs' do
+      let(:config) do
+        {
+          build: {
+            script: 'build',
+            parallel: {
+              matrix: [
+                { PROVIDER: %w[aws gcp] }
+              ]
+            }
+          },
+          test: { script: 'test' }
+        }
+      end
+
+      it 'returns mapping of original to normalized job names' do
+        expect(job_name_mappings).to eq({
+          build: ['build: [aws]', 'build: [gcp]']
+        })
+      end
+    end
+
+    context 'with parallel:N jobs' do
+      let(:config) do
+        {
+          test: {
+            script: 'test',
+            parallel: 3
+          },
+          deploy: { script: 'deploy' }
+        }
+      end
+
+      it 'returns mapping of original to normalized job names' do
+        expect(job_name_mappings).to eq({
+          test: ['test 1/3', 'test 2/3', 'test 3/3']
+        })
+      end
+    end
+
+    context 'with mixed parallel jobs' do
+      let(:config) do
+        {
+          build: {
+            script: 'build',
+            parallel: {
+              matrix: [
+                { PROVIDER: %w[aws gcp] }
+              ]
+            }
+          },
+          test: {
+            script: 'test',
+            parallel: 2
+          },
+          deploy: { script: 'deploy' }
+        }
+      end
+
+      it 'returns mappings for all parallelized jobs' do
+        expect(job_name_mappings).to eq({
+          build: ['build: [aws]', 'build: [gcp]'],
+          test: ['test 1/2', 'test 2/2']
+        })
+      end
+    end
+
+    context 'without parallelized jobs' do
+      let(:config) do
+        {
+          build: { script: 'build' },
+          test: { script: 'test' }
+        }
+      end
+
+      it 'returns empty hash' do
+        expect(job_name_mappings).to eq({})
+      end
+    end
+
+    context 'when jobs config is nil' do
+      let(:config) { nil }
+
+      it 'returns empty hash' do
+        expect(job_name_mappings).to eq({})
+      end
+    end
+  end
 end

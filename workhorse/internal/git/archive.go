@@ -79,60 +79,56 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	}
 
 	cacheEnabled := !params.DisableCache
-	archiveFilename := path.Base(params.ArchivePath)
 
-	if cacheEnabled {
-		if params.UseArchiveCleaner {
-			a.cleaner.RegisterPath(params.StoragePath)
-		}
-
-		cachedArchive, err := os.Open(params.ArchivePath)
-		if err == nil {
-			defer func() {
-				err = cachedArchive.Close()
-				if err != nil {
-					log.WithError(err).Error("SendArchive: failed to close cached archive")
-				}
-			}()
-			gitArchiveCache.WithLabelValues("hit").Inc()
-			setArchiveHeaders(w, format, archiveFilename)
-			// Even if somebody deleted the cachedArchive from disk since we opened
-			// the file, Unix file semantics guarantee we can still read from the
-			// open file in this process.
-			http.ServeContent(w, r, "", time.Unix(0, 0), cachedArchive)
-			return
-		}
+	if cacheEnabled && a.tryServeCachedArchive(w, r, &params, format) {
+		return
 	}
 
+	a.serveArchiveFromGitaly(w, r, &params, format, cacheEnabled)
+}
+
+func (a *archive) tryServeCachedArchive(w http.ResponseWriter, r *http.Request, params *archiveParams, format gitalypb.GetArchiveRequest_Format) bool {
+	archiveFilename := path.Base(params.ArchivePath)
+	if params.UseArchiveCleaner {
+		a.cleaner.RegisterPath(params.StoragePath)
+	}
+
+	cachedArchive, err := os.Open(params.ArchivePath)
+	if err != nil {
+		return false
+	}
+	defer func() {
+		if err := cachedArchive.Close(); err != nil {
+			log.WithError(err).Error("SendArchive: failed to close cached archive")
+		}
+	}()
+
+	gitArchiveCache.WithLabelValues("hit").Inc()
+	setArchiveHeaders(w, format, archiveFilename)
+	// Even if somebody deleted the cachedArchive from disk since we opened
+	// the file, Unix file semantics guarantee we can still read from the
+	// open file in this process.
+	http.ServeContent(w, r, "", time.Unix(0, 0), cachedArchive)
+	return true
+}
+
+func (a *archive) serveArchiveFromGitaly(w http.ResponseWriter, r *http.Request, params *archiveParams, format gitalypb.GetArchiveRequest_Format, cacheEnabled bool) {
+	archiveFilename := path.Base(params.ArchivePath)
 	gitArchiveCache.WithLabelValues("miss").Inc()
 
 	var tempFile *os.File
 	var err error
 
 	if cacheEnabled {
-		// We assume the tempFile has a unique name so that concurrent requests are
-		// safe. We create the tempfile in the same directory as the final cached
-		// archive we want to create so that we can use an atomic link(2) operation
-		// to finalize the cached archive.
 		tempFile, err = prepareArchiveTempfile(path.Dir(params.ArchivePath), archiveFilename)
 		if err != nil {
 			fail.Request(w, r, fmt.Errorf("SendArchive: create tempfile: %v", err))
 			return
 		}
-		defer func() {
-			// Ignore error, this may have already been closed with finalizeCachedArchive
-			_ = tempFile.Close()
-
-			err = os.Remove(tempFile.Name())
-			if err != nil {
-				log.WithError(err).Error("SendArchive: failed to remove tempfile")
-			}
-		}()
+		defer cleanupTempFile(tempFile)
 	}
 
-	var archiveReader io.Reader
-
-	archiveReader, err = handleArchiveWithGitaly(r, &params, format)
+	archiveReader, err := handleArchiveWithGitaly(r, params, format)
 	if err != nil {
 		fail.Request(w, r, fmt.Errorf("operations.GetArchive: %v", err))
 		return
@@ -143,18 +139,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 		reader = io.TeeReader(archiveReader, tempFile)
 	}
 
-	// Start writing the response
 	setArchiveHeaders(w, format, archiveFilename)
-
-	// According to https://github.com/golang/go/blob/go1.22.4/src/net/http/server.go#L119-L120:
-	//
-	// 	  If [ResponseWriter.WriteHeader] has not yet been called, Write calls
-	// 	  WriteHeader(http.StatusOK) before writing the data.
-	//
-	// For io.Copy() below, ResponseWriter.WriteHeader(StatusOK) is ultimately called at
-	// https://github.com/golang/go/blob/go1.22.4/src/net/http/server.go#L1639 (actually
-	// https://gitlab.com/gitlab-org/gitlab/-/blob/4f89a18e85ea039cc52e7308d46d62566d54d70b/workhorse/internal/helper/countingresponsewriter.go#L32)
-	// which means we're stuck always returning a HTTP 200, even if io.Copy() errors.
 	w.WriteHeader(http.StatusOK)
 
 	if _, err := io.Copy(w, reader); err != nil {
@@ -163,11 +148,18 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	}
 
 	if cacheEnabled {
-		err := finalizeCachedArchive(tempFile, params.ArchivePath)
-		if err != nil {
+		if err := finalizeCachedArchive(tempFile, params.ArchivePath); err != nil {
 			log.WithRequest(r).WithError(fmt.Errorf("SendArchive: finalize cached archive: %v", err)).Error()
-			return
 		}
+	}
+}
+
+func cleanupTempFile(tempFile *os.File) {
+	// Ignore error, this may have already been closed with finalizeCachedArchive
+	_ = tempFile.Close()
+
+	if err := os.Remove(tempFile.Name()); err != nil {
+		log.WithError(err).Error("SendArchive: failed to remove tempfile")
 	}
 }
 

@@ -6,14 +6,14 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   include FilterSpecHelper
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:ref) { project.repository.root_ref }
-  let_it_be(:text_include) { '::include{file=file.md}' }
-  let_it_be(:file_data) { 'included text' }
-  let_it_be(:wiki_data) { "---\ntitle: Foo\n---\nincluded text" }
-  let_it_be(:max_includes) { 10 }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:ref, freeze: false) { project.repository.root_ref }
+  let_it_be(:text_include, freeze: false) { '::include{file=file.md}' }
+  let_it_be(:file_data, freeze: false) { 'included text' }
+  let_it_be(:wiki_data, freeze: false) { "---\ntitle: Foo\n---\nincluded text" }
+  let_it_be(:max_includes, freeze: false) { 10 }
 
-  let_it_be(:context) do
+  let_it_be(:context, freeze: false) do
     {
       project: project,
       max_includes: max_includes,
@@ -23,7 +23,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     }
   end
 
-  let_it_be(:wiki_context) do
+  let_it_be(:wiki_context, freeze: false) do
     {
       project: project,
       max_includes: max_includes,
@@ -131,11 +131,11 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   end
 
   context 'when reading content from a URL' do
-    let_it_be(:http_url) { 'http://example.com' }
-    let_it_be(:http_include) { '::include{file=http://example.com}' }
-    let_it_be(:https_include) { '::include{file=https://example.com}' }
-    let_it_be(:space_include) { '::include{file=http://example.com/foo bar}' }
-    let_it_be(:bad_include) { '::include{file=https://example.com/esc)aped}' }
+    let_it_be(:http_url, freeze: false) { 'http://example.com' }
+    let_it_be(:http_include, freeze: false) { '::include{file=http://example.com}' }
+    let_it_be(:https_include, freeze: false) { '::include{file=https://example.com}' }
+    let_it_be(:space_include, freeze: false) { '::include{file=http://example.com/foo bar}' }
+    let_it_be(:bad_include, freeze: false) { '::include{file=https://example.com/esc)aped}' }
 
     context 'when wiki_asciidoc_allow_uri_includes is false' do
       before do

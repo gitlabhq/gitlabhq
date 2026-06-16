@@ -10,7 +10,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER, TYPENAME_NAMESPACE } from '~/graphql_shared/constants';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
   STATUS_OPEN,
@@ -85,7 +85,6 @@ import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filte
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
-import ListView from 'ee_else_ce/work_items/list/list_view.vue';
 
 import {
   convertLegacyTypeFormat,
@@ -93,6 +92,7 @@ import {
   convertNumberToGid,
   getSortOptions,
   getInitialPageParams,
+  isCursorCompatibleWithApi,
   subscribeToSavedView,
   convertToApiParams,
   convertToUrlParams,
@@ -144,16 +144,18 @@ import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_
 
 import {
   WORK_ITEM_TYPE_NAME_TICKET,
-  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   ROUTES,
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
   VIEW_CONTEXT,
 } from '../constants';
 
+const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
+const BoardView = () => import('ee_else_ce/work_items/board/board_view.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -203,6 +205,7 @@ export default {
     NewSavedViewModal,
     IssuableTabs,
     ListView,
+    BoardView,
     WorkItemsOnboardingModal,
     UserCalloutDismisser,
     WorkItemDetailPanel,
@@ -262,6 +265,7 @@ export default {
     const loggedIn = isLoggedIn();
     return {
       namespaceId: null,
+      viewMode: 'list',
       activeItem: null,
       sortKey: CREATED_DESC,
       error: undefined,
@@ -494,6 +498,15 @@ export default {
     isDisplaySettingsDrawerEnabled() {
       return Boolean(this.glFeatures.workItemListDisplaySettingsDrawer);
     },
+    isPlanningViewBoardEnabled() {
+      return Boolean(this.glFeatures.planningViewBoards);
+    },
+    useRestApi() {
+      return Boolean(
+        this.glFeatures.workItemRestApiFrontendUsers &&
+          (this.glFeatures.workItemRestApiIndex || this.glFeatures.workItemRestApi),
+      );
+    },
     workItemDetailPanelEnabled() {
       return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
@@ -639,9 +652,7 @@ export default {
     defaultWorkItemTypes() {
       return this.workItemTypesConfiguration
         .filter((type) => type.isFilterableListView)
-        .map((type) =>
-          this.glFeatures.workItemConfigurableTypes ? type.id : NAME_TO_ENUM_MAP[type.name],
-        );
+        .map((type) => type.id);
     },
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
@@ -1002,23 +1013,19 @@ export default {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
         hasStatusFeature: this.hasStatusFeature,
       });
-      if (this.glFeatures.workItemConfigurableTypes) {
-        if (params.types) {
-          params.workItemTypeIds = convertNumberToGid(params.types);
-          delete params.types;
-        }
-        if (params.not?.types) {
-          params.not.workItemTypeIds = convertNumberToGid(params.not.types);
-          delete params.not.types;
-        }
+      if (params.types) {
+        params.workItemTypeIds = convertNumberToGid(params.types);
+        delete params.types;
+      }
+      if (params.not?.types) {
+        params.not.workItemTypeIds = convertNumberToGid(params.not.types);
+        delete params.not.types;
       }
       return params;
     },
     apiTypesArgument() {
-      const singleWorkItemType = this.glFeatures.workItemConfigurableTypes
-        ? this.getWorkItemTypeConfiguration(this.workItemType)?.id
-        : NAME_TO_ENUM_MAP[this.workItemType];
-      const field = this.glFeatures.workItemConfigurableTypes ? 'workItemTypeIds' : 'types';
+      const singleWorkItemType = this.getWorkItemTypeConfiguration(this.workItemType)?.id;
+      const field = 'workItemTypeIds';
       return {
         [field]: this.apiFilterParams[field] || singleWorkItemType || this.defaultWorkItemTypes,
       };
@@ -1039,6 +1046,9 @@ export default {
         hasLabelPriority: !this.isEpicsList,
         hasWeight: !this.isEpicsList,
       });
+    },
+    filteredSearchSortOptions() {
+      return this.isDisplaySettingsDrawerEnabled ? [] : this.sortOptions;
     },
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
@@ -1082,10 +1092,30 @@ export default {
         this.activeItem = null;
       }
       if (newValue.fullPath !== oldValue.fullPath && !this.isSavedView) {
-        this.updateData(getParameterByName(PARAM_SORT));
+        const paginationKeys = ['page_after', 'page_before', 'first_page_size', 'last_page_size'];
+        const hasPaginationParams = paginationKeys.some(
+          (key) => newValue.query[key] || oldValue.query[key],
+        );
 
-        if (Object.keys(newValue.query).length === 0) {
-          this.addStateToken();
+        let onlyPaginationChanged = false;
+        if (hasPaginationParams) {
+          const oldQueryWithoutPagination = { ...oldValue.query };
+          const newQueryWithoutPagination = { ...newValue.query };
+
+          paginationKeys.forEach((key) => {
+            delete oldQueryWithoutPagination[key];
+            delete newQueryWithoutPagination[key];
+          });
+
+          onlyPaginationChanged = isEqual(oldQueryWithoutPagination, newQueryWithoutPagination);
+        }
+
+        if (!onlyPaginationChanged) {
+          this.updateData(getParameterByName(PARAM_SORT));
+
+          if (Object.keys(newValue.query).length === 0) {
+            this.addStateToken();
+          }
         }
       }
       if (this.isSavedView) {
@@ -1131,10 +1161,7 @@ export default {
       }
 
       // TODO remove when we no longer need to convert old type[]=ISSUE params to new type[]=1 params
-      if (
-        this.glFeatures.workItemConfigurableTypes &&
-        this.filterTokens.some((token) => token.type === TOKEN_TYPE_TYPE)
-      ) {
+      if (this.filterTokens.some((token) => token.type === TOKEN_TYPE_TYPE)) {
         const tokens = convertOldTypeTokenEnumToGid(this.filterTokens, workItemTypesConfiguration);
         this.handleFilter(tokens);
       }
@@ -1222,9 +1249,7 @@ export default {
       const filteredTokens = tokens.filter(
         (token) => availableTokenTypes.includes(token.type) || token.type === FILTERED_SEARCH_TERM,
       );
-      return this.glFeatures.workItemConfigurableTypes
-        ? convertLegacyTypeFormat(filteredTokens, this.getWorkItemTypeConfiguration)
-        : filteredTokens;
+      return convertLegacyTypeFormat(filteredTokens, this.getWorkItemTypeConfiguration);
     },
     restoreViewDraft() {
       const draft = localStorage.getItem(this.savedViewDraftStorageKey);
@@ -1378,26 +1403,52 @@ export default {
         sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
-      const tokens = getFilterTokens(window.location.search, {
+      let tokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
         convertTypeTokens: true,
       });
-      this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
+      tokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
       if (!this.hasStateToken && this.state === STATUS_ALL) {
-        this.filterTokens = this.filterTokens.filter(
-          (filterToken) => filterToken.type !== TOKEN_TYPE_STATE,
-        );
+        tokens = tokens.filter((filterToken) => filterToken.type !== TOKEN_TYPE_STATE);
       }
 
-      this.pageParams = getInitialPageParams(
+      if (!isEqual(tokens, this.filterTokens)) {
+        this.filterTokens = tokens;
+      }
+
+      let afterCursor = getParameterByName(PARAM_PAGE_AFTER) ?? undefined;
+      let beforeCursor = getParameterByName(PARAM_PAGE_BEFORE) ?? undefined;
+
+      // REST keyset cursors include a `_kd` direction marker that GraphQL cursors omit.
+      // When a bookmarked URL is opened under a different API mode than the one that
+      // produced its cursor the cursor is unusable. Reset pagination to page 1.
+      const afterCompatible = isCursorCompatibleWithApi(afterCursor, this.useRestApi);
+      const beforeCompatible = isCursorCompatibleWithApi(beforeCursor, this.useRestApi);
+
+      if (!afterCompatible || !beforeCompatible) {
+        afterCursor = undefined;
+        beforeCursor = undefined;
+        updateHistory({
+          url: removeParams([PARAM_PAGE_AFTER, PARAM_PAGE_BEFORE]),
+          replace: true,
+        });
+      }
+
+      const newPageParams = getInitialPageParams(
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
         isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
-        getParameterByName(PARAM_PAGE_AFTER) ?? undefined,
-        getParameterByName(PARAM_PAGE_BEFORE) ?? undefined,
+        afterCursor,
+        beforeCursor,
       );
+
+      // Only update pageParams if they actually changed to avoid triggering duplicate queries
+      const paramsEqual = isEqual(this.pageParams, newPageParams);
+      if (!paramsEqual) {
+        this.pageParams = newPageParams;
+      }
 
       // Trigger pageSize UI component update based on URL changes
       this.pageSize = this.pageParams.firstPageSize || DEFAULT_PAGE_SIZE;
@@ -1498,7 +1549,21 @@ export default {
         return;
       }
 
-      this.$router.push({ query: this.urlParams }).catch((error) => {
+      // Preserve the detail panel params
+      // so navigating between pages or changing the page size does not
+      // close an open detail panel.
+      const query = {
+        ...this.urlParams,
+        [DETAIL_VIEW_QUERY_PARAM_NAME]:
+          getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME, undefined, { preservePlus: true }) ??
+          undefined,
+        [DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]:
+          getParameterByName(DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME, undefined, {
+            preservePlus: true,
+          }) ?? undefined,
+      };
+
+      this.$router.push({ query }).catch((error) => {
         if (error.name !== 'NavigationDuplicated') {
           throw error;
         }
@@ -1773,6 +1838,17 @@ export default {
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
+            <gl-button
+              v-if="isPlanningViewBoardEnabled"
+              data-testid="toggle-view-mode-button"
+              @click="viewMode = viewMode === 'list' ? 'board' : 'list'"
+            >
+              {{
+                viewMode === 'list'
+                  ? s__('WorkItemBoard|Show Board')
+                  : s__('WorkItemBoard|Show List')
+              }}
+            </gl-button>
           </template>
         </saved-views-selectors>
       </template>
@@ -1782,7 +1858,7 @@ export default {
         recent-searches-storage-key="issues"
         :search-input-placeholder="__('Search or filter results…')"
         :tokens="searchTokens"
-        :sort-options="sortOptions"
+        :sort-options="filteredSearchSortOptions"
         :initial-filter-value="filterTokens"
         :initial-sort-by="sortKey"
         sync-filter-and-sort
@@ -1807,6 +1883,7 @@ export default {
             {{ __('Display') }}
           </gl-button>
           <user-preferences
+            v-else
             :namespace-preferences="displaySettingsSoT.namespacePreferences"
             :common-preferences="displaySettings.commonPreferences"
             :full-path="rootPageFullPath"
@@ -1834,7 +1911,7 @@ export default {
               recent-searches-storage-key="issues"
               :search-input-placeholder="__('Search or filter results…')"
               :tokens="searchTokens"
-              :sort-options="sortOptions"
+              :sort-options="filteredSearchSortOptions"
               :initial-filter-value="filterTokens"
               :initial-sort-by="sortKey"
               sync-filter-and-sort
@@ -1859,6 +1936,7 @@ export default {
                   {{ __('Display') }}
                 </gl-button>
                 <user-preferences
+                  v-else
                   :namespace-preferences="displaySettingsSoT.namespacePreferences"
                   :common-preferences="displaySettings.commonPreferences"
                   :full-path="rootPageFullPath"
@@ -1878,8 +1956,8 @@ export default {
     <template v-if="!isServiceDeskList">
       <!-- state-count -->
       <div class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3">
-        <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
-          <span data-testid="work-item-count">{{ workItemTotalStateCount }}</span>
+        <div class="gl-flex gl-items-center">
+          <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
           <gl-button
             v-if="allowBulkEditing"
             size="small"
@@ -1890,14 +1968,6 @@ export default {
             @click="showBulkEditSidebar = true"
           >
             {{ __('Bulk edit') }}
-          </gl-button>
-          <gl-button
-            v-if="glFeatures.duoQuickActionWorkItemList"
-            size="small"
-            icon="tanuki-ai"
-            data-testid="analyze-items-button"
-          >
-            {{ s__('WorkItem|Analyze items') }}
           </gl-button>
         </div>
 
@@ -1956,6 +2026,8 @@ export default {
       </div>
     </template>
     <list-view
+      v-if="viewMode === 'list'"
+      data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
       :query-variables="queryVariables"
@@ -2052,10 +2124,26 @@ export default {
         </empty-state-without-any-issues>
       </template>
     </list-view>
+    <board-view
+      v-if="viewMode === 'board' && isPlanningViewBoardEnabled"
+      :root-page-full-path="rootPageFullPath"
+      :query-variables="queryVariables"
+      @set-error="($evt) => (error = $evt)"
+    />
     <work-item-display-settings-drawer
       v-if="isDisplaySettingsDrawerEnabled"
       :open="isDisplayDrawerOpen"
+      :sort-options="sortOptions"
+      :sort-key="sortKey"
+      :namespace-preferences="displaySettingsSoT.namespacePreferences"
+      :common-preferences="displaySettings.commonPreferences"
+      :full-path="rootPageFullPath"
+      :is-group="isGroup"
+      :is-service-desk-list="isServiceDeskList"
+      :work-item-type-id="workItemTypeId"
       @close="isDisplayDrawerOpen = false"
+      @sort="handleSort"
+      @update-settings="handleLocalDisplayPreferencesUpdate"
     />
   </div>
 </template>

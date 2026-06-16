@@ -4,11 +4,11 @@
 # It can take a `default_params`.
 
 RSpec.shared_examples 'issuable record that does not supports quick actions' do |with_widgets: false|
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:assignee) { create(:user, maintainer_of: project) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:labels) { create_list(:label, 3, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:assignee, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be(:labels, freeze: false) { create_list(:label, 3, project: project) }
 
   let(:new_descr) { "some updated description" }
   let(:base_params) { { title: 'My issuable title' } }
@@ -64,11 +64,11 @@ RSpec.shared_examples 'issuable record that does not supports quick actions' do 
 end
 
 RSpec.shared_examples 'issuable record that supports quick actions' do |with_widgets: false|
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:assignee) { create(:user, maintainer_of: project) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:labels) { create_list(:label, 3, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:assignee, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be(:labels, freeze: false) { create_list(:label, 3, project: project) }
 
   let(:new_descr) { "some updated description" }
   let(:base_params) { { title: 'My issuable title' } }

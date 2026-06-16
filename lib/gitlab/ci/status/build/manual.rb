@@ -13,7 +13,7 @@ module Gitlab
             {
               image: 'illustrations/empty-state/empty-job-manual-md.svg',
               size: '',
-              title: _('This job requires a manual action'),
+              title: _('This job requires manual action'),
               content: illustration_content
             }
           end

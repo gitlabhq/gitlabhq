@@ -1,6 +1,14 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteButton from './components/delete_button.vue';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export const initGroupDeleteButton = () => {
   const el = document.querySelector('#js-group-delete-button');
@@ -21,6 +29,7 @@ export const initGroupDeleteButton = () => {
   new Vue({
     el,
     name: 'GroupDeleteButtonRoot',
+    apolloProvider,
     provide: { triggerDeleteLocation: 'setting' },
     render(createElement) {
       return createElement(DeleteButton, {

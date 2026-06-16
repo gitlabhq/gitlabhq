@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/rescue_statement_timeout'
 
-RSpec.describe RuboCop::Cop::Database::RescueStatementTimeout do
+RSpec.describe RuboCop::Cop::Database::RescueStatementTimeout, feature_category: :database do
   it 'flags the use of ActiveRecord::StatementTimeout' do
     expect_offense(<<~RUBY)
       begin

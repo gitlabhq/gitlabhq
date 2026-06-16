@@ -128,6 +128,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 
   .merge-request-sticky-header {
     @include gl-container-width-up(md, panel) {
+      // stylelint-disable-next-line gitlab/no-has -- scoped to a specific sticky-header element
       &:has(.detail-page-description)::after {
         height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
       }
@@ -137,7 +138,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
         top: $calc-application-header-height;
         height: $merge-request-sticky-header-height;
         right: var(--scrollbar-width, 0);
-        @include translucent-glass-background;
+        @apply gl-bg-default;
         @apply gl-border-b;
         @apply gl-fixed;
         @apply gl-left-0;
@@ -173,9 +174,16 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
           @apply gl-hidden;
         }
 
-        .merge-request-tabs-container,
         .detail-page-description {
+          @apply gl-z-2;
+        }
+
+        .merge-request-tabs-container {
           @apply gl-z-1;
+        }
+
+        .merge-request-stack-toggle {
+          margin-top: -2px;
         }
       }
     }
@@ -186,7 +194,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
   .merge-request-sticky-header {
     z-index: calc($top-bar-z-index - 1);
     min-height: $mr-sticky-header-height; // Allow container to grow with content or browser zoom
-    @include translucent-glass-background;
+    @apply gl-bg-default;
   }
 }
 
@@ -232,6 +240,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
   inset: calc(-1 * var(--mr-tab-border-width)) 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to merge-request-tabs li
 .merge-request-tabs.merge-request-tabs li a:hover,
 .merge-request-tabs.merge-request-tabs li a:active,
 .merge-request-tabs.merge-request-tabs li a.active,
@@ -253,6 +262,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 // Use text-stroke instead of font-weight to visually emphasize active tabs
 // without changing the element's layout width, preventing tab bar shifts.
 @supports (-webkit-text-stroke: 0.025em) {
+  // stylelint-disable-next-line gitlab/no-has -- scoped to merge-request-tabs li
   .merge-request-tabs.merge-request-tabs li.active a,
   .merge-request-tabs.merge-request-tabs li:has(a.active) a,
   .merge-request-tabs.merge-request-tabs li a.active,

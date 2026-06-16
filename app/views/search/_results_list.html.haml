@@ -25,7 +25,7 @@
             %thead
               %tr
                 %th= _('User')
-                %th.text-right= _('Activity')
+                %th{ class: "!gl-text-right" }= _('Activity')
             %tbody
               - @search_objects.each_with_index do |user, index|
                 = render_if_exists partial: "search/results/user", locals: { user: user, index: index }

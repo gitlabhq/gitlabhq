@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'merge requests actions', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   let(:merge_request) do
     create(

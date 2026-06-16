@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:user) { create(:user) }
 
   let(:access_level) {}
@@ -63,7 +63,7 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['value']).to be_nil
           expect(json_response['protected']).to eq(variable.protected?)
-          expect(json_response['hidden']).to eq(true)
+          expect(json_response['hidden']).to be(true)
           expect(json_response['variable_type']).to eq(variable.variable_type)
           expect(json_response['environment_scope']).to eq(variable.environment_scope)
           expect(json_response['description']).to be_nil
@@ -86,7 +86,7 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['value']).to eq(variable.value)
           expect(json_response['protected']).to eq(variable.protected?)
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
           expect(json_response['variable_type']).to eq(variable.variable_type)
           expect(json_response['environment_scope']).to eq(variable.environment_scope)
           expect(json_response['description']).to be_nil
@@ -138,7 +138,7 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(json_response['key']).to eq('TEST_VARIABLE_2')
           expect(json_response['value']).to eq('PROTECTED_VALUE_2')
           expect(json_response['protected']).to be_truthy
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
           expect(json_response['masked']).to be_truthy
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['environment_scope']).to eq('*')
@@ -192,7 +192,7 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(json_response['key']).to eq('TEST_VARIABLE_2')
           expect(json_response['value']).to eq('VALUE_2')
           expect(json_response['protected']).to be_falsey
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
           expect(json_response['masked']).to be_falsey
           expect(json_response['raw']).to be_falsey
           expect(json_response['variable_type']).to eq('file')
@@ -297,7 +297,7 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { value: 'shrt', masked: true }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(variable.reload.masked).to eq(false)
+          expect(variable.reload.masked).to be(false)
           expect(json_response['message']).to eq('value' => ['is invalid'])
         end
 

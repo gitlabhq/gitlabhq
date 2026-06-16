@@ -15,7 +15,6 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
-        push_frontend_feature_flag(:allow_push_to_allowlisted_projects, @project)
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_environments, resource: @project, user: current_user)
       end
@@ -71,7 +70,7 @@ module Projects
       def reset_registration_token
         ::Ci::Runners::ResetRegistrationTokenService.new(@project, current_user).execute
 
-        flash[:toast] = _("New runners registration token has been generated!")
+        flash[:toast] = _("New runners registration token has been generated.")
         redirect_to namespace_project_settings_ci_cd_path
       end
 

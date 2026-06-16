@@ -1,0 +1,9 @@
+---
+name: ai_catalog_bulk_item_consumer_create
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595242
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236521
+rollout_issue_url:
+milestone: '19.1'
+type: wip
+group: group::workflow catalog
+default_enabled: false

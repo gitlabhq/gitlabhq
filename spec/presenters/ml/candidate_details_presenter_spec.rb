@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
-  let_it_be(:user) { build_stubbed(:user, :with_avatar) }
+  let_it_be(:user, freeze: false) { build_stubbed(:user, :with_avatar) }
   let_it_be(:project) { build_stubbed(:project, :private, creator: user) }
   let_it_be(:experiment) { build_stubbed(:ml_experiments, user: user, project: project, iid: 100) }
   let_it_be(:model_version) { build_stubbed(:ml_model_versions, project: project) }
-  let_it_be(:candidate) do
+  let_it_be(:candidate, freeze: false) do
     build_stubbed(:ml_candidates, :with_artifact, :with_ml_model, experiment: experiment, user: user, project: project,
       internal_id: 100)
   end
 
-  let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
-  let_it_be(:build) { candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
+  let_it_be(:pipeline, freeze: false) { build_stubbed(:ci_pipeline, project: project, user: user) }
+  let_it_be(:build, freeze: false) { candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
   let_it_be(:mr) { pipeline.merge_request = build_stubbed(:merge_request, source_project: project) }
 
   let_it_be(:metrics) do
@@ -194,7 +194,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
       end
 
       context 'when model version already exists' do
-        let_it_be(:candidate) do
+        let_it_be(:candidate, freeze: false) do
           build_stubbed(:ml_candidates, :with_artifact, :with_ml_model, experiment: experiment,
             user: user, project: project, internal_id: 100, model_version: model_version)
         end
@@ -205,7 +205,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
       end
 
       context 'when candidate package is generic' do
-        let_it_be(:candidate) do
+        let_it_be(:candidate, freeze: false) do
           build_stubbed(:ml_candidates, :with_artifact, :with_generic_package, experiment: experiment,
             user: user, project: project, internal_id: 100)
         end

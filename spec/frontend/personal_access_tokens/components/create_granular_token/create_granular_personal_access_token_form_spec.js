@@ -28,7 +28,6 @@ import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/com
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 import CreatedPersonalAccessToken from '~/personal_access_tokens/components/created_personal_access_token.vue';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
-import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
 import getSourcePersonalAccessToken from '~/personal_access_tokens/graphql/get_source_personal_access_token.query.graphql';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
 import {
@@ -54,10 +53,6 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   let mockApollo;
 
   const mockMutationHandler = jest.fn().mockResolvedValue(mockCreateMutationResponse);
-  const mockPermissionsHandler = jest
-    .fn()
-    .mockResolvedValue({ data: { accessTokenPermissions: [] } });
-
   const mockSourceTokenHandler = jest.fn().mockResolvedValue(mockGroupScopedTokenQueryResponse);
 
   const createComponent = ({
@@ -67,7 +62,6 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   } = {}) => {
     mockApollo = createMockApollo([
       [createGranularPersonalAccessTokenMutation, mutationHandler],
-      [getAccessTokenPermissions, mockPermissionsHandler],
       [getSourcePersonalAccessToken, sourceTokenHandler],
     ]);
 
@@ -81,6 +75,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       stubs: {
         GlSprintf,
         GlTabs: { template: '<div><slot name="tabs-end" /><slot /></div>' },
+        AskDapPermissions: true,
       },
     });
   };
@@ -108,6 +103,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     wrapper.findAllComponents(PersonalAccessTokenPermissionsSelector);
   const findGroupPermissionsSelector = () => findPermissionsSelectors().at(0);
   const findUserPermissionsSelector = () => findPermissionsSelectors().at(1);
+  const findInstancePermissionsSelector = () => findPermissionsSelectors().at(2);
 
   const findCreateButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findCancelButton = () => wrapper.findAllComponents(GlButton).at(1);
@@ -117,7 +113,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const fillFormWithValidData = async (
-    options = { groupPermissions: true, userPermissions: true },
+    options = { groupPermissions: true, userPermissions: true, instancePermissions: false },
   ) => {
     findNameInput().vm.$emit('input', mockCreateMutationInput.name);
     findDescriptionTextarea().vm.$emit('input', mockCreateMutationInput.description);
@@ -134,6 +130,13 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
     if (options.userPermissions) {
       findUserPermissionsSelector().vm.$emit('input', mockCreateMutationInput.user.permissions);
+    }
+
+    if (options.instancePermissions) {
+      findInstancePermissionsSelector().vm.$emit(
+        'input',
+        mockCreateMutationInput.instance.permissions,
+      );
     }
   };
 
@@ -232,23 +235,24 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
       const publicAccessLink = findLinks().at(1);
       expect(publicAccessLink.attributes('href')).toBe(
-        helpPagePath('auth/tokens/fine_grained_access_tokens.md', {
+        helpPagePath('auth/tokens/fine_grained_access_tokens_rest.md', {
           anchor: 'publicly-accessible-endpoints',
         }),
       );
       expect(publicAccessLink.attributes('target')).toBe('_blank');
     });
 
-    it('renders permissions selectors for group and user scope', () => {
+    it('renders permissions selectors for group, user, and instance scope', () => {
       expect(findTabs().exists()).toBe(true);
 
-      expect(findPermissionsSelectors()).toHaveLength(2);
+      expect(findPermissionsSelectors()).toHaveLength(3);
 
       expect(findGroupPermissionsSelector().props('targetBoundaries')).toEqual([
         'GROUP',
         'PROJECT',
       ]);
       expect(findUserPermissionsSelector().props('targetBoundaries')).toEqual(['USER']);
+      expect(findInstancePermissionsSelector().props('targetBoundaries')).toEqual(['INSTANCE']);
     });
   });
 
@@ -313,6 +317,9 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         'Add at least one resource with permissions.',
       );
       expect(findUserPermissionsSelector().props('error')).toBe(
+        'Add at least one resource with permissions.',
+      );
+      expect(findInstancePermissionsSelector().props('error')).toBe(
         'Add at least one resource with permissions.',
       );
     });
@@ -425,6 +432,28 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
               access: mockCreateMutationInput.group.access,
               resourceIds: mockCreateMutationInput.group.resourceIds,
               permissions: mockCreateMutationInput.group.permissions,
+            },
+          ],
+        },
+      });
+    });
+
+    it('submits form with an instance scope when instance permissions are selected', async () => {
+      await fillAndSubmitForm({
+        groupPermissions: false,
+        userPermissions: false,
+        instancePermissions: true,
+      });
+
+      expect(mockMutationHandler).toHaveBeenCalledWith({
+        input: {
+          name: mockCreateMutationInput.name,
+          description: mockCreateMutationInput.description,
+          expiresAt: mockCreateMutationInput.expirationDate,
+          granularScopes: [
+            {
+              access: mockCreateMutationInput.instance.access,
+              permissions: mockCreateMutationInput.instance.permissions,
             },
           ],
         },

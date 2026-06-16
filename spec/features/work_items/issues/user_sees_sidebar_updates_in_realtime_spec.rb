@@ -15,6 +15,8 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   end
 
   it 'updates the assignee in real-time' do
+    visit project_issue_path(project, issue)
+
     using_session :other_session do
       visit project_issue_path(project, issue)
 
@@ -22,9 +24,6 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
         expect(page).to have_text('None')
       end
     end
-
-    sign_in(user)
-    visit project_issue_path(project, issue)
 
     click_button 'assign yourself'
 
@@ -36,6 +35,8 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   end
 
   it 'updates the label in real-time' do
+    visit project_issue_path(project, issue)
+
     using_session :other_session do
       visit project_issue_path(project, issue)
 
@@ -43,9 +44,6 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
         expect(page).to have_text('None')
       end
     end
-
-    sign_in(user)
-    visit project_issue_path(project, issue)
 
     within_testid('work-item-labels') do
       click_on 'Edit'

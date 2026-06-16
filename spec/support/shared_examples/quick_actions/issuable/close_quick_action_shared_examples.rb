@@ -28,6 +28,8 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
         click_button "Create #{issuable_type.to_s.capitalize}"
       end
 
+      expect(page).to have_content 'bug 345'
+
       issuable = project.public_send(issuable_type.to_s.pluralize).first
 
       expect(issuable.description).to eq 'bug description'

@@ -1,8 +1,8 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: プロジェクトイシューボード 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: プロジェクトイシューボードAPI
 ---
 
 {{< details >}}
@@ -12,13 +12,13 @@ title: プロジェクトイシューボード
 
 {{< /details >}}
 
-すべてのAPIコールは、[イシューボード](../user/project/issue_board.md)で認証される必要があります。
+このAPIを使用して、[イシューボード](../user/project/issue_board.md)を管理します。このAPIへのすべての呼び出しには認証が必要です。
 
 ユーザーが非公開プロジェクトのメンバーでない場合、そのプロジェクトに対する`GET`リクエストの結果はステータスコード`404`になります。
 
-## プロジェクトのイシューボードをリスト表示する {#list-project-issue-boards}
+## すべてのプロジェクトイシューボードをリスト表示 {#list-all-project-issue-boards}
 
-指定されたプロジェクトのプロジェクトイシューボードを一覧表示します。
+指定されたプロジェクト内のすべてのイシューボードをリスト表示します。
 
 ```plaintext
 GET /projects/:id/boards
@@ -34,7 +34,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/boards"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -98,15 +98,15 @@ curl --request GET \
 ]
 ```
 
-ボードがアクティブ化されていないか、プロジェクトに存在しない場合の別の応答例:
+プロジェクトでボードがアクティベートされていないか、存在しない場合の別の応答例:
 
 ```json
 []
 ```
 
-## 単一のイシューボードを表示 {#show-a-single-issue-board}
+## イシューボードを取得する {#retrieve-an-issue-board}
 
-単一プロジェクトのイシューボードを取得します。
+プロジェクト内の指定されたイシューボードを取得します。
 
 ```plaintext
 GET /projects/:id/boards/:board_id
@@ -123,7 +123,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -187,7 +187,7 @@ curl --request GET \
 
 ## イシューボードを作成する {#create-an-issue-board}
 
-プロジェクトイシューボードを作成します。
+指定されたプロジェクトにイシューボードを作成します。
 
 ```plaintext
 POST /projects/:id/boards
@@ -201,10 +201,11 @@ POST /projects/:id/boards
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards?name=newboard"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards" \
+  --data "name=newboard"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -232,7 +233,7 @@ curl --request POST \
 
 ## イシューボードを更新する {#update-an-issue-board}
 
-プロジェクトイシューボードを更新します。
+プロジェクト内の指定されたイシューボードを更新します。
 
 ```plaintext
 PUT /projects/:id/boards/:board_id
@@ -242,21 +243,22 @@ PUT /projects/:id/boards/:board_id
 | ---------------------------- | -------------- | -------- | ----------- |
 | `id`                         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id`                   | 整数        | はい      | ボードのID。 |
-| `name`                       | 文字列         | いいえ       | ボードの新しい名前。 |
-| `hide_backlog_list`          | ブール値        | いいえ       | [Open]（オープン）リストを非表示にします。 |
-| `hide_closed_list`           | ブール値        | いいえ       | [Closed]（クローズ済）リストを非表示にします。 |
-| `assignee_id`                | 整数        | いいえ       | ボードのスコープを設定する担当者。PremiumおよびUltimateのみです。 |
-| `milestone_id`               | 整数        | いいえ       | ボードのスコープを設定するマイルストーン。PremiumおよびUltimateのみです。 |
-| `labels`                     | 文字列         | いいえ       | ボードのスコープを設定するラベル名のカンマ区切りリスト。PremiumおよびUltimateのみです。 |
-| `weight`                     | 整数        | いいえ       | ボードのスコープを設定するウェイト範囲（0～9）。PremiumおよびUltimateのみです。 |
+| `name`                       | 文字列         | いいえ       | 新しいボードの名前。 |
+| `hide_backlog_list`          | ブール値        | いいえ       | Openリストを非表示にします。 |
+| `hide_closed_list`           | ブール値        | いいえ       | Closedリストを非表示にします。 |
+| `assignee_id`                | 整数        | いいえ       | ボードのスコープとする担当者。PremiumおよびUltimateのみです。 |
+| `milestone_id`               | 整数        | いいえ       | ボードのスコープとするマイルストーン。PremiumおよびUltimateのみです。 |
+| `labels`                     | 文字列         | いいえ       | ボードのスコープとする、コンマ区切りのラベル名リスト。PremiumおよびUltimateのみです。 |
+| `weight`                     | 整数        | いいえ       | ボードのスコープとする0から9までのウェイト範囲。PremiumおよびUltimateのみです。 |
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1" \
+  --data "name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -318,7 +320,7 @@ curl --request PUT \
 
 ## イシューボードを削除する {#delete-an-issue-board}
 
-プロジェクトイシューボードを削除します。
+プロジェクト内の指定されたイシューボードを削除します。
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id
@@ -335,9 +337,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
-## プロジェクトイシューボードのボードリストをリスト表示 {#list-board-lists-in-a-project-issue-board}
+## イシューボード内のすべてのボードリストをリスト表示 {#list-all-board-lists-in-an-issue-board}
 
-ボードのリストのリストを取得します。`open`および`closed`リストは含まれません。
+指定されたイシューボード内のすべてのリストをリスト表示します。`open`および`closed`リストは含まれません。
 
 ```plaintext
 GET /projects/:id/boards/:board_id/lists
@@ -354,7 +356,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -397,9 +399,9 @@ curl --request GET \
 ]
 ```
 
-## 単一のボードリストを表示 {#show-a-single-board-list}
+## ボードリストを取得する {#retrieve-a-board-list}
 
-単一のボードリストを取得します。
+イシューボードから指定されたリストを取得します。
 
 ```plaintext
 GET /projects/:id/boards/:board_id/lists/:list_id
@@ -409,7 +411,7 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
-| `list_id`| 整数 | はい | ボードのリストのID。 |
+| `list_id`| 整数 | はい | ボードリストのID。 |
 
 ```shell
 curl --request GET \
@@ -417,7 +419,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -434,9 +436,9 @@ curl --request GET \
 }
 ```
 
-## ボードリストを作成 {#create-a-board-list}
+## ボードリストを作成する {#create-a-board-list}
 
-新しいイシューボードイシューボードリストを作成します。
+新しいイシューボードリストを作成します。
 
 ```plaintext
 POST /projects/:id/boards/:board_id/lists
@@ -447,23 +449,21 @@ POST /projects/:id/boards/:board_id/lists
 | `id` | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
 | `label_id` | 整数 | いいえ | ラベルのID。 |
-| `assignee_id` | 整数 | いいえ | ユーザーのIDPremiumおよびUltimateのみです。 |
+| `assignee_id` | 整数 | いいえ | ユーザーのID。PremiumおよびUltimateのみです。 |
 | `milestone_id` | 整数 | いいえ | マイルストーンのID。PremiumおよびUltimateのみです。 |
 | `iteration_id` | 整数 | いいえ | イテレーションのID。PremiumおよびUltimateのみです。 |
 
-{{< alert type="note" >}}
-
-ラベル、担当者、およびマイルストーンの引数は相互に排他的です。つまり、リクエストで許可されるのはいずれか1つのみです。各リストタイプに必要なライセンスに関する詳細は、[イシューボードドキュメント](../user/project/issue_board.md)を確認してください。
-
-{{< /alert >}}
+> [!note]
+> ラベル、assignee、およびマイルストーンの引数は相互に排他的であり、リクエストではそのうちの1つのみが受け入れられます。各リストタイプに必要なライセンスに関する詳細は、[イシューボードドキュメント](../user/project/issue_board.md)を確認してください。
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists" \
+  --data "label_id=5"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -480,9 +480,9 @@ curl --request POST \
 }
 ```
 
-## ボード内のリストを並べ替え {#reorder-a-list-in-a-board}
+## ボードリストを更新する {#update-a-board-list}
 
-既存のイシューボードイシューボードリストを更新します。このAPIコールは、リストの位置を変更するために使用されます。
+イシューボードから指定されたリストの位置を更新します。
 
 ```plaintext
 PUT /projects/:id/boards/:board_id/lists/:list_id
@@ -492,16 +492,17 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
-| `list_id` | 整数 | はい | ボードのリストのID。 |
+| `list_id` | 整数 | はい | ボードリストのID。 |
 | `position` | 整数 | はい | リストの位置。 |
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1" \
+  --data "position=2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -518,9 +519,15 @@ curl --request PUT \
 }
 ```
 
-## ボードからボードリストを削除 {#delete-a-board-list-from-a-board}
+## ボードからボードリストを削除する {#delete-a-board-list-from-a-board}
 
-管理者とプロジェクトオーナーのみを対象としています。ボードリストを削除します。
+イシューボードから指定されたリストを削除します。
+
+前提条件: 
+
+- 次のいずれかの操作を行います:
+  - プロジェクトのプランナー、レポーター、セキュリティマネージャー、デベロッパー、メンテナー、またはオーナーロール。
+  - 管理者アクセス権が必要です。
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id/lists/:list_id
@@ -530,7 +537,7 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `board_id` | 整数 | はい | ボードのID。 |
-| `list_id` | 整数 | はい | ボードのリストのID。 |
+| `list_id` | 整数 | はい | ボードリストのID。 |
 
 ```shell
 curl --request DELETE \

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Gitlab::BitbucketImport::StageMethods do
-  let_it_be(:project) { create(:project, :import_started, import_url: 'https://bitbucket.org/the-workspace/the-repo') }
+  let_it_be(:project, freeze: false) { create(:project, :import_started, import_url: 'https://bitbucket.org/the-workspace/the-repo') }
 
   describe '.sidekiq_retries_exhausted' do
     let(:job) { { 'args' => [project.id] } }

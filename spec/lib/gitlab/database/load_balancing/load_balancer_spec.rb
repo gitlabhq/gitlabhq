@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     it_behaves_like 'restrict within concurrent ruby', :read_write
 
     it 'yields a connection for a write' do
-      connection = ActiveRecord::Base.connection_pool.connection
+      connection = ActiveRecord::Base.connection_pool.lease_connection
 
       expect { |b| lb.read_write(&b) }.to yield_with_args(connection)
     end
@@ -254,7 +254,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     end
 
     it 'does not raise NoMethodError error when primary_only?' do
-      connection = ActiveRecord::Base.connection_pool.connection
+      connection = ActiveRecord::Base.connection_pool.lease_connection
       expected_error = Gitlab::Database::LoadBalancing::CONNECTION_ERRORS.first
 
       allow(lb).to receive(:primary_only?).and_return(true)
@@ -749,7 +749,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
   describe '#get_write_location' do
     it 'returns a string' do
-      expect(lb.send(:get_write_location, lb.pool.connection))
+      expect(lb.send(:get_write_location, lb.pool.lease_connection))
         .to be_a(String)
     end
 
@@ -760,7 +760,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
   describe '#wal_diff' do
     it 'returns the diff between two write locations' do
-      loc1 = lb.send(:get_write_location, lb.pool.connection)
+      loc1 = lb.send(:get_write_location, lb.pool.lease_connection)
 
       ActiveRecord::Schema.define do
         create_table :_test_load_balancing_test, force: true do |t|
@@ -768,7 +768,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
         end
       end
 
-      loc2 = lb.send(:get_write_location, lb.pool.connection)
+      loc2 = lb.send(:get_write_location, lb.pool.lease_connection)
       diff = lb.wal_diff(loc2, loc1)
 
       expect(diff).to be_positive

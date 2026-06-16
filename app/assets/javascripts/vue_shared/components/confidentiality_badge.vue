@@ -3,6 +3,7 @@ import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { confidentialityInfoText } from '../constants';
 
 export default {
+  name: 'ConfidentialityBadge',
   components: {
     GlBadge,
     GlIcon,

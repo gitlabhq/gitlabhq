@@ -8,7 +8,7 @@ RSpec.shared_examples 'OmniAuth user password authentication' do
       user.update!(password_automatically_set: false)
     end
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'when password authentication is disabled for users with an SSO identity' do
       before do
@@ -18,19 +18,19 @@ RSpec.shared_examples 'OmniAuth user password authentication' do
       context 'when the user has no SSO identity' do
         let!(:user) { create(:user) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when the user has a SAML identity' do
         let!(:user) { create(:omniauth_user, provider: 'saml', password_automatically_set: false) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the user has a different identity' do
         let!(:user) { create(:omniauth_user, password_automatically_set: false) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

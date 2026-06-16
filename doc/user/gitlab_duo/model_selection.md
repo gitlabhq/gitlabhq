@@ -23,25 +23,25 @@ The following table lists the default model for each GitLab Duo feature.
 | Feature | Model |
 |---------|---------------|
 | **Code Suggestions** | |
-| Code Generation | Claude Sonnet 4 Vertex |
+| Code Generation | Claude Sonnet 4.6 Vertex |
 | Code Completion | Codestral 25.08 Fireworks |
 | **GitLab Duo Chat** | |
-| General Chat | Claude Sonnet 4.5 Vertex |
-| Code Explanation | Claude Sonnet 4 |
-| Test Generation | Claude Sonnet 4.5 Vertex |
-| Refactor Code | Claude Sonnet 4.5 Vertex |
-| Fix Code | Claude Sonnet 4.5 Vertex |
-| Root Cause Analysis | Claude Sonnet 4 Vertex |
+| General Chat | Claude Sonnet 4.6 Vertex |
+| Code Explanation | Claude Sonnet 4.6 Vertex |
+| Test Generation | Claude Sonnet 4.6 Vertex |
+| Refactor Code | Claude Sonnet 4.6 Vertex |
+| Fix Code | Claude Sonnet 4.6 Vertex |
+| Root Cause Analysis | Claude Sonnet 4.6 Vertex |
 | **GitLab Duo for merge requests** | |
-| Merge Commit Message Generation | Claude Sonnet 4 Vertex|
-| Merge Request Summary | Claude Sonnet 4 Vertex |
-| Code Review Summary | Claude Sonnet 4 Vertex |
-| Code Review | Claude Sonnet 4 Vertex |
+| Merge Commit Message Generation | Claude Sonnet 4.6 Vertex|
+| Merge Request Summary | Claude Sonnet 4.6 Vertex |
+| Code Review Summary | Claude Sonnet 4.6 Vertex |
+| Code Review | Claude Sonnet 4.5 Vertex |
 | **Other GitLab Duo features** | |
 | Vulnerability Explanation | Claude Sonnet 4.6 Vertex |
 | Vulnerability Resolution | Claude Sonnet 4.6 Vertex |
-| Discussion Summary | Claude Sonnet 4.5 Vertex |
-| GitLab Duo for CLI | Claude Haiku 4.5 |
+| Discussion Summary | Claude Sonnet 4.6 Vertex |
+| GitLab Duo for CLI | Claude Sonnet 4.6 Vertex |
 
 ## Supported models
 
@@ -51,9 +51,6 @@ The following tables list the models you can select for each feature.
 
 | Model | Code Generation | Code Completion |
 |------------|-----------------|-----------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Bedrock | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
 | Codestral 25.08 Fireworks | {{< no >}} | {{< yes >}} |
@@ -66,18 +63,17 @@ The following tables list the models you can select for each feature.
 |------------|--------------|------------------|-----------------|---------------|----------|---------------------|
 | Claude Haiku 4.5 | {{< yes >}} | {{< no >}} | | | {{< no >}} | |
 | Claude Sonnet 3 | {{< no >}} | | | {{< no >}} | | {{< yes >}} |
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
 
 ### GitLab Duo for merge requests
 
 | Model | Merge Commit Message Generation | Merge Request Summary | Code Review Summary | Code Review |
 |------------|--------------------------------|------------------------|---------------------|-------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
 | Claude Sonnet 4.6 | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
 | Claude Sonnet 4.6 Vertex | {{< no >}} | {{< no >}} | {{< no >}} | {{< yes >}} |
 
@@ -87,10 +83,10 @@ The following tables list the models you can select for each feature.
 |------------|----------------------------|--------------------------|-------------------|---------------------|
 | Claude Haiku 3 | {{< yes >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
 | Claude Haiku 4.5 | {{< no >}} | | {{< yes >}} | {{< no >}} |
-| Claude Sonnet 4 |  | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} |  | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} |  |  | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 Vertex | {{< yes >}} |  |  | {{< yes >}} |
 
 ## Select a model for a feature
 
@@ -126,6 +122,23 @@ To select a model for a feature:
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
+
+### Selecting the right model
+
+For many use cases, starting with a faster, more cost-effective model like
+Claude Haiku 4.5 or GPT-5.4 Mini can be the optimal approach.
+For this approach:
+
+1. Select Claude Haiku 4.5 or GPT-5.4 Mini.
+1. Test your use case thoroughly.
+1. Evaluate if performance meets your requirements.
+1. Upgrade only if necessary for specific capability gaps.
+
+You can use this approach for the following:
+
+- Exploratory or high-volume tasks
+- Applications with strict latency requirements
+- Cost-sensitive implementations
 
 ## Troubleshooting
 

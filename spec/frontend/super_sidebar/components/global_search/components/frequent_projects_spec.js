@@ -40,6 +40,7 @@ describe('FrequentlyVisitedProjects', () => {
   });
 
   beforeEach(() => {
+    gon.current_username = 'root';
     currentUserFrecentProjectsQueryHandler = jest.fn().mockResolvedValue({
       data: {
         frecentProjects: frecentProjectsMock,
@@ -117,6 +118,17 @@ describe('FrequentlyVisitedProjects', () => {
 
     it('passes empty array to items', () => {
       expect(findFrequentItems().props('items')).toEqual([]);
+    });
+  });
+
+  describe('when user is not logged in', () => {
+    it('does not render frequent items, load frecent projects, and emits nothing-to-render event', () => {
+      gon.current_username = null;
+      createComponent();
+
+      expect(findFrequentItems().exists()).toBe(false);
+      expect(currentUserFrecentProjectsQueryHandler).not.toHaveBeenCalled();
+      expect(wrapper.emitted('nothing-to-render')).toHaveLength(1);
     });
   });
 });

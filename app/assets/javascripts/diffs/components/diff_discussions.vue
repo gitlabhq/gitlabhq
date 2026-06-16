@@ -6,6 +6,7 @@ import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 export default {
+  name: 'DiffDiscussions',
   components: {
     NoteableDiscussion,
     GlIcon,

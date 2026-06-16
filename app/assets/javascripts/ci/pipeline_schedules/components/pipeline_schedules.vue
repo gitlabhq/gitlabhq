@@ -59,7 +59,7 @@ export default {
     planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
   },
   sortStorageKey: TABLE_SORT_STORAGE_KEY,
-  docsLink: helpPagePath('administration/instance_limits', {
+  docsLink: helpPagePath('administration/cicd/limits.md', {
     anchor: 'number-of-pipeline-schedules',
   }),
   components: {

@@ -14,7 +14,7 @@ function provideAppData(appData) {
   };
 }
 
-function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store }) {
+function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store, showWhitespace }) {
   if (container.destroyApp) return;
   const mountTarget = document.createElement('div');
   container.appendChild(mountTarget);
@@ -26,11 +26,14 @@ function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store }
       return {
         store,
         userPermissions: appData.userPermissions,
+        sourceBranch: appData.sourceBranch,
+        iid: appData.iid,
         endpoints: provideAppData(appData),
         noteableType: appData.noteableType,
         filePaths: { oldPath, newPath },
         linkedFileData: appData.linkedFileData,
         newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
+        showWhitespace,
       };
     },
     render(h) {
@@ -54,7 +57,7 @@ function focusForm(id) {
 export const createFileDiscussionsAdapter = (store) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData } = this;
-    const { oldPath, newPath } = this.data;
+    const { oldPath, newPath, showWhitespace } = this.data;
     const fileCommentToggle = diffElement.querySelector('[data-click="fileComment"]');
     fileCommentToggle.disabled = false;
     fileCommentToggle.classList.remove('disabled');
@@ -65,7 +68,7 @@ export const createFileDiscussionsAdapter = (store) => ({
         if (matchedDiscussions.length === 0) return;
         const container = diffElement.querySelector('[data-file-discussions]');
         if (!container) return;
-        mountFileDiscussionsApp({ container, oldPath, newPath, appData, store });
+        mountFileDiscussionsApp({ container, oldPath, newPath, appData, store, showWhitespace });
       },
       { immediate: true },
     );

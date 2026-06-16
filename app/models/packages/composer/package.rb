@@ -7,7 +7,7 @@ module Packages
       VERSION_CACHE_SHA_MAX_LENGTH = 255.bytes
 
       self.table_name = :packages_composer_packages
-      self.inheritance_column = nil # rubocop:disable Database/AvoidInheritanceColumn -- suppress single table inheritance
+      def self.inheritance_column = nil
 
       validate :valid_composer_global_name
       validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },

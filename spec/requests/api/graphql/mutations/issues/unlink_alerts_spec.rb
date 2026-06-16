@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Unlink alert from an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:internal_alert) { create(:alert_management_alert, project: project) }
-  let_it_be(:external_alert) { create(:alert_management_alert, project: another_project) }
-  let_it_be(:incident) do
+  let_it_be(:internal_alert, freeze: false) { create(:alert_management_alert, project: project) }
+  let_it_be(:external_alert, freeze: false) { create(:alert_management_alert, project: another_project) }
+  let_it_be(:incident, freeze: false) do
     create(:incident, project: project, alert_management_alerts: [internal_alert, external_alert])
   end
 
@@ -96,6 +96,24 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
       let(:visible_remainded_alerts) { [] } # The user cannot fetch external alerts without reading permissions
 
       it_behaves_like 'unlinking'
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+        let(:user) { reporter }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(
+            :issue_unlink_alert,
+            {
+              project_path: project.full_path,
+              iid: incident.iid.to_s,
+              alert_id: internal_alert.to_global_id.to_s
+            },
+            'errors'
+          )
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
 
     context 'when the alert is external' do

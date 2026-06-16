@@ -2,12 +2,13 @@
 
 module Achievements
   class AwardService
-    attr_reader :current_user, :achievement_id, :recipient_id
+    attr_reader :current_user, :achievement_id, :recipient_id, :award_message
 
-    def initialize(current_user, achievement_id, recipient_id)
+    def initialize(current_user, achievement_id, recipient_id, award_message: nil)
       @current_user = current_user
       @achievement_id = achievement_id
       @recipient_id = recipient_id
+      @award_message = award_message
     end
 
     def execute
@@ -19,7 +20,8 @@ module Achievements
       user_achievement = Achievements::UserAchievement.create(
         achievement: achievement,
         user: recipient,
-        awarded_by_user: current_user)
+        awarded_by_user: current_user,
+        award_message: award_message)
       return error_awarding(user_achievement) unless user_achievement.persisted?
 
       NotificationService.new.new_achievement_email(recipient, achievement, user_achievement).deliver_later

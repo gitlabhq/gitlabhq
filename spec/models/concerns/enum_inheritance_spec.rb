@@ -9,7 +9,7 @@ module EnumInheritableTestCase
     def self.table_name = '_test_animals'
     def self.inheritance_column = 'species'
 
-    enum species: {
+    enum :species, {
       dog: 1,
       cat: 2,
       bird: 3

@@ -272,7 +272,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
     context 'when there is a project in group namespace' do
       let_it_be(:public_group) { create(:group, :public) }
-      let_it_be(:public_project, reload: true) { create(:project, :public, namespace: public_group) }
+      let_it_be_with_reload(:public_project) { create(:project, :public, namespace: public_group) }
 
       let_it_be(:public_group_owner) { create(:user) }
 
@@ -290,7 +290,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
     context 'when there is a private group and a public project' do
       let_it_be(:public_group) { create(:group, :public) }
       let_it_be(:private_group) { create(:group, :private, :nested) }
-      let_it_be(:public_project, reload: true) { create(:project, :public, namespace: public_group) }
+      let_it_be_with_reload(:public_project) { create(:project, :public, namespace: public_group) }
 
       let_it_be(:project_issue) { create(:issue, project: public_project) }
 

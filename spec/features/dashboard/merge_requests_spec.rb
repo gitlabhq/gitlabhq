@@ -76,6 +76,8 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
     end
 
     it 'passes axe automated accessibility testing' do
+      expect(find('#content-body')).not_to have_content('Loading')
+
       expect(page).to be_axe_clean.within('#content-body')
     end
   end
@@ -87,9 +89,6 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
 
     it 'shows an empty state' do
       expect(page).to have_selector('.gl-empty-state')
-    end
-
-    it 'passes axe automated accessibility testing' do
       expect(page).to be_axe_clean.within('#content-body')
     end
   end

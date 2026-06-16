@@ -10,6 +10,8 @@ module Mutations
         description: 'Set the incident severity level.'
 
       authorize :admin_issue
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:, iid:, severity:)
         issue = authorized_find!(project_path: project_path, iid: iid)

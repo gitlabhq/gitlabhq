@@ -63,6 +63,18 @@ module API
               using: ::API::Entities::WorkItems::Features::Hierarchy,
               documentation: { type: 'Entities::WorkItems::Features::Hierarchy' },
               expose_nil: true
+
+            expose_feature :award_emoji,
+              widget_name: :award_emoji,
+              using: ::API::Entities::WorkItems::Features::AwardEmoji,
+              documentation: { type: 'Entities::WorkItems::Features::AwardEmoji' },
+              expose_nil: true
+
+            expose_feature :notifications,
+              widget_name: :notifications,
+              using: ::API::Entities::WorkItems::Features::Notifications,
+              documentation: { type: 'Entities::WorkItems::Features::Notifications' },
+              expose_nil: true
           end
         end
       end

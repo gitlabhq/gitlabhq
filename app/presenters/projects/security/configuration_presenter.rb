@@ -23,7 +23,7 @@ module Projects
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
           cvs_for_container_scanning_enabled: cvs_for_container_scanning_enabled,
           cvs_for_dependency_scanning_enabled: cvs_for_dependency_scanning_enabled,
-
+          license_scanning_for_cyclonedx_enabled: license_scanning_for_cyclonedx_enabled,
           secret_push_protection_available: secret_push_protection_available?,
           secret_push_protection_enforced: secret_push_protection_enforced,
           secret_push_protection_enabled: secret_push_protection_enabled,
@@ -174,7 +174,8 @@ module Projects
       def cvs_for_dependency_scanning_enabled; end
       def cvs_for_container_scanning_available; end
       def cvs_for_dependency_scanning_available; end
-
+      def license_scanning_for_cyclonedx_available; end
+      def license_scanning_for_cyclonedx_enabled; end
       def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end
       def license_configuration_source; end

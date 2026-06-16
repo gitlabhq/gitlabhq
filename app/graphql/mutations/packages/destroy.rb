@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'DestroyPackage'
 
       authorize :destroy_package
+      authorize_granular_token permissions: :delete_package,
+        boundary_argument: :id, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::Packages::Package],

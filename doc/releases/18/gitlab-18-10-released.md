@@ -314,7 +314,7 @@ Configure [network access controls](../../user/duo_agent_platform/environment_sa
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Links: [Documentation](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md#configure-authentication-with-google-vertex-ai) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/591604)
+- Links: [Documentation](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md#configure-authentication-with-gemini-enterprise-agent-platform) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/591604)
 
 {{< /details >}}
 

@@ -270,4 +270,131 @@ describe('Resolver', () => {
       });
     });
   });
+
+  describe('per-display-type pagination behaviour', () => {
+    // Setting totalCount higher than the loaded nodes is what makes the
+    // resolver think "more data exists". hasNextPage only flips to true when
+    // the display type *also* opts into pagination via PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT.
+    const TOTAL_COUNT_WITH_MORE_DATA = MOCK_ISSUES.nodes.length + 30;
+
+    const parseOutputFor = ({ display, limit = null }) => ({
+      ...MOCK_PARSE_OUTPUT,
+      config: {
+        ...(display !== undefined && { display }),
+        ...(limit != null && { limit }),
+      },
+      variables: {
+        limit: { value: null, type: 'Int' },
+        after: { value: null, type: 'String' },
+        before: { value: null, type: 'String' },
+      },
+    });
+
+    const setup = async ({ display, limit = null } = {}) => {
+      mockUtils({ totalCount: TOTAL_COUNT_WITH_MORE_DATA });
+      parse.mockResolvedValue(parseOutputFor({ display, limit }));
+      createWrapper();
+      await waitForPromises();
+    };
+
+    const lastEmittedChange = () => wrapper.emitted('change').slice(-1)[0][0];
+
+    describe.each(['columnChart', 'lineChart'])('non-paginated display type: %s', (display) => {
+      it('does not set the default limit variable', async () => {
+        await setup({ display });
+
+        expect(execute).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: null, type: 'Int' } }),
+        );
+      });
+
+      it('honors an explicit limit from the GLQL block', async () => {
+        await setup({ display, limit: 5 });
+
+        expect(execute).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+        );
+      });
+
+      it('does not render pagination even when more data exists', async () => {
+        await setup({ display });
+
+        expect(findPagination().exists()).toBe(false);
+      });
+
+      it('emits hasNextPage as false', async () => {
+        await setup({ display });
+
+        expect(lastEmittedChange().hasNextPage).toBe(false);
+      });
+    });
+
+    describe.each([
+      ['list', 'list'],
+      ['orderedList', 'orderedList'],
+      ['table', 'table'],
+      ['(no display)', undefined],
+    ])('paginated display type: %s', (_label, display) => {
+      it('applies the default page size when no limit is set', async () => {
+        await setup({ display });
+
+        expect(execute).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: 20, type: 'Int' } }),
+        );
+      });
+
+      it('honors an explicit limit from the GLQL block', async () => {
+        await setup({ display, limit: 5 });
+
+        expect(execute).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+        );
+      });
+
+      it('preserves an explicit limit across loadMore calls', async () => {
+        await setup({ display, limit: 5 });
+        execute.mockClear();
+        execute.mockResolvedValue({
+          count: TOTAL_COUNT_WITH_MORE_DATA,
+          ...MOCK_ISSUES_PAGE_2,
+        });
+
+        findPagination().vm.$emit('loadMore');
+        await waitForPromises();
+
+        expect(execute).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+        );
+      });
+
+      it('renders pagination when more data exists', async () => {
+        await setup({ display });
+
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      it('passes the default page size to the pagination component when no limit is set', async () => {
+        await setup({ display });
+
+        expect(findPagination().props('pageSize')).toBe(20);
+      });
+
+      it('passes the explicit limit to the pagination component', async () => {
+        await setup({ display, limit: 5 });
+
+        expect(findPagination().props('pageSize')).toBe(5);
+      });
+
+      it('emits hasNextPage as true when more data exists', async () => {
+        await setup({ display });
+
+        expect(lastEmittedChange().hasNextPage).toBe(true);
+      });
+    });
+  });
 });

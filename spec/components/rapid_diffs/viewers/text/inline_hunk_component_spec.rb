@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category: :code_review_workflow do
-  let_it_be(:diff_file) { build(:diff_file) }
+  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
   let(:lines) { diff_file.diff_lines_with_match_tail }
   let(:hunk) { diff_file.viewer_hunks.first }
 
@@ -148,6 +148,66 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category:
     render_component(diff_hunk)
     expect(page).to have_selector("td[data-position] span")
     expect(page).not_to have_selector("td[data-position] a")
+  end
+
+  describe 'line coverage slot' do
+    it 'renders a slot on added lines carrying the new line number' do
+      added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('[data-line-coverage="5"]')
+    end
+
+    it 'renders a slot on context lines carrying the new line number' do
+      context_line = Gitlab::Diff::Line.new(" context", nil, 1, 4, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [context_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('[data-line-coverage="5"]')
+    end
+
+    it 'does not render a slot on removed lines' do
+      removed_line = Gitlab::Diff::Line.new("removed", 'old', 1, 5, nil)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [removed_line])
+      render_component(diff_hunk)
+      expect(page).not_to have_selector('[data-line-coverage]')
+    end
+
+    it 'does not render a slot on meta lines' do
+      meta_line = Gitlab::Diff::Line.new("@@ -1,3 +1,3 @@", 'match', 1, 0, 0)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [meta_line])
+      render_component(diff_hunk)
+      expect(page).not_to have_selector('[data-line-coverage]')
+    end
+  end
+
+  describe 'code quality slot' do
+    it 'renders a slot on added lines carrying the new line number' do
+      added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('[data-line-codequality="5"]')
+    end
+
+    it 'renders a slot on context lines carrying the new line number' do
+      context_line = Gitlab::Diff::Line.new(" context", nil, 1, 4, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [context_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('[data-line-codequality="5"]')
+    end
+
+    it 'does not render a slot on removed lines' do
+      removed_line = Gitlab::Diff::Line.new("removed", 'old', 1, 5, nil)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [removed_line])
+      render_component(diff_hunk)
+      expect(page).not_to have_selector('[data-line-codequality]')
+    end
+
+    it 'does not render a slot on meta lines' do
+      meta_line = Gitlab::Diff::Line.new("@@ -1,3 +1,3 @@", 'match', 1, 0, 0)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [meta_line])
+      render_component(diff_hunk)
+      expect(page).not_to have_selector('[data-line-codequality]')
+    end
   end
 
   def render_component(diff_hunk = hunk)

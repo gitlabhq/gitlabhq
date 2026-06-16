@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, feature_category: :integrations do
+RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, feature_category: :observability do
   describe '.call' do
     let(:sentry_event) do
       Sentry.get_current_client.event_from_exception(exception)

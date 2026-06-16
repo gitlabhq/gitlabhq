@@ -43,7 +43,7 @@ The `BulkProcessWorker` is a cron job that runs every minute and processes embed
 
 ### Embedding models
 
-Currently, semantic search uses **Vertex AI's `text-embedding-005` model** for generating embeddings. The model configuration is defined in the collection classes (for example, `Ai::ActiveContext::Collections::Code`).
+Currently, semantic search uses the `text-embedding-005` model of Gemini Enterprise Agent Platform for generating embeddings. The model configuration is defined in the collection classes (for example, `Ai::ActiveContext::Collections::Code`).
 
 Support for setting the embeddings model in a [Self-hosted AI Gateway](../../administration/gitlab_duo_self_hosted/_index.md)
 setup is planned in [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110). Once available, administrators
@@ -234,7 +234,7 @@ See the Semantic Code Search implementation for a complete example of how these 
 ### Prerequisites
 
 - Vector store connection configured (Elasticsearch, OpenSearch, or PostgreSQL with pgvector)
-- Vertex AI credentials configured for embedding generation
+- Gemini Enterprise Agent Platform credentials configured for embedding generation
 - Beta experiment features setting enabled for the instance
 
 ### Verifying prerequisites
@@ -421,14 +421,51 @@ See [epic 17749](https://gitlab.com/groups/gitlab-org/-/work_items/17749) for fu
    - Check: `Ai::ActiveContext::Connection.active.present?`
    - Solution: Configure vector store connection
 
-#### Clearing dead queue items
+#### Managing dead queue items
 
-If embedding generation fails repeatedly, items may be placed on a dead queue. Clear them using:
+If embedding generation fails repeatedly, items are placed on the dead queue. Use the Admin API to manage them without a Rails console.
 
-```ruby
-# Clear all dead queue items
-ActiveContext::DeadQueue.clear_tracking!
+**Check dead queue size**
 
-# Or clear a specific queue
-Ai::ActiveContext::Queues::Code.clear_tracking!
+The dead queue size is visible in the `Embedding Queues` section of the Rake task output:
+
+```shell
+sudo gitlab-rake gitlab:semantic_search:code:info
 ```
+
+**Clear all dead queue items**
+
+To discard all dead queue items:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_token>" \
+  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue"
+```
+
+Or via chatops:
+
+```plaintext
+/chatops run active_context dead_queue clear
+```
+
+**Replay dead queue items into a processing queue**
+
+To move dead queue items back into a processing queue for another attempt:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_token>" \
+  --data "queue=retry_queue" \
+  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue/replay"
+```
+
+Or via chatops (recommended):
+
+```plaintext
+/chatops run active_context dead_queue replay --queue=retry_queue
+```
+
+Valid queue values are `retry_queue`, `code`, and `code_backfill`. Use `retry_queue` to attempt
+processing once more before failing back to the dead queue. Use `code` to restart the full
+embedding pipeline from scratch.

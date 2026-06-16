@@ -1,7 +1,15 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import GroupActionsApp from '~/groups/show/actions/components/app.vue';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { formatGroup } from '~/groups/show/actions/formatter';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export const initGroupActions = () => {
   const el = document.querySelector('#js-group-more-actions-dropdown');
@@ -20,6 +28,7 @@ export const initGroupActions = () => {
   return new Vue({
     el,
     name: 'GroupActionsApp',
+    apolloProvider,
     provide: {
       triggerDeleteLocation: 'header',
       triggerRestoreLocation: 'header',

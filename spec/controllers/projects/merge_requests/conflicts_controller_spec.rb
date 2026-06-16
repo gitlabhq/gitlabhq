@@ -302,6 +302,24 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
       end
     end
 
+    context 'when a git command error occurs (e.g. pre-receive hook rejection)' do
+      before do
+        allow_next_instance_of(MergeRequests::Conflicts::ResolveService) do |instance|
+          allow(instance).to receive(:execute)
+                  .and_raise(Gitlab::Git::PreReceiveError.new('GitLab: hook rejected the push'))
+        end
+
+        resolve_conflicts([])
+      end
+
+      it 'returns a 422 status with the error message' do
+        aggregate_failures do
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('hook rejected the push')
+        end
+      end
+    end
+
     context 'when a file has identical content to the conflict' do
       before do
         content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts)
@@ -337,6 +355,24 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to have_received(:track_resolve_conflict_action).with(user: user)
+        end
+      end
+    end
+
+    context 'when Gitlab::Git::CommandError is raised' do
+      before do
+        allow_next_instance_of(MergeRequests::Conflicts::ResolveService) do |service|
+          allow(service).to receive(:execute)
+            .and_raise(Gitlab::Git::CommandError, 'error')
+        end
+
+        resolve_conflicts([])
+      end
+
+      it 'returns a 500 with the error message' do
+        aggregate_failures do
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response['message']).to include('error')
         end
       end
     end

@@ -57,7 +57,7 @@ RSpec.describe MergeRequests::Mergeability::CheckMergeTimeService, feature_categ
       let(:skip_check) { true }
 
       it 'returns true' do
-        expect(check_merge_time.skip?).to eq true
+        expect(check_merge_time.skip?).to be true
       end
     end
 
@@ -65,14 +65,14 @@ RSpec.describe MergeRequests::Mergeability::CheckMergeTimeService, feature_categ
       let(:skip_check) { false }
 
       it 'returns false' do
-        expect(check_merge_time.skip?).to eq false
+        expect(check_merge_time.skip?).to be false
       end
     end
   end
 
   describe '#cacheable?' do
     it 'returns false' do
-      expect(check_merge_time.cacheable?).to eq false
+      expect(check_merge_time.cacheable?).to be false
     end
   end
 end

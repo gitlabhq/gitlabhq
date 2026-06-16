@@ -706,11 +706,16 @@ module Trigger
 
   class DatabaseTesting < Base
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
+    COMMIT_STATUS_NAME = 'database-testing'
+    COMMIT_STATUS_DESCRIPTION = 'Database testing pipeline running on ops.gitlab.net and it needs to finish'
 
     def invoke!
       pipeline = super
       project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
       merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
+
+      post_pending_commit_status(project_path, variables['UPSTREAM_TARGET_SHA'])
+
       comment = <<~COMMENT.strip
         <!-- #{IDENTIFIABLE_NOTE_TAG} -->
         Started database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) (limited access). This comment will be updated once the pipeline has finished running.
@@ -758,7 +763,14 @@ module Trigger
       {
         'GITLAB_COMMIT_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         'TRIGGERED_USER_LOGIN' => ENV['GITLAB_USER_LOGIN'],
-        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
+        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
+        # Forwarded to the ops notifier so it can update the same `database-testing`
+        # commit status entry on the upstream project when the downstream pipeline
+        # finishes. Uses CI_COMMIT_SHA (the merge-commit SHA in merged-results
+        # pipelines) so the status lands on the SHA that the MR's head pipeline
+        # runs against and surfaces in the pipeline graph.
+        # See https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/issues/172.
+        'UPSTREAM_TARGET_SHA' => ENV['CI_COMMIT_SHA']
       }
     end
 
@@ -768,6 +780,21 @@ module Trigger
 
     def primary_ref
       'master'
+    end
+
+    # Post a pending `database-testing` commit status on the upstream project so
+    # the gitlab.com merge gate waits for the downstream ops pipeline. The ops
+    # notifier updates this same status to success/failed when the pipeline
+    # finishes.
+    def post_pending_commit_status(project_path, sha)
+      com_gitlab_client.update_commit_status(
+        project_path,
+        sha,
+        'pending',
+        name: COMMIT_STATUS_NAME,
+        target_url: ENV['CI_JOB_URL'],
+        description: COMMIT_STATUS_DESCRIPTION
+      )
     end
   end
 

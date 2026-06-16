@@ -64,6 +64,52 @@ module API
             package_revisions.find_by_revision(params[:package_revision])
           end
           strong_memoize_attr :package_revision
+
+          def v1_revisions_backward_compatibility_enabled?
+            Feature.enabled?(:packages_conan_v1_revisions_backward_compatibility, project)
+          end
+
+          def default_recipe_revision?
+            params[:recipe_revision] == ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
+          end
+
+          # v1 packages have files but no recipe/package revision records. We only fall back
+          # to the default "0" revision when installable v1 files exist, so files that are
+          # pending destruction or errored cannot advertise a phantom revision.
+          def v1_recipe_revision_fallback?
+            v1_revisions_backward_compatibility_enabled? &&
+              package.installable_package_files.without_conan_recipe_revision.exists?
+          end
+
+          def v1_package_revision_fallback?
+            v1_revisions_backward_compatibility_enabled? &&
+              default_recipe_revision? &&
+              package.installable_package_files
+                .with_conan_package_reference(params[:conan_package_reference])
+                .without_conan_recipe_revision
+                .without_conan_package_revision.exists?
+          end
+
+          def latest_recipe_revision
+            package.conan_recipe_revisions.default.order_by_id_desc.first ||
+              (package.default_recipe_revision if v1_recipe_revision_fallback?)
+          end
+
+          def latest_package_revision
+            package_revisions.default.order_by_id_desc.first ||
+              (package.default_package_revision if v1_package_revision_fallback?)
+          end
+
+          def package_references_for_recipe_revision
+            return recipe_revision.conan_package_references if recipe_revision
+            return unless default_recipe_revision?
+            return unless v1_recipe_revision_fallback?
+
+            # Scope to refs without a recipe revision so mixed v1+v2 packages do not leak v2
+            # refs, and to refs backed by installable v1 files so orphaned or partially-cleaned
+            # references are not advertised through the fallback path.
+            package.conan_package_references.without_recipe_revision.with_installable_package_files
+          end
         end
 
         params do
@@ -108,12 +154,7 @@ module API
                 get urgency: :low do
                   not_found!('Package') unless package
 
-                  revision = if Feature.disabled?(:packages_conan_v1_revisions_backward_compatibility, project)
-                               package.conan_recipe_revisions.default.order_by_id_desc.first
-                             else
-                               # Fall back to default revision '0' for Conan v1 compatibility
-                               package.latest_recipe_revision_or_default
-                             end
+                  revision = latest_recipe_revision
 
                   not_found!('Revision') unless revision
                   present revision, with: ::API::Entities::Packages::Conan::Revision
@@ -307,15 +348,11 @@ module API
                     authorize_read_package!(project)
                     not_found!('Package') unless package
 
-                    revision = recipe_revision
+                    references = package_references_for_recipe_revision
 
-                    if Feature.enabled?(:packages_conan_v1_revisions_backward_compatibility, project)
-                      revision ||= package
-                    end
+                    not_found!('Revision') unless references
 
-                    not_found!('Revision') unless revision
-
-                    revision.conan_package_references.pluck_reference_and_info.to_h
+                    references.pluck_reference_and_info.to_h
                   end
 
                   params do
@@ -343,12 +380,7 @@ module API
                       get urgency: :low do
                         not_found!('Package') unless package
 
-                        revision = package_revisions.default.order_by_id_desc.first
-
-                        # Fall back to default revision '0' for Conan v1 compatibility
-                        if Feature.enabled?(:packages_conan_v1_revisions_backward_compatibility, project)
-                          revision ||= package.default_package_revision
-                        end
+                        revision = latest_package_revision
 
                         not_found!('Revision') unless revision
                         present revision, with: ::API::Entities::Packages::Conan::Revision

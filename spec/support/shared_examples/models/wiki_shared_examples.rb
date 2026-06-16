@@ -3,7 +3,7 @@
 RSpec.shared_examples 'wiki model' do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user, :commit_email) }
+  let_it_be(:user, freeze: false) { create(:user, :commit_email) }
 
   let(:wiki_container) { raise NotImplementedError }
   let(:wiki_container_without_repo) { raise NotImplementedError }
@@ -109,7 +109,7 @@ RSpec.shared_examples 'wiki model' do
       end
 
       it 'returns true' do
-        expect(wiki.has_home_page?).to eq(true)
+        expect(wiki.has_home_page?).to be(true)
       end
 
       it 'returns false when #find_page raise an error' do
@@ -117,13 +117,13 @@ RSpec.shared_examples 'wiki model' do
           .to receive(:find_page)
           .and_raise(StandardError)
 
-        expect(wiki.has_home_page?).to eq(false)
+        expect(wiki.has_home_page?).to be(false)
       end
     end
 
     context 'when home page does not exist' do
       it 'returns false' do
-        expect(wiki.has_home_page?).to eq(false)
+        expect(wiki.has_home_page?).to be(false)
       end
     end
   end
@@ -600,7 +600,7 @@ RSpec.shared_examples 'wiki model' do
     end
 
     it 'returns nil if the page does not exist' do
-      expect(subject.find_file('non-existent')).to eq(nil)
+      expect(subject.find_file('non-existent')).to be_nil
     end
 
     it 'returns a Gitlab::Git::WikiFile instance' do
@@ -666,14 +666,14 @@ RSpec.shared_examples 'wiki model' do
   describe '#create_page' do
     shared_examples 'create_page tests' do
       it 'creates a new wiki page' do
-        expect(subject.create_page('test page', 'this is content')).not_to eq(false)
+        expect(subject.create_page('test page', 'this is content')).not_to be(false)
         expect(subject.list_pages.count).to eq(1)
       end
 
       it 'returns false when a duplicate page exists' do
         subject.create_page('test page', 'content')
 
-        expect(subject.create_page('test page', 'content')).to eq(false)
+        expect(subject.create_page('test page', 'content')).to be(false)
       end
 
       it 'stores an error message when a duplicate page exists' do
@@ -739,12 +739,12 @@ RSpec.shared_examples 'wiki model' do
 
         allow(subject).to receive(:file_exists_by_regex?).and_return(false)
 
-        expect(subject.create_page('test page', 'content')).to eq false
+        expect(subject.create_page('test page', 'content')).to be false
         expect(subject.error_message).to match(/Duplicate page:/)
       end
 
       it 'returns false if it has an invalid format', :aggregate_failures do
-        expect(subject.create_page('test page', 'content', :foobar)).to eq false
+        expect(subject.create_page('test page', 'content', :foobar)).to be false
         expect(subject.error_message).to match(/Invalid format selected/)
       end
 
@@ -841,7 +841,7 @@ RSpec.shared_examples 'wiki model' do
             raise GRPC::Unavailable, 'Gitaly broken in this spec'
           end
 
-          expect(subject.create_page('test page', 'content')).to eq(false)
+          expect(subject.create_page('test page', 'content')).to be(false)
           expect(subject.error_message).to match(/Gitaly broken in this spec/)
         end
 
@@ -851,7 +851,7 @@ RSpec.shared_examples 'wiki model' do
           end
 
           expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
-          expect(subject.create_page('test page', 'content')).to eq(false)
+          expect(subject.create_page('test page', 'content')).to be(false)
         end
       end
     end
@@ -879,7 +879,7 @@ RSpec.shared_examples 'wiki model' do
 
         specify :aggregate_failures do
           expect(subject).to receive(:after_wiki_activity)
-          expect(update_page).to eq true
+          expect(update_page).to be true
 
           page = subject.find_page(expected_title)
 
@@ -979,7 +979,7 @@ RSpec.shared_examples 'wiki model' do
         ])
 
         page = subject.find_page("folder with spaces/page with spaces in the path")
-        expect(subject.update_page(page.page, content: 'new content', format: :markdown)).to eq true
+        expect(subject.update_page(page.page, content: 'new content', format: :markdown)).to be true
 
         pages_after_update = subject.list_pages
         expect(pages_after_update.map(&:title)).to match_array([
@@ -995,7 +995,7 @@ RSpec.shared_examples 'wiki model' do
       let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
 
       it 'returns false and sets error message' do
-        expect(subject.update_page(page.page, content: 'new content', format: :foobar)).to eq false
+        expect(subject.update_page(page.page, content: 'new content', format: :foobar)).to be false
         expect(subject.error_message).to match(/Invalid format selected/)
       end
     end
@@ -1004,7 +1004,7 @@ RSpec.shared_examples 'wiki model' do
       let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
 
       it 'returns false and sets error message' do
-        expect(subject.update_page(page.page, content: 'new content', format: :creole)).to eq false
+        expect(subject.update_page(page.page, content: 'new content', format: :creole)).to be false
         expect(subject.error_message).to match(/Invalid format selected/)
       end
     end
@@ -1018,7 +1018,7 @@ RSpec.shared_examples 'wiki model' do
         end
 
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
-          .to eq(false)
+          .to be(false)
         expect(subject.error_message).to match(/Gitaly broken in this spec/)
       end
 
@@ -1029,7 +1029,7 @@ RSpec.shared_examples 'wiki model' do
 
         expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
-          .to eq(false)
+          .to be(false)
       end
 
       it 'returns false and sets error message if the repository raise an IndexError', :aggregate_failures do
@@ -1038,7 +1038,7 @@ RSpec.shared_examples 'wiki model' do
           .and_raise(Gitlab::Git::Index::IndexError.new)
 
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
-          .to eq(false)
+          .to be(false)
         expect(subject.error_message)
           .to match("Duplicate page: A page with that title already exists in the file test-page.md")
       end
@@ -1171,7 +1171,7 @@ RSpec.shared_examples 'wiki model' do
       let(:wiki_container) { wiki_container_without_repo }
 
       it 'changes the HEAD reference to the default branch' do
-        expect(wiki.empty?).to eq true
+        expect(wiki.empty?).to be true
 
         subject
 

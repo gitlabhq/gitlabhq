@@ -26,6 +26,7 @@ export default {
       default: false,
     },
   },
+  emits: ['showReplyForm'],
   data() {
     return {
       loading: false,

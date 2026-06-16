@@ -162,6 +162,11 @@ export default {
     isEditing() {
       return Boolean(this.initialFormValues[FORM_FIELD_ID]);
     },
+    pathInputClass() {
+      if (this.hasPathBeenManuallySet || !this.formValues[FORM_FIELD_PATH]?.length) return '';
+
+      return '!gl-bg-feedback-info';
+    },
   },
   watch: {
     [`formValues.${FORM_FIELD_NAME}`](newName) {
@@ -209,6 +214,7 @@ export default {
           :state="validation.state"
           :base-path="basePath"
           :is-editing="isEditing"
+          :input-class="pathInputClass"
           @input="onPathInput($event, input)"
           @input-suggested-path="input"
           @blur="blur"

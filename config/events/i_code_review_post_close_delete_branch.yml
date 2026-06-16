@@ -1,0 +1,17 @@
+---
+description: User clicks the delete source branch button on a closed merge request
+internal_events: true
+action: i_code_review_post_close_delete_branch
+identifiers:
+- project
+- namespace
+- user
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237646
+tiers:
+- free
+- premium
+- ultimate

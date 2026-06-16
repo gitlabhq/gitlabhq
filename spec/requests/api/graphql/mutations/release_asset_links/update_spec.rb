@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Updating an existing release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private, :repository) }
-  let_it_be(:release) { create(:release, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+  let_it_be(:release, freeze: false) { create(:release, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let_it_be(:release_link) do
+  let_it_be(:release_link, freeze: false) do
     create(
       :release_link,
       release: release,

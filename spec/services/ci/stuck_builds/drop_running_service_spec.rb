@@ -23,8 +23,8 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
   shared_examples 'running builds' do
     context 'when job is running' do
       let(:status) { 'running' }
-      let(:outdated_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago - 30.minutes }
-      let(:fresh_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago + 30.minutes }
+      let(:outdated_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago - 15.minutes }
+      let(:fresh_time) { described_class::BUILD_RUNNING_OUTDATED_TIMEOUT.ago + 15.minutes }
 
       context 'when job is outdated' do
         let(:created_at) { outdated_time }

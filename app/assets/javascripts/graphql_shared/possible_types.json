@@ -190,6 +190,7 @@
   "NoteableInterface": [
     "AlertManagementAlert",
     "BoardEpic",
+    "Commit",
     "CountableVulnerability",
     "Design",
     "Epic",
@@ -202,9 +203,16 @@
     "WikiPage"
   ],
   "NoteableType": [
+    "AlertManagementAlert",
+    "Commit",
     "Design",
+    "Epic",
     "Issue",
-    "MergeRequest"
+    "MergeRequest",
+    "ProjectComplianceViolation",
+    "Snippet",
+    "Vulnerability",
+    "WikiPage"
   ],
   "OrchestrationPolicy": [
     "ApprovalPolicy",
@@ -255,15 +263,18 @@
     "Epic",
     "Issue",
     "MergeRequest",
-    "WikiPage"
+    "WikiPage",
+    "WorkItem"
   ],
   "Registrable": [
     "AbuseReportUploadRegistry",
     "AchievementUploadRegistry",
     "AiVectorizableFileUploadRegistry",
+    "AlertManagementMetricImageUploadRegistry",
     "BulkImportExportUploadUploadRegistry",
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",
+    "DependencyListExportUploadRegistry",
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
     "DesignManagementActionUploadRegistry",
@@ -271,13 +282,16 @@
     "GroupUploadRegistry",
     "GroupWikiRepositoryRegistry",
     "ImportExportUploadUploadRegistry",
+    "IssuableMetricImageUploadRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
     "PackageFileRegistry",
+    "PackagesDebianProjectComponentFileRegistry",
     "PackagesHelmMetadataCacheRegistry",
     "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
+    "PersonalSnippetUploadRegistry",
     "PipelineArtifactRegistry",
     "ProjectImportExportRelationExportUploadUploadRegistry",
     "ProjectRepositoryRegistry",
@@ -286,8 +300,10 @@
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
     "UploadRegistry",
+    "UserPermissionExportUploadUploadRegistry",
     "UserUploadRegistry",
     "VulnerabilityArchiveExportUploadRegistry",
+    "VulnerabilityExportPartUploadRegistry",
     "VulnerabilityExportUploadRegistry"
   ],
   "RegistryInterface": [

@@ -15,6 +15,10 @@ module BranchRules
 
       ServiceResponse.error(message: 'Failed to delete branch rule.')
     end
+
+    def execute_on_all_branches_rule
+      ServiceResponse.error(message: 'All branches rules cannot be deleted.')
+    end
   end
 end
 

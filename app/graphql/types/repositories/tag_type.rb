@@ -7,10 +7,7 @@ module Types
 
       authorize :read_code
       authorize_granular_token permissions: :read_repository_tag,
-        boundary: ->(obj) {
-          container = obj.repository.container
-          container if container.is_a?(Project)
-        },
+        boundary: :project,
         boundary_type: :project
 
       field :name,

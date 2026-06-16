@@ -22,22 +22,22 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
   end
 
   context 'with Debian components and architectures' do
-    let_it_be(:component_main) { create("debian_#{container_type}_component", distribution: distribution, name: 'main') }
-    let_it_be(:component_contrib) { create("debian_#{container_type}_component", distribution: distribution, name: 'contrib') }
+    let_it_be(:component_main, freeze: false) { create("debian_#{container_type}_component", distribution: distribution, name: 'main') }
+    let_it_be(:component_contrib, freeze: false) { create("debian_#{container_type}_component", distribution: distribution, name: 'contrib') }
 
-    let_it_be(:architecture_all) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }
-    let_it_be(:architecture_amd64) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'amd64') }
-    let_it_be(:architecture_arm64) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'arm64') }
+    let_it_be(:architecture_all, freeze: false) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }
+    let_it_be(:architecture_amd64, freeze: false) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'amd64') }
+    let_it_be(:architecture_arm64, freeze: false) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'arm64') }
 
-    let_it_be(:component_file_old_main_amd64) { create("debian_#{container_type}_component_file", component: component_main, architecture: architecture_amd64, updated_at: '2020-01-24T08:00:00Z', file_sha256: 'a') } # destroyed
+    let_it_be(:component_file_old_main_amd64, freeze: false) { create("debian_#{container_type}_component_file", component: component_main, architecture: architecture_amd64, updated_at: '2020-01-24T08:00:00Z', file_sha256: 'a') } # destroyed
 
-    let_it_be(:component_file_oldest_kept_contrib_all) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_all, updated_at: '2020-01-24T10:55:00Z', file_sha256: 'b') } # oldest kept
-    let_it_be(:component_file_oldest_kept_contrib_amd64) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-24T10:55:00Z', file_sha256: 'c') } # oldest kept
-    let_it_be(:component_file_recent_contrib_amd64) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-25T15:17:18Z', file_sha256: 'd') } # kept, less than 1 hour ago
+    let_it_be(:component_file_oldest_kept_contrib_all, freeze: false) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_all, updated_at: '2020-01-24T10:55:00Z', file_sha256: 'b') } # oldest kept
+    let_it_be(:component_file_oldest_kept_contrib_amd64, freeze: false) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-24T10:55:00Z', file_sha256: 'c') } # oldest kept
+    let_it_be(:component_file_recent_contrib_amd64, freeze: false) { create("debian_#{container_type}_component_file", component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-25T15:17:18Z', file_sha256: 'd') } # kept, less than 1 hour ago
 
-    let_it_be(:component_file_empty_contrib_all_di) { create("debian_#{container_type}_component_file", :di_packages, :empty, component: component_contrib, architecture: architecture_all, updated_at: '2020-01-24T10:55:00Z') } # oldest kept
-    let_it_be(:component_file_empty_contrib_amd64_di) { create("debian_#{container_type}_component_file", :di_packages, :empty, component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-24T10:55:00Z') } # touched, as last empty
-    let_it_be(:component_file_recent_contrib_amd64_di) { create("debian_#{container_type}_component_file", :di_packages, component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-25T15:17:18Z', file_sha256: 'f') } # kept, less than 1 hour ago
+    let_it_be(:component_file_empty_contrib_all_di, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, :empty, component: component_contrib, architecture: architecture_all, updated_at: '2020-01-24T10:55:00Z') } # oldest kept
+    let_it_be(:component_file_empty_contrib_amd64_di, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, :empty, component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-24T10:55:00Z') } # touched, as last empty
+    let_it_be(:component_file_recent_contrib_amd64_di, freeze: false) { create("debian_#{container_type}_component_file", :di_packages, component: component_contrib, architecture: architecture_amd64, updated_at: '2020-01-25T15:17:18Z', file_sha256: 'f') } # kept, less than 1 hour ago
 
     let(:pool_prefix) do
       prefix = "pool/#{distribution.codename}"

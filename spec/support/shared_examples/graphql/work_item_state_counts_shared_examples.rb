@@ -6,8 +6,8 @@ require 'spec_helper'
 RSpec.shared_context 'with work item state count shared context' do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group, :private) }
 
   let(:params) { {} }
   subject(:query_counts) { post_graphql(query, current_user: current_user) }
@@ -76,18 +76,21 @@ end
 RSpec.shared_examples 'resolves work item state counts in a group' do |query_type|
   include_context 'with work item state count shared context'
 
-  let_it_be(:milestone) { create(:milestone, group: group) }
-  let_it_be(:label) { create(:group_label, group: group) }
-  let_it_be(:work_item_opened1) do
+  let_it_be(:milestone, freeze: false) { create(:milestone, group: group) }
+  let_it_be(:label, freeze: false) { create(:group_label, group: group) }
+  let_it_be(:work_item_opened1, freeze: false) do
     create(:work_item, namespace: group, milestone_id: milestone.id, labels: [label], title: 'Foo')
   end
 
-  let_it_be(:work_item_opened2) { create(:work_item, :confidential, namespace: group, author: current_user) }
-  let_it_be(:work_item_closed1) do
+  let_it_be(:work_item_opened2, freeze: false) do
+    create(:work_item, :confidential, namespace: group, author: current_user)
+  end
+
+  let_it_be(:work_item_closed1, freeze: false) do
     create(:work_item, :closed, :confidential, namespace: group, milestone_id: milestone.id)
   end
 
-  let_it_be(:work_item_closed2) do
+  let_it_be(:work_item_closed2, freeze: false) do
     create(:work_item, :epic, :closed, namespace: group, assignees: [current_user], labels: [label], description: 'Bar')
   end
 
@@ -170,18 +173,18 @@ end
 RSpec.shared_examples 'resolves work item state counts in a project' do |query_type|
   include_context 'with work item state count shared context'
 
-  let_it_be(:project) { create(:project, :repository, :private, group: group) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:label) { create(:label, project: project) }
-  let_it_be(:work_item_opened1) do
+  let_it_be(:project, freeze: false) { create(:project, :repository, :private, group: group) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be(:label, freeze: false) { create(:label, project: project) }
+  let_it_be(:work_item_opened1, freeze: false) do
     create(:work_item, project: project, milestone_id: milestone.id, title: 'Foo', labels: [label])
   end
 
-  let_it_be(:work_item_opened2) do
+  let_it_be(:work_item_opened2, freeze: false) do
     create(:work_item, project: project, author: current_user, assignees: [current_user], milestone_id: milestone.id)
   end
 
-  let_it_be(:work_item_closed) do
+  let_it_be(:work_item_closed, freeze: false) do
     create(:work_item, :closed, :confidential, project: project, description: 'Bar', labels: [label])
   end
 

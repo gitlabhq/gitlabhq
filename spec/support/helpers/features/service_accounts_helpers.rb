@@ -11,6 +11,10 @@ module Features
 
       open_service_account_options
       click_button s_('ServiceAccounts|Manage access tokens')
+
+      within_testid('access-token-table') do
+        expect(page).not_to have_selector('.gl-spinner')
+      end
     end
   end
 end

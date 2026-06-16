@@ -18,11 +18,12 @@ module API
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       params do
-        requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: 11 }
+        requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: '11' }
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get all Pipelines of the project' do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc 'List all project pipelines' do
+          detail 'Lists all pipelines in a project. By default, child pipelines are not included in the results. To ' \
+            'return child pipelines, set `source` to `parent_pipeline`.'
           success status: 200, model: Entities::Ci::PipelineBasic
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -88,8 +89,8 @@ module API
           present paginate(pipelines), with: Entities::Ci::PipelineBasicWithMetadata, project: user_project
         end
 
-        desc 'Create a new pipeline' do
-          detail 'This feature was introduced in GitLab 8.14'
+        desc 'Create a pipeline' do
+          detail 'Creates a pipeline in the specified project.'
           success status: 201, model: Entities::Ci::Pipeline
           failure [
             { code: 400, message: 'Bad request' },
@@ -129,8 +130,10 @@ module API
           end
         end
 
-        desc 'Gets the latest pipeline for the project branch' do
-          detail 'This feature was introduced in GitLab 12.3'
+        desc 'Retrieve the latest pipeline' do
+          detail 'Retrieves the latest pipeline for the most recent commit on a specified ref in a project. If no ' \
+            'pipeline exists for the commit, a `403` status code is returned. Use the `page` and `per_page` pagination ' \
+            'parameters to control the pagination of results.'
           success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -151,8 +154,8 @@ module API
           present latest_pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
-        desc 'Gets a specific pipeline for the project' do
-          detail 'This feature was introduced in GitLab 8.11'
+        desc 'Retrieve a pipeline' do
+          detail 'Retrieves a specified pipeline from a project. You can also get a child pipeline.'
           success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -175,7 +178,8 @@ module API
           present pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
-        desc 'Get pipeline jobs' do
+        desc 'List all jobs by pipeline' do
+          detail 'Lists all jobs for a specified pipeline.'
           success status: 200, model: Entities::Ci::Job
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -211,7 +215,8 @@ module API
           present paginate(builds), with: Entities::Ci::Job
         end
 
-        desc 'Get pipeline bridge jobs' do
+        desc 'List all trigger jobs by pipeline' do
+          detail 'Lists all trigger jobs for a specified pipeline.'
           success status: 200, model: Entities::Ci::Bridge
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -246,8 +251,9 @@ module API
           present paginate(bridges), with: Entities::Ci::Bridge
         end
 
-        desc 'Gets the variables for a given pipeline' do
-          detail 'This feature was introduced in GitLab 11.11'
+        desc 'List all pipeline variables' do
+          detail 'Lists all pipeline variables for a specified pipeline. Use the `page` and `per_page` pagination ' \
+            'parameters to control the pagination of results.'
           success status: 200, model: Entities::Ci::Variable
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -268,8 +274,8 @@ module API
           present pipeline.variables, with: Entities::Ci::Variable
         end
 
-        desc 'Gets the test report for a given pipeline' do
-          detail 'This feature was introduced in GitLab 13.0.'
+        desc 'Retrieve a test report for a pipeline' do
+          detail 'Retrieves a test report for a pipeline.'
           success status: 200, model: TestReportEntity
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -291,8 +297,8 @@ module API
           end
         end
 
-        desc 'Gets the test report summary for a given pipeline' do
-          detail 'This feature was introduced in GitLab 14.2'
+        desc 'Retrieve a test report summary for a pipeline' do
+          detail 'Retrieves a test report summary for a pipeline.'
           success status: 200, model: TestReportSummaryEntity
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -312,10 +318,11 @@ module API
           present pipeline.test_report_summary, with: TestReportSummaryEntity
         end
 
-        desc 'Deletes a pipeline' do
-          detail 'This feature was introduced in GitLab 11.6'
+        desc 'Delete a pipeline' do
+          detail 'Deletes a specified pipeline for a project.'
           http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]
           success code: 204, message: 'Pipeline was deleted'
+          failure [[403, 'Forbidden']]
           tags ['pipelines']
         end
         params do
@@ -338,8 +345,9 @@ module API
           end
         end
 
-        desc 'Updates pipeline metadata' do
-          detail 'This feature was introduced in GitLab 16.6'
+        desc 'Update pipeline metadata' do
+          detail 'Updates pipeline metadata. The metadata contains the name of the pipeline. This feature was ' \
+            'introduced in GitLab 16.6.'
           success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 400, message: 'Bad request' },
@@ -375,8 +383,9 @@ module API
           end
         end
 
-        desc 'Retry builds in the pipeline' do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc 'Retry jobs in a pipeline' do
+          detail 'Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the ' \
+            'pipeline, calling this endpoint has no effect.'
           success status: 201, model: Entities::Ci::Pipeline
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -407,8 +416,8 @@ module API
           end
         end
 
-        desc 'Cancel all builds in the pipeline' do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc 'Cancel all jobs for a pipeline' do
+          detail 'Cancels all jobs in a specified pipeline.'
           success status: 200, model: Entities::Ci::Pipeline
           failure [
             { code: 401, message: 'Unauthorized' },

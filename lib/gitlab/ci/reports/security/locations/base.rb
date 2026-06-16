@@ -9,7 +9,7 @@ module Gitlab
             include ::Gitlab::Utils::StrongMemoize
 
             def ==(other)
-              other.fingerprint == fingerprint
+              other.is_a?(self.class) && other.fingerprint == fingerprint
             end
 
             def fingerprint

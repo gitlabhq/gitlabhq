@@ -52,6 +52,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
     push_frontend_feature_flag(:blob_edit_refactor, @project)
     push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
+    push_frontend_feature_flag(:vue3_migrate_repository, current_user)
   end
 
   def new

@@ -1,7 +1,6 @@
 ---
 RSpec/SubjectDeclaration:
   Exclude:
-    - 'ee/spec/lib/ee/api/helpers/notes_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/llm/concerns/exponential_backoff_spec.rb'
     - 'ee/spec/lib/merge_requests/group_merge_request_approval_setting_changes_auditor_spec.rb'

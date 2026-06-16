@@ -6,7 +6,6 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { generateRouterParams } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { __ } from '~/locale';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
@@ -38,16 +37,24 @@ export default {
     'commitsFeedPath',
   ],
   props: {
+    currentRef: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    filePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     initialFilterTokens: {
       type: Array,
       required: false,
       default: () => [],
     },
   },
+  emits: ['filter', 'ref-change'],
   computed: {
-    currentPath() {
-      return this.$route.params.path || '';
-    },
     dropdownItems() {
       return [
         {
@@ -74,13 +81,30 @@ export default {
       };
     },
     refSelectorValue() {
-      return this.refType ? joinPaths('refs', this.refType, this.escapedRef) : this.escapedRef;
+      const ref = this.currentRef || this.escapedRef;
+      return this.refType ? joinPaths('refs', this.refType, ref) : ref;
     },
   },
   methods: {
     onRefChange(selectedRef) {
-      const { path, query, ref } = generateRouterParams(selectedRef, this.$route);
-      this.$emit('ref-change', ref);
+      const matches = selectedRef.match(/^refs\/(heads|tags)\/(.+)/) || [];
+      const [, refType = null, actualRef = selectedRef] = matches;
+
+      const query = { ...this.$route.query };
+      if (refType) {
+        query.ref_type = refType.toLowerCase();
+      } else {
+        delete query.ref_type;
+      }
+
+      // Use encodeURIComponent so the ref becomes a single path segment.
+      // Slashes inside the ref are encoded as %2F, which lets the Vue
+      // Router /:ref/:path* pattern parse the ref unambiguously — even
+      // during browser back/forward navigation.
+      const encodedRef = encodeURIComponent(actualRef);
+      const path = `/${encodedRef}/${this.filePath || ''}`;
+
+      this.$emit('ref-change', actualRef);
       this.$router.push({ path, query });
     },
   },
@@ -100,7 +124,7 @@ export default {
         :query-params="refSelectorQueryParams"
         @input="onRefChange"
       />
-      <commit-list-breadcrumb class="gl-grow" />
+      <commit-list-breadcrumb class="gl-grow" :file-path="filePath" />
     </div>
 
     <div class="gl-flex gl-items-center gl-justify-between">
@@ -108,9 +132,9 @@ export default {
 
       <div class="gl-flex gl-items-baseline gl-gap-3">
         <open-mr-badge
-          v-if="currentPath"
+          v-if="filePath"
           :project-path="projectFullPath"
-          :blob-path="currentPath"
+          :blob-path="filePath"
           :current-ref="escapedRef"
         />
         <gl-disclosure-dropdown

@@ -99,6 +99,17 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
         expect(project_namespace.shared_runners_enabled).to eq(project_shared_runners_enabled)
         expect(project_namespace.organization_id).to eq(project.organization_id)
       end
+
+      context 'when the project namespace is frozen' do
+        before do
+          project_namespace.freeze
+        end
+
+        it 'does not sync and does not raise' do
+          expect { project_namespace.sync_attributes_from_project(project) }.not_to raise_error
+          expect(project_namespace.name).not_to eq(project_new_name)
+        end
+      end
     end
 
     it 'syncs visibility_level if project is new' do

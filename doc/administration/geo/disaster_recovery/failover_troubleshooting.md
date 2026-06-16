@@ -19,7 +19,7 @@ when promoting a secondary to a primary site with strategies to resolve them.
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
 
-When [promoting a **secondary** site](_index.md#step-2-promoting-a-secondary-site),
+When [promoting a secondary site](_index.md#step-2-promoting-a-secondary-site),
 you might encounter the following error message:
 
 ```plaintext
@@ -48,7 +48,7 @@ or `gitlab-ctl promote-to-primary-node`, enter a Rails console and run:
 
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 
-When [promoting a **secondary** site](_index.md#step-2-promoting-a-secondary-site),
+When [promoting a secondary site](_index.md#step-2-promoting-a-secondary-site),
 you might encounter the following error message:
 
 ```plaintext
@@ -70,31 +70,31 @@ is displayed if you attempt to run this command on a primary site.
 ### Expired artifacts
 
 If you notice for some reason there are more artifacts on the Geo
-**secondary** site than on the Geo **primary** site, you can use the Rake task
+secondary site than on the Geo primary site, you can use the Rake task
 to [cleanup orphan artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 
-On a Geo **secondary** site, this command also cleans up all Geo
+On a Geo secondary site, this command also cleans up all Geo
 registry record related to the orphan files on disk.
 
 ### Fixing sign in errors
 
 #### Message: The redirect URI included is not valid
 
-If you are able to sign in to the web interface for the **primary** site, but you receive this error message
-when attempting to sign in to a **secondary** web interface, you should verify the Geo
+If you are able to sign in to the web interface for the primary site, but you receive this error message
+when attempting to sign in to a secondary web interface, you should verify the Geo
 site's URL matches its external URL.
 
 Prerequisites:
 
 - Administrator access.
 
-On the **primary** site:
+On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
-1. Find the affected **secondary** site and select **Edit**.
+1. Find the affected secondary site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
-   in `external_url "https://gitlab.example.com"` on the **Rails nodes of the secondary** site.
+   in `external_url "https://gitlab.example.com"` on the Rails nodes of the secondary site.
 
 #### Authenticating with SAML on the secondary site always lands on the primary site
 
@@ -104,7 +104,7 @@ This [problem is usually encountered when upgrading to GitLab 15.1](../../../upd
 
 The partial failover to a secondary Geo site may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
 
-1. SSH into every Sidekiq, PostgreSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
+1. SSH into every Sidekiq, PostgreSQL, Gitaly, and Rails node in the secondary site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -118,12 +118,12 @@ The partial failover to a secondary Geo site may be the result of a temporary/tr
      sudo gitlab-ctl geo promote --force
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
-1. If **successful**, the **secondary** site is now promoted to the **primary** site.
+1. Verify you can connect to the newly-promoted primary site using the URL used previously for the secondary site.
+1. If **successful**, the secondary site is now promoted to the primary site.
 
 If the previous steps are **not successful**, proceed through the next steps:
 
-1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
+1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the secondary site and perform the following operations:
 
    - Create a `/etc/gitlab/gitlab-cluster.json` file with the following content:
 
@@ -140,5 +140,5 @@ If the previous steps are **not successful**, proceed through the next steps:
      sudo gitlab-ctl reconfigure
      ```
 
-1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
+1. Verify you can connect to the newly-promoted primary site using the URL used previously for the secondary site.
+1. If successful, the secondary site is now promoted to the primary site.

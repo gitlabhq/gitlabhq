@@ -6,6 +6,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 export default {
+  name: 'MetadataComposer',
   i18n: {
     targetShaCopyButton: s__('PackageRegistry|Copy target SHA'),
     targetSha: s__('PackageRegistry|Target SHA: %{sha}'),

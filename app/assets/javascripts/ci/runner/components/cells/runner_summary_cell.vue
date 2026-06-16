@@ -18,6 +18,7 @@ import {
 import RunnerSummaryField from './runner_summary_field.vue';
 
 export default {
+  name: 'RunnerSummaryCell',
   components: {
     GlIcon,
     GlSprintf,

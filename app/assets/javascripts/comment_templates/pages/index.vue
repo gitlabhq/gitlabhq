@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
@@ -15,6 +14,7 @@ const DEFAULT_PAGINATION = {
 };
 
 export default {
+  name: 'CommentTemplatesIndex',
   apollo: {
     savedReplies: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,

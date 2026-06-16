@@ -10,7 +10,7 @@ module Types
 
     DEFAULT_COMPLEXITY = 1
 
-    attr_reader :doc_reference
+    attr_reader :doc_reference, :scopes
     attr_accessor :skip_type_authorization
 
     def initialize(**kwargs, &block)

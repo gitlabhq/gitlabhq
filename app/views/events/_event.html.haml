@@ -30,6 +30,8 @@
         = render "events/event/joined", event: event
       - elsif event.left_action? || event.expired_action?
         = render "events/event/left", event: event
+      - elsif event.transferred_action?
+        = render "events/event/transferred", event: event
       - else
         = render "events/event/common", event: event
     - elsif @user&.include_private_contributions?

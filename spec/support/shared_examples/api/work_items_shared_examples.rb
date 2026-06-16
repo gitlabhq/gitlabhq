@@ -64,12 +64,20 @@ RSpec.shared_examples 'work item pagination' do
 end
 
 RSpec.shared_examples 'work item authorization' do
-  it 'returns forbidden when feature flag is disabled' do
-    stub_feature_flags(work_item_rest_api: false)
+  it 'returns forbidden when both feature flags are disabled' do
+    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: false)
 
     get api(api_request_path, user)
 
     expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns success when only the index feature flag is enabled' do
+    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: true)
+
+    get api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:ok)
   end
 end
 
@@ -161,7 +169,9 @@ RSpec.shared_examples 'work item listing payload' do
       'moved_to_work_item_url' => nil,
       'user_permissions' => a_hash_including('create_note' => true, 'read_work_item' => true),
       'author' => a_hash_including('id' => primary_work_item.author_id,
-        'username' => primary_work_item.author.username, 'name' => primary_work_item.author.name
+        'username' => primary_work_item.author.username, 'name' => primary_work_item.author.name,
+        'web_url' => Gitlab::Routing.url_helpers.user_url(primary_work_item.author),
+        'web_path' => Gitlab::Routing.url_helpers.user_path(primary_work_item.author)
       ),
       'work_item_type' => a_hash_including(
         'name' => primary_work_item.work_item_type.name,
@@ -186,10 +196,12 @@ RSpec.shared_examples 'work item listing payload' do
 end
 
 RSpec.shared_examples 'avoids N+1 queries' do
-  let_it_be(:timelog_user) { create(:user) }
+  let_it_be(:timelog_user, freeze: false) { create(:user) }
 
   before do
     create(:issue_assignee, issue: primary_work_item, assignee: user)
+    first_note = create(:discussion_note_on_work_item, noteable: primary_work_item, project: project)
+    create(:discussion_note_on_work_item, noteable: primary_work_item, project: project, in_reply_to: first_note)
     create(:discussion_note_on_work_item, noteable: primary_work_item, project: project)
     create(:work_items_dates_source, :fixed, work_item: primary_work_item)
     create(:timelog, issue: primary_work_item, user: timelog_user, time_spent: 3600)
@@ -216,12 +228,21 @@ RSpec.shared_examples 'avoids N+1 queries' do
     create(:timelog, issue: extra_work_item, user: timelog_user, time_spent: 1800)
     extra_work_item.update_columns(last_edited_by_id: editor.id, last_edited_at: 1.day.ago)
 
+    # Settle first-request queries for any users created by the factories above before comparing
+    get api(api_request_path, user), params: { fields: all_fields_param, features: all_features_param }
+
     expect do
       get api(api_request_path, user), params: { fields: all_fields_param, features: all_features_param }
     end.to issue_same_number_of_queries_as(baseline)
 
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.size).to eq(expected_work_item_ids.size + 1)
+
+    # Verify user_discussions_count is correct per work item. Without the preload, the field
+    # silently falls back to 0 for every work item (no per-item query, so the N+1 check above
+    # would still pass). These value assertions are what actually catch a missing preload.
+    expect(work_item_json_for(primary_work_item)).to include('user_discussions_count' => 2)
+    expect(work_item_json_for(extra_work_item)).to include('user_discussions_count' => 1)
   end
 end
 
@@ -349,9 +370,32 @@ RSpec.shared_examples 'work item show endpoint' do
     expect(response).to have_gitlab_http_status(:forbidden)
   end
 
+  it 'returns forbidden when only the index feature flag is enabled' do
+    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: true)
+
+    get api(show_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
   it 'returns not found when the work item does not exist' do
     get api("#{api_request_path}/#{non_existing_record_iid}", user)
 
     expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns user_discussions_count counting distinct discussions' do
+    project = primary_work_item.project
+    # Two notes in the same discussion (parent + reply) collapse into one discussion,
+    # plus one note in a separate discussion, plus a system note that must be excluded -> 2.
+    parent_note = create(:discussion_note_on_work_item, noteable: primary_work_item, project: project)
+    create(:discussion_note_on_work_item, noteable: primary_work_item, project: project, in_reply_to: parent_note)
+    create(:discussion_note_on_work_item, noteable: primary_work_item, project: project)
+    create(:note, :system, noteable: primary_work_item, project: project)
+
+    get api(show_request_path, user), params: { fields: 'user_discussions_count' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('user_discussions_count' => 2)
   end
 end

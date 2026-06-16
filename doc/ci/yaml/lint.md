@@ -21,8 +21,11 @@ creation to try to find more complicated configuration problems.
 If you use the [pipeline editor](../pipeline_editor/_index.md), it verifies configuration
 syntax automatically.
 
-If you use VS Code, you can validate your CI/CD configuration with the
-[GitLab for VS Code extension](../../editor_extensions/visual_studio_code/_index.md).
+Alternatively, you can validate CI/CD configuration with:
+
+- The [GitLab for VS Code extension](../../editor_extensions/visual_studio_code/_index.md)
+- The [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/ci/lint/)
+- The [CI lint API endpoint](../../api/lint.md)
 
 ## Check CI/CD syntax
 

@@ -34,6 +34,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click'],
   methods: {
     isTabActive(tabName) {
       return tabName === this.currentTab;

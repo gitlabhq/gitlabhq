@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PackageTag'] do
+RSpec.describe GitlabSchema.types['PackageTag'], feature_category: :package_registry do
   it { expect(described_class.graphql_name).to eq('PackageTag') }
 
   it 'includes all the package tag fields' do

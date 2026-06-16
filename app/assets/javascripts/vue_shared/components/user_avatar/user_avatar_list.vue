@@ -4,6 +4,7 @@ import { sprintf, __ } from '~/locale';
 import UserAvatarLink from './user_avatar_link.vue';
 
 export default {
+  name: 'UserAvatarList',
   components: {
     UserAvatarLink,
     GlButton,

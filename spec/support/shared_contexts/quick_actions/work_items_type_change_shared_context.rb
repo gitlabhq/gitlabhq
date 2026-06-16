@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with work item change type context' do
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
   let(:new_type) { 'Task' }
   let(:with_access) { true }
 

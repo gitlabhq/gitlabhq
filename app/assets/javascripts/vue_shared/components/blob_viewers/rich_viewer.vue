@@ -13,6 +13,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'RichViewer',
   components: {
     MarkdownFieldView,
   },

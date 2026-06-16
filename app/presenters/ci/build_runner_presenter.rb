@@ -45,7 +45,8 @@ module Ci
       input_values = inputs.index_by(&:name)
 
       options.fetch(:inputs, {}).map do |name, spec|
-        input_value = input_values[name.to_s]&.value || spec[:default]
+        stored = input_values[name.to_s]
+        input_value = stored.nil? ? spec[:default] : stored.value
 
         {
           key: name,

@@ -10,6 +10,7 @@ import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query
 import issueCrmContactsSubscription from '../../queries/issue_crm_contacts.subscription.graphql';
 
 export default {
+  name: 'CrmContacts',
   crmDocsLink: `${DOCS_URL}/user/crm/`,
   components: {
     GlIcon,

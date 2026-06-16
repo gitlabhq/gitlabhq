@@ -38,6 +38,7 @@ Experimental features:
   Issues regarding such features should be opened in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Might be unstable.
 - Could be removed at any time.
+- Might not mature to general availability.
 - Might have a risk of data loss.
 - Might have no documentation, or information limited to just GitLab issues or a blog.
 - Might not have a finalized user experience, and might only be accessible through quick actions or API requests.

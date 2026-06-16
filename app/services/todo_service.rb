@@ -96,9 +96,7 @@ class TodoService
   #  * mark pending todos for all users with specific actions as done
   #
   def close_merge_request(merge_request, current_user)
-    if Feature.enabled?(:merge_request_resolve_all_user_todos, current_user)
-      resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
-    end
+    resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
 
     resolve_todos_for_target(merge_request, current_user)
   end
@@ -109,9 +107,7 @@ class TodoService
   #  * mark pending todos for all users with specific actions as done
   #
   def merge_merge_request(merge_request, current_user)
-    if Feature.enabled?(:merge_request_resolve_all_user_todos, current_user)
-      resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
-    end
+    resolve_todos_with_attributes_for_target(merge_request, { action: RESOLVE_ON_MR_FINALIZED_ACTIONS })
 
     resolve_todos_for_target(merge_request, current_user)
   end

@@ -1,16 +1,13 @@
 <script>
 import {
   GlAvatar,
-  GlIcon,
   GlDropdown,
   GlDropdownDivider,
   GlDropdownSectionHeader,
   GlDropdownItem,
   GlSearchBoxByType,
   GlLoadingIcon,
-  GlTooltip,
   GlButton,
-  GlSprintf,
 } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
@@ -21,6 +18,7 @@ import SidebarAssignee from './sidebar_assignee.vue';
 const DATA_REFETCH_DELAY = 250;
 
 export default {
+  name: 'SidebarAssignees',
   i18n: {
     FETCH_USERS_ERROR: s__(
       'AlertManagement|There was an error while updating the assignees list. Please try again.',
@@ -31,20 +29,16 @@ export default {
     UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR: s__(
       'AlertManagement|This assignee cannot be assigned to this alert.',
     ),
-    ASSIGNEES_BLOCK: s__('AlertManagement|Alert assignees: %{assignees}'),
   },
   components: {
     GlAvatar,
-    GlIcon,
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
     GlDropdownSectionHeader,
     GlSearchBoxByType,
     GlLoadingIcon,
-    GlTooltip,
     GlButton,
-    GlSprintf,
     SidebarAssignee,
   },
   props: {
@@ -64,10 +58,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    sidebarCollapsed: {
-      type: Boolean,
-      required: false,
     },
   },
   emits: ['alert-error', 'toggle-sidebar'],
@@ -195,87 +185,63 @@ export default {
 </script>
 
 <template>
-  <div
-    class="alert-assignees gl-w-7/10 gl-py-5"
-    :class="{ 'gl-border-b-1 gl-border-b-default gl-border-b-solid': !sidebarCollapsed }"
-  >
-    <template v-if="sidebarCollapsed">
-      <div
-        ref="assignees"
-        class="gl-mb-6 gl-ml-6"
-        data-testid="assignees-icon"
-        @click="$emit('toggle-sidebar')"
-      >
-        <gl-icon name="user" />
-        <gl-loading-icon v-if="isUpdating" size="sm" />
-      </div>
-      <gl-tooltip :target="() => $refs.assignees" boundary="viewport" placement="left">
-        <gl-sprintf :message="$options.i18n.ASSIGNEES_BLOCK">
-          <template #assignees>
-            {{ userName }}
-          </template>
-        </gl-sprintf>
-      </gl-tooltip>
-    </template>
-
-    <div v-else>
-      <p class="gl-mb-2 gl-flex gl-justify-between gl-leading-20 gl-text-default">
-        {{ __('Assignee') }}
-        <gl-button
-          v-if="isEditable"
-          ref="editButton"
-          category="tertiary"
-          size="small"
-          class="!gl-text-default"
-          @click="toggleFormDropdown"
-          @keydown.esc="hideDropdown"
-        >
-          {{ __('Edit') }}
-        </gl-button>
-      </p>
-
-      <gl-dropdown
-        ref="dropdown"
-        :text="dropDownTitle"
-        class="gl-w-full"
-        :class="dropdownClass"
-        toggle-class="dropdown-menu-toggle"
+  <div>
+    <p class="gl-mb-2 gl-flex gl-justify-between gl-leading-20 gl-text-default">
+      {{ __('Assignee') }}
+      <gl-button
+        v-if="isEditable"
+        ref="editButton"
+        category="tertiary"
+        size="small"
+        class="!gl-text-default"
+        @click="toggleFormDropdown"
         @keydown.esc="hideDropdown"
-        @hide="hideDropdown"
       >
-        <p class="gl-dropdown-header-top">
-          {{ __('Select assignees') }}
-        </p>
-        <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />
-        <div class="dropdown-content dropdown-body">
-          <template v-if="userListValid">
-            <gl-dropdown-item
-              :active="!userName"
-              active-class="is-active"
-              @click="updateAlertAssignees('')"
-            >
-              {{ __('Unassigned') }}
-            </gl-dropdown-item>
-            <gl-dropdown-divider />
+        {{ __('Edit') }}
+      </gl-button>
+    </p>
 
-            <gl-dropdown-section-header>
-              {{ __('Assignee') }}
-            </gl-dropdown-section-header>
-            <sidebar-assignee
-              v-for="user in sortedUsers"
-              :key="user.username"
-              :user="user"
-              :active="user.active"
-              @update-alert-assignees="updateAlertAssignees"
-            />
-          </template>
-          <p v-else-if="userListEmpty" class="gl-mx-5 gl-my-4">
-            {{ __('No Matching Results') }}
-          </p>
-          <gl-loading-icon v-else size="sm" />
-        </div>
-      </gl-dropdown>
-    </div>
+    <gl-dropdown
+      ref="dropdown"
+      :text="dropDownTitle"
+      class="gl-w-full"
+      :class="dropdownClass"
+      toggle-class="dropdown-menu-toggle"
+      @keydown.esc="hideDropdown"
+      @hide="hideDropdown"
+    >
+      <p class="gl-dropdown-header-top">
+        {{ __('Select assignees') }}
+      </p>
+      <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />
+      <div class="dropdown-content dropdown-body">
+        <template v-if="userListValid">
+          <gl-dropdown-item
+            :active="!userName"
+            active-class="is-active"
+            @click="updateAlertAssignees('')"
+          >
+            {{ __('Unassigned') }}
+          </gl-dropdown-item>
+          <gl-dropdown-divider />
+
+          <gl-dropdown-section-header>
+            {{ __('Assignee') }}
+          </gl-dropdown-section-header>
+          <sidebar-assignee
+            v-for="user in sortedUsers"
+            :key="user.username"
+            :user="user"
+            :active="user.active"
+            @update-alert-assignees="updateAlertAssignees"
+          />
+        </template>
+        <p v-else-if="userListEmpty" class="gl-mx-5 gl-my-4">
+          {{ __('No Matching Results') }}
+        </p>
+        <gl-loading-icon v-else size="sm" />
+      </div>
+    </gl-dropdown>
 
     <gl-loading-icon v-if="isUpdating" size="sm" :inline="true" />
     <div

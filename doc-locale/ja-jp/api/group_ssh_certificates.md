@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループSSH証明書API
 ---
 
@@ -15,14 +15,20 @@ title: グループSSH証明書API
 {{< history >}}
 
 - GitLab 16.4で`ssh_certificates_rest_endpoints`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/421915)されました。デフォルトでは無効になっています。
-- [GitLab 16.9のGitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/424501)になりました。
-- [一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/424501)はGitLab 17.7で開始されました。機能フラグ`ssh_certificates_rest_endpoints`は削除されました。
+- GitLab.comの[有効化](https://gitlab.com/gitlab-org/gitlab/-/issues/424501)（GitLab 16.9より）
+- GitLab 17.7で[一般提供開始](https://gitlab.com/gitlab-org/gitlab/-/issues/424501)。機能フラグ`ssh_certificates_rest_endpoints`は削除されました。
 
 {{< /history >}}
 
-このAPIを使用して、グループのSSH証明書を作成、読み取り、削除します。トップレベルグループのみがSSH証明書を保存できます。このAPIを使用するには、オーナーロールが割り当てられたユーザーとして[認証する](rest/authentication.md)必要があります。
+このAPIを使用して、[グループSSH証明書](../user/group/ssh_certificates.md)を管理します。トップレベルグループのみがSSH証明書を保存できます。
 
-## 特定のグループのすべてのSSH証明書を取得 {#get-all-ssh-certificates-for-a-particular-group}
+前提条件: 
+
+- トップレベルグループのオーナーである必要があります。
+
+## すべてのグループSSH証明書を一覧表示 {#list-all-group-ssh-certificates}
+
+指定されたグループのすべてのSSH証明書を一覧表示します。
 
 ```plaintext
 GET /groups/:id/ssh_certificates
@@ -36,14 +42,14 @@ GET /groups/:id/ssh_certificates
 
 APIの結果はページネーションされるため、デフォルトでは、`GET`リクエストは一度に20件の結果を返します。詳細については、[ページネーション](rest/_index.md#pagination)を参照してください。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/groups/90/ssh_certificates"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -62,9 +68,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## SSH証明書の作成 {#create-ssh-certificate}
+## グループSSH証明書を追加 {#add-a-group-ssh-certificate}
 
-グループに新しいSSH証明書を作成します。
+指定されたグループにグループSSH証明書を追加します。
 
 ```plaintext
 POST /groups/:id/ssh_certificates
@@ -78,7 +84,7 @@ POST /groups/:id/ssh_certificates
 | `key`     | 文字列     | はい       | SSH証明書の公開キー。|
 | `title`   | 文字列     | はい       | SSH証明書のタイトル。     |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -86,7 +92,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/5/ssh_certificates?title=newtitle&key=ssh-rsa+REDACTED+example%40gitlab.com"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -97,12 +103,12 @@ curl --request POST \
 }
 ```
 
-## グループSSH証明書の削除 {#delete-group-ssh-certificate}
+## グループSSH証明書を削除 {#delete-a-group-ssh-certificate}
 
-グループからSSH証明書を削除します。
+指定されたグループSSH証明書を削除します。
 
 ```plaintext
-DELETE /groups/:id/ssh_certificate/:id
+DELETE /groups/:id/ssh_certificates/:id
 ```
 
 パラメータは以下のとおりです:
@@ -112,7 +118,7 @@ DELETE /groups/:id/ssh_certificate/:id
 | `id`      | 整数 | はい       | グループのID           |
 | `id`      | 整数 | はい       | SSH証明書のID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

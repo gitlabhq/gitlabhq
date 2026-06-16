@@ -220,8 +220,10 @@ module IntegrationsHelper
   end
 
   def add_to_slack_link(parent, slack_app_id)
+    duo_enabled = Feature.enabled?(:slack_duo_agent, current_user)
+
     query = {
-      scope: SlackIntegration::SCOPES.join(','),
+      scope: SlackIntegration.scopes_for(duo_enabled: duo_enabled).join(','),
       client_id: slack_app_id,
       redirect_uri: add_to_slack_link_redirect_url(parent),
       state: form_authenticity_token

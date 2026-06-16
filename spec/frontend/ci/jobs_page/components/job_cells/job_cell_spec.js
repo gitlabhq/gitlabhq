@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import JobCell from '~/ci/jobs_page/components/job_cells/job_cell.vue';
+import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import { mockJobsNodes, mockJobsNodesAsGuest } from 'jest/ci/jobs_mock_data';
 
 describe('Job Cell', () => {
@@ -26,6 +27,7 @@ describe('Job Cell', () => {
   const findForkIcon = () => wrapper.findByTestId('fork-icon');
   const findStuckIcon = () => wrapper.findByTestId('stuck-icon');
   const findAllTagBadges = () => wrapper.findAllByTestId('job-tag-badge');
+  const findCommitPopover = () => wrapper.findComponent(CommitPopover);
 
   const findBadgeById = (id) => wrapper.findByTestId(id);
 
@@ -115,6 +117,20 @@ describe('Job Cell', () => {
       it('renders a LinkCell with href set to null', () => {
         expect(findJobSha().text()).toBe(mockJob.shortSha);
         expect(findJobSha().props('href')).toBe(null);
+      });
+    });
+
+    describe('commit popover', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders CommitPopover when pipeline commit exists', () => {
+        expect(findCommitPopover().exists()).toBe(true);
+      });
+
+      it('passes pipeline.commit to CommitPopover', () => {
+        expect(findCommitPopover().props('commit')).toEqual(mockJob.pipeline.commit);
       });
     });
   });

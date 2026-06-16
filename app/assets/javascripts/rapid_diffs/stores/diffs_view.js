@@ -4,21 +4,28 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   TRACKING_CLICK_DIFF_VIEW_SETTING,
+  TRACKING_CLICK_SINGLE_FILE_SETTING,
   TRACKING_DIFF_VIEW_INLINE,
   TRACKING_DIFF_VIEW_PARALLEL,
+  TRACKING_MULTIPLE_FILES_MODE,
+  TRACKING_SINGLE_FILE_MODE,
 } from '~/diffs/constants';
 import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 
 export const useDiffsView = defineStore('diffsView', {
   state() {
     return {
       viewType: INLINE_DIFF_VIEW_TYPE,
       showWhitespace: true,
+      fileByFileMode: false,
       singleFileMode: false,
+      currentFileIndex: 0,
       updateUserEndpoint: undefined,
+      diffFileEndpoint: undefined,
       streamUrl: undefined,
       diffsStatsEndpoint: undefined,
       diffsStats: null,
@@ -32,11 +39,13 @@ export const useDiffsView = defineStore('diffsView', {
         added_lines: addedLines,
         removed_lines: removedLines,
         diffs_count: diffsCount,
+        real_size: realSize,
       } = data.diffs_stats;
       this.diffsStats = {
         addedLines,
         removedLines,
         diffsCount,
+        realSize,
       };
       if (data.overflow) {
         const {
@@ -55,10 +64,33 @@ export const useDiffsView = defineStore('diffsView', {
     },
     updateDiffView() {
       if (this.singleFileMode) {
-        // TODO: implement single file mode
+        this.loadCurrentFile();
         return;
       }
       useDiffsList().reloadDiffs(mergeUrlParams(this.requestParams, this.streamUrl));
+    },
+    loadCurrentFile() {
+      const file = useFileBrowser().flatBlobsList[this.currentFileIndex];
+      if (!file) return;
+      useDiffsList().loadSingleFile({
+        endpoint: this.diffFileEndpoint,
+        oldPath: file.filePaths.old,
+        newPath: file.filePaths.new,
+        viewType: this.viewType,
+        showWhitespace: this.showWhitespace,
+      });
+    },
+    goToFile(index) {
+      const { flatBlobsList } = useFileBrowser();
+      if (index < 0 || index >= flatBlobsList.length) return;
+      this.currentFileIndex = index;
+      this.loadCurrentFile();
+    },
+    goToNextFile() {
+      this.goToFile(this.currentFileIndex + 1);
+    },
+    goToPrevFile() {
+      this.goToFile(this.currentFileIndex - 1);
     },
     updateViewType(view) {
       this.viewType = view;
@@ -68,6 +100,18 @@ export const useDiffsView = defineStore('diffsView', {
         view === INLINE_DIFF_VIEW_TYPE ? TRACKING_DIFF_VIEW_INLINE : TRACKING_DIFF_VIEW_PARALLEL,
       ]);
       historyPushState(mergeUrlParams({ view }, window.location.href));
+      this.updateDiffView();
+    },
+    toggleFileByFile(value) {
+      this.fileByFileMode = value;
+      this.singleFileMode = value;
+      queueRedisHllEvents([
+        TRACKING_CLICK_SINGLE_FILE_SETTING,
+        value ? TRACKING_SINGLE_FILE_MODE : TRACKING_MULTIPLE_FILES_MODE,
+      ]);
+      if (this.updateUserEndpoint) {
+        axios.put(this.updateUserEndpoint, { view_diffs_file_by_file: value });
+      }
       this.updateDiffView();
     },
     updateShowWhitespace(value) {
@@ -86,7 +130,16 @@ export const useDiffsView = defineStore('diffsView', {
       return { view: this.viewType, w: this.showWhitespace ? '0' : '1' };
     },
     totalFilesCount() {
-      return this.diffsStats?.diffsCount;
+      return this.diffsStats?.realSize ?? this.diffsStats?.diffsCount;
+    },
+    currentFileNumber() {
+      return this.currentFileIndex + 1;
+    },
+    hasNextFile() {
+      return this.currentFileIndex < useFileBrowser().flatBlobsList.length - 1;
+    },
+    hasPrevFile() {
+      return this.currentFileIndex > 0;
     },
   },
 });

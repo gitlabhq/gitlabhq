@@ -15,23 +15,70 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import apolloProvider from '~/repository/graphql';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { initHomePanel } from '~/projects/home_panel';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
-  import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
-    .then(({ default: initTree }) => {
-      initTree();
-    })
-    .catch(() => {});
+  if (gon.features?.vue3MigrateRepository) {
+    (async () => {
+      try {
+        const { default: initTree } = await import(
+          /* webpackChunkName: 'treeList' */ 'ee_else_ce/repository?vue3'
+        );
+        initTree();
+        return;
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+
+      try {
+        const { default: initTree } = await import(
+          /* webpackChunkName: 'treeList' */ 'ee_else_ce/repository'
+        );
+        initTree();
+      } catch {
+        // Ignore fallback errors
+      }
+    })();
+  } else {
+    import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
+      .then(({ default: initTree }) => {
+        initTree();
+      })
+      .catch(() => {});
+  }
 }
 
 if (document.querySelector('.blob-viewer')) {
-  import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
-    .then(({ BlobViewer }) => {
-      new BlobViewer(); // eslint-disable-line no-new
-      initHeaderApp({ isReadmeView: true });
-    })
-    .catch(() => {});
+  if (gon.features?.vue3MigrateRepository) {
+    (async () => {
+      try {
+        const { BlobViewer } = await import(
+          /* webpackChunkName: 'blobViewer' */ '~/blob/viewer?vue3'
+        );
+        new BlobViewer(); // eslint-disable-line no-new
+        initHeaderApp({ isReadmeView: true });
+        return;
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+
+      try {
+        const { BlobViewer } = await import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer');
+        new BlobViewer(); // eslint-disable-line no-new
+        initHeaderApp({ isReadmeView: true });
+      } catch {
+        // Ignore fallback errors
+      }
+    })();
+  } else {
+    import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
+      .then(({ BlobViewer }) => {
+        new BlobViewer(); // eslint-disable-line no-new
+        initHeaderApp({ isReadmeView: true });
+      })
+      .catch(() => {});
+  }
 }
 
 if (document.querySelector('.project-show-activity')) {

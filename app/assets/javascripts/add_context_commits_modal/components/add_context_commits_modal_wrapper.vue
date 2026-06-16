@@ -23,6 +23,7 @@ import Token from './token.vue';
 import DateOption from './date_option.vue';
 
 export default {
+  name: 'AddContextCommitsModalWrapper',
   components: {
     GlModal,
     GlTabs,

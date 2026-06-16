@@ -1,0 +1,10 @@
+---
+name: work_items_traversal_ids_healing_service
+description: Enables the cron-driven healer that scans namespaces and realigns work item traversal IDs when an issue's denormalized namespace_traversal_ids diverges from the namespace's current traversal_ids.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592712
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226690
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592897
+milestone: '19.1'
+group: group::product planning
+type: ops
+default_enabled: true

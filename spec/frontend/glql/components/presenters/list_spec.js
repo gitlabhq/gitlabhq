@@ -3,11 +3,12 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import FieldPresenter from '~/glql/components/presenters/field.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
+import ProjectPresenter from '~/glql/components/presenters/project.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
+import { MOCK_FIELDS, MOCK_ISSUES, MOCK_PROJECT } from '../../mock_data';
 
 describe('ListPresenter', () => {
   let wrapper;
@@ -95,6 +96,38 @@ describe('ListPresenter', () => {
 
     fieldsWithoutTitle.forEach((field) => {
       expect(fieldKeys).toContain(field.key);
+    });
+  });
+
+  describe('per-type title alias', () => {
+    const projectFields = [
+      { key: 'name', label: 'Name', name: 'name' },
+      { key: 'updatedAt', label: 'Updated', name: 'updatedAt' },
+    ];
+    const projectData = {
+      nodes: [
+        { ...MOCK_PROJECT, id: 'gid://gitlab/Project/1', name: 'Wget2', updatedAt: '2026-05-22' },
+      ],
+    };
+
+    it('promotes the type-aliased field to the title heading for Project items', () => {
+      createWrapper({ data: projectData, fields: projectFields }, mountExtended);
+
+      expect(wrapper.find('h3').exists()).toBe(true);
+      expect(wrapper.find('h3').findComponent(ProjectPresenter).exists()).toBe(true);
+    });
+
+    it('hides the title-aliased field from the inline row', () => {
+      createWrapper({ data: projectData, fields: projectFields }, mountExtended);
+
+      const inlinePresenters = wrapper
+        .findByTestId('list-item-0')
+        .findAllComponents(FieldPresenter)
+        .wrappers.filter((w) => w.props('variant') === 'compact');
+      const inlineKeys = inlinePresenters.map((w) => w.props('fieldKey'));
+
+      expect(inlineKeys).not.toContain('name');
+      expect(inlineKeys).toContain('updatedAt');
     });
   });
 

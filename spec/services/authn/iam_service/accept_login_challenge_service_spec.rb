@@ -6,29 +6,23 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
   let_it_be(:user) { create(:user) }
 
   let(:iam_service_url) { 'https://iam.example.com' }
-  let(:iam_secret) { 'test-secret-token' }
   let(:challenge) { 'a' * 64 }
   let(:redirect_url) { "#{iam_service_url}/oauth2/authorize?client_id=test-app&login_verifier=#{'b' * 64}" }
 
-  let(:service) { described_class.new(challenge: challenge, user: user) }
+  let(:grpc_client) { instance_double(Authn::IamService::GrpcClient) }
+  let(:service) { described_class.new(challenge: challenge, user: user, client: grpc_client) }
 
   subject(:result) { service.execute }
 
   before do
-    allow(Authn::IamAuthService).to receive_messages(
-      url: iam_service_url,
-      secret: iam_secret
-    )
+    allow(Authn::IamAuthService).to receive(:url).and_return(iam_service_url)
   end
 
   describe '#execute' do
-    let(:http_response) do
-      instance_double(Gitlab::HTTP::Response, success?: true, code: 200,
-        body: { redirect_to: redirect_url }.to_json)
-    end
+    let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: redirect_url) }
 
     before do
-      allow(Gitlab::HTTP).to receive(:put).and_return(http_response)
+      allow(grpc_client).to receive(:accept_login_challenge).and_return(response)
     end
 
     context 'when the IAM service accepts the challenge' do
@@ -37,47 +31,31 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
         expect(result.payload[:redirect_to]).to eq(redirect_url)
       end
 
-      it 'sends the correct HTTP PUT request to the IAM service' do
+      it 'sends the correct gRPC request' do
         result
 
-        expect(Gitlab::HTTP).to have_received(:put).with(
-          "#{iam_service_url}#{described_class::ACCEPT_PATH}?challenge=#{challenge}",
-          hash_including(
-            body: { id: user.id.to_s, subject: user.id.to_s, name: user.name, email: user.email }.to_json,
-            headers: { 'Content-Type' => 'application/json',
-                       Authn::IamAuthService::IAM_AUTH_TOKEN_HEADER => iam_secret },
-            timeout: Authn::IamService::HttpClient::TIMEOUT_SECONDS
-          )
+        expect(grpc_client).to have_received(:accept_login_challenge).with(
+          challenge: challenge,
+          subject: user.id.to_s,
+          name: user.name,
+          email: user.email
         )
       end
     end
 
-    context 'when the IAM service returns an HTTP error' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: false, code: 400,
-          body: { error: 'Failed to accept login challenge' }.to_json)
+    context 'when the gRPC client raises a RequestError' do
+      before do
+        allow(grpc_client).to receive(:accept_login_challenge)
+          .and_raise(Authn::IamService::GrpcClient::RequestError, 'Failed to connect to IAM service')
       end
 
       include_examples 'iam service error response with user',
-        reason: :iam_request_failed,
-        message: 'IAM login accept failed: HTTP 400'
+        reason: :service_unavailable,
+        message: 'Failed to connect to IAM service'
     end
 
     context 'when the response is missing redirect_to' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: true, code: 200,
-          body: { some_other_field: 'value' }.to_json)
-      end
-
-      include_examples 'iam service error response with user',
-        reason: :invalid_response,
-        message: 'IAM login accept response missing redirect_to'
-    end
-
-    context 'when request succeeds but response body is nil' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: true, code: 200, body: nil)
-      end
+      let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: '') }
 
       include_examples 'iam service error response with user',
         reason: :invalid_response,
@@ -85,16 +63,11 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
     end
 
     context 'when redirect_to points to a different host' do
-      let(:http_response) do
-        instance_double(Gitlab::HTTP::Response, success?: true, code: 200,
-          body: { redirect_to: 'https://untrusted.com/oauth2/authorize' }.to_json)
-      end
+      let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: 'https://untrusted.com/oauth2/authorize') }
 
       include_examples 'iam service error response with user',
         reason: :invalid_redirect_url,
         message: 'IAM login accept response contains invalid redirect URL'
     end
-
-    include_examples 'iam service transport failure', http_method: :put
   end
 end

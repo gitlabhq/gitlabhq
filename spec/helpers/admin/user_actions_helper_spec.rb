@@ -13,7 +13,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a bot' do
-      let_it_be(:user) { build(:user, :bot) }
+      let_it_be(:user, freeze: false) { build(:user, :bot) }
 
       it { is_expected.to be_empty }
     end
@@ -25,7 +25,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a standard user' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       it do
         is_expected.to contain_exactly(
@@ -41,7 +41,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is an admin user' do
-      let_it_be(:user) { create(:user, :admin) }
+      let_it_be(:user, freeze: false) { create(:user, :admin) }
 
       it do
         is_expected.to contain_exactly(
@@ -57,25 +57,25 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is blocked by LDAP' do
-      let_it_be(:user) { create(:omniauth_user, :ldap_blocked) }
+      let_it_be(:user, freeze: false) { create(:omniauth_user, :ldap_blocked) }
 
       it { is_expected.to contain_exactly("edit", "ldap", "delete", "delete_with_contributions") }
     end
 
     context 'the user is blocked pending approval' do
-      let_it_be(:user) { create(:user, :blocked_pending_approval) }
+      let_it_be(:user, freeze: false) { create(:user, :blocked_pending_approval) }
 
       it { is_expected.to contain_exactly("edit", "approve", "reject") }
     end
 
     context 'the user is blocked' do
-      let_it_be(:user) { create(:user, :blocked) }
+      let_it_be(:user, freeze: false) { create(:user, :blocked) }
 
       it { is_expected.to contain_exactly("edit", "unblock", "delete", "delete_with_contributions") }
     end
 
     context 'the user is deactivated' do
-      let_it_be(:user) { create(:user, :deactivated) }
+      let_it_be(:user, freeze: false) { create(:user, :deactivated) }
 
       it do
         is_expected.to contain_exactly(
@@ -90,7 +90,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is locked' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         user.lock_access!
@@ -111,13 +111,13 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is banned' do
-      let_it_be(:user) { create(:user, :banned) }
+      let_it_be(:user, freeze: false) { create(:user, :banned) }
 
       it { is_expected.to contain_exactly("edit", "unban", "delete", "delete_with_contributions") }
     end
 
     context 'the user is trusted' do
-      let_it_be(:user) { create(:user, :trusted) }
+      let_it_be(:user, freeze: false) { create(:user, :trusted) }
 
       it do
         is_expected.to contain_exactly("edit",
@@ -132,7 +132,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the current_user does not have permission to delete the user' do
-      let_it_be(:user) { build(:user) }
+      let_it_be(:user, freeze: false) { build(:user) }
 
       before do
         allow(helper).to receive(:can?).and_call_original
@@ -144,7 +144,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
 
     context 'the user is a sole owner of a group' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         group.add_owner(user)
@@ -154,7 +154,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a bot' do
-      let_it_be(:user) { create(:user, :bot) }
+      let_it_be(:user, freeze: false) { create(:user, :bot) }
 
       it { is_expected.to match_array([]) }
     end

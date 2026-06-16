@@ -25,12 +25,12 @@ RSpec.shared_examples 'a Taskable' do
 
     describe '#tasks?' do
       it 'returns true when object has tasks' do
-        expect(subject.tasks?).to eq true
+        expect(subject.tasks?).to be true
       end
 
       it 'returns false when object has no tasks' do
         subject.description = 'Now I have no tasks'
-        expect(subject.tasks?).to eq false
+        expect(subject.tasks?).to be false
       end
     end
   end

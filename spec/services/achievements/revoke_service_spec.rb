@@ -8,7 +8,7 @@ RSpec.describe Achievements::RevokeService, feature_category: :user_profile do
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:achievement) { create(:achievement, namespace: group) }
-    let_it_be(:user_achievement) { create(:user_achievement, achievement: achievement) }
+    let_it_be(:user_achievement, freeze: false) { create(:user_achievement, achievement: achievement) }
 
     let(:user_achievement_param) { user_achievement }
 

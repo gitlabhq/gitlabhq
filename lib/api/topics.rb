@@ -119,6 +119,7 @@ module API
 
     desc 'Delete a topic' do
       detail 'This feature was introduced in GitLab 14.9.'
+      success code: 204, message: 'Resource deleted'
       tags ['project_topics']
     end
     params do

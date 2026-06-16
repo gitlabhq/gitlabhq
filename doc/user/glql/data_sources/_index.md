@@ -14,6 +14,7 @@ GLQL can query the following data sources:
 | [Pipelines](pipelines.md) | `Pipeline` | CI/CD pipelines. |
 | [Jobs](jobs.md) | `Job` | CI/CD jobs within pipelines. |
 | [Projects](projects.md) | `Project` | Projects within a namespace. |
+| [Code suggestions](code_suggestions.md) | `CodeSuggestion` | Aggregated Duo Code Suggestions analytics. |
 
 Each data source has its own set of supported fields for filtering, display, and sorting.
 

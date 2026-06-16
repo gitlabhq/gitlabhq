@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Glql::Data, feature_category: :integrations do
+RSpec.describe API::Entities::Glql::Data, feature_category: :custom_dashboards_foundation do
   let(:data) do
     {
       count: 42,

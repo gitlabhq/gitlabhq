@@ -271,8 +271,8 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     end
 
     context 'when updating work items that do not support requested widgets' do
-      let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
-      let_it_be(:task) { create(:work_item, work_item_type: task_type, project: project) }
+      let_it_be(:task_type, freeze: false) { build(:work_item_system_defined_type, :task) }
+      let_it_be(:task, freeze: false) { create(:work_item, work_item_type: task_type, project: project) }
       let_it_be(:issue) { create(:work_item, :issue, project: project) }
 
       let(:updatable_work_item_ids) { [task.to_gid.to_s, issue.to_gid.to_s] }
@@ -316,7 +316,7 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
   end
 
   context 'when work items have different types' do
-    let_it_be(:task) { create(:work_item, :task, project: project) }
+    let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
     let_it_be(:issue) { create(:work_item, :issue, project: project) }
     let(:updatable_work_item_ids) { [task.to_gid.to_s, issue.to_gid.to_s] }
 

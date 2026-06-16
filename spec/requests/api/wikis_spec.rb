@@ -17,12 +17,12 @@ RSpec.describe API::Wikis, feature_category: :wiki do
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, owners: user) }
-  let_it_be(:group_project) { create(:project, :wiki_repo, namespace: group) }
+  let_it_be(:group, freeze: false) { create(:group, owners: user) }
+  let_it_be(:group_project, freeze: false) { create(:project, :wiki_repo, namespace: group) }
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project_wiki_disabled) do
+  let_it_be(:project_wiki_disabled, freeze: false) do
     create(:project, :wiki_repo, :wiki_disabled).tap do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
@@ -817,8 +817,8 @@ RSpec.describe API::Wikis, feature_category: :wiki do
   end
 
   context 'when authenticated with a token that has the ai_workflows scope' do
-    let_it_be(:project) { create(:project, :wiki_repo) }
-    let_it_be(:wiki) { create(:project_wiki, project: project, user: user) }
+    let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
+    let_it_be(:wiki, freeze: false) { create(:project_wiki, project: project, user: user) }
     let_it_be(:wiki_page) { create(:wiki_page, wiki: wiki) }
     let(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 

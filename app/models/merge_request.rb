@@ -26,19 +26,6 @@ class MergeRequest < ApplicationRecord
   include Todoable
   include Spammable
 
-  ignore_columns %i[
-    latest_merge_request_diff_id_convert_to_bigint
-    assignee_id_convert_to_bigint
-    author_id_convert_to_bigint
-    id_convert_to_bigint
-    last_edited_by_id_convert_to_bigint
-    merge_user_id_convert_to_bigint
-    milestone_id_convert_to_bigint
-    source_project_id_convert_to_bigint
-    target_project_id_convert_to_bigint
-    updated_by_id_convert_to_bigint
-  ], remove_with: '19.1', remove_after: '2026-05-21'
-
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha
@@ -120,16 +107,23 @@ class MergeRequest < ApplicationRecord
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues,
+  has_many :merge_request_issues,
     class_name: 'MergeRequestsClosingIssues',
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :merge_request_closing_issues,
+    -> { link_type_closes },
+    class_name: 'MergeRequestsClosingIssues',
+    inverse_of: :merge_request
 
   has_one :approval_metrics,
     class_name: 'MergeRequest::ApprovalMetrics',
     inverse_of: :merge_request
 
-  has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
+  has_many :cached_closes_issues,
+    through: :merge_request_closing_issues,
+    source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
   has_many :suggestions, through: :notes
   has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note', inverse_of: :noteable
@@ -311,10 +305,11 @@ class MergeRequest < ApplicationRecord
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    after_transition [:unchecked, :checking] => :cannot_be_merged do |merge_request, transition|
+    after_transition [:unchecked, :checking] => :cannot_be_merged do |merge_request, _|
       merge_request.run_after_commit do
         next unless merge_request.notify_conflict?
 
+        publish_code_conflict_event
         NotificationService.new.merge_request_unmergeable(merge_request)
         TodoService.new.merge_request_became_unmergeable(merge_request)
       end
@@ -421,6 +416,7 @@ class MergeRequest < ApplicationRecord
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
+  scope :non_closed, -> { where.not(state_id: available_states[:closed]) }
   scope :open_and_closed, -> { with_state(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
@@ -1224,22 +1220,6 @@ class MergeRequest < ApplicationRecord
     diffs.diff_files.map(&:new_path)
   end
 
-  def diff_base_commit
-    if merge_request_diff.persisted?
-      merge_request_diff.base_commit
-    else
-      branch_merge_base_commit
-    end
-  end
-
-  def diff_start_commit
-    if merge_request_diff.persisted?
-      merge_request_diff.start_commit
-    else
-      target_branch_head
-    end
-  end
-
   def diff_head_commit
     if merge_request_diff.persisted?
       merge_request_diff.head_commit
@@ -1270,6 +1250,29 @@ class MergeRequest < ApplicationRecord
     else
       source_branch_head.try(:sha)
     end
+  end
+
+  def merged_in_repository?
+    merge_commit_sha.present? || read_attribute(:merged_commit_sha).present? || squash_commit_reachable_from_target_branch?
+  end
+
+  def squash_commit_reachable_from_target_branch?
+    return false if squash_commit_sha.blank?
+    return false unless target_project.repository.exists?
+
+    target_head = target_project.repository.commit(target_branch)
+    return false unless target_head
+
+    target_project.repository.ancestor?(squash_commit_sha, target_head.sha)
+  rescue Gitlab::Git::Repository::NoRepository, Gitlab::Git::CommandError => e
+    Gitlab::ErrorTracking.track_exception(
+      e,
+      merge_request_id: id,
+      merge_request_iid: iid,
+      project_id: target_project_id,
+      method: :squash_commit_reachable_from_target_branch?
+    )
+    false
   end
 
   # When importing a pull request from GitHub, the old and new branches may no
@@ -1448,10 +1451,6 @@ class MergeRequest < ApplicationRecord
     return true unless source_project
 
     !source_project.in_fork_network_of?(target_project)
-  end
-
-  def can_be_closed?
-    opened?
   end
 
   def ensure_merge_request_diff
@@ -1834,7 +1833,7 @@ class MergeRequest < ApplicationRecord
 
     transaction do
       update_cached_closing_issues_from_description!(squash_and_merge_commit_issue_ids)
-      existing_issue_ids = merge_requests_closing_issues.pluck(:issue_id)
+      existing_issue_ids = merge_request_closing_issues.pluck(:issue_id)
       issue_ids_to_create = squash_and_merge_commit_issue_ids - existing_issue_ids
 
       bulk_insert_cached_closing_issues(issue_ids_to_create)
@@ -1852,7 +1851,7 @@ class MergeRequest < ApplicationRecord
     issues_to_close_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
 
     transaction do
-      merge_requests_closing_issues.from_mr_description.delete_all
+      merge_request_closing_issues.from_mr_description.delete_all
 
       updated_issue_ids = update_cached_closing_issues_from_description!(issues_to_close_ids)
       issue_ids_to_create = issues_to_close_ids - updated_issue_ids
@@ -2245,7 +2244,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_coverage_reports?
-    diff_head_pipeline&.has_coverage_reports?
+    has_coverage_reports_for?(diff_head_pipeline)
+  end
+
+  def has_coverage_reports_for?(pipeline)
+    !!pipeline&.has_coverage_reports?
   end
 
   def has_terraform_reports?
@@ -2289,7 +2292,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
+    has_codequality_reports_for?(diff_head_pipeline)
+  end
+
+  def has_codequality_reports_for?(pipeline)
+    !!pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports
@@ -2641,10 +2648,6 @@ class MergeRequest < ApplicationRecord
     true
   end
 
-  def find_assignee(user)
-    merge_request_assignees.find_by(user_id: user.id)
-  end
-
   def find_reviewer(user)
     merge_request_reviewers.find_by(user_id: user.id)
   end
@@ -2714,6 +2717,10 @@ class MergeRequest < ApplicationRecord
 
   def prepared?
     prepared_at.present?
+  end
+
+  def initial_preparation?
+    preparing? && !prepared?
   end
 
   def check_for_spam?(*)
@@ -2945,10 +2952,6 @@ class MergeRequest < ApplicationRecord
       .limit(Gitlab::CurrentSettings.diff_max_versions)
   end
 
-  def find_viewable_diff_by_id(diff_id)
-    merge_request_diffs.viewable.find(diff_id)
-  end
-
   def show_context_commits_diff?(diff_options)
     diff_options[:only_context_commits] && context_commits_diff && !context_commits_diff.empty?
   end
@@ -2967,6 +2970,11 @@ class MergeRequest < ApplicationRecord
       .use_primary { self.class.where(id: id).pick(:state_id) }
 
     primary_state_id != state_id
+  end
+
+  def publish_code_conflict_event
+    cloud_event = MergeRequests::CodeConflictEvent.build(merge_request: self)
+    Gitlab::EventStore.publish(cloud_event) if cloud_event
   end
 
   def committer_emails_from_diff
@@ -3009,12 +3017,14 @@ class MergeRequest < ApplicationRecord
 
   def update_cached_closing_issues_from_description!(issues_to_close_ids)
     # These might have been created manually from the work item interface
-    issue_ids_to_update = merge_requests_closing_issues
+    issue_ids_to_update = merge_request_closing_issues
       .where(from_mr_description: false, issue_id: issues_to_close_ids)
       .pluck(:issue_id)
 
     if issue_ids_to_update.any?
-      merge_requests_closing_issues.where(issue_id: issue_ids_to_update).update_all(from_mr_description: true)
+      merge_request_closing_issues
+        .where(issue_id: issue_ids_to_update)
+        .update_all(from_mr_description: true)
     end
 
     issue_ids_to_update
@@ -3027,6 +3037,7 @@ class MergeRequest < ApplicationRecord
         issue_id: issue_id,
         merge_request_id: id,
         from_mr_description: true,
+        link_type: :closes,
         created_at: now,
         updated_at: now
       )

@@ -493,12 +493,12 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
           state_event_1 = @merge_request.resource_state_events.last
           expect(state_event_1.state).to eq('merged')
-          expect(state_event_1.source_merge_request).to eq(nil)
+          expect(state_event_1.source_merge_request).to be_nil
           expect(state_event_1.source_commit).to eq(commit.id)
 
           state_event_2 = @fork_merge_request.resource_state_events.last
           expect(state_event_2.state).to eq('merged')
-          expect(state_event_2.source_merge_request).to eq(nil)
+          expect(state_event_2.source_merge_request).to be_nil
           expect(state_event_2.source_commit).to eq(commit.id)
 
           expect(@merge_request).to be_merged
@@ -533,13 +533,13 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         it 'updates the merge state' do
           state_event_1 = @merge_request.resource_state_events.last
           expect(state_event_1.state).to eq('merged')
-          expect(state_event_1.source_merge_request).to eq(nil)
-          expect(state_event_1.source_commit).to eq(nil)
+          expect(state_event_1.source_merge_request).to be_nil
+          expect(state_event_1.source_commit).to be_nil
 
           state_event_2 = @fork_merge_request.resource_state_events.last
           expect(state_event_2.state).to eq('merged')
           expect(state_event_2.source_merge_request).to eq(@merge_request)
-          expect(state_event_2.source_commit).to eq(nil)
+          expect(state_event_2.source_commit).to be_nil
 
           expect(@fork_merge_request).to be_merged
         end
@@ -825,7 +825,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
         fixup_merge_request.reload
 
-        expect(fixup_merge_request.draft?).to eq(true)
+        expect(fixup_merge_request.draft?).to be(true)
         expect(fixup_merge_request.notes.last.note).to match(
           /marked this merge request as \*\*draft\*\* from #{Commit.reference_pattern}/
         )
@@ -958,7 +958,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
     let_it_be(:user) { create(:user) }
     let_it_be(:author) { user }
 
-    let_it_be(:merge_request, refind: true) do
+    let_it_be_with_refind(:merge_request) do
       create(
         :merge_request,
         source_project: project,

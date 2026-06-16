@@ -11,12 +11,12 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:note) { create(:note, project: project) }
+    let_it_be(:note, freeze: false) { create(:note, project: project) }
     let_it_be(:record_attrs) { { email_participant: 'email@example.com', note_id: note.id } }
   end
 
   describe 'callbacks' do
-    let_it_be(:note) { create(:note) }
+    let_it_be(:note, freeze: false) { create(:note) }
     let_it_be(:email) { "#{'a' * 255}@example.com" }
 
     context 'with before_save :ensure_email_participant_length' do
@@ -71,7 +71,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
         context 'when noteable belongs to a group' do
           context 'when note has a noteable' do
             let_it_be(:noteable) { create(:issue, :group_level, namespace: group) }
-            let_it_be(:note) { create(:note, noteable: noteable) }
+            let_it_be(:note, freeze: false) { create(:note, noteable: noteable) }
 
             let(:expected_namespace_id) { group.id }
 
@@ -79,7 +79,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
           end
 
           context 'when note does not have a noteable' do
-            let_it_be(:note) { build(:note, noteable: nil, namespace_id: nil, noteable_type: 'Issue') }
+            let_it_be(:note, freeze: false) { build(:note, noteable: nil, namespace_id: nil, noteable_type: 'Issue') }
 
             it_behaves_like 'does not set namespace_id'
           end
@@ -89,7 +89,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
           let_it_be(:noteable) { create(:merge_request, source_project: project) }
 
           context 'when note has a project' do
-            let_it_be(:note) { create(:note, noteable: noteable, project: project) }
+            let_it_be(:note, freeze: false) { create(:note, noteable: noteable, project: project) }
 
             let(:expected_namespace_id) { project.project_namespace_id }
 
@@ -97,7 +97,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
           end
 
           context 'when note does not have a project' do
-            let_it_be(:note) { build(:note, noteable: noteable, project: nil, namespace_id: nil) }
+            let_it_be(:note, freeze: false) { build(:note, noteable: noteable, project: nil, namespace_id: nil) }
 
             it_behaves_like 'does not set namespace_id'
           end
@@ -105,7 +105,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
 
         context "when noteable doesn't have a namespace" do
           let_it_be(:noteable) { create(:personal_snippet) }
-          let_it_be(:note) { build(:note, noteable: noteable, namespace_id: nil) }
+          let_it_be(:note, freeze: false) { build(:note, noteable: noteable, namespace_id: nil) }
 
           it_behaves_like 'does not set namespace_id'
         end
@@ -114,19 +114,22 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
   end
 
   describe 'ensure sharding key is set' do
-    let_it_be(:note) { create(:note, project: project) }
+    let_it_be(:note, freeze: false) { create(:note, project: project) }
 
-    it 'inherits the sharding key from the note' do
-      note_metadata = create(:note_metadata, note: note)
+    context 'when note has a namespace_id' do
+      before do
+        note.update_column(:namespace_id, project.project_namespace_id)
+        note.reload
+      end
 
-      expect(note_metadata.reload.namespace_id).to eq(note.namespace_id)
+      it 'inherits the sharding key from the note' do
+        note_metadata = create(:note_metadata, note: note)
+
+        expect(note_metadata.reload.namespace_id).to eq(note.namespace_id)
+      end
     end
 
     context 'when note namespace_id is not set' do
-      before do
-        note.update_column(:namespace_id, nil)
-      end
-
       it 'sets namespace_id to the project namespace_id' do
         note_metadata = create(:note_metadata, note: note)
 

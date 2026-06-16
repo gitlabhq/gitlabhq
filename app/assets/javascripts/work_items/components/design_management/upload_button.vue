@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['upload'],
   methods: {
     openFileUpload() {
       this.$refs.fileUpload.click();

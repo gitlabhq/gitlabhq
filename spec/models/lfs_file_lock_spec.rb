@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe LfsFileLock, feature_category: :source_code_management do
-  let_it_be(:lfs_file_lock, reload: true) { create(:lfs_file_lock) }
+  let_it_be_with_reload(:lfs_file_lock) { create(:lfs_file_lock) }
 
   subject { lfs_file_lock }
 

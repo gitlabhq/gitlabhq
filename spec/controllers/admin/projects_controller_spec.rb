@@ -21,7 +21,7 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
   end
 
   describe 'PUT /projects/transfer/:id' do
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:new_namespace) { create(:namespace) }
 
     it 'updates namespace' do

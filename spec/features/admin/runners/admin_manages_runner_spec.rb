@@ -93,17 +93,6 @@ RSpec.describe "Admin manages runner in admin section", :js, feature_category: :
       end
     end
 
-    context 'when a runner is updated' do
-      before do
-        click_on _('Save changes')
-      end
-
-      it 'show success alert and redirects to runner page' do
-        expect(current_url).to match(admin_runner_path(project_runner))
-        expect(find_by_testid('alert-success')).to have_content('saved')
-      end
-    end
-
     describe 'projects' do
       it 'contains project names' do
         expect(page).to have_content(project1.full_name)

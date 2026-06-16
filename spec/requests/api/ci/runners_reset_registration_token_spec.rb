@@ -133,7 +133,7 @@ RSpec.describe API::Ci::Runners, feature_category: :fleet_visibility do
 
   describe '/api/v4/groups/:id/runners/reset_registration_token' do
     describe 'POST /api/v4/groups/:id/runners/reset_registration_token' do
-      let_it_be(:group) { create(:group, :private, :allow_runner_registration_token) }
+      let_it_be(:group, freeze: false) { create(:group, :private, :allow_runner_registration_token) }
 
       let(:prefix) { "/groups/#{group.id}" }
 

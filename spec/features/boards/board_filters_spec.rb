@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   include GlFilteredSearchHelpers
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project_label) { create(:label, project: project, title: 'Label') }
-  let_it_be(:milestone_1) { create(:milestone, project: project, due_date: 3.days.from_now) }
-  let_it_be(:milestone_2) { create(:milestone, project: project, due_date: Date.tomorrow) }
-  let_it_be(:release) { create(:release, tag: 'v1.0', project: project, milestones: [milestone_1]) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project_label, freeze: false) { create(:label, project: project, title: 'Label') }
+  let_it_be(:milestone_1, freeze: false) { create(:milestone, project: project, due_date: 3.days.from_now) }
+  let_it_be(:milestone_2, freeze: false) { create(:milestone, project: project, due_date: Date.tomorrow) }
+  let_it_be(:release, freeze: false) { create(:release, tag: 'v1.0', project: project, milestones: [milestone_1]) }
   let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project, milestones: [milestone_2]) }
-  let_it_be(:issue_1) { create(:issue, project: project, milestone: milestone_1, author: user) }
+  let_it_be(:issue_1, freeze: false) { create(:issue, project: project, milestone: milestone_1, author: user) }
   let_it_be(:issue_2) { create(:labeled_issue, project: project, milestone: milestone_2, assignees: [user], labels: [project_label], confidential: true) }
   let_it_be(:award_emoji1) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: issue_1) }
 

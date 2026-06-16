@@ -13,8 +13,8 @@ title: Configure OpenID Connect in AWS to retrieve temporary credentials
 {{< /details >}}
 
 > [!warning]
-> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
+> `CI_JOB_JWT_V2` was [removed in GitLab 17.0](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).
+> Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial shows you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without storing secrets.
 To do this, you must configure OpenID Connect (OIDC) for ID federation between GitLab and AWS. For background and requirements for integrating GitLab using OIDC, see [Connect to cloud services](../_index.md).
@@ -50,6 +50,16 @@ You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/Us
 for the role to limit authorization to a specific group, project, branch, or tag.
 For the full list of supported filtering types, see [Connect to cloud services](../_index.md#configure-a-conditional-role-with-oidc-claims).
 
+On GitLab.com, AWS supports additional condition keys for the `gitlab.com` OIDC identity provider, including `namespace_id` and `project_id`. Include conditions on these stable, unique identifiers in your role trust policies. Because these identifiers are independent of paths, trust policies that reference them are not affected by changes to paths, such as group or project renames.
+
+These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` claim is currently supported as an AWS condition key. For those deployments, scope your trust policy using `sub` alone (for example, `gitlab.example.com:sub`).
+
+`project_id` is globally unique and remains the same for the entire lifetime of the project, including across group renames, project renames, and project transfers. `namespace_id` is stable while the project remains in its current namespace. If the project is transferred to a different namespace, `namespace_id` changes, which intentionally invalidates a trust policy that pins to it.
+
+To find the `namespace_id` and `project_id` values for a project, see the project's settings page or the [Projects API](../../../api/projects.md). For the full list of claims available as condition keys, see the [ID token payload](../../secrets/id_token_authentication.md#token-payload).
+
+The following example trust policy uses `sub` together with `namespace_id` and `project_id` to pin trust to a specific group, project, and branch on GitLab.com:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -57,12 +67,14 @@ For the full list of supported filtering types, see [Connect to cloud services](
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated": "arn:aws:iam::AWS_ACCOUNT:oidc-provider/gitlab.example.com"
+        "Federated": "arn:aws:iam::AWS_ACCOUNT:oidc-provider/gitlab.com"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "gitlab.example.com:sub": "project_path:mygroup/myproject:ref_type:branch:ref:main"
+          "gitlab.com:sub": "project_path:mygroup/myproject:ref_type:branch:ref:main",
+          "gitlab.com:namespace_id": "12345",
+          "gitlab.com:project_id": "67890"
         }
       }
     }

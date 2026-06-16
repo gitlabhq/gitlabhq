@@ -1,0 +1,3 @@
+---
+name: read_model_selection_allowlist
+description: Grants the ability to read the model selection allowlist configuration

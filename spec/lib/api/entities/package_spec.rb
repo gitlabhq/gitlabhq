@@ -61,7 +61,7 @@ RSpec.describe API::Entities::Package, feature_category: :package_registry do
   end
 
   context 'with build info', :aggregate_failures do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:user) { create(:user, reporter_of: project) }
     let_it_be(:package) { create(:npm_package, :with_build, project: project) }
     let_it_be(:pipeline) { package.pipeline }

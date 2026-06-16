@@ -1,10 +1,6 @@
 import { n__, s__, sprintf } from '~/locale';
 
-export const DESIGN_DETAIL_LAYOUT_CLASSLIST = [
-  'design-detail-layout',
-  'gl-overflow-hidden',
-  'gl-m-0',
-];
+export const DESIGN_DETAIL_LAYOUT_CLASSLIST = ['design-detail-layout', 'gl-m-0'];
 
 export const ACTIVE_DISCUSSION_SOURCE_TYPES = {
   pin: 'pin',

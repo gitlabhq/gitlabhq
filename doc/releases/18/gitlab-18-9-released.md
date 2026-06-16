@@ -212,7 +212,7 @@ The GitLab Duo plugin for JetBrains IDEs now supports OAuth authentication for G
 Previously, organizations that used identity providers to automate user provisioning on GitLab Self-Managed Premium might run into a potential problem. When identity provider syncs attempt to add users beyond the licensed seat limit, administrators must either purchase extra seats for users who don’t need active access, or manually intervene to prevent failures.
 
 Now, users with the Minimal Access role on GitLab Self-Managed Premium subscriptions no longer count as billable seats, bringing them in line with how minimal access works on GitLab.com Premium, GitLab.com Ultimate, and GitLab Self-Managed Ultimate.
-This change unlocks the [restricted access](../../administration/settings/sign_up_restrictions.md#restricted-access) feature, which automatically assigns the Minimal Access role to users who would otherwise exceed the seat limit during identity provider syncs. This change keeps syncs running smoothly without unexpected billing overages or manual intervention.
+This change unlocks the [restricted access](../../subscriptions/manage_seats.md#restricted-access) feature, which automatically assigns the Minimal Access role to users who would otherwise exceed the seat limit during identity provider syncs. This change keeps syncs running smoothly without unexpected billing overages or manual intervention.
 
 ### Geo data management view on primary site
 
@@ -541,7 +541,7 @@ You can now view timestamps on each CI job log line to identify performance bott
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../ci/components/_index.md#view-catalog-resource-analytics) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/579458)
+- Links: [Documentation](../../ci/components/_index.md#view-cicd-catalog-project-analytics) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/579458)
 
 {{< /details >}}
 

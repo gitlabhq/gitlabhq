@@ -8,7 +8,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
   include_context 'for a cleanup tags service'
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :private) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
 
   let(:repository) { create(:container_repository, :root, project: project) }
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }

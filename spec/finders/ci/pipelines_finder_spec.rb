@@ -453,5 +453,36 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         end
       end
     end
+
+    describe 'merge_request_event_first ordering' do
+      let_it_be(:push_pipeline_old) { create(:ci_pipeline, project: project, source: :push) }
+      let_it_be(:mr_pipeline_old)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+      let_it_be(:push_pipeline_new) { create(:ci_pipeline, project: project, source: :push) }
+      let_it_be(:mr_pipeline_new)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+
+      context 'when merge_request_event_first is true' do
+        let(:params) { { merge_request_event_first: true } }
+
+        it 'returns merge_request_event pipelines first, then others, each ordered by id desc' do
+          expect(execute).to eq([mr_pipeline_new, mr_pipeline_old, push_pipeline_new, push_pipeline_old])
+        end
+
+        context 'when order_by is provided' do
+          let(:params) { { merge_request_event_first: true, order_by: 'id', sort: 'asc' } }
+
+          it 'applies the secondary order within each source bucket' do
+            expect(execute).to eq([mr_pipeline_old, mr_pipeline_new, push_pipeline_old, push_pipeline_new])
+          end
+        end
+      end
+
+      context 'when merge_request_event_first is false or absent' do
+        let(:params) { {} }
+
+        it 'falls back to the default id desc ordering' do
+          expect(execute).to eq([mr_pipeline_new, push_pipeline_new, mr_pipeline_old, push_pipeline_old])
+        end
+      end
+    end
   end
 end

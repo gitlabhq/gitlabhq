@@ -31,6 +31,7 @@ function toUsernames(reviewers) {
 }
 
 export default {
+  name: 'ReviewerDropdown',
   apollo: {
     userPermissions: {
       query: userPermissionsQuery,

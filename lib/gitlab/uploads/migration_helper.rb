@@ -12,13 +12,13 @@ module Gitlab
       def migrate_to_remote_storage
         @to_store = ObjectStorage::Store::REMOTE
 
-        uploads.each_batch(of: batch_size, &method(:enqueue_batch))
+        uploads.each_batch(of: batch_size) { |batch, index| enqueue_batch(batch, index) }
       end
 
       def migrate_to_local_storage
         @to_store = ObjectStorage::Store::LOCAL
 
-        uploads(ObjectStorage::Store::REMOTE).each_batch(of: batch_size, &method(:enqueue_batch))
+        uploads(ObjectStorage::Store::REMOTE).each_batch(of: batch_size) { |batch, index| enqueue_batch(batch, index) }
       end
 
       private

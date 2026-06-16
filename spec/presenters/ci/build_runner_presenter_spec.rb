@@ -400,6 +400,24 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
         expect(presenter.runner_inputs).to eq([])
       end
     end
+
+    context 'when a boolean input with default: true is overridden to false' do
+      let(:inputs_spec) do
+        { boolean_input: { type: 'boolean', default: true } }
+      end
+
+      before do
+        create(:ci_job_input,
+          job: build, project: build.project,
+          name: 'boolean_input', value: false)
+      end
+
+      it 'returns the false override, not the true default' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :boolean_input, value: { content: false, type: 'boolean' } }
+        )
+      end
+    end
   end
 
   describe '#runner_variables' do

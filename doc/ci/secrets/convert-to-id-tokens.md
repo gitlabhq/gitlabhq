@@ -42,7 +42,6 @@ This tutorial assumes you are familiar with GitLab CI/CD and Vault.
 
 To follow along, you must have:
 
-- An instance running GitLab 16.0 or later, or be on GitLab.com.
 - A Vault server that you are already using.
 - CI/CD jobs retrieving secrets from Vault with `CI_JOB_JWT`.
 

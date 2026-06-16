@@ -4,6 +4,7 @@ import initDiverganceGraph from '~/branches/divergence_graph';
 import initDeleteBranchModal from '~/branches/init_delete_branch_modal';
 import initDeleteMergedBranches from '~/branches/init_delete_merged_branches';
 import initBranchMoreActions from '~/branches/init_branch_more_actions';
+import initIssuablePopovers from '~/issuable/popover';
 import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 
 const { divergingCountsEndpoint, defaultBranch } =
@@ -16,5 +17,6 @@ initDeleteMergedBranches();
 initSourceCodeDropdowns();
 
 document.querySelectorAll('.js-branch-more-actions').forEach((elem) => initBranchMoreActions(elem));
+initIssuablePopovers(document.querySelectorAll('[data-reference-type="commit"]'));
 
 initDeleteBranchModal();

@@ -476,6 +476,42 @@ take one of the following actions:
 - Convert it to an instance, group, or project setting.
 - Revert the changes if it's still disabled and not needed anymore.
 
+### Zero-downtime upgrade compatibility
+
+Before removing a feature flag, consider whether the code it guards is safe to run
+across [mixed-version nodes during a zero-downtime upgrade](../multi_version_compatibility.md#a-walkthrough-of-an-update) of GitLab Self-Managed instances.
+
+During a zero-downtime upgrade, different components (Rails, Sidekiq, and others) run different versions
+of the code simultaneously. If a feature flag gates a write path, a cache key, or any state
+transition shared between components, the old-version components must still behave correctly
+when new-version components have the flag removed. For a real-world example, see [incident #562149](https://gitlab.com/gitlab-org/gitlab/-/issues/562149).
+
+> [!warning]
+> A feature flag is not a compatibility boundary. Removing a flag (or setting it to
+> `default_enabled: true`) does not make the code behind it safe to run on mixed-version
+> nodes. During a rolling upgrade, components on the previous version still run with the
+> flag disabled.
+
+The correct approach is the
+[expand-and-contract pattern](../multi_version_compatibility.md#expand-and-contract-pattern).
+See also the [feature flags section](../multi_version_compatibility.md#feature-flags) of
+that document for guidance specific to feature flags.
+
+For flags that guard a data write, cache key, or state transition, apply the pattern across
+three milestones:
+
+1. Milestone N (expand): Introduce the new behavior while keeping the old behavior intact.
+   Make the guarded code safe across mixed-version nodes. For example, if the flag gates a
+   Redis cache write, ensure the cleanup path on old-version components does not depend on
+   the flag being enabled. Both old and new code paths must coexist safely.
+1. Milestone N+1 (migrate): Update all consumers to use the new code path. Confirm the
+   expand phase is complete and no component depends on the old path.
+1. Milestone N+2 (contract): Remove the flag and all references to the old code path.
+
+For flags that do not gate data writes, cache keys, or state transitions (for example,
+pure UI or behavior toggles), this multi-milestone pattern is not required, but still recommended
+as good practice.
+
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
 1. Add the ~"feature flag" label so release managers are aware of the removal.

@@ -1,8 +1,8 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GitLabのコンテナリポジトリ保護ルールに関するREST APIのドキュメント。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabのコンテナリポジトリ保護ルールに関するREST APIのドキュメントです。
 title: コンテナリポジトリ保護ルールAPI
 ---
 
@@ -21,17 +21,17 @@ title: コンテナリポジトリ保護ルールAPI
 
 {{< /history >}}
 
-このAPIを使用して、[container repository protection rules](../user/packages/container_registry/protected_container_tags.md)を管理します。
+このAPIを使用して、[コンテナリポジトリ保護ルール](../user/packages/container_registry/protected_container_tags.md)を管理します。
 
-## コンテナリポジトリ保護ルールの一覧 {#list-container-repository-protection-rules}
+## すべてのコンテナリポジトリ保護ルールを一覧表示 {#list-all-container-repository-protection-rules}
 
-プロジェクトのコンテナリポジトリからコンテナリポジトリ保護ルールの一覧を取得します。
+指定されたプロジェクトのすべてのコンテナリポジトリ保護ルールを一覧表示します。
 
 ```plaintext
 GET /api/v4/projects/:id/registry/protection/repository/rules
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                     | 型            | 必須 | 説明                    |
 |-------------------------------|-----------------|----------|--------------------------------|
@@ -39,21 +39,21 @@ GET /api/v4/projects/:id/registry/protection/repository/rules
 
 成功した場合、[`200`](rest/troubleshooting.md#status-codes)とコンテナリポジトリ保護ルールの一覧を返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
 - `200 OK`: 保護ルールの一覧。
 - `401 Unauthorized`: アクセストークンが無効です。
 - `403 Forbidden`: このプロジェクトの保護ルールを一覧表示する権限がユーザーにありません。
 - `404 Not Found`: プロジェクトが見つかりませんでした。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -70,11 +70,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "repository_path_pattern": "flightjs/flight1",
     "minimum_access_level_for_push": "maintainer",
     "minimum_access_level_for_delete": "maintainer"
-  },
+  }
 ]
 ```
 
-## コンテナリポジトリ保護ルールを作成する {#create-a-container-repository-protection-rule}
+## コンテナリポジトリ保護ルールを作成 {#create-a-container-repository-protection-rule}
 
 {{< history >}}
 
@@ -82,33 +82,33 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-プロジェクトのコンテナリポジトリのコンテナリポジトリ保護ルールを作成します。
+指定されたプロジェクトのコンテナリポジトリ保護ルールを作成します。
 
 ```plaintext
 POST /api/v4/projects/:id/registry/protection/repository/rules
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                         | 型           | 必須 | 説明 |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `repository_path_pattern`         | 文字列         | はい      | 保護ルールによって保護されるコンテナリポジトリパスパターン。例: `flight/flight-*`。ワイルドカード文字`*`を使用できます。 |
-| `minimum_access_level_for_delete` | 文字列         | いいえ       | コンテナリポジトリ内のコンテナイメージを削除するために必要な最小GitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_push`が設定されていない場合は、指定する必要があります。 |
-| `minimum_access_level_for_push`   | 文字列         | いいえ       | コンテナイメージをコンテナリポジトリにプッシュするために必要な最小GitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_delete`が設定されていない場合は、指定する必要があります。 |
+| `minimum_access_level_for_delete` | 文字列         | いいえ       | コンテナレジストリ内のコンテナイメージを削除するために必要な最低限のGitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_push`が設定されていない場合は、これを指定する必要があります。 |
+| `minimum_access_level_for_push`   | 文字列         | いいえ       | コンテナレジストリにコンテナイメージをプッシュするために必要な最低限のGitLabアクセスレベル。例: `maintainer`、`owner`、または`admin`。`minimum_access_level_for_delete`が設定されていない場合は、これを指定する必要があります。 |
 
-成功した場合、[`201`](rest/troubleshooting.md#status-codes)と、作成されたコンテナリポジトリ保護ルールを返します。
+成功した場合、[`201`](rest/troubleshooting.md#status-codes)と作成されたコンテナリポジトリ保護ルールを返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
 - `201 Created`: 保護ルールが正常に作成されました。
 - `400 Bad Request`: 保護ルールが無効です。
 - `401 Unauthorized`: アクセストークンが無効です。
 - `403 Forbidden`: 保護ルールを作成する権限がユーザーにありません。
 - `404 Not Found`: プロジェクトが見つかりませんでした。
-- `422 Unprocessable Entity`: 保護ルールを作成できませんでした。たとえば、`repository_path_pattern`がすでに使用されているためです。
+- `422 Unprocessable Entity`: 保護ルールを作成できませんでした。たとえば、`repository_path_pattern`コードがすでに使用されている場合などです。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -122,7 +122,7 @@ curl --request POST \
     }'
 ```
 
-## コンテナリポジトリ保護ルールを更新する {#update-a-container-repository-protection-rule}
+## コンテナリポジトリ保護ルールを更新 {#update-a-container-repository-protection-rule}
 
 {{< history >}}
 
@@ -130,34 +130,34 @@ curl --request POST \
 
 {{< /history >}}
 
-プロジェクトのコンテナリポジトリのコンテナリポジトリ保護ルールを更新します。
+指定されたプロジェクトのコンテナリポジトリ保護ルールを更新します。
 
 ```plaintext
 PATCH /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                         | 型           | 必須 | 説明 |
 |-----------------------------------|----------------|----------|-------------|
 | `id`                              | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `protection_rule_id`              | 整数        | はい      | 更新する保護ルールのID。 |
-| `minimum_access_level_for_delete` | 文字列         | いいえ       | コンテナリポジトリ内のコンテナイメージを削除するために必要な最小GitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_push`が設定されていない場合は、指定する必要があります。値を設定解除するには、空の文字列`""`を使用します。 |
-| `minimum_access_level_for_push`   | 文字列         | いいえ       | コンテナイメージをコンテナリポジトリにプッシュするために必要な最小GitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_delete`が設定されていない場合は、指定する必要があります。値を設定解除するには、空の文字列`""`を使用します。 |
+| `minimum_access_level_for_delete` | 文字列         | いいえ       | コンテナレジストリ内のコンテナイメージを削除するために必要な最低限のGitLabアクセスレベル。例: `maintainer`、`owner`、`admin`。`minimum_access_level_for_push`が設定されていない場合は、これを指定する必要があります。値を未設定にするには、空の文字列`""`を使用します。 |
+| `minimum_access_level_for_push`   | 文字列         | いいえ       | コンテナレジストリにコンテナイメージをプッシュするために必要な最低限のGitLabアクセスレベル。例: `maintainer`、`owner`、または`admin`。`minimum_access_level_for_delete`が設定されていない場合は、これを指定する必要があります。値を未設定にするには、空の文字列`""`を使用します。 |
 | `repository_path_pattern`         | 文字列         | いいえ       | 保護ルールによって保護されるコンテナリポジトリパスパターン。例: `flight/flight-*`。ワイルドカード文字`*`を使用できます。 |
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と、更新された保護ルールを返します。
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と更新された保護ルールを返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
 - `200 OK`: 保護ルールが正常に更新されました。
 - `400 Bad Request`: 保護ルールが無効です。
 - `401 Unauthorized`: アクセストークンが無効です。
 - `403 Forbidden`: 保護ルールを更新する権限がユーザーにありません。
 - `404 Not Found`: プロジェクトが見つかりませんでした。
-- `422 Unprocessable Entity`: 保護ルールを更新できませんでした。たとえば、`repository_path_pattern`がすでに使用されているためです。
+- `422 Unprocessable Entity`: 保護ルールを更新できませんでした。たとえば、`repository_path_pattern`コードがすでに使用されている場合などです。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH \
@@ -169,7 +169,7 @@ curl --request PATCH \
     }'
 ```
 
-## コンテナリポジトリ保護ルールを削除する {#delete-a-container-repository-protection-rule}
+## コンテナリポジトリ保護ルールを削除 {#delete-a-container-repository-protection-rule}
 
 {{< history >}}
 
@@ -177,30 +177,30 @@ curl --request PATCH \
 
 {{< /history >}}
 
-プロジェクトのコンテナリポジトリからコンテナリポジトリ保護ルールを削除します。
+指定されたコンテナリポジトリ保護ルールを削除します。
 
 ```plaintext
 DELETE /api/v4/projects/:id/registry/protection/repository/rules/:protection_rule_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性            | 型           | 必須 | 説明 |
 |----------------------|----------------|----------|-------------|
 | `id`                 | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `protection_rule_id` | 整数        | はい      | 削除するコンテナリポジトリ保護ルールのID。 |
 
-成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
-- `204 No Content`: 保護ルールは正常に削除されました。
-- `400 Bad Request`: `id`または`protection_rule_id`がないか、無効です。
+- `204 No Content`: 保護ルールが正常に削除されました。
+- `400 Bad Request`: `id`または`protection_rule_id`が見つからないか、無効です。
 - `401 Unauthorized`: アクセストークンが無効です。
 - `403 Forbidden`: 保護ルールを削除する権限がユーザーにありません。
 - `404 Not Found`: プロジェクトまたは保護ルールが見つかりませんでした。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

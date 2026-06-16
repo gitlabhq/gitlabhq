@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/refer_to_index_by_name'
 
-RSpec.describe RuboCop::Cop::Migration::ReferToIndexByName do
+RSpec.describe RuboCop::Cop::Migration::ReferToIndexByName, feature_category: :database do
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

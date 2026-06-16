@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
+  name: 'VisualizeAndLintSection',
   i18n: {
     title: s__('PipelineEditorTutorial|Tip: Visualize and validate your pipeline'),
     firstParagraph: s__(

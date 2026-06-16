@@ -6,7 +6,7 @@ RSpec.describe Ci::Pipelines::HookService, feature_category: :continuous_integra
   describe '#execute_hooks' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-    let_it_be(:pipeline, reload: true) { create(:ci_empty_pipeline, :created, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
     let(:hook_enabled) { true }
     let!(:hook) { create(:project_hook, project: project, pipeline_events: hook_enabled) }

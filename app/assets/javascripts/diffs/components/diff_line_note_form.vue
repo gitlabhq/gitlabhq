@@ -23,6 +23,7 @@ import {
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 
 export default {
+  name: 'DiffLineNoteForm',
   components: {
     NoteForm,
     MultilineCommentForm,

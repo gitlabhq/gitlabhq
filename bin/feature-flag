@@ -6,51 +6,23 @@
 # argument is used.
 
 require_relative '../config/bundler_setup'
-require 'fileutils'
-require 'httparty'
-require 'json'
 require 'optparse'
 require 'readline'
-require 'shellwords'
 require 'uri'
 require 'yaml'
 require 'gitlab/utils/all'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
-require_relative '../lib/gitlab/popen'
-
-module FeatureFlagHelpers
-  Abort = Class.new(StandardError)
-  Done = Class.new(StandardError)
-
-  def capture_stdout(cmd)
-    output = IO.popen(cmd, &:read)
-    fail_with "command failed: #{cmd.join(' ')}" unless $?.success?
-    output
-  end
-
-  def fail_with(message)
-    raise Abort, "\e[31merror\e[0m #{message}"
-  end
-end
+require_relative 'lib/feature_generator/shared'
 
 class FeatureFlagOptionParser
-  extend FeatureFlagHelpers
+  extend FeatureGenerator::Shared::Helpers
+  extend FeatureGenerator::Shared::OptionParserMixin
   extend ::Feature::Shared
 
-  WWW_GITLAB_COM_SITE = 'https://about.gitlab.com'
-  WWW_GITLAB_COM_GROUPS_JSON = "#{WWW_GITLAB_COM_SITE}/groups.json".freeze
+  NOUN = 'feature flag'
+
   FF_ROLLOUT_ISSUE_TEMPLATE = '.gitlab/issue_templates/Feature Flag Roll Out.md'
-  COPY_COMMANDS = [
-    'pbcopy', # macOS
-    'xclip -selection clipboard', # Linux
-    'xsel --clipboard --input', # Linux
-    'wl-copy' # Wayland
-  ].freeze
-  OPEN_COMMANDS = [
-    'open', # macOS
-    'xdg-open' # Linux
-  ].freeze
 
   Options = Struct.new(
     :name,
@@ -128,7 +100,7 @@ class FeatureFlagOptionParser
 
         opts.on('-h', '--help', 'Print help message') do
           $stdout.puts opts
-          raise Done.new
+          raise FeatureGenerator::Shared::Done
         end
       end
 
@@ -137,29 +109,16 @@ class FeatureFlagOptionParser
       unless argv.one?
         $stdout.puts parser.help
         $stdout.puts
-        raise Abort, 'Feature flag name is required'
+        raise FeatureGenerator::Shared::Abort, 'Feature flag name is required'
       end
 
-      # Name is a first name
       options.name = argv.first.downcase.gsub(/-/, '_')
 
       options
     end
 
-    def groups
-      @groups ||= fetch_json(WWW_GITLAB_COM_GROUPS_JSON)
-    end
-
     def rollout_issue_template
       @rollout_issue_template ||= File.read(File.expand_path("../#{FF_ROLLOUT_ISSUE_TEMPLATE}", __dir__))
-    end
-
-    def group_labels
-      @group_labels ||= groups.map { |_, group| group['label'] }.sort
-    end
-
-    def find_group_by_label(label)
-      groups.find { |_, group| group['label'] == label }[1]
     end
 
     def types_list
@@ -171,61 +130,6 @@ class FeatureFlagOptionParser
       end
 
       list
-    end
-
-    def group_list
-      list = []
-      group_labels.each_with_index do |group_label, index|
-        list << "#{index + 1}. #{group_label}"
-      end
-
-      list
-    end
-
-    def fzf_available?
-      find_compatible_command(%w[fzf])
-    end
-
-    def prompt_readline(prompt:)
-      Readline.readline('?> ', false)&.strip
-    end
-
-    def prompt_fzf(list:, prompt:)
-      arr = list.join("\n")
-      selection = IO.popen("echo \"#{arr}\" | fzf --tac --prompt=\"#{prompt}\"") { |pipe| pipe.readlines }.join.strip
-      selection.match(/(\d+)\./)[1]
-    end
-
-    def print_list(list)
-      return if list.empty?
-
-      $stdout.puts list.join("\n")
-    end
-
-    def print_prompt(prompt)
-      $stdout.puts
-      $stdout.puts ">> #{prompt}:"
-      $stdout.puts
-    end
-
-    def prompt_list(prompt:, list: nil)
-      if fzf_available?
-        prompt_fzf(list: list, prompt: prompt)
-      else
-        prompt_readline(prompt: prompt)
-      end
-    end
-
-    def fetch_json(json_url)
-      json = with_retries { HTTParty.get(json_url, format: :plain) }
-      JSON.parse(json)
-    end
-
-    def with_retries(attempts: 3)
-      yield
-    rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::OpenTimeout
-      retry if (attempts -= 1).positive?
-      raise
     end
 
     def read_type
@@ -242,34 +146,16 @@ class FeatureFlagOptionParser
         type_def = TYPES[type]
 
         if type_def && !type_def[:deprecated]
-          $stdout.puts "You picked the type '#{type}'"
+          $stdout.puts "You picked the type '#{type}'" # rubocop:disable Gitlab/DirectStdio -- CLI script output
           return type
         else
-          $stderr.puts "Invalid type specified '#{type}'"
+          $stderr.puts "Invalid type specified '#{type}'" # rubocop:disable Gitlab/DirectStdio -- CLI script output
         end
       end
     end
 
     def read_group
-      prompt = "Specify the group label to which the feature flag belongs, from the following list"
-
-      unless fzf_available?
-        print_prompt(prompt)
-        print_list(group_list)
-      end
-
-      loop do
-        group = prompt_list(prompt: prompt, list: group_list)
-        group = group_labels[group.to_i - 1] unless group.to_i.zero?
-
-        if group_labels.include?(group)
-          $stdout.puts "You picked the group '#{group}'"
-          return group
-        else
-          $stderr.puts "The group label isn't in the above labels list"
-        end
-
-      end
+      super(noun: NOUN)
     end
 
     def read_feature_issue_url
@@ -277,7 +163,7 @@ class FeatureFlagOptionParser
     end
 
     def read_introduced_by_url
-      read_url('URL of the MR introducing the feature flag (enter to skip and let Danger provide a suggestion directly in the MR):')
+      super(noun: NOUN)
     end
 
     def read_rollout_issue_url(options)
@@ -293,7 +179,6 @@ class FeatureFlagOptionParser
       if options.username
         template.gsub!('<gitlab-username-of-dri>', options.username)
       else
-        # Assign to current user by default
         template.gsub!('/assign @<gitlab-username-of-dri>', "/assign me")
       end
 
@@ -304,105 +189,53 @@ class FeatureFlagOptionParser
       template.gsub!('<slack-channel-of-dri-team>', group_name['slack_channel']) if group_name&.key?('slack_channel')
       template.gsub!('<group-label>', %Q(~"#{options.group}"))
 
-      $stdout.puts
-      $stdout.puts ">> Press any key and paste the issue content that we copied to your clipboard! 🚀"
+      $stdout.puts # rubocop:disable Gitlab/DirectStdio -- CLI script output
+      $stdout.puts ">> Press any key and paste the issue content that we copied to your clipboard! 🚀" # rubocop:disable Gitlab/DirectStdio -- CLI script output
       Readline.readline('?> ', false)
       copy_to_clipboard!(template)
 
       if open_url!(issue_new_url) != 0
-        $stdout.puts ">> Automatic opening of the new issue URL failed, so please visit #{issue_new_url} manually."
+        $stdout.puts ">> Automatic opening of the new issue URL failed, so please visit #{issue_new_url} manually." # rubocop:disable Gitlab/DirectStdio -- CLI script output
       end
 
-      $stdout.puts ">> URL of the rollout issue (enter to skip):"
+      $stdout.puts ">> URL of the rollout issue (enter to skip):" # rubocop:disable Gitlab/DirectStdio -- CLI script output
 
       loop do
         created_url = Readline.readline('?> ', false)&.strip
-        created_url = nil if created_url.empty?
+        created_url = nil if created_url&.empty?
         return created_url if created_url.nil? || valid_url?(created_url)
       end
     end
 
-    def read_milestone
-      milestone = File.read('VERSION')
-      milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
-    end
-
     def read_username
-      $stdout.puts
-      $stdout.puts ">> Username of the feature flag DRI (enter to skip):"
+      $stdout.puts # rubocop:disable Gitlab/DirectStdio -- CLI script output
+      $stdout.puts ">> Username of the feature flag DRI (enter to skip):" # rubocop:disable Gitlab/DirectStdio -- CLI script output
 
       loop do
         username = Readline.readline('?> ', false)&.strip
-        return if username.empty?
+        return if username.nil? || username.empty?
         return username if valid_url?("https://gitlab.com/#{username}")
       end
     end
 
     def read_ee
-      $stdout.puts
-      $stdout.puts ">> Is this an EE only feature (enter to skip):"
+      $stdout.puts # rubocop:disable Gitlab/DirectStdio -- CLI script output
+      $stdout.puts ">> Is this an EE only feature (enter to skip):" # rubocop:disable Gitlab/DirectStdio -- CLI script output
 
       loop do
         ee = Readline.readline('?> ', false)&.strip
-        return if ee.empty?
+        return if ee.nil? || ee.empty?
         return Gitlab::Utils.to_boolean(ee)
-      end
-    end
-
-    def read_url(prompt)
-      $stdout.puts
-      $stdout.puts ">> #{prompt}"
-
-      loop do
-        url = Readline.readline('?> ', false)&.strip
-        url = nil if url.empty?
-        return url if url.nil? || valid_url?(url)
-      end
-    end
-
-    def valid_url?(url)
-      unless url.start_with?('https://')
-        $stderr.puts "URL needs to start with https://"
-        return false
-      end
-
-      response = HTTParty.head(url)
-
-      return true if response.success?
-
-      $stderr.puts "URL '#{url}' isn't valid!"
-    end
-
-    def open_url!(url)
-      _, open_url_status = Gitlab::Popen.popen([open_command, url])
-
-      open_url_status
-    end
-
-    def copy_to_clipboard!(text)
-      IO.popen(copy_to_clipboard_command.shellsplit, 'w') do |pipe|
-        pipe.print(text)
-      end
-    end
-
-    def copy_to_clipboard_command
-      find_compatible_command(COPY_COMMANDS)
-    end
-
-    def open_command
-      find_compatible_command(OPEN_COMMANDS)
-    end
-
-    def find_compatible_command(commands)
-      commands.find do |command|
-        Gitlab::Popen.popen(%W[which #{command.split(' ')[0]}])[1] == 0
       end
     end
   end
 end
 
 class FeatureFlagCreator
-  include FeatureFlagHelpers
+  include FeatureGenerator::Shared::Helpers
+  include FeatureGenerator::Shared::CreatorMixin
+
+  NOUN = 'feature flag'
 
   attr_reader :options
 
@@ -413,10 +246,9 @@ class FeatureFlagCreator
   def execute
     assert_clipboard_command!
     assert_feature_branch!
-    assert_name!
+    assert_name!(noun: NOUN)
     assert_existing_feature_flag!
 
-    # Read type from stdin unless is already set
     options.type ||= FeatureFlagOptionParser.read_type
     options.group ||= FeatureFlagOptionParser.read_group
     options.feature_issue_url ||= FeatureFlagOptionParser.read_feature_issue_url
@@ -426,8 +258,8 @@ class FeatureFlagCreator
     options.ee ||= FeatureFlagOptionParser.read_ee
     options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
 
-    $stdout.puts "\e[32mcreate\e[0m #{file_path}"
-    $stdout.puts contents
+    $stdout.puts "\e[32mcreate\e[0m #{file_path}" # rubocop:disable Gitlab/DirectStdio -- CLI script output
+    $stdout.puts contents # rubocop:disable Gitlab/DirectStdio -- CLI script output
 
     unless options.dry_run
       write
@@ -459,15 +291,7 @@ class FeatureFlagCreator
     }
   end
 
-  def write
-    FileUtils.mkdir_p(File.dirname(file_path))
-    File.write(file_path, contents)
-  end
-
-  def editor
-    ENV['EDITOR']
-  end
-
+  # Override: use Kernel.exec so the user gets a full interactive editor session
   def amend_commit
     fail_with "git add failed" unless system(*%W[git add #{file_path}])
 
@@ -480,24 +304,12 @@ class FeatureFlagCreator
     fail_with "Could not find a copy to clipboard command. On Linux, please install xclip or xsel (or wl-clipboard under Wayland). On macOS, make sure pbcopy is available."
   end
 
-  def assert_feature_branch!
-    return unless branch_name == 'master'
-
-    fail_with "Create a branch first!"
-  end
-
   def assert_existing_feature_flag!
     existing_path = all_feature_flag_names[options.name]
     return unless existing_path
     return if options.force
 
     fail_with "#{existing_path} already exists! Use `--force` to overwrite."
-  end
-
-  def assert_name!
-    return if options.name.match(/\A[a-z0-9_-]+\Z/)
-
-    fail_with "Provide a name for the feature flag that is [a-z0-9_-]"
   end
 
   def file_path
@@ -525,20 +337,16 @@ class FeatureFlagCreator
   def ee?
     options.ee
   end
-
-  def branch_name
-    @branch_name ||= capture_stdout(%w[git symbolic-ref --short HEAD]).strip
-  end
 end
 
 if $0 == __FILE__
   begin
     options = FeatureFlagOptionParser.parse(ARGV)
     FeatureFlagCreator.new(options).execute
-  rescue FeatureFlagHelpers::Abort => ex
-    $stderr.puts ex.message
+  rescue FeatureGenerator::Shared::Abort => ex
+    $stderr.puts ex.message # rubocop:disable Gitlab/DirectStdio -- CLI script output
     exit 1
-  rescue FeatureFlagHelpers::Done
+  rescue FeatureGenerator::Shared::Done
     exit
   end
 end

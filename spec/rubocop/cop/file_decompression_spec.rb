@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/file_decompression'
 
-RSpec.describe RuboCop::Cop::FileDecompression do
+RSpec.describe RuboCop::Cop::FileDecompression, feature_category: :vulnerability_management do
   it 'does not flag when using a system command not related to file decompression' do
     expect_no_offenses('system("ls")')
   end

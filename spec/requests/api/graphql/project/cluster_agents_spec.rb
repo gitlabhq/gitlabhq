@@ -25,6 +25,13 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
     allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agentks_by_agent_ids: []))
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_cluster_agent do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:project_fields) { query_nodes(:cluster_agents, [:id], args: { first: first }) }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   it 'can retrieve cluster agents' do
     post_graphql(query, current_user: current_user)
 

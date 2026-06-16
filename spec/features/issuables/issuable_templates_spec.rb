@@ -210,13 +210,15 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
 
         it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then cancels template change' do
           page.find('.js-template-warning .js-close-btn.js-cancel-btn').click
-          expect(find('textarea')['value']).to eq(updated_description)
+
+          expect(page).to have_field('Description', with: updated_description)
           expect(page).not_to have_content template_override_warning
         end
 
         it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then dismiss the template warning' do
           page.find('.js-template-warning .js-close-btn.js-dismiss-btn').click
-          expect(find('textarea')['value']).to eq(updated_description)
+
+          expect(page).to have_field('Description', with: updated_description)
           expect(page).not_to have_content template_override_warning
         end
 
@@ -266,7 +268,7 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
 
   def assert_template(expected_content: template_content, page_part: '#content-body')
     page.within(page_part) do
-      expect(find('textarea')['value']).to eq(expected_content)
+      expect(page).to have_field('Description', with: expected_content)
     end
   end
 

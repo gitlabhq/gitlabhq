@@ -50,7 +50,7 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
         expect(json_response['files']).to have_attributes(size: 1)
         expect(json_response['files'].first).to include('path', 'is_dir', 'file_size')
         expect(json_response['files'].first['path']).to eq(package_file.file_name)
-        expect(json_response['files'].first['is_dir']).to eq(false)
+        expect(json_response['files'].first['is_dir']).to be(false)
         expect(json_response['files'].first['file_size']).to eq(package_file.size)
       end
 

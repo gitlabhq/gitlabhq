@@ -28,6 +28,33 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     it { is_expected.not_to allow_value('https://user:p@ss@example.com').for(:instance_url) }
   end
 
+  describe '#normalize_instance_url' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:installation) { build(:jira_connect_installation, instance_url: raw_url) }
+
+    where(:case_name, :raw_url, :expected_url) do
+      'no scheme'                       | 'gitlab.example.com'           | 'https://gitlab.example.com'
+      'no scheme with subpath'          | 'gitlab.example.com/gitlab'    | 'https://gitlab.example.com/gitlab'
+      'leading and trailing whitespace' | '  gitlab.example.com  '       | 'https://gitlab.example.com'
+      'https:// scheme already'         | 'https://gitlab.example.com'   | 'https://gitlab.example.com'
+      'http:// scheme already'          | 'http://gitlab.example.com'    | 'http://gitlab.example.com'
+      'non-http scheme'                 | 'ftp://gitlab.example.com'     | 'ftp://gitlab.example.com'
+      'no dot (not host-like)'          | 'not-a-url'                    | 'not-a-url'
+      'path-only value'                 | '/gitlab'                      | '/gitlab'
+      'blank string'                    | ''                             | ''
+      'nil'                             | nil                            | nil
+    end
+
+    with_them do
+      it 'normalizes the value as expected' do
+        installation.valid?
+
+        expect(installation.instance_url).to eq(expected_url)
+      end
+    end
+  end
+
   describe 'scopes' do
     let_it_be(:jira_connect_subscription) { create(:jira_connect_subscription) }
 

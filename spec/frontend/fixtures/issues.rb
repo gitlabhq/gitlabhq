@@ -68,8 +68,8 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :team_planning 
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   before_all do
     project.add_reporter(user)

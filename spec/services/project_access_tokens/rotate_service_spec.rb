@@ -118,7 +118,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
       end
 
       context 'when nested membership' do
-        let_it_be(:project_bot) { create(:user, :project_bot) }
+        let_it_be(:project_bot, freeze: false) { create(:user, :project_bot) }
         let(:token) { create(:personal_access_token, user: project_bot) }
         let(:top_level_group) { create(:group) }
         let(:sub_group) { create(:group, parent: top_level_group) }
@@ -136,8 +136,8 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
           it_behaves_like "rotates token successfully"
 
           context 'when its a bot user' do
-            let_it_be(:bot_user) { create(:user, :project_bot) }
-            let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
+            let_it_be(:bot_user, freeze: false) { create(:user, :project_bot) }
+            let_it_be_with_reload(:token) { create(:personal_access_token, user: bot_user) }
             let_it_be(:bot_user_membership) do
               create(
                 :project_member,

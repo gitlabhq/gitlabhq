@@ -28,6 +28,7 @@ RSpec.shared_examples 'create environment for job' do
         subject
 
         job.save!
+        job.job_environment.save!
 
         expect(job.job_environment).to be_valid
         expect(job.job_environment).to have_attributes(
@@ -61,6 +62,7 @@ RSpec.shared_examples 'create environment for job' do
           subject
 
           job.save!
+          job.job_environment.save!
 
           expect(job.job_environment).to be_valid
           expect(job.job_environment).to have_attributes(
@@ -190,7 +192,7 @@ RSpec.shared_examples 'create environment for job' do
     end
 
     context 'when job has a cluster agent attribute' do
-      let_it_be(:agent) { create(:cluster_agent, project: project) }
+      let_it_be(:agent, freeze: false) { create(:cluster_agent, project: project) }
 
       let(:environment_name) { 'production' }
       let(:expected_environment_name) { 'production' }
@@ -281,7 +283,7 @@ RSpec.shared_examples 'create environment for job' do
           end
 
           context 'when the environment has a associated cluster agent' do
-            let_it_be(:another_agent) { create(:cluster_agent, project: project) }
+            let_it_be(:another_agent, freeze: false) { create(:cluster_agent, project: project) }
             let(:environment) do
               create(:environment, project: project, name: environment_name, cluster_agent: another_agent)
             end

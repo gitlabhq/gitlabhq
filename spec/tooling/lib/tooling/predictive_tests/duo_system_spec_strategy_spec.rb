@@ -9,9 +9,10 @@ RSpec.describe Tooling::PredictiveTests::DuoSystemSpecStrategy, feature_category
   let(:instance) { described_class.new(changed_files: changed_files, logger: logger) }
 
   let(:duo_selector) { instance_double(Tooling::PredictiveTests::DuoTestSelector) }
+  let(:threshold) { Tooling::PredictiveTests::DuoTestSelector::CONFIDENCE_THRESHOLD }
   let(:duo_result) do
     {
-      confidence: 0.9,
+      confidence: threshold + 0.1,
       specs: ['spec/features/users/profile_spec.rb', 'spec/features/admin/users_spec.rb'],
       reasoning: 'Found specs related to user views and models'
     }
@@ -45,7 +46,7 @@ RSpec.describe Tooling::PredictiveTests::DuoSystemSpecStrategy, feature_category
       context 'when Duo returns low confidence' do
         let(:duo_result) do
           {
-            confidence: 0.5,
+            confidence: threshold - 0.1,
             specs: [],
             reasoning: 'Large change detected'
           }
@@ -53,6 +54,36 @@ RSpec.describe Tooling::PredictiveTests::DuoSystemSpecStrategy, feature_category
 
         it 'returns empty array' do
           expect(execute).to be_empty
+        end
+      end
+
+      context 'on the confidence threshold boundary' do
+        context 'when just below threshold' do
+          let(:duo_result) do
+            {
+              confidence: threshold - 0.01,
+              specs: ['spec/features/users/profile_spec.rb'],
+              reasoning: 'Borderline confidence'
+            }
+          end
+
+          it 'falls back to non-Duo strategies' do
+            expect(execute).to be_empty
+          end
+        end
+
+        context 'when exactly at threshold' do
+          let(:duo_result) do
+            {
+              confidence: threshold,
+              specs: ['spec/features/users/profile_spec.rb'],
+              reasoning: 'At threshold'
+            }
+          end
+
+          it 'uses Duo predictions' do
+            expect(execute).to contain_exactly('spec/features/users/profile_spec.rb')
+          end
         end
       end
 

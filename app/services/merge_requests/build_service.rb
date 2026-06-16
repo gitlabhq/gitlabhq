@@ -4,6 +4,10 @@ module MergeRequests
   class BuildService < MergeRequests::BaseService
     include Gitlab::Utils::StrongMemoize
 
+    # Fetch one more commit than the display limit so we can detect truncation
+    # and show "100+" in the badge when there are more commits than we display.
+    COMPARE_COMMITS_LIMIT = MergeRequestDiff::COMMITS_SAFE_SIZE + 1
+
     def execute
       @params_issue_iid = params.delete(:issue_iid)
       self.merge_request = MergeRequest.new
@@ -160,7 +164,7 @@ module MergeRequests
       )
 
       if compare
-        merge_request.compare_commits = compare.commits
+        merge_request.compare_commits = compare.commits(limit: COMPARE_COMMITS_LIMIT)
         merge_request.compare = compare
       end
     end

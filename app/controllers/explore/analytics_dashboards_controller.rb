@@ -3,6 +3,7 @@
 module Explore
   class AnalyticsDashboardsController < Explore::ApplicationController
     feature_category :custom_dashboards_foundation
+    before_action :authenticate_user!
     before_action :check_feature_flag
 
     def index; end

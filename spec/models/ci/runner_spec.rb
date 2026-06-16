@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner_core do
+RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_core do
   include StubGitlabCalls
   include ::TokenAuthenticatableMatchers
 
@@ -400,7 +400,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'when runner has creator' do
-      let(:creator) { create(:user) }
+      let_it_be(:creator) { create(:user) }
       let!(:runner) { build(:ci_runner, creator: creator) }
 
       it { is_expected.to eq creator }
@@ -412,9 +412,9 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.instance_type' do
-    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let!(:shared_runner) { create(:ci_runner, :instance) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
     it 'returns only shared runners' do
       expect(described_class.instance_type).to contain_exactly(shared_runner)
@@ -735,7 +735,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'when runner is shared' do
-      let_it_be_with_refind(:runner) { create(:ci_runner, :instance) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
       it { is_expected.to be_truthy }
 
@@ -950,7 +950,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#ensure_runner_queue_value' do
-    let_it_be_with_refind(:runner) { create(:ci_runner) }
+    let_it_be_with_reload(:runner) { create(:ci_runner) }
     let!(:last_update) { runner.ensure_runner_queue_value }
 
     it 'sets a new last_update value when it is called the first time' do
@@ -1651,7 +1651,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with custom instance prefix' do
-      let_it_be_with_refind(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
       let_it_be(:instance_prefix) { 'instanceprefix' }
 
       before do
@@ -1861,7 +1861,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#token_expires_at', :freeze_time do
-    let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
+    let_it_be(:group_settings, freeze: false) do
+      create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i)
+    end
+
     let_it_be_with_refind(:group_with_expiration) { create(:group, namespace_settings: group_settings) }
     let_it_be(:existing_runner, freeze: true) { create(:ci_runner) }
 
@@ -1945,7 +1948,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'project expiration' do
-      let_it_be(:project) { create(:project, group: group, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be(:project, freeze: false) do
+        create(:project, group: group, runner_token_expiration_interval: 4.days.to_i)
+      end
+
       let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
       it_behaves_like 'expiring token', interval: 4.days
@@ -1985,9 +1991,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context "with group's project runner token expiring" do
-      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 2.days.to_i) }
-      let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
-      let_it_be(:group_settings) { create(:namespace_settings) }
+      let_it_be(:parent_group_settings, freeze: false) do
+        create(:namespace_settings, subgroup_runner_token_expiration_interval: 2.days.to_i)
+      end
+
+      let_it_be(:parent_group, freeze: false) { create(:group, namespace_settings: parent_group_settings) }
+      let_it_be(:group_settings, freeze: false) { create(:namespace_settings) }
       let_it_be(:group) { create(:group, parent: parent_group, namespace_settings: group_settings) }
 
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
@@ -2604,7 +2613,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let_it_be(:group, freeze: true) { create(:group) }
       let_it_be(:another_project, freeze: true) { other_project }
       let_it_be(:unlocked_project_runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
-      let_it_be(:locked_project_runner, freeze: true) { create(:ci_runner, :project, locked: true, projects: [project]) }
+      let_it_be(:locked_project_runner, freeze: true) do
+        create(:ci_runner, :project, locked: true, projects: [project])
+      end
+
       let_it_be(:group_runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
       let_it_be(:instance_runner, freeze: true) { create(:ci_runner, :instance) }
 
@@ -2627,7 +2639,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       context 'with different organization' do
         let_it_be(:other_org_group, freeze: true) { create(:group, organization: other_organization) }
-        let_it_be(:other_org_project, freeze: true) { create(:project, organization: other_organization, group: other_org_group) }
+        let_it_be(:other_org_project, freeze: true) do
+          create(:project, organization: other_organization, group: other_org_group)
+        end
+
         let_it_be(:other_org_runner, freeze: true) { create(:ci_runner, :project, projects: [other_org_project]) }
 
         let(:target_project) { other_project }

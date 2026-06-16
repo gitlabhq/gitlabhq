@@ -154,7 +154,7 @@ approval_policy: []
 Once the policy is running. all the projects associated with the global policy will have the `secret detect` job will run automatically in the pipeline as `secret_detection_0` job.
 ![Security Dashboard](img/secret_detection_job_v17_9.png)
 
-Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed in the MR widget. If it is the default branch merged, they will be shown in the security vulnerability report as following:
+Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed on the **Reports** tab. If it is the default branch merged, they will be shown in the security vulnerability report as following:
 ![Secret detection password vulnerability results](img/secret_detection_pwd_vuln_v17_9.png)
 
 The following is an example password in clear text:

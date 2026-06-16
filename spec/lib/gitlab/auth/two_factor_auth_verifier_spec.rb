@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
   subject(:verifier) { described_class.new(user, request) }
 
   describe '#two_factor_authentication_enforced?' do
-    subject do
+    subject(:enforced?) do
       described_class.new(user, request,
         treat_email_otp_as_2fa: treat_email_otp_as_2fa).two_factor_authentication_enforced?
     end
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
           expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
             .with(save: true).and_call_original
 
-          expect(subject).to be(true)
+          expect(enforced?).to be(true)
         end
       end
 
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
         it 'does not call set_email_otp_required_after_based_on_restrictions' do
           expect(user).not_to receive(:set_email_otp_required_after_based_on_restrictions)
 
-          expect(subject).to be(false)
+          expect(enforced?).to be(false)
         end
       end
     end
@@ -146,21 +146,21 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
       allow(user).to receive(:two_factor_enabled?).and_return(false)
       allow(user).to receive(:temp_oauth_email?).and_return(true)
 
-      expect(subject.current_user_needs_to_setup_two_factor?).to be_falsey
+      expect(verifier.current_user_needs_to_setup_two_factor?).to be_falsey
     end
 
     it 'returns false when current_user has 2fa disabled' do
       allow(user).to receive(:temp_oauth_email?).and_return(false)
       allow(user).to receive(:two_factor_enabled?).and_return(true)
 
-      expect(subject.current_user_needs_to_setup_two_factor?).to be_falsey
+      expect(verifier.current_user_needs_to_setup_two_factor?).to be_falsey
     end
 
     it 'returns true when user requires 2fa authentication' do
       allow(user).to receive(:two_factor_enabled?).and_return(false)
       allow(user).to receive(:temp_oauth_email?).and_return(false)
 
-      expect(subject.current_user_needs_to_setup_two_factor?).to be_truthy
+      expect(verifier.current_user_needs_to_setup_two_factor?).to be_truthy
     end
   end
 
@@ -169,14 +169,14 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
       stub_application_setting two_factor_grace_period: 2
       allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(false)
 
-      expect(subject.two_factor_grace_period).to eq(2)
+      expect(verifier.two_factor_grace_period).to eq(2)
     end
 
     it 'returns grace period from groups if there is no period from settings' do
       allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
       allow(user).to receive(:two_factor_grace_period).and_return(3)
 
-      expect(subject.two_factor_grace_period).to eq(3)
+      expect(verifier.two_factor_grace_period).to eq(3)
     end
 
     it 'returns minimal grace period if there is grace period from settings and from group' do
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
       allow(user).to receive(:two_factor_grace_period).and_return(3)
       stub_application_setting two_factor_grace_period: 2
 
-      expect(subject.two_factor_grace_period).to eq(2)
+      expect(verifier.two_factor_grace_period).to eq(2)
     end
   end
 
@@ -192,20 +192,20 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
     it 'returns true if the grace period has expired' do
       stub_application_setting two_factor_grace_period: 0
 
-      expect(subject.two_factor_grace_period_expired?).to be_truthy
+      expect(verifier.two_factor_grace_period_expired?).to be_truthy
     end
 
     it 'returns false if the grace period has not expired' do
       stub_application_setting two_factor_grace_period: 1.month.in_hours
 
-      expect(subject.two_factor_grace_period_expired?).to be_falsey
+      expect(verifier.two_factor_grace_period_expired?).to be_falsey
     end
 
     context 'when otp_grace_period_started_at is nil' do
       it 'returns false' do
         user.otp_grace_period_started_at = nil
 
-        expect(subject.two_factor_grace_period_expired?).to be_falsey
+        expect(verifier.two_factor_grace_period_expired?).to be_falsey
       end
     end
   end

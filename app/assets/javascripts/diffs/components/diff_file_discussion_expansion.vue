@@ -3,6 +3,7 @@ import { GlAvatarLink, GlAvatar, GlAvatarsInline, GlButton, GlSprintf, GlLink } 
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
+  name: 'DiffFileDiscussionExpansion',
   components: {
     GlAvatarLink,
     GlAvatar,

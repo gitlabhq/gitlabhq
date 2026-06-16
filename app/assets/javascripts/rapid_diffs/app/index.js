@@ -8,13 +8,13 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapter_configs/base';
 import { camelizeKeys } from '~/lib/utils/object_utils';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { createDiffFileMounted } from '~/rapid_diffs/web_components/diff_file_mounted';
+import { initFileByFileNavigation } from '~/rapid_diffs/app/init_file_by_file_navigation';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -43,16 +43,24 @@ export class RapidDiffsFacade {
       useDiffsList(pinia).setLinkedFileData(this.appData.linkedFileData);
     }
     this.#populateLegacyFileFragment();
-    if (this.#lazy) {
-      useDiffsList(pinia).streamInitialDiffs(this.appData.reloadStreamUrl);
-    } else {
-      this.#streamRemainingDiffs();
-    }
     this.#delegateEvents();
     this.#registerCustomElements();
     this.#initHeader();
-    this.#initSidebar();
+    this.#initSidebar()
+      .then(() => {
+        if (useDiffsView(pinia).singleFileMode && this.#lazy) {
+          useDiffsView(pinia).loadCurrentFile();
+        }
+      })
+      .catch(() => {});
     this.#initDiffsList();
+    if (!useDiffsView(pinia).singleFileMode) {
+      if (this.#lazy) {
+        useDiffsList(pinia).streamInitialDiffs(this.appData.reloadStreamUrl);
+      } else {
+        this.#streamRemainingDiffs();
+      }
+    }
   }
 
   observe(instance) {
@@ -114,16 +122,12 @@ export class RapidDiffsFacade {
     window.customElements.define('diff-file', this.#DiffFileImplementation);
     window.customElements.define('diff-file-mounted', this.#DiffFileMounted);
     window.customElements.define('streaming-error', StreamingError);
-    fixWebComponentsStreamingOnSafari(
-      this.root,
-      this.#DiffFileImplementation,
-      this.#DiffFileMounted,
-    );
   }
 
   #initHeader() {
     useDiffsView(pinia).diffsStatsEndpoint = this.appData.diffsStatsEndpoint;
     useDiffsView(pinia).streamUrl = this.appData.reloadStreamUrl;
+    useDiffsView(pinia).diffFileEndpoint = this.appData.diffFileEndpoint;
     useDiffsView(pinia)
       .loadDiffsStats()
       .catch((error) => {
@@ -140,7 +144,7 @@ export class RapidDiffsFacade {
   }
 
   #initSidebar() {
-    initFileBrowser({
+    return initFileBrowser({
       toggleTarget: this.root.querySelector('[data-file-browser-toggle]'),
       browserTarget: this.root.querySelector('[data-file-browser]'),
       appData: this.appData,
@@ -155,6 +159,7 @@ export class RapidDiffsFacade {
   #initDiffsList() {
     disableBrokenContentVisibility(this.root);
     initHiddenFilesWarning(this.root.querySelector('[data-hidden-files-warning]'));
+    initFileByFileNavigation(this.root.querySelector('[data-file-by-file-navigation]'));
     this.root.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
   }
 

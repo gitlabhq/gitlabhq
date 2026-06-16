@@ -1,7 +1,7 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループバッジAPI
 ---
 
@@ -12,33 +12,27 @@ title: グループバッジAPI
 
 {{< /details >}}
 
-このAPIを使用して、グループバッジを操作します。詳細については、[グループ](../user/project/badges.md#group-badges)を参照してください。
+このAPIを使用して、グループバッジを操作します。詳細については、[グループバッジ](../user/project/badges.md#group-badges)を参照してください。
 
-## 補間トークン {#placeholder-tokens}
+バッジは、リンクと画像URLの両方でリアルタイムに置換されるプレースホルダーをサポートしています。次のプレースホルダーを使用できます:
 
-[バッジ](../user/project/badges.md)は、リンクとイメージURLの両方でリアルタイムに置き換えられる補間をサポートしています。使用できる補間は次のとおりです:
+- `%{project_path}`: プロジェクトパスに置換されます。
+- `%{project_title}`: プロジェクトタイトルに置換されます。
+- `%{project_name}`: プロジェクト名に置換されます。
+- `%{project_id}`: プロジェクトIDに置換されます。
+- `%{project_namespace}`: プロジェクトのネームスペースのフルパスに置換されます。
+- `%{group_name}`: プロジェクトのトップレベルグループ名に置換されます。
+- `%{gitlab_server}`: プロジェクトのサーバー名に置換されます。
+- `%{gitlab_pages_domain}`: GitLab Pagesをホストしているドメイン名に置換されます。
+- `%{default_branch}`: プロジェクトのデフォルトブランチに置換されます。
+- `%{commit_sha}`: プロジェクトの最後のコミットSHAに置換されます。
+- `%{latest_tag}`: プロジェクトの最後のタグに置換されます。
 
-<!-- vale gitlab_base.Spelling = NO -->
+これらのエンドポイントはプロジェクトのコンテキスト内にないため、プレースホルダーの置換に使用される情報は、作成日順で最初のグループのプロジェクトから取得されます。グループにプロジェクトがない場合、プレースホルダーを含む元のURLが返されます。
 
-- **%{project_path}**: プロジェクトのパスに置き換えられます。
-- **%{project_title}**: プロジェクトのタイトルに置き換えられます。
-- **%{project_name}**: プロジェクト名に置き換えられます。
-- **%{project_id}**: プロジェクトIDに置き換えられます。
-- **%{project_namespace}**: プロジェクトのネームスペースのフルパスに置き換えられます。
-- **%{group_name}**: プロジェクトのトップレベルグループ名に置き換えられます。
-- **%{gitlab_server}**: プロジェクトのサーバー名に置き換えられます。
-- **%{gitlab_pages_domain}**: GitLab Pagesをホストするドメイン名に置き換えられます。
-- **%{default_branch}**: プロジェクトのデフォルトのブランチに置き換えられます。
-- **%{commit_sha}**: プロジェクトの最後のコミットSHAに置き換えられます。
-- **%{latest_tag}**: プロジェクトの最後のタグに置き換えられます。
+## すべてのグループバッジをリストする {#list-all-group-badges}
 
-<!-- vale gitlab_base.Spelling = YES -->
-
-これらのエンドポイントはプロジェクトのコンテキスト内にないため、補間を置き換えるために使用される情報は、作成日順で最初のグループのプロジェクトから取得されます。グループにプロジェクトがない場合は、補間を含む元のURLが返されます。
-
-## グループのすべてのバッジをリスト表示 {#list-all-badges-of-a-group}
-
-グループのバッジのリストを取得します。
+指定されたグループのバッジをリストします。
 
 ```plaintext
 GET /groups/:id/badges
@@ -47,7 +41,7 @@ GET /groups/:id/badges
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `name`    | 文字列         | いいえ  | 返すバッジの名前（大文字と小文字を区別）。 |
+| `name`    | 文字列         | いいえ  | 返すバッジの名前（大文字と小文字を区別します）。 |
 
 ```shell
 curl \
@@ -55,7 +49,7 @@ curl \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges?name=Coverage"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -71,9 +65,9 @@ curl \
 ]
 ```
 
-## グループのバッジを取得 {#get-a-badge-of-a-group}
+## グループバッジを取得する {#retrieve-a-group-badge}
 
-グループのバッジを取得します。
+グループの指定されたバッジを取得します。
 
 ```plaintext
 GET /groups/:id/badges/:badge_id
@@ -90,7 +84,7 @@ curl \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -104,9 +98,9 @@ curl \
 }
 ```
 
-## グループにバッジを追加 {#add-a-badge-to-a-group}
+## グループバッジを作成する {#create-a-group-badge}
 
-グループにバッジを追加します。
+指定されたグループのバッジを作成します。
 
 ```plaintext
 POST /groups/:id/badges
@@ -116,7 +110,7 @@ POST /groups/:id/badges
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `link_url` | 文字列         | はい | バッジリンクのURL |
-| `image_url` | 文字列 | はい | バッジイメージのURL |
+| `image_url` | 文字列 | はい | バッジ画像のURL |
 | `name` | 文字列 | いいえ | バッジの名前 |
 
 ```shell
@@ -126,7 +120,7 @@ curl --request POST \
   --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&name=mybadge&position=0"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -140,9 +134,9 @@ curl --request POST \
 }
 ```
 
-## グループのバッジを編集 {#edit-a-badge-of-a-group}
+## グループバッジを更新する {#update-a-group-badge}
 
-グループのバッジを更新します。
+指定されたグループのバッジを更新します。
 
 ```plaintext
 PUT /groups/:id/badges/:badge_id
@@ -153,7 +147,7 @@ PUT /groups/:id/badges/:badge_id
 | `id`      | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `badge_id` | 整数 | はい   | バッジID |
 | `link_url` | 文字列         | いいえ | バッジリンクのURL |
-| `image_url` | 文字列 | いいえ | バッジイメージのURL |
+| `image_url` | 文字列 | いいえ | バッジ画像のURL |
 | `name` | 文字列 | いいえ | バッジの名前 |
 
 ```shell
@@ -162,7 +156,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -176,9 +170,9 @@ curl --request PUT \
 }
 ```
 
-## グループからバッジを削除 {#remove-a-badge-from-a-group}
+## グループバッジを削除する {#delete-a-group-badge}
 
-グループからバッジを削除します。
+グループから指定されたバッジを削除します。
 
 ```plaintext
 DELETE /groups/:id/badges/:badge_id
@@ -195,9 +189,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id"
 ```
 
-## グループからバッジをプレビュー {#preview-a-badge-from-a-group}
+## グループバッジプレビューを取得する {#retrieve-a-group-badge-preview}
 
-`link_url`と`image_url`の最終的なURLが、補間を解決するとどうなるかを返します。
+プレースホルダーの補間を解決した後、指定されたグループの最終的な`link_url`と`image_url`のURLのプレビューを取得します。
 
 ```plaintext
 GET /groups/:id/badges/render
@@ -207,7 +201,7 @@ GET /groups/:id/badges/render
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `link_url` | 文字列         | はい | バッジリンクのURL|
-| `image_url` | 文字列 | はい | バッジイメージのURL |
+| `image_url` | 文字列 | はい | バッジ画像のURL |
 
 ```shell
 curl \
@@ -215,7 +209,7 @@ curl \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges/render?link_url=http%3A%2F%2Fexample.com%2Fci_status.svg%3Fproject%3D%25%7Bproject_path%7D%26ref%3D%25%7Bdefault_branch%7D&image_url=https%3A%2F%2Fshields.io%2Fmy%2Fbadge"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

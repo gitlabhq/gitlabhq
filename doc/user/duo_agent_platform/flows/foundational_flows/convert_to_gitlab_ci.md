@@ -34,13 +34,12 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-To convert a Jenkinsfile, you must:
-
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
+- Turn on **Allow foundational flows** and **Convert to GitLab CI/CD** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
+- Have the Developer, Maintainer, or Owner role for the target GitLab project.
 - Have access to your Jenkins pipeline configuration.
-- Have the Developer, Maintainer, or Owner role in the target GitLab project.
-- Meet [the other prerequisites](../../_index.md#prerequisites).
-- [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
-- Ensure **Allow foundational flows** and **Convert to GitLab CI/CD** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
+- [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Configure your own runners](../execution.md#configure-runners) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Use the flow
 

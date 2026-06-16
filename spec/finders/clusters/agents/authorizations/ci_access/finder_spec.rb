@@ -14,7 +14,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_categ
     let_it_be(:non_ancestor_agent) { create(:cluster_agent, project: non_ancestor_project) }
 
     let_it_be(:agent_configuration_project) { create(:project, namespace: subgroup1) }
-    let_it_be(:requesting_project, reload: true) { create(:project, namespace: bottom_level_group) }
+    let_it_be_with_reload(:requesting_project) { create(:project, namespace: bottom_level_group) }
 
     let_it_be(:staging_agent) { create(:cluster_agent, project: agent_configuration_project) }
     let_it_be(:production_agent) { create(:cluster_agent, project: agent_configuration_project) }

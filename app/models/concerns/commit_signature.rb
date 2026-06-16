@@ -50,7 +50,6 @@ module CommitSignature
   # If commit is persisted as verified, check that commit email is still correct.
   def verification_status
     persisted_status = read_attribute(:verification_status)
-    return persisted_status unless Feature.enabled?(:check_for_mailmapped_commit_emails, project)
     return persisted_status unless verified? || verified_system?
     return persisted_status unless commit
 

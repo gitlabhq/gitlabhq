@@ -20,6 +20,7 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 export default {
+  name: 'UserSelect',
   i18n: {
     unassigned: __('Unassigned'),
   },

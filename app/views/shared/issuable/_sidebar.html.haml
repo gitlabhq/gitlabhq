@@ -42,7 +42,7 @@
 
       - if issuable_sidebar[:supports_milestone]
         .block.milestone{ data: { testid: 'sidebar-milestones' } }
-          .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
+          .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid] } }
 
       - if is_merge_request
         .block.related-work-items{ data: { testid: 'related-work-items-container' } }

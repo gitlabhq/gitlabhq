@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupPackages, feature_category: :package_registry do
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
   let_it_be(:user) { create(:user) }
 
@@ -121,6 +121,18 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
       context 'with unauthenticated user' do
         it_behaves_like 'returns packages', :group, :no_type
+
+        context 'with a private project alongside the public project' do
+          let_it_be(:private_project) { create(:project, :private, namespace: group) }
+          let_it_be(:private_package) { create(:generic_package, project: private_project) }
+
+          it 'returns only packages from public projects' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package1.id, package2.id)
+          end
+        end
       end
 
       context 'with authenticated user' do
@@ -197,5 +209,287 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     it_behaves_like 'with versionless packages'
     it_behaves_like 'with status param'
     it_behaves_like 'does not cause n^2 queries'
+
+    context 'when group permission gates listing of descendant project packages' do
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:subproject) { create(:project, :private, group: group) }
+      let_it_be(:package) { create(:generic_package, project: subproject) }
+
+      let_it_be(:granular_assignable_permission_name) do
+        ::Authz::PermissionGroups::Assignable.for_permission(:read_package).first.name
+      end
+
+      let_it_be(:granular_boundary) { ::Authz::Boundary.for(group) }
+
+      let(:url) { "/groups/#{group.id}/packages" }
+
+      subject(:list_request) { get api(url, user) }
+
+      context 'when caller is Guest on group and Owner on subproject' do
+        let_it_be(:user) do
+          create(:user).tap do |u|
+            group.add_guest(u)
+            subproject.add_owner(u)
+          end
+        end
+
+        context 'with allow_guest_plus_roles_to_pull_packages disabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
+
+          it 'returns 200 with the subproject package' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
+          end
+        end
+
+        context 'with allow_guest_plus_roles_to_pull_packages enabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: true)
+          end
+
+          it 'returns 200 with the subproject package' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
+          end
+        end
+      end
+
+      context 'with a subgroup' do
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:subproject) { create(:project, :private, group: subgroup) }
+        let_it_be(:package) { create(:generic_package, project: subproject) }
+
+        context 'when caller is Guest on group + Reporter on the subgroup project' do
+          let_it_be(:user) do
+            create(:user).tap do |u|
+              group.add_guest(u)
+              subproject.add_reporter(u)
+            end
+          end
+
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
+
+          it 'returns 200 with the subgroup project package' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
+          end
+
+          it 'returns 200 with empty body when exclude_subgroups=true' do
+            get api("#{url}?exclude_subgroups=true", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq([])
+          end
+        end
+
+        context 'when the endpoint is called on the subgroup itself' do
+          let_it_be(:user) do
+            create(:user).tap do |u|
+              group.add_guest(u)
+              subproject.add_owner(u)
+            end
+          end
+
+          let(:url) { "/groups/#{subgroup.id}/packages" }
+
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
+
+          it 'returns 200 with the subgroup project package' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
+          end
+        end
+      end
+
+      context 'when caller is an authenticated non-member of a private group' do
+        let_it_be(:user) { create(:user) }
+
+        it 'returns 404 because the user cannot read the group' do
+          list_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when caller is non-member of the group with Reporter on a subproject' do
+        let_it_be(:user) do
+          create(:user).tap { |u| subproject.add_reporter(u) }
+        end
+
+        it 'returns 200 with the subproject package' do
+          list_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to contain_exactly(package.id)
+        end
+
+        it 'avoids N+1 queries as packages are added to the subproject' do
+          create(:generic_package, project: subproject)
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api(url, user)
+          end
+
+          create_list(:generic_package, 4, project: subproject)
+
+          expect do
+            get api(url, user)
+          end.not_to exceed_query_limit(control)
+        end
+
+        context 'with a granular PAT scoped to the group with :read_package' do
+          let_it_be(:pat) do
+            create(:granular_pat,
+              user: user,
+              boundary: granular_boundary,
+              permissions: granular_assignable_permission_name)
+          end
+
+          subject(:list_request) { get api(url, personal_access_token: pat) }
+
+          it 'returns 404 because the read_group check rejects non-members' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'when caller is a non-member with Guest on a subproject' do
+        let_it_be(:user) do
+          create(:user).tap { |u| subproject.add_guest(u) }
+        end
+
+        context 'with allow_guest_plus_roles_to_pull_packages disabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
+
+          it 'returns 200 with an empty body' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq([])
+          end
+        end
+
+        context 'with allow_guest_plus_roles_to_pull_packages enabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: true)
+          end
+
+          it 'returns 200 with the subproject package' do
+            list_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to contain_exactly(package.id)
+          end
+        end
+      end
+
+      context 'with a granular PAT, Guest on group + Reporter on subproject' do
+        let_it_be(:user) do
+          create(:user).tap do |u|
+            group.add_guest(u)
+            subproject.add_reporter(u)
+          end
+        end
+
+        let_it_be(:pat) do
+          create(:granular_pat,
+            user: user,
+            boundary: granular_boundary,
+            permissions: granular_assignable_permission_name)
+        end
+
+        subject(:list_request) { get api(url, personal_access_token: pat) }
+
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
+
+        it 'returns 200 with the subproject package' do
+          list_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to contain_exactly(package.id)
+        end
+      end
+
+      context 'when scaling with subprojects under the group' do
+        observed_delta = 5
+
+        def create_subproject_with_package(group, user)
+          subproject = create(:project, :private, group: group)
+          subproject.add_reporter(user)
+          create(:generic_package, project: subproject)
+        end
+
+        it 'stays within an observed query-count delta as subprojects are added' do
+          user = create(:user)
+
+          create_subproject_with_package(group, user)
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api(url, user)
+          end
+
+          4.times { create_subproject_with_package(group, user) }
+
+          expect do
+            get api(url, user)
+          end.not_to exceed_query_limit(control.count + observed_delta)
+        end
+      end
+
+      context 'with unrelated groups present' do
+        let_it_be(:unrelated_group) { create(:group, :private) }
+        let_it_be(:unrelated_project) { create(:project, :private, group: unrelated_group) }
+        let_it_be(:unrelated_package) { create(:generic_package, project: unrelated_project) }
+        let_it_be(:user) do
+          create(:user).tap { |u| group.add_guest(u) }
+        end
+
+        it 'does not include packages from unrelated groups' do
+          list_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).not_to include(unrelated_package.id)
+        end
+      end
+
+      context 'with a project shared into the group via project_group_link' do
+        let_it_be(:other_group) { create(:group, :private) }
+        let_it_be(:shared_project) { create(:project, :private, group: other_group) }
+        let_it_be(:package) { create(:generic_package, project: shared_project) }
+        let_it_be(:link) do
+          create(:project_group_link, project: shared_project, group: group)
+        end
+
+        let_it_be(:user) do
+          create(:user).tap { |u| shared_project.add_reporter(u) }
+        end
+
+        it 'returns 404 because :read_group is not granted via shared-into projects' do
+          list_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
   end
 end

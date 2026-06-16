@@ -39,7 +39,7 @@ are using. First verify which template is in use:
   - Your Auto DevOps project has a `.gitlab-ci.yml` and [includes](../../ci/yaml/_index.md#includetemplate)
     the `Auto-DevOps.gitlab-ci.yml` template.
 - [The latest Auto Deploy template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml)
-  is being used if **both** of the following is true:
+  is being used if both of the following is true:
   - Your Auto DevOps project has a `.gitlab-ci.yml` file and [includes](../../ci/yaml/_index.md#includetemplate)
     the `Auto-DevOps.gitlab-ci.yml` template.
   - It also includes [the latest Auto Deploy template](#early-adopters)

@@ -1,9 +1,0 @@
----
-name: skip_empty_access_levels_in_branch_rules
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/593578
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227717
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/593578
-milestone: '18.11'
-type: beta
-group: group::security policies
-default_enabled: true

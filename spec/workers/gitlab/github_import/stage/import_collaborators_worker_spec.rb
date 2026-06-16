@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :in_group, :github_import) }
+  let_it_be(:project, freeze: false) { create(:project, :in_group, :github_import) }
 
   let(:settings) { Gitlab::GithubImport::Settings.new(project) }
   let(:stage_enabled) { true }
@@ -51,6 +51,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
         expect(Gitlab::GithubImport::Logger).to receive(:warn)
           .with(a_hash_including(
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             importer: 'Importer::CollaboratorsImporter',
             message: 'no push access rights to fetch collaborators'
           ))
@@ -78,7 +79,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
     end
 
     context 'when importing into a personal namespace' do
-      let_it_be(:project) { create(:project, :github_import) }
+      let_it_be(:project, freeze: false) { create(:project, :github_import) }
 
       it 'skips collaborators import and calls next stage' do
         expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)

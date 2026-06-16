@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループWebhook API
-description: "REST APIを使用して、グループのWebhookを設定および管理します。"
+description: "グループのWebhookをREST APIで設定し、管理します。"
 ---
 
 {{< details >}}
@@ -13,27 +13,27 @@ description: "REST APIを使用して、グループのWebhookを設定および
 
 {{< /details >}}
 
-このAPIを使用して[グループWebhook](../user/project/integrations/webhooks.md#group-webhooks)を管理します。グループWebhookは、インスタンス全体に影響を与える[システムフック](system_hooks.md)、および単一のプロジェクトに限定される[プロジェクトWebhook](project_webhooks.md)とは異なります。
+このAPIを使用して[グループのWebhook](../user/project/integrations/webhooks.md#group-webhooks)を管理します。グループのWebhookは、インスタンス全体に影響を与える[システムフック](system_hooks.md)や、単一のプロジェクトに限定される[プロジェクトWebhook](project_webhooks.md)とは異なります。
 
-前提要件: 
+前提条件: 
 
-- グループの管理者であるか、オーナーロールを持っている必要があります。
+- 管理者であるか、グループのオーナーロールを持っている必要があります。
 
-## グループフックの一覧表示 {#list-group-hooks}
+## すべてのグループフックをリスト表示 {#list-all-group-hooks}
 
-グループフックの一覧を取得します
+指定されたグループのすべてのグループフックをリスト表示します。
 
 ```plaintext
 GET /groups/:id/hooks
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型            | 必須 | 説明 |
 | --------- | --------------- | -------- | ----------- |
 | `id`      | 整数または文字列  | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -41,7 +41,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -83,27 +83,36 @@ curl --request GET \
       {
         "key": "Authorization"
       }
-    ]
+    ],
+    "token_present": false,
+    "signing_token_present": false
   }
 ]
 ```
 
-## グループフックの取得 {#get-a-group-hook}
+## グループフックを取得する {#retrieve-a-group-hook}
 
-グループの特定のフックを取得します。
+{{< history >}}
+
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `token_present`および`signing_token_present`属性はGitLab 19.0で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。
+
+{{< /history >}}
+
+指定されたグループフックを取得します。
 
 ```plaintext
 GET /groups/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `hook_id` | 整数        | はい      | グループフックのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -111,7 +120,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -151,11 +160,13 @@ curl --request GET \
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
-## グループフックイベントの取得 {#get-group-hook-events}
+## すべてのグループフックイベントをリスト表示 {#list-all-group-hook-events}
 
 {{< history >}}
 
@@ -163,13 +174,13 @@ curl --request GET \
 
 {{< /history >}}
 
-開始日から過去7日間の特定のグループフックのイベントの一覧を取得します。
+指定されたグループフックの、開始日から過去7日間のすべてのイベントをリスト表示します。
 
 ```plaintext
 GET /groups/:id/hooks/:hook_id/events
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型                 | 必須 | 説明 |
 |----------- |--------------------- |--------- |------------ |
@@ -177,9 +188,9 @@ GET /groups/:id/hooks/:hook_id/events
 | `id`       | 整数または文字列    | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `page`     | 整数              | いいえ       | 取得するページ。`1`がデフォルトです。 |
 | `per_page` | 整数              | いいえ       | ページごとに返すレコード数。`20`がデフォルトです。 |
-| `status`   | 整数または文字列    | いいえ       | イベントのレスポンスステータスコード (例: `200`または`500`)。ステータスカテゴリで検索できます: `successful` (200～299)、`client_failure` (400～499)、および`server_failure` (500～599)があります。 |
+| `status`   | 整数または文字列    | いいえ       | イベントのレスポンスステータスコード。例: `200`または`500`。ステータスカテゴリで検索できます: `successful` (200-299)、`client_failure` (400-499)、および`server_failure` (500-599)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -187,7 +198,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -437,7 +448,7 @@ curl --request GET \
 ]
 ```
 
-### グループフックイベントの再送信 {#resend-group-hook-event}
+### グループフックイベントを再送 {#resend-group-hook-event}
 
 {{< history >}}
 
@@ -445,15 +456,15 @@ curl --request GET \
 
 {{< /history >}}
 
-特定のフックイベントを再送信します。
+特定のフックイベントを再送します。
 
-このエンドポイントには、フックおよび認証済みユーザーごとに、1分あたり5件のリクエストのレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が[機能フラグを無効にする](../administration/feature_flags/_index.md)ことができます。名前は`web_hook_event_resend_api_endpoint_rate_limit`です。
+このエンドポイントには、フックと認証済みユーザーごとに1分あたり5リクエストのレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が`web_hook_event_resend_api_endpoint_rate_limit`という名前の[機能フラグを無効にできます](../administration/feature_flags/_index.md)。
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型              | 必須 | 説明 |
 |---------------- |------------------ |--------- |------------ |
@@ -461,7 +472,7 @@ POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
 | `hook_id`       | 整数           | はい      | グループフックのID。 |
 | `id`            | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -469,7 +480,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/events/1/resend"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -477,48 +488,57 @@ curl --request POST \
 }
 ```
 
-## グループフックの追加 {#add-a-group-hook}
+## グループフックを作成 {#create-a-group-hook}
 
-指定されたグループにフックを追加します。
+{{< history >}}
+
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `signing_token`属性はGitLab 19.0で`webhook_signing_token`という名前の[フラグとともに](../administration/feature_flags/_index.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。デフォルトでは有効になっています。
+- 機能フラグ`webhook_signing_token`はGitLab 19.1で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/issues/596374)。
+
+{{< /history >}}
+
+指定されたグループのグループフックを作成します。
 
 ```plaintext
 POST /groups/:id/hooks
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                      | 型              | 必須 | 説明 |
 |------------------------------- |------------------ |--------- |------------ |
 | `id`                           | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `url`                          | 文字列            | はい      | フックのURL。 |
-| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします。使用できる値は、`wildcard` (デフォルト)、`regex`、および`all_branches`です。 |
-| `confidential_issues_events`   | ブール値           | いいえ       | 機密イシューイベントでトリガーフックします。 |
-| `confidential_note_events`     | ブール値           | いいえ       | 機密ノートイベントでトリガーフックします。 |
+| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします指定できる値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
+| `confidential_issues_events`   | ブール値           | いいえ       | 機密イシューイベントでフックをトリガーします。 |
+| `confidential_note_events`     | ブール値           | いいえ       | 機密ノートイベントでフックをトリガーします。 |
 | `custom_headers`               | 配列             | いいえ       | フックのカスタムヘッダー。 |
 | `custom_webhook_template`      | 文字列            | いいえ       | フックのカスタムWebhookテンプレート。 |
-| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでトリガーフックします。 |
-| `description`                  | 文字列            | いいえ       | フックの説明(GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887))。 |
-| `enable_ssl_verification`      | ブール値           | いいえ       | トリガーフック時にSSL検証を実行します。 |
-| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでトリガーフックします。 |
-| `issues_events`                | ブール値           | いいえ       | イシューイベントでトリガーフックします。 |
-| `job_events`                   | ブール値           | いいえ       | ジョブイベントでトリガーフックします。 |
-| `member_events`                | ブール値           | いいえ       | メンバーイベントでトリガーフックします。 |
-| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでトリガーフックします。 |
-| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでトリガーフックします。 |
-| `name`                         | 文字列            | いいえ       | フックの名前(GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887))。 |
-| `note_events`                  | ブール値           | いいえ       | ノートイベントでトリガーフックします。 |
-| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでトリガーフックします。 |
-| `project_events`               | ブール値           | いいえ       | プロジェクトイベントでトリガーフックします。 |
-| `push_events`                  | ブール値           | いいえ       | プッシュイベントでトリガーフックします。 |
-| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのみのプッシュイベントでトリガーフックします。 |
-| `releases_events`              | ブール値           | いいえ       | リリースイベントでトリガーフックします。 |
-| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでトリガーフックします。 |
-| `subgroup_events`              | ブール値           | いいえ       | サブグループイベントでトリガーフックします。 |
-| `tag_push_events`              | ブール値           | いいえ       | タグ付けイベントでトリガーフックします。 |
+| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでフックをトリガーします。 |
+| `description`                  | 文字列            | いいえ       | フックの説明（GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)）。 |
+| `enable_ssl_verification`      | ブール値           | いいえ       | フックをトリガーするときにSSL検証を実行します。 |
+| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでフックをトリガーします。 |
+| `issues_events`                | ブール値           | いいえ       | イシューイベントでフックをトリガーします。 |
+| `job_events`                   | ブール値           | いいえ       | ジョブイベントでフックをトリガーします。 |
+| `member_events`                | ブール値           | いいえ       | メンバーイベントでフックをトリガーします。 |
+| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでフックをトリガーします。 |
+| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでフックをトリガーします。 |
+| `name`                         | 文字列            | いいえ       | フックの名前（GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)）。 |
+| `note_events`                  | ブール値           | いいえ       | ノートイベントでフックをトリガーします。 |
+| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでフックをトリガーします。 |
+| `project_events`               | ブール値           | いいえ       | プロジェクトイベントでフックをトリガーします。 |
+| `push_events`                  | ブール値           | いいえ       | プッシュイベントでフックをトリガーします。 |
+| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのプッシュイベントでのみフックをトリガーします。 |
+| `releases_events`              | ブール値           | いいえ       | リリースイベントでフックをトリガーします。 |
+| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでフックをトリガーします。 |
+| `signing_token`                | 文字列            | いいえ       | `webhook-signature`ヘッダーをコンピューティングするために使用されるHMAC署名トークン。32バイトのキーをエンコードする`whsec_<base64>`形式である必要があります。レスポンスでは返されません。 |
+| `subgroup_events`              | ブール値           | いいえ       | サブグループイベントでフックをトリガーします。 |
+| `tag_push_events`              | ブール値           | いいえ       | タグプッシュイベントでフックをトリガーします。 |
 | `token`                        | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。レスポンスでは返されません。 |
-| `wiki_page_events`             | ブール値           | いいえ       | Wikiページイベントでトリガーフックします。 |
+| `wiki_page_events`             | ブール値           | いいえ       | Wikiページイベントでフックをトリガーします。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -528,7 +548,7 @@ curl --request POST \
   --data '{"url": "https://example.com/hook", "name": "My Hook", "description": "Hook description"}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -564,53 +584,64 @@ curl --request POST \
   "created_at": "2012-10-12T17:04:47Z",
   "resource_access_token_events": true,
   "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
-## グループフックの編集 {#edit-group-hook}
+## グループフックを更新 {#update-a-group-hook}
 
-指定されたグループのフックを編集します。
+{{< history >}}
+
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `signing_token`属性はGitLab 19.0で`webhook_signing_token`という名前の[フラグとともに](../administration/feature_flags/_index.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。デフォルトでは有効になっています。
+- 機能フラグ`webhook_signing_token`はGitLab 19.1で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/issues/596374)。
+
+{{< /history >}}
+
+指定されたグループのグループフックを更新します。
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                                   | 型              | 必須 | 説明 |
 |-------------------------------------------- |------------------ |--------- |------------ |
 | `hook_id`                                   | 整数           | はい      | グループフックのID。 |
 | `id`                                        | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `url`                                       | 文字列            | はい      | フックのURL。 |
-| `branch_filter_strategy`                    | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします。使用できる値は、`wildcard` (デフォルト)、`regex`、および`all_branches`です。 |
-| `confidential_issues_events`                | ブール値           | いいえ       | 機密イシューイベントでトリガーフックします。 |
-| `confidential_note_events`                  | ブール値           | いいえ       | 機密ノートイベントでトリガーフックします。 |
+| `branch_filter_strategy`                    | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします指定できる値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
+| `confidential_issues_events`                | ブール値           | いいえ       | 機密イシューイベントでフックをトリガーします。 |
+| `confidential_note_events`                  | ブール値           | いいえ       | 機密ノートイベントでフックをトリガーします。 |
 | `custom_headers`                            | 配列             | いいえ       | フックのカスタムヘッダー。 |
 | `custom_webhook_template`                   | 文字列            | いいえ       | フックのカスタムWebhookテンプレート。 |
-| `deployment_events`                         | ブール値           | いいえ       | デプロイイベントでトリガーフックします。 |
-| `description`                               | 文字列            | いいえ       | フックの説明(GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887))。 |
-| `enable_ssl_verification`                   | ブール値           | いいえ       | トリガーフック時にSSL検証を実行します。 |
-| `feature_flag_events`                       | ブール値           | いいえ       | 機能フラグイベントでトリガーフックします。 |
-| `issues_events`                             | ブール値           | いいえ       | イシューイベントでトリガーフックします。 |
-| `job_events`                                | ブール値           | いいえ       | ジョブイベントでトリガーフックします。 |
-| `member_events`                             | ブール値           | いいえ       | メンバーイベントでトリガーフックします。 |
-| `merge_requests_events`                     | ブール値           | いいえ       | マージリクエストイベントでトリガーフックします。 |
-| `milestone_events`                          | ブール値           | いいえ       | マイルストーンイベントでトリガーフックします。 |
-| `name`                                      | 文字列            | いいえ       | フックの名前(GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887))。 |
-| `note_events`                               | ブール値           | いいえ       | ノートイベントでトリガーフックします。 |
-| `pipeline_events`                           | ブール値           | いいえ       | パイプラインイベントでトリガーフックします。 |
-| `project_events`                            | ブール値           | いいえ       | プロジェクトイベントでトリガーフックします。 |
-| `push_events`                               | ブール値           | いいえ       | プッシュイベントでトリガーフックします。 |
-| `push_events_branch_filter`                 | 文字列            | いいえ       | 一致するブランチのみのプッシュイベントでトリガーフックします。 |
-| `releases_events`                           | ブール値           | いいえ       | リリースイベントでトリガーフックします。 |
-| `resource_access_token_events`              | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでトリガーフックします。 |
-| `service_access_tokens_expiration_enforced` | ブール値           | いいえ       | サービスアカウントアクセストークンに有効期限日を設定することを要求します。 |
-| `subgroup_events`                           | ブール値           | いいえ       | サブグループイベントでトリガーフックします。 |
-| `tag_push_events`                           | ブール値           | いいえ       | タグ付けイベントでトリガーフックします。 |
+| `deployment_events`                         | ブール値           | いいえ       | デプロイイベントでフックをトリガーします。 |
+| `description`                               | 文字列            | いいえ       | フックの説明。 |
+| `enable_ssl_verification`                   | ブール値           | いいえ       | フックをトリガーするときにSSL検証を実行します。 |
+| `feature_flag_events`                       | ブール値           | いいえ       | 機能フラグイベントでフックをトリガーします。 |
+| `issues_events`                             | ブール値           | いいえ       | イシューイベントでフックをトリガーします。 |
+| `job_events`                                | ブール値           | いいえ       | ジョブイベントでフックをトリガーします。 |
+| `member_events`                             | ブール値           | いいえ       | メンバーイベントでフックをトリガーします。 |
+| `merge_requests_events`                     | ブール値           | いいえ       | マージリクエストイベントでフックをトリガーします。 |
+| `milestone_events`                          | ブール値           | いいえ       | マイルストーンイベントでフックをトリガーします。 |
+| `name`                                      | 文字列            | いいえ       | フックの名前。 |
+| `note_events`                               | ブール値           | いいえ       | ノートイベントでフックをトリガーします。 |
+| `pipeline_events`                           | ブール値           | いいえ       | パイプラインイベントでフックをトリガーします。 |
+| `project_events`                            | ブール値           | いいえ       | プロジェクトイベントでフックをトリガーします。 |
+| `push_events`                               | ブール値           | いいえ       | プッシュイベントでフックをトリガーします。 |
+| `push_events_branch_filter`                 | 文字列            | いいえ       | 一致するブランチのプッシュイベントでのみフックをトリガーします。 |
+| `releases_events`                           | ブール値           | いいえ       | リリースイベントでフックをトリガーします。 |
+| `resource_access_token_events`              | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでフックをトリガーします。 |
+| `service_access_tokens_expiration_enforced` | ブール値           | いいえ       | サービスアカウントのアクセストークンに有効期限日を設定する必要があります。 |
+| `signing_token`                             | 文字列            | いいえ       | `webhook-signature`ヘッダーをコンピューティングするために使用されるHMAC署名トークン。32バイトのキーをエンコードする`whsec_<base64>`形式である必要があります。レスポンスでは返されません。 |
+| `subgroup_events`                           | ブール値           | いいえ       | サブグループイベントでフックをトリガーします。 |
+| `tag_push_events`                           | ブール値           | いいえ       | タグプッシュイベントでフックをトリガーします。 |
 | `token`                                     | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。レスポンスでは返されません。Webhook URLを変更すると、シークレットトークンはリセットされ、保持されません。 |
-| `wiki_page_events`                          | ブール値           | いいえ       | Wikiページイベントでトリガーフックします。 |
+| `wiki_page_events`                          | ブール値           | いいえ       | Wikiページイベントでフックをトリガーします。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -620,7 +651,7 @@ curl --request POST \
   --data '{"url": "https://example.com/hook", "name": "New hook name", "description": "Changed hook description"}'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -660,26 +691,28 @@ curl --request POST \
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
-## グループフックの削除 {#delete-a-group-hook}
+## グループフックを削除 {#delete-a-group-hook}
 
-グループからフックを削除します。これは冪等メソッドであり、複数回呼び出すことができます。フックが使用可能であるか、そうでないかのどちらかです。
+指定されたグループフックを削除します。これは冪等なメソッドであり、複数回呼び出すことができます。フックが利用可能であるかどうか。
 
 ```plaintext
 DELETE /groups/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 | --------- | ----------------- | -------- | ----------- |
 | `hook_id` | 整数           | はい      | グループフックのID。 |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -687,20 +720,20 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1"
 ```
 
-成功すると、メッセージは返されません。
+成功した場合、メッセージは返されません。
 
-## テストグループフックのトリガー {#trigger-a-test-group-hook}
+## テスト用のグループフックをトリガー {#trigger-a-test-group-hook}
 
 {{< history >}}
 
 - GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/455589)されました。
-- 特別なレート制限がGitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) [フラグ付き](../administration/feature_flags/_index.md)名前は`web_hook_test_api_endpoint_rate_limit`。デフォルトでは有効になっています。
+- 特別なレート制限がGitLab 17.1で`web_hook_test_api_endpoint_rate_limit`という名前の[フラグとともに](../administration/feature_flags/_index.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486)。デフォルトでは有効になっています。
 
 {{< /history >}}
 
 指定されたグループのテストフックをトリガーします。
 
-このエンドポイントには、フックおよび認証済みユーザーごとに、1分あたり5件のリクエストのレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が[機能フラグを無効にする](../administration/feature_flags/_index.md)ことができます。名前は`web_hook_test_api_endpoint_rate_limit`です。
+このエンドポイントには、グループと認証済みユーザーごとに1分あたり5リクエストのレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が`web_hook_test_api_endpoint_rate_limit`という名前の[機能フラグを無効にできます](../administration/feature_flags/_index.md)。
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/test/:trigger
@@ -712,7 +745,7 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `trigger` | 文字列            | はい      | `push_events`、`tag_push_events`、`issues_events`、`confidential_issues_events`、`note_events`、`merge_requests_events`、`job_events`、`pipeline_events`、`wiki_page_events`、`releases_events`、`milestone_events`、`emoji_events`、または`resource_access_token_events`のいずれか。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -720,13 +753,13 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/test/push_events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {"message":"201 Created"}
 ```
 
-## カスタムヘッダーの設定 {#set-a-custom-header}
+## カスタムヘッダーを更新 {#update-a-custom-header}
 
 {{< history >}}
 
@@ -734,13 +767,13 @@ curl --request POST \
 
 {{< /history >}}
 
-カスタムヘッダーを設定します。
+指定されたグループフックのカスタムヘッダーを更新します。
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id/custom_headers/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |---------- |------------------ |--------- |------------ |
@@ -749,7 +782,7 @@ PUT /groups/:id/hooks/:hook_id/custom_headers/:key
 | `key`     | 文字列            | はい      | カスタムヘッダーのキー。 |
 | `value`   | 文字列            | はい      | カスタムヘッダーの値。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -757,9 +790,9 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key?value='header_value'"
 ```
 
-成功すると、メッセージは返されません。
+成功した場合、メッセージは返されません。
 
-## カスタムヘッダーの削除 {#delete-a-custom-header}
+## カスタムヘッダーを削除 {#delete-a-custom-header}
 
 {{< history >}}
 
@@ -773,7 +806,7 @@ curl --request PUT \
 DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |---------- |------------------ |--------- |------------ |
@@ -781,7 +814,7 @@ DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | カスタムヘッダーのキー。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -789,9 +822,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key"
 ```
 
-成功すると、メッセージは返されません。
+成功した場合、メッセージは返されません。
 
-## URL変数の設定 {#set-a-url-variable}
+## URL変数を更新 {#update-a-url-variable}
 
 {{< history >}}
 
@@ -799,11 +832,13 @@ curl --request DELETE \
 
 {{< /history >}}
 
+指定されたグループフックのURL変数を更新します。
+
 ```plaintext
 PUT /groups/:id/hooks/:hook_id/url_variables/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |---------- |------------------ |--------- |------------ |
@@ -812,7 +847,7 @@ PUT /groups/:id/hooks/:hook_id/url_variables/:key
 | `key`     | 文字列            | はい      | URL変数のキー。 |
 | `value`   | 文字列            | はい      | URL変数の値。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -820,15 +855,17 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key?value='my_key_value'"
 ```
 
-成功すると、メッセージは返されません。
+成功した場合、メッセージは返されません。
 
-## URL変数の削除 {#delete-a-url-variable}
+## URL変数を削除 {#delete-a-url-variable}
+
+指定されたグループフックのURL変数を削除します。
 
 ```plaintext
 DELETE /groups/:id/hooks/:hook_id/url_variables/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |---------- |------------------ |--------- |------------ |
@@ -836,7 +873,7 @@ DELETE /groups/:id/hooks/:hook_id/url_variables/:key
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | URL変数のキー。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -844,4 +881,4 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key"
 ```
 
-成功すると、メッセージは返されません。
+成功した場合、メッセージは返されません。

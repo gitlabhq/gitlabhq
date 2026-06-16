@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_index'
 
-RSpec.describe RuboCop::Cop::Migration::AddIndex do
+RSpec.describe RuboCop::Cop::Migration::AddIndex, feature_category: :database do
   context 'in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

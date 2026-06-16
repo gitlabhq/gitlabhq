@@ -21,7 +21,10 @@ module Users
 
     # Asynchronously destroys +user+
     # Migrating the associated user records, and post-migration cleanup is
-    # handled by the Users::MigrateRecordsToGhostUserInBatchesWorker cron worker.
+    # handled by the Users::MigrateHumanRecordsToGhostUserInBatchesWorker and
+    # Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker cron workers when
+    # split_ghost_user_migration_queue_into_human_and_non_human FF is enabled,
+    # otherwise the Users::MigrateRecordsToGhostUserInBatchesWorker cron worker.
     #
     # The operation will fail if the user is the sole owner of any groups. To
     # force the groups to be destroyed, pass `delete_solo_owned_groups: true` in

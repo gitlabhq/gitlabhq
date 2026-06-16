@@ -537,17 +537,27 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
-    it('does not sync sort values when initialSortBy is unset', async () => {
-      // Give initialSort some value which changes the current sort option...
+    it('resets sort to first option when initialSortBy changes to empty string', async () => {
+      // Set a specific sort first...
       await wrapper.setProps({ initialSortBy: 'updated_asc', syncFilterAndSort: true });
 
-      // ... Read the new sort options...
+      expect(findGlSorting().props()).toMatchObject({ sortBy: 2, isAscending: true });
+
+      // ...then reset to empty string (directionless default)...
+      await wrapper.setProps({ initialSortBy: '' });
+
+      // ...the sort state resets to the first option.
+      expect(findGlSorting().props()).toMatchObject({ sortBy: 1, isAscending: false });
+    });
+
+    it('does not sync sort values when initialSortBy does not change', async () => {
+      await wrapper.setProps({ initialSortBy: 'updated_asc', syncFilterAndSort: true });
+
       const { sortBy, isAscending } = findGlSorting().props();
 
-      // ... Then *unset* initialSortBy...
-      await wrapper.setProps({ initialSortBy: undefined });
+      // Setting the same value should not trigger an update.
+      await wrapper.setProps({ initialSortBy: 'updated_asc' });
 
-      // ... The sort options should not have changed.
       expect(findGlSorting().props()).toMatchObject({ sortBy, isAscending });
     });
   });

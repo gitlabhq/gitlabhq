@@ -101,6 +101,17 @@ To enforce two-factor authentication for administrators:
    method at the end of this time. Set to `0` to enforce registration at the next sign in.
 1. Select **Save changes**.
 
+### Enable email OTP
+
+To allow users to configure [Email One Time Passwords](../../user/profile/account/two_factor_authentication.md#enable-email-otp):
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Sign-in restrictions** section.
+1. Select both the **Enable email-based one-time passwords** checkbox
+   and **Require email verification when account is locked** checkbox.
+1. Select **Save changes**.
+
 ## Admin Mode
 
 If you're an administrator, you might want to work in GitLab without administrator access.

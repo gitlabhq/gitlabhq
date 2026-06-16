@@ -25,10 +25,6 @@ class Admin::HooksController < Admin::ApplicationController
     @hook ||= SystemHook.find(params.permit(:id)[:id])
   end
 
-  def webhook_signing_token_actor
-    :instance
-  end
-
   def trigger_values
     SystemHook.triggers.values
   end

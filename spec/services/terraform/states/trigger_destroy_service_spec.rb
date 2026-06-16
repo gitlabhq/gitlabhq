@@ -7,7 +7,7 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
   let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe '#execute', :aggregate_failures do
-    let_it_be(:state) { create(:terraform_state, project: project) }
+    let_it_be(:state, freeze: false) { create(:terraform_state, project: project) }
 
     let(:service) { described_class.new(state, current_user: user) }
 

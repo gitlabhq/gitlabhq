@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BranchRule, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:protected_branch) { create(:protected_branch, project: project, name: 'feature*') }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project, name: 'feature*') }
 
   subject { described_class.new(protected_branch.project, protected_branch) }
 

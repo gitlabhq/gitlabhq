@@ -96,6 +96,18 @@ class LintDocsRedirect
   ##
   def check_for_missing_nav_entry(file)
     puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking for navigation entry to file..."
+
+    # A page can be converted into a Hugo page bundle that publishes the same
+    # URL, for example doc/foo.md -> doc/foo/index.md (leaf bundle) or
+    # doc/foo/_index.md (branch bundle). Git records this as a delete plus an
+    # add, but the page still exists at the same URL, so the navigation entry is
+    # still valid and no redirect is needed. Skip the check in that case.
+    if converted_to_page_bundle?(file)
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} File #{file['old_path']} was converted to a " \
+        "page bundle that publishes the same URL. Skipping."
+      return
+    end
+
     # Translate the file path to its website path:
     # 1. gsub(docs_path, project_slug) - Replaces the local docs directory with the appropriate project URL prefix
     # 2. gsub(/_?index\.md/, '') - Removes both index.md and _index.md
@@ -118,6 +130,27 @@ class LintDocsRedirect
       @errors = true
     else
       puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} No navigation entry for file #{file['old_path']} found."
+    end
+  end
+
+  # Returns true when a deleted doc page is replaced, in the same merge request,
+  # by a page-bundle index (index.md or _index.md) in a directory of the same
+  # name. Both publish the same URL as the original file, so the navigation
+  # entry remains valid.
+  #
+  # Limited to doc/releases/, the only directory using Hugo leaf bundles. We
+  # are converting flat .md files there into leaf bundles, which trips this
+  # linter because Git records the change as a delete plus an add even though
+  # the URL is unchanged.
+  def converted_to_page_bundle?(file)
+    return false unless file['old_path'].start_with?('doc/releases/')
+
+    bundle_dir = file['old_path'].delete_suffix('.md')
+
+    merge_request_diff.any? do |diff_file|
+      diff_file['new_file'] == true &&
+        (diff_file['new_path'] == "#{bundle_dir}/index.md" ||
+          diff_file['new_path'] == "#{bundle_dir}/_index.md")
     end
   end
 

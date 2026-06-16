@@ -35,7 +35,7 @@ RSpec.shared_examples 'a repo type' do
     end
 
     it 'returns nil when container is nil' do
-      expect(subject.repository_for(nil)).to eq(nil)
+      expect(subject.repository_for(nil)).to be_nil
     end
   end
 end

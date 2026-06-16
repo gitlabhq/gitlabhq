@@ -181,6 +181,13 @@ module Types
       description: 'Pipelines for the merge request. Note: for performance reasons, ' \
         'no more than the most recent 500 pipelines will be returned.',
       resolver: Resolvers::MergeRequestPipelinesResolver
+    field :stack,
+      [Types::MergeRequestType],
+      null: true,
+      description: 'Other open merge requests in the same stack as this merge request, ' \
+        'ordered from the top of the stack to the bottom. ' \
+        'Returns null if this merge request is not part of a stack.',
+      resolver: Resolvers::MergeRequests::StackResolver
 
     field :assignees,
       type: Types::MergeRequests::AssigneeType.connection_type,

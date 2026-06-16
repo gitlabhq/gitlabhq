@@ -5,6 +5,7 @@ class Projects::FindFileController < Projects::ApplicationController
   include ExtractsPath
   include ActionView::Helpers::SanitizeHelper
   include TreeHelper
+  include HandlesGitalyErrors
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/performance/readlines_each'
 
-RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
+RSpec.describe RuboCop::Cop::Performance::ReadlinesEach, feature_category: :tooling do
   let(:message) { 'Avoid `IO.readlines.each`, since it reads contents into memory in full. Use `IO.each_line` or `IO.each` instead.' }
 
   shared_examples_for('class read') do |klass|

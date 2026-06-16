@@ -3,12 +3,12 @@
 require 'spec_helper'
 require 'webrick'
 
-RSpec.describe 'Net::Http patch', :request_store, feature_category: :integrations do
+RSpec.describe 'Net::Http patch', :request_store, feature_category: :tooling do
   let(:two_mega_bytes_body) { "A" * 2 * 1024 * 1024 }
 
-  let_it_be(:server_port) { 4567 }
+  let_it_be(:server_port, freeze: false) { 4567 }
 
-  let_it_be(:server_thread) do
+  let_it_be(:server_thread, freeze: false) do
     Thread.new do
       server = WEBrick::HTTPServer.new(Port: server_port, Logger: WEBrick::Log.new("/dev/null"), AccessLog: [])
 

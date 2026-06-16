@@ -1,5 +1,6 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import GlobalSearchFrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentItem from '~/super_sidebar/components/global_search/components/frequent_item.vue';
 import FrequentItemSkeleton from '~/super_sidebar/components/global_search/components/frequent_item_skeleton.vue';
@@ -95,8 +96,9 @@ describe('FrequentlyVisitedItems', () => {
     ${'with relativeUrl'}    | ${'/gitlab'}
     ${'without relativeUrl'} | ${''}
   `('when there are items $description', ({ relativeUrl }) => {
+    useConfigurePathHelpers(relativeUrl);
+
     beforeEach(() => {
-      gon.relative_url_root = relativeUrl;
       createComponent({
         items: frecentGroupsMock,
       });

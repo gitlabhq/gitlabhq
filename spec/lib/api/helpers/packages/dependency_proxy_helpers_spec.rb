@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
-  let_it_be(:helper) { Class.new.include(described_class).new }
+  let_it_be(:helper, freeze: false) { Class.new.include(described_class).new }
 
   describe '#redirect_registry_request' do
     using RSpec::Parameterized::TableSyntax

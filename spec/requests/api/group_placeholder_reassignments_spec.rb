@@ -7,7 +7,7 @@ RSpec.describe API::GroupPlaceholderReassignments, feature_category: :importers 
 
   let_it_be(:group_owner) { create(:user) }
   let(:current_user) { group_owner }
-  let_it_be(:group) { create(:group, :public, owners: group_owner) }
+  let_it_be(:group, freeze: false) { create(:group, :public, owners: group_owner) }
   let_it_be(:source_user) { create(:import_source_user, namespace: group) }
 
   shared_examples 'it has authentication and authorization requirements' do

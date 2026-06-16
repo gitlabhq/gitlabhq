@@ -95,6 +95,41 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     end
   end
 
+  describe '#expanded_permissions' do
+    let(:scope) { build(:granular_scope, permissions: permissions) }
+
+    subject(:expanded) { scope.expanded_permissions }
+
+    before do
+      allow(::Authz::PermissionGroups::Assignable).to receive(:get).and_call_original
+      allow(::Authz::PermissionGroups::Assignable).to receive(:get).with('group_a')
+        .and_return(instance_double(::Authz::PermissionGroups::Assignable, permissions: [:perm_1, :perm_2]))
+      allow(::Authz::PermissionGroups::Assignable).to receive(:get).with('group_b')
+        .and_return(instance_double(::Authz::PermissionGroups::Assignable, permissions: [:perm_3]))
+      allow(::Authz::PermissionGroups::Assignable).to receive(:get).with('unknown').and_return(nil)
+    end
+
+    context 'with known assignable permission group names' do
+      let(:permissions) { %w[group_a group_b] }
+
+      it { is_expected.to match_array([:perm_1, :perm_2, :perm_3]) }
+    end
+
+    context 'with an unknown assignable permission group name' do
+      let(:permissions) { %w[group_a unknown] }
+
+      it 'silently drops the unknown name' do
+        is_expected.to match_array([:perm_1, :perm_2])
+      end
+    end
+
+    context 'with nil permissions' do
+      let(:permissions) { nil }
+
+      it { is_expected.to eq([]) }
+    end
+  end
+
   describe 'validations' do
     # Actual permission with existing YAML definition file in
     # config/authz/permission_groups/assignable_permissions/
@@ -239,7 +274,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
       with_them do
         it 'is expected to raise an error' do
-          expect { permissions }.to raise_error { NoMethodError }
+          expect { permissions }.to raise_error(NoMethodError)
         end
       end
     end

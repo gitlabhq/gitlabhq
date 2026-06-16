@@ -30,6 +30,22 @@ RSpec.describe Ci::TrackFirstPipelineSucceededWorker, feature_category: :pipelin
       it 'creates a ci_project_metrics record' do
         expect { perform }.to change { Ci::ProjectMetric.count }.by(1)
       end
+
+      context 'when the project has an AI-generated CI config' do
+        let!(:metric) { create(:ci_project_metric, :ai_generated, project: project) }
+
+        it 'includes the ci_config_generated_by value as author_source' do
+          freeze_time do
+            expected_ttfp = (Time.current - project.created_at).to_i
+
+            expect { perform }
+              .to trigger_internal_events('first_pipeline_succeeded')
+              .with(project: project, user: user,
+                additional_properties: { value: expected_ttfp, author_source: 'ci_expert_agent/v1' })
+              .once
+          end
+        end
+      end
     end
 
     context 'when project already has a recorded first pipeline success' do
@@ -92,10 +108,15 @@ RSpec.describe Ci::TrackFirstPipelineSucceededWorker, feature_category: :pipelin
       it 'fires the event exactly once' do
         pipeline_id = pipeline.id
 
-        expect { 2.times { described_class.new.perform(pipeline_id) } }
-          .to trigger_internal_events('first_pipeline_succeeded')
-          .with(project: project, user: user)
-          .once
+        freeze_time do
+          expected_ttfp = (Time.current - project.created_at).to_i
+
+          expect { 2.times { described_class.new.perform(pipeline_id) } }
+            .to trigger_internal_events('first_pipeline_succeeded')
+            .with(project: project, user: user,
+              additional_properties: { value: expected_ttfp })
+            .once
+        end
       end
 
       it 'results in exactly one ci_project_metrics record' do

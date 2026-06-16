@@ -1,0 +1,18 @@
+---
+description: Tracks the rendering of the "What's new for you" menu item when its containing menu is opened. Fired separately for the Help menu (control) and Profile menu (candidate) so engagement can be compared by placement.
+category: default
+action: render_whats_new_for_you_menu_item
+extra_properties:
+identifiers:
+additional_properties:
+  property:
+    description: Menu placement of the item ("help_menu" or "profile_menu").
+product_group: acquisition
+product_categories:
+- onboarding
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238286
+tiers:
+- free
+- premium
+- ultimate

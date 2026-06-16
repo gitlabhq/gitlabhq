@@ -15,6 +15,29 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     end
   end
 
+  describe '.scopes_for' do
+    it 'returns SCOPES when duo_enabled is false' do
+      expect(described_class.scopes_for(duo_enabled: false)).to eq(described_class::SCOPES)
+    end
+
+    it 'returns DUO_SCOPES when duo_enabled is true' do
+      expect(described_class.scopes_for(duo_enabled: true)).to eq(described_class::DUO_SCOPES)
+    end
+
+    it 'includes the base scopes in DUO_SCOPES' do
+      expect(described_class::DUO_SCOPES).to include(*described_class::SCOPES)
+    end
+
+    it 'includes the Duo-specific scopes in DUO_SCOPES' do
+      expect(described_class::DUO_SCOPES).to include(
+        described_class::SCOPE_APP_MENTIONS_READ,
+        described_class::SCOPE_CHANNELS_HISTORY,
+        described_class::SCOPE_GROUPS_HISTORY,
+        described_class::SCOPE_REACTIONS_WRITE
+      )
+    end
+  end
+
   describe '.organization_alias' do
     it 'returns organization alias with org_id provided' do
       expect(described_class.organization_alias(1)).to eq('gitlab-organization-1')

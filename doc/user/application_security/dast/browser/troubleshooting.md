@@ -8,7 +8,7 @@ title: Troubleshooting DAST scans
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a
-support ticket. For more details, see the [GitLab Support](https://about.gitlab.com/support/) page.
+support ticket. For more details, see the [GitLab Support](https://support.gitlab.com/) page.
 
 ## When something goes wrong
 
@@ -459,7 +459,7 @@ dast:
 
 #### Try disabling the cache
 
-If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting `DAST_USE_CACHE: "false"` variable to see if that helps. This can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://about.gitlab.com/support/) to investigate why cache is preventing your website from being crawled.
+If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting `DAST_USE_CACHE: "false"` variable to see if that helps. This can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://support.gitlab.com/) to investigate why cache is preventing your website from being crawled.
 
 #### Specifying target paths directly
 

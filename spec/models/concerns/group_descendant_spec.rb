@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupDescendant do
+RSpec.describe GroupDescendant, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:parent) { create(:group) }

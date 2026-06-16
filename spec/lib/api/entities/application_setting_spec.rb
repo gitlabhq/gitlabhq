@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::ApplicationSetting, feature_category: :shared do
-  let_it_be(:application_setting, reload: true) { create(:application_setting) }
+  let_it_be_with_reload(:application_setting) { create(:application_setting) }
 
   let_it_be(:default_organization) { create(:organization) }
 

@@ -18,8 +18,15 @@ module ActiveRecord
     end
 
     def record(&block)
+      # Enable :line so find_query source attribution works even when globally disabled (e.g. CI).
+      # See config/initializers/0_marginalia.rb
+      line_was_present = Marginalia::Comment.components.include?(:line)
+      Marginalia::Comment.components << :line unless line_was_present
+
       # force replacement of bind parameters to give tests the ability to check for ids
       ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
+    ensure
+      Marginalia::Comment.components.delete(:line) unless line_was_present
     end
 
     def show_backtrace(values, duration)

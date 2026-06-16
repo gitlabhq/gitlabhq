@@ -415,6 +415,9 @@ module MergeRequestsHelper
       title: merge_request.target_branch,
       class: target_branch_class
 
+    default_branch = html_escape(merge_request.target_project.default_branch)
+    stack_dropdown = "<div class=\"js-stack-dropdown\" data-default-branch=\"#{default_branch}\"></div>".html_safe
+
     copy_button_data = {
       author: link_to_author.html_safe,
       source_branch: merge_request_source_branch(merge_request).html_safe,
@@ -423,7 +426,8 @@ module MergeRequestsHelper
       target_copy_button: " ",
       created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe,
       author_container_start: '<div class="merge-request-author-container">'.html_safe,
-      author_container_end: '</div>'.html_safe
+      author_container_end: '</div>'.html_safe,
+      stack_dropdown: stack_dropdown
     }
 
     if @project.default_branch != merge_request.target_branch
@@ -431,8 +435,8 @@ module MergeRequestsHelper
     end
 
     safe_format(_(
-      '%{author_container_start}%{author}requested to merge %{author_container_end}%{source_branch} %{copy_button} ' \
-        'into %{target_branch} %{target_copy_button} %{created_at}'
+      '%{author_container_start}%{author}requested to merge %{author_container_end}%{stack_dropdown}%{source_branch} ' \
+        '%{copy_button} into %{target_branch} %{target_copy_button} %{created_at}'
     ), copy_button_data)
   end
 
@@ -443,7 +447,9 @@ module MergeRequestsHelper
   end
 
   def tab_count_display(merge_request, count)
-    merge_request.preparing? ? "-" : count
+    return "-" if merge_request.preparing? || count.nil?
+
+    count
   end
 
   def review_bar_data(_merge_request, _user)

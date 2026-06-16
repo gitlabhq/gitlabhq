@@ -7,8 +7,8 @@ RSpec.describe Projects::Forks::Details, feature_category: :source_code_manageme
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:source_repo) { create(:project, :repository, :public).repository }
-  let_it_be(:fork_repo) { fork_project(source_repo.project, user, { repository: true }).repository }
+  let_it_be(:source_repo, freeze: false) { create(:project, :repository, :public).repository }
+  let_it_be(:fork_repo, freeze: false) { fork_project(source_repo.project, user, { repository: true }).repository }
 
   let(:fork_branch) { 'fork-branch' }
   let(:cache_key) { ['project_fork_details', fork_repo.project.id, fork_branch].join(':') }
@@ -77,8 +77,8 @@ RSpec.describe Projects::Forks::Details, feature_category: :source_code_manageme
     end
 
     context 'when counts calculated from a branch that exists upstream' do
-      let_it_be(:source_repo) { create(:project, :repository, :public).repository }
-      let_it_be(:fork_repo) { fork_project(source_repo.project, user, { repository: true }).repository }
+      let_it_be(:source_repo, freeze: false) { create(:project, :repository, :public).repository }
+      let_it_be(:fork_repo, freeze: false) { fork_project(source_repo.project, user, { repository: true }).repository }
 
       let(:fork_branch) { 'feature' }
 

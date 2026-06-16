@@ -7,6 +7,7 @@ import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
 import wikiDiscussionSortOrder from '~/wikis/wiki_notes/graphql/wiki_discussion_sort_order.query.graphql';
 import { WIKI_NOTES_SORT_ORDER } from '~/wikis/constants';
+import WikiPageAwardEmoji from '~/wikis/components/wiki_page_award_emoji.vue';
 import OrderedLayout from './ordered_layout.vue';
 import PlaceholderNote from './placeholder_note.vue';
 import WikiNotesActivityHeader from './wiki_notes_activity_header.vue';
@@ -26,6 +27,7 @@ export default {
     WikiCommentForm,
     WikiDiscussion,
     WikiNotesActivityHeader,
+    WikiPageAwardEmoji,
     OrderedLayout,
     SkeletonNote,
     PlaceholderNote,
@@ -49,6 +51,8 @@ export default {
         this.noteableId = data?.wikiPage?.id || '';
         this.discussions = cloneDeep(data?.wikiPage?.discussions?.nodes) || [];
         this.userPermissions = data?.wikiPage?.userPermissions || {};
+        this.pageAwardEmoji = data?.wikiPage?.awardEmoji?.nodes || [];
+        this.isPageSubscribed = data?.wikiPage?.subscribed ?? false;
       },
     },
   },
@@ -57,6 +61,8 @@ export default {
       wikiPage: {},
       noteableId: '',
       userPermissions: {},
+      pageAwardEmoji: [],
+      isPageSubscribed: false,
       loadingFailed: false,
       placeholderNote: {},
       discussions: Array.from({ length: this.noteCount }, (_, index) => ({
@@ -199,6 +205,14 @@ export default {
 </script>
 <template>
   <div class="wiki-comments gl-px-3">
+    <wiki-page-award-emoji
+      v-if="noteableId"
+      :awards="pageAwardEmoji"
+      :noteable-id="noteableId"
+      :can-award-emoji="Boolean(userPermissions.awardEmoji)"
+      :is-subscribed="isPageSubscribed"
+      class="gl-mt-5"
+    />
     <wiki-notes-activity-header />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>

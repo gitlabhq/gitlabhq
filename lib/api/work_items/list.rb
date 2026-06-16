@@ -5,8 +5,6 @@ module API
     class List < ::API::Base
       include PaginationParams
 
-      before { authenticate! }
-
       feature_category :portfolio_management
       urgency :low
 

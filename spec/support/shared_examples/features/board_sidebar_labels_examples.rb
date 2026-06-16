@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'labels from nested groups and projects' do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:group_label) { create(:group_label, group: group, name: 'Group label') }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:project_label) { create(:label, project: project, name: 'Project label') }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:group_label, freeze: false) { create(:group_label, group: group, name: 'Group label') }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:project_label, freeze: false) { create(:label, project: project, name: 'Project label') }
 
-  let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:subgroup_label) { create(:group_label, group: subgroup, name: 'Subgroup label') }
-  let_it_be(:subproject) { create(:project, group: subgroup) }
-  let_it_be(:subproject_label) { create(:label, project: subproject, name: 'Subproject label') }
+  let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+  let_it_be(:subgroup_label, freeze: false) { create(:group_label, group: subgroup, name: 'Subgroup label') }
+  let_it_be(:subproject, freeze: false) { create(:project, group: subgroup) }
+  let_it_be(:subproject_label, freeze: false) { create(:label, project: subproject, name: 'Subproject label') }
 
-  let_it_be(:subgroup2) { create(:group, parent: group) }
-  let_it_be(:subgroup2_label) { create(:group_label, group: subgroup2, name: 'Subgroup2 label') }
+  let_it_be(:subgroup2, freeze: false) { create(:group, parent: group) }
+  let_it_be(:subgroup2_label, freeze: false) { create(:group_label, group: subgroup2, name: 'Subgroup2 label') }
 
-  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:maintainer, freeze: false) { create(:user) }
 
   let(:labels_select) { find("[data-testid='sidebar-labels']") }
   let(:labels_dropdown) { labels_select.find('[data-testid="dropdown-content"]') }

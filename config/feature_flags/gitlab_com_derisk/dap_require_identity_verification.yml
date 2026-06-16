@@ -1,0 +1,10 @@
+---
+name: dap_require_identity_verification
+description: Require identity verification (phone or credit card via the active-user IV flow) before a trial or free user on .com can use Duo Agent Platform features. Mitigates active trial-credit abuse.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595952
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235315
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599755
+milestone: '19.1'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

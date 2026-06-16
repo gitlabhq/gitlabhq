@@ -10,7 +10,6 @@ import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_AWARD_EMOJI,
-  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
@@ -22,7 +21,7 @@ import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_ex
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
-import { workItemsRestResolver } from '~/work_items/list/graphql/rest/work_items_rest_resolver';
+import { workItemsRestResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
 import { preserveDetailsState } from '~/work_items/utils';
 import {
   linkedItems,
@@ -140,6 +139,17 @@ export const config = {
           // kills any possibility to handle it on the widget level without hardcoding a string.
           discussions: {
             keyArgs: false,
+            // we want to concat next page of discussions to the existing ones
+            // handled here so it applies `features.notes.discussions`
+            merge(existing, incoming, { variables }) {
+              if (existing && incoming && variables.after) {
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              }
+              return incoming;
+            },
           },
         },
       },
@@ -183,13 +193,33 @@ export const config = {
         },
       },
       WorkItemWidgetHierarchy: {
+        merge: true,
         fields: {
           // If we add any key args, the children field becomes children({"first":10}) and
           // kills any possibility to handle it on the widget level without hardcoding a string.
           children: {
             keyArgs: false,
+            // Handles paginated children for both;
+            // - `widgets[].hierarchy.children`
+            // - `features.hierarchy.children`
+            // By writing to the same WorkItemWidgetHierarchy type.
+            merge(existing, incoming, { variables }) {
+              if (existing && incoming && variables.endCursor) {
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              }
+              return incoming;
+            },
           },
         },
+      },
+      WorkItemWidgetLinkedItems: {
+        merge: true,
+      },
+      WorkItemWidgetNotifications: {
+        merge: true,
       },
       WorkItemWidgetVulnerabilities: {
         fields: {
@@ -211,6 +241,13 @@ export const config = {
             merge(existing = {}, incoming = {}) {
               const merged = { ...existing, ...incoming };
 
+              // Deep-merge hierarchy so a partial incoming.hierarchy (e.g. from
+              // an optimistic response that only knows the new parent) preserves
+              // existing fields like children, hasChildren, rolledUpCountsByType.
+              if (incoming.hierarchy && existing.hierarchy) {
+                merged.hierarchy = { ...existing.hierarchy, ...incoming.hierarchy };
+              }
+
               // preserve existing awardEmoji connection when incoming only has summary data
               // (e.g. upvotes/downvotes from main query or subscription)
               if (
@@ -220,6 +257,13 @@ export const config = {
                 existing.awardEmoji.awardEmoji
               ) {
                 merged.awardEmoji = { ...existing.awardEmoji, ...incoming.awardEmoji };
+              }
+
+              // Preserve existing notes.discussions when the incoming notes object
+              // does not carry a discussions field. This happens when a subscription
+              // write (e.g. workItemUpdated) and trigger a network refetch.
+              if (incoming.notes && existing.notes?.discussions && !incoming.notes.discussions) {
+                merged.notes = { ...existing.notes, ...incoming.notes };
               }
 
               return merged;
@@ -256,6 +300,8 @@ export const config = {
                 }
 
                 // we want to concat next page of discussions to the existing ones
+                // kept for the legacy `widgets[]` path; `features.notes.discussions` is handled
+                // by the field-level merge on `WorkItemWidgetNotes.discussions` above.
                 if (incomingWidget?.type === WIDGET_TYPE_NOTES && context.variables.after) {
                   // concatPagination won't work because we were placing new widget here so we have to do this manually
                   return {
@@ -266,22 +312,6 @@ export const config = {
                         ...existingWidget.discussions.nodes,
                         ...incomingWidget.discussions.nodes,
                       ],
-                    },
-                  };
-                }
-
-                // we want to concat next page of children work items within Hierarchy widget to the existing ones
-                if (
-                  incomingWidget?.type === WIDGET_TYPE_HIERARCHY &&
-                  context.variables.endCursor &&
-                  incomingWidget.children?.nodes
-                ) {
-                  // concatPagination won't work because we were placing new widget here so we have to do this manually
-                  return {
-                    ...incomingWidget,
-                    children: {
-                      ...incomingWidget.children,
-                      nodes: [...existingWidget.children.nodes, ...incomingWidget.children.nodes],
                     },
                   };
                 }
@@ -540,7 +570,8 @@ export const config = {
 };
 
 const namespaceResolvers =
-  window.gon?.features?.workItemRestApiFrontendUsers && window.gon?.features?.workItemRestApi
+  window.gon?.features?.workItemRestApiFrontendUsers &&
+  (window.gon?.features?.workItemRestApiIndex || window.gon?.features?.workItemRestApi)
     ? { Namespace: { workItems: workItemsRestResolver } }
     : {};
 

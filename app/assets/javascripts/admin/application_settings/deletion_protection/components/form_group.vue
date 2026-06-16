@@ -10,6 +10,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'FormGroup',
   components: {
     GlFormGroup,
     GlFormInput,

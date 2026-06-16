@@ -169,8 +169,9 @@ RSpec.describe ActiveContext::Concerns::Collection do
   describe 'indexing embedding models' do
     let(:current_indexing_embedding_model) do
       ::ActiveContext::EmbeddingModel.new(
-        model_key: 'some-model-01',
+        model_ref: 'some-model-01',
         field: 'current_model_field',
+        model_type: 'gitlab_managed',
         llm_class: Test::MockLlmClass,
         llm_params: {}
       )
@@ -178,8 +179,9 @@ RSpec.describe ActiveContext::Concerns::Collection do
 
     let(:next_indexing_embedding_model) do
       ::ActiveContext::EmbeddingModel.new(
-        model_key: 'some-model-02',
+        model_ref: 'some-model-02',
         field: 'next_model_field',
+        model_type: 'gitlab_managed',
         llm_class: Test::MockLlmClass,
         llm_params: {}
       )

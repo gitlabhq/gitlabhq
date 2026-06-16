@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/enum_values'
 
-RSpec.describe RuboCop::Cop::Graphql::EnumValues do
+RSpec.describe RuboCop::Cop::Graphql::EnumValues, feature_category: :api do
   it 'adds an offense when enum value is not uppercase' do
     expect_offense(<<~RUBY)
       module Types

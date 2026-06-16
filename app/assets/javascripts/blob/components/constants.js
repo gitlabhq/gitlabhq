@@ -1,9 +1,13 @@
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export const BTN_COPY_CONTENTS_TITLE = __('Copy file contents');
 export const BTN_RAW_TITLE = __('Open raw');
 export const BTN_DOWNLOAD_TITLE = __('Download');
+export const BTN_DOWNLOAD_AS_MARKDOWN_TITLE = s__('BlobViewer|Download as Markdown');
+export const BTN_DOWNLOAD_AS_PDF_TITLE = __('Print as PDF');
+
+export const MARKDOWN_EXTENSIONS = ['md', 'markdown', 'mkd', 'mkdn', 'mdown', 'rmd'];
 
 export const SIMPLE_BLOB_VIEWER = 'simple';
 export const SIMPLE_BLOB_VIEWER_TITLE = __('Display source');

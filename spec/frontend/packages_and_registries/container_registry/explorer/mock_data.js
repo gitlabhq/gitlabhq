@@ -391,3 +391,34 @@ export const graphQLEmptyImageDetailsMock = {
     containerRepository: null,
   },
 };
+
+export const tagDetailsManifestedMock = {
+  manifests: [
+    {
+      digest: 'sha256:abc1',
+      platform: { os: 'linux', architecture: 'amd64', variant: null, osVersion: null },
+    },
+    {
+      digest: 'sha256:abc2',
+      platform: { os: 'linux', architecture: 'arm64', variant: 'v8', osVersion: null },
+    },
+    {
+      digest: 'sha256:abc3',
+      platform: {
+        os: 'windows',
+        architecture: 'amd64',
+        variant: null,
+        osVersion: '10.0.20348.4529',
+      },
+    },
+  ],
+};
+
+export const graphQLTagDetailsMock = (tagDetails = tagDetailsManifestedMock) => ({
+  data: {
+    containerRepository: {
+      id: containerRepositoryMock.id,
+      tagDetails,
+    },
+  },
+});

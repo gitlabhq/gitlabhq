@@ -51,7 +51,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     context 'when the import is offline' do
-      let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import) }
+      let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import, source_type: :offline_export) }
       let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
       let_it_be(:entity_prefix) { 'group_123' }
       let_it_be(:offline_configuration) do

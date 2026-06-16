@@ -1,20 +1,20 @@
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import UserListsComponent from '~/user_lists/components/user_lists.vue';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
-import createStore from '~/user_lists/store/index';
+import { useUserLists } from '~/user_lists/store/index';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('~/user_lists/components/user_lists.vue', () => {
   const mockProvide = {
@@ -23,17 +23,16 @@ describe('~/user_lists/components/user_lists.vue', () => {
     errorStateSvgPath: '/assets/illustrations/empty-state/empty-feature-flag-md.svg',
   };
 
-  const mockState = {
-    projectId: '1',
-  };
-
   let wrapper;
+  let pinia;
   let store;
 
   const factory = (provide = mockProvide, fn = mount) => {
-    store = createStore(mockState);
+    pinia = createTestingPinia({ stubActions: false });
+    store = useUserLists();
+    store.$patch({ projectId: '1' });
     wrapper = fn(UserListsComponent, {
-      store,
+      pinia,
       provide,
     });
   };
@@ -125,7 +124,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
         });
 
         factory();
-        jest.spyOn(store, 'dispatch');
+        await waitForPromises();
         await nextTick();
         table = wrapper.findComponent(UserListsTable);
       });
@@ -150,13 +149,12 @@ describe('~/user_lists/components/user_lists.vue', () => {
           expect(pagination.exists()).toBe(true);
         });
 
-        it('should make an API request when page is clicked', () => {
-          jest.spyOn(store, 'dispatch');
+        it('should update the page option when page is clicked', () => {
+          const setOptionsSpy = jest.spyOn(store, 'setUserListsOptions');
+
           pagination.vm.change('4');
 
-          expect(store.dispatch).toHaveBeenCalledWith('setUserListsOptions', {
-            page: '4',
-          });
+          expect(setOptionsSpy).toHaveBeenCalledWith({ page: '4' });
         });
       });
     });

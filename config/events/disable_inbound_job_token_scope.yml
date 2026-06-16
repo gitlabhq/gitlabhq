@@ -6,7 +6,9 @@ identifiers:
 - project
 - namespace
 - user
-product_group: pipeline_security
+product_group: authentication
+product_categories:
+- system_access
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171945
 tiers:

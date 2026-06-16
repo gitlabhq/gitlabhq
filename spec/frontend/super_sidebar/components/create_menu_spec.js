@@ -58,15 +58,6 @@ describe('CreateMenu component', () => {
       mockToast.mockReset();
     });
 
-    it('passes custom offset to the dropdown', () => {
-      createWrapper();
-
-      expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-        crossAxis: -8,
-        mainAxis: 4,
-      });
-    });
-
     it("sets the toggle's label", () => {
       expect(findGlDisclosureDropdown().props('toggleText')).toBe('Create new…');
     });
@@ -206,15 +197,6 @@ describe('CreateMenu component', () => {
 
       const tooltip = getBinding(findGlDisclosureDropdown().element, 'gl-tooltip');
       expect(tooltip.value).toBe('Create new…');
-    });
-  });
-
-  it('decreases the dropdown offset when impersonating a user', () => {
-    createWrapper({ provide: { isImpersonating: true } });
-
-    expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -8,
-      mainAxis: 4,
     });
   });
 });

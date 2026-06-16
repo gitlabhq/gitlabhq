@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Pages::DeploymentUploader, feature_category: :pages do
-  let(:pages_deployment) { create(:pages_deployment) }
+  let(:pages_deployment) { build_stubbed(:pages_deployment) }
   let(:uploader) { described_class.new(pages_deployment, :file) }
 
   let(:file) do

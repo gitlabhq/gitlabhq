@@ -10,7 +10,6 @@ API/DescriptionTags:
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces/provision.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/subscriptions.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/users.rb'
-    - 'lib/api/internal/auto_flow.rb'
     - 'lib/api/internal/coverage.rb'
     - 'lib/api/internal/kubernetes.rb'
     - 'lib/api/internal/lfs.rb'

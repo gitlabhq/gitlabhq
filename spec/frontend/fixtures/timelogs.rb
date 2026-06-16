@@ -8,11 +8,11 @@ RSpec.describe 'Timelogs (GraphQL fixtures)', feature_category: :team_planning d
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:developer) { create(:user) }
+    let_it_be(:developer, freeze: false) { create(:user) }
 
     context 'for time tracking timelogs' do
-      let_it_be(:project) { create(:project_empty_repo, :public) }
-      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
       let(:query_path) { 'time_tracking/components/queries/get_timelogs.query.graphql' }
       let(:query) { get_graphql_query_as_string(query_path) }
@@ -28,7 +28,9 @@ RSpec.describe 'Timelogs (GraphQL fixtures)', feature_category: :team_planning d
       end
 
       context 'with 20 or less timelogs' do
-        let_it_be(:timelogs) { create_list(:timelog, 6, user: developer, issue: issue, time_spent: 4 * 60 * 60) }
+        let_it_be(:timelogs, freeze: false) do
+          create_list(:timelog, 6, user: developer, issue: issue, time_spent: 4 * 60 * 60)
+        end
 
         it "graphql/get_non_paginated_timelogs_response.json" do
           post_graphql(query, current_user: developer, variables: { username: developer.username })
@@ -38,7 +40,9 @@ RSpec.describe 'Timelogs (GraphQL fixtures)', feature_category: :team_planning d
       end
 
       context 'with more than 20 timelogs' do
-        let_it_be(:timelogs) { create_list(:timelog, 30, user: developer, issue: issue, time_spent: 4 * 60 * 60) }
+        let_it_be(:timelogs, freeze: false) do
+          create_list(:timelog, 30, user: developer, issue: issue, time_spent: 4 * 60 * 60)
+        end
 
         it "graphql/get_paginated_timelogs_response.json" do
           post_graphql(query, current_user: developer, variables: { username: developer.username, first: 25 })

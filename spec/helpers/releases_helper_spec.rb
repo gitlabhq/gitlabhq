@@ -95,9 +95,12 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
     describe '#data_for_show_page' do
       let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:commit) { create(:commit, project: project, id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-      let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0', sha: commit.id) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:commit, freeze: false) do
+        create(:commit, project: project, id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+      end
+
+      let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0.0', sha: commit.id) }
       let_it_be(:environment) { create(:environment, project: project) }
       let_it_be(:deployable) { create(:ci_build, user: user, project: project) }
       let_it_be(:deployment) do
@@ -216,7 +219,7 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     end
 
     describe '#index_page_startup_query_variables' do
-      let_it_be(:project) { build(:project, namespace: create(:group)) }
+      let_it_be(:project, freeze: false) { build(:project, namespace: create(:group)) }
 
       before do
         helper.instance_variable_set(:@project, project)

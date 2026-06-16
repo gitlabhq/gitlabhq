@@ -230,7 +230,12 @@ module Tooling
         end
 
         list = test_selector.duo_spec_list
-        save_output(list.join("\n"), @duo_system_test_files_path)
+        # Empty file = Duo is confident no system tests are needed (preserved for the
+        # downstream contract in prepare_predictive_system_pipeline.rb#duo_has_predictions?,
+        # which treats `File.size? == nil` as "no predictions").
+        # Non-empty: terminate with a newline so the CI `wc -l` summary reports the right count.
+        content = list.empty? ? "" : "#{list.join("\n")}\n"
+        save_output(content, @duo_system_test_files_path)
         logger.info("Following Duo predicted system test files saved: #{JSON.pretty_generate(list)}")
       end
     end

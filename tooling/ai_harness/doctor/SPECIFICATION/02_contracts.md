@@ -404,3 +404,4 @@ for the exception.
 
 Initial entries:
 - `.claude/skills/gitlab-coding-principles/SKILL.md` (added in !234174)
+- `.claude/skills/glab/` (directory prefix, added for gitlab-org/gitlab#601836)

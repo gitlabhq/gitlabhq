@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integrations::IrkerWorker, '#perform', feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:push_data) { HashWithIndifferentAccess.new(Gitlab::DataBuilder::Push.build_sample(project, user)) }
+  let_it_be(:push_data, freeze: false) { HashWithIndifferentAccess.new(Gitlab::DataBuilder::Push.build_sample(project, user)) }
   let_it_be(:channels) { ['irc://test.net/#test'] }
 
   let_it_be(:server_settings) do

@@ -42,6 +42,7 @@ describe('OrganizationNewApp', () => {
       name: 'Foo bar',
       path: 'foo-bar',
       description: 'Foo bar description',
+      visibilityLevel: 0,
       avatar: file,
     });
     await nextTick();
@@ -87,6 +88,7 @@ describe('OrganizationNewApp', () => {
             name: 'Foo bar',
             path: 'foo-bar',
             description: 'Foo bar description',
+            visibility: 'private',
             avatar: file,
           },
         });

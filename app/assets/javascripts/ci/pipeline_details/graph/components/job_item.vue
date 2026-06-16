@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import JobSourceBadge from '~/ci/job_details/components/job_source_badge.vue';
 import ActionComponent from '../../../common/private/job_action_component.vue';
 import JobNameComponent from '../../../common/private/job_name_component.vue';
 import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } from '../constants';
@@ -69,6 +70,7 @@ export default {
     GlLink,
     GlModal,
     JobNameComponent,
+    JobSourceBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -344,11 +346,14 @@ export default {
       <div class="gl-flex gl-grow gl-items-center">
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
-          <div
-            class="gl-line-clamp-2 gl-pr-6 gl-text-left gl-leading-normal gl-text-default"
-            :title="job.name"
-          >
-            {{ job.name }}
+          <div class="gl-flex gl-items-center">
+            <div
+              class="gl-line-clamp-2 gl-pr-1 gl-text-left gl-leading-normal gl-text-default"
+              :title="job.name"
+            >
+              {{ job.name }}
+            </div>
+            <job-source-badge v-if="job.source" :source="job.source" compact />
           </div>
           <div
             v-if="showStageName"

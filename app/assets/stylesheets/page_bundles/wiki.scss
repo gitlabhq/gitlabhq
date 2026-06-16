@@ -232,6 +232,7 @@
 }
 
 /* Sidebar in edit mode */
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-overview element
 .wiki-overview:has(.wiki-form.immersive) .wiki-sidebar {
 
   /* Hide the floating `open`-toggle since the edit header has its own */
@@ -281,20 +282,24 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+// stylelint-disable-next-line gitlab/no-has -- WARNING: this code can be potentially very slow, refactor ASAP
 .content:has(.wiki-overview),
 .panel-content:has(.wiki-overview) {
   padding-bottom: 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- WARNING: this code can be potentially very slow, refactor ASAP
 .panel-content-inner:has(.wiki-overview) {
   padding-left: 0;
   padding-right: 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-overview element
 .wiki-overview:has(.wiki-form.immersive) {
   gap: 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-page-details element
 .wiki-page-details:has(.wiki-form.immersive) {
   max-width: none;
 }
@@ -358,6 +363,7 @@ ul.wiki-pages-list.content-list {
 }
 
 /** Remove the below when the vue-wiki-sidebar FF is removed */
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific blocks-container element
 .blocks-container:has(.wiki-list.collapsed) {
   flex-grow: 0;
 }
@@ -383,7 +389,7 @@ ul.wiki-pages-list.content-list {
     display: none;
   }
 
-  .paneled-view.ai-panels {
+  .ai-panels {
     display: none;
   }
 
@@ -416,6 +422,7 @@ ul.wiki-pages-list.content-list {
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-has -- WARNING: this code can be potentially very slow, refactor ASAP
   &.content-wrapper:has(.wiki-page-header),
   &.content-wrapper:has(.wiki-page-details) {
     .container-limited.project-highlight-puc {

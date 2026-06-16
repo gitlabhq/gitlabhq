@@ -1,6 +1,6 @@
 ---
-source_checksum: 3c85628c6d7cae8a
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 3ac83ddd8eb34472
+distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -70,6 +70,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Place `graphql_name` as the first line of a mutation class.
 - Name mutations following `{Resource}{Action}` or `{Resource}{Action}{Attribute}`; use `Create`, `Update`/`Set`/`Add`/`Toggle`, and `Delete`/`Remove` verbs.
 - Expose permissions using `expose_permissions` with a type inheriting `BasePermissionType`.
+- Keep logic inside type definitions minimal; move complex logic into a presenter using `present_using`.
 
 ### Arguments
 
@@ -80,6 +81,8 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use enum types for sort arguments following the `{PROPERTY}_{DIRECTION}` format.
 - Name full-path arguments `project_path`, `group_path`, or `namespace_path`; use `iid` with a parent path for IID-identified objects; use `Types::GlobalIDType[Model]` for all other object identifiers.
 - Ensure all GraphQL mutations that accept file content use Workhorse-assisted uploads.
+- Add explicit `validates: { length: { maximum: Types::BaseArgument::MAX_ARRAY_SIZE } }` to all array arguments; DO NOT rely solely on the automatic 100-item limit from `BaseArgument`.
+- DO NOT hardcode array size limits as literals; use `Types::BaseArgument::MAX_ARRAY_SIZE` or a named module constant, and document the limit in the argument `description:`.
 
 ### Resolvers and Mutations
 
@@ -94,7 +97,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `BatchModelLoader` for ID-based record lookups; DO NOT implement custom ID batch loaders.
 - DO NOT call `batch.sync` or `Lazy.force` in resolver code; use `Lazy.with_value` instead.
 - Define a method under `GraphqlTriggers` to trigger subscriptions; DO NOT call `GitlabSchema.subscriptions.trigger` directly in application code.
-- Implement `#authorized?` in subscription classes and call `unauthorized!` when authorization fails.
+- Implement `#authorized?` in subscription classes and call `unauthorized!` when authorization fails; use `#authorize_object_or_gid!` for the typical permission check on the subscribed object.
 - Return `errors` as an empty array on success and populate it with user-relevant error messages on failure; raise `raise_resource_not_available_error!` for authorization/not-found errors.
 - Mutation payload fields must have `null: true`.
 - Return the current true state of the resource in update mutation failures (call `#reset` if needed).
@@ -109,6 +112,13 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT use field authorization as a substitute for object-level checks when objects can have independent access controls (for example, confidential issues).
 - Use `skip_type_authorization` on a field only when the resolver already authorizes the resolved objects and the permission checks are equivalent, to avoid redundant N+1 authorization calls.
 - Load only what the current user is allowed to see using finders first; DO NOT rely solely on authorization to filter records after loading.
+
+### Pagination
+
+- Prefer keyset pagination (the default for `ActiveRecord::Relation`) over offset pagination; fall back to `offset_pagination(result)` only when the sort order is too complex for keyset pagination.
+- DO NOT define collection ordering using the string syntax (for example, `items.order('created_at DESC')`); use the hash syntax (`items.order(created_at: :desc)`) so sort information is correctly embedded in cursors.
+- Support only two ordering fields for keyset pagination, one of which must be the primary key.
+- Use `Gitlab::Graphql::ExternallyPaginatedArray.new(previous_cursor, next_cursor, *items)` when proxying externally paginated data (for example, from a third-party API).
 
 ### Performance and N+1
 
@@ -130,6 +140,8 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `get_graphql_query_as_string` to test frontend `.graphql` query files.
 - Mirror the folder structure of `app/graphql/types` in `spec/requests/api/graphql`.
 - Use `batch_sync` or `Gitlab::Graphql::Lazy.force` only in tests when lazy values must be forced; prefer `Schema.execute` in request specs to avoid manual lifecycle management.
+- Use the `sorted paginated query` shared example for any GraphQL field that supports pagination and sorting to verify sort key compatibility and cursor correctness.
+- Include a `describe 'sorting and pagination'` block in request specs for paginated and sortable fields.
 
 ## Authoritative sources
 
@@ -139,4 +151,6 @@ For the full picture, see:
 - doc/development/graphql_guide/reviewing.md
 - doc/development/graphql_guide/authorization.md
 - doc/development/graphql_guide/batchloader.md
+- doc/development/graphql_guide/pagination.md
+- doc/development/graphql_guide/array_argument_validation.md
 

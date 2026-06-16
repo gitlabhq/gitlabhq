@@ -111,12 +111,6 @@ Quote script commands and variable values to prevent YAML and shell parsing erro
 
 ## Pass an environment variable from the `script` section to `artifacts` or `cache`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29391) in GitLab 16.4.
-
-{{< /history >}}
-
 Use `$GITLAB_ENV` to use environment variables defined in the `script` section in the
 `artifacts` or `cache` keywords. For example:
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:user) { project.creator }
 

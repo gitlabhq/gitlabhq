@@ -85,8 +85,9 @@ RSpec.describe Route do
   end
 
   describe '.by_paths' do
-    let!(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
-    let!(:project) { create(:project, path: 'other-project', namespace: group) }
+    let_it_be(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
+    let_it_be(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
+    let_it_be(:project) { create(:project, path: 'other-project', namespace: group) }
 
     it 'returns correct routes' do
       expect(described_class.by_paths(%w[git_lab/foo git_lab/other-project])).to match_array(
@@ -370,14 +371,14 @@ RSpec.describe Route do
 
   describe 'conflicting routes validation' do
     context 'when there is a conflicting route' do
-      let!(:conflicting_group) { create(:group, path: 'foo') }
+      let_it_be(:conflicting_group) { create(:group, path: 'foo') }
 
       before do
         route.path = conflicting_group.route.path
       end
 
       context 'when deleting the conflicting route' do
-        let!(:offending_route) { conflicting_group.route }
+        let_it_be(:offending_route) { conflicting_group.route }
 
         it 'does not delete the original route' do
           # before deleting the route, check its there
@@ -402,6 +403,87 @@ RSpec.describe Route do
     context 'when there are no conflicting routes' do
       it 'passes validation' do
         expect(route.valid?).to be_truthy
+      end
+    end
+  end
+
+  describe 'project path burn hooks', feature_category: :system_access do
+    describe 'before_destroy' do
+      context 'for a Project route' do
+        let(:project) { create(:project) }
+
+        it 'writes a tombstone for the project path' do
+          expect { project.destroy! }
+            .to change { Authn::BurnedProjectRoute.for_path(project.full_path).count }.by(1)
+
+          row = Authn::BurnedProjectRoute.for_path(project.full_path).order(:id).first
+          expect(row).to have_attributes(
+            project_id: project.id,
+            organization_id: project.organization_id
+          )
+        end
+
+        # Regression: project teardown may detach the polymorphic association
+        # in memory (nulling source_id) before the route's own before_destroy
+        # fires. The burn hook must still capture the original project id
+        # from the persisted column so the tombstone is not orphaned.
+        it 'captures source_id from the database even when the in-memory attribute is nil' do
+          route = project.route
+          route.assign_attributes(source_id: nil)
+
+          expect { route.destroy! }
+            .to change { Authn::BurnedProjectRoute.for_path(project.full_path).count }.by(1)
+
+          row = Authn::BurnedProjectRoute.for_path(project.full_path).order(:id).first
+          expect(row.project_id).to eq(project.id)
+        end
+      end
+
+      context 'for a Group route' do
+        let(:group) { create(:group) }
+
+        it 'does not write a tombstone (project scope only)' do
+          expect { group.destroy! }
+            .not_to change { Authn::BurnedProjectRoute.count }
+        end
+      end
+    end
+
+    describe 'after_update when path changes' do
+      context 'for a Project route' do
+        let(:project) { create(:project, path: 'original-name') }
+
+        it 'writes a tombstone for the old path' do
+          old_full_path = project.full_path
+
+          project.update!(path: 'new-name')
+
+          expect(Authn::BurnedProjectRoute.for_path(old_full_path)).to exist
+        end
+
+        it 'does not write a tombstone for the new path' do
+          project.update!(path: 'new-name')
+
+          expect(Authn::BurnedProjectRoute.for_path(project.full_path)).not_to exist
+        end
+      end
+
+      context 'for a Group route' do
+        let(:group) { create(:group, path: 'original-group') }
+
+        it 'does not write a tombstone (project scope only)' do
+          expect { group.update!(path: 'new-group') }
+            .not_to change { Authn::BurnedProjectRoute.count }
+        end
+      end
+    end
+
+    describe 'after_update when only the name changes' do
+      let(:project) { create(:project) }
+
+      it 'does not write a tombstone' do
+        expect { project.update!(name: 'Renamed Project') }
+          .not_to change { Authn::BurnedProjectRoute.count }
       end
     end
   end

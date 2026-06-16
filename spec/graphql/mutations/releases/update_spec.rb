@@ -5,20 +5,20 @@ require 'spec_helper'
 RSpec.describe Mutations::Releases::Update do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
-  let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
-  let_it_be(:reporter) { create(:user, reporter_of: project) }
-  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:milestone_12_3, freeze: false) { create(:milestone, project: project, title: '12.3') }
+  let_it_be(:milestone_12_4, freeze: false) { create(:milestone, project: project, title: '12.4') }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: project) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
 
-  let_it_be(:tag) { 'v1.1.0' }
-  let_it_be(:name) { 'Version 1.0' }
-  let_it_be(:description) { 'The first release :rocket:' }
-  let_it_be(:released_at) { Time.parse('2018-12-10').utc }
-  let_it_be(:created_at) { Time.parse('2018-11-05').utc }
-  let_it_be(:milestones) { [milestone_12_3.title, milestone_12_4.title] }
+  let_it_be(:tag, freeze: false) { 'v1.1.0' }
+  let_it_be(:name, freeze: false) { 'Version 1.0' }
+  let_it_be(:description, freeze: false) { 'The first release :rocket:' }
+  let_it_be(:released_at, freeze: false) { Time.parse('2018-12-10').utc }
+  let_it_be(:created_at, freeze: false) { Time.parse('2018-11-05').utc }
+  let_it_be(:milestones, freeze: false) { [milestone_12_3.title, milestone_12_4.title] }
 
-  let_it_be(:release) do
+  let_it_be(:release, freeze: false) do
     create(
       :release,
       project: project,

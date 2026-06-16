@@ -52,6 +52,18 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
   let(:current_user) { project.creator }
   let(:data) { graphql_data.dig('project', 'terraformStates') }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_terraform_state] do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql(
+        graphql_query_for(:project, { fullPath: project.full_path },
+          'terraformStates { nodes { id latestVersion { id } } }'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   before do
     post_graphql(query, current_user: current_user)
   end

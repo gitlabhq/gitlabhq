@@ -11,6 +11,7 @@ import {
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   ACCESS_ALL_MEMBERSHIPS_ENUM,
   ACCESS_USER_ENUM,
+  ACCESS_INSTANCE_ENUM,
 } from '../constants';
 
 export default {
@@ -45,6 +46,7 @@ export default {
           ],
         },
         { type: 'user', accessList: [ACCESS_USER_ENUM] },
+        { type: 'instance', accessList: [ACCESS_INSTANCE_ENUM] },
       ];
 
       return sectionDefs.map(({ type, accessList }) => {
@@ -94,6 +96,9 @@ export default {
     },
     user: {
       permissions: s__('AccessTokens|User permissions'),
+    },
+    instance: {
+      permissions: s__('AccessTokens|Global permissions'),
     },
     noResources: s__('AccessTokens|No resources added'),
   },

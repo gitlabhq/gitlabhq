@@ -6,7 +6,10 @@ RSpec.describe Gitlab::GithubImport::ImportProtectedBranchWorker, feature_catego
   let(:worker) { described_class.new }
 
   let(:import_state) { build_stubbed(:import_state, :started) }
-  let(:project) { instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state) }
+  let(:project) do
+    instance_double('Project', full_path: 'foo/bar', id: 1, organization_id: 1, import_state: import_state)
+  end
+
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:importer) { instance_double('Gitlab::GithubImport::Importer::ProtectedBranchImporter') }
 

@@ -37,6 +37,10 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
         expect { service.execute(merge_request) }.not_to publish_event(MergeRequests::ApprovedEvent)
       end
 
+      it 'does not publish MergeRequests::ApprovedCloudEvent' do
+        expect { service.execute(merge_request) }.not_to publish_event(MergeRequests::ApprovedCloudEvent)
+      end
+
       it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
         let(:action) { service.execute(merge_request) }
       end
@@ -110,6 +114,11 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
           .with(current_user_id: user.id,
             merge_request_id: merge_request.id,
             approved_at: anything)
+      end
+
+      it 'publishes MergeRequests::ApprovedCloudEvent' do
+        expect { service.execute(merge_request) }
+          .to publish_event(MergeRequests::ApprovedCloudEvent)
       end
 
       it 'changes reviewers state to unapproved' do

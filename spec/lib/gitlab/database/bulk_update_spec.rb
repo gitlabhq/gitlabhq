@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::BulkUpdate, feature_category: :database do
   describe 'error states' do
     let(:columns) { %i[title] }
 
-    let_it_be(:mapping) do
+    let_it_be(:mapping, freeze: false) do
       create_default(:user)
       create_default(:project)
 

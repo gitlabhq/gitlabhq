@@ -45,7 +45,7 @@ RSpec.describe RapidDiffs::DiffSourceVersionEntity, feature_category: :code_revi
       expect(serialized).to include(
         :id,
         :version_index,
-        :head,
+        :is_merge_head,
         :latest,
         :short_commit_sha,
         :commits_count,
@@ -63,6 +63,26 @@ RSpec.describe RapidDiffs::DiffSourceVersionEntity, feature_category: :code_revi
   end
 
   describe 'selected' do
+    context 'when only_context_commits option is true' do
+      let(:options) do
+        {
+          merge_request: merge_request,
+          merge_request_diffs: merge_request_diffs,
+          diff_id: diff_id,
+          start_sha: start_sha,
+          only_context_commits: true
+        }
+      end
+
+      before do
+        allow(merge_request_diff).to receive_messages(latest?: true, merge_head?: false)
+      end
+
+      it 'returns false even for the latest version' do
+        expect(serialized[:selected]).to be(false)
+      end
+    end
+
     context 'when diff is latest' do
       before do
         allow(merge_request_diff).to receive_messages(

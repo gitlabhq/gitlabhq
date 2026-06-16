@@ -7,6 +7,8 @@ additional_properties:
     description: Name of the triggered audit event
 identifiers:
 product_group: compliance
+product_categories:
+- audit_events
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151878
 tiers:

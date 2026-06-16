@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe RemoteMirrors::CreateService, feature_category: :source_code_management do
   subject(:service) { described_class.new(project, user, params) }
 
-  let_it_be(:project) { create(:project, :empty_repo) }
+  let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:params) do

@@ -9,6 +9,7 @@ const DIR_LABEL = __('Directory name');
 const COMMIT_MESSAGE = __('Add new directory');
 
 export default {
+  name: 'NewDirectoryModal',
   components: {
     GlFormGroup,
     GlFormInput,

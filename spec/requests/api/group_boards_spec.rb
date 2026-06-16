@@ -7,7 +7,7 @@ RSpec.describe API::GroupBoards, :with_license, feature_category: :portfolio_man
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:board_parent) { create(:group, :public, owners: user) }
+  let_it_be(:board_parent, freeze: false) { create(:group, :public, owners: user) }
 
   let_it_be(:project) { create(:project, :public, namespace: board_parent) }
 
@@ -23,18 +23,18 @@ RSpec.describe API::GroupBoards, :with_license, feature_category: :portfolio_man
     create(:group_label, title: 'UX', color: '#FF0000', group: board_parent)
   end
 
-  let_it_be(:dev_list) do
+  let_it_be(:dev_list, freeze: false) do
     create(:list, label: dev_label, position: 1)
   end
 
-  let_it_be(:test_list) do
+  let_it_be(:test_list, freeze: false) do
     create(:list, label: test_label, position: 2)
   end
 
   let_it_be(:milestone) { create(:milestone, group: board_parent) }
   let_it_be(:board_label) { create(:group_label, group: board_parent) }
 
-  let_it_be(:board) { create(:board, group: board_parent, lists: [dev_list, test_list]) }
+  let_it_be(:board, freeze: false) { create(:board, group: board_parent, lists: [dev_list, test_list]) }
 
   it_behaves_like 'group and project boards', "/groups/:id/boards", false
 

@@ -851,7 +851,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   context 'traversal queries' do
-    let_it_be(:group, reload: true) { create(:group, :nested) }
+    let_it_be_with_reload(:group) { create(:group, :nested) }
 
     it_behaves_like 'namespace traversal'
 
@@ -1176,7 +1176,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe 'scopes' do
-    let_it_be(:private_group)  { create(:group, :private)  }
+    let_it_be_with_refind(:private_group) { create(:group, :private) }
     let_it_be(:internal_group) { create(:group, :internal) }
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
@@ -1387,6 +1387,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '#pending_delete?' do
+      context 'when group has no deletion schedule' do
+        let(:group) { create(:group) }
+
+        specify { expect(group.pending_delete?).to be(false) }
+      end
+
+      context 'when group is marked for deletion in the future' do
+        let(:group) { create(:group, deletion_scheduled_at: 1.day.from_now) }
+
+        specify { expect(group.pending_delete?).to be(true) }
+      end
+
+      context 'when group is marked for deletion in the past' do
+        let(:group) { create(:group, deletion_scheduled_at: 1.day.ago) }
+
+        specify { expect(group.pending_delete?).to be(false) }
+      end
+
+      context 'when group is marked for deletion today' do
+        let(:group) { create(:group, deletion_scheduled_at: Time.zone.today) }
+
+        specify { expect(group.pending_delete?).to be(false) }
+      end
+    end
+
     describe '.with_project_creation_levels' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
@@ -1450,7 +1476,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
       let_it_be(:group_5) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
       let_it_be(:group_6) { create(:group, project_creation_level: nil) } # `nil` inherits `default_project_creation`
-      let_it_be(:all_groups) { described_class.id_in([group_1, group_2, group_3, group_4, group_5, group_6]) }
+      let(:all_groups) { described_class.id_in([group_1, group_2, group_3, group_4, group_5, group_6]) }
 
       where(:admin_user?, :admin_mode, :default_project_creation, :expected_groups) do
         false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
@@ -1545,7 +1571,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:public_group) { create(:group, :public) }
       let_it_be(:unaccessible_group) { create(:group, :private) }
       let_it_be(:unaccessible_subgroup) { create(:group, :private, parent: unaccessible_group) }
-      let_it_be(:accessible_group) { create(:group, :private) }
+      let_it_be_with_refind(:accessible_group) { create(:group, :private) }
       let_it_be(:accessible_subgroup) { create(:group, :private, parent: accessible_group) }
 
       context 'when user is nil' do
@@ -1720,8 +1746,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '.excluding_self_and_ancestors_archived' do
-      let_it_be(:root_group) { create(:group) }
-      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be_with_refind(:root_group) { create(:group) }
+      let_it_be_with_refind(:subgroup) { create(:group, parent: root_group) }
       let_it_be(:sub_subgroup) { create(:group, parent: subgroup) }
 
       subject { root_group.self_and_descendants.excluding_self_and_ancestors_archived }
@@ -2342,7 +2368,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#has_user?' do
-    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:user) { create(:user) }
     let_it_be(:user2) { create(:user) }
@@ -2435,7 +2461,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#member_of_self_or_descendant?' do
-    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
 
     subject { group.member_of_self_or_descendant?(user) }
@@ -2527,7 +2553,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     context 'when organization owner' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:org_owner) { create(:user, owner_of: group.organization) }
+      let_it_be_with_reload(:org_owner) { create(:user, owner_of: group.organization) }
 
       it 'returns OWNER by default' do
         expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
@@ -2971,7 +2997,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when the group is private' do
-      let_it_be(:group) { create(:group, :private) }
+      let_it_be_with_refind(:group) { create(:group, :private) }
 
       context 'when the user is not a member of the group' do
         it 'is an empty array' do
@@ -2990,7 +3016,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       context 'when the group has a sub group' do
-        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be_with_refind(:subgroup) { create(:group, :private, parent: group) }
 
         context 'when the user is not a member of the subgroup' do
           it 'is an empty array' do
@@ -3234,8 +3260,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#highest_group_member' do
-    let_it_be(:nested_group) { create(:group, parent: group) }
-    let_it_be(:nested_group_2) { create(:group, parent: nested_group) }
+    let_it_be_with_refind(:nested_group) { create(:group, parent: group) }
+    let_it_be_with_refind(:nested_group_2) { create(:group, parent: nested_group) }
     let_it_be(:user) { create(:user) }
 
     subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
@@ -3561,9 +3587,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.preset_root_ancestor_for' do
-    let_it_be(:rootgroup, reload: true) { create(:group) }
-    let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }
-    let_it_be(:subgroup2, reload: true) { create(:group, parent: subgroup) }
+    let_it_be_with_reload(:rootgroup) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: rootgroup) }
+    let_it_be_with_reload(:subgroup2) { create(:group, parent: subgroup) }
 
     it 'does noting for single group' do
       expect(subgroup).not_to receive(:self_and_ancestors)
@@ -3725,7 +3751,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when none of group child projects has service desk enabled' do
-      let_it_be(:project) { create(:project, group: group, service_desk_enabled: false) }
+      let_it_be_with_reload(:project) { create(:project, group: group, service_desk_enabled: false) }
 
       before do
         project.update!(service_desk_enabled: false)
@@ -3742,11 +3768,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.ids_with_disabled_email' do
-    let_it_be(:parent_1) { create(:group) }
+    let_it_be_with_reload(:parent_1) { create(:group) }
     let_it_be(:child_1) { create(:group, parent: parent_1) }
 
     let_it_be(:parent_2) { create(:group) }
-    let_it_be(:child_2) { create(:group, parent: parent_2) }
+    let_it_be_with_reload(:child_2) { create(:group, parent: parent_2) }
 
     let_it_be(:other_group) { create(:group) }
 
@@ -4170,7 +4196,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     # runner_token_expiration_interval should not affect the expiration interval, only
     # subgroup_runner_token_expiration_interval should.
     context 'when there is a grandparent group enforced group interval' do
-      let_it_be(:grandparent_group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:grandparent_group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
       let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
       let_it_be(:subgroup) { create(:group, parent: parent_group) }
@@ -4182,7 +4208,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when there is a grandparent group enforced subgroup interval' do
-      let_it_be(:grandparent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:grandparent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
       let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
       let_it_be(:subgroup) { create(:group, parent: parent_group) }
@@ -4196,7 +4222,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     # project_runner_token_expiration_interval should not affect the expiration interval, only
     # subgroup_runner_token_expiration_interval should.
     context 'when there is a grandparent group enforced project interval' do
-      let_it_be(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:grandparent_group_settings) { create(:namespace_settings, project_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:grandparent_group) { create(:group, namespace_settings: grandparent_group_settings) }
       let_it_be(:parent_group) { create(:group, parent: grandparent_group) }
       let_it_be(:subgroup) { create(:group, parent: parent_group) }
@@ -4208,9 +4234,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when there is a parent group enforced interval overridden by group interval' do
-      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 5.days.to_i) }
+      let_it_be_with_refind(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 5.days.to_i) }
       let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
-      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:subgroup_with_settings) { create(:group, parent: parent_group, namespace_settings: group_settings) }
 
       subject { subgroup_with_settings }
@@ -4229,7 +4255,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
       end
 
-      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
 
       subject { group_with_settings }
@@ -4243,7 +4269,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
       end
 
-      let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:group_with_settings) { create(:group, namespace_settings: group_settings) }
 
       subject { group_with_settings }
@@ -4257,7 +4283,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         stub_application_setting(group_runner_token_expiration_interval: 3.days.to_i)
       end
 
-      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
       let_it_be(:subgroup) { create(:group, parent: parent_group) }
 
@@ -4272,7 +4298,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         stub_application_setting(group_runner_token_expiration_interval: 5.days.to_i)
       end
 
-      let_it_be(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:parent_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:parent_group) { create(:group, namespace_settings: parent_group_settings) }
       let_it_be(:subgroup) { create(:group, parent: parent_group) }
 
@@ -4284,7 +4310,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     # Unrelated groups should not affect the expiration interval.
     context 'when there is an enforced group interval in an unrelated group' do
-      let_it_be(:unrelated_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:unrelated_group_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:unrelated_group) { create(:group, namespace_settings: unrelated_group_settings) }
       let_it_be(:group) { create(:group) }
 
@@ -4296,7 +4322,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     # Subgroups should not affect the parent group expiration interval.
     context 'when there is an enforced group interval in a subgroup' do
-      let_it_be(:subgroup_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
+      let_it_be_with_refind(:subgroup_settings) { create(:namespace_settings, subgroup_runner_token_expiration_interval: 4.days.to_i) }
       let_it_be(:subgroup) { create(:group, parent: group, namespace_settings: subgroup_settings) }
       let_it_be(:group) { create(:group) }
 
@@ -4812,7 +4838,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#mcp_server_enabled', feature_category: :mcp_server do
-    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
 
     it 'delegates to namespace_settings' do
       group.namespace_settings.update!(mcp_server_enabled: true)
@@ -4821,8 +4847,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.with_mcp_server_enabled', feature_category: :mcp_server do
-    let_it_be(:group_on) { create(:group) }
-    let_it_be(:group_off) { create(:group) }
+    let_it_be_with_refind(:group_on) { create(:group) }
+    let_it_be_with_refind(:group_off) { create(:group) }
     let_it_be(:group_nil) { create(:group) }
 
     before do

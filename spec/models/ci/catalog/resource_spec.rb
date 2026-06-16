@@ -3,23 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
-  let_it_be(:project_a) { create(:project, name: 'A', star_count: 20) }
-  let_it_be(:project_b) { create(:project, name: 'B', star_count: 10) }
-  let_it_be(:project_c) { create(:project, name: 'C', description: 'B', star_count: 30) }
+  let_it_be(:project_a, freeze: false) { create(:project, name: 'A', star_count: 20) }
+  let_it_be(:project_b, freeze: false) { create(:project, name: 'B', star_count: 10) }
+  let_it_be(:project_c, freeze: false) { create(:project, name: 'C', description: 'B', star_count: 30) }
 
   let_it_be_with_reload(:resource_a) do
     create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z',
       last_30_day_usage_count: 150, verification_level: 100)
   end
 
-  let_it_be(:resource_b) do
+  let_it_be(:resource_b, freeze: false) do
     create(:ci_catalog_resource, project: project_b, latest_released_at: '2023-01-01T00:00:00Z',
       last_30_day_usage_count: 100, verification_level: 10)
   end
 
-  let_it_be(:resource_c) { create(:ci_catalog_resource, project: project_c, verification_level: 50) }
+  let_it_be(:resource_c, freeze: false) { create(:ci_catalog_resource, project: project_c, verification_level: 50) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -172,9 +172,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe '.with_topics' do
-    let_it_be(:topic_ruby) { create(:topic, name: 'ruby') }
-    let_it_be(:topic_rails) { create(:topic, name: 'rails') }
-    let_it_be(:topic_gitlab) { create(:topic, name: 'gitlab') }
+    let_it_be(:topic_ruby, freeze: false) { create(:topic, name: 'ruby') }
+    let_it_be(:topic_rails, freeze: false) { create(:topic, name: 'rails') }
+    let_it_be(:topic_gitlab, freeze: false) { create(:topic, name: 'gitlab') }
 
     before_all do
       create(:project_topic, project: project_a, topic: topic_ruby)
@@ -199,17 +199,17 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe '.in_namespaces' do
-    let_it_be(:group_a) { create(:group) }
-    let_it_be(:group_b) { create(:group) }
-    let_it_be(:group_c) { create(:group) }
+    let_it_be(:group_a, freeze: false) { create(:group) }
+    let_it_be(:group_b, freeze: false) { create(:group) }
+    let_it_be(:group_c, freeze: false) { create(:group) }
 
-    let_it_be(:project_in_a) { create(:project, namespace: group_a) }
-    let_it_be(:project_in_b) { create(:project, namespace: group_b) }
-    let_it_be(:project_in_c) { create(:project, namespace: group_c) }
+    let_it_be(:project_in_a, freeze: false) { create(:project, namespace: group_a) }
+    let_it_be(:project_in_b, freeze: false) { create(:project, namespace: group_b) }
+    let_it_be(:project_in_c, freeze: false) { create(:project, namespace: group_c) }
 
-    let_it_be(:resource_in_a) { create(:ci_catalog_resource, project: project_in_a) }
-    let_it_be(:resource_in_b) { create(:ci_catalog_resource, project: project_in_b) }
-    let_it_be(:resource_in_c) { create(:ci_catalog_resource, project: project_in_c) }
+    let_it_be(:resource_in_a, freeze: false) { create(:ci_catalog_resource, project: project_in_a) }
+    let_it_be(:resource_in_b, freeze: false) { create(:ci_catalog_resource, project: project_in_b) }
+    let_it_be(:resource_in_c, freeze: false) { create(:ci_catalog_resource, project: project_in_c) }
 
     it 'returns only catalog resources whose project namespace matches one of the given ids' do
       expect(described_class.in_namespaces([group_a.id]))
@@ -238,22 +238,27 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe 'authorized catalog resources' do
-    let_it_be(:namespace) { create(:group) }
-    let_it_be(:other_namespace) { create(:group) }
-    let_it_be(:other_user) { create(:user) }
+    let_it_be(:namespace, freeze: false) { create(:group) }
+    let_it_be(:other_namespace, freeze: false) { create(:group) }
+    let_it_be(:other_user, freeze: false) { create(:user) }
 
-    let_it_be(:public_project) { create(:project, :public) }
-    let_it_be(:internal_project) { create(:project, :internal) }
-    let_it_be(:internal_namespace_project) { create(:project, :internal, namespace: namespace) }
-    let_it_be(:private_namespace_project) { create(:project, namespace: namespace) }
-    let_it_be(:other_private_namespace_project) { create(:project, namespace: other_namespace) }
+    let_it_be(:public_project, freeze: false) { create(:project, :public) }
+    let_it_be(:internal_project, freeze: false) { create(:project, :internal) }
+    let_it_be(:internal_namespace_project, freeze: false) { create(:project, :internal, namespace: namespace) }
+    let_it_be(:private_namespace_project, freeze: false) { create(:project, namespace: namespace) }
+    let_it_be(:other_private_namespace_project, freeze: false) { create(:project, namespace: other_namespace) }
 
-    let_it_be(:public_resource) { create(:ci_catalog_resource, project: public_project) }
-    let_it_be(:internal_resource) { create(:ci_catalog_resource, project: internal_project) }
-    let_it_be(:internal_namespace_resource) { create(:ci_catalog_resource, project: internal_namespace_project) }
-    let_it_be(:private_namespace_resource) { create(:ci_catalog_resource, project: private_namespace_project) }
+    let_it_be(:public_resource, freeze: false) { create(:ci_catalog_resource, project: public_project) }
+    let_it_be(:internal_resource, freeze: false) { create(:ci_catalog_resource, project: internal_project) }
+    let_it_be(:internal_namespace_resource, freeze: false) do
+      create(:ci_catalog_resource, project: internal_namespace_project)
+    end
 
-    let_it_be(:other_private_namespace_resource) do
+    let_it_be(:private_namespace_resource, freeze: false) do
+      create(:ci_catalog_resource, project: private_namespace_project)
+    end
+
+    let_it_be(:other_private_namespace_resource, freeze: false) do
       create(:ci_catalog_resource, project: other_private_namespace_project)
     end
 
@@ -314,17 +319,17 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
     # rubocop:disable RSpec/MultipleMemoizedHelpers -- Inherits helpers from parent context
     describe '.visible_to_user_with_access_level' do
-      let_it_be(:access_level_user) { create(:user) }
-      let_it_be(:maintainer_project) { create(:project, :private) }
-      let_it_be(:developer_project) { create(:project, :private) }
-      let_it_be(:reporter_project) { create(:project, :private) }
-      let_it_be(:guest_project) { create(:project, :private) }
-      let_it_be(:owner_project) { create(:project, :private) }
-      let_it_be(:maintainer_resource) { create(:ci_catalog_resource, project: maintainer_project) }
-      let_it_be(:developer_resource) { create(:ci_catalog_resource, project: developer_project) }
-      let_it_be(:reporter_resource) { create(:ci_catalog_resource, project: reporter_project) }
-      let_it_be(:guest_resource) { create(:ci_catalog_resource, project: guest_project) }
-      let_it_be(:owner_resource) { create(:ci_catalog_resource, project: owner_project) }
+      let_it_be(:access_level_user, freeze: false) { create(:user) }
+      let_it_be(:maintainer_project, freeze: false) { create(:project, :private) }
+      let_it_be(:developer_project, freeze: false) { create(:project, :private) }
+      let_it_be(:reporter_project, freeze: false) { create(:project, :private) }
+      let_it_be(:guest_project, freeze: false) { create(:project, :private) }
+      let_it_be(:owner_project, freeze: false) { create(:project, :private) }
+      let_it_be(:maintainer_resource, freeze: false) { create(:ci_catalog_resource, project: maintainer_project) }
+      let_it_be(:developer_resource, freeze: false) { create(:ci_catalog_resource, project: developer_project) }
+      let_it_be(:reporter_resource, freeze: false) { create(:ci_catalog_resource, project: reporter_project) }
+      let_it_be(:guest_resource, freeze: false) { create(:ci_catalog_resource, project: guest_project) }
+      let_it_be(:owner_resource, freeze: false) { create(:ci_catalog_resource, project: owner_project) }
 
       subject(:resources) { described_class.visible_to_user_with_access_level(access_level_user, min_access_level) }
 
@@ -396,9 +401,11 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       end
 
       context 'with a different user' do
-        let_it_be(:different_user) { create(:user) }
-        let_it_be(:different_user_project) { create(:project, :private) }
-        let_it_be(:different_user_resource) { create(:ci_catalog_resource, project: different_user_project) }
+        let_it_be(:different_user, freeze: false) { create(:user) }
+        let_it_be(:different_user_project, freeze: false) { create(:project, :private) }
+        let_it_be(:different_user_resource, freeze: false) do
+          create(:ci_catalog_resource, project: different_user_project)
+        end
 
         subject(:resources) { described_class.visible_to_user_with_access_level(different_user, Gitlab::Access::GUEST) }
 
@@ -488,7 +495,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
 
     context 'when the project is updated' do
-      let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+      let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
       context 'when project name is updated' do
         it 'updates the catalog resource name to match' do
@@ -517,8 +524,8 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe 'updating latest_released_at using model callbacks' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_refind(:january_release) do
       create(:release, :with_catalog_resource_version, project: project, tag: '1.0.0',

@@ -174,7 +174,7 @@ The rate limit is 60 deletions per minute.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211239) in GitLab 18.6.
 
 {{< /history >}}
 

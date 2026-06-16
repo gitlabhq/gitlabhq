@@ -7,91 +7,108 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
   include TermsHelper
   include Features::SettingsHelpers
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
 
   context 'when application setting :admin_mode is enabled', :request_store, :enable_admin_mode do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
-      visit general_admin_application_settings_path
     end
 
     context 'on General page' do
-      it 'change visibility settings' do
-        within_testid('admin-visibility-access-settings') do
-          choose "application_setting_default_project_visibility_20"
-        end
-
-        expect_save_settings('admin-visibility-access-settings')
+      before do
+        visit general_admin_application_settings_path
       end
 
-      it 'uncheck all restricted visibility levels' do
-        within_testid('restricted-visibility-levels') do
-          uncheck s_('VisibilityLevel|Public')
-          uncheck s_('VisibilityLevel|Internal')
-          uncheck s_('VisibilityLevel|Private')
+      it 'change visibility settings' do
+        within_testid('admin-visibility-access-settings') do
+          choose_option("application_setting_default_project_visibility_20")
+
+          expect_save_settings
+
+          expect_field_checked("application_setting_default_project_visibility_20")
         end
+      end
 
-        expect_save_settings('admin-visibility-access-settings')
+      it 'uncheck all restricted visibility levels', :aggregate_failures do
+        within_testid('admin-visibility-access-settings') do
+          within_testid('restricted-visibility-levels') do
+            click_unchecked_field s_('VisibilityLevel|Public')
+            click_unchecked_field s_('VisibilityLevel|Internal')
+          end
 
-        within_testid('restricted-visibility-levels') do
-          expect(find_field(s_('VisibilityLevel|Public'))).not_to be_checked
-          expect(find_field(s_('VisibilityLevel|Internal'))).not_to be_checked
-          expect(find_field(s_('VisibilityLevel|Private'))).not_to be_checked
+          expect_save_settings(refresh: true)
+
+          within_testid('restricted-visibility-levels') do
+            expect_field_checked s_('VisibilityLevel|Public')
+            expect_field_checked s_('VisibilityLevel|Internal')
+
+            click_checked_field s_('VisibilityLevel|Public')
+            click_checked_field s_('VisibilityLevel|Internal')
+          end
+
+          expect_save_settings
+
+          within_testid('restricted-visibility-levels') do
+            expect_field_unchecked s_('VisibilityLevel|Public')
+            expect_field_unchecked s_('VisibilityLevel|Internal')
+          end
         end
       end
 
       it 'change deletion settings', :js do
         within_testid('admin-visibility-access-settings') do
-          fill_in 'Retention period', with: 40
-        end
+          fill_field_with_new_value(s_('DeletionSettings|Retention period'), '40')
 
-        expect_save_settings('admin-visibility-access-settings')
+          expect_save_settings
 
-        within_testid('admin-visibility-access-settings') do
-          expect(find_field('Retention period').value).to eq('40')
+          expect_field_value(s_('DeletionSettings|Retention period'), '40')
         end
       end
 
       it 'modify import sources' do
-        expect(current_settings.import_sources).to be_empty
-
         within_testid('admin-import-export-settings') do
-          check "Repository by URL"
+          click_unchecked_field("Repository by URL")
+
+          expect_save_settings
+
+          expect_field_checked("Repository by URL")
         end
-
-        expect_save_settings('admin-import-export-settings')
-
-        expect(current_settings.import_sources).to eq(['git'])
       end
 
-      it 'change Visibility and Access Controls' do
-        expect(current_settings.project_export_enabled).to be(true)
-        expect(current_settings.bulk_import_enabled).to be(false)
-        expect(current_settings.silent_admin_exports_enabled).to be(false)
-
+      it 'change Visibility and Access Controls', :aggregate_failures do
         within_testid('admin-import-export-settings') do
           within_testid('project-export') do
-            uncheck 'Enabled'
+            click_checked_field s_('AdminSettings|Enabled')
           end
 
           within_testid('bulk-import') do
-            check 'Enabled'
+            click_unchecked_field s_('AdminSettings|Enabled')
           end
 
           within_testid('silent-admin-exports') do
-            check 'Enabled'
+            click_unchecked_field s_('AdminSettings|Enabled')
+          end
+
+          expect_save_settings
+
+          within_testid('project-export') do
+            expect_field_unchecked s_('AdminSettings|Enabled')
+          end
+
+          within_testid('bulk-import') do
+            expect_field_checked s_('AdminSettings|Enabled')
+          end
+
+          within_testid('silent-admin-exports') do
+            expect_field_checked s_('AdminSettings|Enabled')
           end
         end
-
-        expect_save_settings('admin-import-export-settings')
-
-        expect(current_settings.project_export_enabled).to be(false)
-        expect(current_settings.bulk_import_enabled).to be(true)
-        expect(current_settings.silent_admin_exports_enabled).to be(true)
       end
 
-      it 'change Keys settings' do
+      it 'change Keys settings', :aggregate_failures do
+        forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
+
         within_testid('admin-visibility-access-settings') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
@@ -99,60 +116,58 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
           select 'Are forbidden', from: 'ED25519 SSH keys'
           select 'Are forbidden', from: 'ECDSA_SK SSH keys'
           select 'Are forbidden', from: 'ED25519_SK SSH keys'
+
+          expect_save_settings
+
+          expect_field_value('RSA SSH keys', forbidden)
+          expect_field_value('DSA SSH keys', '0')
+          expect_field_value('ECDSA SSH keys', '384')
+          expect_field_value('ED25519 SSH keys', forbidden)
+          expect_field_value('ECDSA_SK SSH keys', forbidden)
+          expect_field_value('ED25519_SK SSH keys', forbidden)
         end
-
-        expect_save_settings('admin-visibility-access-settings')
-
-        forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
-
-        expect(find_field('RSA SSH keys').value).to eq(forbidden)
-        expect(find_field('DSA SSH keys').value).to eq('0')
-        expect(find_field('ECDSA SSH keys').value).to eq('384')
-        expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
-        expect(find_field('ECDSA_SK SSH keys').value).to eq(forbidden)
-        expect(find_field('ED25519_SK SSH keys').value).to eq(forbidden)
       end
 
       it 'change Account and Limit Settings' do
         within_testid('account-and-limit-settings-content') do
-          uncheck 'Gravatar enabled'
+          click_checked_field(_('Gravatar enabled'))
+
+          expect_save_settings
+
+          expect_field_unchecked(_('Gravatar enabled'))
         end
-
-        expect_save_settings('account-and-limit-settings-content')
-
-        expect(current_settings.gravatar_enabled).to be_falsey
       end
 
       it 'change Maximum export size' do
         within_testid('admin-import-export-settings') do
-          fill_in 'Maximum export size (MiB)', with: 25
+          fill_field_with_new_value(_('Maximum export size (MiB)'), '25')
+
+          expect_save_settings
+
+          expect_field_value(_('Maximum export size (MiB)'), '25')
         end
-
-        expect_save_settings('admin-import-export-settings')
-
-        expect(current_settings.max_export_size).to eq 25
       end
 
       it 'change Maximum import size' do
         within_testid('admin-import-export-settings') do
-          fill_in 'Maximum import size (MiB)', with: 15
+          fill_field_with_new_value(_('Maximum import size (MiB)'), '15')
+
+          expect_save_settings
+
+          expect_field_value(_('Maximum import size (MiB)'), '15')
         end
-
-        expect_save_settings('admin-import-export-settings')
-
-        expect(current_settings.max_import_size).to eq 15
       end
 
-      it 'change Diff limits settings' do
+      it 'change Diff limits settings', :aggregate_failures do
         within_testid('diff-limits-settings') do
-          fill_in 'Maximum diff versions per merge request', with: 500
-          fill_in 'Maximum diff commits per merge request', with: 500_000
-          click_button 'Save changes'
-        end
+          fill_field_with_new_value(_('Maximum diff versions per merge request'), '500')
+          fill_field_with_new_value(_('Maximum diff commits per merge request'), '500000')
 
-        expect(page).to have_content 'Application settings saved successfully'
-        expect(current_settings.diff_max_versions).to eq 500
-        expect(current_settings.diff_max_commits).to eq 500_000
+          expect_save_settings
+
+          expect_field_value(_('Maximum diff versions per merge request'), '500')
+          expect_field_value(_('Maximum diff commits per merge request'), '500000')
+        end
       end
 
       it 'change New users set to external', :js,
@@ -195,34 +210,29 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
           end
 
           it 'changes dormant users', :js do
-            expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
-            expect(current_settings.deactivate_dormant_users).to be_falsey
-
             within_testid('account-and-limit-settings-content') do
-              check _('Deactivate dormant users after a period of inactivity')
+              click_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
+
+              expect_save_settings
+
+              expect_field_checked(_('Deactivate dormant users after a period of inactivity'))
             end
-
-            expect_save_settings('account-and-limit-settings-content')
-
-            page.refresh
-
-            expect(page).to have_checked_field(_('Deactivate dormant users after a period of inactivity'))
-            expect(current_settings.deactivate_dormant_users).to be_truthy
           end
 
-          it 'change dormant users period', :js do
+          it 'change dormant users period', :js, :aggregate_failures do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
             within_testid('account-and-limit-settings-content') do
-              check _('Deactivate dormant users after a period of inactivity')
-              fill_in _('Days of inactivity before deactivation'), with: '180'
+              click_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
+              fill_field_with_new_value(_('Days of inactivity before deactivation'), '180')
+
+              expect_save_settings
+
+              expect_field_checked(_('Deactivate dormant users after a period of inactivity'))
+              expect_field_value(_('Days of inactivity before deactivation'), '180')
             end
 
-            expect_save_settings('account-and-limit-settings-content')
-
-            page.refresh
-
-            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: false, with: '180')
+            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: false)
           end
 
           it 'displays dormant users period field validation error', :js,
@@ -234,7 +244,7 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
             within_testid('account-and-limit-settings-content') do
               check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
-              click_button 'Save changes'
+              click_button _('Save changes')
             end
 
             expect(page).to have_selector(selector, visible: :visible)
@@ -255,12 +265,12 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         context 'for Require Admin approval for new signup setting' do
           it 'changes the setting', :js do
             within_testid('sign-up-restrictions-settings-content') do
-              check 'Require admin approval for new user accounts'
+              click_checked_field(s_('ApplicationSettings|Require admin approval for new user accounts'))
+
+              expect_save_settings
+
+              expect_field_unchecked(s_('ApplicationSettings|Require admin approval for new user accounts'))
             end
-
-            expect_save_settings('sign-up-restrictions-settings-content')
-
-            expect(current_settings.require_admin_approval_after_user_signup).to be_truthy
           end
         end
 
@@ -271,24 +281,24 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
 
           it 'changes the setting', :js do
             within_testid('sign-up-restrictions-settings-content') do
-              choose 'Hard'
+              choose_option('Hard')
+
+              expect_save_settings
+
+              expect_field_checked('Hard')
             end
-
-            expect_save_settings('sign-up-restrictions-settings-content')
-
-            expect(current_settings.email_confirmation_setting).to eq('hard')
           end
         end
       end
 
       it 'change Sign-in restrictions' do
         within_testid('signin-settings') do
-          fill_in 'Home page URL', with: 'https://about.gitlab.com/'
+          fill_field_with_new_value(_('Home page URL'), 'https://about.gitlab.com/')
+
+          expect_save_settings
+
+          expect_field_value(_('Home page URL'), 'https://about.gitlab.com/')
         end
-
-        expect_save_settings('signin-settings')
-
-        expect(current_settings.home_page_url).to eq "https://about.gitlab.com/"
       end
 
       it 'terms of Service', :js do
@@ -297,9 +307,9 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         accept_terms(admin)
 
         within_testid('terms-settings') do
-          check 'All users must accept the Terms of Service and Privacy Policy to access GitLab'
+          check _('All users must accept the Terms of Service and Privacy Policy to access GitLab')
           fill_in 'Terms of Service Agreement', with: 'Be nice!'
-          click_button 'Save changes'
+          click_button _('Save changes')
         end
 
         within_testid('terms-content') do
@@ -313,38 +323,34 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
 
       context 'for project and group access tokens settings' do
         it 'changes inactive_resource_access_tokens_delete_after_days' do
-          expect(current_settings.inactive_resource_access_tokens_delete_after_days).to eq 30
-
           within_testid('account-and-limit-settings-content') do
-            fill_in 'Inactive project and group access token retention period', with: '42'
+            fill_field_with_new_value(
+              s_('ResourceAccessTokensInstanceSettings|Inactive project and group access token retention period'), '42')
+
+            expect_save_settings
+
+            expect_field_value(
+              s_('ResourceAccessTokensInstanceSettings|Inactive project and group access token retention period'), '42')
           end
-
-          expect_save_settings('account-and-limit-settings-content')
-
-          expect(current_settings.inactive_resource_access_tokens_delete_after_days).to eq 42
         end
       end
 
       it 'modify oauth providers' do
-        expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
-
         within_testid('signin-settings') do
-          uncheck 'Google'
+          click_checked_field('Google')
+
+          expect_save_settings
+
+          expect_field_unchecked('Google')
         end
-
-        expect_save_settings('signin-settings')
-
-        expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
       end
 
       it 'oauth providers do not raise validation errors when saving unrelated changes' do
-        expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
-
         within_testid('signin-settings') do
-          uncheck 'Google'
-        end
+          click_checked_field('Google')
 
-        expect_save_settings('signin-settings', refresh: true)
+          expect_save_settings(refresh: true)
+        end
 
         expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
 
@@ -352,48 +358,48 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         allow(Devise).to receive(:omniauth_providers).and_return([])
 
         # Save an unrelated setting
-        expect_save_settings('terms-settings')
+        within_testid('terms-settings') { expect_save_settings }
 
         expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
       end
 
       it 'configure web terminal' do
         within_testid('terminal-settings') do
-          fill_in 'Max session time', with: 15
+          fill_field_with_new_value(_('Max session time'), '15')
+
+          expect_save_settings
+
+          expect_field_value(_('Max session time'), '15')
         end
-
-        expect_save_settings('terminal-settings')
-
-        expect(current_settings.terminal_max_session_time).to eq(15)
       end
 
       context 'when configuring Ona' do
-        it 'changes ona settings' do
-          page.within('#js-gitpod-settings') do
-            check 'Enable Ona integration'
-            fill_in 'Ona URL', with: 'https://ona.test/'
+        it 'changes ona settings', :aggregate_failures do
+          within('#js-gitpod-settings') do
+            click_unchecked_field(s_('Gitpod|Enable Ona integration'))
+            fill_field_with_new_value(s_('Gitpod|Ona URL'), 'https://ona.test/')
+
+            expect_save_settings
+
+            expect_field_checked(s_('Gitpod|Enable Ona integration'))
+            expect_field_value(s_('Gitpod|Ona URL'), 'https://ona.test/')
           end
-
-          expect_save_settings('#js-gitpod-settings')
-
-          expect(current_settings.gitpod_url).to eq('https://ona.test/')
-          expect(current_settings.gitpod_enabled).to be(true)
         end
       end
 
       context 'for GitLab for Jira App settings', feature_category: :integrations do
-        it 'changes the settings' do
-          page.within('#js-jira_connect-settings') do
-            fill_in 'Jira Connect Application ID', with: '1234'
-            fill_in 'Jira Connect Proxy URL', with: 'https://example.com'
-            check 'Enable public key storage'
+        it 'changes the settings', :aggregate_failures do
+          within('#js-jira_connect-settings') do
+            fill_field_with_new_value(s_('JiraConnect|Jira Connect Application ID'), '1234')
+            fill_field_with_new_value(s_('JiraConnect|Jira Connect Proxy URL'), 'https://example.com')
+            click_unchecked_field(s_('JiraConnect|Enable public key storage'))
+
+            expect_save_settings
+
+            expect_field_value(s_('JiraConnect|Jira Connect Application ID'), '1234')
+            expect_field_value(s_('JiraConnect|Jira Connect Proxy URL'), 'https://example.com')
+            expect_field_checked(s_('JiraConnect|Enable public key storage'))
           end
-
-          expect_save_settings('#js-jira_connect-settings')
-
-          expect(current_settings.jira_connect_application_key).to eq('1234')
-          expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
-          expect(current_settings.jira_connect_public_key_storage_enabled).to be(true)
         end
       end
 
@@ -421,24 +427,22 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
           end
         end
 
-        it 'changes the settings' do
+        it 'changes the settings', :aggregate_failures do
           within_testid('slack-settings') do
-            check 'Enable GitLab for Slack app'
-            fill_in 'Client ID', with: 'slack_app_id'
-            fill_in 'Client secret', with: 'slack_app_secret'
-            fill_in 'Signing secret', with: 'slack_app_signing_secret'
-            fill_in 'Verification token', with: 'slack_app_verification_token'
+            click_unchecked_field(s_('ApplicationSettings|Enable GitLab for Slack app'))
+            fill_field_with_new_value(s_('SlackIntegration|Client ID'), 'slack_app_id')
+            fill_field_with_new_value(s_('SlackIntegration|Client secret'), 'slack_app_secret')
+            fill_field_with_new_value(s_('SlackIntegration|Signing secret'), 'slack_app_signing_secret')
+            fill_field_with_new_value(s_('SlackIntegration|Verification token'), 'slack_app_verification_token')
+
+            expect_save_settings
+
+            expect_field_checked(s_('ApplicationSettings|Enable GitLab for Slack app'))
+            expect_field_value(s_('SlackIntegration|Client ID'), 'slack_app_id')
+            expect_field_value(s_('SlackIntegration|Client secret'), 'slack_app_secret')
+            expect_field_value(s_('SlackIntegration|Signing secret'), 'slack_app_signing_secret')
+            expect_field_value(s_('SlackIntegration|Verification token'), 'slack_app_verification_token')
           end
-
-          expect_save_settings('slack-settings')
-
-          expect(current_settings).to have_attributes(
-            slack_app_enabled: true,
-            slack_app_id: 'slack_app_id',
-            slack_app_secret: 'slack_app_secret',
-            slack_app_signing_secret: 'slack_app_signing_secret',
-            slack_app_verification_token: 'slack_app_verification_token'
-          )
         end
       end
 
@@ -446,57 +450,55 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         it 'changes and restores web ide extension host domain setting' do
           default_host_domain = ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
 
-          page.within('#js-web-ide-settings') do
-            expect(page).to have_field('Extension host domain', with: default_host_domain)
+          within('#js-web-ide-settings') do
+            fill_field_with_new_value('Extension host domain', 'example.com')
 
-            fill_in 'Extension host domain', with: 'example.com'
-          end
+            expect_save_settings
 
-          expect_save_settings('#js-web-ide-settings')
+            expect_field_value('Extension host domain', 'example.com')
 
-          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
-            .to eq('example.com')
-
-          page.within('#js-web-ide-settings') do
             click_link 'Restore default domain'
           end
 
           expect(page).to have_content 'The Web IDE extension host domain was restored to its default value.'
-          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
-            .to eq(default_host_domain)
+          page.within('#js-web-ide-settings') do
+            expect_field_value('Extension host domain', default_host_domain)
+          end
         end
 
         it 'changes single origin fallback setting' do
-          expect(current_settings.vscode_extension_marketplace_single_origin_fallback_enabled).to be(true)
-          page.within('#js-web-ide-settings') do
-            expect(page).to have_checked_field('Enable single origin fallback')
+          within('#js-web-ide-settings') do
+            click_checked_field(s_('AdminSettings|Enable single origin fallback'))
 
-            uncheck 'Enable single origin fallback'
+            expect_save_settings
+
+            expect_field_unchecked(s_('AdminSettings|Enable single origin fallback'))
           end
+        end
+      end
+    end
 
-          expect_save_settings('#js-web-ide-settings')
+    describe 'Personal Access Token enforcement settings' do
+      context 'when `granular_personal_access_tokens_enforcement` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement: false)
+          visit general_admin_application_settings_path
+        end
 
-          expect(current_settings.vscode_extension_marketplace_single_origin_fallback_enabled).to be(false)
+        it 'does not show the enforcement section' do
+          expect(page).not_to have_content(
+            s_('AccessTokens|Fine-grained personal access tokens')
+          )
         end
       end
 
-      context 'for granular personal access token enforcement settings' do
-        context 'when `granular_personal_access_tokens_enforcement` feature flag is disabled' do
-          before do
-            stub_feature_flags(granular_personal_access_tokens_enforcement: false)
-            visit general_admin_application_settings_path
-          end
-
-          it 'does not show the enforcement section' do
-            expect(page).not_to have_content(
-              s_('AccessTokens|Fine-grained personal access tokens')
-            )
-          end
+      context 'when `granular_personal_access_tokens_enforcement` feature flag is enabled', :freeze_time do
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement: true)
         end
 
-        context 'when `granular_personal_access_tokens_enforcement` feature flag is enabled', :freeze_time do
+        context 'when enforcement is not yet enabled' do
           before do
-            stub_feature_flags(granular_personal_access_tokens_enforcement: true)
             visit general_admin_application_settings_path
           end
 
@@ -517,7 +519,9 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
 
           it 'enables the enforcement date input when the checkbox is checked', :js do
             within_testid('account-and-limit-settings-content') do
-              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              click_unchecked_field(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              )
 
               expect(page).to have_field(
                 s_('AccessTokens|Fine-grained personal access tokens enforcement date'),
@@ -526,52 +530,63 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
             end
           end
 
-          it 'saves the granular token enforcement settings' do
+          it 'saves the granular token enforcement settings', :aggregate_failures do
             within_testid('account-and-limit-settings-content') do
-              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
-              fill_in s_('AccessTokens|Fine-grained personal access tokens enforcement date'), with: Date.current.to_s
+              click_unchecked_field(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              )
+              fill_field_with_new_value(s_('AccessTokens|Fine-grained personal access tokens enforcement date'),
+                1.month.from_now.to_date.to_s)
+
+              expect_save_settings
+
+              expect_field_checked(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              )
+              expect_field_value(s_('AccessTokens|Fine-grained personal access tokens enforcement date'),
+                1.month.from_now.to_date.to_s)
             end
-
-            expect_save_settings('account-and-limit-settings-content')
-
-            expect(current_settings.enforce_granular_tokens).to be(true)
-            expect(current_settings.granular_tokens_enforced_after).to eq(Date.current)
           end
 
           it 'shows an inline validation error when checkbox is checked but date is cleared' do
             within_testid('account-and-limit-settings-content') do
-              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              click_unchecked_field(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              )
               fill_in s_('AccessTokens|Fine-grained personal access tokens enforcement date'), with: ''
 
               expect(page).to have_content(_('Please enter a date value.'))
             end
           end
+        end
 
-          context 'when enforcement is already enabled' do
-            before do
-              current_settings.update_columns(
-                personal_access_token_settings: {
-                  enforce_granular_tokens: true,
-                  granular_tokens_enforced_after: 1.month.ago.to_date
-                }
+        context 'when enforcement is already enabled' do
+          before do
+            current_settings.update_columns(
+              personal_access_token_settings: {
+                enforce_granular_tokens: true,
+                granular_tokens_enforced_after: 1.month.ago.to_date
+              }
+            )
+
+            visit general_admin_application_settings_path
+          end
+
+          it 'saving without changing the date does not throw an error' do
+            within_testid('account-and-limit-settings-content') { expect_save_settings }
+          end
+
+          it 'unchecking the checkbox updates granular token enforcement settings', :js do
+            within_testid('account-and-limit-settings-content') do
+              click_checked_field(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
               )
 
-              visit general_admin_application_settings_path
-            end
+              expect_save_settings
 
-            it 'saving without changing the date does not throw an error' do
-              expect_save_settings('account-and-limit-settings-content')
-            end
-
-            it 'unchecking the checkbox updates granular token enforcement settings', :js do
-              within_testid('account-and-limit-settings-content') do
-                uncheck s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
-
-                click_button 'Save changes'
-              end
-
-              expect(page).to have_content('Application settings saved successfully')
-              expect(current_settings.enforce_granular_tokens).to be(false)
+              expect_field_unchecked(
+                s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              )
             end
           end
         end
@@ -587,12 +602,13 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         end
 
         it 'enables clickhouse settings' do
-          page.within('#js-analytics-settings') do
-            check 'Enable ClickHouse'
-          end
+          within('#js-analytics-settings') do
+            click_unchecked_field(_('Enable ClickHouse'))
 
-          expect_save_settings('#js-analytics-settings')
-          expect(current_settings.use_clickhouse_for_analytics).to be_truthy
+            expect_save_settings
+
+            expect_field_checked(_('Enable ClickHouse'))
+          end
         end
       end
 
@@ -612,26 +628,34 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
     end
 
     context 'on Integrations page' do
+      before do
+        visit general_admin_application_settings_path
+      end
+
       it 'enable hiding third party offers' do
         within_testid('third-party-offers-settings') do
-          check 'Do not display content for customer experience improvement and offers from third parties'
+          click_unchecked_field(
+            _('Do not display content for customer experience improvement and offers from third parties')
+          )
+
+          expect_save_settings
+
+          expect_field_checked(
+            _('Do not display content for customer experience improvement and offers from third parties')
+          )
         end
-
-        expect_save_settings('third-party-offers-settings')
-
-        expect(current_settings.hide_third_party_offers).to be true
       end
 
       it 'enabling Mailgun events', :aggregate_failures do
         within_testid('mailgun-settings') do
-          check 'Enable Mailgun event receiver'
-          fill_in 'Mailgun HTTP webhook signing key', with: 'MAILGUN_SIGNING_KEY'
+          click_unchecked_field(_('Enable Mailgun event receiver'))
+          fill_field_with_new_value(_('Mailgun HTTP webhook signing key'), 'MAILGUN_SIGNING_KEY')
+
+          expect_save_settings
+
+          expect_field_checked(_('Enable Mailgun event receiver'))
+          expect_field_value(_('Mailgun HTTP webhook signing key'), 'MAILGUN_SIGNING_KEY')
         end
-
-        expect_save_settings('mailgun-settings')
-
-        expect(current_settings.mailgun_events_enabled).to be true
-        expect(current_settings.mailgun_signing_key).to eq 'MAILGUN_SIGNING_KEY'
       end
     end
   end
@@ -652,6 +676,6 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
   end
 
   def current_settings
-    ApplicationSetting.current_without_cache
+    ApplicationSetting.current_without_cache || Gitlab::CurrentSettings.current_application_settings
   end
 end

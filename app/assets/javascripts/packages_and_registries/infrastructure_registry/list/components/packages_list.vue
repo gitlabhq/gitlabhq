@@ -1,15 +1,16 @@
 <script>
 import { GlPagination } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import Tracking from '~/tracking';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 
 export default {
+  name: 'PackagesList',
   components: {
     GlPagination,
     DeletePackageModal,
@@ -28,13 +29,13 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      perPage: (state) => state.pagination.perPage,
-      totalItems: (state) => state.pagination.total,
-      page: (state) => state.pagination.page,
+    ...mapState(useInfrastructureList, {
+      perPage: (store) => store.pagination.perPage,
+      totalItems: (store) => store.pagination.total,
+      page: (store) => store.pagination.page,
       isLoading: 'isLoading',
+      list: 'getList',
     }),
-    ...mapGetters({ list: 'getList' }),
     currentPage: {
       get() {
         return this.page;

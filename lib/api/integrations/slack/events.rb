@@ -38,6 +38,7 @@ module API
             optional :authed_users, type: Array[String], desc: '(Deprecated by Slack) An array of Slack user IDs'
           end
 
+          route_setting :authorization, skip_granular_token_authorization: :slack_signature_auth
           post :events do
             response = ::Integrations::SlackEventService.new(params).execute
 

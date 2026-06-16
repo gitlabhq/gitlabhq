@@ -15,6 +15,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
   end
 
   describe "GET /application/settings" do
+    it_behaves_like 'authorizing granular token permissions', :read_application_setting do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api('/application/settings', personal_access_token: pat) }
+    end
+
     before do
       # Testing config file config/gitlab.yml becomes SSOT for this API
       # see https://gitlab.com/gitlab-org/gitlab/-/issues/426091#note_1675160909
@@ -64,7 +70,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['spam_check_api_key']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
       expect(json_response['wiki_asciidoc_allow_uri_includes']).to be_falsey
-      expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
+      expect(json_response['require_admin_approval_after_user_signup']).to be(true)
       expect(json_response['personal_access_token_prefix']).to eq('glpat-')
       expect(json_response['admin_mode']).to be(false)
       expect(json_response['whats_new_variant']).to eq('all_tiers')
@@ -83,11 +89,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
       expect(json_response['inactive_projects_min_size_mb']).to eq(0)
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
-      expect(json_response['can_create_group']).to eq(true)
-      expect(json_response['jira_connect_application_key']).to eq(nil)
-      expect(json_response['jira_connect_public_key_storage_enabled']).to eq(false)
-      expect(json_response['jira_connect_proxy_url']).to eq(nil)
-      expect(json_response['user_defaults_to_private_profile']).to eq(false)
+      expect(json_response['can_create_group']).to be(true)
+      expect(json_response['jira_connect_application_key']).to be_nil
+      expect(json_response['jira_connect_public_key_storage_enabled']).to be(false)
+      expect(json_response['jira_connect_proxy_url']).to be_nil
+      expect(json_response['user_defaults_to_private_profile']).to be(false)
       expect(json_response['default_syntax_highlighting_theme']).to eq(1)
       expect(json_response['default_dark_syntax_highlighting_theme']).to eq(2)
       expect(json_response['projects_api_rate_limit_unauthenticated']).to eq(400)
@@ -99,7 +105,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['slack_app_verification_token']).to be_nil
       expect(json_response['valid_runner_registrars']).to match_array(%w[project group])
       expect(json_response['ci_max_includes']).to eq(150)
-      expect(json_response['allow_account_deletion']).to eq(true)
+      expect(json_response['allow_account_deletion']).to be(true)
       expect(json_response['gitlab_shell_operation_limit']).to eq(600)
       expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to eq(300)
       expect(json_response['default_branch_protection_defaults']).to be_kind_of(Hash)
@@ -110,18 +116,27 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
-      expect(json_response['require_personal_access_token_expiry']).to eq(true)
-      expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(false)
-      expect(json_response['terraform_state_encryption_enabled']).to eq(true)
+      expect(json_response['require_personal_access_token_expiry']).to be(true)
+      expect(json_response['organization_cluster_agent_authorization_enabled']).to be(false)
+      expect(json_response['terraform_state_encryption_enabled']).to be(true)
       expect(json_response['iframe_rendering_enabled']).to be(false)
       expect(json_response['iframe_rendering_allowlist']).to eq([])
-      expect(json_response['authn_data_retention_cleanup_enabled']).to eq(false)
-      expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to eq(false)
+      expect(json_response['email_otp_enabled']).to be(false)
+      expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
+      expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
     end
   end
 
   describe "PUT /application/settings" do
     let(:group) { create(:group) }
+
+    it_behaves_like 'authorizing granular token permissions', :update_application_setting do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api('/application/settings', personal_access_token: pat), params: { default_projects_limit: 42 }
+      end
+    end
 
     context 'iframe in markdown settings' do
       it 'updates iframe_rendering_enabled and iframe_rendering_allowlist via array' do
@@ -161,6 +176,16 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443'])
         expect(json_response['iframe_rendering_allowlist_raw']).to eq(raw)
         expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443'])
+      end
+    end
+
+    context 'email_otp_enabled setting' do
+      it 'updates email_otp_enabled' do
+        put api('/application/settings', admin), params: { email_otp_enabled: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['email_otp_enabled']).to be(true)
+        expect(ApplicationSetting.current.email_otp_enabled?).to be(true)
       end
     end
 
@@ -312,7 +337,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['diagramsnet_url']).to be_nil
         expect(json_response['sourcegraph_enabled']).to be_truthy
         expect(json_response['sourcegraph_url']).to eq('https://sourcegraph.com')
-        expect(json_response['sourcegraph_public_only']).to eq(false)
+        expect(json_response['sourcegraph_public_only']).to be(false)
         expect(json_response['default_snippet_visibility']).to eq('internal')
         expect(json_response['restricted_visibility_levels']).to eq(['public'])
         expect(json_response['default_artifacts_expire_in']).to eq('2 days')
@@ -339,8 +364,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
         expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['local_markdown_version']).to eq(3)
-        expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
-        expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
+        expect(json_response['allow_local_requests_from_web_hooks_and_services']).to be(true)
+        expect(json_response['allow_local_requests_from_system_hooks']).to be(false)
         expect(json_response['push_event_hooks_limit']).to eq(2)
         expect(json_response['push_event_activities_limit']).to eq(2)
         expect(json_response['snippet_size_limit']).to eq(5)
@@ -355,7 +380,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['max_export_size']).to eq(6)
         expect(json_response['max_decompressed_archive_size']).to eq(20000)
         expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
-        expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(true)
+        expect(json_response['organization_cluster_agent_authorization_enabled']).to be(true)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w[github bitbucket])
         expect(json_response['inactive_resource_access_tokens_delete_after_days']).to eq(42)
@@ -370,9 +395,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['inactive_projects_delete_after_months']).to eq(24)
         expect(json_response['inactive_projects_min_size_mb']).to eq(10)
         expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
-        expect(json_response['can_create_group']).to eq(false)
+        expect(json_response['can_create_group']).to be(false)
         expect(json_response['jira_connect_application_key']).to eq('123')
-        expect(json_response['jira_connect_public_key_storage_enabled']).to eq(true)
+        expect(json_response['jira_connect_public_key_storage_enabled']).to be(true)
         expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
         expect(json_response['bulk_import_enabled']).to be(false)
         expect(json_response['allow_runner_registration_token']).to be(true)
@@ -395,9 +420,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)
         expect(json_response['require_personal_access_token_expiry']).to be(false)
         expect(json_response['vscode_extension_marketplace']).to eq({ "enabled" => false, "preset" => 'open_vsx' })
-        expect(json_response['terraform_state_encryption_enabled']).to eq(false)
-        expect(json_response['authn_data_retention_cleanup_enabled']).to eq(true)
-        expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to eq(true)
+        expect(json_response['terraform_state_encryption_enabled']).to be(false)
+        expect(json_response['authn_data_retention_cleanup_enabled']).to be(true)
+        expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(true)
       end
     end
 
@@ -405,6 +430,38 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       put api("/application/settings", admin), params: { diff_max_versions: 0 }
 
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    context 'with oauth_access_token_expires_in' do
+      it 'updates the setting' do
+        put api("/application/settings", admin), params: { oauth_access_token_expires_in: 900 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['oauth_access_token_expires_in']).to eq(900)
+      end
+
+      it 'allows nil to restore the default fallback' do
+        put api("/application/settings", admin), params: { oauth_access_token_expires_in: nil }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['oauth_access_token_expires_in']).to be_nil
+      end
+
+      it 'rejects values below the minimum (300)' do
+        put api("/application/settings", admin), params: { oauth_access_token_expires_in: 299 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['oauth_access_token_expires_in'])
+          .to include(a_string_matching('must be greater than or equal to 300'))
+      end
+
+      it 'rejects values above the maximum (7200)' do
+        put api("/application/settings", admin), params: { oauth_access_token_expires_in: 7201 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['oauth_access_token_expires_in'])
+          .to include(a_string_matching('must be less than or equal to 7200'))
+      end
     end
 
     it 'does not allow zero diff_max_commits' do
@@ -451,6 +508,19 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'when updating dependency_management_settings' do
+      it "updates the nested setting and exposes it as a hash" do
+        put api("/application/settings", admin),
+          params: { dependency_management_settings: { security_update_scheduler_max_concurrency: 50 } }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['dependency_management_settings']).to eq(
+          "security_update_scheduler_max_concurrency" => 50
+        )
+        expect(ApplicationSetting.first.security_update_scheduler_max_concurrency).to eq(50)
+      end
+    end
+
     it "supports legacy performance_bar_allowed_group_id" do
       put api("/application/settings", admin),
         params: { performance_bar_allowed_group_id: group.full_path }
@@ -475,7 +545,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         params: { allow_local_requests_from_hooks_and_services: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
+      expect(json_response['allow_local_requests_from_hooks_and_services']).to be(true)
     end
 
     it 'supports legacy asset_proxy_whitelist' do
@@ -529,7 +599,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       put api("/application/settings", admin), params: { hashed_storage_enabled: false }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['hashed_storage_enabled']).to eq(true)
+      expect(json_response['hashed_storage_enabled']).to be(true)
     end
 
     context 'SSH key restriction settings', :fips_mode do
@@ -898,7 +968,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         params: { require_admin_approval_after_user_signup: true }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
+      expect(json_response['require_admin_approval_after_user_signup']).to be(true)
     end
 
     context "missing sourcegraph_url value when sourcegraph_enabled is true" do
@@ -1361,7 +1431,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           params: { vscode_extension_marketplace_enabled: true }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['vscode_extension_marketplace_enabled']).to eq(true)
+        expect(json_response['vscode_extension_marketplace_enabled']).to be(true)
         expect(json_response['vscode_extension_marketplace'])
           .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net", "single_origin_fallback_enabled" => true })
       end

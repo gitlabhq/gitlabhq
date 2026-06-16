@@ -6,6 +6,12 @@ module Gitlab
     extend MergeRequests
     extend Packages
 
+    # Matches a single URL path segment (any characters except a forward slash).
+    # Defined here rather than in API::API so that it can be referenced from
+    # files that are loaded before API::API without triggering a Zeitwerk
+    # circular autoload.
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
       # hence the Ruby warning.
@@ -208,7 +214,16 @@ module Gitlab
 
     # Based on Jira's project key format
     # https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html
-    def jira_issue_key_regex(expression_escape: '\b')
+    #
+    # `\b` is unreliable: Onigmo treats most non-ASCII letters as word
+    # characters, so an issue key directly adjacent to CJK or accented text
+    # never matches. The ASCII-only negative lookbehind preserves the
+    # word-boundary semantics for ASCII input (the class mirrors Onigmo's
+    # ASCII word-char set) while letting non-ASCII input fall through.
+    #
+    # Callers that interpolate the source into RE2 (which does not support
+    # lookbehind) must pass `expression_escape: '\b'` explicitly.
+    def jira_issue_key_regex(expression_escape: '(?<![A-Za-z0-9_])')
       /#{expression_escape}([A-Z][A-Z_0-9]+-\d+)/
     end
 
@@ -260,6 +275,14 @@ module Gitlab
 
     def feature_flag_regex
       /\A[a-z]([-_a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def cd_name_regex
+      @cd_name_regex ||= /\A[a-zA-Z0-9_]([a-zA-Z0-9_\-]*[a-zA-Z0-9_])?\z/
+    end
+
+    def cd_name_regex_message
+      "can contain only letters, digits, '_' and '-'. Cannot start or end with '-'."
     end
 
     # One or more `part`s, separated by separator

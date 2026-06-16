@@ -21,7 +21,8 @@ module API
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get all resource groups for a project' do
+        desc 'List all resource groups' do
+          detail 'Lists all resource groups for a specified project.'
           success Entities::Ci::ResourceGroup
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -40,7 +41,8 @@ module API
           present paginate(user_project.resource_groups), with: Entities::Ci::ResourceGroup
         end
 
-        desc 'Get a specific resource group' do
+        desc 'Retrieve a resource group' do
+          detail 'Retrieves a specified resource group for a project.'
           success Entities::Ci::ResourceGroup
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -58,7 +60,8 @@ module API
           present resource_group, with: Entities::Ci::ResourceGroup
         end
 
-        desc 'Show current job for a specific resource group' do
+        desc 'Retrieve current job for a resource group' do
+          detail 'Retrieves the current job for a specified resource group in a project.'
           success Entities::Ci::JobBasic
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -80,7 +83,8 @@ module API
           present current_processable, with: Entities::Ci::JobBasic
         end
 
-        desc 'List upcoming jobs for a specific resource group' do
+        desc 'List all upcoming jobs for a resource group' do
+          detail 'Lists all upcoming jobs for a specified resource group.'
           success Entities::Ci::JobBasic
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -106,8 +110,9 @@ module API
           present paginate(upcoming_processables), with: Entities::Ci::JobBasic
         end
 
-        desc 'Edit an existing resource group' do
-          detail "Updates an existing resource group's properties."
+        desc 'Update a resource group' do
+          detail 'Updates the properties for a specified resource group. It returns `200` if the resource group was ' \
+            'successfully updated. In case of an error, a status code `400` is returned.'
           success Entities::Ci::ResourceGroup
           failure [
             { code: 400, message: 'Bad request' },

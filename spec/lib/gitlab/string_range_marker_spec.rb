@@ -128,6 +128,39 @@ RSpec.describe Gitlab::StringRangeMarker, feature_category: :source_code_managem
           expect(result).to be_html_safe
         end
       end
+
+      context 'when processing text with many HTML entities from escaped email addresses' do
+        let(:raw) { "Author: John Doe <john.doe@example.com>" }
+        let(:rich) { "Author: John Doe &lt;john.doe@example.com&gt;".html_safe }
+        let(:ranges) { [0..5] }
+
+        it 'marks the correct range spanning plain text' do
+          expect(result).to eq('<mark>Author</mark>: John Doe &lt;john.doe@example.com&gt;')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when rich text has no HTML entities' do
+        let(:raw) { 'plain text without special chars' }
+        let(:rich) { 'plain text without special chars'.html_safe }
+        let(:ranges) { [0..4] }
+
+        it 'marks the correct range in plain text' do
+          expect(result).to eq('<mark>plain</mark> text without special chars')
+          expect(result).to be_html_safe
+        end
+      end
+
+      context 'when text contains an unclosed HTML entity' do
+        let(:raw) { 'a&b' }
+        let(:rich) { 'a&amp;b'.html_safe }
+        let(:ranges) { [0..2] }
+
+        it 'marks the correct range including the entity' do
+          expect(result).to eq('<mark>a&amp;b</mark>')
+          expect(result).to be_html_safe
+        end
+      end
     end
 
     it_behaves_like 'bounds-checked position mapping'

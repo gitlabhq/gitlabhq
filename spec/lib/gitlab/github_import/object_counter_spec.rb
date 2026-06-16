@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/vim/vim.git') }
+  let_it_be(:project, freeze: false) { create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/vim/vim.git') }
 
   it 'validates the operation being incremented' do
     expect { described_class.increment(project, :issue, :unknown) }

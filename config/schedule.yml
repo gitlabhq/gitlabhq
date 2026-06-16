@@ -1,0 +1,468 @@
+# Sidekiq Cron Jobs default schedules loaded by Gitlab::SidekiqConfig::CronJobs
+---
+
+adjourned_group_deletion_worker:
+  class: AdjournedGroupDeletionWorker
+  cron: "0 2 * * *"
+
+adjourned_projects_deletion_cron_worker:
+  class: AdjournedProjectsDeletionCronWorker
+  cron: "0 7 * * *"
+
+admin_email_worker:
+  class: AdminEmailWorker
+  cron: "0 0 * * 0"
+
+analytics_usage_trends_count_job_trigger_worker:
+  class: Analytics::UsageTrends::CountJobTriggerWorker
+  cron: "50 23 */1 * *"
+
+authn_data_retention_authentication_event_archive_worker:
+  class: Authn::DataRetention::AuthenticationEventArchiveWorker
+  cron: "10 6 * * *"
+
+authn_data_retention_oauth_access_grant_archive_worker:
+  class: Authn::DataRetention::OauthAccessGrantArchiveWorker
+  cron: "15 6 * * *"
+
+authn_data_retention_oauth_access_token_archive_worker:
+  class: Authn::DataRetention::OauthAccessTokenArchiveWorker
+  cron: "5 6 * * *"
+
+authorized_project_update_periodic_recalculate_worker:
+  class: AuthorizedProjectUpdate::PeriodicRecalculateWorker
+  cron: "45 1 1,15 * *"
+
+background_operation_environments_auto_delete:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "24 * * * *"
+  args:
+    job_class_name: "EnvironmentsAutoDelete"
+    table_name: "environments"
+    column_name: "id"
+
+background_operations_worker_cell_local_ci_database:
+  class: Database::BackgroundOperation::CiSchedulerCellLocalWorker
+  cron: "* * * * *"
+
+background_operations_worker_cell_local_main_database:
+  class: Database::BackgroundOperation::MainSchedulerCellLocalWorker
+  cron: "* * * * *"
+
+background_operations_worker_cell_local_sec_database:
+  class: Database::BackgroundOperation::SecSchedulerCellLocalWorker
+  cron: "* * * * *"
+
+background_operations_worker_ci_database:
+  class: Database::BackgroundOperation::CiSchedulerWorker
+  cron: "* * * * *"
+
+background_operations_worker_main_database:
+  class: Database::BackgroundOperation::MainSchedulerWorker
+  cron: "* * * * *"
+
+background_operations_worker_sec_database:
+  class: Database::BackgroundOperation::SecSchedulerWorker
+  cron: "* * * * *"
+
+batched_background_migration_worker_ci_database:
+  class: Database::BatchedBackgroundMigration::CiDatabaseWorker
+  cron: "* * * * *"
+
+batched_background_migration_worker_sec_database:
+  class: Database::BatchedBackgroundMigration::SecDatabaseWorker
+  cron: "* * * * *"
+
+batched_background_migrations_worker:
+  class: Database::BatchedBackgroundMigrationWorker
+  cron: "* * * * *"
+
+batched_git_ref_updates_cleanup_scheduler_worker:
+  class: BatchedGitRefUpdates::CleanupSchedulerWorker
+  cron: "*/1 * * * *"
+
+bbo_users_delete_unconfirmed_secondary:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "0 * * * *"
+  args:
+    job_class_name: "UsersDeleteUnconfirmedSecondaryEmails"
+    table_name: "emails"
+    column_name: "id"
+
+bulk_imports_stale_import_worker:
+  class: BulkImports::StaleImportWorker
+  cron: "0 */4 * * *"
+
+cells_schedule_claims_verification_worker:
+  class: Gitlab::Scheduling::ScheduleWithinWorker
+  cron: "0 0 * * 6"
+  args:
+    worker_class: "Cells::ScheduleClaimsVerificationWorker"
+    within_minutes: 59
+    within_hours: 23
+
+ci_archive_traces_cron_worker:
+  class: Ci::ArchiveTracesCronWorker
+  cron: "17 * * * *"
+
+ci_catalog_resources_aggregate_last30_day_usage_worker:
+  class: Ci::Catalog::Resources::AggregateLast30DayUsageWorker
+  cron: "0 0 * * *"
+
+ci_catalog_resources_cleanup_last_usages_worker:
+  class: Ci::Catalog::Resources::CleanupLastUsagesWorker
+  cron: "0 0 * * *"
+
+ci_catalog_resources_process_sync_events_worker:
+  class: Ci::Catalog::Resources::ProcessSyncEventsWorker
+  cron: "*/1 * * * *"
+
+ci_click_house_finished_pipelines_sync_worker:
+  class: Ci::ClickHouse::FinishedPipelinesSyncCronWorker
+  cron: "*/4 * * * *"
+  args:
+    - 1
+
+ci_delete_unit_tests_worker:
+  class: Ci::DeleteUnitTestsWorker
+  cron: "0 0 * * *"
+
+ci_partitioning_worker:
+  class: Ci::PartitioningWorker
+  cron: "0 2 * * *"
+
+ci_pipelines_expire_artifacts_worker:
+  class: Ci::PipelineArtifacts::ExpireArtifactsWorker
+  cron: "*/23 * * * *"
+
+ci_runner_versions_reconciliation_worker:
+  class: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
+  cron: "@daily"
+
+ci_runners_stale_machines_cleanup_worker:
+  class: Ci::Runners::StaleMachinesCleanupCronWorker
+  cron: "36 * * * *"
+
+ci_schedule_bulk_delete_job_artifact_cron_worker:
+  class: Ci::ScheduleBulkDeleteJobArtifactCronWorker
+  cron: "*/30 * * * *"
+
+ci_schedule_delete_objects_worker:
+  class: Ci::ScheduleDeleteObjectsCronWorker
+  cron: "*/16 * * * *"
+
+ci_schedule_old_pipelines_removal_cron_worker:
+  class: Ci::ScheduleOldPipelinesRemovalCronWorker
+  cron: "*/11 * * * *"
+
+ci_schedule_unlock_pipelines_in_queue_worker:
+  class: Ci::ScheduleUnlockPipelinesInQueueCronWorker
+  cron: "*/1 * * * *"
+
+cleanup_container_registry_worker:
+  class: ContainerRegistry::CleanupWorker
+  cron: "*/5 * * * *"
+
+cleanup_dangling_debian_package_files_worker:
+  class: Packages::Debian::CleanupDanglingPackageFilesWorker
+  cron: "20 21 * * *"
+
+cleanup_dependency_proxy_worker:
+  class: DependencyProxy::CleanupDependencyProxyWorker
+  cron: "20 3,15 * * *"
+
+cleanup_package_registry_worker:
+  class: Packages::CleanupPackageRegistryWorker
+  cron: "20 * * * *"
+
+concurrency_limit_resume_worker:
+  class: ConcurrencyLimit::ResumeWorker
+  cron: "*/1 * * * *"
+
+container_expiration_policy_worker:
+  class: ContainerExpirationPolicyWorker
+  cron: "50 * * * *"
+
+database_monitor_locked_tables_cron_worker:
+  class: Database::MonitorLockedTablesWorker
+  cron: "30 7 */3 * *"
+
+deactivate_expired_deployments_cron_worker:
+  class: Pages::DeactivateExpiredDeploymentsCronWorker
+  cron: "*/10 * * * *"
+
+deactivated_pages_deployments_delete_cron_worker:
+  class: Pages::DeactivatedDeploymentsDeleteCronWorker
+  cron: "*/10 * * * *"
+
+delete_expired_trigger_token_worker:
+  class: Ci::DeleteExpiredTriggerTokenWorker
+  cron: "0 0 * * *"
+
+deploy_tokens_expiring_worker:
+  class: DeployTokens::ExpiringWorker
+  cron: "0 1 * * *"
+
+drop_timed_out_worker:
+  class: Ci::TimedOutBuilds::DropTimedOutWorker
+  cron: "*/10 * * * *"
+
+environments_auto_stop_cron_worker:
+  class: Environments::AutoStopCronWorker
+  cron: "24 * * * *"
+
+gitlab_export_prune_project_export_jobs_worker:
+  class: Gitlab::Export::PruneProjectExportJobsWorker
+  cron: "30 * * * *"
+
+gitlab_import_import_file_cleanup_worker:
+  class: Gitlab::Import::ImportFileCleanupWorker
+  cron: "30 * * * *"
+
+gitlab_service_ping_worker:
+  class: GitlabServicePingWorker
+  cron: ~  # set dynamically at runtime
+
+image_ttl_group_policy_worker:
+  class: DependencyProxy::ImageTtlGroupPolicyWorker
+  cron: "40 0 * * *"
+
+import_export_project_cleanup_worker:
+  class: ImportExportProjectCleanupWorker
+  cron: "0 * * * *"
+
+import_placeholder_user_cleanup_worker:
+  class: Import::PlaceholderUserCleanupWorker
+  cron: "0 0 * * *"
+
+import_stuck_project_import_jobs:
+  class: Gitlab::Import::StuckProjectImportJobsWorker
+  cron: "15 * * * *"
+
+inactive_projects_deletion_cron_worker:
+  class: Projects::InactiveProjectsDeletionCronWorker
+  cron: "*/10 * * * *"
+
+issue_due_scheduler_worker:
+  class: IssueDueSchedulerWorker
+  cron: "50 00 * * *"
+
+issues_reschedule_stuck_issue_rebalances:
+  class: Issues::RescheduleStuckIssueRebalancesWorker
+  cron: "*/15 * * * *"
+
+jira_import_stuck_jira_import_jobs:
+  class: Gitlab::JiraImport::StuckJiraImportJobsWorker
+  cron: "* 0/15 * * *"
+
+loose_foreign_keys_ci_pipelines_builds_cleanup_worker:
+  class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+  cron: "*/1 * * * *"
+
+loose_foreign_keys_cleanup_worker:
+  class: LooseForeignKeys::CleanupWorker
+  cron: "*/1 * * * *"
+
+loose_foreign_keys_merge_request_diff_commit_cleanup_worker:
+  class: LooseForeignKeys::MergeRequestDiffCommitCleanupWorker
+  cron: "*/1 * * * *"
+
+lost_transaction_recovery_worker:
+  class: Cells::LostTransactionRecoveryWorker
+  cron: "* * * * *"
+
+manage_evidence_worker:
+  class: Releases::ManageEvidenceWorker
+  cron: "0 * * * *"
+
+member_invitation_reminder_emails_worker:
+  class: MemberInvitationReminderEmailsWorker
+  cron: "0 0 * * *"
+
+members_expiring_worker:
+  class: Members::ExpiringWorker
+  cron: "0 1 * * *"
+
+merge_requests_process_scheduled_merge:
+  class: MergeRequests::ProcessScheduledMergeWorker
+  cron: "*/1 * * * *"
+
+namespaces_process_outdated_namespace_descendants_cron_worker:
+  class: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
+  cron: "*/1 * * * *"
+
+namespaces_prune_aggregation_schedules_worker:
+  class: Namespaces::PruneAggregationSchedulesWorker
+  cron: "5 1 * * *"
+
+namespaces_stuck_transfers_cancel_cron_worker:
+  class: Namespaces::StuckTransfersCancelCronWorker
+  cron: "*/30 * * * *"
+
+object_storage_delete_stale_direct_uploads_worker:
+  class: ObjectStorage::DeleteStaleDirectUploadsWorker
+  cron: "*/6 * * * *"
+
+packages_cleanup_delete_orphaned_dependencies_worker:
+  class: Packages::Cleanup::DeleteOrphanedDependenciesWorker
+  cron: "*/10 * * * *"
+
+pages_domain_removal_cron_worker:
+  class: PagesDomainRemovalCronWorker
+  cron: "47 0 * * *"
+
+pages_domain_ssl_renewal_cron_worker:
+  class: PagesDomainSslRenewalCronWorker
+  cron: "*/10 * * * *"
+
+pages_domain_verification_cron_worker:
+  class: PagesDomainVerificationCronWorker
+  cron: "*/15 * * * *"
+
+performance_bar_stats:
+  class: GitlabPerformanceBarStatsWorker
+  cron: "*/2 * * * *"
+
+personal_access_tokens_expired_notification_worker:
+  class: PersonalAccessTokens::ExpiredNotificationWorker
+  cron: "0 2 * * *"
+
+personal_access_tokens_expiring_worker:
+  class: PersonalAccessTokens::ExpiringWorker
+  cron: "0 1 * * *"
+
+pipeline_schedule_worker:
+  class: PipelineScheduleWorker
+  cron: "3-59/10 * * * *"
+
+postgres_dynamic_partitions_dropper:
+  class: Database::DropDetachedPartitionsWorker
+  cron: "20 3 * * *"
+
+postgres_dynamic_partitions_manager:
+  class: Database::PartitionManagementWorker
+  cron: "21 */6 * * *"
+
+projects_schedule_refresh_build_artifacts_size_statistics_worker:
+  class: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
+  cron: "2/17 * * * *"
+
+prune_old_events_worker:
+  class: PruneOldEventsWorker
+  cron: "0 */6 * * *"
+
+publish_release_worker:
+  class: Releases::PublishEventWorker
+  cron: "20,50 * * * *"
+
+remove_expired_group_links_worker:
+  class: RemoveExpiredGroupLinksWorker
+  cron: "10 0 * * *"
+
+remove_expired_members_worker:
+  class: RemoveExpiredMembersWorker
+  cron: "10 0 * * *"
+
+remove_unaccepted_member_invites_worker:
+  class: RemoveUnacceptedMemberInvitesWorker
+  cron: "10 15 * * *"
+
+remove_unreferenced_lfs_objects_worker:
+  class: RemoveUnreferencedLfsObjectsWorker
+  cron: "20 0 * * *"
+
+repository_archive_cache_worker:
+  class: RepositoryArchiveCacheWorker
+  cron: "0 * * * *"
+
+repository_check_worker:
+  class: RepositoryCheck::DispatchWorker
+  cron: "20 * * * *"
+
+resource_access_tokens_inactive_tokens_deletion_cron_worker:
+  class: ResourceAccessTokens::InactiveTokensDeletionCronWorker
+  cron: "0 0 * * *"
+
+schedule_merge_request_cleanup_refs_worker:
+  class: ScheduleMergeRequestCleanupRefsWorker
+  cron: "* * * * *"
+
+schedule_migrate_external_diffs_worker:
+  class: ScheduleMigrateExternalDiffsWorker
+  cron: "15 * * * *"
+
+service_desk_custom_email_verification_cleanup:
+  class: ServiceDesk::CustomEmailVerificationCleanupWorker
+  cron: "*/2 * * * *"
+
+ssh_keys_expired_notification_worker:
+  class: SshKeys::ExpiredNotificationWorker
+  cron: "0 2,14 * * *"
+
+ssh_keys_expiring_soon_notification_worker:
+  class: SshKeys::ExpiringSoonNotificationWorker
+  cron: "0 1 * * *"
+
+stuck_ci_jobs_worker:
+  class: StuckCiJobsWorker
+  cron: "0 * * * *"
+
+stuck_export_jobs_worker:
+  class: StuckExportJobsWorker
+  cron: "30 * * * *"
+
+stuck_merge_jobs_worker:
+  class: StuckMergeJobsWorker
+  cron: "*/15 * * * *"
+
+topology_service_stale_requests_cleanup_worker:
+  class: Cells::StaleRequestsCleanupCronWorker
+  cron: "*/5 * * * *"
+
+update_container_registry_info_worker:
+  class: UpdateContainerRegistryInfoWorker
+  cron: "0 0 * * *"
+
+update_locked_unknown_artifacts_worker:
+  class: Ci::UpdateLockedUnknownArtifactsWorker
+  cron: "*/7 * * * *"
+
+user_status_cleanup_batch_worker:
+  class: UserStatusCleanup::BatchWorker
+  cron: "* * * * *"
+
+users_create_statistics_worker:
+  class: Users::CreateStatisticsWorker
+  cron: "2 15 * * *"
+
+users_deactivate_dormant_users_worker:
+  class: Users::DeactivateDormantUsersWorker
+  cron: "21,42 0-4 * * *"
+
+users_migrate_records_to_ghost_user_in_batches_worker:
+  class: Users::MigrateRecordsToGhostUserInBatchesWorker
+  cron: "*/2 * * * *"
+
+users_migrate_human_records_to_ghost_user_in_batches_worker:
+  class: Users::MigrateHumanRecordsToGhostUserInBatchesWorker
+  cron: "*/2 * * * *"
+
+users_migrate_non_human_records_to_ghost_user_in_batches_worker:
+  class: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
+  cron: "*/2 * * * *"
+
+version_version_check_cron:
+  class: Gitlab::Scheduling::ScheduleWithinWorker
+  cron: "0 0 * * * UTC"
+  args:
+    worker_class: "Gitlab::Version::VersionCheckCronWorker"
+    within_minutes: 59
+    within_hours: 23
+
+work_items_traversal_ids_healing_cron_worker:
+  class: WorkItems::TraversalIdsHealingCronWorker
+  cron: "0 3 * * *"
+
+x509_issuer_crl_check_worker:
+  class: X509IssuerCrlCheckWorker
+  cron: "30 1 * * *"

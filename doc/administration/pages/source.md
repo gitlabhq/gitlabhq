@@ -22,7 +22,7 @@ For more information about configuring GitLab Pages for Linux package installati
 see the [Linux package documentation](_index.md). The Linux package installation contains the latest
 supported version of GitLab Pages.
 
-## How GitLab Pages works
+## GitLab Pages daemon
 
 GitLab Pages uses the GitLab Pages daemon, a
 lightweight HTTP server that listens on an external IP address and provides support for custom
@@ -32,7 +32,7 @@ by default. For more information, see the
 
 For [custom domains](#custom-domains), the Pages daemon must listen on ports `80` or `443`.
 This does not apply to [wildcard domains](#wildcard-domains).
-You can set it up in one of these ways:
+You can set up the Pages daemon in one of these ways:
 
 - On the same server as GitLab, listening on a secondary IP.
 - On a separate server. The [Pages path](#change-storage-path) must also be present on that server,

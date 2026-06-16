@@ -99,13 +99,11 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         context 'with different pipeline sources' do
           before do
             # We're creating many pipelines
-            # +1 from uploads table sync trigger (table_sync_function_40ecbfb353)
-            # created by SwapUploadsWithPartitionedTable migration.
-            # Remove after uploads_archived is dropped.
-            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(514)
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(513)
 
             external_pull_request = create(:external_pull_request, project: project)
-            create(:ci_pipeline, project: project, source: :external_pull_request_event, external_pull_request: external_pull_request)
+            create(:ci_pipeline, project: project, source: :external_pull_request_event,
+              external_pull_request: external_pull_request)
 
             create(:ci_pipeline, project: project)
               .update_attribute(:source, :unknown) # Skip validation to create pipeline with unknown source
@@ -129,7 +127,9 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       end
 
       context 'when project is undergoing refresh' do
-        let!(:build_artifacts_size_refresh) { create(:project_build_artifacts_size_refresh, :pending, project: project) }
+        let!(:build_artifacts_size_refresh) do
+          create(:project_build_artifacts_size_refresh, :pending, project: project)
+        end
 
         it 'does not log about artifact deletion but continues to delete artifacts' do
           expect(Gitlab::ProjectStatsRefreshConflictsLogger).not_to receive(:warn_artifact_deletion_during_stats_refresh)
@@ -221,7 +221,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   context 'when the parent group has been marked for deletion' do
     let_it_be(:parent_group) do
-      create(:group_with_deletion_schedule)
+      create(:group, :deletion_scheduled)
     end
 
     let(:project) { create(:project, namespace: parent_group) }
@@ -732,7 +732,9 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   context 'with related storage move records' do
     context 'when project has active repository storage move records' do
-      let!(:project_repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project) }
+      let!(:project_repository_storage_move) do
+        create(:project_repository_storage_move, :scheduled, container: project)
+      end
 
       it 'does not delete the project' do
         expect(destroy_project(project, user)).to be_falsey
@@ -744,7 +746,9 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     context 'when project has active snippet storage move records' do
       let(:project_snippet) { create(:project_snippet, project: project) }
-      let!(:snippet_repository_storage_move) { create(:snippet_repository_storage_move, :started, container: project_snippet) }
+      let!(:snippet_repository_storage_move) do
+        create(:snippet_repository_storage_move, :started, container: project_snippet)
+      end
 
       it 'does not delete the project' do
         expect(destroy_project(project, user)).to be_falsey
@@ -821,7 +825,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     let!(:snippet2) { create(:project_snippet, project: project, author: user) }
 
     it 'does not include snippets when deleting in batches' do
-      expect(project).to receive(:destroy_dependent_associations_in_batches).with({ exclude: [:container_repositories, :snippets] })
+      expect(project).to receive(:destroy_dependent_associations_in_batches).with({ exclude: [:container_repositories,
+        :snippets] })
 
       destroy_project(project, user)
     end
@@ -934,7 +939,9 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       allow_any_instance_of(Ci::Build).to receive(:destroy).and_raise('boom')
       destroy_project(project, user, {})
 
-      allow_any_instance_of(Ci::Build).to receive(:destroy).and_call_original
+      allow_next_instance_of(Ci::Build) do |instance|
+        allow(instance).to receive(:destroy).and_call_original
+      end
       destroy_project(project, user, {})
 
       expect(Project.unscoped.all).not_to include(project)
@@ -1005,7 +1012,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   describe '#delete_commit_statuses' do
     let(:service) { described_class.new(project, user, {}) }
-    let(:batch_size) { described_class::BATCH_SIZE }
 
     context 'when there are no commit statuses' do
       it 'does not delete anything and logs zero count' do
@@ -1060,7 +1066,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   describe '#delete_environments' do
     let(:service) { described_class.new(project, user, {}) }
-    let(:batch_size) { described_class::BATCH_SIZE }
 
     context 'when there are no environments' do
       it 'does not delete anything and logs zero count' do

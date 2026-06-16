@@ -24,27 +24,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthBeforeRequestPhase, feature_categor
   end
 
   let(:provider_step_up_auth_name) { provider_step_up_auth.name }
-  let(:provider_step_up_auth) do
-    GitlabSettings::Options.new(
-      name: 'openid_connect',
-      step_up_auth: {
-        admin_mode: {
-          id_token: {
-            required: {
-              acr: 'gold'
-            }
-          }
-        },
-        namespace: {
-          id_token: {
-            required: {
-              acr: 'silver'
-            }
-          }
-        }
-      }
-    )
-  end
+  let(:provider_step_up_auth) { build(:omniauth_provider_config, :with_both_scopes) }
 
   before do
     stub_omniauth_setting(enabled: true, providers: [provider_step_up_auth])

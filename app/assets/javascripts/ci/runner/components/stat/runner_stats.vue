@@ -18,6 +18,7 @@ import RunnerCount from './runner_count.vue';
  */
 
 export default {
+  name: 'RunnerStats',
   components: {
     RunnerCount,
     RunnerSingleStat,

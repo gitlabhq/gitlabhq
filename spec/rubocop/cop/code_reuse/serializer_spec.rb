@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/serializer'
 
-RSpec.describe RuboCop::Cop::CodeReuse::Serializer do
+RSpec.describe RuboCop::Cop::CodeReuse::Serializer, feature_category: :tooling do
   it 'flags the use of a Serializer in a Service class' do
     allow(cop)
       .to receive(:in_service_class?)

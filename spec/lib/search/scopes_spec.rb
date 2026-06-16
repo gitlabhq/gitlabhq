@@ -3,6 +3,86 @@
 require 'spec_helper'
 
 RSpec.describe Search::Scopes, feature_category: :global_search do
+  describe '.scope_allowed_for_project?' do
+    let_it_be(:user) { build_stubbed(:user) }
+
+    let(:project_double) { instance_double(Project) }
+
+    subject(:scope_allowed) { described_class.scope_allowed_for_project?(scope, user, project) }
+
+    context 'when project is not present' do
+      let(:scope) { :blobs }
+      let(:project) { nil }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when project is present' do
+      let(:project) { project_double }
+
+      context 'when user has the ability mapped to the scope' do
+        let(:scope) { :blobs }
+
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_code, project_double).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have the ability mapped to the scope' do
+        let(:scope) { :work_items }
+
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_work_item, project_double).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the scope maps to multiple abilities' do
+        let(:scope) { :notes }
+
+        before do
+          allow(Ability).to receive(:allowed?).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_issue, project_double).and_return(true)
+        end
+
+        it 'is allowed when the user has any of the abilities' do
+          is_expected.to be(true)
+        end
+      end
+
+      context 'when the scope is unknown' do
+        let(:scope) { :nonexistent }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when an array of projects is provided' do
+      let(:scope) { :blobs }
+      let(:project) { [project_double] }
+
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :read_code, project_double).and_return(true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when scope is given as a string' do
+      let(:scope) { 'blobs' }
+      let(:project) { project_double }
+
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :read_code, project_double).and_return(true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '.all_scope_names' do
     it 'returns all defined scope names as strings' do
       scope_names = described_class.all_scope_names

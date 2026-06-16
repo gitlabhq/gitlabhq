@@ -77,6 +77,15 @@ RSpec.describe 'Destroying a model version', feature_category: :mlops do
         project.add_maintainer(user)
       end
 
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_model_version do
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:ml_model_version_delete, { id: id }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       context 'with invalid id' do
         let(:params) do
           { id: "gid://gitlab/Ml::ModelVersion/#{non_existing_record_id}" }

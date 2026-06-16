@@ -206,7 +206,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
   end
 
   describe 'escalation_status' do
-    let_it_be(:issue, reload: true) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     let(:execute) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
     let(:query) do

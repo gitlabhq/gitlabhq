@@ -54,9 +54,13 @@ function appendNestedFilterParams(params, prefix, filters) {
     const restKey = key.replace(/([A-Z])/g, (letter) => `_${letter.toLowerCase()}`);
 
     if (Array.isArray(value)) {
-      value.forEach((v) => params.append(`${prefix}[${restKey}][]`, v));
+      value.forEach((v) => {
+        const paramValue = restKey === 'types' ? v.toLowerCase() : v;
+        params.append(`${prefix}[${restKey}][]`, paramValue);
+      });
     } else {
-      params.append(`${prefix}[${restKey}]`, value);
+      const paramValue = restKey === 'types' ? value.toLowerCase() : value;
+      params.append(`${prefix}[${restKey}]`, paramValue);
     }
   });
 }
@@ -76,8 +80,12 @@ export function convertGraphQLVarsToRestParams(vars) {
     }
   }
 
-  appendParam(params, 'cursor', vars.after ?? vars.afterCursor);
-  appendParam(params, 'per_page', vars.first ?? vars.firstPageSize);
+  appendParam(params, 'cursor', vars.after ?? vars.afterCursor ?? vars.before ?? vars.beforeCursor);
+  appendParam(
+    params,
+    'per_page',
+    vars.first ?? vars.firstPageSize ?? vars.last ?? vars.lastPageSize,
+  );
   appendParam(params, 'search', vars.search);
 
   if (vars.in) {

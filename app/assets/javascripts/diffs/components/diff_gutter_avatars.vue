@@ -7,6 +7,7 @@ import { COUNT_OF_AVATARS_IN_GUTTER, LENGTH_OF_AVATAR_TOOLTIP } from '../constan
 import { HIDE_COMMENTS } from '../i18n';
 
 export default {
+  name: 'DiffGutterAvatars',
   components: {
     GlIcon,
     UserAvatarImage,

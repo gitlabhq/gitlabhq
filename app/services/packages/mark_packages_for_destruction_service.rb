@@ -60,6 +60,7 @@ module Packages
     def after_marked_for_destruction(packages)
       sync_maven_metadata(packages)
       sync_npm_metadata(packages)
+      sync_rubygems_spec_files(packages)
       sync_helm_metadata(packages)
       mark_package_files_for_destruction(packages)
     end
@@ -86,6 +87,15 @@ module Packages
       ::Packages::Npm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
         npm_packages,
         arguments_proc: ->(package) { [package.project_id, package.name] },
+        context_proc: ->(package) { { project: package.project, user: current_user } }
+      )
+    end
+
+    def sync_rubygems_spec_files(packages)
+      rubygems_packages = packages.select(&:rubygems?).uniq(&:project_id)
+      ::Packages::Rubygems::CreateSpecFilesWorker.bulk_perform_async_with_contexts(
+        rubygems_packages,
+        arguments_proc: ->(package) { package.project_id },
         context_proc: ->(package) { { project: package.project, user: current_user } }
       )
     end

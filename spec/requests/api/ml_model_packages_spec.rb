@@ -10,14 +10,14 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
   include_context 'workhorse headers'
 
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:job) { create(:ci_build, :running, user: personal_access_token.user, project: project) }
   let_it_be(:deploy_token) do
     create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
   end
 
-  let_it_be(:another_project, reload: true) { create(:project) }
+  let_it_be_with_reload(:another_project) { create(:project) }
   let_it_be(:model) { create(:ml_models, user: project.owner, project: project) }
   let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
   let(:snowplow_gitlab_standard_context) do

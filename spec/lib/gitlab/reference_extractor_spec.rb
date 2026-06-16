@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   before do
     project.add_developer(project.creator)
@@ -193,7 +193,7 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
   end
 
   context 'with an external issue tracker' do
-    let_it_be(:project) { create(:project, :with_jira_integration) }
+    let_it_be(:project, freeze: false) { create(:project, :with_jira_integration) }
     let(:issue)   { create(:issue, project: project) }
 
     context 'when GitLab issues are enabled' do
@@ -422,7 +422,7 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
 
   describe '#has_work_item_references?' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let(:work_item) { create(:work_item, project: project) }
     let(:work_item_path) { "/#{work_item.project.namespace.path}/#{work_item.project.path}/-/work_items/#{work_item.iid}" }
     let(:work_item_url) { "http://#{Gitlab.config.gitlab.host}#{work_item_path}" }

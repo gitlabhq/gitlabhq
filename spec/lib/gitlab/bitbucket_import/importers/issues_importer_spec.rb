@@ -22,7 +22,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab
     before do
       allow(Bitbucket::Client).to receive(:new).and_return(client)
       allow(client).to receive(:repo).and_return(Bitbucket::Representation::Repo.new({ 'has_issues' => true }))
-      allow(client).to receive(:last_issue).and_return(Bitbucket::Representation::Issue.new({ 'id' => 2 }))
+      allow(client).to receive(:issues_available?).and_return(true)
       page = instance_double('Bitbucket::Page', attrs: [], items: [
         Bitbucket::Representation::Issue.new({ 'id' => 1 }),
         Bitbucket::Representation::Issue.new({ 'id' => 2 })
@@ -55,12 +55,6 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab
         .to match_array(%w[1 2])
     end
 
-    it 'allocates internal ids' do
-      expect(Issue).to receive(:track_namespace_iid!).with(project.project_namespace, 2)
-
-      importer.execute
-    end
-
     context 'when issue was already enqueued' do
       before do
         Gitlab::Cache::Import::Caching.set_add(importer.already_enqueued_cache_key, 1)
@@ -87,6 +81,27 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab
 
       it 'raises the error' do
         expect { importer.execute }.to raise_error(StandardError, 'error fetching issues')
+      end
+    end
+
+    context 'when the Bitbucket Issues API is unavailable' do
+      before do
+        allow(client).to receive(:issues_available?).and_return(false)
+      end
+
+      it 'logs a warning and returns an empty job waiter', :aggregate_failures do
+        expect(Gitlab::BitbucketImport::ImportIssueWorker).not_to receive(:perform_in)
+        expect(Gitlab::BitbucketImport::Logger).to receive(:warn).with(
+          hash_including(
+            import_stage: 'import_issues',
+            message: 'Bitbucket Issues API is unavailable, skipping issues import'
+          )
+        )
+
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(0)
       end
     end
   end

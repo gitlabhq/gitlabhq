@@ -8,6 +8,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 import { RUNNER_TAG_BG_CLASS } from '../../constants';
 
 export default {
+  name: 'TagToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

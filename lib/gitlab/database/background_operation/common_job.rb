@@ -31,6 +31,10 @@ module Gitlab
         included do |job_class|
           include FromUnion
 
+          # Setting this lets ActiveRecord look up records by scalar 'id' (unique across partitions)
+          job_class.primary_key = :id
+          job_class.query_constraints :id, :partition
+
           REQUIRED_COLUMNS.each do |column|
             validates column, presence: true
           end

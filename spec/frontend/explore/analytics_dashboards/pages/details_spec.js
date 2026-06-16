@@ -1,135 +1,127 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { shallowMount } from '@vue/test-utils';
-import { GlDashboardLayout, GlSkeletonLoader } from '@gitlab/ui';
+import { GlDashboardLayout } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import ExploreAnalyticsDashboard from '~/explore/analytics_dashboards/pages/details.vue';
+import DashboardFilters from '~/explore/analytics_dashboards/components/dashboard_filters.vue';
+import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
-import { mockDashboardResponse, mockDashboardCompactGridResponse } from '../mock_data';
+import { mockDashboardResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/alert');
-
-describe('ExploreAnalyticsDashboard', () => {
+describe('ExploreAnalyticsDashboardDetails', () => {
   let wrapper;
 
-  const defaultPropsData = {
-    currentUserId: 1,
-  };
-
-  const mockBreadcrumbState = { name: '', updateName: jest.fn() };
+  const mockBreadcrumbState = { name: '', slug: '', update: jest.fn() };
 
   const mockResolvedQuery = (queryResponse = mockDashboardResponse) =>
     createMockApollo([[getDashboardQuery, jest.fn().mockResolvedValue({ data: queryResponse })]]);
 
-  const mockRejectedQuery = () =>
-    createMockApollo([
-      [getDashboardQuery, jest.fn().mockRejectedValue(new Error('Network error'))],
-    ]);
-
-  const createComponent = ({ requestHandlers, props = {}, routeParams = { slug: '3' } } = {}) => {
-    wrapper = shallowMount(ExploreAnalyticsDashboard, {
-      propsData: { ...defaultPropsData, ...props },
+  const createComponent = ({ requestHandlers, routeParams = { slug: '3' }, stubs = {} } = {}) => {
+    wrapper = shallowMountExtended(ExploreAnalyticsDashboard, {
       apolloProvider: requestHandlers || mockResolvedQuery(),
       provide: { breadcrumbState: mockBreadcrumbState },
       mocks: { $route: { params: routeParams } },
+      stubs: { DashboardLoader, ...stubs },
     });
   };
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findDashboardLayout = () => wrapper.findComponent(GlDashboardLayout);
+  const findDashboardFilters = () => wrapper.findComponent(DashboardFilters);
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  describe('dashboard filters', () => {
+    const dashboardLoaderSlotStub = {
+      template: `
+        <div>
+          <slot name="dashboard" :config="{ panels: [] }" :cell-height="undefined" :min-cell-height="undefined" :has-panels="false" />
+        </div>
+      `,
+    };
 
-  describe('while the query is loading', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('renders the skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
-    });
-
-    it('does not render the dashboard layout', () => {
-      expect(findDashboardLayout().exists()).toBe(false);
-    });
-  });
-
-  describe('with data loaded', () => {
-    const { config } = mockDashboardResponse.customDashboard;
+    const filtersSlotStub = {
+      props: ['filters'],
+      template: '<div><slot name="filters" /></div>',
+    };
 
     beforeEach(async () => {
-      createComponent();
+      createComponent({
+        stubs: { DashboardLoader: dashboardLoaderSlotStub, GlDashboardLayout: filtersSlotStub },
+      });
       await waitForPromises();
     });
 
-    it('does not render the skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(false);
+    it('passes an empty groupNamespace to dashboard-filters by default', () => {
+      expect(findDashboardFilters().props('groupNamespace')).toBe('');
     });
 
-    it('renders the dashboard layout', () => {
-      expect(findDashboardLayout().exists()).toBe(true);
+    it('passes an empty filters object to the dashboard layout by default', () => {
+      expect(findDashboardLayout().props('filters')).toEqual({});
     });
 
-    it('passes the dashboard config to the layout', () => {
-      expect(findDashboardLayout().props('config').title).toBe(config.title);
-    });
+    describe('when dashboard-filters emits set-groups with a group', () => {
+      const group = { id: 1, fullPath: 'gitlab-org' };
 
-    it('replaces original panel ids with unique ids', () => {
-      const { panels } = findDashboardLayout().props('config');
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('set-groups', [group]);
+        await waitForPromises();
+      });
 
-      panels.forEach((panel, idx) => {
-        expect(panel.id).toBe(`panel-${idx + 1}`);
-        expect(panel.id).not.toBe(`panel-original-${idx + 1}`);
+      it('updates the groupNamespace prop passed back to dashboard-filters', () => {
+        expect(findDashboardFilters().props('groupNamespace')).toBe(group.fullPath);
+      });
+
+      it('passes the selected group full path to the dashboard layout filters', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject({
+          groups: [group.fullPath],
+          projects: [],
+        });
       });
     });
 
-    it('does not set cellHeight for a non-compact grid', () => {
-      expect(findDashboardLayout().props('cellHeight')).toBe(137);
+    describe('when dashboard-filters emits set-projects with a project', () => {
+      const project = { id: 2, fullPath: 'gitlab-org/gitlab' };
+
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('set-projects', [project]);
+        await waitForPromises();
+      });
+
+      it('passes the selected project full path to the dashboard layout filters', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject({
+          projects: [project.fullPath],
+        });
+      });
     });
 
-    it('does not set minCellHeight for a non-compact grid', () => {
-      expect(findDashboardLayout().props('minCellHeight')).toBe(1);
+    describe('when dashboard-filters emits set-projects with an empty list', () => {
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('set-projects', []);
+        await waitForPromises();
+      });
+
+      it('clears the projects on the dashboard layout filters', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject({ projects: [] });
+      });
     });
 
-    it('updates the breadcrumb state with the dashboard title', () => {
-      expect(mockBreadcrumbState.updateName).toHaveBeenCalledWith(config.title);
-    });
-  });
+    describe('when dashboard-filters emits set-date-range', () => {
+      const dateRange = {
+        dateRangeOption: 'custom',
+        startDate: new Date('2026-01-01'),
+        endDate: new Date('2026-01-31'),
+      };
 
-  describe('with a compact grid height', () => {
-    beforeEach(async () => {
-      createComponent({ requestHandlers: mockResolvedQuery(mockDashboardCompactGridResponse) });
-      await waitForPromises();
-    });
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('set-date-range', dateRange);
+        await waitForPromises();
+      });
 
-    it('sets cellHeight to 10', () => {
-      expect(findDashboardLayout().props('cellHeight')).toBe(10);
-    });
-
-    it('sets minCellHeight to 10', () => {
-      expect(findDashboardLayout().props('minCellHeight')).toBe(10);
-    });
-  });
-
-  describe('with a query error', () => {
-    beforeEach(async () => {
-      createComponent({ requestHandlers: mockRejectedQuery() });
-      await waitForPromises();
-    });
-
-    it('shows an error alert', () => {
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: 'Failed to load dashboard. Please try again.',
-          captureError: true,
-        }),
-      );
+      it('passes the date range to the dashboard layout filters', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject(dateRange);
+      });
     });
   });
 });

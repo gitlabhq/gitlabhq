@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Extractors::RestExtractor do
+RSpec.describe BulkImports::Common::Extractors::RestExtractor, feature_category: :importers do
   let(:http_client) { instance_double(BulkImports::Clients::HTTP) }
   let(:options) { { query: double(to_h: { resource: nil, query: nil }) } }
   let(:response) { double(parsed_response: { 'data' => { 'foo' => 'bar' } }, headers: { 'x-next-page' => '2' }) }

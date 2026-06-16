@@ -20,9 +20,9 @@ Adjust the wiki settings of your GitLab instance.
 You can set a maximum content size limit for wiki pages. This limit can prevent
 abuse of the feature. The default value is **5242880 Bytes** (5 MB).
 
-### How does it work?
+### Content size limit behavior
 
-The content size limit is applied when a wiki page is created or updated
+GitLab applies the content size limit when you create or update a wiki page
 through the GitLab UI or API. Local changes pushed with Git are not validated.
 
 To break any existing wiki pages, the limit doesn't take effect until a wiki page

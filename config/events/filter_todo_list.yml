@@ -8,6 +8,8 @@ additional_properties:
   label:
     description: The type by which the todo list is filtered
 product_group: engagement
+product_categories:
+- notifications
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
 tiers:

@@ -8,6 +8,7 @@ import eventHub from '../../event_hub';
 import IssuableTimeTracker from './time_tracker.vue';
 
 export default {
+  name: 'SidebarTimeTracking',
   components: {
     IssuableTimeTracker,
   },

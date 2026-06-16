@@ -62,21 +62,5 @@ module Gitlab
       GC.start
       GC.stat
     end
-
-    # feature_flag_test introduces chaos when the `ebonet_chaos_tests` feature flag
-    # is enabled. It has a 20% chance of raising a 500 error (via the endpoint) and
-    # a 20% chance of adding 300ms of latency. Used to demonstrate feature flag
-    # observability by comparing request metrics with the flag on vs. off.
-    #
-    # `endpoint` is the Grape endpoint instance, used to call `error!` for HTTP 500s.
-    def self.feature_flag_test(endpoint)
-      roll = Kernel.rand
-
-      if roll < 0.2
-        endpoint.error!('Internal Server Error', 500)
-      elsif roll < 0.4
-        Kernel.sleep(0.3)
-      end
-    end
   end
 end

@@ -7,6 +7,7 @@ class MergeRequests::PipelineEntity < Grape::Entity
   expose :iid
   expose :active?, as: :active
   expose :name
+  expose :source
 
   expose :path do |pipeline|
     project_pipeline_path(pipeline.project, pipeline)

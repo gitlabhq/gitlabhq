@@ -281,4 +281,39 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
       end
     end
   end
+
+  describe 'record_store parameter' do
+    let(:record_store) { class_double(LooseForeignKeys::DeletedRecord) }
+    let(:batch_cleaner) { instance_double(LooseForeignKeys::BatchCleanerService, execute: nil) }
+    let(:records) do
+      ::Gitlab::Database::SharedModel.using_connection(connection) do
+        LooseForeignKeys::DeletedRecord.load_batch_for_table(
+          "#{connection.current_schema}._test_loose_fk_parent_table_1",
+          described_class::BATCH_SIZE
+        )
+      end
+    end
+
+    it 'invokes load_batch_for_table on the injected record_store' do
+      allow(record_store).to receive(:load_batch_for_table).and_return([])
+
+      ::Gitlab::Database::SharedModel.using_connection(connection) do
+        described_class.new(connection: connection, record_store: record_store).execute
+      end
+
+      expect(record_store).to have_received(:load_batch_for_table).at_least(:once)
+    end
+
+    it 'forwards record_store to BatchCleanerService' do
+      allow(record_store).to receive(:load_batch_for_table).and_return(records, [])
+
+      expect(LooseForeignKeys::BatchCleanerService).to(
+        receive(:new).with(hash_including(record_store: record_store)).at_least(:once).and_return(batch_cleaner)
+      )
+
+      ::Gitlab::Database::SharedModel.using_connection(connection) do
+        described_class.new(connection: connection, record_store: record_store).execute
+      end
+    end
+  end
 end

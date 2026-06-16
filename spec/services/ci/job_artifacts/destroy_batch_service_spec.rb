@@ -13,17 +13,15 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
     )
   end
 
-  let_it_be(:artifact_with_file, refind: true) do
+  let_it_be_with_refind(:artifact_with_file) do
     create(:ci_job_artifact, :zip)
   end
 
-  let_it_be(:artifact_without_file, refind: true) do
+  let_it_be_with_refind(:artifact_without_file) do
     create(:ci_job_artifact)
   end
 
-  let_it_be(:undeleted_artifact, refind: true) do
-    create(:ci_job_artifact)
-  end
+  let_it_be(:undeleted_artifact) { create(:ci_job_artifact) }
 
   describe '#execute' do
     subject(:execute) { service.execute }
@@ -57,15 +55,15 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
     end
 
     context 'when artifact belongs to a project that is undergoing stats refresh' do
-      let!(:artifact_under_refresh_1) do
+      let_it_be_with_refind(:artifact_under_refresh_1) do
         create(:ci_job_artifact, :zip)
       end
 
-      let!(:artifact_under_refresh_2) do
+      let_it_be_with_refind(:artifact_under_refresh_2) do
         create(:ci_job_artifact, :zip)
       end
 
-      let!(:artifact_under_refresh_3) do
+      let_it_be_with_refind(:artifact_under_refresh_3) do
         create(:ci_job_artifact, :zip, project: artifact_under_refresh_2.project)
       end
 
@@ -74,7 +72,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
           artifact_under_refresh_3.id])
       end
 
-      before do
+      before_all do
         create(:project_build_artifacts_size_refresh, :created, project: artifact_with_file.project)
         create(:project_build_artifacts_size_refresh, :pending, project: artifact_under_refresh_1.project)
         create(:project_build_artifacts_size_refresh, :running, project: artifact_under_refresh_2.project)
@@ -180,11 +178,11 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
 
     context 'when an artifact belongs to an orphaned project' do
       let(:artifacts) { Ci::JobArtifact.where(id: [orphaned_artifact.id]) }
-      let!(:orphaned_artifact) do
+      let_it_be_with_reload(:orphaned_artifact) do
         create(:ci_job_artifact, :zip)
       end
 
-      before do
+      before_all do
         orphaned_artifact.update!(project_id: 0)
       end
 

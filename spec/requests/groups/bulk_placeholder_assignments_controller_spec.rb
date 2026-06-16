@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :importers do
   include WorkhorseHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group, :public, owners: user) }
   let_it_be(:source_user) { create(:import_source_user, namespace: group) }
   let(:file) { fixture_file_upload('spec/fixtures/import/user_mapping/user_mapping_upload.csv') }

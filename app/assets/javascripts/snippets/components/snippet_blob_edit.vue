@@ -31,6 +31,7 @@ export default {
       default: true,
     },
   },
+  emits: ['blob-updated', 'delete'],
   computed: {
     inputId() {
       return `${this.blob.id}_file_path`;

@@ -237,7 +237,7 @@ example, to allow a Gitaly **Default** timeout of `110` seconds:
    (`max_request_duration_seconds = (worker_timeout * 0.95).ceil`), so the Rails request deadline trips before Puma
    reaches its worker timeout.
 
-   `GITLAB_RAILS_RACK_TIMEOUT` does **not** raise the Gitaly cap on its own.
+   `GITLAB_RAILS_RACK_TIMEOUT` does not raise the Gitaly cap on its own.
    `Settings.gitlab.max_request_duration_seconds` is what the application settings validator consults, and that is set
    by `gitlab_rails['max_request_duration_seconds']`. However, leaving `GITLAB_RAILS_RACK_TIMEOUT` at its default of
    `60` causes the Rack middleware to terminate any request longer than 60 seconds, including long Gitaly calls, before

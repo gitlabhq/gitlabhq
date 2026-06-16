@@ -1,6 +1,6 @@
 ---
-source_checksum: af6511ee022c5ef5
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: b60336bffbaaf0ca
+distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -10,7 +10,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 ### Ruby Style
 
-- Order methods by level of abstraction (high-level orchestrator methods before helper methods) within each visibility section.
+- Order methods by level of abstraction (high-level orchestrator methods before helper methods) within each visibility section; Exception: grouping by domain concept or alphabetical ordering for large sets of similar methods may take precedence.
 - DO NOT nest beyond two levels of method calls in the stepdown pattern; refactor into separate classes if needed.
 - Use `attr_reader` for public attributes only when accessed outside the class; maintain consistency for internal access.
 - Separate code with newlines only to group related logic together; add a newline before blocks. Exception: do not add a newline when a code block starts or ends right inside another code block.
@@ -20,12 +20,13 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `order_by_` prefix for scopes that apply `order`.
 - Freeze constants (`CONSTANT = 'value'.freeze`).
 - DO NOT call application logic (database queries, service calls, I18n helpers) when defining class-level constants; use a method instead so the logic runs at call time.
+- Prefer `excluding` (alias `without`) over hand-written `where.not(id: record)` when excluding specific records already loaded in memory; DO NOT use `excluding` as a replacement for `where.not(id: relation)` — pass the relation directly to avoid loading IDs into memory.
 
 ### ActiveRecord / Rails
 
 - DO NOT add new lifecycle logic via ActiveRecord callbacks; put it in a service class instead. Exception: callbacks are acceptable when overriding a dependency's callback, incrementing cache counts, or normalizing data that only relates to the current model.
 - DO NOT override `has_many through:` or `has_one through:` associations; overriding changes `destroy()` behavior and can cause data loss.
-- DO NOT open database connections or issue queries from Rails initializers.
+- DO NOT open database connections or issue queries from Rails initializers; tasks like `db:drop` and `db:test:prepare` will fail if an active session is held.
 - DO NOT issue database queries in routes.
 
 ### JSON
@@ -63,8 +64,12 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT call `downcase` or `toLocaleLowerCase()` on translatable strings; let translators control casing.
 - Add a namespace (PascalCase, followed by `|`) to all UI strings to provide translator context; prefer granular subcategories over broad ones.
 - Pass only string literals to translation helpers; DO NOT pass variables, function calls, or interpolated strings.
-- Use `%{named}` placeholders (not `%d` positional) in singular strings to allow natural translation.
+- Use `%{named}` placeholders rather than positional `%d` in strings where the number adds no value to the singular form; use `n_`/`n__` with `%{count}` named placeholders for counted strings.
 - Use `n_`/`n__` only to select between plural forms of the same string, not to switch between entirely different strings.
+- DO NOT place a zero-state phrase in the `one` slot of a plural string; handle the zero state as a separate string outside the plural call.
+- Pluralize whole sentences rather than extracting single words to give translators full context.
+- DO NOT define pluralized strings that depend on runtime counts as static constants in Vue; define them as functions that accept a `count` argument.
+- Split strings with multiple independent plurals into separate `n__()` calls and combine with a non-pluralized connector string.
 - Add errors to `:base` with a complete sentence rather than to a specific attribute when the message is a full sentence, to avoid Rails prepending the humanized attribute name.
 - Update `locale/gitlab.pot` by running `tooling/bin/gettext_extractor locale/gitlab.pot` before pushing changes to translated strings.
 - In RSpec, use the same externalizing helper in expectations (e.g., `have_content(_('...'))`); DO NOT hard-code translated strings.
@@ -75,10 +80,9 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Ensure Redis keys are globally unique across all Redis categories/instances.
 - Use immutable identifiers (e.g., project ID, not full path) in Redis key names.
 - Enclose the changeable parts of keys in curly braces `{}` when multiple keys must reside on the same Redis shard (hash-tags for Redis Cluster compatibility).
-- Use `Gitlab::Redis::Cache` only for truly ephemeral, regenerable data; always set a TTL.
+- Use `Gitlab::Redis::Cache` only for truly ephemeral, regenerable data; always set a TTL explicitly (no default TTL is set; consider 8 hours to match a workday).
 - Use `Gitlab::Redis::SharedState` for data that must persist until its expiration; always set a TTL.
 - DO NOT use `Rails.cache` for data that must be reliably persisted; use `Gitlab::Redis::SharedState` instead.
-- DO NOT use query parameters in endpoints where ETag caching is enabled; include all parameters in the request path.
 - Use `RedisCommands::Recorder` in tests to detect Redis N+1 call problems and assert expected call counts.
 
 ### Polling
@@ -114,6 +118,11 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT use `expect_any_instance_of` or `allow_any_instance_of` in RSpec; use `expect_next_instance_of`, `allow_next_instance_of`, `expect_next_found_instance_of`, or `allow_next_found_instance_of` instead.
 - DO NOT `rescue Exception`; rescue specific exception classes.
 - DO NOT use inline JavaScript in Haml views (`:javascript` filter).
+- DO NOT inherit from `OpenStruct`; prefer `Struct` for new code.
+- DO NOT stub method calls on `Regexp` or `Range` instances in RSpec — they are frozen in Ruby 3 and cannot be stubbed; stub the method that returns the range/regexp instead.
+- Pass hash entries to lambdas as a block rather than via `&method_ref` to avoid Ruby 3 argument-count errors (`Hash#each` consistently yields a 2-element array to lambdas in Ruby 3).
+- When a method takes keyword arguments, use `f(k: v)` or `f(**{k: v})`; DO NOT use `f({k: v})` — it is only valid in Ruby 3 if `f` takes a positional `Hash`.
+- In RSpec `with` matchers, pass an explicit `Hash` literal `{ a: 42 }` (with braces) when the method under test takes a positional options hash, not keyword arguments, to avoid Ruby 3 matcher failures.
 
 ### RuboCop
 
@@ -122,6 +131,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - When adding a new cop that could apply to multiple applications, add it to the `gitlab-styles` gem; if it only applies to the main GitLab application, add it to the GitLab repository.
 - Include RDoc-style docs with "good" and "bad" examples when creating new internal RuboCop cops.
 - Generate TODOs for new cops using `bundle exec rake rubocop:todo:generate` rather than adding inline disables throughout the codebase.
+- Enable a new cop by: updating `.rubocop.yml`, generating TODOs, creating an issue to fix TODOs (with `~"quick win"` / `~"Seeking community contributions"` labels), and creating an issue to remove the grace period after 1 week of silence in `#f_rubocop`.
 
 ## Authoritative sources
 
@@ -129,6 +139,10 @@ For the full picture, see:
 
 - doc/development/backend/ruby_style_guide.md
 - doc/development/gotchas.md
+- doc/development/ruby3_gotchas.md
+- doc/development/utilities.md
+- doc/development/changelog.md
+- doc/development/i18n/pluralization.md
 - doc/development/logging.md
 - doc/development/json.md
 - doc/development/i18n/externalization.md

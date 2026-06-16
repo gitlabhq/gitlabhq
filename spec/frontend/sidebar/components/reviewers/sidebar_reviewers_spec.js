@@ -255,8 +255,8 @@ describe('sidebar reviewers approval tracking', () => {
 
   it.each`
     desc                        | reviewerUsername | expectedReviewer
-    ${'user is a reviewer'}     | ${'root'}        | ${true}
-    ${'user is not a reviewer'} | ${'other-user'}  | ${false}
+    ${'user is a reviewer'}     | ${'root'}        | ${1}
+    ${'user is not a reviewer'} | ${'other-user'}  | ${0}
   `(
     'tracks approval event with reviewer=$expectedReviewer when $desc',
     async ({ reviewerUsername, expectedReviewer }) => {
@@ -300,7 +300,7 @@ describe('sidebar reviewers approval tracking', () => {
       await waitForPromises();
 
       diffsEventHub.$emit('mr:reviewDrawer:submit:approval', {
-        summary: true,
+        summary: 1,
         comments: 2,
       });
 
@@ -311,7 +311,7 @@ describe('sidebar reviewers approval tracking', () => {
         {
           reviewer: expectedReviewer,
           drafts: 2,
-          summary: true,
+          summary: 1,
         },
         undefined,
       );

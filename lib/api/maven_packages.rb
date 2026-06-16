@@ -25,6 +25,7 @@ module API
     helpers ::API::Helpers::Packages::DependencyProxyHelpers
     helpers ::API::Helpers::Packages::Maven
     helpers ::API::Helpers::Packages::Maven::BasicAuthHelpers
+    helpers ::API::Helpers::Packages::Maven::ApiErrorFormatter
 
     helpers do
       # overridden in EE

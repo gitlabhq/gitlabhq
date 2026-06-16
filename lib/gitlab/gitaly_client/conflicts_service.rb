@@ -7,6 +7,8 @@ module Gitlab
       include WithFeatureFlagActors
 
       MAX_MSG_SIZE = 128.kilobytes.freeze
+      PRE_RECEIVE_HOOK_PREFIX = 'running pre-receive hooks: '
+      FALLBACK_HOOK_FAIL_MESSAGE = 'Prevented by server hooks'
 
       def initialize(repository, our_commit_oid, their_commit_oid)
         @gitaly_repo = repository.gitaly_repository
@@ -68,6 +70,13 @@ module Gitlab
         if response.resolution_error.present?
           raise Gitlab::Git::Conflict::Resolver::ResolutionError, response.resolution_error
         end
+      rescue GRPC::BadStatus => e
+        if e.details.start_with?(PRE_RECEIVE_HOOK_PREFIX)
+          raise Gitlab::Git::PreReceiveError.new(e.details.delete_prefix(PRE_RECEIVE_HOOK_PREFIX),
+            fallback_message: FALLBACK_HOOK_FAIL_MESSAGE)
+        end
+
+        raise
       end
 
       private

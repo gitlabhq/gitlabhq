@@ -4,7 +4,8 @@ classes:
 - Clusters::Agents::UrlConfiguration
 feature_categories:
 - deployment_management
-description:
+description: Stores user-configured gRPC URL endpoints for cluster agents, including
+  TLS certificate or public key authentication settings.
 introduced_by_url:
 milestone: '17.4'
 gitlab_schema: gitlab_main_org

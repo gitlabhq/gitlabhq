@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository.raw }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository.raw }
 
   describe '#tags' do
     describe 'unsigned tag' do
@@ -67,15 +67,6 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.user_name).to eq(gitaly_commit_author.name) }
       it { expect(tag.user_email).to eq(gitaly_commit_author.email) }
       it { expect(tag.date).to eq(Time.at(1574261780).utc) }
-
-      context 'when render_gpg_signed_tags_verification_status is not enabled' do
-        before do
-          stub_feature_flags(render_gpg_signed_tags_verification_status: false)
-        end
-
-        it { expect(tag.signature).to be_nil }
-        it { expect(tag.lazy_cached_signature).to be_nil }
-      end
     end
 
     describe 'ssh signed tag' do
@@ -103,15 +94,6 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.signature).not_to be_nil }
       it { expect(tag.lazy_cached_signature).not_to be_nil }
       it { expect(tag.user_email).to eq('test@example.com') }
-
-      context 'when render_ssh_signed_tags_verification_status is not enabled' do
-        before do
-          stub_feature_flags(render_ssh_signed_tags_verification_status: false)
-        end
-
-        it { expect(tag.signature).to be_nil }
-        it { expect(tag.lazy_cached_signature).to be_nil }
-      end
     end
 
     it { expect(repository.tags.size).to be > 0 }
@@ -288,28 +270,30 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       let(:stubbed_signature_type) { :PGP }
 
       it { is_expected.to be_truthy }
-
-      context 'when render_gpg_signed_tags_verification_status is not enabled' do
-        before do
-          stub_feature_flags(render_gpg_signed_tags_verification_status: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when signed with ssh' do
       let(:stubbed_signature_type) { :SSH }
 
       it { is_expected.to be_truthy }
+    end
+  end
 
-      context 'when render_ssh_signed_tags_verification_status is not enabled' do
-        before do
-          stub_feature_flags(render_ssh_signed_tags_verification_status: false)
-        end
+  describe '#project' do
+    let(:tag) { repository.tags.first }
 
-        it { is_expected.to be_falsey }
+    context 'when the container is a Project' do
+      it 'returns the project' do
+        expect(tag.project).to eq(project)
       end
+    end
+
+    context 'when the container is not a Project' do
+      before do
+        allow(tag.repository).to receive(:container).and_return(build(:group))
+      end
+
+      it { expect(tag.project).to be_nil }
     end
   end
 end

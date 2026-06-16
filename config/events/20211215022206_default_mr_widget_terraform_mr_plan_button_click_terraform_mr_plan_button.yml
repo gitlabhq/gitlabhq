@@ -4,6 +4,8 @@ action: click_terraform_mr_plan_button
 extra_properties:
 identifiers:
 product_group: environments
+product_categories:
+- infrastructure_as_code
 milestone: "13.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34392
 tiers:

@@ -16,6 +16,7 @@ module Groups
       layout 'group_settings'
 
       def index
+        @hide_search_settings = true
         @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_group(group))
 
         @integrations = experiment(:ordered_integrations, actor: current_user) do |e|

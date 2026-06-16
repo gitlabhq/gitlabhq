@@ -289,7 +289,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
         end
 
         context 'when target user does not belong to the organization' do
-          let_it_be(:target_user) { create(:user) }
+          let_it_be(:target_user, freeze: false) { create(:user) }
 
           it 'adds user to the organization', :aggregate_failures do
             result = described_class.new(

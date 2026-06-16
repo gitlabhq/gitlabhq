@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_state, feature_category: :groups_and_projects do
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   subject { described_class.new(project) }
 
@@ -32,6 +32,14 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
         ruby_lang = ProgrammingLanguage.find_by(name: 'Ruby')
         expect(ruby_lang.language_id).to be_present
       end
+
+      it 'persists language_id on newly created repository languages' do
+        subject.execute
+
+        ruby_lang = ProgrammingLanguage.find_by(name: 'Ruby')
+        repo_lang = RepositoryLanguage.find_by(project_id: project.id, programming_language_id: ruby_lang.id)
+        expect(repo_lang.language_id).to eq(ruby_lang.language_id)
+      end
     end
 
     context 'with a previous detection' do
@@ -55,6 +63,14 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
 
         subject.execute
       end
+
+      it 'sets language_id when updating repository languages' do
+        subject.execute
+
+        ruby_lang = ProgrammingLanguage.find_by(name: 'Ruby')
+        repo_lang = RepositoryLanguage.find_by(project_id: project.id, programming_language_id: ruby_lang.id)
+        expect(repo_lang.language_id).to eq(ruby_lang.language_id)
+      end
     end
 
     context 'when Gitaly returns nil for language_id' do
@@ -74,7 +90,7 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
     end
 
     context 'when no repository exists' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       it 'has no languages' do
         expect(subject.execute).to be_empty

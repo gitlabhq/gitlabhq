@@ -1,7 +1,8 @@
 <script>
-import { GlAvatarLabeled, GlTruncateText } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlAvatarLabeled, GlBadge, GlTruncateText } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { ORGANIZATION_STATE_UNCONFIRMED } from '~/organizations/shared/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
@@ -9,10 +10,12 @@ export default {
   i18n: {
     showMore: __('Show more'),
     showLess: __('Show less'),
+    unconfirmed: s__('Organization|Unconfirmed'),
   },
   truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
+    GlBadge,
     GlTruncateText,
   },
   safeHtmlConfig: {
@@ -25,6 +28,11 @@ export default {
     organization: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    isUnconfirmed() {
+      return this.organization.state === ORGANIZATION_STATE_UNCONFIRMED;
     },
   },
   methods: {
@@ -44,6 +52,11 @@ export default {
       :label-link="organization.webPath"
       shape="rect"
     >
+      <template v-if="isUnconfirmed" #meta>
+        <div class="gl-p-1">
+          <gl-badge variant="warning">{{ $options.i18n.unconfirmed }}</gl-badge>
+        </div>
+      </template>
       <gl-truncate-text
         v-if="organization.descriptionHtml"
         :lines="2"

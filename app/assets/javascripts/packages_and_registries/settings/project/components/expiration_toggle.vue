@@ -7,6 +7,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 
 export default {
+  name: 'ExpirationToggle',
   i18n: {
     toggleLabel: s__('ContainerRegistry|Enable cleanup policy'),
   },

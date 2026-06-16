@@ -23,12 +23,16 @@ class JiraConnect::BranchesController < JiraConnect::ApplicationController
   private
 
   def initial_branch_name
-    return unless params[:issue_key].present?
+    return unless branch_params[:issue_key].present?
 
     Issue.to_branch_name(
-      params[:issue_key],
-      params[:issue_summary]
+      branch_params[:issue_key],
+      branch_params[:issue_summary]
     )
+  end
+
+  def branch_params
+    params.permit(:issue_key, :issue_summary)
   end
 
   def new_branch_data

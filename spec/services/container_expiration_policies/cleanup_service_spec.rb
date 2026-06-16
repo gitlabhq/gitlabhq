@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :container_registry do
-  let_it_be(:repository, reload: true) { create(:container_repository, expiration_policy_started_at: 30.minutes.ago) }
+  let_it_be_with_reload(:repository) { create(:container_repository, expiration_policy_started_at: 30.minutes.ago) }
   let_it_be(:project) { repository.project }
 
   let(:service) { described_class.new(repository) }

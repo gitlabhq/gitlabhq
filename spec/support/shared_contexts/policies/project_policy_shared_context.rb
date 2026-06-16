@@ -2,22 +2,22 @@
 
 RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:organization) { create(:common_organization) }
-  let_it_be(:owner_namespace) { create(:user_namespace, organization: organization) }
+  let_it_be(:owner_namespace, freeze: false) { create(:user_namespace, organization: organization) }
   let_it_be_with_reload(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
-  let_it_be(:group, refind: true) { create(:group, :public, organization: organization) }
+  let_it_be_with_refind(:group) { create(:group, :public, organization: organization) }
 
-  let_it_be(:public_project_in_group, refind: true) { create(:project, :public, namespace: group) }
-  let_it_be(:private_project_in_group, refind: true) { create(:project, :private, namespace: group) }
+  let_it_be_with_refind(:public_project_in_group) { create(:project, :public, namespace: group) }
+  let_it_be_with_refind(:private_project_in_group) { create(:project, :private, namespace: group) }
 
-  let_it_be(:private_project, refind: true) { create(:project, :private, namespace: owner_namespace) }
-  let_it_be(:internal_project, refind: true) { create(:project, :internal, namespace: owner_namespace) }
-  let_it_be(:public_project, refind: true) { create(:project, :public, namespace: owner_namespace) }
+  let_it_be_with_refind(:private_project) { create(:project, :private, namespace: owner_namespace) }
+  let_it_be_with_refind(:internal_project) { create(:project, :internal, namespace: owner_namespace) }
+  let_it_be_with_refind(:public_project) { create(:project, :public, namespace: owner_namespace) }
 
-  let_it_be(:direct_member_projects) do
+  let_it_be(:direct_member_projects, freeze: false) do
     [private_project, internal_project, public_project, public_project_in_group]
   end
 
-  let_it_be(:anonymous) { nil }
+  let_it_be(:anonymous, freeze: false) { nil }
   let_it_be_with_reload(:guest) { create(:user, guest_of: direct_member_projects) }
   let_it_be_with_reload(:planner) { create(:user, planner_of: direct_member_projects) }
   let_it_be_with_reload(:reporter) { create(:user, reporter_of: direct_member_projects) }

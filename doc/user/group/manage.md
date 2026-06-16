@@ -445,34 +445,7 @@ The output lists direct members and members inherited from the ancestor groups.
 For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
 [Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
 
-## Restricted access
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
-- Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
-
-{{< /history >}}
-
-Use restricted access to prevent overage fees.
-Overage fees occur when you exceed the number of seats in your subscription,
-and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
-
-When you turn on restricted access, groups cannot add new billable users when there are no seats
-left in the subscription.
-
-> [!note]
-> If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
-
-### Turn on restricted access
+## Turn on restricted access
 
 Prerequisites:
 
@@ -491,85 +464,7 @@ is automatically turned on.
 
 You can still independently configure [project sharing for the group and its subgroups](../project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
-### Provisioning behavior with SAML, SCIM, and LDAP
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
-
-{{< /history >}}
-
-When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
-This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
-
-Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../permissions.md#users-with-minimal-access).
-When seats become available, they can be promoted to their intended access level.
-Existing users with billable roles are not affected by this behavior.
-
-You can [view seat usage](../../subscriptions/manage_seats.md#view-seat-usage) and manage users with Minimal Access.
-
-### Known issues
-
-When you turn on restricted access, the following known issues might occur and result in overages:
-
-- The number of seats can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the [Minimal Access fallback](#provisioning-behavior-with-saml-scim-and-ldap) feature is enabled, users are assigned Minimal Access instead of being blocked.
-  - Multiple users with the Owner role add members simultaneously.
-  - New billable members delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
-- If you renew your subscription through the GitLab Sales Team for fewer users than your current
-  subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
-  renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
-  you will be charged overages for the five additional users.
-
-Additionally, restricted access might block the standard non-overage flows:
-
-- Service bots that are updated or added to a billable role are incorrectly blocked.
-- Inviting or updating existing billable users through email is blocked unexpectedly.
-
-### Dormant enterprise user reactivation
-
-When restricted access is active and no seats are available, dormant
-[enterprise users](../enterprise_user/_index.md) who attempt to sign back in are
-set to [pending approval](#approve-pending-members-for-a-group) instead of being reactivated. Their existing group and
-project memberships are preserved. A group Owner can approve the users when seats
-become available.
-
-Non-enterprise dormant members have their group membership removed instead of
-being deactivated. When they rejoin through SAML, SCIM, or LDAP sync,
-[provisioning behavior](#provisioning-behavior-with-saml-scim-and-ldap)
-applies and they receive the Minimal Access role if no seats are available.
-
-For more information, see
-[automatically remove dormant members](moderate_users.md#automatically-remove-dormant-members).
-
-## User cap for groups
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/421693) in GitLab 17.1 Feature flag `saas_user_caps` removed.
-
-{{< /history >}}
-
-For more information about user caps for GitLab Self-Managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
-
-When the number of billable members reaches the user cap, the group Owner must approve new members.
-
-Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
-disabled for the group and its subgroups.
-
-> [!warning]
-> When you specify a user cap, any members added through group sharing lose access to the group.
-
-### Set a user cap for a group
+## Set a user cap for a group
 
 Prerequisites:
 
@@ -589,7 +484,11 @@ are not removed. However, you can't add more without approval.
 
 Increasing the user cap does not approve pending members.
 
-### Remove the user cap for a group
+When you set a user cap, the setting to
+[prevent inviting groups outside the group hierarchy](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy)
+is automatically turned on.
+
+## Remove the user cap for a group
 
 You can remove the user cap, so there is no limit on the number of members you can add to a group.
 
@@ -605,9 +504,7 @@ To remove the user cap:
 1. From **Seat control**, select **Open access**.
 1. Select **Save changes**.
 
-Decreasing the user cap does not approve pending members.
-
-### Approve pending members for a group
+## Approve pending members for a group
 
 When the number of billable users reaches the user cap, any new member is put in a pending state
 and must be approved.
@@ -625,22 +522,55 @@ To approve members that are pending because they've exceeded the user cap:
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
 
-### Known issues
+## Control built-in project templates
 
-The user cap cannot be enabled if a group, subgroup, or project is shared externally. If a group, subgroup,
-or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
-in the hierarchy.
+{{< details >}}
 
-To ensure that the user cap applies when groups, subgroups, or projects are shared externally,
-[restrict group sharing only in the top-level namespace](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
-A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
+{{< /details >}}
 
-## Changing from user cap to restricted access
+{{< history >}}
 
-When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
-To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230790) in GitLab 19.0 [with a flag](../../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+[Built-in project templates](../project/_index.md#create-a-project-from-a-built-in-template)
+populate new projects with starter files.
+You can control whether these templates are available when users create projects in your group. You
+can also enforce your choice for all subgroups.
+
+The setting uses cascading inheritance:
+
+- Your group inherits the setting from its closest ancestor group, or from the instance.
+- A value set for your group overrides the inherited value.
+- When you enforce the setting for your group, all subgroups inherit it and cannot change it.
+- When you change the setting for your group, the new value cascades to all subgroups.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To control built-in project templates for a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Built-in project templates**.
+1. Select or clear the **Enable built-in project templates** checkbox.
+1. Optional. To prevent subgroups from changing this setting, select the **Enforce for all
+   subgroups** checkbox.
+1. Select **Save changes**.
+
+If an administrator has [enforced this setting](../../administration/project_templates.md#built-in-project-templates)
+for the instance, or a parent group has enforced it for its subgroups, the setting is locked and you
+cannot change it.
 
 ## Group file templates
 

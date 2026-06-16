@@ -5,6 +5,7 @@ import setEnvironmentToChangeCanaryMutation from '../graphql/mutations/set_envir
 import DeployBoard from './deploy_board.vue';
 
 export default {
+  name: 'DeployBoardWrapper',
   components: {
     DeployBoard,
     GlButton,

@@ -5,18 +5,18 @@ require 'spec_helper'
 RSpec.describe Projects::WikisController, feature_category: :wiki do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:diagramsnet_is_enabled) { false }
-  let_it_be(:diagramsnet_url) { 'https://url.diagrams.net' }
-  let_it_be(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
-  let_it_be(:project_wiki) { create(:project_wiki, project: project, user: user) }
-  let_it_be(:wiki_page) do
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:diagramsnet_is_enabled, freeze: false) { false }
+  let_it_be(:diagramsnet_url, freeze: false) { 'https://url.diagrams.net' }
+  let_it_be(:project, freeze: false) { create(:project, :wiki_repo, namespace: user.namespace) }
+  let_it_be(:project_wiki, freeze: false) { create(:project_wiki, project: project, user: user) }
+  let_it_be(:wiki_page, freeze: false) do
     create(:wiki_page,
       wiki: project_wiki,
       title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})")
   end
 
-  let_it_be(:csp_nonce) { 'just=some=noncense' }
+  let_it_be(:csp_nonce, freeze: false) { 'just=some=noncense' }
 
   before do
     sign_in(user)

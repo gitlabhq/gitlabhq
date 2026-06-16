@@ -9,6 +9,8 @@ identifiers:
 additional_properties:
   value:
     description: Time-to-first-pipeline in seconds (Time.current - project.created_at)
+  author_source:
+    description: AI agent identifier that generated the project's CI config. Only present when an agent is on record; omitted otherwise. AI-vs-human authorship is observed on the per-commit commit_change_to_ciconfigfile and create_ci_config_file events.
 product_group: pipeline_authoring
 product_categories:
   - pipeline_composition

@@ -97,7 +97,7 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
     if foreign_key_definition.on_delete.eql?(:async_delete)
       expect(find_model).not_to be_present
     else
-      expect(find_model[foreign_key_definition.column]).to eq(nil)
+      expect(find_model[foreign_key_definition.column]).to be_nil
     end
 
     lfk_debug_log("##- Additional Debug Logs for LFK flakiness end -##")

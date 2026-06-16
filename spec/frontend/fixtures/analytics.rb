@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline, feature_category: :value_stream_management do
   include_context 'Analytics fixtures shared context'
 
-  let_it_be(:value_stream_id) { 'default' }
+  let_it_be(:value_stream_id, freeze: false) { 'default' }
 
   before do
     update_metrics

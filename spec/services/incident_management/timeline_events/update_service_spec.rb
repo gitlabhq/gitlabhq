@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::TimelineEvents::UpdateService, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:incident) { create(:incident, project: project) }
+  let_it_be(:incident, freeze: false) { create(:incident, project: project) }
   let_it_be(:tag1) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 1') }
   let_it_be(:tag2) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 2') }
   let_it_be(:tag3) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 3') }

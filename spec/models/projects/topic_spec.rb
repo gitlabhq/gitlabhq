@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Topic do
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:topic, reload: true) { create(:topic, name: 'topic', organization: organization) }
+  let_it_be_with_reload(:topic) { create(:topic, name: 'topic', organization: organization) }
 
   subject { topic }
 

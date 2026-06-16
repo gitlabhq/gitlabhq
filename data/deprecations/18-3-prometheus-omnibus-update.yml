@@ -14,6 +14,6 @@
     the latest Prometheus 3.x release in GitLab 18.6.
 
     Prometheus 3 contains some potentially breaking changes such as a new log format and stricter
-    header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/3.0/migration).
+    header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/latest/migration/).
 
     This change does not impact GitLab Helm chart installations.

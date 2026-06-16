@@ -5,6 +5,9 @@ module Mutations
     class SetCrmContacts < Base
       graphql_name 'IssueSetCrmContacts'
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :contact_ids,
         [::Types::GlobalIDType[::CustomerRelations::Contact]],
         required: true,

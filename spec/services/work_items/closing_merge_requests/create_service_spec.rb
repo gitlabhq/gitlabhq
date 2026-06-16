@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::ClosingMergeRequests::CreateService, feature_category: :team_planning do
   describe '#execute' do
-    let_it_be(:group) { create(:group, :private) }
-    let_it_be(:project) { create(:project, :repository, :private, group: group) }
-    let_it_be(:developer) { create(:user, developer_of: group) }
-    let_it_be(:unauthorized_user) { create(:user) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-    let_it_be(:private_merge_request) do
+    let_it_be(:group, freeze: false) { create(:group, :private) }
+    let_it_be(:project, freeze: false) { create(:project, :repository, :private, group: group) }
+    let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
+    let_it_be(:unauthorized_user, freeze: false) { create(:user) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+    let_it_be(:private_merge_request, freeze: false) do
       create(:merge_request, source_project: create(:project, :repository, :private))
     end
 

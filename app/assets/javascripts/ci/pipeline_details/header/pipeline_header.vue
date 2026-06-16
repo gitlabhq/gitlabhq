@@ -323,6 +323,7 @@ export default {
           Category: 'pipeline',
           Content: JSON.stringify({
             source_branch: this.sourceBranch,
+            source: this.pipeline?.source || '',
           }),
         },
         {

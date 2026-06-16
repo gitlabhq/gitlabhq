@@ -206,4 +206,10 @@ class Discussion
   def noteable_collection_name
     noteable.class.underscore.pluralize
   end
+
+  def can_reply_to_system_note?
+    return true if noteable.supports_replying_to_system_notes?
+
+    !first_note.system?
+  end
 end

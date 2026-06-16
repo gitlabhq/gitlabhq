@@ -64,6 +64,16 @@ RSpec.describe 'Updating the dependency proxy group settings', feature_category:
           expect(mutation_response['errors']).to be_empty
           expect(group_settings[:enabled]).to eq(false)
         end
+
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :update_dependency_proxy do
+          let(:boundary_object) { group }
+          let(:mutation) do
+            graphql_mutation(:update_dependency_proxy_settings,
+              { group_path: group.full_path, enabled: false }, 'errors')
+          end
+
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
       end
 
       context 'for maintainer' do

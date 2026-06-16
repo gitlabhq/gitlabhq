@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'Admin menu' do |link:, title:, icon:, separated: false|
-  let_it_be(:user) { build(:user, :admin) }
+  let_it_be(:user, freeze: false) { build(:user, :admin) }
 
   before do
     stub_application_setting(admin_mode: false)
@@ -50,7 +50,7 @@ RSpec.shared_examples 'Admin menu' do |link:, title:, icon:, separated: false|
 end
 
 RSpec.shared_examples 'Admin menu without sub menus' do |active_routes:|
-  let_it_be(:user) { build(:user, :admin) }
+  let_it_be(:user, freeze: false) { build(:user, :admin) }
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 
@@ -66,7 +66,7 @@ RSpec.shared_examples 'Admin menu without sub menus' do |active_routes:|
 end
 
 RSpec.shared_examples 'Admin menu with sub menus' do
-  let_it_be(:user) { build(:user, :admin) }
+  let_it_be(:user, freeze: false) { build(:user, :admin) }
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 
@@ -78,7 +78,7 @@ RSpec.shared_examples 'Admin menu with sub menus' do
 end
 
 RSpec.shared_examples 'Admin menu with extra container html options' do |extra_container_html_options:|
-  let_it_be(:user) { build(:user, :admin) }
+  let_it_be(:user, freeze: false) { build(:user, :admin) }
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 

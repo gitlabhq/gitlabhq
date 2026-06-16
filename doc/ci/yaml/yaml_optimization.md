@@ -179,12 +179,6 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 ### YAML anchors for scripts
 
-{{< history >}}
-
-- Support for anchors with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
-
-{{< /history >}}
-
 You can use [YAML anchors](#anchors) with [script](_index.md#script), [`before_script`](_index.md#before_script),
 and [`after_script`](_index.md#after_script) to use predefined commands in multiple jobs:
 
@@ -476,12 +470,6 @@ deploy_job:
 With all other keywords, you get a [`config should be an array of` validation error](../debugging.md#config-should-be-an-array-of-hashes-error-message).
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
-
-{{< history >}}
-
-- Support for `!reference` with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
-
-{{< /history >}}
 
 You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:
 

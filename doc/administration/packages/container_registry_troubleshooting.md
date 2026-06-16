@@ -39,6 +39,30 @@ Before investigating specific issues, try these troubleshooting steps:
    * Connection #0 to host <hostname> left intact
    ```
 
+## Error: `There are pending migrations`
+
+When troubleshooting pending registry database migrations, first check the current migration status.
+To check the status of all known migrations and whether each has been applied, run:
+
+```shell
+sudo gitlab-ctl registry-database migrate status
+```
+
+To check that all migrations have been applied, run:
+
+```shell
+sudo gitlab-ctl registry-database migrate status --up-to-date
+```
+
+This command returns only `true` or `false`:
+
+- `true`: All known registry database migrations have been applied.
+- `false`: One or more registry database migrations are still pending.
+
+The `--up-to-date` option is useful when validating migration state before or after an upgrade, or when confirming whether the registry is blocked by pending migrations.
+
+If the output is `false`, follow the [steps to apply database migrations](container_registry_metadata_database.md#apply-database-migrations).
+
 ## Error: `... x509: certificate signed by unknown authority`
 
 When using a self-signed certificate with the container registry,

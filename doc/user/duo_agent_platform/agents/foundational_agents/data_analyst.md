@@ -27,8 +27,8 @@ title: Data Analyst Agent
 
 The Data Analyst Agent is a specialized AI assistant that helps you query, visualize, and surface
 data across the GitLab platform. It uses [GitLab Query Language (GLQL)](../../../glql/_index.md)
-to retrieve and analyze data, then provides clear, actionable insights about your projects and groups.
-For information about which data sources and fields are available on your tier, see [GLQL data sources](../../../glql/data_sources/_index.md).
+and [Orbit](https://docs.gitlab.com/orbit/) to retrieve and analyze data, then provides clear, actionable insights about your projects and groups.
+For information about which data sources and fields are available on your tier, see [GLQL data sources](../../../glql/data_sources/_index.md) and [what Orbit indexes](https://docs.gitlab.com/orbit/remote/indexing/).
 
 Use the Data Analyst Agent when you need help with:
 

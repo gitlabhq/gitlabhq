@@ -5,14 +5,17 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_category: :wiki do
   include FilterSpecHelper
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:cross_namespace) { create(:namespace, name: 'cross-namespace') }
-  let_it_be(:project) { create(:project, :public, namespace: namespace) }
-  let_it_be(:cross_project) { create(:project, :public, namespace: cross_namespace, path: 'cross-project') }
-  let_it_be(:wiki) { ProjectWiki.new(project, user) }
-  let_it_be(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
-  let_it_be(:cross_wiki) { ProjectWiki.new(cross_project, user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:namespace, freeze: false) { create(:namespace) }
+  let_it_be(:cross_namespace, freeze: false) { create(:namespace, name: 'cross-namespace') }
+  let_it_be(:project, freeze: false) { create(:project, :public, namespace: namespace) }
+  let_it_be(:cross_project, freeze: false) do
+    create(:project, :public, namespace: cross_namespace, path: 'cross-project')
+  end
+
+  let_it_be(:wiki, freeze: false) { ProjectWiki.new(project, user) }
+  let_it_be(:wiki_page, freeze: false) { create(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
+  let_it_be(:cross_wiki, freeze: false) { ProjectWiki.new(cross_project, user) }
   let_it_be_with_reload(:cross_wiki_page) { create(:wiki_page, wiki: cross_wiki, title: 'nested/twice/start-page') }
 
   shared_examples 'a wiki page reference' do
@@ -99,41 +102,44 @@ RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_cate
   end
 
   context 'when project level wiki page URL reference' do
-    let_it_be(:wiki_page_link_reference)  { urls.project_wiki_url(project, wiki_page) }
-    let_it_be(:wiki_page_url)             { wiki_page_link_reference }
-    let_it_be(:reference)                 { wiki_page_url }
-    let_it_be(:written_reference)         { reference }
-    let_it_be(:inner_text)                { written_reference }
+    let_it_be(:wiki_page_link_reference, freeze: false)  { urls.project_wiki_url(project, wiki_page) }
+    let_it_be(:wiki_page_url, freeze: false)             { wiki_page_link_reference }
+    let_it_be(:reference, freeze: false)                 { wiki_page_url }
+    let_it_be(:written_reference, freeze: false)         { reference }
+    let_it_be(:inner_text, freeze: false)                { written_reference }
 
     it_behaves_like 'a wiki page reference'
   end
 
   context 'when project level wiki page full reference' do
-    let_it_be(:wiki_page_link_reference)  { urls.project_wiki_url(project, wiki_page) }
-    let_it_be(:wiki_page_url)             { wiki_page_link_reference }
-    let_it_be(:reference)                 { wiki_page.to_reference(full: true) }
-    let_it_be(:written_reference)         { reference }
-    let_it_be(:inner_text)                { written_reference }
+    let_it_be(:wiki_page_link_reference, freeze: false)  { urls.project_wiki_url(project, wiki_page) }
+    let_it_be(:wiki_page_url, freeze: false)             { wiki_page_link_reference }
+    let_it_be(:reference, freeze: false)                 { wiki_page.to_reference(full: true) }
+    let_it_be(:written_reference, freeze: false)         { reference }
+    let_it_be(:inner_text, freeze: false)                { written_reference }
 
     it_behaves_like 'a wiki page reference'
   end
 
   context 'on [wiki_page:XXX] reference' do
-    let_it_be(:written_reference)         { "[wiki_page:#{wiki_page.slug}]" }
-    let_it_be(:reference)                 { written_reference }
-    let_it_be(:inner_text)                { written_reference }
-    let_it_be(:wiki_page_link_reference)  { urls.project_wiki_url(project, wiki_page) }
-    let_it_be(:wiki_page_url)             { wiki_page_link_reference }
+    let_it_be(:written_reference, freeze: false)         { "[wiki_page:#{wiki_page.slug}]" }
+    let_it_be(:reference, freeze: false)                 { written_reference }
+    let_it_be(:inner_text, freeze: false)                { written_reference }
+    let_it_be(:wiki_page_link_reference, freeze: false)  { urls.project_wiki_url(project, wiki_page) }
+    let_it_be(:wiki_page_url, freeze: false)             { wiki_page_link_reference }
 
     it_behaves_like 'a wiki page reference'
   end
 
   context 'on cross project [wiki_page:project/path:slug] reference' do
-    let_it_be(:wiki_page_link_reference)  { urls.project_wiki_url(cross_project, wiki_page) }
-    let_it_be(:wiki_page_url)             { wiki_page_link_reference }
-    let_it_be(:written_reference)         { "[wiki_page:#{cross_project.full_path}:#{cross_wiki_page.slug}]" }
-    let_it_be(:reference)                 { written_reference }
-    let_it_be(:inner_text)                { written_reference }
+    let_it_be(:wiki_page_link_reference, freeze: false)  { urls.project_wiki_url(cross_project, wiki_page) }
+    let_it_be(:wiki_page_url, freeze: false)             { wiki_page_link_reference }
+    let_it_be(:written_reference, freeze: false)         do
+      "[wiki_page:#{cross_project.full_path}:#{cross_wiki_page.slug}]"
+    end
+
+    let_it_be(:reference, freeze: false)                 { written_reference }
+    let_it_be(:inner_text, freeze: false)                { written_reference }
 
     it_behaves_like 'a wiki page reference'
   end
@@ -141,11 +147,11 @@ RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_cate
   # Example:
   #   "See http://localhost/cross-namespace/cross-project/-/wikis/foobar"
   context 'when cross-project URL reference' do
-    let_it_be(:wiki_page_link_reference)  { urls.project_wiki_url(cross_project, wiki_page) }
-    let_it_be(:wiki_page_url)             { wiki_page_link_reference }
-    let_it_be(:reference)                 { wiki_page_url }
-    let_it_be(:written_reference)         { reference }
-    let_it_be(:inner_text)                { written_reference }
+    let_it_be(:wiki_page_link_reference, freeze: false)  { urls.project_wiki_url(cross_project, wiki_page) }
+    let_it_be(:wiki_page_url, freeze: false)             { wiki_page_link_reference }
+    let_it_be(:reference, freeze: false)                 { wiki_page_url }
+    let_it_be(:written_reference, freeze: false)         { reference }
+    let_it_be(:inner_text, freeze: false)                { written_reference }
 
     it_behaves_like 'a wiki page reference'
 

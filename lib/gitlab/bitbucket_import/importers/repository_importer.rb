@@ -60,6 +60,10 @@ module Gitlab
           return if project.wiki.repository_exists?
 
           project.wiki.repository.import_repository(wiki.import_url)
+        rescue ::Gitlab::Git::CommandError => e
+          log_warn(import_stage: 'import_wiki',
+            message: 'Wiki import skipped. The Bitbucket Cloud wiki repository is no longer accessible.',
+            error: e.message)
         rescue StandardError => e
           Gitlab::ErrorTracking.log_exception(
             e, import_stage: 'import_repository', message: 'failed to import wiki', error: e.message
@@ -91,7 +95,7 @@ module Gitlab
         end
 
         def client
-          Bitbucket::Client.new(project.import_data.credentials)
+          ::Import::BitbucketImport::ClientFactory.for(project)
         end
       end
     end

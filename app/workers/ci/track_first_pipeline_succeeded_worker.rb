@@ -25,8 +25,9 @@ module Ci
         project: pipeline.project,
         user: pipeline.user,
         additional_properties: {
-          value: (succeeded_at - pipeline.project.created_at).to_i
-        }
+          value: (succeeded_at - pipeline.project.created_at).to_i,
+          author_source: Ci::ProjectMetric.ci_config_generated_by_for(pipeline.project_id)
+        }.compact
       )
     end
   end

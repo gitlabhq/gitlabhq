@@ -39,7 +39,10 @@ module Import
             source_enterprise: metadata[:instance_enterprise]
           )
 
-          configuration.update!(entity_prefix_mapping: metadata[:entities_mapping])
+          configuration.update!(
+            entity_prefix_mapping: metadata[:entities_mapping],
+            source_hostname: metadata[:source_hostname]
+          )
         end
 
         def create_entities(bulk_import)

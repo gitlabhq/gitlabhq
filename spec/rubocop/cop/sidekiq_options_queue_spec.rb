@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/sidekiq_options_queue'
 
-RSpec.describe RuboCop::Cop::SidekiqOptionsQueue do
+RSpec.describe RuboCop::Cop::SidekiqOptionsQueue, feature_category: :scalability do
   it 'registers an offense when `sidekiq_options` is used with the `queue` option' do
     expect_offense(<<~RUBY)
       sidekiq_options queue: "some_queue"

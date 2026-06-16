@@ -6,14 +6,14 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
   include FilteredSearchHelpers
   include ListboxHelpers
 
-  let_it_be(:current_user) { create(:user, organization: current_organization) }
+  let_it_be(:current_user, freeze: false) { create(:user, organization: current_organization) }
   let_it_be(:user) { current_user } # Shared examples depend on this being available
   let_it_be(:public_project) { create(:project, :public) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:project_with_issues_disabled) { create(:project, :issues_disabled) }
   let_it_be(:authored_issue) { create :issue, author: current_user, project: project }
   let_it_be(:authored_issue_on_public_project) { create :issue, author: current_user, project: public_project }
-  let_it_be(:assigned_issue) { create :issue, assignees: [current_user], project: project }
+  let_it_be(:assigned_issue, freeze: false) { create :issue, assignees: [current_user], project: project }
   let_it_be(:other_issue) { create :issue, project: project }
 
   before do

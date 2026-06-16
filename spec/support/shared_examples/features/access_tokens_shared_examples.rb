@@ -196,8 +196,8 @@ end
 
 RSpec.shared_examples 'create access token - legacy' do
   let(:url) { {} }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:token_attributes) { attributes_for(:personal_access_token) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:token_attributes, freeze: false) { attributes_for(:personal_access_token) }
 
   before do
     sign_in(admin)
@@ -230,8 +230,8 @@ end
 
 RSpec.shared_examples 'create access token' do
   let(:url) { {} }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:token_attributes) { attributes_for(:personal_access_token) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:token_attributes, freeze: false) { attributes_for(:personal_access_token) }
 
   before do
     sign_in(admin)

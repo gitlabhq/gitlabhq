@@ -21,7 +21,7 @@ module Gitlab
           commit: pipeline.commit.try(:hook_attrs),
           builds: Gitlab::Lazy.new do
             preload_builds(pipeline, :latest_builds)
-            pipeline.latest_builds.map(&method(:build_hook_attrs))
+            pipeline.latest_builds.map { |build| build_hook_attrs(build) }
           end
         }
 
@@ -36,7 +36,7 @@ module Gitlab
         merge(
           builds: Gitlab::Lazy.new do
             preload_builds(@pipeline, :builds)
-            @pipeline.builds.map(&method(:build_hook_attrs))
+            @pipeline.builds.map { |build| build_hook_attrs(build) }
           end
         )
       end

@@ -82,6 +82,7 @@ In the report, you can:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/555541) in GitLab 18.7.
+- **Detected before** and **Detected after** filters [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582497) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -92,6 +93,10 @@ You can filter the compliance violations report to focus on specific violations:
    - **Status**: Filter by violation status (Detected, Dismissed, In Review, or Resolved).
    - **Project**: Filter by specific projects in your group.
    - **Control**: Filter by compliance control.
+   - **Detected before**: Show violations detected before a specific date.
+   - **Detected after**: Show violations detected on or after a specific date.
+
+Combine **Detected before** and **Detected after** to limit the report to a date range.
 
 The report updates automatically to show only violations matching your selected filters.
 

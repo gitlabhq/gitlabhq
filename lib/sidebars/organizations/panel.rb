@@ -20,3 +20,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Organizations::Panel.prepend_mod_with('Sidebars::Organizations::Panel')

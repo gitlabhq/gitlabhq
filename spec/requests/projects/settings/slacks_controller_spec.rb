@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Settings::SlacksController, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
 
   let(:redirect_url) do
     edit_project_settings_integration_path(
@@ -55,7 +55,7 @@ RSpec.describe Projects::Settings::SlacksController, feature_category: :integrat
     end
 
     context 'when user is unauthorized' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       it 'returns not found response' do
         put_update

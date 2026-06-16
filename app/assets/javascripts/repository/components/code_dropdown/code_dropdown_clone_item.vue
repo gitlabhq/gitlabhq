@@ -13,6 +13,7 @@ import { InternalEvents } from '~/tracking';
 
 Vue.use(GlToast);
 export default {
+  name: 'CodeDropdownCloneItem',
   components: {
     GlDisclosureDropdownItem,
     GlFormGroup,

@@ -52,9 +52,6 @@ class Issue < ApplicationRecord
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
   TYPES_FOR_LIST = %w[issue incident test_case task objective key_result ticket].freeze
 
-  # This default came from the enum `issue_type` column. Defined as default in the DB
-  DEFAULT_ISSUE_TYPE = :issue
-
   # A list of types user can change between - both original and new
   # type must be included in this list. This is needed for legacy issues
   # where it's possible to switch between issue and incident.
@@ -86,10 +83,20 @@ class Issue < ApplicationRecord
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues,
+  has_many :merge_request_issues,
     class_name: 'MergeRequestsClosingIssues',
     inverse_of: :issue,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  # Sibling association scoped to closes-type rows so readers (e.g.
+  # WorkItems::Widgets::Development) and GraphQL preloaders can eager-load
+  # exactly the rows they consume. Chaining `.link_type_closes` on the
+  # unscoped association above bypasses Rails' preload cache and causes
+  # an N+1 per work item.
+  has_many :merge_request_closing_issues,
+    -> { link_type_closes },
+    class_name: 'MergeRequestsClosingIssues',
+    inverse_of: :issue
 
   has_many :issue_assignees
   has_many :issue_email_participants
@@ -127,11 +134,6 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
-  has_one :work_item_description,
-    class_name: 'WorkItems::Description',
-    inverse_of: :work_item,
-    autosave: true
-
   has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
   has_one :work_item_position, class_name: 'WorkItems::Position', inverse_of: :work_item
 
@@ -140,8 +142,6 @@ class Issue < ApplicationRecord
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
   accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
-  accepts_nested_attributes_for :work_item_description
-
   validates :project, presence: true, if: -> { !namespace || namespace.is_a?(Namespaces::ProjectNamespace) }
   validates :namespace, presence: true
   validates :work_item_type, presence: true
@@ -310,8 +310,6 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
-  before_validation :ensure_work_item_description, if: :importing?
-
   after_save :ensure_metrics!, unless: :skip_metrics?
   after_commit :expire_etag_cache, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
@@ -738,10 +736,6 @@ class Issue < ApplicationRecord
     @design_collection ||= DesignManagement::DesignCollection.new(self)
   end
 
-  def from_service_desk?
-    author.support_bot?
-  end
-
   def issue_link_type
     link_class = self.class.related_link_class
     return unless respond_to?(:issue_link_type_value) && respond_to?(:issue_link_source_id)
@@ -910,26 +904,8 @@ class Issue < ApplicationRecord
     !require_legacy_views?
   end
 
-  # Legacy views/workflows only
-  # - Service Desk were not converted to the work items framework.
-  # - Incidents were not converted to the work items framework.
-  #
-  # Overridden in EE for test case check
   def require_legacy_views?
-    from_service_desk? || work_item_type&.incident?
-  end
-
-  def ensure_work_item_description
-    return if work_item_description.present?
-
-    build_work_item_description(
-      description: description,
-      description_html: description_html,
-      last_edited_at: last_edited_at,
-      last_edited_by_id: last_edited_by_id,
-      lock_version: lock_version,
-      cached_markdown_version: cached_markdown_version
-    )
+    work_item_type&.use_legacy_view? || false
   end
 
   def ==(other)

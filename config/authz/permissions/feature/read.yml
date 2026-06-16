@@ -1,0 +1,3 @@
+---
+name: read_feature
+description: Grants the ability to read instance feature flags

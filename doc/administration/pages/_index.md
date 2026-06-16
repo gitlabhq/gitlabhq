@@ -14,7 +14,7 @@ title: GitLab Pages administration
 
 GitLab Pages provides static site hosting for GitLab projects and groups.
 Server administrators must configure Pages before users can access this feature.
-With GitLab Pages, administrators can:
+As an administrator, you can use GitLab Pages to:
 
 - Host static websites securely with [custom domains](#custom-domains) and SSL/TLS certificates.
 - Enable authentication to control access to Pages sites through GitLab permissions.

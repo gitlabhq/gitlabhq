@@ -1,0 +1,21 @@
+---
+key_path: counts.count_root_groups_mcp_server_enabled
+description: Count of top-level groups with MCP server enabled
+product_group: ai_framework
+product_categories:
+  - mcp_server
+value_type: number
+status: active
+milestone: "19.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239759
+time_frame: all
+data_source: database
+instrumentation_class: CountRootGroupsMcpServerEnabledMetric
+options:
+  mcp_server_enabled: true
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

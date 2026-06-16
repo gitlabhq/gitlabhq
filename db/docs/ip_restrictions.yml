@@ -4,7 +4,8 @@ classes:
 - IpRestriction
 feature_categories:
 - permissions
-description: Stores group-level IP restrictions
+description: Stores IP address restrictions configured for groups to limit access
+  by network location.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12669
 milestone: '12.0'
 gitlab_schema: gitlab_main_org

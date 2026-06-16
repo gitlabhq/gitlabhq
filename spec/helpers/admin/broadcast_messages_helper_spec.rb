@@ -135,7 +135,7 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
 
   describe '#render_broadcast_message' do
     context 'when message is banner' do
-      let_it_be(:broadcast_message) do
+      let_it_be(:broadcast_message, freeze: false) do
         System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :banner)
       end.freeze
 
@@ -145,7 +145,7 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when message is notification' do
-      let_it_be(:broadcast_message) do
+      let_it_be(:broadcast_message, freeze: false) do
         System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :notification)
       end.freeze
 

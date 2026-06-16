@@ -16,6 +16,7 @@ export default {
       default: false,
     },
   },
+  emits: ['addUsers'],
   modalOptions: {
     actionPrimary: {
       text: s__('UserLists|Add'),

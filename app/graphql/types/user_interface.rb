@@ -111,6 +111,9 @@ module Types
     field :contributed_projects,
       description: 'Projects the user has contributed to.',
       resolver: Resolvers::Projects::UserContributedProjectsResolver
+    field :events,
+      description: 'Activity events visible to the current user, most recent first.',
+      resolver: Resolvers::Users::EventsResolver
     field :namespace,
       type: Types::NamespaceType,
       null: true,

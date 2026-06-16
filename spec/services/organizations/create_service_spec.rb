@@ -25,7 +25,16 @@ RSpec.describe Organizations::CreateService, feature_category: :organization do
       end
     end
 
-    context 'when user has permission' do
+    context 'when on self-managed' do
+      it 'returns an error' do
+        expect(response).to be_error
+
+        expect(response.message).to match_array(
+          ['You have insufficient permissions to create organizations'])
+      end
+    end
+
+    context 'when user has permission', :saas do
       shared_examples 'creating an organization' do
         it 'creates the organization' do
           expect { response }.to change { Organizations::Organization.count }
@@ -66,7 +75,7 @@ RSpec.describe Organizations::CreateService, feature_category: :organization do
       end
     end
 
-    context 'when `organization_switching` FF is disabled' do
+    context 'when `organization_switching` FF is disabled', :saas do
       before do
         stub_feature_flags(organization_switching: false)
       end

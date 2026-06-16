@@ -2,8 +2,8 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Activate GitLab Enterprise Edition (EE) to unlock Premium and Ultimate features. Learn activation steps, license options, and troubleshooting tips.
 title: Activate GitLab Enterprise Edition (EE)
+description: "Activate GitLab Enterprise Edition with an activation code to unlock paid features. Learn to activate your subscription for new, scaled, or offline instances."
 ---
 
 {{< details >}}
@@ -72,7 +72,7 @@ To activate your instance for an offline environment:
 - [Activate GitLab EE with a license file or key](license_file.md).
 
 If you have questions or need assistance activating your instance,
-[contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+[contact GitLab Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support).
 
 When [the license expires](license_file.md#what-happens-when-your-license-expires),
 some functionality is locked.
@@ -87,7 +87,7 @@ If you are running GitLab Community Edition (CE), you can upgrade your installat
 EE. For more information, see [other upgrade paths](../update/convert_to_ee/_index.md).
 
 If you have questions or need assistance,
-[contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+[contact GitLab Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support).
 
 ## Troubleshooting
 
@@ -143,4 +143,4 @@ This can be caused by:
   - Check [DNS settings](https://docs.gitlab.com/omnibus/settings/dns/).
   - Contact either:
     - Your GitLab sales representative to request an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
-    - [GitLab Support](https://about.gitlab.com/support/#contact-support) to request assistance with [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).
+    - [GitLab Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support) to request assistance with [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).

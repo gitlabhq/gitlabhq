@@ -6,6 +6,7 @@ import { __, s__, sprintf } from '~/locale';
 import actionMutation from '../graphql/mutations/action.mutation.graphql';
 
 export default {
+  name: 'EnvironmentActions',
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdown,

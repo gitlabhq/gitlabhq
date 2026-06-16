@@ -4,6 +4,7 @@ import { updateElementsVisibility } from '../utils/dom';
 import TreePage from './tree.vue';
 
 export default {
+  name: 'RepositoryIndex',
   components: {
     TreePage,
   },

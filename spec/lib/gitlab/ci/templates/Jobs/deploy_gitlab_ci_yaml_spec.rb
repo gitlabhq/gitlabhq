@@ -40,7 +40,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
   end
 
   describe 'the created pipeline' do
-    let_it_be(:project, refind: true) { create(:project, :repository) }
+    let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:user) { project.first_owner }
     let(:default_branch) { 'master' }

@@ -1,12 +1,13 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import AlertDetails from '~/vue_shared/alert_details/components/alert_details.vue';
@@ -15,6 +16,7 @@ import { PAGE_CONFIG, SEVERITY_LEVELS } from '~/vue_shared/alert_details/constan
 import createIssueMutation from '~/vue_shared/alert_details/graphql/mutations/alert_issue_create.mutation.graphql';
 import alertQuery from '~/vue_shared/alert_details/graphql/queries/alert_sidebar_details.query.graphql';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
 import createStore from '~/vue_shared/components/metric_images/store/';
 import service from '~/vue_shared/alert_details/service';
@@ -71,7 +73,7 @@ describe('AlertDetails', () => {
     ]);
   };
 
-  function mountComponent({
+  function createComponent({
     data,
     mountMethod = shallowMount,
     provide = {},
@@ -105,6 +107,9 @@ describe('AlertDetails', () => {
         stubs: {
           AlertSummaryRow,
           'metric-images-tab': true,
+          DetailLayout: stubComponent(DetailLayout, {
+            template: RENDER_ALL_SLOTS_TEMPLATE,
+          }),
           ...stubs,
         },
         store: createStore({}, service),
@@ -120,19 +125,19 @@ describe('AlertDetails', () => {
     mock.restore();
   });
 
-  const findTabs = () => wrapper.findByTestId('alertDetailsTabs');
-  const findCreateIncidentBtn = () => wrapper.findByTestId('createIncidentBtn');
-  const findViewIncidentBtn = () => wrapper.findByTestId('viewIncidentBtn');
-  const findIncidentCreationAlert = () => wrapper.findByTestId('incidentCreationError');
-  const findEnvironmentName = () => wrapper.findByTestId('environmentName');
-  const findEnvironmentPath = () => wrapper.findByTestId('environmentPath');
+  const findTabs = () => wrapper.findByTestId('alert-details-tabs');
+  const findCreateIncidentBtn = () => wrapper.findByTestId('create-incident-button');
+  const findViewIncidentBtn = () => wrapper.findByTestId('view-incident-button');
+  const findIncidentCreationAlert = () => wrapper.findByTestId('incident-creation-error');
+  const findEnvironmentName = () => wrapper.findByTestId('environment-name');
+  const findEnvironmentPath = () => wrapper.findByTestId('environment-path');
   const findDetailsTable = () => wrapper.findComponent(AlertDetailsTable);
   const findMetricsTab = () => wrapper.findComponent(MetricImagesTab);
 
   describe('Alert details', () => {
     describe('when alert is null', () => {
       beforeEach(() => {
-        mountComponent({ data: { alert: null } });
+        createComponent({ data: { alert: null } });
       });
 
       it('shows an empty state', () => {
@@ -142,7 +147,7 @@ describe('AlertDetails', () => {
 
     describe('when alert is present', () => {
       beforeEach(() => {
-        mountComponent({ data: { alert: mockAlert } });
+        createComponent({ data: { alert: mockAlert } });
       });
 
       it('renders a tab with overview information', () => {
@@ -158,18 +163,23 @@ describe('AlertDetails', () => {
       });
 
       it('renders a title', () => {
-        expect(wrapper.findByTestId('title').text()).toBe(mockAlert.title);
+        createComponent({
+          mountMethod: mount,
+          data: { alert: { ...mockAlert } },
+          stubs: { DetailLayout },
+        });
+        expect(wrapper.findByTestId('page-heading').text()).toBe(mockAlert.title);
       });
 
       it('renders a start time', () => {
-        expect(wrapper.findByTestId('startTimeItem').exists()).toBe(true);
-        expect(wrapper.findByTestId('startTimeItem').props('time')).toBe(mockAlert.startedAt);
+        expect(wrapper.findByTestId('start-time-item').exists()).toBe(true);
+        expect(wrapper.findByTestId('start-time-item').props('time')).toBe(mockAlert.startedAt);
       });
     });
 
     describe('Metrics tab', () => {
       it('should mount without errors', () => {
-        mountComponent({
+        createComponent({
           provide: {
             canUpdate: true,
             iid: '1',
@@ -185,26 +195,26 @@ describe('AlertDetails', () => {
 
     describe('individual alert fields', () => {
       describe.each`
-        field               | data            | isShown
-        ${'eventCount'}     | ${1}            | ${true}
-        ${'eventCount'}     | ${undefined}    | ${false}
-        ${'monitoringTool'} | ${'New Relic'}  | ${true}
-        ${'monitoringTool'} | ${undefined}    | ${false}
-        ${'service'}        | ${'Prometheus'} | ${true}
-        ${'service'}        | ${undefined}    | ${false}
-        ${'runbook'}        | ${undefined}    | ${false}
-        ${'runbook'}        | ${'run.com'}    | ${true}
-      `(`$desc`, ({ field, data, isShown }) => {
+        testId               | field               | data            | isShown
+        ${'event-count'}     | ${'eventCount'}     | ${1}            | ${true}
+        ${'event-count'}     | ${'eventCount'}     | ${undefined}    | ${false}
+        ${'monitoring-tool'} | ${'monitoringTool'} | ${'New Relic'}  | ${true}
+        ${'monitoring-tool'} | ${'monitoringTool'} | ${undefined}    | ${false}
+        ${'service'}         | ${'service'}        | ${'Prometheus'} | ${true}
+        ${'service'}         | ${'service'}        | ${undefined}    | ${false}
+        ${'runbook'}         | ${'runbook'}        | ${undefined}    | ${false}
+        ${'runbook'}         | ${'runbook'}        | ${'run.com'}    | ${true}
+      `(`$desc`, ({ testId, field, data, isShown }) => {
         beforeEach(() => {
-          mountComponent({ data: { alert: { ...mockAlert, [field]: data } } });
+          createComponent({ data: { alert: { ...mockAlert, [field]: data } } });
         });
 
         it(`${field} is ${isShown ? 'displayed' : 'hidden'} correctly`, () => {
-          const element = wrapper.findByTestId(field);
+          const element = wrapper.findByTestId(testId);
           if (isShown) {
             expect(element.text()).toContain(data.toString());
           } else {
-            expect(wrapper.findByTestId(field).exists()).toBe(false);
+            expect(wrapper.findByTestId(testId).exists()).toBe(false);
           }
         });
       });
@@ -212,7 +222,7 @@ describe('AlertDetails', () => {
 
     describe('environment fields', () => {
       it('should show the environment name with a link to the path', () => {
-        mountComponent();
+        createComponent();
         const path = findEnvironmentPath();
 
         expect(findEnvironmentName().exists()).toBe(false);
@@ -222,7 +232,7 @@ describe('AlertDetails', () => {
 
       it('should only show the environment name if the path is not provided', () => {
         environmentData = { name: environmentName, path: null };
-        mountComponent();
+        createComponent();
 
         expect(findEnvironmentPath().exists()).toBe(false);
         expect(findEnvironmentName().text()).toBe(environmentName);
@@ -232,7 +242,7 @@ describe('AlertDetails', () => {
     describe('Create incident from alert', () => {
       it('should display "View incident" button that links the incident page when incident exists', () => {
         const iid = '3';
-        mountComponent({
+        createComponent({
           data: { alert: { ...mockAlert, issue: { iid } }, sidebarStatus: false },
         });
 
@@ -245,7 +255,7 @@ describe('AlertDetails', () => {
 
       it('should display "Create incident" button when incident doesn\'t exist yet', async () => {
         const issue = null;
-        mountComponent({
+        createComponent({
           data: { alert: { ...mockAlert, issue } },
         });
 
@@ -255,7 +265,7 @@ describe('AlertDetails', () => {
       });
 
       it('calls `$apollo.mutate` with `createIssueQuery`', () => {
-        mountComponent({
+        createComponent({
           mountMethod: mount,
           data: { alert: { ...mockAlert } },
         });
@@ -270,7 +280,7 @@ describe('AlertDetails', () => {
 
       it('shows error alert when incident creation fails', async () => {
         const errorMsg = 'Something went wrong';
-        mountComponent({
+        createComponent({
           mountMethod: mount,
           data: { alert: { ...mockAlert, alertIid: 1 } },
           handlers: {
@@ -288,7 +298,7 @@ describe('AlertDetails', () => {
 
     describe('View full alert details', () => {
       beforeEach(async () => {
-        mountComponent({
+        createComponent({
           data: { alert: mockAlert },
           handlers: {
             ...defaultHandlers,
@@ -320,37 +330,38 @@ describe('AlertDetails', () => {
 
     describe('loading state', () => {
       beforeEach(() => {
-        mountComponent();
+        createComponent();
       });
 
-      it('displays a loading state when loading', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      it('passes the loading state to the detail layout', () => {
+        expect(wrapper.findComponent(DetailLayout).props('loading')).toBe(true);
       });
     });
 
     describe('error state', () => {
       it('displays a error state correctly', () => {
-        mountComponent({ data: { errored: true } });
+        createComponent({ data: { errored: true } });
         expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
       });
 
       it('renders html-errors correctly', () => {
-        mountComponent({
-          data: { errored: true, sidebarErrorMessage: '<span data-testid="htmlError" />' },
+        createComponent({
+          data: { errored: true, sidebarErrorMessage: '<span data-testid="html-error" />' },
         });
-        expect(wrapper.findByTestId('htmlError').exists()).toBe(true);
+        expect(wrapper.findByTestId('html-error').exists()).toBe(true);
       });
 
       it('does not display an error when dismissed', () => {
-        mountComponent({ data: { errored: true, isErrorDismissed: true } });
+        createComponent({ data: { errored: true, isErrorDismissed: true } });
         expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
       });
     });
 
     describe('header', () => {
-      const findHeader = () => wrapper.findByTestId('alert-header');
+      const findPageHeadingDescription = () => wrapper.findByTestId('page-heading-description');
       const stubs = {
         TimeAgoTooltip: { template: '<span>now</span>' },
+        DetailLayout,
       };
 
       describe('individual header fields', () => {
@@ -362,7 +373,7 @@ describe('AlertDetails', () => {
           `When createdAt=$createdAt, monitoringTool=$monitoringTool`,
           ({ createdAt, monitoringTool, result }) => {
             beforeEach(() => {
-              mountComponent({
+              createComponent({
                 data: { alert: { ...mockAlert, createdAt, monitoringTool } },
                 mountMethod: mount,
                 stubs,
@@ -370,7 +381,7 @@ describe('AlertDetails', () => {
             });
 
             it('header text is shown correctly', () => {
-              expect(findHeader().text()).toBe(result);
+              expect(findPageHeadingDescription().text()).toBe(result);
             });
           },
         );
@@ -379,7 +390,7 @@ describe('AlertDetails', () => {
 
     describe('tab navigation', () => {
       beforeEach(() => {
-        mountComponent({ data: { alert: mockAlert } });
+        createComponent({ data: { alert: mockAlert } });
       });
 
       it.each`
@@ -406,7 +417,7 @@ describe('AlertDetails', () => {
     });
 
     it('should not track alert details page views when the tracking options do not exist', () => {
-      mountComponent(mountOptions);
+      createComponent(mountOptions);
       expect(Tracking.event).not.toHaveBeenCalled();
     });
 
@@ -415,7 +426,7 @@ describe('AlertDetails', () => {
         category: 'Alert Management',
         action: 'view_alert_details',
       };
-      mountComponent({ ...mountOptions, provide: { trackAlertsDetailsViewsOptions } });
+      createComponent({ ...mountOptions, provide: { trackAlertsDetailsViewsOptions } });
       const { category, action } = trackAlertsDetailsViewsOptions;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });

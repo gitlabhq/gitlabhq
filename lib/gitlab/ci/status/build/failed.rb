@@ -23,6 +23,9 @@ module Gitlab
             no_updates_canceling: 'canceling job stopped receiving updates',
             server_timeout_running: 'running server timeout',
             server_timeout_canceling: 'canceling server timeout',
+            runner_configuration_error: 'runner configuration error',
+            runner_external_dependency_failure: 'runner external dependency failure',
+            runner_interrupted: 'runner interrupted',
             archived_failure: 'archived failure',
             unmet_prerequisites: 'unmet prerequisites',
             scheduler_failure: 'scheduler failure',
@@ -31,6 +34,7 @@ module Gitlab
             protected_environment_failure: 'protected environment failure',
             pipeline_loop_detected: 'job would create infinitely looping pipelines',
             invalid_bridge_trigger: 'downstream pipeline trigger definition is invalid',
+            downstream_project_trigger_resolved_to_empty: 'trigger:project resolved to a blank value',
             downstream_bridge_project_not_found: 'downstream project could not be found',
             upstream_bridge_project_not_found: 'upstream project could not be found',
             insufficient_bridge_permissions: 'no permissions to trigger downstream pipeline',
@@ -53,7 +57,8 @@ module Gitlab
             failed_outdated_deployment_job: 'failed outdated deployment job',
             reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
             job_router_failure: 'The Job Router failed to run this job.',
-            job_token_expired: 'job token has expired'
+            job_token_expired: 'job token has expired',
+            id_token_burned_project_path: 'CI ID token issuance disabled for this project path'
           }.freeze
           # rubocop: enable Layout/LineLength
 

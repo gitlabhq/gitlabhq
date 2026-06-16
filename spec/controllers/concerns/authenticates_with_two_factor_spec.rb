@@ -185,7 +185,8 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
               }
             )
           )
-          allow(controller).to receive(:render).with('devise/sessions/two_factor')
+          allow(controller).to receive(:render).with('devise/sessions/two_factor', status: :ok)
+          allow(controller).to receive(:render).with('devise/sessions/two_factor', status: :unauthorized)
         end
 
         let(:user) { create(:user, :two_factor_via_webauthn) }
@@ -237,8 +238,8 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
             authenticate_with_two_factor_via_webauthn
           end
 
-          it 'prompts the user for 2FA re-authentication' do
-            expect(controller).to receive(:prompt_for_two_factor)
+          it 'prompts the user for 2FA re-authentication with 401 status' do
+            expect(controller).to receive(:prompt_for_two_factor).with(user, status: :unauthorized)
 
             authenticate_with_two_factor_via_webauthn
           end

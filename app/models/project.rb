@@ -58,7 +58,6 @@ class Project < ApplicationRecord
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
-  ignore_column :delete_error, remove_with: '19.0', remove_after: '2026-04-22'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -1326,11 +1325,6 @@ class Project < ApplicationRecord
         }x
     end
 
-    def trending
-      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
-        .reorder('trending_projects.id ASC')
-    end
-
     def cached_count
       Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
         Project.count
@@ -1881,7 +1875,7 @@ class Project < ApplicationRecord
   end
 
   def external_import?
-    safe_import_url.present?
+    import_url.present?
   end
 
   def notify_project_import_complete?
@@ -3272,10 +3266,6 @@ class Project < ApplicationRecord
       else
         Storage::LegacyProject.new(self)
       end
-  end
-
-  def storage_upgradable?
-    storage_version != LATEST_STORAGE_VERSION
   end
 
   def snippets_visible?(user = nil)

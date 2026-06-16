@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_composition do
-  let(:pipeline)       { create(:ci_pipeline) }
+  let(:pipeline)       { build_stubbed(:ci_pipeline) }
   let(:yaml_variables) { {} }
   let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger) }
 

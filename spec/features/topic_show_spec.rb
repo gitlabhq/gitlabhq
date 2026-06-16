@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Topic show page', :with_current_organization, feature_category: :groups_and_projects do
-  let_it_be(:current_organization, reload: true) { create(:organization, :public, name: 'Current Public Organization') }
+  let_it_be_with_reload(:current_organization) { create(:organization, :public, name: 'Current Public Organization') }
 
   let_it_be(:topic) do
     create(

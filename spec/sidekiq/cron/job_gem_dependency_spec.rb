@@ -7,10 +7,12 @@ RSpec.describe Sidekiq::Cron::Job, :allow_unrouted_sidekiq_calls, feature_catego
   describe 'cron jobs' do
     context 'when Fugit depends on ZoTime or EoTime' do
       before do
+        job = Gitlab::SidekiqConfig.cron_jobs['pipeline_schedule_worker']
+
         described_class.create( # rubocop:disable Rails/SaveBang
           name: 'TestCronWorker',
-          cron: Settings.cron_jobs[:pipeline_schedule_worker]['cron'],
-          class: Settings.cron_jobs[:pipeline_schedule_worker]['job_class']
+          cron: job['cron'],
+          class: job['class']
         )
       end
 

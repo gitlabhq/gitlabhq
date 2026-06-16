@@ -8,7 +8,7 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
 
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:get_params) do
       {
@@ -228,7 +228,7 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
   describe 'POST /:namespace/:project/merge_requests' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let(:create_params) do
       {

@@ -48,7 +48,11 @@ module WikiHelper
       slug = parts[0..i].join('/')
       basename = File.basename(slug)
       title = WikiPage.unhyphenize(basename)
-      title = 'Home' if title.casecmp('home') == 0
+      if title.casecmp('home') == 0
+        title = 'Home'
+      elsif WikiPage::RESERVED_SLUGS.any? { |reserved| reserved.casecmp?(basename) }
+        title = title.upcase_first
+      end
 
       { text: title, href: wiki_page_path(@wiki, slug) }
     end

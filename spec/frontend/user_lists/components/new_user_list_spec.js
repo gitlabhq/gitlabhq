@@ -1,19 +1,14 @@
 import { GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { visitUrl } from '~/lib/utils/url_utility';
 import NewUserList from '~/user_lists/components/new_user_list.vue';
-import createStore from '~/user_lists/store/new';
 import { userList } from 'jest/feature_flags/mock_data';
 
 jest.mock('~/api');
 jest.mock('~/lib/utils/url_utility');
-
-Vue.use(Vuex);
 
 describe('user_lists/components/new_user_list', () => {
   let wrapper;
@@ -24,10 +19,10 @@ describe('user_lists/components/new_user_list', () => {
 
   beforeEach(() => {
     wrapper = mount(NewUserList, {
-      store: createStore({ projectId: '1' }),
       provide: {
         featureFlagsPath: '/feature_flags',
         userListsDocsPath: '/docs/user_lists',
+        projectId: '1',
       },
     });
   });

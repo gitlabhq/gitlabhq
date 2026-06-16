@@ -73,7 +73,7 @@ docs-lint release-note-categories:
   stage: lint
   needs: []
   script:
-    - python3 scripts/lint/validate_release_categories.py --release-notes doc/releases/**/*.md
+    - ruby scripts/lint/validate_release_categories.rb --release-notes doc/releases/**/*.md
 
 docs-lint mermaid:
   extends:
@@ -151,8 +151,8 @@ docs hugo_build:
     - hugo --gc --printPathWarnings --panicOnWarning  --environment test
     # Test for invalid index pages
     # See https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-index-filenames.sh
-    - make check-index-pages SEARCH_DIR="../doc"
-    - make check-index-pages SEARCH_DIR="../doc-locale"
+    - make check-index-pages SEARCH_DIR="../doc" SEARCH_PROJECT="gitlab"
+    - make check-index-pages SEARCH_DIR="../doc-locale" SEARCH_PROJECT="gitlab"
 
 docs-lint links:
   extends:
@@ -289,10 +289,25 @@ docs-i18n-fix-alert-boxes:
   rules:
     - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
       when: never
+    - if: '$GITLAB_ARGO_BOT_TOKEN == null'
+      when: never
     - !reference [.docs:rules:docs-i18n-lint, rules]
   before_script:
     - apk add --no-cache perl
-    - git fetch --depth=20 origin "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
-    - git fetch --depth=20 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+    - |
+      # Fork MRs: source branch lives in the fork, not origin (the CI project).
+      if [ "$CI_MERGE_REQUEST_SOURCE_PROJECT_ID" != "$CI_MERGE_REQUEST_PROJECT_ID" ]; then
+        SOURCE_URL="https://oauth2:${GITLAB_ARGO_BOT_TOKEN}@gitlab.com/${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH}.git"
+        if git remote get-url source >/dev/null 2>&1; then
+          git remote set-url source "$SOURCE_URL"
+        else
+          git remote add source "$SOURCE_URL"
+        fi
+        SOURCE_REMOTE=source
+      else
+        SOURCE_REMOTE=origin
+      fi
+      git fetch --depth=20 "$SOURCE_REMOTE" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+      git fetch --depth=20 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
   script:
     - scripts/i18n_fix_alert_box.sh --ci

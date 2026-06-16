@@ -84,36 +84,13 @@ RSpec.describe EnforcesStepUpAuthentication, feature_category: :system_access do
 
     let(:example_doc_link) { 'https://example.com/company-internal-docs-for-step-up-auth' }
 
-    let(:provider_oidc_no_step_up) { GitlabSettings::Options.new(name: 'oidc_no_step_up') }
-    let(:provider_oidc) do
-      GitlabSettings::Options.new(
-        name: 'oidc',
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: {
-                acr: 'gold'
-              }
-            }
-          }
-        }
-      )
+    let(:provider_oidc_no_step_up) do
+      build(:omniauth_provider_config, :no_step_up_auth, provider_name: 'oidc_no_step_up')
     end
 
+    let(:provider_oidc) { build(:omniauth_provider_config, provider_name: 'oidc') }
     let(:provider_oidc_doc_link) do
-      GitlabSettings::Options.new(
-        name: 'oidc_doc_link',
-        step_up_auth: {
-          admin_mode: {
-            documentation_link: example_doc_link,
-            id_token: {
-              required: {
-                acr: 'gold'
-              }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, provider_name: 'oidc_doc_link', documentation_link: example_doc_link)
     end
 
     let(:session_unknown_succeeded) { { 'unknown' => { 'admin_mode' => { 'state' => 'succeeded' } } } }

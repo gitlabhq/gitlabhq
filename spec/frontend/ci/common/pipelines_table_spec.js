@@ -144,9 +144,6 @@ describe('Pipelines Table', () => {
       });
 
       it('should render the latest downstream pipelines only', () => {
-        // component receives two downstream pipelines. one of them is already outdated
-        // because we retried the trigger job, so the mini pipeline graph will only
-        // render the newly created downstream pipeline instead
         expect(firstPipeline.triggered).toHaveLength(2);
         expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
       });

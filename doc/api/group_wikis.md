@@ -98,10 +98,10 @@ Example response:
 
 ## Create a wiki page
 
-Creates a wiki page for a specific project with the given title, slug, and content.
+Creates a wiki page for a specific group with the given title, slug, and content.
 
 ```plaintext
-POST /projects/:id/wikis
+POST /groups/:id/wikis
 ```
 
 | Attribute | Type           | Required | Description |

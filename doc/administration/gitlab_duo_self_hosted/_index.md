@@ -9,7 +9,7 @@ title: Self-hosted models
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -21,6 +21,7 @@ title: Self-hosted models
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 - Changed to require the GitLab Duo Agent Platform Self-Hosted add-on for offline licenses in GitLab 18.8
 - Changed to usage billing of features in GitLab Duo Agent Platform for online licenses in GitLab 18.9
 
@@ -99,7 +100,7 @@ For example:
 {
   "InstanceId": "ccbb3949-9836-471c-b2nb-32a38e8cca99",
   "GlobalUserId": "KWDTe17sGSADiAzEGJ6IuL1D7RAzsXqa2wun3aX1YuA=",
-  "Quantity": 1, 
+  "Quantity": 1,
   "Timestamp": "2026-05-04 18:04:30.969000000"
 }
 ```
@@ -162,16 +163,16 @@ This option provides flexibility by allowing you to:
 > - Internet connectivity is required for these features.
 > - This is not a fully self-hosted or isolated configuration.
 
-#### GitLab managed models
+#### GitLab-managed models
 
-Use GitLab managed models to connect to AI models without the need to self-host infrastructure. These models are managed entirely by GitLab.
+Use GitLab-managed models to connect to AI models without the need to self-host infrastructure. These models are managed entirely by GitLab.
 
 You can select the default GitLab model to use with an AI-native feature. For the default model, GitLab uses the best model based on availability, quality, and reliability. The model used for a feature can change without notice.
 
-When you select a specific GitLab managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI Gateway fail and users cannot use that feature until another model is selected.
+When you select a specific GitLab-managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI Gateway fail and users cannot use that feature until another model is selected.
 
 > [!note]
-> When you configure a feature to use GitLab managed models:
+> When you configure a feature to use GitLab-managed models:
 >
 > - Calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 > - Internet connectivity is required for these features.
@@ -203,20 +204,19 @@ For more information, see the [GitLab.com AI Gateway configuration diagram](conf
 
 To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../gitlab_duo/configure/gitlab_self_managed.md).
 
-## Set up a private infrastructure
+## Set up private infrastructure
 
-If you have an offline license, you can set up a fully private infrastructure:
+If you have an offline license, you can set up fully private infrastructure:
 
 1. Install a Large Language Model (LLM) serving infrastructure.
 
-   - GitLab supports various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock,
-     and Azure OpenAI. For more information about each platform, see [supported LLM platforms documentation](supported_llm_serving_platforms.md).
-
-   - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
-     see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
+   - Review the [supported LLM platforms](supported_llm_serving_platforms.md) to choose
+     a serving and hosting platform, such as vLLM, AWS Bedrock, or Azure OpenAI.
+   - Check the [supported models and hardware requirements](supported_models_and_hardware_requirements.md)
+     to confirm your model and hardware choices.
 
 1. [Install the AI Gateway](../../install/install_ai_gateway.md) to access GitLab Duo features.
-1. [Configure your GitLab instance](configure_duo_features.md) for features to use self-hosted models.
+1. [Configure your GitLab instance](configure_duo_features.md) to use self-hosted models.
 1. [Enable logging](logging.md) to track and manage your system's performance.
 
 ## Related topics

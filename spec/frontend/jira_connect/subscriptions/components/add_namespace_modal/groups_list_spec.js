@@ -10,6 +10,7 @@ import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import GroupsList from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list.vue';
 import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
@@ -33,6 +34,7 @@ jest.mock('~/jira_connect/subscriptions/api', () => {
     fetchGroups: jest.fn(),
   };
 });
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('GroupsList', () => {
   let wrapper;
@@ -84,15 +86,30 @@ describe('GroupsList', () => {
   });
 
   describe('when groups fetch fails', () => {
-    it('renders error message', async () => {
-      fetchGroups.mockRejectedValue();
+    it.each`
+      scenario                      | rejectedValue                                               | expectedMessage
+      ${'no response body'}         | ${undefined}                                                | ${'Failed to load groups. Please try again.'}
+      ${'a server `errors` field'}  | ${{ response: { data: { errors: 'Insufficient scope' } } }} | ${'Insufficient scope'}
+      ${'a server `message` field'} | ${{ response: { data: { message: 'Forbidden' } } }}         | ${'Forbidden'}
+    `('renders $scenario in the alert', async ({ rejectedValue, expectedMessage }) => {
+      fetchGroups.mockRejectedValue(rejectedValue);
       createComponent();
 
       await waitForPromises();
 
       expect(findGlLoadingIcon().exists()).toBe(false);
       expect(findGlAlert().exists()).toBe(true);
-      expect(findGlAlert().text()).toBe('Failed to load groups. Please try again.');
+      expect(findGlAlert().text()).toBe(expectedMessage);
+    });
+
+    it('reports the error to Sentry', async () => {
+      const error = new Error('network');
+      fetchGroups.mockRejectedValue(error);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
   });
 

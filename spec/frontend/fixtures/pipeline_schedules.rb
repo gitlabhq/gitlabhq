@@ -24,7 +24,7 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)', feature_category: :co
     fixtures_path = 'graphql/pipeline_schedules/'
     get_pipeline_schedules_query = 'get_pipeline_schedules.query.graphql'
 
-    let_it_be(:query) do
+    let_it_be(:query, freeze: false) do
       get_graphql_query_as_string("ci/pipeline_schedules/graphql/queries/#{get_pipeline_schedules_query}")
     end
 

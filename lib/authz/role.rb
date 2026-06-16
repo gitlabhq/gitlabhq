@@ -4,7 +4,7 @@ module Authz
   class Role
     BASE_PATH = 'config/authz/roles'
 
-    RESOURCE_SCOPES = %i[project group].freeze
+    RESOURCE_SCOPES = %i[project group organization].freeze
     VALID_SCOPES = (%i[all] + RESOURCE_SCOPES).freeze
 
     class << self
@@ -21,6 +21,20 @@ module Authz
 
       def reset!
         @cache = nil
+        @conditionally_enables_requirements = nil
+      end
+
+      # Maps each permission that declares `conditionally_enables:` to the set
+      # of broader permissions it lists. Used by role expansion: a permission
+      # is granted to the role when the role holds *every* permission in its
+      # requirement set.
+      def conditionally_enables_requirements
+        @conditionally_enables_requirements ||= Authz::Permission.all.each_with_object({}) do |(_, permission), index|
+          requirements = permission.conditionally_enables
+          next if requirements.nil? || requirements.empty?
+
+          index[permission.name.to_sym] = requirements.to_set
+        end
       end
 
       private
@@ -47,16 +61,17 @@ module Authz
       @role_data = role_data
     end
 
-    # Returns all permissions (project + group) for this role including
-    # permissions from inherited roles. This can be limited to project or group
-    # permissions by supplying the optional scope argument
+    # Returns all permissions (project + group + organization) for this role
+    # including permissions from inherited roles. This can be limited to a
+    # single scope by supplying the optional scope argument
     def permissions(scope)
       raise ArgumentError, "Invalid scope: #{scope}" if VALID_SCOPES.exclude?(scope)
 
       return project_permissions if scope == :project
       return group_permissions if scope == :group
+      return organization_permissions if scope == :organization
 
-      @all_permissions ||= project_permissions | group_permissions
+      @all_permissions ||= project_permissions | group_permissions | organization_permissions
     end
 
     # Returns only the permissions directly defined in this role's YAML file
@@ -66,8 +81,10 @@ module Authz
 
       return direct_project_permissions if scope == :project
       return direct_group_permissions if scope == :group
+      return direct_organization_permissions if scope == :organization
 
-      @all_direct_permissions ||= direct_project_permissions | direct_group_permissions
+      @all_direct_permissions ||= direct_project_permissions | direct_group_permissions |
+        direct_organization_permissions
     end
 
     protected
@@ -81,7 +98,7 @@ module Authz
         set.merge(self.class.get(parent_name).resolve_permissions(scope, evaluated_roles))
       end
 
-      inherited | direct_permissions(scope)
+      expand_conditionally_enables(inherited | direct_permissions(scope))
     end
 
     private
@@ -101,15 +118,45 @@ module Authz
     end
 
     # Returns all project permissions for this role including permissions
-    # from inherited roles.
+    # from inherited roles and those derived via `conditionally_enables:` expansion.
     def project_permissions
       @project_permissions ||= resolve_permissions(:project, Set.new)
     end
 
     # Returns all group permissions for this role including permissions
-    # from inherited roles.
+    # from inherited roles and those derived via `conditionally_enables:` expansion.
     def group_permissions
       @group_permissions ||= resolve_permissions(:group, Set.new)
+    end
+
+    # Returns all organization permissions for this role including permissions
+    # from inherited roles and those derived via `conditionally_enables:` expansion.
+    def organization_permissions
+      @organization_permissions ||= resolve_permissions(:organization, Set.new)
+    end
+
+    # Returns a new set that includes every permission in `set` plus every
+    # permission whose `conditionally_enables:` requirements are all satisfied
+    # by the expanding set. Repeats until the set stops growing, which handles
+    # transitive chains (a newly added permission may itself satisfy another
+    # candidate's requirements) and terminates on cycles, since an
+    # unsatisfiable requirement set never grows the result.
+    def expand_conditionally_enables(set)
+      expanded = set.dup
+
+      loop do
+        before = expanded.size
+        conditionally_enables_requirements.each do |name, requirements|
+          expanded.add(name) if requirements.subset?(expanded)
+        end
+        break if expanded.size == before
+      end
+
+      expanded
+    end
+
+    def conditionally_enables_requirements
+      self.class.conditionally_enables_requirements
     end
 
     def direct_project_permissions
@@ -118,6 +165,11 @@ module Authz
 
     def direct_group_permissions
       @direct_group_permissions ||= raw_permissions(:group) | expand_assignable_permissions(:group)
+    end
+
+    def direct_organization_permissions
+      @direct_organization_permissions ||=
+        raw_permissions(:organization) | expand_assignable_permissions(:organization)
     end
   end
 end

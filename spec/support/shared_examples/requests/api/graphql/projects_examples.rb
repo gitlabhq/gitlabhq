@@ -5,10 +5,10 @@ RSpec.shared_examples 'getting a collection of projects' do
 
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'public-group', developers: current_user) }
-  let_it_be(:aimed_for_deletion_project) { create(:project, :public, :aimed_for_deletion, group: group) }
-  let_it_be(:projects) do
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group, name: 'public-group', developers: current_user) }
+  let_it_be(:aimed_for_deletion_project, freeze: false) { create(:project, :public, :aimed_for_deletion, group: group) }
+  let_it_be(:projects, freeze: false) do
     (
       create_list(:project, 5, :public, group: group) << aimed_for_deletion_project
     ).each do |project|
@@ -16,8 +16,8 @@ RSpec.shared_examples 'getting a collection of projects' do
     end
   end
 
-  let_it_be(:other_project) { create(:project, :public, group: group) }
-  let_it_be(:archived_project) { create(:project, :archived, group: group) }
+  let_it_be(:other_project, freeze: false) { create(:project, :public, group: group) }
+  let_it_be(:archived_project, freeze: false) { create(:project, :archived, group: group) }
 
   let(:filters) { {} }
 
@@ -82,7 +82,7 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   describe 'min_access_level' do
-    let_it_be(:project_with_owner_access) { create(:project, :private) }
+    let_it_be(:project_with_owner_access, freeze: false) { create(:project, :private) }
 
     before_all do
       project_with_owner_access.add_owner(current_user)
@@ -166,9 +166,9 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   context 'when providing the programming_language_name argument' do
-    let_it_be(:project) { projects.first }
-    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
-    let_it_be(:repository_language) do
+    let_it_be(:project, freeze: false) { projects.first }
+    let_it_be(:ruby, freeze: false) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language, freeze: false) do
       create(:repository_language, project: project, programming_language: ruby, share: 1)
     end
 
@@ -183,9 +183,9 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   context 'when providing the trending argument' do
-    let_it_be(:trending_project1) { create(:project, :public, group: group) }
-    let_it_be(:trending_project2) { create(:project, :public, group: group) }
-    let_it_be(:test_project) { create(:project, :public, group: group) }
+    let_it_be(:trending_project1, freeze: false) { create(:project, :public, group: group) }
+    let_it_be(:trending_project2, freeze: false) { create(:project, :public, group: group) }
+    let_it_be(:test_project, freeze: false) { create(:project, :public, group: group) }
 
     let(:filters) { { trending: true } }
 
@@ -205,30 +205,6 @@ RSpec.shared_examples 'getting a collection of projects' do
           a_graphql_entity_for(test_project),
           a_graphql_entity_for(other_project)
         )
-    end
-
-    context 'when `disable_trending_args` flag is disabled' do
-      before do
-        stub_feature_flags(disable_trending_args: false)
-
-        post_graphql(query, current_user: current_user)
-      end
-
-      it 'returns only trending projects' do
-        expect(graphql_data_at(field, :nodes))
-          .to contain_exactly(
-            a_graphql_entity_for(trending_project1),
-            a_graphql_entity_for(trending_project2)
-          )
-      end
-
-      it 'excludes non-trending projects' do
-        expect(graphql_data_at(field, :nodes)).not_to include(
-          a_graphql_entity_for(archived_project),
-          a_graphql_entity_for(test_project),
-          a_graphql_entity_for(other_project)
-        )
-      end
     end
   end
 
@@ -256,12 +232,12 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   context 'when providing marked_for_deletion_on filter', :freeze_time do
-    let_it_be(:marked_for_deletion_on) { Date.yesterday }
-    let_it_be(:project_marked_for_deletion) do
+    let_it_be(:marked_for_deletion_on, freeze: false) { Date.yesterday }
+    let_it_be(:project_marked_for_deletion, freeze: false) do
       create(:project, marked_for_deletion_at: marked_for_deletion_on, developers: current_user)
     end
 
-    let_it_be(:second_project_marked_for_deletion) do
+    let_it_be(:second_project_marked_for_deletion, freeze: false) do
       create(:project, marked_for_deletion_at: marked_for_deletion_on - 1.day, developers: current_user)
     end
 
@@ -279,16 +255,16 @@ RSpec.shared_examples 'getting a collection of projects' do
         aimed_for_deletion_project.to_global_id.to_s
       )
       expect(returned_marked_for_deletion_on).to contain_exactly(
-        project_marked_for_deletion.marked_for_deletion_on.iso8601,
-        aimed_for_deletion_project.marked_for_deletion_on.iso8601
+        project_marked_for_deletion.self_deletion_scheduled_deletion_created_on.iso8601,
+        aimed_for_deletion_project.self_deletion_scheduled_deletion_created_on.iso8601
       )
     end
   end
 
   context 'when providing visibility_level filter' do
-    let_it_be(:public_project) { create(:project, :public, owners: [current_user]) }
-    let_it_be(:private_project) { create(:project, :private, owners: [current_user]) }
-    let_it_be(:internal_project) { create(:project, :internal, owners: [current_user]) }
+    let_it_be(:public_project, freeze: false) { create(:project, :public, owners: [current_user]) }
+    let_it_be(:private_project, freeze: false) { create(:project, :private, owners: [current_user]) }
+    let_it_be(:internal_project, freeze: false) { create(:project, :internal, owners: [current_user]) }
 
     where :visibility_level, :included_projects, :excluded_projects do
       nil       | [ref(:public_project), ref(:private_project), ref(:internal_project)] | []
@@ -316,8 +292,8 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   context 'when providing namespace_path filter' do
-    let_it_be(:group) { create(:group, owners: [current_user]) }
-    let_it_be(:project) { create(:project, group: group, owners: [current_user]) }
+    let_it_be(:group, freeze: false) { create(:group, owners: [current_user]) }
+    let_it_be(:project, freeze: false) { create(:project, group: group, owners: [current_user]) }
 
     before do
       post_graphql(query, current_user: current_user)

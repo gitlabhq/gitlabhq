@@ -14,6 +14,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggle-pages-list'],
   computed: {
     headerClasses() {
       return {

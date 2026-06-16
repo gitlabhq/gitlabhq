@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'protected ref' do
-  let_it_be(:factory) { described_class.model_name.singular }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:factory, freeze: false) { described_class.model_name.singular }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   subject(:described_instance) { build(factory, project: project) }
 

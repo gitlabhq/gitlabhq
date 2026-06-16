@@ -8,6 +8,7 @@ import { workspaceLabelsQueries } from '../../../queries/constants';
 import LabelItem from './label_item.vue';
 
 export default {
+  name: 'DropdownContentsLabelsViewWidget',
   components: {
     GlDropdownItem,
     GlLoadingIcon,

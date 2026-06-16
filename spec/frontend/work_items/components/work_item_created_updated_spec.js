@@ -215,7 +215,9 @@ describe('work-item-createdUpdated component', () => {
     it('passes useWorkItemFeatures to the query and renders locked badge from features.notes', async () => {
       await createComponent({
         provide: { glFeatures: { workItemFeaturesField: true } },
-        features: { notes: { discussionLocked: true, __typename: 'WorkItemWidgetNotes' } },
+        features: {
+          notes: { type: 'NOTES', discussionLocked: true, __typename: 'WorkItemWidgetNotes' },
+        },
       });
 
       expect(successHandler).toHaveBeenCalledWith(

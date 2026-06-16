@@ -22,7 +22,7 @@ the Geo site closest to them. This means users don't need to update their Git
 configuration to take advantage of closer Geo sites as they move.
 
 This is possible because, Git push requests can be automatically redirected
-(HTTP) or proxied (SSH) from **secondary** sites to the **primary** site.
+(HTTP) or proxied (SSH) from secondary sites to the primary site.
 
 Though these instructions use [AWS Route53](https://aws.amazon.com/route53/),
 other services such as [Cloudflare](https://www.cloudflare.com/) could be used
@@ -32,19 +32,19 @@ as well.
 
 In this example, we have already set up:
 
-- `primary.example.com` as a Geo **primary** site.
-- `secondary.example.com` as a Geo **secondary** site.
+- `primary.example.com` as a Geo primary site.
+- `secondary.example.com` as a Geo secondary site.
 
 We create a `git.example.com` subdomain that automatically directs
 requests:
 
-- From Europe to the **secondary** site.
-- From all other locations to the **primary** site.
+- From Europe to the secondary site.
+- From all other locations to the primary site.
 
 In any case, you require:
 
-- A working GitLab **primary** site that is accessible at its own address.
-- A working GitLab **secondary** site.
+- A working GitLab primary site that is accessible at its own address.
+- A working GitLab secondary site.
 - A Route53 Hosted Zone managing your domain.
 
 If you haven't yet set up a Geo primary site and secondary site, see the
@@ -76,10 +76,10 @@ routing configurations.
 
 1. For the first **Location**, leave it as `Default`.
 1. Select **Connect to** and select **New endpoint**.
-1. Choose **Type** `value` and fill it in with `<your **primary** IP address>`.
+1. Choose **Type** `value` and fill it in with `<your primary IP address>`.
 1. For the second **Location**, choose `Europe`.
 1. Select **Connect to** and select **New endpoint**.
-1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
+1. Choose **Type** `value` and fill it in with `<your secondary IP address>`.
 
    ![Setting locations and endpoints to geolocation rule](img/single_git_add_traffic_policy_endpoints_v12_3.png)
 
@@ -118,13 +118,13 @@ You can customize the:
 After following the configuration steps documented previously, handling for Git requests is now location aware.
 For requests:
 
-- Outside Europe, all requests are directed to the **primary** site.
+- Outside Europe, all requests are directed to the primary site.
 - Within Europe, over:
   - HTTP:
-    - `git clone http://git.example.com/foo/bar.git` is directed to the **secondary** site.
-    - `git push` is initially directed to the **secondary**, which automatically
+    - `git clone http://git.example.com/foo/bar.git` is directed to the secondary site.
+    - `git push` is initially directed to the secondary, which automatically
       redirects to `primary.example.com`.
   - SSH:
-    - `git clone git@git.example.com:foo/bar.git` is directed to the **secondary**.
-    - `git push` is initially directed to the **secondary**, which automatically
+    - `git clone git@git.example.com:foo/bar.git` is directed to the secondary.
+    - `git push` is initially directed to the secondary, which automatically
       proxies the request to `primary.example.com`.

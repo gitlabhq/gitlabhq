@@ -1,6 +1,6 @@
 ---
-source_checksum: c0a83b7c5451fe50
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: d36ccbb0679c0fc2
+distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -37,7 +37,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Keep feature names lowercase unless they are listed as exceptions in markdownlint or the word list.
 - Capitalize GitLab product tiers (e.g., GitLab Free, GitLab Ultimate), third-party product names, and methodology names.
 - DO NOT match capitalization from the Features page or `features.yml` by default.
-- Use the same capitalization as displayed in the UI when referring to UI elements.
+- Use the same capitalization as displayed in the UI when referring to UI elements; exception: use sentence case for UI text that is all uppercase.
 
 ### Fake Data and Tokens
 
@@ -84,7 +84,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 ### Tables
 
-- DO NOT leave table cells empty; use **N/A** or **None** instead.
+- DO NOT leave table cells empty; use **None** for cells with no meaningful value.
 - Make the header row and delimiter row the same length; DO NOT use shortened delimiters like `|-|-|-|`.
 - Use sentence case for table headers.
 - Place the `Description` column as the right-most column when possible.
@@ -128,7 +128,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT use color alone to differentiate diagram elements (must work in both light and dark modes).
 - DO NOT include links in diagrams (not testable by link checkers).
 - Keep diagrams simple; use rectangles for processes, diamonds for decisions, solid lines for direct relationships, dotted lines for indirect relationships.
-- Save Draw.io diagrams with the `.drawio.svg` extension.
+- Save Draw.io diagrams with the `.drawio.svg` extension and include the diagram definition in the SVG file by selecting **Include a copy of my diagram** on export.
 
 ### Alert Boxes and Special Elements
 
@@ -147,6 +147,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Embed only videos from the official GitLab YouTube channel; link to videos from other sources.
 - Include the video publication date as a comment below every video link or embed.
 - Include a `<div class="video-fallback">` fallback for embedded videos.
+- Use `www.youtube-nocookie.com` in the `src` of embedded video iframes to enable Privacy Enhanced Mode.
 - Follow the same guidelines for click-through demo links as for videos.
 
 ### Navigation and UI References
@@ -157,6 +158,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Place punctuation outside bold tags unless the punctuation is part of the UI element itself.
 - Start optional steps with "Optional." followed by a period.
 - Start recommended steps with "Recommended." followed by a period.
+- Use "Complete the fields" to summarize multiple self-explanatory fields in a single task step rather than documenting each field individually.
 
 ### Documentation Workflow
 
@@ -165,6 +167,9 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Delete documentation added prematurely rather than hiding it with HTML comments; add a link to the original MR in the removal MR.
 - When moving content to a new location and editing it in the same MR, use separate commits (first commit moves only, subsequent commits edit).
 - DO NOT promise to deliver features in a future release; instead reference the proposing issue (e.g., "Support for improvements is proposed in [issue 12345](link)").
+- Assign the technical writer as a reviewer directly on the MR (not just pinged) before the code maintainer review; documentation reviews must not block merging.
+- When a post-merge technical writer review is required, create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Doc%20Review) and link it to the merged MR.
+- Name documentation-only branches in `omnibus-gitlab`, `charts/gitlab`, or `gitlab-operator` starting with `docs/`, `docs-`, or ending with `-docs` to trigger shorter pipelines.
 
 ### Common Mistakes - Repetition
 

@@ -15,6 +15,10 @@ class Groups::ClustersController < ::Clusters::ClustersController
   end
 
   def group
-    @group ||= find_routable!(Group, params[:group_id] || params[:id], request.fullpath)
+    @group ||= find_routable!(Group, group_finder_params[:group_id] || group_finder_params[:id], request.fullpath)
+  end
+
+  def group_finder_params
+    params.permit(:group_id, :id)
   end
 end

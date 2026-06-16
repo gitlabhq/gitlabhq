@@ -159,10 +159,12 @@ export const useMergeConflicts = defineStore('mergeConflicts', {
       try {
         const { data } = await axios.post(resolveConflictsPath, this.getCommitData);
         window.location.assign(data.redirect_to);
-      } catch {
+      } catch (e) {
         this.isSubmitting = false;
         createAlert({
-          message: __('Failed to save merge conflict resolutions. Please try again.'),
+          message:
+            e.response?.data?.message ||
+            __('Failed to save merge conflict resolutions. Please try again.'),
         });
       }
     },

@@ -280,6 +280,7 @@ describe('WorkItemLinkChild', () => {
           endCursor: 'Y3Vyc29yOjE=',
           id: 'gid://gitlab/WorkItem/12',
           pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          useWorkItemFeatures: false,
         });
       });
 

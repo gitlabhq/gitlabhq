@@ -2,7 +2,9 @@
 
 RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
   describe '#run' do
-    let_it_be(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
+    let_it_be(:bulk_import_configuration, freeze: false) do
+      create(:bulk_import_configuration, bulk_import: bulk_import)
+    end
 
     let_it_be_with_reload(:tracker) { create(:bulk_import_tracker, entity: entity) }
 

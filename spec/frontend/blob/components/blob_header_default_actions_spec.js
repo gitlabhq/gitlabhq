@@ -1,9 +1,11 @@
-import { GlButtonGroup, GlButton } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import BlobHeaderActions from '~/blob/components/blob_header_default_actions.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
+  BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
+  BTN_DOWNLOAD_AS_PDF_TITLE,
   BTN_RAW_TITLE,
   RICH_BLOB_VIEWER,
 } from '~/blob/components/constants';
@@ -166,6 +168,80 @@ describe('Blob Header Default Actions', () => {
       expect(wrapper.findComponent(GlButtonGroup).attributes('class')).toBe(
         'gl-hidden @sm/panel:gl-inline-flex',
       );
+    });
+  });
+
+  describe('download dropdown', () => {
+    const markdownRawPath = '/namespace/project/-/raw/main/README.md';
+    const findDownloadDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+    const findDownloadButton = () => wrapper.findByTestId('download-button');
+
+    describe('when file is markdown', () => {
+      beforeEach(() => {
+        createComponent({ rawPath: markdownRawPath });
+      });
+
+      it('renders the download dropdown instead of the plain download button', () => {
+        expect(findDownloadDropdown().exists()).toBe(true);
+        expect(findDownloadButton().exists()).toBe(false);
+      });
+
+      it('passes two items to the dropdown', () => {
+        expect(findDownloadDropdown().props('items')).toHaveLength(2);
+      });
+
+      it('first item is Download as Markdown with correct href', () => {
+        const [markdownItem] = findDownloadDropdown().props('items');
+
+        expect(markdownItem.text).toBe(BTN_DOWNLOAD_AS_MARKDOWN_TITLE);
+        expect(markdownItem.href).toContain('inline=false');
+      });
+
+      it('second item is Print as PDF with an action function', () => {
+        const [, pdfItem] = findDownloadDropdown().props('items');
+
+        expect(pdfItem.text).toBe(BTN_DOWNLOAD_AS_PDF_TITLE);
+        expect(typeof pdfItem.action).toBe('function');
+      });
+    });
+
+    describe('when file is not markdown', () => {
+      it('does not render the dropdown', () => {
+        createComponent({ rawPath: '/namespace/project/-/raw/main/file.txt' });
+
+        expect(findDownloadDropdown().exists()).toBe(false);
+        expect(findDownloadButton().exists()).toBe(true);
+      });
+    });
+
+    describe('Print as PDF action', () => {
+      beforeEach(() => {
+        document.body.innerHTML = `
+          <img src="https://example.com/image.png" loading="lazy" />
+          <details><summary>Summary</summary><p>Content</p></details>
+        `;
+        jest.spyOn(window, 'print').mockImplementation(() => {});
+        createComponent({ rawPath: markdownRawPath });
+
+        const [, pdfItem] = findDownloadDropdown().props('items');
+        pdfItem.action();
+      });
+
+      afterEach(() => {
+        document.body.innerHTML = '';
+      });
+
+      it('calls window.print', () => {
+        expect(window.print).toHaveBeenCalled();
+      });
+
+      it('sets all images to eager loading', () => {
+        expect(document.querySelector('img').getAttribute('loading')).toBe('eager');
+      });
+
+      it('opens all details elements', () => {
+        expect(document.querySelector('details').getAttribute('open')).toBe('');
+      });
     });
   });
 });

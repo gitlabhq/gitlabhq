@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Ci::BuildPrepareWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform(build_id) }
 
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
   context 'when build exists' do
     let(:build) { create(:ci_build) }
     let(:build_id) { build.id }

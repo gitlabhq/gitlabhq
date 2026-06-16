@@ -23,6 +23,7 @@ import EnvironmentFluxResourceSelector from './environment_flux_resource_selecto
 import EnvironmentNamespaceSelector from './environment_namespace_selector.vue';
 
 export default {
+  name: 'EnvironmentForm',
   components: {
     GlButton,
     GlForm,

@@ -152,7 +152,7 @@ describe('DateRangeFilter', () => {
       startDate: new Date('2021-01-01'),
       endDate: new Date('2021-01-02'),
     };
-    await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+    await findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
     expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
     expect(wrapper.emitted('onDateRangeSelected')).toBeUndefined();
@@ -188,15 +188,15 @@ describe('DateRangeFilter', () => {
       expect(findDatetimeRangesPicker().props('startOpened')).toBe(false);
     });
 
-    it('sets startOpend to true if customDateRangeSelected is emitted', async () => {
-      await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+    it('sets startOpend to true if custom-date-range-selected is emitted', async () => {
+      await findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
       expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
     });
   });
 
   it('sets the max-date to tomorrow', async () => {
-    await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+    await findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
     expect(findDatetimeRangesPicker().props('defaultMaxDate').toISOString()).toBe(
       '2024-04-24T00:00:00.000Z',
@@ -207,7 +207,7 @@ describe('DateRangeFilter', () => {
     const minDate = new Date('2024-04-24T00:00:00.000Z');
     mount({ ...defaultProps, defaultMinDate: minDate });
 
-    await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+    await findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
     expect(findDatetimeRangesPicker().props('defaultMinDate').toISOString()).toBe(
       '2024-04-24T00:00:00.000Z',

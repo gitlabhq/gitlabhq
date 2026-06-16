@@ -73,12 +73,16 @@ RSpec.describe PagesDeployment, feature_category: :pages do
   end
 
   describe '.deactivate_all', :freeze_time do
-    let!(:deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
-    let!(:nil_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: nil) }
-    let!(:empty_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: '') }
+    let_it_be_with_reload(:deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
+    let_it_be_with_reload(:nil_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: nil) }
+    let_it_be_with_reload(:empty_path_prefix_deployment) do
+      create(:pages_deployment, project: project, path_prefix: '')
+    end
 
-    let!(:other_project_deployment) { create(:pages_deployment) }
-    let!(:deactivated_deployment) { create(:pages_deployment, project: project, deleted_at: 5.minutes.ago) }
+    let_it_be_with_reload(:other_project_deployment) { create(:pages_deployment) }
+    let_it_be_with_reload(:deactivated_deployment) do
+      create(:pages_deployment, project: project, deleted_at: 5.minutes.ago)
+    end
 
     it 'updates only older deployments for the same project and path prefix' do
       expect { described_class.deactivate_all(project) }
@@ -92,15 +96,26 @@ RSpec.describe PagesDeployment, feature_category: :pages do
   end
 
   describe '.deactivate_deployments_older_than', :freeze_time do
-    let!(:nil_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: nil) }
-    let!(:empty_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: '') }
-    let!(:older_deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
-    let!(:reference_deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
-    let!(:newer_deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
+    let_it_be_with_reload(:nil_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: nil) }
+    let_it_be_with_reload(:empty_path_prefix_deployment) do
+      create(:pages_deployment, project: project, path_prefix: '')
+    end
 
-    let!(:other_project_deployment) { create(:pages_deployment) }
-    let!(:other_path_prefix_deployment) { create(:pages_deployment, project: project, path_prefix: 'other') }
-    let!(:deactivated_deployment) { create(:pages_deployment, project: project, deleted_at: 5.minutes.ago) }
+    let_it_be_with_reload(:older_deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
+    let_it_be_with_reload(:reference_deployment) do
+      create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+    end
+
+    let_it_be_with_reload(:newer_deployment) { create(:pages_deployment, project: project, updated_at: 5.minutes.ago) }
+
+    let_it_be_with_reload(:other_project_deployment) { create(:pages_deployment) }
+    let_it_be_with_reload(:other_path_prefix_deployment) do
+      create(:pages_deployment, project: project, path_prefix: 'other')
+    end
+
+    let_it_be_with_reload(:deactivated_deployment) do
+      create(:pages_deployment, project: project, deleted_at: 5.minutes.ago)
+    end
 
     it 'updates only older deployments for the same project and path prefix' do
       expect { described_class.deactivate_deployments_older_than(reference_deployment) }

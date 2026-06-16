@@ -847,7 +847,7 @@ rspec-predictive:pipeline-generate:
   needs:
     - job: "detect-tests"
     - job: "retrieve-tests-metadata"
-    - job: "detect-system-tests-duo-experiment"
+    - job: "detect-system-tests-duo"
       optional: true
   script:
     - scripts/prepare_predictive_system_pipeline.rb
@@ -1219,31 +1219,31 @@ rspec-ee system pg17 es9:
 
 # PG17 is the default now.
 
-# PG16 (Nightly)
+# PG16 (Nightly) — PREVIOUS PG version. Runs only when its own nightly schedule sets PREVIOUS_NIGHTLY_PG_VERSION=16.
 rspec migration pg16:
   extends:
     - .rspec-base-pg16
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage
     - .rspec-migration-parallel
 
 rspec background_migration pg16:
   extends:
     - .rspec-base-pg16
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage
     - .rspec-background-migration-parallel
 
 rspec unit pg16:
   extends:
     - .rspec-base-pg16
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage
     - .rspec-unit-parallel
 
 rspec integration pg16:
   extends:
     - .rspec-base-pg16
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage
     - .rspec-integration-parallel
 
 rspec system pg16:
@@ -1252,33 +1252,33 @@ rspec system pg16:
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage", rules]
 
-# PG18 (Nightly)
+# PG18 (Nightly) — NEXT PG version. Runs only when its own nightly schedule sets NEXT_NIGHTLY_PG_VERSION=18.
 rspec migration pg18:
   extends:
     - .rspec-base-pg18
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage
     - .rspec-migration-parallel
 
 rspec background_migration pg18:
   extends:
     - .rspec-base-pg18
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage
     - .rspec-background-migration-parallel
 
 rspec unit pg18:
   extends:
     - .rspec-base-pg18
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage
     - .rspec-unit-parallel
 
 rspec integration pg18:
   extends:
     - .rspec-base-pg18
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage
     - .rspec-integration-parallel
 
 rspec system pg18:
@@ -1287,7 +1287,7 @@ rspec system pg18:
     - .rspec-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage", rules]
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
@@ -1339,32 +1339,31 @@ rspec-ee system pg17 opensearch2:
 
 # Production version tests for ES and PG in nightly pipeline are defined in the previous section
 
-# PG16 (EE-Nightly)
-# Adding new job families can cause the nightly pipeline to fail.
+# PG16 (EE-Nightly) — PREVIOUS PG version. Runs only when its own nightly schedule sets PREVIOUS_NIGHTLY_PG_VERSION=16.
 rspec-ee migration pg16:
   extends:
     - .rspec-ee-base-pg16
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
     - .rspec-ee-migration-parallel
 
 rspec-ee background_migration pg16:
   extends:
     - .rspec-ee-base-pg16
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
     - .rspec-ee-background-migration-parallel
 
 rspec-ee unit pg16:
   extends:
     - .rspec-ee-base-pg16
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
 rspec-ee integration pg16:
   extends:
     - .rspec-ee-base-pg16
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
 rspec-ee system pg16:
@@ -1373,35 +1372,34 @@ rspec-ee system pg16:
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only", rules]
 
-# PG18 (EE-Nightly)
-# Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.
-# Adding new job families can cause the nightly pipeline to fail.
+# PG18 (EE-Nightly) — NEXT PG version. Runs only when its own nightly schedule sets NEXT_NIGHTLY_PG_VERSION=18.
+# Each non-default PG version runs in its own nightly schedule to keep every pipeline under the 2000-job limit.
 rspec-ee migration pg18:
   extends:
     - .rspec-ee-base-pg18
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
     - .rspec-ee-migration-parallel
 
 rspec-ee background_migration pg18:
   extends:
     - .rspec-ee-base-pg18
     - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
     - .rspec-ee-background-migration-parallel
 
 rspec-ee unit pg18:
   extends:
     - .rspec-ee-base-pg18
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
 rspec-ee integration pg18:
   extends:
     - .rspec-ee-base-pg18
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
 rspec-ee system pg18:
@@ -1410,10 +1408,35 @@ rspec-ee system pg18:
     - .rspec-ee-system-parallel
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only", rules]
 
 # EE: default branch nightly scheduled jobs #
 #####################################
+
+##################################################
+# Default branch weekly scheduled jobs #
+# Integration tests with Valkey instead of Redis, using the production PG version (PG17)
+
+rspec unit pg17 valkey:
+  extends:
+    - .rspec-base-pg17-valkey
+    - .rspec-unit-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+rspec integration pg17 valkey:
+  extends:
+    - .rspec-base-pg17-valkey
+    - .rspec-integration-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+rspec system pg17 valkey:
+  extends:
+    - .rspec-base-pg17-valkey
+    - .rspec-system-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+# Default branch weekly scheduled jobs #
+##################################################
 
 ##################################################
 # EE: default branch weekly scheduled jobs #
@@ -1521,15 +1544,15 @@ rspec-ee system pg17 pgvector17 es8:
 
 rspec fail-fast:
   extends:
-    - .rspec-base-pg16
-    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-base-pg16
+    - .rspec-base-pg17
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-base-pg17
   variables:
     MATCHING_TESTS_PATH: "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}"
 
 rspec-ee fail-fast:
   extends:
-    - .rspec-ee-base-pg16
-    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg16
+    - .rspec-ee-base-pg17
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg17
   variables:
     MATCHING_TESTS_PATH: "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}"
 

@@ -55,9 +55,9 @@ class NotificationRecipient
     when :participating
       participating_custom_action? || participating_or_mention?
     when :custom
-      custom_enabled? || participating_or_mention?
+      custom_enabled? || custom_participation_allowed?
     when :watch
-      !excluded_watcher_action?
+      participating_or_mention? || !excluded_watcher_action?
     else
       false
     end
@@ -140,12 +140,28 @@ class NotificationRecipient
 
   def excluded_watcher_action?
     return false unless notification_level == :watch
+
+    excluded_opt_in_action?
+  end
+
+  private
+
+  # Whether a custom-level recipient should be notified by virtue of participating in,
+  # or being mentioned on, the target. Mentions always notify. Opt-in-only events
+  # (EXCLUDED_WATCHER_EVENTS, e.g. push_to_merge_request) must not be re-enabled by
+  # participation when the user has disabled the custom toggle for that event.
+  def custom_participation_allowed?
+    return false unless participating_or_mention?
+    return true if @type == :mention
+
+    !excluded_opt_in_action?
+  end
+
+  def excluded_opt_in_action?
     return false unless @custom_action
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
   end
-
-  private
 
   # They are disabled if the project or group has disallowed it.
   # No need to check the group if there is already a project

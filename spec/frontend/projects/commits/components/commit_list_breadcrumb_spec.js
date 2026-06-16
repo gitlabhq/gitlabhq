@@ -18,12 +18,8 @@ describe('CommitListBreadcrumb', () => {
         ...defaultProvide,
         ...provide,
       },
-      mocks: {
-        $route: {
-          params: {
-            path,
-          },
-        },
+      propsData: {
+        filePath: path,
       },
     });
   };

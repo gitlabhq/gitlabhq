@@ -83,7 +83,7 @@ describe('GlobalSearchAutocompleteItems', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
     describe('when loading is true', () => {
       beforeEach(() => {
-        createComponent({ loading: true });
+        createComponent({ loading: true }, { autocompleteGroupedSearchOptions: () => [] });
       });
 
       it('renders GlLoadingIcon', () => {
@@ -92,6 +92,10 @@ describe('GlobalSearchAutocompleteItems', () => {
 
       it('does not render autocomplete options', () => {
         expect(findItems()).toHaveLength(0);
+      });
+
+      it('does not render no-results component while loading', () => {
+        expect(findNoResults().exists()).toBe(false);
       });
     });
 

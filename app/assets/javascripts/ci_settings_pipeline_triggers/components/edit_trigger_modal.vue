@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'EditTriggerModal',
   components: {
     GlModal,
     GlFormGroup,

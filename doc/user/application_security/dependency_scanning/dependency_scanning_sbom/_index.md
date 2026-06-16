@@ -216,60 +216,69 @@ The dependency scanning report is:
 - Uploaded as a `dependency_scanning` report.
 - Saved in the root directory of the project.
 
-## Optimization
+## Improve scanning performance
 
-To optimize dependency scanning with SBOM, use any of the following methods:
+The main factor in dependency scanning performance is the number of dependencies to scan.
+By default, dependency scanning operates with the following scope:
 
-- Exclude paths
-- Limit scanning to a maximum directory depth
+- All supported languages and files are included.
+- The root directory and its immediate subdirectories are included.
+- Hidden directories are excluded.
 
-### Exclude paths
+To improve performance, you can exclude specific paths, limit the scan directory depth, and exclude
+development and test dependencies.
 
-Exclude paths to optimize scanning performance and focus on relevant repository content.
+### Exclude paths from scanning
+
+To improve scanning performance, exclude paths. For example, you might exclude paths that contain
+documentation. When you exclude paths, be selective to avoid hiding vulnerabilities.
 
 List excluded paths in the `.gitlab-ci.yml` file:
 
-- If using the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
-- If using the dependency scanning CI/CD component, use the `excluded_paths` spec input.
-
-#### Exclusion patterns
+- For the dependency scanning template, use the `DS_EXCLUDED_PATHS` CI/CD variable.
+- For the dependency scanning CI/CD component, use the `excluded_paths` spec input.
 
 Exclusion patterns follow these rules:
 
-- Patterns without slashes match file or directory names at any depth in the project (example: `test` matches `./test`, `src/test`).
-- Patterns with slashes use parent directory matching - they match paths that start with the pattern (example: `a/b` matches `a/b` and `a/b/c`, but not `c/a/b`).
-- Standard glob wildcards are supported (example: `a/**/b` matches `a/b`, `a/x/b`, `a/x/y/b`).
-- Leading and trailing slashes are ignored (example: `/build` and `build/` work the same as `build`).
+- Patterns without slashes match file or directory names at any depth in the project. For example,
+  `test` matches `./test` and `src/test`.
+- Patterns with slashes match paths that start with the pattern. For example, `a/b` matches `a/b`
+  and `a/b/c`, but not `c/a/b`.
+- Standard glob wildcards are supported. For example, `a/**/b` matches `a/b`, `a/x/b`, and
+  `a/x/y/b`.
+- Leading and trailing slashes are ignored. For example, `/build` and `build/` match the same
+  results as `build`.
 
-### Limit scanning to a maximum directory depth
+### Limit scan directory depth
 
-Limit scanning to a maximum directory depth to optimize scanning performance and reduce the number
-of files analyzed.
+By default, the scan only searches the repository's root directory and its immediate subdirectories for
+package manager files. To improve scanning performance, set the maximum directory depth to `1` to limit the search to just the repository's root directory. Be careful to include all relevant
+package manager files in your repository.
 
-The root directory is counted as depth `1`, and each subdirectory increments the depth by 1. The
-default depth is `2`. A value of `-1` scans all directories regardless of depth.
+To specify the maximum scan directory depth in the `.gitlab-ci.yml` file:
 
-To specify the maximum depth in the `.gitlab-ci.yml` file:
+- For the dependency scanning template, use the `DS_MAX_DEPTH` CI/CD variable.
+- For the dependency scanning CI/CD component, use the `max_scan_depth` spec input.
 
-- If using the dependency scanning template, use the `DS_MAX_DEPTH` CI/CD variable.
-- If using the dependency scanning CI/CD component, use the `max_scan_depth` spec input.
-
-In the following example, with `DS_MAX_DEPTH` set to `3`, subdirectories of the `common` directory
-are not scanned.
+In the following example, with `DS_MAX_DEPTH` set to `1`, dependency scanning searches only the
+`timer` directory for package manager files. It does not scan the subdirectories.
 
 ```plaintext
 timer
 ├── integration
-│   ├── doc
-│   └── modules
 └── source
-    ├── common
-    │   ├── cplusplus
-    │   └── go
-    ├── linux
-    ├── macos
-    └── windows
 ```
+
+### Exclude development and test dependencies
+
+By default, development and test dependencies are included in the scan. To improve scanning
+performance, exclude them by setting one of the following:
+
+- CI/CD variable `DS_INCLUDE_DEV_DEPENDENCIES` to `"false"`
+- CI/CD component input `include_dev_dependencies` to false
+
+Only projects using the following package managers are supported: Composer, Conda, Gradle, Maven,
+npm, pnpm, Pipenv, Poetry, and uv.
 
 ## Roll out
 
@@ -419,8 +428,9 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `AST_ENABLE_MR_PIPELINES`                      | Control whether dependency scanning job runs in MR or branch pipeline. Default: `"true"`. If your project does not use MR pipelines, disable this to avoid duplicate pipelines.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `ADDITIONAL_CA_CERT_BUNDLE`                    | CA certificate bundle to trust. The CA bundle provided here is added to the system's certificates and also used by other tools during the scanning process. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority).                                                                                                                                                                                                                                                                                                                                         |
 | `ANALYZER_ARTIFACT_DIR`                        | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `DEPENDENCY_SCANNING_DISABLED`                 | When set to `"true"` or `"1"`, disables all dependency scanning jobs. Default: not set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_EXCLUDED_ANALYZERS`                        | Specify the analyzers (by name) to exclude from dependency scanning.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [Exclusion patterns](#exclusion-patterns) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
+| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [exclude paths from scanning](#exclude-paths-from-scanning) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
 | `DS_MAX_DEPTH`                                 | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`.                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `DS_INCLUDE_DEV_DEPENDENCIES`                  | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"`                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_PIP_MANIFEST_FILE_NAME_PATTERN`            | Defines which pip manifest files to process for dependency resolution and manifest scanning, using glob pattern matching (for example, `custom-requirements.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details.                                                                                                                                                                                                         |
@@ -435,13 +445,17 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `DS_API_TIMEOUT`                               | Dependency scanning SBOM API request timeout in seconds (minimum: `5`, maximum: `300`) Default: `10`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_API_SCAN_DOWNLOAD_DELAY`                   | Initial delay in seconds before downloading scan results (minimum: 1, maximum: 120) Default: `3`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `DS_ENABLE_MANIFEST_FALLBACK`                  | Enable manifest fallback when no lockfile or dependency graph export is available. See [Manifest fallback](#manifest-fallback). Default: `"true"`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `DS_SKIP_IF_NO_SUPPORTED_FILES`                | When set to `"true"`, skips the dependency scanning job if no [supported file](#supported-languages-and-files) is detected in the project. See [Skip the job when no supported file is present](#skip-the-job-when-no-supported-file-is-present). Default: `"false"`.                                                                                                                                                                                                                                                                                                                             |
+| `DS_SKIP_IF_NO_SUPPORTED_FILES`                | When set to `"true"`, skips the dependency scanning job if no [supported file](#supported-languages-and-files) is detected in the project. For details, see [skip the job when no supported file is present](#skip-the-job-when-no-supported-file-is-present). Default: `"false"`.                                                                                                                                                                                                                                                                                                                            |
 | `SECURE_LOG_LEVEL`                             | Log level. Default: `"info"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `DS_DISABLED_RESOLUTION_JOBS`                  | Comma-separated list of resolution jobs to disable (for example, `"maven, python"`). By default, all available resolution jobs are enabled. Possible values are: `maven`,`gradle`,`python`.                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `DS_MAVEN_RESOLUTION_IMAGE`                    | The image used by the Maven dependency resolution job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `DS_MAVEN_DEPENDENCY_PLUGIN_VERSION`           | The version of `maven-dependency-plugin` used during Maven dependency resolution. Must be `3.7.0` or later. Default: `3.7.0`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `MAVEN_ARGS`                                   | Additional arguments to pass to the `mvn` command during Maven dependency resolution. Replaces the legacy `MAVEN_CLI_OPTS` variable.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `DS_PYTHON_RESOLUTION_IMAGE`                   | The image used by the Python dependency resolution job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `PIP_INDEX_URL`                                | Base URL of the Python package index used during Python dependency resolution. Default: `https://pypi.org/simple`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `PIP_EXTRA_INDEX_URL`                          | Additional Python package index URLs to use with `PIP_INDEX_URL` during Python dependency resolution.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `DS_GRADLE_RESOLUTION_IMAGE`                   | The image used by the Gradle dependency resolution job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `GRADLE_CLI_OPTS`                              | Additional arguments to pass to the `gradle` or `gradlew` command during Gradle dependency resolution.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 ### Disable merge request pipelines for dependency scanning
 
@@ -561,6 +575,52 @@ variables:
 include:
   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 ```
+
+### Security considerations for dependency resolution
+
+Dependency resolution jobs execute ecosystem-native build tools (`mvn`, `gradle`,
+`pip-compile`) in the CI/CD job container. These tools natively honor
+environment variables and configuration files that can load extensions or run
+arbitrary code at startup, including:
+
+- Maven: `MAVEN_ARGS`, `MAVEN_CLI_OPTS` (legacy), `MAVEN_OPTS`,
+  `JAVA_TOOL_OPTIONS`, any `settings.xml` referenced through `-s` or `--settings`,
+  and `<extensions>` declared in `pom.xml` or `settings.xml`.
+- Gradle: `GRADLE_OPTS`, `JAVA_TOOL_OPTIONS`, `--init-script`, and top-level
+  Groovy or Kotlin code in `build.gradle` or `build.gradle.kts`.
+- Python: `PIP_INDEX_URL`, `PIP_EXTRA_INDEX_URL`, `setup.py`, and lockfile
+  install hooks.
+
+Anyone who can set these CI/CD variables or modify the project's build
+files can cause arbitrary code to execute in the resolution job. The resolution
+job runs with `CI_JOB_TOKEN`, access masked CI/CD variables in scope, and
+read or write to the project repository for the duration of the job.
+
+This property is inherent to ecosystem-native build tooling, and not
+specific to dependency scanning. Treat the resolution job as a sensitive
+execution context.
+
+Recommended controls:
+
+- Restrict who can define or override the variables listed previously. Use
+  [protected CI/CD variables](../../../../ci/variables/_index.md#for-a-project)
+  scoped to protected branches and tags. Do not set them in
+  `.gitlab-ci.yml` `variables:` blocks which any developer can edit.
+- Audit any uses of `MAVEN_ARGS`, `MAVEN_CLI_OPTS`, `GRADLE_OPTS`,
+  `--init-script`, custom `settings.xml`, and `<extensions>` in `pom.xml` as
+  part of your standard code review process.
+- When you use [scan execution policies](../../policies/scan_execution_policies.md) to
+  enforce dependency scanning, developer-authored `variables:` from the target project
+  flow into the injected resolution job. Review which variables your policy framework
+  forwards, and unset or override build-tool variables in the policy.
+- If your project's build runs in a CI/CD job you control and trust
+  (like a `build` stage that runs `mvn package`), generate the lockfile
+  or dependency graph export in that same job and disable the
+  GitLab-provided resolution job with `DS_DISABLED_RESOLUTION_JOBS`.
+  This approach does not reduce the risk of running build tooling, but it
+  limits sensitive job contexts to one.
+- Use a [custom resolution image](#use-a-custom-dependency-resolution-image)
+  pinned by digest if you need to guarantee a known toolchain.
 
 ### Dependency resolution limitations
 
@@ -1237,7 +1297,7 @@ The dependency scanning report follows the generic process for [security scannin
 - If the dependency scanning report is declared by a CI/CD job on the default branch: vulnerabilities are created,
   and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
 - If the dependency scanning report is declared by a CI/CD job on a non-default branch: security findings are created,
-  and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and MR security widget.
+  and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and [merge request reports](../../../project/merge_requests/reports.md).
 
 ## Offline environment
 

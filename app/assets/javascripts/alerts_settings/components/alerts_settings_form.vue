@@ -33,6 +33,7 @@ import MappingBuilder from './alert_mapping_builder.vue';
 import AlertSettingsFormHelpBlock from './alert_settings_form_help_block.vue';
 
 export default {
+  name: 'AlertsSettingsForm',
   incidentManagementDocsLink: `${DOCS_URL}/operations/incident_management/integrations.html#configuration`,
   JSON_VALIDATE_DELAY,
   typeSet,

@@ -26,8 +26,7 @@ class CommitRange
   include ActiveModel::Conversion
   include Referable
 
-  attr_reader :commit_from, :notation, :commit_to
-  attr_reader :ref_from, :ref_to
+  attr_reader :commit_from, :notation, :commit_to, :ref_from, :ref_to
 
   # The Project model
   attr_accessor :project

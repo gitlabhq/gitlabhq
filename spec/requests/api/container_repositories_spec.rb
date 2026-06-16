@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ContainerRepositories, feature_category: :container_registry do
+RSpec.describe API::ContainerRepositories, :with_current_organization, feature_category: :container_registry do
   include_context 'container registry client stubs'
 
   let_it_be(:project) { create(:project, :private) }

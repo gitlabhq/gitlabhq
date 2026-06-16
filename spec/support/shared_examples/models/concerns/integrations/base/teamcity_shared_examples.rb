@@ -4,7 +4,7 @@ RSpec.shared_examples Integrations::Base::Teamcity do
   include ReactiveCachingHelpers
   include StubRequests
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
   let(:teamcity_url) { 'https://gitlab.teamcity.com' }
 

@@ -26,7 +26,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
     it { is_expected.to have_one(:dates_source).class_name('WorkItems::DatesSource').inverse_of(:work_item) }
-    it { is_expected.to have_one(:work_item_description).class_name('WorkItems::Description').inverse_of(:work_item).autosave(true) }
     it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
@@ -260,7 +259,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       context 'when a type was already set' do
-        let_it_be(:issue, refind: true) { create(:issue, project: project) }
+        let_it_be_with_refind(:issue) { create(:issue, project: project) }
 
         it 'does not fetch a work item type from the provider' do
           expect(issue.work_item_type_id).to eq(issue_type.id)
@@ -417,7 +416,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.in_namespaces_with_cte' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
     let_it_be(:other_project) { create(:project) }
     let_it_be(:other_issue) { create(:issue, project: other_project) }
 
@@ -545,7 +544,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.with_issue_type' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
 
     it 'returns issues with the given issue type' do
@@ -568,7 +567,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '.without_issue_type' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
     let_it_be(:task) { create(:issue, :task, project: reusable_project) }
 
@@ -794,7 +793,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#to_reference' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project)   { create(:project, namespace: namespace) }
-    let_it_be(:issue)     { create(:issue, project: project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
     context 'when nil argument' do
       it 'returns issue id' do
@@ -1137,22 +1136,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
-  describe '#from_service_desk?' do
-    subject { issue.from_service_desk? }
-
-    context 'when issue author is support bot' do
-      let(:issue) { create(:issue, project: reusable_project, author: support_bot) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when issue author is not support bot' do
-      let(:issue) { create(:issue, project: reusable_project) }
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '#autoclose_by_merged_closing_merge_request?' do
     subject { issue.autoclose_by_merged_closing_merge_request? }
 
@@ -1277,7 +1260,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#to_branch_name' do
-    let_it_be(:issue, reload: true) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
+    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
 
     it 'returns a branch name with the issue title if not confidential' do
       expect(issue.to_branch_name).to eq('123-testing-issue')
@@ -1399,7 +1382,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#allow_possible_spam?' do
-    let_it_be(:issue) { build(:issue) }
+    let_it_be(:issue, freeze: false) { build(:issue) }
 
     subject { issue.allow_possible_spam?(issue.author) }
 
@@ -1620,7 +1603,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe "#previous_updated_at" do
     let_it_be(:updated_at) { Time.zone.local(2012, 01, 06) }
-    let_it_be(:issue) { create(:issue, project: reusable_project, updated_at: updated_at) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project, updated_at: updated_at) }
 
     it 'returns updated_at value if updated_at did not change at all' do
       allow(issue).to receive(:previous_changes).and_return({})
@@ -1748,7 +1731,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#issue_type' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     it 'gets the type field from the work_item_types table' do
       expect(issue).to receive_message_chain(:work_item_type, :base_type)
@@ -1760,13 +1743,13 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'uses the default work item type' do
         non_persisted_issue = build(:issue, work_item_type: nil)
 
-        expect(non_persisted_issue.issue_type).to eq(described_class::DEFAULT_ISSUE_TYPE.to_s)
+        expect(non_persisted_issue.issue_type).to eq(WorkItems::TypesFramework::Provider.new.default_issue_type.name.downcase)
       end
     end
   end
 
   describe '#issue_type_supports?' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
@@ -1774,14 +1757,12 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#supports_assignee?' do
-    WorkItems::Type::BASE_TYPES.each_key do |base_type|
+    WorkItems::TypesFramework::SystemDefined::Type::BASE_TYPES.pluck(:base_type).each do |base_type|
       specify do
-        skip if !Gitlab.ee? && [:epic, :requirement, :objective, :test_case, :key_result].include?(base_type)
-
-        traits = base_type == :issue ? [] : [base_type]
+        traits = base_type == 'issue' ? [] : [base_type.to_sym]
         issue = build(:issue, *traits)
         widgets = WorkItems::TypesFramework::SystemDefined::Definitions
-          .const_get(base_type.to_s.camelize, false).widgets
+          .const_get(base_type.camelize, false).widgets
         supports_assignee = widgets.include?('assignees')
 
         expect(issue.supports_assignee?).to eq(supports_assignee)
@@ -1811,7 +1792,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe '#time_estimate' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
 
     context 'when time estimate on the issue record is NULL' do
       before do
@@ -1849,7 +1830,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#email_participants_emails' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     it 'returns a list of emails' do
       participant1 = issue.issue_email_participants.create!(email: 'a@gitlab.com')
@@ -1877,7 +1858,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#expire_etag_cache' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     subject(:expire_cache) { issue.expire_etag_cache }
 
@@ -2013,7 +1994,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
       let_it_be(:group_issue2) { create(:issue, :group_level, namespace: group) }
-      let_it_be(:issue) { create(:issue, project: reusable_project) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
       it 'uses uses an absolute and full path when referencing a root group' do
         expect(group_issue.gfm_reference(issue.project)).to eq("issue /#{group.full_path}##{group_issue.iid}")
@@ -2172,42 +2153,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
-  describe 'work_item_description' do
-    context 'on import' do
-      it 'creates a work_item_description record' do
-        issue = build(:issue, project: reusable_project, description: "test")
-        issue.importing = true
-
-        issue.save!
-
-        expect(issue.work_item_description.description).to eq("test")
-      end
-    end
-
-    context 'on create' do
-      it 'does not create the work_item_description record' do
-        issue = build(:issue, project: reusable_project, description: "old")
-
-        issue.save!
-
-        expect(issue.work_item_description).to be_nil
-      end
-    end
-
-    context 'on update' do
-      it 'does not update the work_item_description record' do
-        issue = build(:issue, project: reusable_project, description: "old")
-        issue.ensure_work_item_description
-
-        issue.save!
-        issue.update!(description: "new")
-
-        expect(issue.reload.description).to eq("new")
-        expect(issue.work_item_description.description).to eq("old")
-      end
-    end
-  end
-
   describe '#show_as_work_item?' do
     subject(:issue_as_work_item) { issue.show_as_work_item? }
 
@@ -2216,7 +2161,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       [:issue, :task]         | true
       [:issue, :group_level]  | true
       [:issue, :incident]     | false
-      [:issue, :service_desk] | false
+      [:issue, :ticket]       | false
     end
 
     with_them do
@@ -2241,7 +2186,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       :issue                  | true
       [:issue, :task]         | true
       [:issue, :incident]     | false
-      [:issue, :service_desk] | false
+      [:issue, :ticket]       | false
     end
 
     with_them do
@@ -2267,13 +2212,19 @@ RSpec.describe Issue, feature_category: :team_planning do
       [:issue, :task]         | false
       [:issue, :group_level]  | false
       [:issue, :incident]     | true
-      [:issue, :service_desk] | true
+      [:issue, :ticket]       | true
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
 
       it { is_expected.to be result }
+    end
+
+    context 'when work_item_type is nil' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil) }
+
+      it { is_expected.to be false }
     end
   end
 
@@ -2320,7 +2271,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#referenced_mentionables' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     context 'when mentioning an issue from the work item version of itself' do
       it 'does not include the self-reference' do
@@ -2341,7 +2292,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#as_json' do
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
 
     it 'renames exported_work_item_type to work_item_type' do
       json = issue.as_json(methods: [:exported_work_item_type])
@@ -2349,20 +2300,6 @@ RSpec.describe Issue, feature_category: :team_planning do
       expect(json).to have_key('work_item_type')
       expect(json).not_to have_key('exported_work_item_type')
       expect(json['work_item_type']).to eq({ 'name' => issue.work_item_type.name })
-    end
-
-    context 'when work_item_configurable_types feature flag is disabled' do
-      before do
-        stub_feature_flags(work_item_configurable_types: false)
-      end
-
-      it 'renames exported_work_item_type using the legacy base_type format' do
-        json = issue.as_json(methods: [:exported_work_item_type])
-
-        expect(json).to have_key('work_item_type')
-        expect(json).not_to have_key('exported_work_item_type')
-        expect(json['work_item_type']).to eq({ 'base_type' => issue.work_item_type.base_type })
-      end
     end
 
     it 'does not add work_item_type when exported_work_item_type is not in methods' do

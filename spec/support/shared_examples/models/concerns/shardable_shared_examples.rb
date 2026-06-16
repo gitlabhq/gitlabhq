@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'shardable scopes' do
-  let_it_be(:secondary_shard) { create(:shard, name: 'test_second_storage') }
+  let_it_be(:secondary_shard, freeze: false) { create(:shard, name: 'test_second_storage') }
 
   before do
     record_2.update!(shard: secondary_shard)

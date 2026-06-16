@@ -94,6 +94,7 @@ export const initSecurityConfiguration = (el) => {
         'userIsProjectAdmin',
         'cvsForContainerScanningEnabled',
         'cvsForDependencyScanningEnabled',
+        'licenseScanningForCyclonedxEnabled',
       ]),
     },
     render(createElement) {

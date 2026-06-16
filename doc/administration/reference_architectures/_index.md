@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Recommended deployments at scale.
+description: Recommended deployment specifications for GitLab at scale.
 title: Reference architectures
 ---
 
@@ -13,7 +13,7 @@ title: Reference architectures
 
 {{< /details >}}
 
-The GitLab reference architectures are validated, production-ready environment designs for deploying GitLab at scale. Each architecture provides detailed specifications that you can use or adapt based on your requirements.
+The GitLab reference architectures are recommended, production-ready environment designs for deploying GitLab at scale. Each architecture provides detailed specifications that you can use or adapt based on your requirements.
 
 ## Before you start
 
@@ -32,11 +32,9 @@ If you are considering using the GitLab Self-Managed approach, we encourage you 
 
 ## Deciding which architecture to start with
 
-The reference architectures are designed to strike a balance between three important factors: performance, resilience, and cost. They provide validated starting points for deploying GitLab at scale based on typical workload patterns. While they make initial deployment easier, most environments benefit from tuning based on actual usage patterns that emerge through [monitoring](#monitoring). Selecting an appropriate starting point is important, but expect to adjust based on your specific workload characteristics.
+The reference architectures balance performance, resilience, and cost. They are recommended starting points based on typical workload patterns. However, most deployments will need tuning based on actual usage through [monitoring](#monitoring).
 
 As a general guide, the more performant or resilient you want your environment to be, the more complex it is.
-
-This section explains the things to consider when picking a reference architecture.
 
 ### Expected load
 
@@ -98,28 +96,19 @@ Cloud Native Hybrid reference architectures deploy select stateless components (
 | [25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) | 500     | 50      | 50             | 10             |
 | [50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) | 1000    | 100     | 100            | 20             |
 
-### Cloud Native First (Beta)
+### Cloud Native
 
-{{< details >}}
+Cloud Native architectures deploy all GitLab components in Kubernetes, while PostgreSQL,
+Redis, and Object Storage use external managed services. Four standardized sizes cover most
+production deployments. For atypical workloads, see [reference architecture sizing](sizing.md).
+This is the recommended architecture for new deployments.
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-- Status: Beta
-
-{{< /details >}}
-
-Cloud Native First architectures are our next generation of architectures that target modern deployment methods with four standardized sizes (S/M/L/XL) based on workload characteristics. These architectures deploy all GitLab components in Kubernetes, while PostgreSQL, Redis, and Object Storage use external third-party solutions including managed services or on-premises options.
-
-These architectures provide reduced operational overhead, simplified deployment, and enhanced resilience through Kubernetes orchestration.
-
-| Size | Target RPS | Workload Characteristics |
+| Size | Target RPS | Workload characteristics |
 |------|------------|--------------------------|
-| Small (S) | ≤100 RPS | Light overall load, not suitable for active monorepos |
-| Medium (M) | ≤200 RPS | Moderate load, supports lightly-used monorepos |
-| Large (L) | ≤500 RPS | Heavy load, handles moderately-used monorepos |
-| Extra Large (XL) | ≤1000 RPS | Intensive load, designed for heavily-used monorepos |
-
-For more information, see [Cloud Native First reference architectures](cloud_native_first.md).
+| [Small (S)](cloud_native.md#small-s) | ≤100 RPS | Light overall load, not suitable for active monorepos |
+| [Medium (M)](cloud_native.md#medium-m) | ≤200 RPS | Moderate load, supports lightly-used monorepos |
+| [Large (L)](cloud_native.md#large-l) | ≤500 RPS | Heavy load, handles moderately-used monorepos |
+| [Extra Large (XL)](cloud_native.md#extra-large-xl) | ≤1000 RPS | Intensive load, designed for heavily-used monorepos |
 
 ### If in doubt, start large, monitor, and then scale down
 
@@ -212,11 +201,14 @@ Read through the guidance documented previously in full first before you refer t
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Decision tree for reference architecture selection
-    accDescr: Key considerations for selecting architecture including expected load, HA requirements, and additional workload factors.
+    accDescr: Key considerations for selecting architecture type and size, including Gitaly Cluster requirements, expected load, and HA requirements.
 
    L0A(<b>What Reference Architecture should I use?</b>)
-   L1A(<b>What is your expected load?</b>)
 
+   L_CNQ("Do you need Gitaly Cluster (Praefect)<br>for repository-level HA?")
+   L_CN><b>Recommendation</b><br><br>Cloud Native architecture<br>Select the size closest to your RPS]
+
+   L1A(<b>What is your expected load?</b>)
    L2A("60 RPS / 3,000 users or more?")
    L2B("40 RPS / 2,000 users or less?")
 
@@ -228,7 +220,9 @@ graph TD
    L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to expected load]
    L4D>"<b>Recommendation</b><br><br>Standalone 20 RPS / 1,000 user or 40 RPS / 2,000 user<br/>architecture with Backups"]
 
-   L0A --> L1A
+   L0A --> L_CNQ
+   L_CNQ -->|No| L_CN
+   L_CNQ -->|Yes| L1A
    L1A --> L2A
    L1A --> L2B
    L2A -->|Yes| L3B
@@ -238,22 +232,22 @@ graph TD
    L2B --> L3A
    L3A -->|Yes| L4A
    L3A -->|No| L4D
+
    L5A("Do you need cross regional distribution</br> or disaster recovery?") --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
+   L_CN ~~~ L5A
    L4A ~~~ L5A
    L4B ~~~ L5A
    L4C ~~~ L5A
    L4D ~~~ L5A
 
    L5B("Do you have Large Monorepos or expect</br> to have substantial additional workloads?") --> |Yes| L6B><b>Additional Recommendations</b><br><br>Start large, monitor and scale down<br><br> Contact GitLab representative or Support]
+   L_CN ~~~ L5B
    L4A ~~~ L5B
    L4B ~~~ L5B
    L4C ~~~ L5B
    L4D ~~~ L5B
 
 ```
-
-> [!note]
-> The decision tree above reflects production-ready architectures. For fully Kubernetes-native deployments including Gitaly, see [Cloud Native First (Beta)](cloud_native_first.md), which is currently in Beta and not yet recommended for production use.
 
 ## Requirements
 
@@ -417,7 +411,7 @@ The following architectures are recommended for the following cloud providers ba
 |------------------------|-------------|-------------|--------------------------|-------------|
 | [Linux package](#linux-package-omnibus)          | {{< Yes >}} | {{< Yes >}} | {{< Yes >}} <sup>1</sup> | {{< Yes >}} |
 | [Cloud Native Hybrid](#cloud-native-hybrid)    | {{< Yes >}} | {{< Yes >}} |                          |             |
-| [Cloud Native First](cloud_native_first.md) (Beta) | {{< Yes >}} | {{< Yes >}} |  |  |
+| [Cloud Native](cloud_native.md) | {{< Yes >}} | {{< Yes >}} | | |
 
 Additionally, the following cloud provider services are recommended for use as part of the architectures:
 
@@ -523,9 +517,9 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 You can use other supported cloud provider services, unless specifically called out as unsupported.
 
-Individual Gitaly nodes can be deployed on Kubernetes in [limited availability](../gitaly/kubernetes.md#timeline). This provides a non-HA solution where each repository is stored on a single node. For context on Gitaly deployment options and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#context).
+Individual Gitaly nodes can be deployed on Kubernetes and are generally available. This provides a non-HA solution where each repository is stored on a single node. For context on Gitaly deployment options and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#context).
 
-For reference architectures that deploy Gitaly in Kubernetes as part of a fully cloud-native setup, see [Cloud Native First reference architectures (Beta)](cloud_native_first.md).
+For reference architectures that deploy Gitaly in Kubernetes as part of a fully cloud-native setup, see [Cloud Native reference architectures](cloud_native.md).
 
 #### Autoscaling of stateful nodes
 

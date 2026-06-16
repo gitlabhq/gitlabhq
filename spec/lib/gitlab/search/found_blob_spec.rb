@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Search::FoundBlob, feature_category: :global_search do
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
 
   describe 'parsing content results' do
     let(:results) { project.repository.search_files_by_content('feature', 'master') }

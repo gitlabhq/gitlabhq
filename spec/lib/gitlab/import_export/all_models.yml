@@ -2,7 +2,6 @@
 issues:
 - subscriptions
 - award_emoji
-- own_award_emoji
 - author
 - assignees
 - assignees_by_name_and_id
@@ -35,7 +34,8 @@ issues:
 - moved_from
 - duplicated_to
 - events
-- merge_requests_closing_issues
+- merge_request_issues
+- merge_request_closing_issues
 - metrics
 - metric_images
 - timelogs
@@ -79,14 +79,9 @@ issues:
 - observability_traces
 - dates_source
 - current_status
-- work_item_description
 - work_item_transition
 - work_item_position
 - duo_workflows
-work_item_description:
-- namespace
-- work_item
-- last_editing_user
 work_item_transition:
 - namespace
 - work_item
@@ -232,7 +227,8 @@ merge_requests:
 - merge_request_stage_events
 - merge_schedule
 - events
-- merge_requests_closing_issues
+- merge_request_issues
+- merge_request_closing_issues
 - cached_closes_issues
 - metrics
 - timelogs
@@ -447,7 +443,6 @@ builds:
 - job_artifacts_metrics_referee
 - job_artifacts_network_referee
 - job_artifacts_lsif
-- job_artifacts_scip
 - job_artifacts_dotenv
 - job_artifacts_cobertura
 - job_artifacts_jacoco
@@ -483,7 +478,6 @@ builds:
 - dast_scanner_profile
 - job_annotations
 - job_artifacts_annotations
-- job_artifacts_environment_key
 - project_mirror
 - job_source
 - supply_chain_attestation
@@ -1072,7 +1066,6 @@ design_versions: *version
 epic:
 - subscriptions
 - award_emoji
-- own_award_emoji
 - description_versions
 - author
 - assignee

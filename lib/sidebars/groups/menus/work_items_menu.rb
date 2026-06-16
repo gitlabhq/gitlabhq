@@ -27,11 +27,6 @@ module Sidebars
           'issues'
         end
 
-        override :has_pill?
-        def has_pill?
-          Feature.enabled?(:show_work_items_sidebar_count, context.current_user)
-        end
-
         override :active_routes
         def active_routes
           {
@@ -60,7 +55,7 @@ module Sidebars
             active_routes: list_menu_item.active_routes,
             pill_count: pill_count,
             pill_count_field: pill_count_field,
-            has_pill: has_pill?,
+            has_pill: true,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             item_id: :group_issue_list
           })

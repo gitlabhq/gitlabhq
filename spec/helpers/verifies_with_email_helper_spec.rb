@@ -107,6 +107,14 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
       end
 
       it { is_expected.to be false }
+
+      context 'and email_otp_enabled application setting is enabled' do
+        before do
+          stub_application_setting(email_otp_enabled: true)
+        end
+
+        it { is_expected.to be true }
+      end
     end
 
     context 'when user has two factor authentication enabled' do

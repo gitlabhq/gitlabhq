@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/user_admin'
 
-RSpec.describe RuboCop::Cop::UserAdmin do
+RSpec.describe RuboCop::Cop::UserAdmin, feature_category: :system_access do
   it 'flags a method call' do
     expect_offense(<<~RUBY)
       user.admin?

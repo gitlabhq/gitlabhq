@@ -123,7 +123,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
   end
 
   context 'with fork project MRs' do
-    let_it_be(:fork_project_mr_source) { fork_project(gitlab_org_gitlab_project, user, repository: true) }
+    let_it_be(:fork_project_mr_source) do
+      fork_project(gitlab_org_gitlab_project, user, repository: true)
+    end
+
     let(:source_project)    { fork_project_mr_source }
     let(:target_project)    { gitlab_org_gitlab_project }
 

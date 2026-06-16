@@ -18,8 +18,8 @@ module TwCodeowners
 
   # For groups without an assigned TW, comment out the line.
   CODE_OWNER_RULES = [
-    CodeOwnerRule.new('Activation', '@kpaizee'),
-    CodeOwnerRule.new('Acquisition', '@kpaizee'),
+    # CodeOwnerRule.new('Activation', ''),
+    # CodeOwnerRule.new('Acquisition', ''),
     CodeOwnerRule.new('Agent Foundations', '@fneill'),
     CodeOwnerRule.new('AI Coding', '@uchandran'),
     CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
@@ -31,7 +31,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Cells Infrastructure', ''),
     CodeOwnerRule.new('Code Review', '@brendan777'),
     # CodeOwnerRule.new('Compliance', ''),
-    CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
+    # CodeOwnerRule.new('Composition Analysis', ''),
     CodeOwnerRule.new('Container Registry', '@z_painter'),
     CodeOwnerRule.new('Contributor Experience', '@eread'),
     CodeOwnerRule.new('Custom Models', '@fneill'),
@@ -43,11 +43,11 @@ module TwCodeowners
     CodeOwnerRule.new('Duo Chat', '@jglassman1'),
     CodeOwnerRule.new('Dynamic Analysis', '@rsarangadharan'),
     CodeOwnerRule.new('Editor Extensions', '@uchandran'),
-    CodeOwnerRule.new('Engagement', '@kpaizee'),
+    # CodeOwnerRule.new('Engagement', ''),
     CodeOwnerRule.new('Environment Automation', '@lyspin'),
     # CodeOwnerRule.new('Environments', ''),
     # CodeOwnerRule.new('Fulfillment Platform', ''),
-    CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
+    # CodeOwnerRule.new('Fuzz Testing', ''),
     CodeOwnerRule.new('Geo', '@axil'),
     CodeOwnerRule.new('Gitaly', '@eread'),
     CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
@@ -56,7 +56,7 @@ module TwCodeowners
     CodeOwnerRule.new('Knowledge', '@brendan777'),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile Devops', ''),
-    CodeOwnerRule.new('Monetization', '@kpaizee'),
+    # CodeOwnerRule.new('Monetization', ''),
     CodeOwnerRule.new('Optimize', '@lciutacu'),
     CodeOwnerRule.new('Organizations', '@z_painter'),
     CodeOwnerRule.new('Organization', '@lciutacu'),
@@ -76,14 +76,14 @@ module TwCodeowners
     # CodeOwnerRule.new('Runners Platform', ''),
     CodeOwnerRule.new('Seat Management', '@lciutacu'),
     # CodeOwnerRule.new('Security Infrastructure', ''),
-    CodeOwnerRule.new('Security Platform Management', '@rlehmann1'),
-    CodeOwnerRule.new('Security Policies', '@rlehmann1'),
+    # CodeOwnerRule.new('Security Platform Management', ''),
+    # CodeOwnerRule.new('Security Policies', ''),
     CodeOwnerRule.new('Secret Detection', '@rsarangadharan'),
-    CodeOwnerRule.new('Security Insights', '@rlehmann1'),
+    # CodeOwnerRule.new('Security Insights', ''),
     CodeOwnerRule.new('Operate', '@axil @eread'),
     CodeOwnerRule.new('Solutions Architecture', '@jfullam @Darwinjs @sbrightwell'),
     CodeOwnerRule.new('Source Code', '@brendan777'),
-    CodeOwnerRule.new('Static Analysis', '@rdickenson'),
+    # CodeOwnerRule.new('Static Analysis', ''),
     CodeOwnerRule.new('Subscription Management', '@lciutacu'),
     CodeOwnerRule.new('Switchboard', '@lyspin'),
     CodeOwnerRule.new('Testing', '@eread'),
@@ -91,8 +91,8 @@ module TwCodeowners
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
     CodeOwnerRule.new('Utilization', '@lciutacu'),
     # CodeOwnerRule.new('Vulnerability Research', '')
-    CodeOwnerRule.new('Workflow Catalog', '@jglassman1'),
-    CodeOwnerRule.new('Knowledge Graph', '@phillipwells')
+    CodeOwnerRule.new('Workflow Catalog', '@jglassman1')
+    # CodeOwnerRule.new('Knowledge Graph', '')
   ].freeze
 
   CONTRIBUTOR_DOCS_PATH = '/doc/development/'
@@ -111,7 +111,7 @@ module TwCodeowners
         '@gitlab-org/govern/threat-insights-backend-team'),
     CodeOwnerRule.new('Composition Analysis',
       '@gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis'),
-    CodeOwnerRule.new('Documentation Guidelines', '@fneill @kpaizee'),
+    CodeOwnerRule.new('Documentation Guidelines', '@fneill'),
     CodeOwnerRule.new('Duo Workflow', '@gitlab-org/ai-powered'),
     CodeOwnerRule.new('Engineering Productivity', '@gl-dx/pipeline-maintainers'),
     CodeOwnerRule.new('Engagement', '@gitlab-org/growth'),

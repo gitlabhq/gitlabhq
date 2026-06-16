@@ -5,6 +5,7 @@ import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'RunnerJobsEmptyState',
   i18n: {
     title: s__('Runners|This runner has not run any jobs'),
     description: s__(

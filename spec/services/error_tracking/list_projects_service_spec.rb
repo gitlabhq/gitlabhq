@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integrations do
+RSpec.describe ErrorTracking::ListProjectsService, feature_category: :observability do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, maintainers: user) }
+  let_it_be_with_reload(:project) { create(:project, maintainers: user) }
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/org/proj/' }
   let(:token) { 'test-token' }

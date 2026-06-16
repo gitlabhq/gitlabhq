@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification, query_analyzers: false,
   feature_category: :cell do
-  let_it_be(:pipeline, refind: true) { create(:ci_pipeline) }
-  let_it_be(:project, refind: true) { create(:project) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
+  let_it_be_with_refind(:project) { create(:project) }
 
   before do
     allow(Gitlab::Database::QueryAnalyzer.instance).to receive(:all_analyzers).and_return([described_class])

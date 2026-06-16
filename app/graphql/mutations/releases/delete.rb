@@ -15,6 +15,8 @@ module Mutations
         description: 'Name of the tag associated with the release to delete.'
 
       authorize :destroy_release
+      authorize_granular_token permissions: :delete_release,
+        boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:, tag:)
         project = authorized_find!(project_path)

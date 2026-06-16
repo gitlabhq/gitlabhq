@@ -22,9 +22,9 @@ RSpec.shared_examples 'requires `admin_project_google_cloud` role' do
   end
 
   context 'when requested by users with different roles' do
-    let_it_be(:guest) { create(:user) }
-    let_it_be(:developer) { create(:user) }
-    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:guest, freeze: false) { create(:user) }
+    let_it_be(:developer, freeze: false) { create(:user) }
+    let_it_be(:maintainer, freeze: false) { create(:user) }
 
     before do
       project.add_guest(guest)

@@ -4,7 +4,8 @@ classes:
 - GrafanaIntegration
 feature_categories:
 - observability
-description: TODO
+description: Stores per-project Grafana host URL and access token for embedding Grafana
+  dashboards in issues. Feature is deprecated and scheduled for removal.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17234
 milestone: '12.4'
 gitlab_schema: gitlab_main_org

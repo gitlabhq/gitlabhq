@@ -3,6 +3,8 @@ description: Tracks filtering of items by resolved status.
 internal_events: true
 action: filter_resolved_status
 product_group: platform_insights
+product_categories:
+- observability
 milestone: '16.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121259
 tiers:

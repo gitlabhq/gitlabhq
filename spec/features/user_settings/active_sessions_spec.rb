@@ -121,7 +121,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
       using_session :admin_session do
         gitlab_sign_in(admin)
 
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+        enter_admin_mode_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
 
         visit user_settings_active_sessions_path
 
@@ -136,7 +136,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
       using_session :admin_session do
         gitlab_sign_in(admin)
 
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: { extra: { raw_info: { acr: 'bronze' } } }, expect_fail: true)
+        enter_admin_mode_via(provider_oidc, admin, extern_uid, additional_info: { extra: { raw_info: { acr: 'bronze' } } }, expect_fail: true)
 
         visit user_settings_active_sessions_path
 
@@ -151,7 +151,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
       using_session :admin_session do
         gitlab_sign_in(admin)
 
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+        enter_admin_mode_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
 
         visit user_settings_active_sessions_path
 
@@ -180,7 +180,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
         using_session :admin_session do
           gitlab_sign_in(admin)
 
-          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
+          enter_admin_mode_via(provider_oidc, admin, extern_uid, additional_info: additional_info)
 
           visit user_settings_active_sessions_path
 

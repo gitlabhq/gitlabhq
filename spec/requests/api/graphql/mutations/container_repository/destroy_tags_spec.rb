@@ -96,6 +96,22 @@ RSpec.describe 'Destroying a container repository tags', feature_category: :cont
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_container_repository_tag do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:destroy_container_repository_tags, { id: id, tag_names: tags }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before do
+        project.add_maintainer(user)
+        allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
+          allow(service).to receive(:execute).and_return(status: :success, deleted: tags)
+        end
+      end
+    end
+
     context 'with service error' do
       before do
         project.add_maintainer(user)

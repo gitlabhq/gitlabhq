@@ -6,12 +6,6 @@
 # Basic usage:
 #
 #     user = User.find(1)
-#
-#     SnippetsFinder.new(user).execute
-#
-# To scope snippets to a specific organization:
-#
-#     user = User.find(1)
 #     organization = Organization.find(1)
 #
 #     SnippetsFinder.new(user, organization_id: organization.id).execute
@@ -48,6 +42,9 @@
 # * `:are_public`
 #
 # Any other value will be ignored.
+#
+# Note: `organization_id` is a required parameter. An ArgumentError will be
+# raised if it is not provided.
 class SnippetsFinder < UnionFinder
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
@@ -60,6 +57,13 @@ class SnippetsFinder < UnionFinder
     @current_user = current_user
     @params = params
     @organization_id = params.delete(:organization_id)
+
+    unless @organization_id
+      raise(
+        ArgumentError,
+        'organization_id is a required parameter for SnippetsFinder'
+      )
+    end
 
     if project && author
       raise(
@@ -228,8 +232,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def should_apply_organization_filter?
-    organization_id.present? &&
-      project.blank? &&
+    project.blank? &&
       !return_all_available_and_permitted?
   end
 

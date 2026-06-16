@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'a resource event' do
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
 
-  let_it_be(:issue1) { create(:issue, author: user1) }
-  let_it_be(:issue2) { create(:issue, author: user1) }
-  let_it_be(:issue3) { create(:issue, author: user2) }
+  let_it_be(:issue1, freeze: false) { create(:issue, author: user1) }
+  let_it_be(:issue2, freeze: false) { create(:issue, author: user1) }
+  let_it_be(:issue3, freeze: false) { create(:issue, author: user2) }
 
   let(:resource_event) { described_class.name.demodulize.underscore.to_sym }
 
@@ -70,17 +70,17 @@ RSpec.shared_examples 'a resource event that responds to imported' do
 end
 
 RSpec.shared_examples 'a resource event for issues' do
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
 
-  let_it_be(:issue1) { create(:issue, author: user1) }
-  let_it_be(:issue2) { create(:issue, author: user1) }
-  let_it_be(:issue3) { create(:issue, author: user2) }
+  let_it_be(:issue1, freeze: false) { create(:issue, author: user1) }
+  let_it_be(:issue2, freeze: false) { create(:issue, author: user1) }
+  let_it_be(:issue3, freeze: false) { create(:issue, author: user2) }
 
-  let_it_be(:resource_event) { described_class.name.demodulize.underscore.to_sym }
-  let_it_be(:event1) { create(resource_event, issue: issue1) }
-  let_it_be(:event2) { create(resource_event, issue: issue2) }
-  let_it_be(:event3) { create(resource_event, issue: issue1) }
+  let_it_be(:resource_event, freeze: false) { described_class.name.demodulize.underscore.to_sym }
+  let_it_be(:event1, freeze: false) { create(resource_event, issue: issue1) }
+  let_it_be(:event2, freeze: false) { create(resource_event, issue: issue2) }
+  let_it_be(:event3, freeze: false) { create(resource_event, issue: issue1) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
@@ -109,9 +109,9 @@ RSpec.shared_examples 'a resource event for issues' do
   end
 
   describe '.by_created_at_earlier_or_equal_to' do
-    let_it_be(:event1) { create(resource_event, issue: issue1, created_at: '2020-03-10') }
-    let_it_be(:event2) { create(resource_event, issue: issue2, created_at: '2020-03-10') }
-    let_it_be(:event3) { create(resource_event, issue: issue1, created_at: '2020-03-12') }
+    let_it_be(:event1, freeze: false) { create(resource_event, issue: issue1, created_at: '2020-03-10') }
+    let_it_be(:event2, freeze: false) { create(resource_event, issue: issue2, created_at: '2020-03-10') }
+    let_it_be(:event3, freeze: false) { create(resource_event, issue: issue1, created_at: '2020-03-12') }
 
     it 'returns the expected events' do
       events = described_class.by_created_at_earlier_or_equal_to('2020-03-11 23:59:59')
@@ -128,7 +128,7 @@ RSpec.shared_examples 'a resource event for issues' do
 
   if described_class.method_defined?(:issuable)
     describe '#issuable' do
-      let_it_be(:event1) { create(resource_event, issue: issue2) }
+      let_it_be(:event1, freeze: false) { create(resource_event, issue: issue2) }
 
       it 'returns the expected issuable' do
         expect(event1.issuable).to eq(issue2)
@@ -138,22 +138,22 @@ RSpec.shared_examples 'a resource event for issues' do
 end
 
 RSpec.shared_examples 'a resource event for merge requests' do
-  let_it_be(:user1) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
 
-  let_it_be(:resource_event) { described_class.name.demodulize.underscore.to_sym }
-  let_it_be(:merge_request1) { create(:merge_request, author: user1) }
-  let_it_be(:merge_request2) { create(:merge_request, author: user1) }
-  let_it_be(:merge_request3) { create(:merge_request, author: user2) }
+  let_it_be(:resource_event, freeze: false) { described_class.name.demodulize.underscore.to_sym }
+  let_it_be(:merge_request1, freeze: false) { create(:merge_request, author: user1) }
+  let_it_be(:merge_request2, freeze: false) { create(:merge_request, author: user1) }
+  let_it_be(:merge_request3, freeze: false) { create(:merge_request, author: user2) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
   end
 
   describe '.by_merge_request' do
-    let_it_be(:event1) { create(resource_event, merge_request: merge_request1) }
-    let_it_be(:event2) { create(resource_event, merge_request: merge_request2) }
-    let_it_be(:event3) { create(resource_event, merge_request: merge_request1) }
+    let_it_be(:event1, freeze: false) { create(resource_event, merge_request: merge_request1) }
+    let_it_be(:event2, freeze: false) { create(resource_event, merge_request: merge_request2) }
+    let_it_be(:event3, freeze: false) { create(resource_event, merge_request: merge_request1) }
 
     it 'returns the expected records for an issue with events' do
       events = described_class.by_merge_request(merge_request1)
@@ -170,7 +170,7 @@ RSpec.shared_examples 'a resource event for merge requests' do
 
   if described_class.method_defined?(:issuable)
     describe '#issuable' do
-      let_it_be(:event1) { create(resource_event, merge_request: merge_request2) }
+      let_it_be(:event1, freeze: false) { create(resource_event, merge_request: merge_request2) }
 
       it 'returns the expected issuable' do
         expect(event1.issuable).to eq(merge_request2)
@@ -190,9 +190,9 @@ RSpec.shared_examples 'a resource event for merge requests' do
 end
 
 RSpec.shared_examples 'a note for work item resource event' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project, author: user) }
 
   let(:resource_event) { described_class.name.demodulize.underscore.to_sym }
 

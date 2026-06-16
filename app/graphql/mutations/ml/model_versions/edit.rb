@@ -8,6 +8,8 @@ module Mutations
         include FindsProject
 
         authorize :write_model_registry
+        authorize_granular_token permissions: :update_model_version,
+          boundary_argument: :project_path, boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

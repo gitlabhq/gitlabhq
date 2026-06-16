@@ -8,12 +8,14 @@ module LooseForeignKeys
       connection:,
       logger: Sidekiq.logger,
       modification_tracker: LooseForeignKeys::ModificationTracker.new,
-      worker_class: LooseForeignKeys::CleanupWorker
+      worker_class: LooseForeignKeys::CleanupWorker,
+      record_store: LooseForeignKeys::DeletedRecord
     )
       @connection = connection
       @modification_tracker = modification_tracker
       @logger = logger
       @worker_class = worker_class
+      @record_store = record_store
     end
 
     def execute
@@ -39,7 +41,8 @@ module LooseForeignKeys
             deleted_parent_records: records,
             connection: connection,
             logger: logger,
-            modification_tracker: modification_tracker)
+            modification_tracker: modification_tracker,
+            record_store: record_store)
           .execute
 
         break if modification_tracker.over_limit?
@@ -63,7 +66,7 @@ module LooseForeignKeys
 
     private
 
-    attr_reader :connection, :logger, :modification_tracker
+    attr_reader :connection, :logger, :modification_tracker, :record_store
 
     def db_config_name
       ::Gitlab::Database.db_config_name(connection)
@@ -72,7 +75,7 @@ module LooseForeignKeys
     def load_batch_for_table(table)
       Gitlab::Database::SharedModel.using_connection(connection) do
         fully_qualified_table_name = "#{current_schema}.#{table}"
-        LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, BATCH_SIZE)
+        record_store.load_batch_for_table(fully_qualified_table_name, BATCH_SIZE)
       end
     end
 

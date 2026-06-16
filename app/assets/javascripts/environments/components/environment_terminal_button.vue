@@ -7,6 +7,7 @@ import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'EnvironmentTerminalButton',
   components: {
     GlDisclosureDropdownItem,
   },

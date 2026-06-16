@@ -14,8 +14,12 @@ module Packages
     }.freeze
 
     def execute
-      ::Packages::Event.unique_counters_for(event_scope, event_name, originator_type).each do |event_name|
-        ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: current_user.id)
+      # User metrics have been migrated to internal events with filters.
+      # HLL tracking is only needed for deploy_token metrics which haven't been migrated yet.
+      if originator_type != :user
+        ::Packages::Event.unique_counters_for(event_scope, event_name, originator_type).each do |event_name|
+          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: current_user.id)
+        end
       end
 
       return unless INTERNAL_EVENTS_NAMES.key?(event_name)

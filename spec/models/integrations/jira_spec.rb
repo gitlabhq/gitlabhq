@@ -430,6 +430,17 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         expect(jira_integration.reference_pattern.match(key).to_s).to eq('')
       end
     end
+
+    # Regression: Gitlab::Regex.jira_issue_key_regex's default expression
+    # escape is a lookbehind, which RE2 (the engine behind UntrustedRegexp)
+    # cannot compile. `#jira_issue_match_regex` must override the default so
+    # the source it interpolates remains RE2-compatible.
+    context 'when compiled through Gitlab::UntrustedRegexp (RE2)' do
+      it 'does not raise when building the reference pattern' do
+        expect { jira_integration.reference_pattern }.not_to raise_error
+        expect(jira_integration.reference_pattern).to be_a(Gitlab::UntrustedRegexp)
+      end
+    end
   end
 
   describe '.valid_jira_cloud_url?' do
@@ -1137,6 +1148,29 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       let(:commit_id) { resource.diff_head_sha }
 
       it_behaves_like 'close_issue'
+
+      context 'when the merge request was squash-merged' do
+        let(:resource) do
+          build_stubbed(:merge_request, source_project: project,
+            squash_commit_sha: '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b')
+        end
+
+        let(:commit_id) { resource.squash_commit_sha }
+
+        it_behaves_like 'close_issue'
+      end
+
+      context 'when the merge request has a merge commit but no squash commit' do
+        let(:resource) do
+          build_stubbed(:merge_request, source_project: project,
+            squash_commit_sha: nil,
+            merge_commit_sha: 'aabbccddeeff00112233445566778899aabbccdd')
+        end
+
+        let(:commit_id) { resource.merge_commit_sha }
+
+        it_behaves_like 'close_issue'
+      end
     end
 
     context 'when resource is a commit' do
@@ -1322,9 +1356,29 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     end
 
     context 'when the test fails' do
-      it 'returns result with the error' do
+      it 'returns a 401 response with the error' do
         test_url = 'http://jira.example.com/rest/api/2/serverInfo'
-        error_message = 'Some specific failure.'
+        error_message = 'Unauthorized'
+        response = 'Jira returned HTTP 401: Unauthorized'
+
+        WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
+          .to_raise(JIRA::HTTPError.new(double(message: error_message, code: '401')))
+
+        expect(jira_integration).to receive(:log_exception).with(
+          kind_of(JIRA::HTTPError),
+          message: 'Error sending message',
+          client_url: 'http://jira.example.com',
+          client_path: '/rest/api/2/serverInfo',
+          client_status: '401'
+        )
+
+        expect(jira_integration.test(nil)).to eq(success: false, result: response)
+      end
+
+      it 'returns a 403 response with the error' do
+        test_url = 'http://jira.example.com/rest/api/2/serverInfo'
+        error_message = 'Forbidden'
+        response = 'Jira returned HTTP 403: Forbidden'
 
         WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
           .to_raise(JIRA::HTTPError.new(double(message: error_message, code: '403')))
@@ -1337,7 +1391,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           client_status: '403'
         )
 
-        expect(jira_integration.test(nil)).to eq(success: false, result: error_message)
+        expect(jira_integration.test(nil)).to eq(success: false, result: response)
       end
     end
   end

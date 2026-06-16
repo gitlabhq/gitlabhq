@@ -95,6 +95,9 @@ your merge request, either use the
 
 GitLab adds the merge request to the user's review requests.
 
+To assign Code Owners as reviewers without selecting them by hand, see
+[automatic reviewer assignment](automatic_reviewer_assignment.md).
+
 ### Find reviewers who fulfill approval rules
 
 {{< details >}}

@@ -20,7 +20,7 @@ RSpec.describe ::Gitlab::Graphql::Pagination::Connections do
     end
   end
 
-  let_it_be(:node_model) do
+  let_it_be(:node_model, freeze: false) do
     Class.new(ActiveRecord::Base) do
       self.table_name = '_test_testing_pagination_nodes'
     end

@@ -18,14 +18,18 @@ module QA
         while_signed_in(address: address, admin: true, &block)
       end
 
-      def sign_in(as: nil, address: :gitlab, skip_page_validation: false, admin: false)
+      def sign_in(as: nil, address: :gitlab, skip_page_validation: false, admin: false, raise_on_invalid_login: true)
         Page::Main::Login.perform do |login|
           login.redirect_to_login_page(address)
 
           if admin
             login.sign_in_using_admin_credentials
           else
-            login.sign_in_using_credentials(user: as, skip_page_validation: skip_page_validation)
+            login.sign_in_using_credentials(
+              user: as,
+              skip_page_validation: skip_page_validation,
+              raise_on_invalid_login: raise_on_invalid_login
+            )
           end
         end
       end

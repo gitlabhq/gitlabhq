@@ -15,7 +15,7 @@ title: Apps for a testing environment
 This is the GitLab Support Team's collection of information regarding testing environments,
 for use while troubleshooting. It is listed here for transparency, and it may be useful
 for users with experience with these tools. If you are currently having an issue with
-GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
+GitLab, you may want to check your [support options](https://support.gitlab.com/)
 first, before attempting to use this information.
 
 > [!note]

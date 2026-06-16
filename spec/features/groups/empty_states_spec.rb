@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   let_it_be(:group_without_projects) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group_without_projects) }

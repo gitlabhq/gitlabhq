@@ -80,4 +80,8 @@ class Tree
   def sorted_entries
     trees + blobs + submodules
   end
+
+  def project
+    repository&.project
+  end
 end

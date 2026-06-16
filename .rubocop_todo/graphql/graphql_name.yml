@@ -86,7 +86,6 @@ GraphQL/GraphqlName:
     - 'app/graphql/types/todo_target_enum.rb'
     - 'app/graphql/types/untrusted_regexp.rb'
     - 'app/graphql/types/visibility_levels_enum.rb'
-    - 'ee/app/graphql/mutations/ai/agents/base.rb'
     - 'ee/app/graphql/mutations/audit_events/amazon_s3_configurations/base.rb'
     - 'ee/app/graphql/mutations/audit_events/external_audit_event_destinations/base.rb'
     - 'ee/app/graphql/mutations/audit_events/google_cloud_logging_configurations/base.rb'

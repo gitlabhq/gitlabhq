@@ -23,6 +23,7 @@ const STATUS_ICON = {
 };
 
 export default {
+  name: 'DeploymentStatusBadge',
   components: {
     CiIcon,
   },

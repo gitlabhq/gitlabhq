@@ -11,6 +11,8 @@ module RapidDiffs
     end
 
     expose :selected do |merge_request_diff|
+      next false if Gitlab::Utils.to_boolean(options[:only_context_commits], default: false)
+
       if current_merge_request_diff.present?
         next true if current_merge_request_diff.merge_head? && latest_or_merge_head?(merge_request_diff)
 

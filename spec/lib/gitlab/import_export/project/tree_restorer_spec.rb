@@ -488,17 +488,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(award_emoji.name).to eq('clapper')
         end
 
-        it 'restores work_item_description for issues' do
-          issue = @project.issues.find_by(title: 'Voluptatem')
-          work_item_description = issue.work_item_description
-
-          expect(work_item_description).to be_present
-          expect(work_item_description.description).to eq('Aliquam enim illo et possimus.')
-          expect(work_item_description.description_html).to include('Aliquam enim illo et possimus.')
-          expect(work_item_description.last_edited_at).to eq(Time.parse('2016-06-14T15:02:47.967Z'))
-          expect(work_item_description.last_edited_by_id).to be_present
-        end
-
         it 'restores container_expiration_policy' do
           policy = Project.find_by_path('project').container_expiration_policy
 
@@ -770,7 +759,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
     context 'when expect tree structure is not present in the export path' do
       let(:user) { create(:user) }
-      let_it_be(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+      let_it_be(:project, freeze: false) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
 
       it 'fails to restore the project' do
         result = described_class.new(user: user, shared: shared, project: project).restore
@@ -1265,9 +1254,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
     end
 
     context 'JSON with design management data' do
-      let_it_be(:user) { create(:admin, email: 'user_1@gitlabexample.com') }
-      let_it_be(:second_user) { create(:user, email: 'user_2@gitlabexample.com') }
-      let_it_be(:project) do
+      let_it_be(:user, freeze: false) { create(:admin, email: 'user_1@gitlabexample.com') }
+      let_it_be(:second_user, freeze: false) { create(:user, email: 'user_2@gitlabexample.com') }
+      let_it_be(:project, freeze: false) do
         create(:project, :builds_disabled, :issues_disabled, { name: 'project', path: 'project' })
       end
 

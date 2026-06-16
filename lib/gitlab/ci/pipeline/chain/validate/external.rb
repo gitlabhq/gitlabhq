@@ -127,7 +127,7 @@ module Gitlab
 
             def builds_validation_payload
               stages_attributes.flat_map { |stage| stage[:builds] }
-                .map(&method(:build_validation_payload))
+                .map { |build| build_validation_payload(build) }
             end
 
             def build_validation_payload(build)

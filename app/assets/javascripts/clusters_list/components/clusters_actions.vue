@@ -10,6 +10,7 @@ import {
 import { INSTALL_AGENT_MODAL_ID, CLUSTERS_ACTIONS } from '../constants';
 
 export default {
+  name: 'ClustersActions',
   i18n: CLUSTERS_ACTIONS,
   INSTALL_AGENT_MODAL_ID,
   components: {

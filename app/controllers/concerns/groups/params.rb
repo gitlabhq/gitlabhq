@@ -57,7 +57,9 @@ module Groups
         :crm_source_group_id,
         :force_pages_access_control,
         :enable_namespace_descendants_cache,
-        :step_up_auth_required_oauth_provider
+        :step_up_auth_required_oauth_provider,
+        :enforce_granular_tokens,
+        :granular_tokens_enforced_after
       ] + [group_feature_attributes: group_feature_attributes]
     end
 

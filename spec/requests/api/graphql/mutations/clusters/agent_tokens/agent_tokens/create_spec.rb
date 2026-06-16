@@ -36,6 +36,17 @@ RSpec.describe 'Create a new cluster agent token', feature_category: :deployment
       cluster_agent.project.add_maintainer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_cluster_agent_token do
+      let(:user) { current_user }
+      let(:boundary_object) { cluster_agent.project }
+      let(:mutation) do
+        graphql_mutation(:cluster_agent_token_create,
+          { cluster_agent_id: cluster_agent.to_global_id.to_s, name: name }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates a new token', :aggregate_failures do
       expect { post_graphql_mutation(mutation, current_user: current_user) }.to change { Clusters::AgentToken.count }.by(1)
       expect(mutation_response['errors']).to eq([])

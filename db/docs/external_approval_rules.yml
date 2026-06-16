@@ -3,7 +3,8 @@ table_name: external_approval_rules
 classes: []
 feature_categories:
 - security_policy_management
-description: TODO
+description: Stores rules that require an external service (queried over HTTP) to
+  approve a merge request before it can be merged. Predecessor to status checks.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54002
 milestone: '13.10'
 gitlab_schema: gitlab_main_org

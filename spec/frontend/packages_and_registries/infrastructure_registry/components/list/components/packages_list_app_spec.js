@@ -1,14 +1,15 @@
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 
 import * as packageUtils from '~/packages_and_registries/shared/utils';
@@ -19,10 +20,11 @@ import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_ba
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/alert');
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('packages_list_app', () => {
   let wrapper;
+  let pinia;
   let store;
 
   const PackageList = {
@@ -37,21 +39,18 @@ describe('packages_list_app', () => {
   const findInfrastructureTitle = () => wrapper.findComponent(InfrastructureTitle);
 
   const createStore = ({ filter = [], packageCount = 0 } = {}) => {
-    store = new Vuex.Store({
-      state: {
-        isLoading: false,
-        filter,
-        pagination: {
-          total: packageCount,
-        },
-      },
+    pinia = createTestingPinia();
+    store = useInfrastructureList();
+    store.$patch({
+      isLoading: false,
+      filter,
+      pagination: { total: packageCount },
     });
-    store.dispatch = jest.fn();
   };
 
   const mountComponent = ({ isGroupPage = false } = {}) => {
     wrapper = shallowMount(PackageListApp, {
-      store,
+      pinia,
       provide: {
         isGroupPage,
         emptyListIllustration: 'helpSvg',
@@ -83,7 +82,7 @@ describe('packages_list_app', () => {
   it('calls requestPackagesList on page:changed', () => {
     const list = findListComponent();
     list.vm.$emit('page:changed', 1);
-    expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', {
+    expect(store.requestPackagesList).toHaveBeenCalledWith({
       page: 1,
       isGroupPage: false,
       resourceId: 'project_id',
@@ -99,18 +98,20 @@ describe('packages_list_app', () => {
     const list = findListComponent();
     list.vm.$emit('package:delete', payload);
 
-    expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', {
+    expect(store.requestDeletePackage).toHaveBeenCalledWith({
       ...payload,
       isGroupPage: false,
       resourceId: 'project_id',
     });
   });
 
-  it('calls requestPackagesList only once on render', () => {
-    expect(store.dispatch).toHaveBeenCalledTimes(3);
-    expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', expect.any(Object));
-    expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', expect.any(Array));
-    expect(store.dispatch).toHaveBeenNthCalledWith(3, 'requestPackagesList', {
+  it('calls setSorting, setFilter, and requestPackagesList once on render', () => {
+    expect(store.setSorting).toHaveBeenCalledTimes(1);
+    expect(store.setSorting).toHaveBeenCalledWith(expect.any(Object));
+    expect(store.setFilter).toHaveBeenCalledTimes(1);
+    expect(store.setFilter).toHaveBeenCalledWith(expect.any(Array));
+    expect(store.requestPackagesList).toHaveBeenCalledTimes(1);
+    expect(store.requestPackagesList).toHaveBeenCalledWith({
       isGroupPage: false,
       resourceId: 'project_id',
     });
@@ -132,7 +133,7 @@ describe('packages_list_app', () => {
     it('calls setSorting with the query string based sorting', () => {
       mountComponent();
 
-      expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', {
+      expect(store.setSorting).toHaveBeenCalledWith({
         orderBy: defaultQueryParamsMock.orderBy,
         sort: defaultQueryParamsMock.sort,
       });
@@ -141,22 +142,22 @@ describe('packages_list_app', () => {
     it('calls setFilter with the query string based filters', () => {
       mountComponent();
 
-      expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', [
+      expect(store.setFilter).toHaveBeenCalledWith([
         { type: 'type', value: { data: defaultQueryParamsMock.type } },
         { type: FILTERED_SEARCH_TERM, value: { data: defaultQueryParamsMock.search[0] } },
         { type: FILTERED_SEARCH_TERM, value: { data: defaultQueryParamsMock.search[1] } },
       ]);
     });
 
-    it('calls setSorting and setFilters with the results of extractFilterAndSorting', () => {
+    it('calls setSorting and setFilter with the results of extractFilterAndSorting', () => {
       jest
         .spyOn(packageUtils, 'extractFilterAndSorting')
         .mockReturnValue({ filters: ['foo'], sorting: { sort: 'desc' } });
 
       mountComponent();
 
-      expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', { sort: 'desc' });
-      expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', ['foo']);
+      expect(store.setSorting).toHaveBeenCalledWith({ sort: 'desc' });
+      expect(store.setFilter).toHaveBeenCalledWith(['foo']);
     });
   });
 
@@ -228,11 +229,11 @@ describe('packages_list_app', () => {
       });
 
       it('on update fetches data from the store', () => {
-        store.dispatch.mockClear();
+        store.requestPackagesList.mockClear();
 
         findInfrastructureSearch().vm.$emit('update');
 
-        expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', {
+        expect(store.requestPackagesList).toHaveBeenCalledWith({
           isGroupPage: false,
           resourceId: 'project_id',
         });

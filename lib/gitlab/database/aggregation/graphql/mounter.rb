@@ -10,12 +10,16 @@ module Gitlab
             opts[:field_name] ||= :aggregation
             opts[:types_prefix] ||= opts[:field_name]
 
-            field opts[:field_name],
+            field_options = {
               description: opts[:description],
               null: true,
               resolver_method: :object,
               authorize: opts[:authorize],
               resolver: Resolvers::Analytics::Aggregation::EngineResolver.build(engine, **opts, &block)
+            }
+            field_options[:experiment] = opts[:experiment] if opts.key?(:experiment)
+
+            field opts[:field_name], **field_options
           end
         end
       end

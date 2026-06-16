@@ -42,6 +42,9 @@ describe('noteActions', () => {
   const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
   const findDeleteButton = () => wrapper.find('.js-note-delete');
   const findEditButton = () => wrapper.find('.js-note-edit');
+  const findCopyLinkButton = () => wrapper.find('.js-btn-copy-note-link');
+  const findMoreActionsDropdown = () =>
+    wrapper.find('.more-actions-toggle').findComponent(GlDisclosureDropdown);
   const findResolveButton = () => wrapper.findComponent({ ref: 'resolveButton' });
 
   const setupStoreForIncidentTimelineEvents = ({
@@ -177,7 +180,7 @@ describe('noteActions', () => {
       });
 
       it('should be possible to copy link to a note', () => {
-        expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(true);
+        expect(findCopyLinkButton().exists()).toBe(true);
       });
 
       it('should not show copy link action when `noteUrl` prop is empty', async () => {
@@ -195,7 +198,7 @@ describe('noteActions', () => {
         });
 
         await nextTick();
-        expect(wrapper.find('.js-btn-copy-note-link').exists()).toBe(false);
+        expect(findCopyLinkButton().exists()).toBe(false);
       });
 
       it('should be possible to delete comment', () => {
@@ -312,8 +315,32 @@ describe('noteActions', () => {
       expect(wrapper.find('.js-add-award').exists()).toBe(false);
     });
 
-    it('should not render actions dropdown', () => {
-      expect(wrapper.find('.more-actions').exists()).toBe(false);
+    it('should render actions dropdown with copy link button only', () => {
+      expect(findMoreActionsDropdown().exists()).toBe(true);
+      expect(findCopyLinkButton().exists()).toBe(true);
+
+      expect(findDeleteButton().exists()).toBe(false);
+      expect(findEditButton().exists()).toBe(false);
+      expect(findFeedbackButton().exists()).toBe(false);
+      expect(findReportAbuseButton().exists()).toBe(false);
+    });
+
+    it('should render actions dropdown with copy link and report abuse button when canReportAsAbuse is true', () => {
+      wrapper = mountNoteActions({
+        ...props,
+        canDelete: false,
+        canEdit: false,
+        canAwardEmoji: false,
+        canReportAsAbuse: true,
+      });
+
+      expect(findMoreActionsDropdown().exists()).toBe(true);
+      expect(findCopyLinkButton().exists()).toBe(true);
+      expect(findReportAbuseButton().exists()).toBe(true);
+
+      expect(findDeleteButton().exists()).toBe(false);
+      expect(findEditButton().exists()).toBe(false);
+      expect(findFeedbackButton().exists()).toBe(false);
     });
   });
 
@@ -596,8 +623,6 @@ describe('noteActions', () => {
 
     describe('toggle-aria-label on emoji picker and more actions', () => {
       const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
-      const findMoreActionsDropdown = () =>
-        wrapper.find('.more-actions-toggle').findComponent(GlDisclosureDropdown);
 
       const mountWithEmojiPicker = (propsData) => {
         return shallowMount(noteActions, {

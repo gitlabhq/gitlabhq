@@ -8,6 +8,7 @@ import { INCIDENT_SEVERITY, SEVERITY_I18N as I18N } from '../../constants';
 import SeverityToken from './severity.vue';
 
 export default {
+  name: 'SidebarSeverityWidget',
   i18n: I18N,
   components: {
     GlTooltip,

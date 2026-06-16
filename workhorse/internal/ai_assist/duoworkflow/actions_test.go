@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -16,16 +15,23 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 const testRemoteAddr = "192.0.2.1:1234"
 
 // createBackendHandler creates a backend handler that makes HTTP requests using the provided client
-func createBackendHandler(client *http.Client) http.Handler {
+// serverURL is used to rewrite the relative request URL to point at the test server
+func createBackendHandler(client *http.Client, serverURL string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resp, err := client.Do(r)
+		// Rewrite the relative URL to include the test server scheme and host
+		reqWithServerURL := r.Clone(r.Context())
+		reqWithServerURL.URL.Scheme = "http"
+		reqWithServerURL.URL.Host = r.Host
+		if reqWithServerURL.URL.Host == "" {
+			reqWithServerURL.URL.Host = serverURL
+		}
+
+		resp, err := client.Do(reqWithServerURL)
 		if err != nil {
 			w.WriteHeader(http.StatusBadGateway)
 			fmt.Fprint(w, err.Error())
@@ -66,9 +72,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		body := `{"name": "test-project"}`
 
 		action := &pb.Action{
@@ -86,17 +89,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
 			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
-			action:      action,
 			token:       "test-token",
 			originalReq: originalReq,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -116,9 +114,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-456",
 			Action: &pb.Action_RunHTTPRequest{
@@ -134,17 +129,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.Header.Set("X-Forwarded-For", "127.0.0.1:3000")
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: originalReq,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -165,9 +155,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-456",
 			Action: &pb.Action_RunHTTPRequest{
@@ -179,17 +166,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -205,9 +187,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-789",
 			Action: &pb.Action_RunHTTPRequest{
@@ -219,17 +198,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -238,9 +212,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 	})
 
 	t.Run("invalid request URL", func(t *testing.T) {
-		serverURL, err := url.Parse("http://localhost:0")
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-invalid",
 			Action: &pb.Action_RunHTTPRequest{
@@ -252,17 +223,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    serverURL,
-			},
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
-			action:      action,
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		// Note: This test still expects an error because the URL parsing happens
 		// before the HTTP request, in url.Parse() and http.NewRequestWithContext()
@@ -281,9 +247,6 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-query",
 			Action: &pb.Action_RunHTTPRequest{
@@ -295,17 +258,12 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -389,6 +347,8 @@ func TestServeHTTPSafe(t *testing.T) {
 
 func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
 	t.Run("sends error to dws instead of panicking or erroring when context is canceled", func(t *testing.T) {
+		testhelper.ConfigureSecret()
+
 		// This backend simulates what httputil.ReverseProxy does when the request
 		// context is canceled mid-flight: it panics with http.ErrAbortHandler.
 		// Without the serveHTTPSafe wrapper, this panic would propagate uncaught
@@ -396,9 +356,6 @@ func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
 		backend := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			panic(http.ErrAbortHandler)
 		})
-
-		serverURL, err := url.Parse("http://localhost:0")
-		require.NoError(t, err)
 
 		action := &pb.Action{
 			RequestID: "req-cancel",
@@ -417,17 +374,12 @@ func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    serverURL,
-			},
 			backend:     backend,
-			action:      action,
 			token:       "test-token",
 			originalReq: originalReq,
 		}
 
-		result, err := handler.Execute(ctx)
+		result, err := handler.Execute(ctx, action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -459,19 +411,11 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 	}
 
 	t.Run("returns errRequestTimedOut when shouldTimeoutHTTPRequests is true and deadline is exceeded", func(t *testing.T) {
-		serverURL, err := url.Parse("http://localhost:0")
-		require.NoError(t, err)
-
 		originalReq := httptest.NewRequest("GET", "/ws", nil)
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: &http.Client{},
-				URL:    serverURL,
-			},
 			backend:                   slowBackend,
-			action:                    makeAction(),
 			token:                     "test-token",
 			originalReq:               originalReq,
 			shouldTimeoutHTTPRequests: true,
@@ -482,7 +426,7 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
 		defer cancel()
 
-		result, err := handler.Execute(ctx)
+		result, err := handler.Execute(ctx, makeAction())
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -496,25 +440,17 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		originalReq := httptest.NewRequest("GET", "/ws", nil)
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:                   createBackendHandler(server.Client()),
-			action:                    makeAction(),
+			backend:                   createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:                     "test-token",
 			originalReq:               originalReq,
 			shouldTimeoutHTTPRequests: false,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), makeAction())
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -529,25 +465,17 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		originalReq := httptest.NewRequest("GET", "/ws", nil)
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:                   createBackendHandler(server.Client()),
-			action:                    makeAction(),
+			backend:                   createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:                     "test-token",
 			originalReq:               originalReq,
 			shouldTimeoutHTTPRequests: true,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), makeAction())
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -567,9 +495,6 @@ func TestHeaderParsing(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-headers",
 			Action: &pb.Action_RunHTTPRequest{
@@ -581,17 +506,12 @@ func TestHeaderParsing(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -612,9 +532,6 @@ func TestHeaderParsing(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-multi-headers",
 			Action: &pb.Action_RunHTTPRequest{
@@ -626,17 +543,12 @@ func TestHeaderParsing(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: &http.Request{},
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -657,9 +569,6 @@ func TestHeaderParsing(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-forwarded",
 			Action: &pb.Action_RunHTTPRequest{
@@ -675,17 +584,12 @@ func TestHeaderParsing(t *testing.T) {
 		originalReq.Header.Set("X-Forwarded-For", "10.0.0.1, 10.0.0.2")
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: originalReq,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -704,9 +608,6 @@ func TestHeaderParsing(t *testing.T) {
 		}))
 		defer server.Close()
 
-		serverURL, err := url.Parse(server.URL)
-		require.NoError(t, err)
-
 		action := &pb.Action{
 			RequestID: "req-forwarded-new",
 			Action: &pb.Action_RunHTTPRequest{
@@ -721,17 +622,12 @@ func TestHeaderParsing(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			rails: &api.API{
-				Client: server.Client(),
-				URL:    serverURL,
-			},
-			backend:     createBackendHandler(server.Client()),
-			action:      action,
+			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:       "test-token",
 			originalReq: originalReq,
 		}
 
-		result, err := handler.Execute(context.Background())
+		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)

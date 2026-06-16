@@ -56,6 +56,7 @@ export default {
       default: true,
     },
   },
+  emits: ['closeCommentForm', 'moveNote', 'openCommentForm'],
   data() {
     return {
       overlayDimensions: null,

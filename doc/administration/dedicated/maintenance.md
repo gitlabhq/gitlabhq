@@ -9,7 +9,7 @@ title: GitLab Dedicated maintenance operations
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Dedicated
+- Offering: GitLab Dedicated, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -24,16 +24,37 @@ your instance is created.
 
 ### Maintenance window schedule
 
+{{< tabs >}}
+
+{{< tab title="GitLab Dedicated" >}}
+
 The following maintenance windows are listed in chronological order:
 
-| Region                          | Day           | Time (UTC) |
-| ------------------------------- | ------------- | ---------- |
-| Europe, Middle East, and Africa | Tuesday       | 1:00 AM-5:00 AM |
-| Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM |
-| Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM |
-| Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM |
+| Region                          | Day           | Time (UTC)        |
+| ------------------------------- | ------------- | ----------------- |
+| Europe, Middle East, and Africa | Tuesday       | 1:00 AM-5:00 AM   |
+| Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM  |
+| Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM   |
+| Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM   |
 
 To view your assigned maintenance window, go to [Switchboard](tenant_overview.md).
+
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated for Government" >}}
+
+Maintenance windows are fixed and scheduled Tuesday through Thursday.
+Monday is reserved for internal validation.
+
+| Window ID | Day       | Time (UTC)  |
+| --------- | --------- | ----------- |
+| US-Gov-02 | Wednesday | 1:00 AM-5:00 AM |
+| US-Gov-03 | Thursday  | 12:00 AM-4:00 AM |
+| US-Gov-04 | Thursday  | 11:00 PM-3:00 AM |
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 During scheduled maintenance windows, the following tasks might be performed:
 

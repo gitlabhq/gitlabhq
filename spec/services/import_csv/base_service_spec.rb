@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ImportCsv::BaseService, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:csv_io) { double }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:csv_io, freeze: false) { double }
 
   subject { described_class.new(user, project, csv_io) }
 

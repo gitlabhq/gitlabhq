@@ -13,6 +13,7 @@ require_relative 'helpers/fast_rails_root'
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
 require 'gitlab_quality/test_tooling'
+require 'gitlab/rspec-metrics-exporter'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
@@ -107,7 +108,14 @@ RSpec.configure do |config|
     config.add_formatter Support::PerTestCoverageFormatter
   end
 
-  GitlabQuality::TestTooling::TestMetricsExporter::ConfigHelper.configure!('backend-rspec-tests') do |exporter_config|
+  Gitlab::RSpecMetricsExporter::ConfigHelper.configure!('backend-rspec-tests') do |exporter_config|
     exporter_config.test_retried_proc = ->(_example) { ENV["RSPEC_RETRY_PROCESS"] == "true" }
+    exporter_config.custom_metrics_proc = ->(_example) do
+      test_level = ENV['CI_JOB_NAME'].to_s[
+        /(?:^|[\s_-])(unit|integration|system|background_migration|migration)(?:[\s_-]|$)/,
+        1
+      ]
+      { test_level: test_level || "unit" }
+    end
   end
 end

@@ -229,6 +229,14 @@ Prerequisites:
 
 You can set up verification rules to ensure Jira issues referenced in commit messages meet specific criteria before allowing pushes. This feature helps maintain consistent workflows between GitLab and Jira.
 
+When GitLab performs verification checks:
+
+- If a commit message contains multiple Jira issue keys, only the first one is used for
+  verification checks.
+- Because of a known issue, clearing the **Check issue exists** setting doesn't stop the check
+  from running. The only way to stop the check from running is to clear all Jira verification
+  checks.
+
 To configure Jira verification:
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -243,9 +251,6 @@ To configure Jira verification:
 1. Select **Save changes**.
 
 When a user attempts to push changes that don't meet the verification criteria, GitLab displays an error message indicating why the push was rejected.
-
-> [!note]
-> If a commit message contains multiple Jira issue keys, only the first one is used for verification checks.
 
 ### Example error messages
 

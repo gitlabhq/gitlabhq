@@ -8,7 +8,6 @@ import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue'
 
 import {
   WIDGET_TYPE_HEALTH_STATUS,
-  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_PARTICIPANTS,
@@ -23,6 +22,7 @@ import {
 import {
   findAssigneesWidget,
   findCrmContactsWidget,
+  findHierarchyWidget,
   findHierarchyWidgetDefinition,
   findLabelsWidget,
   findStartAndDueDateWidget,
@@ -180,7 +180,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
     },
     workItemHierarchy() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+      return findHierarchyWidget(this.workItem);
     },
     workItemMilestone() {
       return this.useWorkItemFeatures
@@ -191,7 +191,7 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+      return findHierarchyWidget(this.workItem)?.parent;
     },
     showParent() {
       return this.allowedParentTypes.length > 0 && this.workItemHierarchy && this.isParentEnabled;

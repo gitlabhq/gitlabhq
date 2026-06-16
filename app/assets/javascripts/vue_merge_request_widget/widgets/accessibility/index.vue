@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['loaded'],
   data() {
     return {
       collapsedData: {},

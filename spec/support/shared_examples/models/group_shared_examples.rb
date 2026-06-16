@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'checks self and root ancestor feature flag' do
-  let_it_be(:root_group) { create(:group) }
-  let_it_be(:group) { create(:group, parent: root_group) }
+  let_it_be(:root_group, freeze: false) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group, parent: root_group) }
 
   subject { group.public_send(feature_flag_method) }
 
@@ -42,9 +42,9 @@ RSpec.shared_examples 'checks self and root ancestor feature flag' do
 end
 
 RSpec.shared_examples 'checks self (project) and root ancestor feature flag' do
-  let_it_be(:root_group) { create(:group) }
-  let_it_be(:group) { create(:group, parent: root_group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:root_group, freeze: false) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group, parent: root_group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
 
   subject { project.public_send(feature_flag_method) }
 

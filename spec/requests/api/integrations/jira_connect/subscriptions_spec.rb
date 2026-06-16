@@ -81,15 +81,67 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, :with_current_orga
             .to_return(body: jira_user.to_json, status: 200, headers: { 'Content-Type' => 'application/json' })
         end
 
-        it 'returns 401 if the user does not have access to the group' do
-          post_subscriptions
+        context 'when the user cannot read the namespace' do
+          let(:private_group) { create(:group, :private) }
 
-          expect(response).to have_gitlab_http_status(:unauthorized)
+          subject(:post_subscriptions) do
+            post api('/integrations/jira_connect/subscriptions', user),
+              params: { jwt: jwt, namespace_path: private_group.path }
+          end
+
+          it 'returns 404' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to include(
+              'Namespace not found. Check the group path and try again.'
+            )
+          end
+        end
+
+        context 'when the user can read the namespace but cannot link it' do
+          before do
+            group.add_developer(user)
+          end
+
+          it 'returns 403' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to include(
+              'You do not have permission to link this namespace. ' \
+                'You must be a Maintainer or Owner of the group.'
+            )
+          end
+        end
+
+        context 'when the namespace path does not exist' do
+          subject(:post_subscriptions) do
+            post api('/integrations/jira_connect/subscriptions', user),
+              params: { jwt: jwt, namespace_path: 'nonexistent-namespace-path' }
+          end
+
+          it 'returns 404' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to include(
+              'Namespace not found. Check the group path and try again.'
+            )
+          end
         end
 
         context 'user has access to the group' do
           before do
             group.add_maintainer(user)
+          end
+
+          it_behaves_like 'authorizing granular token permissions', :create_jira_connect_subscription do
+            let(:boundary_object) { group }
+            let(:request) do
+              post api('/integrations/jira_connect/subscriptions', personal_access_token: pat),
+                params: { jwt: jwt, namespace_path: group.path }
+            end
           end
 
           it 'creates a subscription' do

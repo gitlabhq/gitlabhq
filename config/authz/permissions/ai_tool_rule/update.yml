@@ -1,0 +1,3 @@
+---
+name: update_ai_tool_rule
+description: Grants the ability to create and update AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform

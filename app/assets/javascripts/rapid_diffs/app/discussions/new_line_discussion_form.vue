@@ -15,6 +15,7 @@ export default {
   inject: {
     store: { type: Object },
     blobRawPath: { default: null },
+    showWhitespace: { default: undefined },
   },
   props: {
     discussion: {
@@ -73,7 +74,11 @@ export default {
     }),
     async saveNote(noteBody) {
       try {
-        await this.store.createLineDiscussion(this.discussion, noteBody);
+        await this.store.createLineDiscussion({
+          discussion: this.discussion,
+          noteBody,
+          showWhitespace: this.showWhitespace,
+        });
       } catch (e) {
         const reason = e.response?.data?.errors;
         const errorMessage = reason
@@ -87,7 +92,11 @@ export default {
     },
     async saveDraft(noteBody) {
       try {
-        await this.store.createDraftLineDiscussion(this.discussion, noteBody);
+        await this.store.createDraftLineDiscussion({
+          discussion: this.discussion,
+          noteBody,
+          showWhitespace: this.showWhitespace,
+        });
       } catch (e) {
         const reason = e.response?.data?.errors;
         const errorMessage = reason

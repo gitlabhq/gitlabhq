@@ -117,6 +117,11 @@ export default {
       required: false,
       default: null,
     },
+    activePanel: {
+      type: String,
+      required: false,
+      default: null,
+    },
     parentIteration: {
       type: Object,
       required: false,
@@ -160,6 +165,7 @@ export default {
           id: this.workItemId,
           pageSize: getDefaultHierarchyChildrenCount(),
           endCursor: '',
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -506,6 +512,7 @@ export default {
           :allowed-children-by-type="allowedChildrenByType"
           :dragged-item-type="draggedItemType"
           :active-child-item-id="activeChildItemId"
+          :active-panel="activePanel"
           :parent-id="workItemId"
           :contextual-view-enabled="contextualViewEnabled"
           @drag="draggedItemType = $event"

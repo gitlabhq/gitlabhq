@@ -55,12 +55,17 @@ describe('Vue.js compat behavior', () => {
       // eslint-disable-next-line no-new
       new Vue({
         el: '#app',
+        name: 'MyApp',
         render(h) {
           return h('div', { attrs: { id: 'component' } }, 'My App');
         },
       });
 
-      expect(document.body.innerHTML).toBe('<div id="component">My App</div>');
+      expect(document.body.innerHTML).toBe(
+        isVue3
+          ? '<div id="component" data-gitlab-vue3-app="MyApp">My App</div>'
+          : '<div id="component">My App</div>',
+      );
     });
 
     it('can find elements in document while mounting', () => {
@@ -116,7 +121,7 @@ describe('Vue.js compat behavior', () => {
 
         await nextTick();
 
-        expect(document.body.innerHTML).toBe('<div class="foo">42px</div>');
+        expect(document.body.innerText).toBe('42px');
       });
     });
   });

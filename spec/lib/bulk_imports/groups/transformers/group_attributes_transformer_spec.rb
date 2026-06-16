@@ -195,6 +195,27 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
       end
     end
 
+    # Subgroup full paths under distinct parents can coexist across organizations
+    # (top-level routes are globally unique), so this is the realistic shape of a
+    # cross-organization destination collision.
+    context 'when a same-path namespace exists in both the import and another organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:bulk_import) { create(:bulk_import, organization: organization) }
+
+      let(:in_org_parent) { create(:group, organization: organization) }
+      let(:destination_group) { create(:group, parent: in_org_parent, path: 'colliding-subgroup') }
+
+      before do
+        foreign_organization = create(:organization)
+        foreign_parent = create(:group, organization: foreign_organization)
+        create(:group, parent: foreign_parent, path: 'colliding-subgroup')
+      end
+
+      it 'resolves the parent namespace from the import organization, not the foreign one' do
+        expect(transformed_data['parent_id']).to eq(destination_group.id)
+      end
+    end
+
     describe 'visibility level' do
       include_examples 'visibility level settings'
     end

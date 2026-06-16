@@ -230,7 +230,7 @@ To add a new vulnerability:
 1. On the **New merge request** page, scroll to the bottom and select **Create merge request**.
 
 Wait for the merge request pipeline to complete, then refresh the page. The merge
-request security widget warns of new potential vulnerabilities. These vulnerabilities exist
+request **Reports** tab warns of new potential vulnerabilities. These vulnerabilities exist
 only in the `add_dependency` branch, not the `main` branch.
 
 You now know how to:

@@ -16,12 +16,19 @@ class MergeWorker
   deduplicate :until_executed, including_scheduled: true
 
   def perform(merge_request_id, current_user_id, params)
+    # MergeService enqueues downstream jobs that reset the per-thread experience
+    # context, so the reference must be captured up front. On the GraphQL and
+    # auto-merge paths the experience is never started, and Labkit short-circuits
+    # resume/complete on an unstarted experience.
+    experience = Labkit::UserExperienceSli.resume(:immediate_web_merge)
+
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464676')
 
     begin
       current_user = User.find(current_user_id)
       merge_request = MergeRequest.find(merge_request_id)
     rescue ActiveRecord::RecordNotFound
+      experience.error!('merge request or user not found').complete
       return
     end
 
@@ -30,6 +37,9 @@ class MergeWorker
 
     MergeRequests::MergeService.new(project: merge_request.target_project, current_user: current_user, params: params)
       .execute(merge_request)
+
+    experience.error!(merge_request.merge_error) unless merge_request.merged?
+    experience.complete
   end
 end
 

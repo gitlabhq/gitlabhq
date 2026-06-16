@@ -2,6 +2,7 @@
 import { GlAvatar, GlAvatarLink, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'DeploymentTriggerer',
   components: {
     GlAvatar,
     GlAvatarLink,

@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: デプロイキーAPI
 ---
 
@@ -14,22 +14,22 @@ title: デプロイキーAPI
 
 このAPIを使用して、[デプロイキー](../user/project/deploy_keys/_index.md)を操作します。
 
-## デプロイキーのフィンガープリント {#deploy-key-fingerprints}
+## デプロイキーフィンガープリント {#deploy-key-fingerprints}
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) GitLab 15.2の`fingerprint_sha256`属性。
+- GitLab 15.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302)された`fingerprint_sha256`属性。
 
 {{< /history >}}
 
-一部のエンドポイントは、レスポンスの一部として公開キーのフィンガープリントを返します。これらのフィンガープリントを使用して、デプロイキーを作成したユーザーを識別できます。詳細については、[デプロイキーフィンガープリントでユーザーを取得する](keys.md#get-user-by-deploy-key-fingerprint)を参照してください。
+一部のエンドポイントは、レスポンスの一部として公開キーのフィンガープリントを返します。これらのフィンガープリントを使用して、デプロイキーを作成したユーザーを特定できます。詳細については、[デプロイキーのフィンガープリントによるユーザー取得](keys.md#retrieve-user-by-deploy-key-fingerprint)を参照してください。
 
 次の属性には、デプロイキーのフィンガープリントが含まれています:
 
-- `fingerprint`: MD5ハッシュを使用します。連邦情報処理規格対応システムでは利用できません。
+- `fingerprint`: MD5ハッシュを使用します。FIPSが有効なシステムでは利用できません。
 - `fingerprint_sha256`: SHA256ハッシュを使用します。
 
-## すべてのデプロイキーをリスト表示 {#list-all-deploy-keys}
+## すべてのデプロイキーを一覧表示 {#list-all-deploy-keys}
 
 {{< details >}}
 
@@ -40,23 +40,23 @@ title: デプロイキーAPI
 
 {{< history >}}
 
-- `projects_with_readonly_access`[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) GitLab 16.0。
+- `projects_with_readonly_access`はGitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147)されました。
 
 {{< /history >}}
 
-GitLabインスタンスのすべてのプロジェクトにわたるすべてのデプロイキーのリストを取得します。このエンドポイントには管理者アクセス権が必要で、GitLab.comでは使用できません。
+GitLabインスタンスの全プロジェクトにわたるすべてのデプロイキーのリストを取得します。このエンドポイントには管理者アクセスが必要であり、GitLab.comでは利用できません。
 
 ```plaintext
 GET /deploy_keys
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型     | 必須 | 説明           |
 |:------------|:---------|:---------|:----------------------|
 | `public` | ブール値 | いいえ | 公開されているデプロイキーのみを返します。`false`がデフォルトです。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -64,7 +64,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/deploy_keys?public=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -137,21 +137,21 @@ curl --request GET \
 
 {{< /history >}}
 
-GitLabインスタンスのデプロイキーを作成します。このエンドポイントには管理者アクセス権が必要です。
+GitLabインスタンスのデプロイキーを作成します。このエンドポイントには管理者アクセスが必要です。
 
 ```plaintext
 POST /deploy_keys
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性     | 型     | 必須 | 説明                                                                                                                       |
 |:--------------|:---------|:---------|:----------------------------------------------------------------------------------------------------------------------------------|
 | `key`         | 文字列   | はい      | 新しいデプロイキー                                                                                                                    |
 | `title`       | 文字列   | はい      | 新しいデプロイキーのタイトル                                                                                                            |
-| `expires_at`  | 日時 | いいえ       | デプロイキーの有効期限。値が指定されていない場合、有効期限は切れません。ISO 8601形式（`2024-12-31T08:00:00Z`）で指定します。 |
+| `expires_at`  | 日時 | いいえ       | デプロイキーの有効期限。値が指定されていない場合、有効期限は設定されません。ISO 8601形式（`2024-12-31T08:00:00Z`）で指定します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \ --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -160,7 +160,7 @@ curl --request POST \ --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/deploy_keys/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -175,7 +175,7 @@ curl --request POST \ --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## プロジェクトのデプロイキーをリスト表示 {#list-deploy-keys-for-project}
+## プロジェクトのデプロイキーを一覧表示 {#list-deploy-keys-for-project}
 
 プロジェクトのデプロイキーのリストを取得します。
 
@@ -193,7 +193,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -220,7 +220,7 @@ curl --request GET \
 ]
 ```
 
-## ユーザーのプロジェクトデプロイキーをリスト表示 {#list-project-deploy-keys-for-user}
+## ユーザーのプロジェクトデプロイキーを一覧表示 {#list-project-deploy-keys-for-user}
 
 {{< history >}}
 
@@ -228,7 +228,7 @@ curl --request GET \
 
 {{< /history >}}
 
-指定されたユーザー（リクエスタ）と認証済みユーザー（リクエスタ）の共通[プロジェクトデプロイキー](../user/project/deploy_keys/_index.md#scope)のリストを取得します。これは、**enabled project keys from the common projects of requester and requestee**（リクエスタとリクエステの共通プロジェクトからのキーを有効にしたプロジェクトのみ）をリストします。
+指定されたユーザー (リクエスト対象者) と認証済みユーザー (リクエスタ) の共通の[プロジェクトデプロイキー](../user/project/deploy_keys/_index.md#scope)のリストを取得します。これは、**enabled project keys from the common projects of requester and requestee**のみを一覧表示します。
 
 ```plaintext
 GET /users/:id_or_username/project_deploy_keys
@@ -238,7 +238,7 @@ GET /users/:id_or_username/project_deploy_keys
 
 | 属性          | 型   | 必須 | 説明                                                        |
 |------------------- |--------|----------|------------------------------------------------------------------- |
-| `id_or_username`   | 文字列 | はい      | プロジェクトのデプロイキーを取得するユーザーのIDまたはユーザー名。 |
+| `id_or_username`   | 文字列 | はい      | プロジェクトデプロイキーを取得するユーザーのIDまたはユーザー名。 |
 
 ```json
 [
@@ -269,7 +269,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/users/20/project_deploy_keys"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -285,9 +285,9 @@ curl --request GET \
 ]
 ```
 
-## 単一のデプロイキーを取得 {#get-a-single-deploy-key}
+## デプロイキーを取得 {#retrieve-a-deploy-key}
 
-単一のキーを取得します。
+指定されたデプロイキーを取得します。
 
 ```plaintext
 GET /projects/:id/deploy_keys/:key_id
@@ -298,7 +298,7 @@ GET /projects/:id/deploy_keys/:key_id
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key_id`  | 整数 | はい | デプロイキーのID。 |
+| `key_id`  | 整数 | はい | デプロイキーのID |
 
 ```shell
 curl --request GET \
@@ -306,7 +306,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -321,11 +321,11 @@ curl --request GET \
 }
 ```
 
-## プロジェクトのデプロイキーを追加 {#add-deploy-key-for-a-project}
+## プロジェクトにデプロイキーを追加 {#add-a-deploy-key-for-a-project}
 
-プロジェクトの新しいデプロイキーを作成します。
+指定されたプロジェクトにデプロイキーを追加します。
 
-デプロイキーが別のプロジェクトに既に存在する場合、元のデプロイキーが同じユーザーからアクセスできる場合にのみ、現在のプロジェクトに参加します。
+そのデプロイキーが別のプロジェクトにすでに存在する場合、元のプロジェクトが同じユーザーによってアクセス可能な場合にのみ、現在のプロジェクトに参加します。
 
 ```plaintext
 POST /projects/:id/deploy_keys
@@ -336,8 +336,8 @@ POST /projects/:id/deploy_keys
 | `id`         | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `key`        | 文字列   | はい | 新しいデプロイキー |
 | `title`      | 文字列   | はい | 新しいデプロイキーのタイトル |
-| `can_push`   | ブール値  | いいえ  | デプロイキーはプロジェクトのリポジトリにプッシュできますか |
-| `expires_at` | 日時 | いいえ | デプロイキーの有効期限。値が指定されていない場合、有効期限は切れません。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `can_push`   | ブール値  | いいえ  | デプロイキーはプロジェクトのリポジトリにプッシュすることができます |
+| `expires_at` | 日時 | いいえ | デプロイキーの有効期限。値が指定されていない場合、有効期限は設定されません。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -346,7 +346,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -359,7 +359,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## デプロイキーを更新 {#update-deploy-key}
+## デプロイキーを更新 {#update-a-deploy-key}
 
 プロジェクトのデプロイキーを更新します。
 
@@ -370,7 +370,7 @@ PUT /projects/:id/deploy_keys/:key_id
 | 属性  | 型 | 必須 | 説明 |
 | ---------  | ---- | -------- | ----------- |
 | `id`       | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `can_push` | ブール値 | いいえ  | デプロイキーはプロジェクトのリポジトリにプッシュできますか |
+| `can_push` | ブール値 | いいえ  | デプロイキーはプロジェクトのリポジトリにプッシュすることができます |
 | `title`    | 文字列  | いいえ | 新しいデプロイキーのタイトル |
 
 ```shell
@@ -380,7 +380,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -393,9 +393,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## デプロイキーを削除 {#delete-deploy-key}
+## デプロイキーを削除 {#delete-a-deploy-key}
 
-プロジェクトからデプロイキーを削除します。デプロイキーがこのプロジェクトでのみ使用されている場合、システムから削除されます。
+プロジェクトからデプロイキーを削除します。そのデプロイキーがこのプロジェクトでのみ使用されている場合、システムから削除されます。
 
 ```plaintext
 DELETE /projects/:id/deploy_keys/:key_id
@@ -404,7 +404,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key_id`  | 整数 | はい | デプロイキーのID。 |
+| `key_id`  | 整数 | はい | デプロイキーのID |
 
 ```shell
 curl --request DELETE \
@@ -412,9 +412,9 @@ curl --request DELETE \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13"
 ```
 
-## デプロイキーを有効にする {#enable-a-deploy-key}
+## デプロイキーを有効化 {#enable-a-deploy-key}
 
-使用できるように、プロジェクトのデプロイキーを有効にします。成功した場合、ステータスコード201で、有効になっているキーを返します。
+プロジェクトのデプロイキーを有効にして、使用できるようにします。成功した場合は、有効になったキーとステータスコード201を返します。
 
 ```plaintext
 POST /projects/:id/deploy_keys/:key_id/enable
@@ -423,7 +423,7 @@ POST /projects/:id/deploy_keys/:key_id/enable
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key_id`  | 整数 | はい | デプロイキーのID。 |
+| `key_id`  | 整数 | はい | デプロイキーのID |
 
 ```shell
 curl --request POST \
@@ -431,7 +431,7 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/12/enable"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -445,9 +445,9 @@ curl --request POST \
 
 ## 複数のプロジェクトにデプロイキーを追加 {#add-deploy-keys-to-multiple-projects}
 
-同じグループ内の複数のプロジェクトに同じデプロイキーを追加する場合は、APIでこれを実現できます。
+同じデプロイキーを同じグループ内の複数のプロジェクトに追加したい場合は、APIで実現できます。
 
-まず、すべてのプロジェクトをリストして、関心のあるプロジェクトのIDを見つけます:
+まず、興味のあるプロジェクトのIDを、すべてのプロジェクトを一覧表示して見つけます:
 
 ```shell
 curl --request GET \
@@ -463,7 +463,7 @@ curl --request GET \
      --url "https://gitlab.example.com/api/v4/groups"
 ```
 
-次に、そのグループ内のすべてのプロジェクトをリストします（たとえば、グループ1234）:
+次に、そのグループ内のすべてのプロジェクトを一覧表示します (例: グループ1234):
 
 ```shell
 curl --request GET \

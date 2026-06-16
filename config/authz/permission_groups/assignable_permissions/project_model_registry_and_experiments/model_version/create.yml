@@ -1,0 +1,9 @@
+---
+name: create_model_version
+description: Grants the ability to create a model version
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_model_version

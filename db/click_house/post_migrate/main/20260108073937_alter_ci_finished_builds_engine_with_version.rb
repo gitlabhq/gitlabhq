@@ -23,64 +23,31 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
 
   private
 
+  # Clone ci_finished_builds into ci_finished_builds_tmp, preserving columns
+  # and projections, while swapping the engine.
+  #
+  # Using `CREATE TABLE ... AS source_table ENGINE = ...` keeps the tmp table
+  # structurally identical to the live table regardless of which columns or
+  # projections earlier-running regular migrations have added. This is required
+  # because post-deployment migrations are deferred on Self-Managed upgrades,
+  # so later-timestamped regular migrations may have already added columns by
+  # the time this migration runs (see https://gitlab.com/gitlab-org/gitlab/-/work_items/593129).
+  #
+  # PARTITION BY and ORDER BY are restated explicitly because ClickHouse 23.x
+  # and 24.x do not inherit them from the source table in this CREATE form,
+  # raising `Code: 36 BAD_ARGUMENTS` without an explicit ORDER BY. They are
+  # stable across versions and match the source table by construction, so
+  # restating them is safe.
   def create_tmp_table(engine)
     settings = "index_granularity = 8192, use_async_block_ids_cache = true"
     settings += ", deduplicate_merge_projection_mode = 'rebuild'" if supports_deduplicate_merge_projection_mode?
 
     execute <<~SQL
-        CREATE TABLE IF NOT EXISTS ci_finished_builds_tmp(
-          `id` UInt64 DEFAULT 0,
-          `project_id` UInt64 DEFAULT 0,
-          `pipeline_id` UInt64 DEFAULT 0,
-          `status` LowCardinality(String) DEFAULT '',
-          `created_at` DateTime64(6, 'UTC') DEFAULT 0,
-          `queued_at` DateTime64(6, 'UTC') DEFAULT 0,
-          `finished_at` DateTime64(6, 'UTC') DEFAULT 0,
-          `started_at` DateTime64(6, 'UTC') DEFAULT 0,
-          `runner_id` UInt64 DEFAULT 0,
-          `runner_manager_system_xid` String DEFAULT '',
-          `runner_run_untagged` Bool DEFAULT false,
-          `runner_type` UInt8 DEFAULT 0,
-          `runner_manager_version` LowCardinality(String) DEFAULT '',
-          `runner_manager_revision` LowCardinality(String) DEFAULT '',
-          `runner_manager_platform` LowCardinality(String) DEFAULT '',
-          `runner_manager_architecture` LowCardinality(String) DEFAULT '',
-          `duration` Int64 MATERIALIZED if((started_at > 0) AND (finished_at > started_at), age('ms', started_at, finished_at), 0),
-          `queueing_duration` Int64 MATERIALIZED if((queued_at > 0) AND (started_at > queued_at), age('ms', queued_at, started_at), 0),
-          `root_namespace_id` UInt64 DEFAULT 0,
-          `name` String DEFAULT '',
-          `date` Date32 MATERIALIZED toStartOfMonth(finished_at),
-          `runner_owner_namespace_id` UInt64 DEFAULT 0,
-          `stage_id` UInt64 DEFAULT 0,
-          `stage_name` String DEFAULT '',
-          version DateTime64(6, 'UTC') DEFAULT now(),
-          deleted Bool DEFAULT FALSE,
-          PROJECTION build_stats_by_project_pipeline_name_stage_name
-              (
-              SELECT
-                  project_id,
-                  pipeline_id,
-                  name,
-                  stage_name,
-                  countIf(status = 'success') AS success_count,
-                  countIf(status = 'failed') AS failed_count,
-                  countIf(status = 'canceled') AS canceled_count,
-                  count() AS total_count,
-                  sum(duration) AS sum_duration,
-                  avg(duration) AS avg_duration,
-                  quantile(0.95)(duration) AS p95_duration,
-                  quantilesTDigest(0.5, 0.75, 0.9, 0.99)(duration) AS duration_quantiles
-              GROUP BY
-                  project_id,
-                  pipeline_id,
-                  name,
-                  stage_name
-              )
-        )
-          ENGINE = #{engine}
-              PARTITION BY toYear(finished_at)
-              ORDER BY (status, runner_type, project_id, finished_at, id)
-              SETTINGS #{settings};
+      CREATE TABLE IF NOT EXISTS ci_finished_builds_tmp AS ci_finished_builds
+        ENGINE = #{engine}
+        PARTITION BY toYear(finished_at)
+        ORDER BY (status, runner_type, project_id, finished_at, id)
+        SETTINGS #{settings};
     SQL
   end
 

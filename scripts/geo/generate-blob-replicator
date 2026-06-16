@@ -21,7 +21,7 @@
 #   --table-name          The database table name (e.g. abuse_report_uploads)
 #   --sharding-key        The sharding key column(s). Can be specified multiple times
 #                         or as a comma-separated list. Valid values:
-#                         project_id, namespace_id, organization_id
+#                         project_id, namespace_id, organization_id, uploaded_by_user_id
 #                         Example: --sharding-key=organization_id
 #                         Example: --sharding-key=project_id,namespace_id,organization_id
 #   --milestone           The milestone for this feature (e.g. 18.10)
@@ -29,6 +29,9 @@
 #                         that overrides the composite PK (id, model_type) to use
 #                         just `id`, avoiding the need for composite PK support
 #                         in the Geo SSF. Also generates the model spec.
+#   --parent-factory      Factory name for the parent model in upload partition mode.
+#                         Defaults to replicable_name with '_upload' stripped.
+#                         Example: --parent-factory=topic (for Projects::Topic)
 #   --dry-run             Print file paths without writing (default: false)
 #   --help                Show this help message
 #
@@ -52,7 +55,7 @@ module Geo
     MIGRATION_VERSION = '2.3'
 
     attr_reader :replicable_name, :model_class, :table_name, :sharding_keys, :milestone, :dry_run,
-      :upload_partition
+      :upload_partition, :parent_factory
 
     def initialize(options)
       @replicable_name = options[:replicable_name]
@@ -62,6 +65,7 @@ module Geo
       @milestone = options[:milestone]
       @dry_run = options[:dry_run] || false
       @upload_partition = options[:upload_partition] || false
+      @parent_factory = options[:parent_factory]
       @files_created = []
       @files_modified = []
     end
@@ -228,6 +232,8 @@ module Geo
         'namespace_id_in'
       when 'organization_id'
         'organization_id_in'
+      when 'uploaded_by_user_id'
+        'uploaded_by_user_id_in'
       else
         'organization_id_in'
       end
@@ -286,6 +292,25 @@ module Geo
                    raise ::Geo::Errors::UnknownSelectiveSyncType.new(selective_sync_type: node.selective_sync_type)
                  end
                RUBY
+             when 'uploaded_by_user_id'
+               <<~RUBY
+                 replicables = params.fetch(:replicables, all)
+                 replicables = replicables.primary_key_in(params[:primary_key_in]) if params[:primary_key_in].present?
+
+                 return replicables unless node.selective_sync?
+
+                 if node.selective_sync_by_namespaces? || node.selective_sync_by_shards?
+                   namespace_ids = node.namespaces_for_group_owned_replicables.select(:id)
+                   user_ids = ::Member.where(source_type: 'Namespace', source_id: namespace_ids).select(:user_id)
+                   replicables.uploaded_by_user_id_in(user_ids)
+                 elsif node.selective_sync_by_organizations?
+                   organization_ids = node.organizations.select(:id)
+                   user_ids = ::Organizations::OrganizationUser.in_organization(organization_ids).select(:user_id)
+                   replicables.uploaded_by_user_id_in(user_ids)
+                 else
+                   raise ::Geo::Errors::UnknownSelectiveSyncType.new(selective_sync_type: node.selective_sync_type)
+                 end
+               RUBY
              end
 
       # Indent relative to the heredoc template. The model template uses
@@ -304,6 +329,8 @@ module Geo
         "scope :namespace_id_in, ->(ids) { where(namespace_id: ids) }"
       when 'organization_id'
         "scope :organization_id_in, ->(ids) { where(organization_id: ids) }"
+      when 'uploaded_by_user_id'
+        "scope :uploaded_by_user_id_in, ->(ids) { where(uploaded_by_user_id: ids) }"
       end
     end
 
@@ -319,7 +346,7 @@ module Geo
       errors << '--sharding-key is required' if sharding_keys.empty?
       errors << '--milestone is required' unless milestone
 
-      valid_keys = %w[project_id namespace_id organization_id]
+      valid_keys = %w[project_id namespace_id organization_id uploaded_by_user_id]
       invalid_keys = sharding_keys - valid_keys
       unless invalid_keys.empty?
         errors << "--sharding-key must be one of: #{valid_keys.join(', ')} (got invalid: #{invalid_keys.join(', ')})"
@@ -399,7 +426,6 @@ module Geo
           class #{replicable_name_camel} < ::Upload
             include ::Geo::ReplicableModel
             include ::Geo::VerifiableModel
-            extend ::Gitlab::Utils::Override
 
             self.table_name = '#{table_name}'
             self.primary_key = :id
@@ -464,7 +490,7 @@ module Geo
     end
 
     def parent_model_factory_name
-      replicable_name.sub(/_upload$/, '')
+      parent_factory || replicable_name.sub(/_upload$/, '')
     end
 
     def generate_upload_partition_model_factory
@@ -593,6 +619,36 @@ module Geo
                    create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, project: project_3))
                  end
                RUBY
+             when 'uploaded_by_user_id'
+               <<~RUBY
+                 let_it_be(:organization_1) { create(:organization) }
+                 let_it_be(:organization_2) { create(:organization) }
+                 let_it_be(:group_1) { create(:group, organization: organization_1) }
+                 let_it_be(:group_2) { create(:group, organization: organization_2) }
+                 let_it_be(:user_1) { create(:user, organizations: [organization_1]) }
+                 let_it_be(:user_2) { create(:user, organizations: [organization_2]) }
+
+                 before do
+                   group_1.add_developer(user_1)
+                   group_2.add_developer(user_2)
+                 end
+
+                 let!(:first_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, user: user_1))
+                 end
+
+                 let!(:second_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, user: user_1))
+                 end
+
+                 let!(:third_replicable_on_object_storage_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{parent_model_factory_name}, user: user_1))
+                 end
+
+                 let!(:last_replicable_and_not_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, user: user_2))
+                 end
+               RUBY
              end
 
       # Indent relative to the heredoc template. The spec template uses
@@ -673,7 +729,7 @@ module Geo
     end
 
     def upload_model_validation_include
-      upload_partition ? "\n            include ::Geo::Concerns::UploadReplicatorBehavior" : ''
+      upload_partition ? "\n    include ::Geo::Concerns::UploadReplicatorBehavior" : ''
     end
 
     def generate_replicator
@@ -683,7 +739,6 @@ module Geo
         module Geo
           class #{replicator_class_name} < Gitlab::Geo::Replicator
             include ::Geo::BlobReplicatorStrategy#{upload_model_validation_include}
-            extend ::Gitlab::Utils::Override
 
             def self.model
               #{replicator_model_reference}
@@ -942,6 +997,8 @@ module Geo
         'namespaces'
       when 'organization_id'
         'organizations'
+      when 'uploaded_by_user_id'
+        'users'
       end
     end
 
@@ -1297,7 +1354,7 @@ module Geo
 
         FactoryBot.define do
           factory :geo_#{replicable_name}_state, class: 'Geo::#{state_class_name}' do
-            #{replicable_name}
+            geo_#{replicable_name}
 
             trait :checksummed do
               verification_checksum { 'abc' }
@@ -1420,6 +1477,7 @@ module Geo
       patch_registry_classes
       patch_geo_node_type
       patch_registrable_type
+      patch_authorization_todo
       patch_inflections
       patch_registries_shared_context
       patch_registries_spec
@@ -1503,6 +1561,15 @@ module Geo
         new_line: "#{new_entry},",
         after_anchor: true
       )
+    end
+
+    # -- GraphQL granular token authorization allowlist --
+
+    def patch_authorization_todo
+      file_path = 'config/authz/graphql/authorization_todo.txt'
+      new_entry = "type:#{graphql_name}"
+
+      insert_into_sorted_list(file_path, new_entry)
     end
 
     # -- Inflections --
@@ -2024,6 +2091,48 @@ module Geo
       puts "  [PATCH]  #{file_path}"
     end
 
+    # Insert a single line into a flat, alphabetically sorted list file (one entry
+    # per line, with leading comment lines). Entries are kept in Ruby sort order so
+    # the result matches what `gitlab:permissions:validate` writes when it syncs the
+    # todo file.
+    def insert_into_sorted_list(file_path, new_entry)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      lines = File.readlines(file_path)
+
+      if lines.any? { |line| line.strip == new_entry }
+        puts "  [SKIP]   #{file_path} (already contains entry)"
+        return
+      end
+
+      # Insert before the first entry that sorts after the new one, skipping
+      # comment and blank lines.
+      insert_index = lines.index do |line|
+        stripped = line.strip
+        next false if stripped.empty? || stripped.start_with?('#')
+
+        stripped > new_entry
+      end
+
+      if insert_index
+        lines.insert(insert_index, "#{new_entry}\n")
+      else
+        lines << "#{new_entry}\n"
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, lines.join)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
     def insert_before_line(file_path, anchor:, new_content:, before_anchor: false)
       unless File.exist?(file_path)
         warn "  [SKIP]   #{file_path} (file not found)"
@@ -2285,6 +2394,12 @@ OptionParser.new do |opts|
 
   opts.on('--upload-partition', 'Generate a dedicated model for an upload partition table') do
     options[:upload_partition] = true
+  end
+
+  opts.on('--parent-factory=NAME',
+    'Factory name for the parent model (upload partition mode). ' \
+      'Defaults to replicable_name minus _upload suffix.') do |v|
+    options[:parent_factory] = v
   end
 
   opts.on('--dry-run', 'Print file paths without writing') do

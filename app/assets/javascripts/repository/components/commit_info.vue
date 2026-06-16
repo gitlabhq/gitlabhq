@@ -9,6 +9,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import getRefMixin from '../mixins/get_ref';
 
 export default {
+  name: 'CommitInfo',
   components: {
     UserAvatarLink,
     TimeagoTooltip,

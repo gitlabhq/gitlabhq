@@ -4,7 +4,7 @@ classes:
 - GroupDeletionSchedule
 feature_categories:
 - groups_and_projects
-description: TODO
+description: Stores scheduled deletion dates for groups marked for delayed deletion.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20276
 milestone: '12.6'
 gitlab_schema: gitlab_main_org

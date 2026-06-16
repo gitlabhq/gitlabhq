@@ -8,7 +8,7 @@
       = render 'shared/zen', attr: 'note[note]', classes: 'note-textarea js-note-text js-task-list-field', testid: 'edit-note-field', placeholder: _("Write a comment or drag your files here…")
       = render 'shared/notes/hints'
 
-    .note-form-actions.clearfix
+    .note-form-actions.gl-clearfix
       = render Pajamas::AlertComponent.new(variant: :warning,
         dismissible: false,
         alert_options: { class: 'js-finish-edit-warning gl-hidden gl-mb-3' }) do |c|

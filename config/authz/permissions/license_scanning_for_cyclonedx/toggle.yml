@@ -1,0 +1,3 @@
+---
+name: toggle_license_scanning_for_cyclonedx
+description: Grants the ability to enable or disable license scanning for CycloneDX SBOM files

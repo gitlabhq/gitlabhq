@@ -49,13 +49,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:project) { create(:project, :public, group: group) }
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
-      let_it_be(:user) { create(:user, :banned) }
+      let_it_be(:user, freeze: false) { create(:user, :banned) }
 
       subject { response }
 
@@ -110,7 +110,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #index' do
-    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:public_project, freeze: false) { create(:project, :public) }
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, use_second_scope: false do
       let(:current_user) { user }
@@ -186,7 +186,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   context 'token authentication' do
     context 'when public project' do
-      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:public_project, freeze: false) { create(:project, :public) }
 
       it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: true do
         let(:url) { project_merge_requests_url(public_project, format: :atom) }
@@ -505,7 +505,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     include_examples 'diffs stats' do
       let(:expected_stats) do
         {
-          added_lines: 119,
+          added_lines: 120,
           removed_lines: 9,
           diffs_count: 21
         }
@@ -531,7 +531,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       it 'returns an empty array' do
         send_request
 
-        expect(json_response['diffs_stats']).to eq({ "added_lines" => 0, "removed_lines" => 0, "diffs_count" => 0 })
+        expect(json_response['diffs_stats']).to eq(
+          { "added_lines" => 0, "removed_lines" => 0, "diffs_count" => 0, "real_size" => nil }
+        )
       end
     end
 
@@ -541,7 +543,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       it_behaves_like 'diffs stats' do
         let(:expected_stats) do
           {
-            added_lines: 119,
+            added_lines: 120,
             removed_lines: 9,
             diffs_count: 21
           }
@@ -573,6 +575,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
             removed_lines: 0,
             diffs_count: 1
           }
+        end
+      end
+
+      context 'when diffs overflow' do
+        include_examples 'overflow' do
+          let(:expected_stats) do
+            {
+              visible_count: 1,
+              email_path: "/#{project.full_path}/-/commit/#{commit_id}.patch",
+              diff_path: "/#{project.full_path}/-/commit/#{commit_id}.diff"
+            }
+          end
         end
       end
     end
@@ -722,7 +736,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       expect(json_response['source_versions'].first).to include(
         "id" => latest_diff_id,
         "version_index" => 2,
-        "head" => false,
+        "is_merge_head" => false,
         "latest" => true,
         "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
         "commits_count" => latest_mr_diff.commits_count,
@@ -732,7 +746,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       expect(json_response['source_versions'].last).to include(
         "id" => previous_diff_id,
         "version_index" => 1,
-        "head" => false,
+        "is_merge_head" => false,
         "latest" => false,
         "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
         "commits_count" => previous_mr_diff.commits_count,
@@ -744,7 +758,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       expect(json_response['target_versions'].first).to include(
         "id" => latest_diff_id,
         "version_index" => nil,
-        "head" => false,
+        "is_merge_head" => false,
         "latest" => true,
         "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
         "href" => diffs_path.to_s,
@@ -755,7 +769,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       expect(json_response['target_versions'].last).to include(
         "id" => previous_diff_id,
         "version_index" => 1,
-        "head" => false,
+        "is_merge_head" => false,
         "latest" => false,
         "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
         "commits_count" => previous_mr_diff.commits_count,
@@ -779,7 +793,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(json_response['source_versions'].first).to include(
           "id" => latest_diff_id,
           "version_index" => 2,
-          "head" => false,
+          "is_merge_head" => false,
           "latest" => true,
           "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
           "commits_count" => latest_mr_diff.commits_count,
@@ -789,7 +803,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(json_response['source_versions'].last).to include(
           "id" => previous_diff_id,
           "version_index" => 1,
-          "head" => false,
+          "is_merge_head" => false,
           "latest" => false,
           "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
           "commits_count" => previous_mr_diff.commits_count,
@@ -801,7 +815,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(json_response['target_versions'].first).to include(
           "id" => latest_diff_id,
           "version_index" => nil,
-          "head" => false,
+          "is_merge_head" => false,
           "latest" => true,
           "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
           "href" => diffs_path.to_s,
@@ -812,7 +826,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(json_response['target_versions'].last).to include(
           "id" => previous_diff_id,
           "version_index" => 1,
-          "head" => false,
+          "is_merge_head" => false,
           "latest" => false,
           "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
           "commits_count" => previous_mr_diff.commits_count,
@@ -837,7 +851,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(json_response['source_versions'].first).to include(
             "id" => latest_diff_id,
             "version_index" => 2,
-            "head" => false,
+            "is_merge_head" => false,
             "latest" => true,
             "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
             "commits_count" => latest_mr_diff.commits_count,
@@ -847,7 +861,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(json_response['source_versions'].last).to include(
             "id" => previous_diff_id,
             "version_index" => 1,
-            "head" => false,
+            "is_merge_head" => false,
             "latest" => false,
             "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
             "commits_count" => previous_mr_diff.commits_count,
@@ -859,7 +873,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(json_response['target_versions'].first).to include(
             "id" => latest_diff_id,
             "version_index" => nil,
-            "head" => false,
+            "is_merge_head" => false,
             "latest" => true,
             "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
             "href" => diffs_path.to_s,
@@ -870,7 +884,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(json_response['target_versions'].last).to include(
             "id" => previous_diff_id,
             "version_index" => 1,
-            "head" => false,
+            "is_merge_head" => false,
             "latest" => false,
             "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
             "commits_count" => previous_mr_diff.commits_count,

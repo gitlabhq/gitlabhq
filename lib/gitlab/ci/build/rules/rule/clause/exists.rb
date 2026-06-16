@@ -25,7 +25,7 @@ module Gitlab
           context = change_context(context) if @project_path
 
           expanded_globs = expand_globs(context)
-          top_level_only = expanded_globs.all?(&method(:top_level_glob?))
+          top_level_only = expanded_globs.all? { |glob| top_level_glob?(glob) }
 
           paths = worktree_paths(context, top_level_only)
           exact_globs, extension_globs, pattern_globs = separate_globs(expanded_globs)

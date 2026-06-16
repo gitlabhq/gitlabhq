@@ -6,7 +6,9 @@ product_categories:
 - permissions
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237232
+milestone_removed: '19.1'
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189430
 time_frame:

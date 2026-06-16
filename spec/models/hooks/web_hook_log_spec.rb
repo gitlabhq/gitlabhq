@@ -14,10 +14,10 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
   it { is_expected.to validate_presence_of(:web_hook) }
 
   describe '.created_between' do
-    let_it_be(:hook) { create(:project_hook) }
-    let_it_be(:oldest_log) { create(:web_hook_log, web_hook: hook, created_at: 6.hours.ago) }
-    let_it_be(:middle_log) { create(:web_hook_log, web_hook: hook, created_at: 4.hours.ago) }
-    let_it_be(:newest_log) { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
+    let_it_be(:hook, freeze: false) { create(:project_hook) }
+    let_it_be(:oldest_log, freeze: false) { create(:web_hook_log, web_hook: hook, created_at: 6.hours.ago) }
+    let_it_be(:middle_log, freeze: false) { create(:web_hook_log, web_hook: hook, created_at: 4.hours.ago) }
+    let_it_be(:newest_log, freeze: false) { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
 
     let(:start_time) { 5.hours.ago }
     let(:end_time) { newest_log.created_at }
@@ -46,11 +46,11 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
   end
 
   describe '.recent' do
-    let_it_be(:hook) { create(:project_hook) }
-    let_it_be(:too_old_log) { create(:web_hook_log, web_hook: hook, created_at: 8.days.ago) }
-    let_it_be(:oldest_log)  { create(:web_hook_log, web_hook: hook, created_at: 3.days.ago) }
-    let_it_be(:middle_log)  { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
-    let_it_be(:newest_log)  { create(:web_hook_log, web_hook: hook, created_at: 1.hour.ago) }
+    let_it_be(:hook, freeze: false) { create(:project_hook) }
+    let_it_be(:too_old_log, freeze: false) { create(:web_hook_log, web_hook: hook, created_at: 8.days.ago) }
+    let_it_be(:oldest_log, freeze: false)  { create(:web_hook_log, web_hook: hook, created_at: 3.days.ago) }
+    let_it_be(:middle_log, freeze: false)  { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
+    let_it_be(:newest_log, freeze: false)  { create(:web_hook_log, web_hook: hook, created_at: 1.hour.ago) }
 
     it 'returns the web hook logs within the last 2 days in descending order by default' do
       expect(described_class.recent).to eq([newest_log, middle_log])
@@ -182,8 +182,8 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
   end
 
   describe '.delete_batch_for' do
-    let_it_be(:hook) { build(:project_hook) }
-    let_it_be(:hook2) { build(:project_hook) }
+    let_it_be(:hook, freeze: false) { build(:project_hook) }
+    let_it_be(:hook2, freeze: false) { build(:project_hook) }
 
     before_all do
       create_list(:web_hook_log, 3, web_hook: hook)

@@ -46,6 +46,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
       'defaultSuggestionCommitMessage',
       'linkedFileData',
       'newCommentTemplatePaths',
+      'showWhitespace',
     ],
     methods: {
       empty() {
@@ -84,6 +85,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
         renderAsDataAttr('default-suggestion-commit-message', this.defaultSuggestionCommitMessage),
         renderAsDataAttr('linked-file-data', this.linkedFileData),
         renderAsDataAttr('new-comment-template-paths', this.newCommentTemplatePaths),
+        renderAsDataAttr('show-whitespace', this.showWhitespace),
       ];
       return h('div', { attrs: { id: 'discussions-component' } }, [...props, ...injected]);
     },
@@ -146,8 +148,13 @@ describe('discussions adapters', () => {
   });
 
   describe('inlineDiscussionsAdapter', () => {
-    beforeEach(() => {
-      const fileData = { viewer: 'text_inline', old_path: oldPath, new_path: newPath };
+    const setupFixture = (extraFileData = {}) => {
+      const fileData = {
+        viewer: 'text_inline',
+        old_path: oldPath,
+        new_path: newPath,
+        ...extraFileData,
+      };
       setHTMLFixture(`
         <diff-file data-file-data='${JSON.stringify(fileData)}'>
           <div>
@@ -183,6 +190,10 @@ describe('discussions adapters', () => {
         appData,
         unobserve: jest.fn(),
       });
+    };
+
+    beforeEach(() => {
+      setupFixture();
     });
 
     it('renders a discussion row', async () => {
@@ -240,6 +251,33 @@ describe('discussions adapters', () => {
             .newCommentTemplatePaths,
         ),
       ).toStrictEqual(newCommentTemplatePaths);
+    });
+
+    describe('showWhitespace provide', () => {
+      const mountWithDiscussion = (extraFileData) => {
+        resetHTMLFixture();
+        setupFixture(extraFileData);
+        store.discussions = [
+          {
+            id: 'abc',
+            diff_discussion: true,
+            position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          },
+        ];
+        return nextTick();
+      };
+
+      it('provides showWhitespace from this.data when set on the diff-file element', async () => {
+        await mountWithDiscussion({ show_whitespace: true });
+        expect(
+          JSON.parse(document.querySelector('[data-show-whitespace]').dataset.showWhitespace),
+        ).toBe(true);
+      });
+
+      it('provides undefined showWhitespace when not set on the diff-file element', async () => {
+        await mountWithDiscussion();
+        expect(document.querySelector('[data-show-whitespace]')).toBeNull();
+      });
     });
 
     it('mounts discussion row for hidden discussions', async () => {

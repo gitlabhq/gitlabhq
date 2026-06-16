@@ -4,6 +4,8 @@ action: browse_templates
 extra_properties:
 identifiers:
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 milestone: "14.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64349
 tiers:

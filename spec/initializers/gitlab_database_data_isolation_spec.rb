@@ -6,16 +6,46 @@ RSpec.describe 'Gitlab Organization Data Isolation', feature_category: :organiza
   let_it_be(:isolated_organization) { create(:organization, :isolated) }
   let_it_be(:other_organization) { create(:organization) }
 
-  context 'when ActiveRecord model is sharded by organization_id' do
+  before do
+    stub_current_organization(isolated_organization)
+  end
+
+  context 'when sharded by organization_id' do
     let_it_be(:group_isolated) { create(:group, organization: isolated_organization) }
     let_it_be(:group_other) { create(:group, organization: other_organization) }
 
-    before do
-      stub_current_organization(isolated_organization)
-    end
-
     it 'returns only the current organization' do
       expect(Group.all.map(&:organization)).to contain_exactly(isolated_organization)
+    end
+  end
+
+  context 'when sharded by user_id' do
+    # This implicitly creates UserDetail records
+    let_it_be(:user_isolated) { create(:user, organization: isolated_organization) }
+    let_it_be(:user_other) { create(:user, organization: other_organization) }
+
+    it 'returns only data from the isolated organization' do
+      expect(UserDetail.all.map(&:user_id)).to contain_exactly(user_isolated.id)
+    end
+  end
+
+  context 'when sharded by project_id' do
+    # This implicitly creates ProjectPagesMetadatum records
+    let_it_be(:project_isolated) { create(:project, organization: isolated_organization) }
+    let_it_be(:project_other) { create(:project, organization: other_organization) }
+
+    it 'returns only data from the isolated organization' do
+      expect(ProjectPagesMetadatum.all.map(&:project_id)).to contain_exactly(project_isolated.id)
+    end
+  end
+
+  context 'when sharded by namespace_id' do
+    # This implicitly creates Namespace::Detail records
+    let_it_be(:namespace_isolated) { create(:namespace, organization: isolated_organization) }
+    let_it_be(:namespace_other) { create(:namespace, organization: other_organization) }
+
+    it 'returns only data from the isolated organization' do
+      expect(Namespace::Detail.all.map(&:namespace_id)).to contain_exactly(namespace_isolated.id)
     end
   end
 end

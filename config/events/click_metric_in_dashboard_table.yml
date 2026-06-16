@@ -1,0 +1,20 @@
+---
+description: Metric drill-down link in an analytics dashboard table is selected
+internal_events: true
+action: click_metric_in_dashboard_table
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Metric's name
+  property:
+    description: Table's name
+product_group: optimize
+product_categories:
+- value_stream_management
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157363
+tiers:
+  - ultimate

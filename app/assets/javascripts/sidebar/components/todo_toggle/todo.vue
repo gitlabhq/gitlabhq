@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -7,6 +6,7 @@ const MARK_TEXT = __('Mark to-do items done');
 const TODO_TEXT = __('Add a to-do item');
 
 export default {
+  name: 'SidebarTodoToggle',
   components: {
     GlButton,
     GlIcon,
@@ -40,6 +40,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggleTodo'],
   computed: {
     buttonClasses() {
       return this.collapsed

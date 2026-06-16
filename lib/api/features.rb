@@ -9,33 +9,43 @@ module API
     urgency :low
 
     resource :features do
-      desc 'List all features' do
-        detail 'Get a list of all persisted features, with its gate values.'
+      desc 'List all feature flags' do
+        detail 'Lists all feature flags for the instance.'
         success Entities::Feature
         is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' }
+        ]
         tags features_tags
       end
+      route_setting :authorization, permissions: :read_feature, boundary_type: :instance
       get do
         features = Feature.all
 
         present features, with: Entities::Feature, current_user: current_user
       end
 
-      desc 'List all feature definitions' do
-        detail 'Get a list of all feature definitions.'
+      desc 'List all feature flag definitions' do
+        detail 'Lists all feature flag definitions.'
         success Entities::Feature::Definition
         is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' }
+        ]
         tags features_tags
       end
+      route_setting :authorization, permissions: :read_feature, boundary_type: :instance
       get :definitions do
         definitions = ::Feature::Definition.definitions.values.map(&:to_h)
 
         present definitions, with: Entities::Feature::Definition, current_user: current_user
       end
 
-      desc 'Set or create a feature' do
-        detail "Set a feature's gate value. If a feature with the given name doesn't exist yet, it's created. " \
-          "The value can be a boolean, or an integer to indicate percentage of time."
+      desc 'Create or update a feature flag' do
+        detail "Creates or updates a feature flag value. If a feature with the given name doesn't exist yet, " \
+          "the operation creates one. The value can be a boolean or an integer to indicate percentage of time."
         success Entities::Feature
         failure [
           { code: 400, message: 'Bad request' },
@@ -83,6 +93,7 @@ module API
         mutually_exclusive :key, :runner
         mutually_exclusive :key, :endpoint
       end
+      route_setting :authorization, permissions: :update_feature, boundary_type: :instance
       post ':name' do
         flag_params = declared_params(include_missing: false)
         response = ::Admin::SetFeatureFlagService
@@ -98,9 +109,11 @@ module API
       end
 
       desc 'Delete a feature' do
-        detail "Removes a feature gate. Response is equal when the gate exists, or doesn't."
+        detail 'Deletes a feature gate. Returns the same response if the feature gate does not exist.'
+        success code: 204, message: 'Resource deleted'
         tags features_tags
       end
+      route_setting :authorization, permissions: :delete_feature, boundary_type: :instance
       delete ':name' do
         Feature.remove(params[:name])
 

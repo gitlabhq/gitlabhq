@@ -91,6 +91,45 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, fea
             message: 'Packages were successfully marked as pending destruction'
         end
 
+        context 'with rubygems packages' do
+          let_it_be_with_reload(:packages) { create_list(:rubygems_package, 3, :with_metadatum, project: project) }
+
+          it 'creates rubygems spec files', :aggregate_failures do
+            expect(::Packages::Rubygems::CreateSpecFilesService).to receive(:new).with(project).once.and_call_original
+
+            expect { subject }
+              .to change { ::Packages::Package.pending_destruction.count }.by(3)
+              .and change { Packages::PackageFile.pending_destruction.count }.by(6)
+              .and change { ::Packages::Rubygems::SpecFile.count }.by(3)
+
+            expect(packages.each(&:reset)).to all(be_pending_destruction)
+          end
+
+          it_behaves_like 'returning service response', status: :success,
+            message: 'Packages were successfully marked as pending destruction'
+        end
+
+        context 'with rubygems packages across multiple projects' do
+          let_it_be(:other_project) { create(:project) }
+          let_it_be_with_reload(:packages) do
+            create_list(:rubygems_package, 2, :with_metadatum, project: project) +
+              create_list(:rubygems_package, 2, :with_metadatum, project: other_project)
+          end
+
+          before do
+            other_project.add_maintainer(user)
+          end
+
+          it 'invokes the spec-file service once per distinct project', :aggregate_failures do
+            expect(::Packages::Rubygems::CreateSpecFilesService)
+              .to receive(:new).with(project).once.and_call_original
+            expect(::Packages::Rubygems::CreateSpecFilesService)
+              .to receive(:new).with(other_project).once.and_call_original
+
+            subject
+          end
+        end
+
         context 'with helm packages' do
           let_it_be_with_reload(:packages) do
             create_list(:helm_package, 3, project: project, without_package_files: true)

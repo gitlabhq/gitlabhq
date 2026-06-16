@@ -1,8 +1,8 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: グルーリリースAPI
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: グループリリースAPI
 ---
 
 {{< details >}}
@@ -19,17 +19,14 @@ title: グルーリリースAPI
 
 {{< /history >}}
 
-このAPIを使用して、グループ内の[projectsリリース](../user/project/releases/_index.md)を操作します。
+このAPIを使用して、グループ内の[プロジェクトのリリース](../user/project/releases/_index.md)を操作します。
 
-{{< alert type="note" >}}
+> [!note]
+> プロジェクトのリリースを直接操作するには、[プロジェクトリリースAPI](releases/_index.md)を参照してください。
 
-プロジェクトリリースを直接操作するには、[projectリリースAPI](releases/_index.md)を参照してください。
+## グループ内のすべてのリリースを一覧表示 {#list-all-releases-in-a-group}
 
-{{< /alert >}}
-
-## グループ内のすべてのリリースをリストします {#list-all-releases-in-a-group}
-
-指定されたグループ内のプロジェクトのすべてのリリースをリストします。
+指定されたグループ内のプロジェクトのすべてのリリースを一覧表示します。
 
 ```plaintext
 GET /groups/:id/releases
@@ -41,15 +38,15 @@ GET /groups/:id/releases?simple=true
 | 属性 | 型           | 必須 | 説明 |
 | --------- | -------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `sort`    | 文字列         | いいえ       | 並び替えの方向。使用可能な値: `desc`または`asc`。 |
-| `simple`  | ブール値        | いいえ       | `true`の場合、各リリースについて制限されたフィールドのみを返します。 |
+| `sort`    | 文字列         | いいえ       | 並び替えの方向。指定可能な値: `desc`または`asc`。 |
+| `simple`  | ブール値        | いいえ       | `true`の場合、各リリースの制限されたフィールドのみを返します。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>"
    --url "https://gitlab.example.com/api/v4/groups/5/releases"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

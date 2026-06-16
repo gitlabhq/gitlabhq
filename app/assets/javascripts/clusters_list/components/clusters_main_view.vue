@@ -19,6 +19,7 @@ import ClustersViewAll from './clusters_view_all.vue';
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_TABS });
 
 export default {
+  name: 'ClustersMainView',
   i18n: {
     alertTitle: s__('ClusterAgents|%{agentName} successfully created'),
     alertText: s__(

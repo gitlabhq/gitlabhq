@@ -1,0 +1,12 @@
+---
+api_type:
+attr: default_security_tracked_context_quota
+clusterwide: false
+column: default_security_tracked_context_quota
+db_type: integer
+default: '2'
+description: Default quota for security tracked contexts per project
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

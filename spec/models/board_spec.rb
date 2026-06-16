@@ -18,7 +18,7 @@ RSpec.describe Board do
   end
 
   describe 'validations' do
-    let_it_be(:board) { build(:board, project: project) }
+    let_it_be(:board, freeze: false) { build(:board, project: project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:project) }
@@ -56,10 +56,10 @@ RSpec.describe Board do
 
   describe '#order_by_name_asc' do
     # rubocop:disable RSpec/VariableName
-    let!(:board_B) { create(:board, project: project, name: 'B') }
-    let!(:board_C) { create(:board, project: project, name: 'C') }
-    let!(:board_a) { create(:board, project: project, name: 'a') }
-    let!(:board_A) { create(:board, project: project, name: 'A') }
+    let_it_be(:board_B) { create(:board, project: project, name: 'B') }
+    let_it_be(:board_C) { create(:board, project: project, name: 'C') }
+    let_it_be(:board_a) { create(:board, project: project, name: 'a') }
+    let_it_be(:board_A) { create(:board, project: project, name: 'A') }
     # rubocop:enable RSpec/VariableName
 
     it 'returns in case-insensitive alphabetical order and then by ascending id' do
@@ -69,10 +69,10 @@ RSpec.describe Board do
 
   describe '#first_board' do
     # rubocop:disable RSpec/VariableName
-    let!(:board_B) { create(:board, project: project, name: 'B') }
-    let!(:board_C) { create(:board, project: project, name: 'C') }
-    let!(:board_a) { create(:board, project: project, name: 'a') }
-    let!(:board_A) { create(:board, project: project, name: 'A') }
+    let_it_be(:board_B) { create(:board, project: project, name: 'B') }
+    let_it_be(:board_C) { create(:board, project: project, name: 'C') }
+    let_it_be(:board_a) { create(:board, project: project, name: 'a') }
+    let_it_be(:board_A) { create(:board, project: project, name: 'A') }
     # rubocop:enable RSpec/VariableName
 
     it 'return the first case-insensitive alphabetical board as a relation' do
@@ -115,13 +115,13 @@ RSpec.describe Board do
     end
 
     context 'for group board' do
-      let_it_be(:board) { create(:board, group: group) }
+      let_it_be(:board, freeze: false) { create(:board, group: group) }
 
       it_behaves_like 'board disabled_for?'
     end
 
     context 'for project board' do
-      let_it_be(:board) { create(:board, project: project) }
+      let_it_be(:board, freeze: false) { create(:board, project: project) }
 
       it_behaves_like 'board disabled_for?'
     end

@@ -6,6 +6,8 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import { activityDashboardPath } from '~/lib/utils/path_helpers/dashboard';
+import { userActivityPath } from '~/lib/utils/path_helpers/user';
 import {
   EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
   TRACKING_SCOPE_YOUR_ACTIVITY,
@@ -136,8 +138,8 @@ export default {
          * a proper GraphQL endpoint here.
          */
         const url = this.filter
-          ? `${gon.relative_url_root || ''}/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
-          : `${gon.relative_url_root || ''}/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
+          ? activityDashboardPath({ limit: MAX_EVENTS, offset: 0, filter: this.filter })
+          : userActivityPath(gon.current_username, { limit: MAX_EVENTS, is_personal_homepage: 1 });
         const { data } = await axios.get(url);
         if (data?.html) {
           const parser = new DOMParser();

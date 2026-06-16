@@ -13,8 +13,8 @@ RSpec.describe 'Query.group(fullPath).releases()', feature_category: :release_or
   describe "ensures that the correct data is returned based on the project's visibility and the user's access level" do
     context 'when the group is private' do
       let_it_be(:group) { create(:group, :private) }
-      let_it_be(:project) { create(:project, :repository, :private, group: group) }
-      let_it_be(:release) { create(:release, :with_evidence, project: project) }
+      let_it_be(:project, freeze: false) { create(:project, :repository, :private, group: group) }
+      let_it_be(:release, freeze: false) { create(:release, :with_evidence, project: project) }
 
       before_all do
         group.add_guest(guest)
@@ -51,8 +51,8 @@ RSpec.describe 'Query.group(fullPath).releases()', feature_category: :release_or
 
     context 'when the group is public' do
       let_it_be(:group) { create(:group, :public) }
-      let_it_be(:project) { create(:project, :repository, :public, group: group) }
-      let_it_be(:release) { create(:release, :with_evidence, project: project) }
+      let_it_be(:project, freeze: false) { create(:project, :repository, :public, group: group) }
+      let_it_be(:release, freeze: false) { create(:release, :with_evidence, project: project) }
 
       before_all do
         group.add_guest(guest)
@@ -91,7 +91,7 @@ RSpec.describe 'Query.group(fullPath).releases()', feature_category: :release_or
 
   describe 'sorting and pagination' do
     let_it_be(:group) { create(:group, :public) }
-    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
     let(:current_user) { developer }
 
     let(:data_path) { [:group, :releases] }
@@ -113,11 +113,17 @@ RSpec.describe 'Query.group(fullPath).releases()', feature_category: :release_or
     end
 
     context 'when sorting by released_at' do
-      let_it_be(:release5) { create(:release, project: project, tag: 'v5.5.0', released_at: 3.days.from_now) }
-      let_it_be(:release1) { create(:release, project: project, tag: 'v5.1.0', released_at: 3.days.ago) }
-      let_it_be(:release4) { create(:release, project: project, tag: 'v5.4.0', released_at: 2.days.from_now) }
-      let_it_be(:release2) { create(:release, project: project, tag: 'v5.2.0', released_at: 2.days.ago) }
-      let_it_be(:release3) { create(:release, project: project, tag: 'v5.3.0', released_at: 1.day.ago) }
+      let_it_be(:release5, freeze: false) do
+        create(:release, project: project, tag: 'v5.5.0', released_at: 3.days.from_now)
+      end
+
+      let_it_be(:release1, freeze: false) { create(:release, project: project, tag: 'v5.1.0', released_at: 3.days.ago) }
+      let_it_be(:release4, freeze: false) do
+        create(:release, project: project, tag: 'v5.4.0', released_at: 2.days.from_now)
+      end
+
+      let_it_be(:release2, freeze: false) { create(:release, project: project, tag: 'v5.2.0', released_at: 2.days.ago) }
+      let_it_be(:release3, freeze: false) { create(:release, project: project, tag: 'v5.3.0', released_at: 1.day.ago) }
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do

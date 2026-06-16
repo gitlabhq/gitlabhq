@@ -7,6 +7,8 @@ identifiers:
 - project
 - user
 product_group: project_management
+product_categories:
+- team_planning
 milestone: '17.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163372
 tiers:

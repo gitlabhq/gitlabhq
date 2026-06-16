@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integrations do
+RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :observability do
   let(:integration) do
     Struct.new(:otel_endpoint_url, :otel_headers, :service_name, :environment).new(
       'https://example.com/otel',
@@ -233,6 +233,7 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
         pipeline_data[:object_attributes][:tag] = true
         pipeline_data[:object_attributes][:before_sha] = 'def456'
         pipeline_data[:object_attributes][:stages] = %w[build test deploy]
+        pipeline_data[:object_attributes][:iid] = 10
         pipeline_data[:user] = { id: 42, username: 'testuser' }
         pipeline_data[:commit] = { id: 'abc123', message: 'Test commit' }
         pipeline_data[:merge_request] = { id: 100, iid: 10 }
@@ -245,7 +246,13 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
         expect(attributes).to include(
           { key: 'pipeline.tag', value: { boolValue: true } },
           { key: 'pipeline.before_sha', value: { stringValue: 'def456' } },
+          { key: 'gitlab.cicd.pipeline.iid', value: { intValue: 10 } },
           { key: 'pipeline.stages', value: { arrayValue: { values: [
+            { stringValue: 'build' },
+            { stringValue: 'test' },
+            { stringValue: 'deploy' }
+          ] } } },
+          { key: 'gitlab.cicd.pipeline.stages', value: { arrayValue: { values: [
             { stringValue: 'build' },
             { stringValue: 'test' },
             { stringValue: 'deploy' }
@@ -290,6 +297,7 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
           { key: 'job.runner.type', value: { stringValue: 'instance_type' } },
           { key: 'job.runner.active', value: { boolValue: true } },
           { key: 'job.runner.is_shared', value: { boolValue: true } },
+          { key: 'gitlab.cicd.runner.is_shared', value: { boolValue: true } },
           { key: 'job.environment.deployment_tier', value: { stringValue: 'production' } }
         )
       end
@@ -307,6 +315,7 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
         pipeline.commit.id
         pipeline.merge_request.id
         pipeline.source_pipeline.pipeline_id
+        gitlab.cicd.pipeline.stages
       ]
 
       missing_job_attrs = %w[
@@ -315,6 +324,8 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
         job.user.id
         job.artifacts.filename
         job.runner.type
+        job.runner.is_shared
+        gitlab.cicd.runner.is_shared
         job.environment.deployment_tier
       ]
 
@@ -324,6 +335,373 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :integ
 
       missing_job_attrs.each do |attr|
         expect(job_attrs).not_to include(attr)
+      end
+    end
+  end
+
+  describe "OTel CI/CD semantic conventions (cicd.* and vcs.*)" do
+    def find_attr(attrs, key)
+      attrs.find { |a| a[:key] == key }
+    end
+
+    def pipeline_attrs
+      pipeline_span[:attributes]
+    end
+
+    def job_attrs
+      job_span[:attributes]
+    end
+
+    def resource_attrs
+      resource[:attributes]
+    end
+
+    describe "pipeline cicd.* attributes" do
+      it "emits cicd.pipeline.name" do
+        attr = find_attr(pipeline_attrs, "cicd.pipeline.name")
+        expect(attr[:value][:stringValue]).to eq("test-pipeline")
+      end
+
+      it "emits cicd.pipeline.run.id in resource" do
+        attrs = resource[:attributes]
+        attr = attrs.find { |a| a[:key] == "cicd.pipeline.run.id" }
+        expect(attr[:value][:stringValue]).to eq("123")
+      end
+
+      it "emits cicd.pipeline.result with mapped value" do
+        attr = find_attr(pipeline_attrs, "cicd.pipeline.result")
+        expect(attr[:value][:stringValue]).to eq("success")
+      end
+
+      context "when pipeline status is failed" do
+        before do
+          pipeline_data[:object_attributes][:status] = "failed"
+        end
+
+        it "maps to failure" do
+          attr = find_attr(pipeline_attrs, "cicd.pipeline.result")
+          expect(attr[:value][:stringValue]).to eq("failure")
+        end
+      end
+
+      context "when pipeline status is canceled" do
+        before do
+          pipeline_data[:object_attributes][:status] = "canceled"
+        end
+
+        it "maps to cancellation" do
+          attr = find_attr(pipeline_attrs, "cicd.pipeline.result")
+          expect(attr[:value][:stringValue]).to eq("cancellation")
+        end
+      end
+
+      context "when pipeline status is running" do
+        before do
+          pipeline_data[:object_attributes][:status] = "running"
+        end
+
+        it "maps run.state to executing" do
+          attr = find_attr(pipeline_attrs, "cicd.pipeline.run.state")
+          expect(attr[:value][:stringValue]).to eq("executing")
+        end
+      end
+    end
+
+    describe "job cicd.pipeline.task.* attributes" do
+      it "emits cicd.pipeline.task.name" do
+        attr = find_attr(job_attrs, "cicd.pipeline.task.name")
+        expect(attr[:value][:stringValue]).to eq("test-job")
+      end
+
+      it "emits cicd.pipeline.task.run.id" do
+        attr = find_attr(job_attrs, "cicd.pipeline.task.run.id")
+        expect(attr[:value][:stringValue]).to eq("1")
+      end
+
+      it "emits cicd.pipeline.task.run.result" do
+        attr = find_attr(job_attrs, "cicd.pipeline.task.run.result")
+        expect(attr[:value][:stringValue]).to eq("success")
+      end
+
+      it "emits cicd.pipeline.task.type from stage" do
+        attr = find_attr(job_attrs, "cicd.pipeline.task.type")
+        expect(attr[:value][:stringValue]).to eq("test")
+      end
+    end
+
+    describe "runner cicd.worker.* attributes" do
+      it "emits cicd.worker.id" do
+        attr = find_attr(job_attrs, "cicd.worker.id")
+        expect(attr[:value][:stringValue]).to eq("1")
+      end
+
+      it "emits cicd.worker.name" do
+        attr = find_attr(job_attrs, "cicd.worker.name")
+        expect(attr[:value][:stringValue]).to eq("test-runner")
+      end
+
+      it "emits cicd.worker.state as available when active is true" do
+        pipeline_data[:builds].first[:runner][:active] = true
+        attr = find_attr(job_attrs, "cicd.worker.state")
+        expect(attr[:value][:stringValue]).to eq("available")
+      end
+
+      it "emits cicd.worker.state as offline when active is false" do
+        pipeline_data[:builds].first[:runner][:active] = false
+        attr = find_attr(job_attrs, "cicd.worker.state")
+        expect(attr[:value][:stringValue]).to eq("offline")
+      end
+
+      it "emits cicd.worker.state as offline when active is nil" do
+        pipeline_data[:builds].first[:runner][:active] = nil
+        attr = find_attr(job_attrs, "cicd.worker.state")
+        expect(attr[:value][:stringValue]).to eq("offline")
+      end
+    end
+
+    describe "vcs.* resource attributes" do
+      it "emits vcs.provider.name as gitlab" do
+        attr = find_attr(resource_attrs, "vcs.provider.name")
+        expect(attr[:value][:stringValue]).to eq("gitlab")
+      end
+
+      it "emits vcs.repository.name" do
+        attr = find_attr(resource_attrs, "vcs.repository.name")
+        expect(attr[:value][:stringValue]).to eq("test-project")
+      end
+
+      it "emits vcs.owner.name from path_with_namespace" do
+        attr = find_attr(resource_attrs, "vcs.owner.name")
+        expect(attr[:value][:stringValue]).to eq("group")
+      end
+
+      it "emits vcs.ref.head.name" do
+        attr = find_attr(resource_attrs, "vcs.ref.head.name")
+        expect(attr[:value][:stringValue]).to eq("main")
+      end
+
+      it "emits vcs.ref.head.revision" do
+        attr = find_attr(resource_attrs, "vcs.ref.head.revision")
+        expect(attr[:value][:stringValue]).to eq("abc123")
+      end
+
+      it "emits vcs.ref.head.type as branch" do
+        attr = find_attr(resource_attrs, "vcs.ref.head.type")
+        expect(attr[:value][:stringValue]).to eq("branch")
+      end
+
+      context "when pipeline is a tag" do
+        before do
+          pipeline_data[:object_attributes][:tag] = true
+        end
+
+        it "emits vcs.ref.head.type as tag" do
+          attr = find_attr(resource_attrs, "vcs.ref.head.type")
+          expect(attr[:value][:stringValue]).to eq("tag")
+        end
+      end
+
+      context "when path_with_namespace has no namespace" do
+        before do
+          pipeline_data[:project][:path_with_namespace] = "top-level-project"
+        end
+
+        it "omits vcs.owner.name when namespace is empty" do
+          attr = find_attr(resource_attrs, "vcs.owner.name")
+          expect(attr).to be_nil
+        end
+      end
+
+      describe "conditional attribute emission" do
+        it "omits cicd.pipeline.result when status is running" do
+          pipeline_data[:object_attributes][:status] = "running"
+          keys = pipeline_span[:attributes].map { |a| a[:key] }
+          expect(keys).not_to include("cicd.pipeline.result")
+        end
+
+        it "omits cicd.pipeline.run.state when status is terminal" do
+          keys = pipeline_span[:attributes].map { |a| a[:key] }
+          expect(keys).not_to include("cicd.pipeline.run.state")
+        end
+
+        it "omits cicd.pipeline.trigger.type when source is nil" do
+          pipeline_data[:object_attributes][:source] = nil
+          keys = pipeline_span[:attributes].map { |a| a[:key] }
+          expect(keys).not_to include("cicd.pipeline.trigger.type")
+        end
+
+        it "emits cicd.pipeline.trigger.type when source is push" do
+          pipeline_data[:object_attributes][:source] = "push"
+          attr = find_attr(pipeline_attrs, "cicd.pipeline.trigger.type")
+          expect(attr[:value][:stringValue]).to eq("push")
+        end
+
+        it "omits cicd.pipeline.task.type for unknown stages" do
+          pipeline_data[:builds].first[:stage] = "lint"
+          keys = job_span[:attributes].map { |a| a[:key] }
+          expect(keys).not_to include("cicd.pipeline.task.type")
+        end
+
+        it "emits vcs.ref.base.revision when before_sha is present" do
+          pipeline_data[:object_attributes][:before_sha] = "def456"
+          attr = find_attr(pipeline_attrs, "vcs.ref.base.revision")
+          expect(attr[:value][:stringValue]).to eq("def456")
+        end
+
+        it "emits vcs.repository.url.full in resource" do
+          pipeline_data[:project][:web_url] = "https://gitlab.com/group/project"
+          attr = find_attr(resource_attrs, "vcs.repository.url.full")
+          expect(attr[:value][:stringValue]).to eq("https://gitlab.com/group/project")
+        end
+      end
+
+      describe "new semconv attributes from #96" do
+        describe "pipeline semconv" do
+          it "emits cicd.pipeline.run.queue_duration" do
+            attr = find_attr(pipeline_attrs, "cicd.pipeline.run.queue_duration")
+            expect(attr[:value][:intValue]).to eq(30000)
+          end
+
+          it "emits vcs.ref.head.protected" do
+            attr = find_attr(pipeline_attrs, "vcs.ref.head.protected")
+            expect(attr[:value][:boolValue]).to be(true)
+          end
+
+          it "emits gitlab.cicd.pipeline.iid" do
+            attr = find_attr(pipeline_attrs, "gitlab.cicd.pipeline.iid")
+            expect(attr[:value][:intValue]).to eq(456)
+          end
+
+          it "emits gitlab.cicd.pipeline.stages when stages present" do
+            pipeline_data[:object_attributes][:stages] = %w[build test deploy]
+            attr = find_attr(pipeline_attrs, "gitlab.cicd.pipeline.stages")
+            values = attr[:value][:arrayValue][:values].map { |v| v[:stringValue] }
+            expect(values).to eq(%w[build test deploy])
+          end
+        end
+
+        describe "vcs ref attributes" do
+          it "emits vcs.ref.head.name in pipeline span" do
+            attr = find_attr(pipeline_attrs, "vcs.ref.head.name")
+            expect(attr[:value][:stringValue]).to eq("main")
+          end
+
+          it "emits vcs.ref.head.revision in pipeline span" do
+            attr = find_attr(pipeline_attrs, "vcs.ref.head.revision")
+            expect(attr[:value][:stringValue]).to eq("abc123")
+          end
+
+          it "emits vcs.ref.base.revision when before_sha present" do
+            pipeline_data[:object_attributes][:before_sha] = "def456"
+            attr = find_attr(pipeline_attrs, "vcs.ref.base.revision")
+            expect(attr[:value][:stringValue]).to eq("def456")
+          end
+        end
+
+        describe "job semconv" do
+          it "emits cicd.pipeline.task.allow_failure" do
+            attr = find_attr(job_attrs, "cicd.pipeline.task.allow_failure")
+            expect(attr[:value][:boolValue]).to be(false)
+          end
+
+          it "emits cicd.pipeline.task.run.failure_reason" do
+            pipeline_data[:builds].first[:failure_reason] = "script_failure"
+            attr = find_attr(job_attrs, "cicd.pipeline.task.run.failure_reason")
+            expect(attr[:value][:stringValue]).to eq("script_failure")
+          end
+
+          it "emits cicd.pipeline.task.trigger.type as automatic for non-manual jobs" do
+            attr = find_attr(job_attrs, "cicd.pipeline.task.trigger.type")
+            expect(attr[:value][:stringValue]).to eq("automatic")
+          end
+
+          it "emits cicd.pipeline.task.trigger.type as manual for manual jobs" do
+            pipeline_data[:builds].first[:manual] = true
+            attr = find_attr(job_attrs, "cicd.pipeline.task.trigger.type")
+            expect(attr[:value][:stringValue]).to eq("manual")
+          end
+
+          it "emits cicd.pipeline.task.run.queue_duration" do
+            pipeline_data[:builds].first[:queued_duration] = 5000
+            attr = find_attr(job_attrs, "cicd.pipeline.task.run.queue_duration")
+            expect(attr[:value][:intValue]).to eq(5000)
+          end
+
+          it "emits cicd.pipeline.task.run.state" do
+            attr = find_attr(job_attrs, "cicd.pipeline.task.run.state")
+            expect(attr).to be_nil
+          end
+
+          it "emits cicd.pipeline.task.run.state as executing when running" do
+            pipeline_data[:builds].first[:status] = "running"
+            attr = find_attr(job_attrs, "cicd.pipeline.task.run.state")
+            expect(attr[:value][:stringValue]).to eq("executing")
+          end
+        end
+
+        describe "runner semconv" do
+          it "emits cicd.worker.tags" do
+            attr = find_attr(job_attrs, "cicd.worker.tags")
+            values = attr[:value][:arrayValue][:values].map { |v| v[:stringValue] }
+            expect(values).to eq(%w[docker linux])
+          end
+
+          it "emits cicd.worker.type when runner_type present" do
+            pipeline_data[:builds].first[:runner][:runner_type] = "instance_type"
+            attr = find_attr(job_attrs, "cicd.worker.type")
+            expect(attr[:value][:stringValue]).to eq("instance_type")
+          end
+
+          it "emits gitlab.cicd.worker.is_shared when is_shared present" do
+            pipeline_data[:builds].first[:runner][:is_shared] = true
+            attr = find_attr(job_attrs, "gitlab.cicd.runner.is_shared")
+            expect(attr[:value][:boolValue]).to be(true)
+          end
+        end
+
+        describe "merge request vcs attributes" do
+          before do
+            pipeline_data[:merge_request] = {
+              id: 100,
+              iid: 42,
+              title: "Add feature",
+              state: "opened",
+              source_branch: "feature-branch",
+              target_branch: "main"
+            }
+          end
+
+          it "emits vcs.change.id" do
+            attr = find_attr(pipeline_attrs, "vcs.change.id")
+            expect(attr[:value][:stringValue]).to eq("42")
+          end
+
+          it "emits vcs.change.title" do
+            attr = find_attr(pipeline_attrs, "vcs.change.title")
+            expect(attr[:value][:stringValue]).to eq("Add feature")
+          end
+
+          it "emits vcs.change.state mapped from opened to open" do
+            attr = find_attr(pipeline_attrs, "vcs.change.state")
+            expect(attr[:value][:stringValue]).to eq("open")
+          end
+
+          it "emits vcs.ref.head.name from source_branch" do
+            attr = pipeline_span[:attributes].reverse.find { |a| a[:key] == "vcs.ref.head.name" }
+            expect(attr[:value][:stringValue]).to eq("feature-branch")
+          end
+
+          it "emits vcs.ref.base.name from target_branch" do
+            attr = find_attr(pipeline_attrs, "vcs.ref.base.name")
+            expect(attr[:value][:stringValue]).to eq("main")
+          end
+
+          it "maps merged state" do
+            pipeline_data[:merge_request][:state] = "merged"
+            attr = find_attr(pipeline_attrs, "vcs.change.state")
+            expect(attr[:value][:stringValue]).to eq("merged")
+          end
+        end
       end
     end
   end

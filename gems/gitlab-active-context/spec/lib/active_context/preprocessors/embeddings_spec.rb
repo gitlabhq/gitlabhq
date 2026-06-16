@@ -30,18 +30,20 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     mock_reference_class.new(collection_id: collection_id, routing: partition, args: mock_reference_record_id)
   end
 
-  let(:test_model_key) { 'test-model-001' }
+  let(:test_model_ref) { 'test-model-001' }
+  let(:model_type) { 'gitlab_managed' }
   let(:mock_embedding_models) do
     ::ActiveContext::EmbeddingModel.new(
-      model_key: test_model_key,
+      model_ref: test_model_ref,
       field: 'embeddings_v1',
+      model_type: model_type,
       llm_class: Test::MockLlmClass,
-      llm_params: { model: test_model_key }
+      llm_params: { abc: "extra-params" }
     )
   end
 
   let(:default_content) { 'content returned in reference method' }
-  let(:expected_vectors) { Test::MockLlmClass::MOCK_VECTORS }
+  let(:expected_vectors) { (1..Test::MockLlmClass::DEFAULT_DIMENSIONS).map(&:to_f) }
 
   let(:preprocessed_reference) { preprocessed_result[:successful].first }
 
@@ -54,6 +56,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
     allow(test_reference).to receive(:indexing_embedding_models).and_return([mock_embedding_models])
 
+    allow(ActiveContext::Logger).to receive(:info)
     allow(ActiveContext::Logger).to receive(:retryable_exception)
   end
 
@@ -86,11 +89,12 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
         user: nil,
-        model: test_model_key
+        abc: "extra-params"
       ).and_call_original
 
-      expect(preprocessed_reference.documents).to match_array([{ expected_content_key => expected_content,
-                                                                 embeddings_v1: expected_vectors }])
+      expect(preprocessed_reference.documents).to match_array([{
+        expected_content_key => expected_content, embeddings_v1: expected_vectors
+      }])
     end
   end
 
@@ -99,7 +103,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
         user: nil,
-        model: test_model_key
+        abc: "extra-params"
       ).and_call_original
 
       expect(preprocessed_reference.documents).to match_array([{ embeddings_v1: expected_vectors }])

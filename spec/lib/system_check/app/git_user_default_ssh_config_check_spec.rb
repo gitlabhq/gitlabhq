@@ -86,7 +86,7 @@ RSpec.describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
         mkdir\ ~/gitlab-check-backup-(.+)\s+
         sudo\ mv\ (.+)\s+
         For\ more\ information\ see:\s+
-        doc/user/ssh\.md\#overriding-ssh-settings-on-the-gitlab-server\s+
+        http.+/help/user/ssh\.md\#overriding-ssh-settings-on-the-gitlab-server\s+
         Please\ fix\ the\ error\ above\ and\ rerun\ the\ checks
       }x
 

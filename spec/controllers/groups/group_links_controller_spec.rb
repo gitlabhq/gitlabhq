@@ -129,7 +129,7 @@ RSpec.describe Groups::GroupLinksController, feature_category: :system_access do
       end
 
       it 'deletes existing link' do
-        expect { subject }.to change(GroupGroupLink, :count).by(-1)
+        expect { subject }.to change { GroupGroupLink.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(group_group_members_path(shared_group))

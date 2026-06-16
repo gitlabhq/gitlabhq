@@ -3,6 +3,8 @@ description: Triggered when automatic closing of incidents is disabled in Incide
 action: disabled_auto_close_incident
 identifiers:
 product_group: platform_insights
+product_categories:
+- incident_management
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40379
 tiers:

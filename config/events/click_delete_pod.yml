@@ -12,6 +12,8 @@ additional_properties:
   label:
     description: agent id
 product_group: environments
+product_categories:
+- environment_management
 milestone: '17.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160635
 tiers:

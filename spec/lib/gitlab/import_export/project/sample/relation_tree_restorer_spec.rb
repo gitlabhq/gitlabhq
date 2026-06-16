@@ -10,7 +10,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
+  let_it_be(:importable, freeze: false) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
 
   let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
   let(:path) { 'spec/fixtures/lib/gitlab/import_export/sample_data/tree' }

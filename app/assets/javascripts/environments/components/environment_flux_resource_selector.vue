@@ -23,6 +23,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'EnvironmentFluxResourceSelector',
   components: {
     GlFormGroup,
     GlCollapsibleListbox,

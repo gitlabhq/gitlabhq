@@ -77,7 +77,17 @@ you can amend the history to remove it:
    git commit --amend
    ```
 
-The secret is removed from the file and the commit history, and you can safely push your changes.
+1. Push your changes to the remote branch:
+
+   ```shell
+   git push --force-with-lease
+   ```
+
+   Because the commit history was rewritten, a regular `git push` fails.
+   The `--force-with-lease` flag forces the push while protecting against
+   overwriting other contributors' commits.
+
+The secret is removed from the file and the commit history.
 
 ### Amending multiple commits
 
@@ -148,7 +158,17 @@ to every commit after the secret was added:
    Successfully rebased and updated refs/heads/secret-tutorial
    ```
 
-The secret is removed and you can safely push your changes to the remote.
+1. Push your changes to the remote branch:
+
+   ```shell
+   git push --force-with-lease
+   ```
+
+   Because the commit history was rewritten, a regular `git push` fails.
+   The `--force-with-lease` flag forces the push while protecting against
+   overwriting other contributors' commits.
+
+The secret is removed from the commit history.
 
 ## What to do when you push a secret
 

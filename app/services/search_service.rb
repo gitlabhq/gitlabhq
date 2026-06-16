@@ -37,6 +37,10 @@ class SearchService
     # overridden in EE
   end
 
+  def user_requested_scope
+    params[:scope]
+  end
+
   def global_search?
     project.blank? && group.blank?
   end

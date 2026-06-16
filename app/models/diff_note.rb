@@ -48,14 +48,15 @@ class DiffNote < Note
       return
     end
 
-    diff_line = diff_file.line_for_position(self.original_position)
+    original_position = self.original_position
+    diff_line = diff_file.line_for_position(original_position) if original_position
 
     return if diff_line
 
     errors.add(:base, :missing_diff_line, message: DIFF_LINE_NOT_FOUND_MESSAGE % {
       file_path: diff_file.file_path,
-      old_line: original_position.old_line,
-      new_line: original_position.new_line
+      old_line: original_position&.old_line,
+      new_line: original_position&.new_line
     })
   end
 
@@ -91,7 +92,7 @@ class DiffNote < Note
     strong_memoize(:latest_diff_file) do
       next if for_design?
 
-      position.diff_file(repository)
+      position&.diff_file(repository)
     end
   end
 
@@ -119,6 +120,7 @@ class DiffNote < Note
   def created_at_diff?(diff_refs)
     return false unless supported?
     return true if for_commit?
+    return false unless original_position
 
     self.original_position.diff_refs == diff_refs
   end
@@ -171,7 +173,8 @@ class DiffNote < Note
   end
 
   def fetch_diff_file
-    return note_diff_file.raw_diff_file if note_diff_file && !note_diff_file.raw_diff_file.has_renderable?
+    persisted_raw_diff_file = note_diff_file&.raw_diff_file
+    return persisted_raw_diff_file if persisted_raw_diff_file && !persisted_raw_diff_file.has_renderable?
 
     if noteable && created_at_diff?(noteable.diff_refs)
       # We're able to use the already persisted diffs (Postgres) if we're
@@ -186,7 +189,7 @@ class DiffNote < Note
       file = nil if file&.line_for_position(original_position).nil? && importing?
     end
 
-    file ||= original_position.diff_file(repository)
+    file ||= original_position&.diff_file(repository)
     file&.unfold_diff_lines(position)
 
     file
@@ -197,7 +200,12 @@ class DiffNote < Note
   end
 
   def set_line_code
-    self.line_code = self.line_code.presence || self.position.line_code(repository)
+    return if line_code.present?
+
+    current_position = position
+    return unless current_position
+
+    self.line_code = current_position.line_code(repository)
   end
 
   def verify_supported
@@ -207,7 +215,7 @@ class DiffNote < Note
   end
 
   def positions_complete
-    return if self.original_position.complete? && self.position.complete?
+    return if original_position&.complete? && position&.complete?
 
     errors.add(:position, "is incomplete")
   end

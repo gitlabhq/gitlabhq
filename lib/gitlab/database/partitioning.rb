@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     module Partitioning
+      PARTITION_EXCLUDED_DATABASES = %w[embedding jh geo].freeze
+
       class TableWithoutModel < Gitlab::Database::SharedModel
         include PartitionedTable
       end

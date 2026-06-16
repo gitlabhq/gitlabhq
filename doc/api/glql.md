@@ -74,7 +74,7 @@ The following configuration options can be included in the YAML:
 
 ### Available fields
 
-The `fields` configuration option is defined by [GLQL's available fields](../user/glql/fields.md).
+Set the `fields` configuration option to a comma-separated list of the [available GLQL fields](../user/glql/fields.md).
 
 ### GLQL query syntax
 

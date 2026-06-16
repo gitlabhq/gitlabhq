@@ -1,7 +1,7 @@
 ---
 stage: Runtime
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトメンバーAPI
 ---
 
@@ -19,11 +19,11 @@ title: プロジェクトメンバーAPI
 ## 既知の問題 {#known-issues}
 
 - `group_saml_identity`属性と`group_scim_identity`属性は、[SSOが有効なグループ](../user/group/saml_sso/_index.md)のグループオーナーのみに表示されます。
-- APIリクエストがグループ自体、またはそのグループのサブグループまたはプロジェクトに送信される場合、`email`属性は、グループの[エンタープライズユーザー](../user/enterprise_user/_index.md)のグループオーナーのみに表示されます。
+- `email`属性は、APIリクエストがグループ自体、またはそのグループのサブグループまたはプロジェクトに送信される場合、グループの[エンタープライズユーザー](../user/enterprise_user/_index.md)のグループオーナーのみに表示されます。
 
-## プロジェクトのすべてのメンバーをリスト表示する {#list-all-members-of-a-project}
+## プロジェクトのすべての直接メンバーを一覧表示 {#list-all-direct-members-of-a-project}
 
-認証済みユーザーが表示できるプロジェクトメンバーのリストを取得します。
+認証済みユーザーが表示できる、指定されたプロジェクトのすべての直接メンバーを一覧表示します。[プロジェクトの全メンバーを一覧表示](#list-all-members-of-a-project)を使用して、継承されたメンバーを一覧表示します。
 
 この関数は、ページネーションパラメータ`page`および`per_page`を受け取り、ユーザーのリストを制限します。
 
@@ -44,7 +44,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -97,7 +97,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 継承されたメンバーと招待されたメンバーを含む、プロジェクトのすべてのメンバーをリスト表示する {#list-all-members-of-a-project-including-inherited-and-invited-members}
+## プロジェクトのすべてのメンバーをリストする {#list-all-members-of-a-project}
 
 {{< history >}}
 
@@ -107,9 +107,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-認証済みユーザーが表示できるプロジェクトメンバーのリストを、継承されたメンバー、招待されたユーザー、祖先グループを通じた権限を含めて取得します。
+認証済みユーザーが表示できるすべてのプロジェクトメンバー（継承されたメンバー、招待されたユーザー、および祖先グループを通じた権限を含む）を一覧表示します。
 
-ユーザーがこのプロジェクトのメンバーであり、1つ以上の祖先グループのメンバーでもある場合、最大の`access_level`を持つメンバーシップのみが返されます。これは、ユーザーの有効な権限を表します。
+ユーザーがこのプロジェクト、および1つ以上の祖先グループのメンバーである場合、`access_level`が最も高いメンバーシップのみが返されます。これは、ユーザーの有効な権限を表します。
 
 招待グループのメンバーは、次のいずれかの場合に返されます。
 
@@ -118,7 +118,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 - リクエスタが共有グループまたは共有プロジェクトのメンバーである。
 
 > [!note]
-> 招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
+> 招待されたグループメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
 
 この関数は、ページネーションパラメータ`page`および`per_page`を受け取り、ユーザーのリストを制限します。
 
@@ -132,14 +132,14 @@ GET /projects/:id/members/all
 | `query`          | 文字列            | いいえ       | 指定された名前、メール、またはユーザー名に基づいて結果をフィルタリングします。クエリのスコープを広げるには、部分的な値を使用します。 |
 | `user_ids`       | 整数の配列 | いいえ       | 指定されたユーザーIDで結果をフィルタリングします。 |
 | `show_seat_info` | ブール値           | いいえ       | ユーザーのシート情報を表示します。 |
-| `state`          | 文字列            | いいえ       | メンバー状態（`awaiting`または`active`のいずれか）で結果をフィルタリングします。PremiumおよびUltimateのみ |
+| `state`          | 文字列            | いいえ       | メンバー状態（`awaiting`または`active`のいずれか）で結果をフィルタリングします。PremiumおよびUltimateのみです。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/all"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -211,9 +211,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## プロジェクトのメンバーを取得する {#get-a-member-of-a-project}
+## プロジェクトの直接メンバーを取得する {#retrieve-a-direct-member-of-a-project}
 
-プロジェクトのメンバーを取得します。祖先グループを介した継承メンバーではなく、直接メンバーのみを返します。
+指定されたプロジェクトの直接メンバーを取得する。[プロジェクトのメンバーを取得する](#retrieve-a-member-of-a-project)を使用して、継承されたメンバーを取得する。
 
 ```plaintext
 GET /projects/:id/members/:user_id
@@ -239,7 +239,7 @@ curl --request PUT --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -265,7 +265,7 @@ curl --request PUT --header "Content-Type: application/json" \
 }
 ```
 
-## 祖先グループを通じて継承または招待されたメンバーを含む、プロジェクトのメンバーを取得する {#get-a-member-of-a-project-including-inherited-and-invited-members}
+## プロジェクトのメンバーを取得する {#retrieve-a-member-of-a-project}
 
 {{< history >}}
 
@@ -276,10 +276,10 @@ curl --request PUT --header "Content-Type: application/json" \
 
 {{< /history >}}
 
-祖先グループを通じて継承または招待されたメンバーを含む、プロジェクトのメンバーを取得します。詳細については、対応する[すべての継承メンバーをリストするためのエンドポイント](#list-all-members-of-a-project-including-inherited-and-invited-members)を参照してください。
+継承された、または祖先グループを通じて招待されたメンバーを含む、プロジェクトの指定されたメンバーを取得する。詳細については、[プロジェクトの全メンバーを一覧表示](#list-all-members-of-a-project)を参照してください。
 
 > [!note]
-> 招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
+> 招待されたグループメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
 
 ```plaintext
 GET /projects/:id/members/all/:user_id
@@ -295,7 +295,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -323,9 +323,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## プロジェクトにメンバーを追加する {#add-a-member-to-a-project}
 
-プロジェクトにメンバーを追加します。
+指定されたプロジェクトに直接メンバーを追加します。
 
-グループにプロジェクトへのアクセス権を付与するには、[グループとプロジェクトを共有する](projects.md#share-a-project-with-a-group)を参照してください。
+グループにプロジェクトへのアクセス権を付与するには、[プロジェクトをグループと共有する](projects.md#share-a-project-with-a-group)を参照してください。
 
 ```plaintext
 POST /projects/:id/members
@@ -336,7 +336,7 @@ POST /projects/:id/members
 | `id`             | 整数または文字列 | はい                                | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`        | 整数または文字列 | はい（`username`が指定されていない場合） | 新しいメンバーのユーザーID、またはカンマで区切られた複数のID。 |
 | `username`       | 文字列            | はい（`user_id`が指定されていない場合）  | 新しいメンバーのユーザー名、またはカンマで区切られた複数のユーザー名。 |
-| `access_level`   | 整数           | はい                                | 有効な[アクセスレベル](../user/permissions.md#default-roles)使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、または`50`（オーナー）。デフォルトは`30`です。 |
+| `access_level`   | 整数           | はい                                | 有効な[アクセスレベル](../user/permissions.md#default-roles)。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。デフォルトは`30`です。 |
 | `expires_at`     | 文字列            | いいえ                                 | `YEAR-MONTH-DAY`形式の日付文字列。 |
 | `invite_source`  | 文字列            | いいえ                                 | メンバー作成プロセスを開始する招待のソース。GitLabのチームメンバーは、この機密情報イシュー（`https://gitlab.com/gitlab-org/gitlab/-/issues/327120`）で詳細情報を確認できます。 |
 | `member_role_id` | 整数           | いいえ                                 | Ultimateのみ。カスタムメンバーロールのID。 |
@@ -347,7 +347,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -374,7 +374,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 > [!note]
-> [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
+> [役割プロモートの管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)がオンになっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには管理者の承認が必要です。
 
 **請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 
@@ -412,9 +412,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## プロジェクトのメンバーを編集する {#edit-a-member-of-a-project}
+## プロジェクトのメンバーを更新 {#update-a-member-of-a-project}
 
-プロジェクトのメンバーを更新します。
+指定されたプロジェクトのメンバーを更新します。
 
 ```plaintext
 PUT /projects/:id/members/:user_id
@@ -424,7 +424,7 @@ PUT /projects/:id/members/:user_id
 | ---------------- | ----------------- | -------- | ----------- |
 | `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`        | 整数           | はい      | メンバーのユーザーID。 |
-| `access_level`   | 整数           | はい       | 有効な[アクセスレベル](../user/permissions.md#default-roles)使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、または`50`（オーナー）。デフォルトは`30`です。 |
+| `access_level`   | 整数           | はい       | 有効な[アクセスレベル](../user/permissions.md#default-roles)。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。デフォルトは`30`です。 |
 | `expires_at`     | 文字列            | いいえ       | `YEAR-MONTH-DAY`形式の日付文字列。 |
 | `member_role_id` | 整数           | いいえ       | Ultimateのみ。カスタムメンバーロールのID。値を指定しない場合は、すべてのロールを削除します。 |
 
@@ -433,7 +433,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -460,11 +460,11 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 > [!note]
-> [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
+> [役割プロモートの管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)がオンになっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには管理者の承認が必要です。
 
 **請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -474,11 +474,11 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## プロジェクトからメンバーを削除する {#remove-a-member-from-a-project}
+## プロジェクトの直接メンバーを削除 {#remove-a-direct-member-of-a-project}
 
-ユーザーが明示的にロールを割り当てられているプロジェクトからユーザーを削除します。
+指定されたプロジェクトの直接メンバーを削除します。
 
-削除の対象となるユーザーがグループメンバーである必要があります。たとえば、ユーザーがグループ内のプロジェクトに直接追加されたが、このグループには明示的に追加されていない場合、このエンドポイントを使用して削除することはできません。詳細については、[グループから請求対象メンバーを削除する](group_members.md#remove-a-billable-member-from-a-group)を参照してください。
+たとえば、ユーザーがグループ内のプロジェクトに直接追加されたが、このグループには明示的に追加されていない場合、このエンドポイントを使用して削除することはできません。詳細については、[グループから請求対象メンバーを削除する](group_members.md#remove-a-billable-group-member)を参照してください。
 
 ```plaintext
 DELETE /projects/:id/members/:user_id
@@ -489,9 +489,9 @@ DELETE /projects/:id/members/:user_id
 | `id`                 | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`            | 整数           | はい      | メンバーのユーザーID。 |
 | `skip_subresources`  | ブール値           | false    | サブグループおよびプロジェクトの削除されたメンバーの直接メンバーシップを削除することをスキップするかどうか。デフォルトは`false`です。 |
-| `unassign_issuables` | ブール値           | false    | 削除されたメンバーを、特定のプロジェクト内のイシューまたはマージリクエストから割り当てを解除するかどうか。デフォルトは`false`です。 |
+| `unassign_issuables` | ブール値           | false    | 特定のプロジェクト内で、イシューまたはマージリクエストから、削除されたメンバーの割り当てを解除する必要があるかどうか。デフォルトは`false`です。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \

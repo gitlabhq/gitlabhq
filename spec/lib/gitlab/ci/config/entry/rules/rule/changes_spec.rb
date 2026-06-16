@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
+RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes, feature_category: :pipeline_composition do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .value(config)

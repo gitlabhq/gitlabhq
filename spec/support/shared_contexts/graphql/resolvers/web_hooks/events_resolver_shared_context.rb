@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'resolving web hook logs' do
-  let_it_be(:log_10m_ago) { create(:web_hook_log, web_hook: web_hook, created_at: 10.minutes.ago) }
-  let_it_be(:log_2d_ago) { create(:web_hook_log, web_hook: web_hook, created_at: 2.days.ago) }
-  let_it_be(:log_6d_ago) { create(:web_hook_log, web_hook: web_hook, created_at: 6.days.ago) }
-  let_it_be(:log_8d_ago) { create(:web_hook_log, web_hook: web_hook, created_at: 8.days.ago) }
+  let_it_be(:log_10m_ago, freeze: false) { create(:web_hook_log, web_hook: web_hook, created_at: 10.minutes.ago) }
+  let_it_be(:log_2d_ago, freeze: false) { create(:web_hook_log, web_hook: web_hook, created_at: 2.days.ago) }
+  let_it_be(:log_6d_ago, freeze: false) { create(:web_hook_log, web_hook: web_hook, created_at: 6.days.ago) }
+  let_it_be(:log_8d_ago, freeze: false) { create(:web_hook_log, web_hook: web_hook, created_at: 8.days.ago) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::WebHooks::EventType.connection_type)

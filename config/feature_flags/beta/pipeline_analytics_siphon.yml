@@ -1,0 +1,10 @@
+---
+name: pipeline_analytics_siphon
+description: Read PipelineAnalytics data from siphon_p_ci_pipelines instead of the ci_finished_pipelines_{hourly,daily} materialized views.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/598440
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238898
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601824
+milestone: '19.1'
+group: group::ci platform
+type: beta
+default_enabled: false

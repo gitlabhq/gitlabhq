@@ -14,6 +14,7 @@ title: Remote execution environment sandbox
 - `network_policy` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590021) in GitLab 18.10.
 - `allow_all_unix_sockets` network policy setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590871) in GitLab 18.11.
 - Instance-level and group-level network access controls [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531) in GitLab 18.11 [with feature flags](../../administration/feature_flags/_index.md) named `dap_instance_network_access_controls` and `dap_group_network_access_controls`. Disabled by default.
+- Feature flags `dap_instance_network_access_controls` and `dap_group_network_access_controls` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235670) in GitLab 19.0.
 
 {{< /history >}}
 
@@ -80,7 +81,7 @@ At runtime, the runner checks that the SRT is available and working:
 $ if which srt > /dev/null; then
 $ echo "SRT found, creating config..."
 SRT found, creating config...
-$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp"],"denyWrite":["/opt/.gitlab-sandbox"],"allowGitConfig":true}}' > /opt/.gitlab-sandbox/srt-settings.json
+$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp"],"denyWrite":["/var/tmp/.gitlab-sandbox"],"allowGitConfig":true}}' > /var/tmp/.gitlab-sandbox/srt-settings.json
 $ echo "Testing SRT sandbox capabilities..."
 Testing SRT sandbox capabilities...
 ```
@@ -134,7 +135,7 @@ The sandbox enforces the following filesystem restrictions:
 
 - Read restrictions: SSH keys (`~/.ssh`) are blocked.
 - Write allowed: Current directory (`./`) and `/tmp`.
-- Write restricted: `/opt/.gitlab-sandbox` (used for platform-internal files like sandbox settings).
+- Write restricted: `/var/tmp/.gitlab-sandbox` (used for platform-internal files like sandbox settings).
 - Git configuration access: Allowed.
 
 ### Configure a network policy
@@ -239,18 +240,15 @@ To configure instance-level network access controls:
 1. Select **Change configuration**.
 1. Under **Data and privacy**, in the **Network access** section, configure the
    following settings:
-   - **Include recommended domains in the allowlist**: When enabled, a curated
-     list of commonly needed domains is automatically included in the allowlist.
-   - **Allow all Unix sockets**: When enabled, all Unix socket connections are
-     permitted for agent platform operations.
-   - **Allow projects to extend network sandbox settings**: When enabled, project
-     maintainers can add additional domains to the allowlist, allow all Unix
-     sockets, and include recommended domains through their `agent-config.yml`
-     file.
-1. Optional. Use the **Allowed domains** card to add or remove specific domains
-   from the allowlist.
-1. Optional. Use the **Blocked domains** card to add or remove specific domains
-   from the denylist.
+   - **Include recommended domains in the allowlist**:
+     A curated list of recommended domains is automatically included in the allowlist.
+   - **Allow all Unix sockets**:
+     All Unix sockets are allowed for GitLab Duo Agent Platform operations.
+   - **Allow projects to extend network sandbox settings**:
+     Users with the Maintainer or Owner role for a project can include recommended domains
+     through the `agent-config.yml` file, add more domains, and allow all Unix sockets.
+1. Optional. Under **Allowed domains**, add or remove domains from the allowlist.
+   Under **Blocked domains**, add or remove domains from the denylist.
 1. Select **Save changes**.
 
 #### Configure top-level group network access controls (GitLab.com)

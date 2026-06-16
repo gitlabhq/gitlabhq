@@ -8,10 +8,10 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
   it_behaves_like 'issues or work items finder', :issue, '{Issues|WorkItems}Finder#execute context'
 
   context 'when filtering by author username' do
-    let_it_be(:issuable_parent) { create(:project) }
-    let_it_be(:issuable_attributes) { { project: issuable_parent } }
-    let_it_be(:issuable_factory) { :issue }
-    let_it_be(:factory_params) { [] }
+    let_it_be(:issuable_parent, freeze: false) { create(:project) }
+    let_it_be(:issuable_attributes, freeze: false) { { project: issuable_parent } }
+    let_it_be(:issuable_factory, freeze: false) { :issue }
+    let_it_be(:factory_params, freeze: false) { [] }
 
     let(:search_params) { { project_id: issuable_parent.id } }
 
@@ -88,11 +88,11 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
   end
 
   context 'when filtering by a date' do
-    let_it_be(:item_due_2_weeks_ago) { create(:issue, project: project1, due_date: 2.weeks.ago) }
-    let_it_be(:item_due_yesterday) { create(:issue, project: project1, due_date: 1.day.ago) }
-    let_it_be(:item_due_today) { create(:issue, project: project1, due_date: Date.current) }
-    let_it_be(:item_due_tomorrow) { create(:issue, project: project1, due_date: 1.day.from_now) }
-    let_it_be(:item_due_in_1_week) { create(:issue, project: project1, due_date: 1.week.from_now) }
+    let_it_be(:item_due_2_weeks_ago, freeze: false) { create(:issue, project: project1, due_date: 2.weeks.ago) }
+    let_it_be(:item_due_yesterday, freeze: false) { create(:issue, project: project1, due_date: 1.day.ago) }
+    let_it_be(:item_due_today, freeze: false) { create(:issue, project: project1, due_date: Date.current) }
+    let_it_be(:item_due_tomorrow, freeze: false) { create(:issue, project: project1, due_date: 1.day.from_now) }
+    let_it_be(:item_due_in_1_week, freeze: false) { create(:issue, project: project1, due_date: 1.week.from_now) }
     let(:scope) { 'all' }
 
     context 'when filtering by due_before' do
@@ -118,11 +118,11 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
 
   describe 'filtering by service desk (author_username)' do
     let_it_be(:project, freeze: false) { create(:project, :public) }
-    let_it_be(:support_bot) { create(:support_bot) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:service_desk_issue) { create(:issue, project: project, author: support_bot) }
-    let_it_be(:regular_issue) { create(:issue, project: project, author: user) }
-    let_it_be(:ticket) { create(:work_item, :ticket, project: project, author: user) }
+    let_it_be(:support_bot, freeze: false) { create(:support_bot) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:service_desk_issue, freeze: false) { create(:issue, project: project, author: support_bot) }
+    let_it_be(:regular_issue, freeze: false) { create(:issue, project: project, author: user) }
+    let_it_be(:ticket, freeze: false) { create(:work_item, :ticket, project: project, author: user) }
 
     context 'when author_username matches support bot' do
       let(:params) { { project_id: project.id, author_username: support_bot.username } }
@@ -145,9 +145,9 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
     end
 
     context 'with organization-specific support bot' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:org_support_bot) { Users::Internal.in_organization(organization).support_bot }
-      let_it_be(:org_service_desk_issue) { create(:issue, project: project, author: org_support_bot) }
+      let_it_be(:organization, freeze: false) { create(:organization) }
+      let_it_be(:org_support_bot, freeze: false) { Users::Internal.in_organization(organization).support_bot }
+      let_it_be(:org_service_desk_issue, freeze: false) { create(:issue, project: project, author: org_support_bot) }
 
       let(:params) { { project_id: project.id, author_username: org_support_bot.username } }
 
@@ -164,13 +164,13 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
   # includes_user? and bypass the confidentiality check) with assignee_username pointing
   # to a group that includes the victim (to expand results via OR semantics to their issues).
   describe 'confidential issue disclosure via assignee_id and group handle assignee_username' do
-    let_it_be(:victim) { create(:user) }
-    let_it_be(:attacker) { create(:user) }
+    let_it_be(:victim, freeze: false) { create(:user) }
+    let_it_be(:attacker, freeze: false) { create(:user) }
     let_it_be(:project, freeze: false) { create(:project, :private) }
     # The attacker controls this group; the victim is a member so group handle expansion
     # would include the victim's issues if param mixing were allowed.
-    let_it_be(:attacker_group) { create(:group, :private) }
-    let_it_be(:confidential_issue) do
+    let_it_be(:attacker_group, freeze: false) { create(:group, :private) }
+    let_it_be(:confidential_issue, freeze: false) do
       create(:issue, :confidential, project: project, assignees: [victim])
     end
 

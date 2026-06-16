@@ -7,7 +7,10 @@ module API
 
     helpers ::API::Helpers::PackagesHelpers
 
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     feature_category :container_registry
     urgency :low

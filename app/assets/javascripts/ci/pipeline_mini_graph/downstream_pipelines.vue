@@ -20,12 +20,18 @@ export default {
       required: false,
       default: () => [],
     },
+    totalCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     pipelinePath: {
       type: String,
       required: false,
       default: '',
     },
   },
+  emits: ['job-action-executed'],
   data() {
     return {
       maxRenderedPipelines: 3,
@@ -33,18 +39,18 @@ export default {
   },
   computed: {
     totalPipelineCount() {
-      return this.pipelines.length;
+      return this.totalCount || this.pipelines.length;
     },
     pipelinesTrimmed() {
-      return this.totalPipelineCount > this.maxRenderedPipelines
+      return this.pipelines.length > this.maxRenderedPipelines
         ? this.pipelines.slice(0, this.maxRenderedPipelines)
         : this.pipelines;
     },
     shouldRenderCounter() {
-      return this.pipelines.length > this.maxRenderedPipelines;
+      return this.totalPipelineCount > this.maxRenderedPipelines;
     },
     counterLabel() {
-      return `+${this.pipelines.length - this.maxRenderedPipelines}`;
+      return `+${this.totalPipelineCount - this.maxRenderedPipelines}`;
     },
     counterTooltipText() {
       return sprintf(

@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe API::GroupMilestones, feature_category: :team_planning do
   let_it_be(:organization) { create(:common_organization) }
-  let_it_be(:user) { create(:user, company: organization) }
+  let_it_be(:user, freeze: false) { create(:user, company: organization) }
   let_it_be_with_refind(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, namespace: group, organization: organization) }
-  let_it_be(:group_member) { create(:group_member, group: group, user: user) }
+  let_it_be(:group_member, freeze: false) { create(:group_member, group: group, user: user) }
   let_it_be(:closed_milestone) do
     create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone')
   end

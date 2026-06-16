@@ -27,7 +27,7 @@ The following are the requirements for providing your own Redis instance:
 - Standalone Redis or Redis high availability with Sentinel are supported. Redis
   Cluster is not supported.
 - Managed Redis from cloud providers such as AWS ElastiCache works fine. If these
-  services support high availability, be sure it is **not** the Redis Cluster type.
+  services support high availability, be sure it is not the Redis Cluster type.
 
 Note the Redis node's IP address or hostname, port, and password (if required).
 

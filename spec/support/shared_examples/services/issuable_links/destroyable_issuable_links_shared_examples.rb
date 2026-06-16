@@ -22,7 +22,7 @@ RSpec.shared_examples 'a destroyable issuable link' do
   end
 
   context 'when failing to remove an issuable link' do
-    let_it_be(:non_member) { create(:user) }
+    let_it_be(:non_member, freeze: false) { create(:user) }
     let(:user) { non_member }
 
     it 'does not remove relation' do

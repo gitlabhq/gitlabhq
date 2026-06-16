@@ -1,0 +1,33 @@
+# @feature_category: code_review_workflow
+
+query getThroughputChartData(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $labels: [String!]
+  $authorUsername: String
+  $assigneeUsername: String
+  $milestoneTitle: String
+  $sourceBranches: [String!]
+  $targetBranches: [String!]
+  $notLabels: [String!]
+  $notMilestoneTitle: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      mergedAfter: $startDate
+      mergedBefore: $endDate
+      labels: $labels
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
+      milestoneTitle: $milestoneTitle
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      not: { labels: $notLabels, milestoneTitle: $notMilestoneTitle }
+    ) {
+      count
+      totalTimeToMerge
+    }
+  }
+}

@@ -6,7 +6,7 @@ RSpec.describe Ci::RunnerNamespace, feature_category: :runner_core do
   it_behaves_like 'includes Limitable concern' do
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:another_group) { create(:group) }
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [another_group]) }
+    let_it_be(:runner, freeze: false) { create(:ci_runner, :group, groups: [another_group]) }
 
     subject { build(:ci_runner_namespace, namespace: group, runner: runner) }
   end
@@ -22,7 +22,7 @@ RSpec.describe Ci::RunnerNamespace, feature_category: :runner_core do
   end
 
   describe 'validations' do
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [create(:group)]) }
+    let_it_be(:runner, freeze: false) { create(:ci_runner, :group, groups: [create(:group)]) }
 
     it { is_expected.to validate_presence_of(:namespace).on([:create, :update]) }
     it { is_expected.to validate_uniqueness_of(:runner_id).scoped_to(:namespace_id) }

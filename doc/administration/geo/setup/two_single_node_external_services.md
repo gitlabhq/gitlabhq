@@ -99,7 +99,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database:
 
-1. SSH into each **Rails, Sidekiq and Geo Log Cursor** node on your **secondary** site and login as root:
+1. SSH into each **Rails, Sidekiq and Geo Log Cursor** node on your secondary site and login as root:
 
    ```shell
    sudo -i
@@ -406,7 +406,7 @@ site **Geo Sites** dashboard in your browser.
 > [!note]
 > This step is optional in case you also want to have your tracking database set up externally on another server.
 
-**Secondary** sites use a separate PostgreSQL installation as a tracking
+Secondary sites use a separate PostgreSQL installation as a tracking
 database to keep track of replication status and automatically recover from
 potential replication issues. The Linux package automatically configures a tracking database
 when `roles ['geo_secondary_role']` is set.
@@ -423,7 +423,7 @@ to grant additional roles to your tracking database user (by default, this is
 - Google Cloud SQL requires the [`cloudsqlsuperuser`](https://cloud.google.com/sql/docs/postgres/users#default-users) role.
 
 Additional roles are needed for the installation of extensions during installation and upgrades. As an alternative,
-[ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
+[install the required extensions manually](../../postgresql/extensions.md).
 
 > [!note]
 > If you want to use Amazon RDS as a tracking database, make sure it has access to
@@ -440,7 +440,7 @@ Create and configure the tracking database in your PostgreSQL instance:
    [database requirements document](../../../install/requirements.md#postgresql).
 1. Set up a `gitlab_geo` user with a password of your choice, create the `gitlabhq_geo_production` database, and make the user an owner of the database.
    You can see an example of this setup in the [self-compiled installation documentation](../../../install/self_compiled/_index.md#7-database).
-1. If you are **not** using a cloud-managed PostgreSQL database, ensure that your secondary
+1. If you are not using a cloud-managed PostgreSQL database, ensure that your secondary
    site can communicate with your tracking database by manually changing the
    `pg_hba.conf` that is associated with your tracking database.
    Remember to restart PostgreSQL afterwards for the changes to take effect:
@@ -458,7 +458,7 @@ Create and configure the tracking database in your PostgreSQL instance:
 
 Configure GitLab to use this database. These steps are for Linux package and Docker deployments.
 
-1. SSH into a GitLab **secondary** server and login as root:
+1. SSH into a GitLab secondary server and login as root:
 
    ```shell
    sudo -i

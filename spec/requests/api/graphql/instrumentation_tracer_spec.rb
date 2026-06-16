@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :aggregate_failures, feature_category: :integrations do
+RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :aggregate_failures, feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user, username: 'instrumentation-tester') }
+  let_it_be(:user, freeze: false) { create(:user, username: 'instrumentation-tester') }
 
   describe "logging" do
-    let_it_be(:common_log_info) do
+    let_it_be(:common_log_info, freeze: false) do
       {
         "correlation_id" => be_a(String),
         :query_fingerprint => be_a(String),

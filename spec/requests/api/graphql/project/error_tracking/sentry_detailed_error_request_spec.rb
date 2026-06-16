@@ -4,10 +4,10 @@ require 'spec_helper'
 RSpec.describe 'getting a detailed sentry error', feature_category: :observability do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:project_setting) { create(:project_error_tracking_setting, project: project) }
-  let_it_be(:current_user) { project.first_owner }
-  let_it_be(:sentry_detailed_error) { build(:error_tracking_sentry_detailed_error) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:project_setting, freeze: false) { create(:project_error_tracking_setting, project: project) }
+  let_it_be(:current_user, freeze: false) { project.first_owner }
+  let_it_be(:sentry_detailed_error, freeze: false) { build(:error_tracking_sentry_detailed_error) }
 
   let(:sentry_gid) { sentry_detailed_error.to_global_id.to_s }
   let(:fields) do

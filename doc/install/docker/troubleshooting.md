@@ -150,6 +150,43 @@ xargs: tail: terminated by signal 6
 
 Removing old log files helps fix the error, and ensures a clean startup of the instance.
 
+## Errors when reusing data from a previous installation
+
+When reusing data from another instance, you might encounter the following issues.
+
+### `stat: missing operand` error on startup
+
+This error occurs when migrating from a Linux package installation and the
+`git-data/repositories` directory is missing or is a broken symlink in the host volume:
+
+```plaintext
+stat: missing operand
+Expected process to exit with [0], but received '1'
+Ran stat --printf='%U' $(readlink -f /var/opt/gitlab/git-data/repositories) returned 1
+```
+
+On the host, create the missing directory, then restart the container:
+
+```shell
+sudo mkdir -p $GITLAB_HOME/data/git-data/repositories
+sudo docker restart <container_name>
+```
+
+For a full migration guide, see
+[Migrate a Linux package GitLab instance to Docker](migrate.md).
+
+### Container exits immediately and restart loop blocks `docker exec`
+
+If a container fails to start and keeps restarting, you cannot use `docker exec` to investigate.
+Start a shell in the image directly instead:
+
+```shell
+docker run --rm -it --entrypoint /bin/bash gitlab/gitlab-ee:<version>
+```
+
+Use this shell to inspect the expected directory structure and compare it with the
+volumes mounted on the host.
+
 ## ThreadError can't create Thread Operation not permitted
 
 ```plaintext

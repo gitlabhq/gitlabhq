@@ -57,5 +57,18 @@ RSpec.describe 'Setting severity level of an incident', feature_category: :incid
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response.dig('issue', 'severity')).to eq('CRITICAL')
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :issue_set_severity,
+          { project_path: project.full_path, iid: incident.iid.to_s, severity: 'CRITICAL' },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

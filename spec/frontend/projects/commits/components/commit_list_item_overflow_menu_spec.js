@@ -39,7 +39,6 @@ describe('CommitListItemOverflowMenu', () => {
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
 
-  const findViewDetailsItem = () => wrapper.findByTestId('view-commit-details');
   const findCopyShaItem = () => wrapper.findByTestId('copy-commit-sha');
   const findBrowseFilesItem = () => wrapper.findByTestId('browse-files');
 
@@ -66,23 +65,11 @@ describe('CommitListItemOverflowMenu', () => {
 
   describe('dropdown items', () => {
     it('renders all dropdown items', () => {
-      expect(findDropdownItems()).toHaveLength(3);
-    });
-
-    describe('view commit details item', () => {
-      it('has correct text and icon', () => {
-        const viewDetailsItem = findViewDetailsItem();
-
-        expect(viewDetailsItem.props('item')).toMatchObject({
-          text: 'View commit details',
-          icon: 'commit',
-          href: mockCommit.webPath,
-        });
-      });
+      expect(findDropdownItems()).toHaveLength(2);
     });
 
     describe('copy commit SHA item', () => {
-      it('has correct text and icon', () => {
+      it('has correct text, icon and clipboard data', () => {
         const copyShaItem = findCopyShaItem();
 
         expect(copyShaItem.props('item')).toMatchObject({
@@ -90,6 +77,7 @@ describe('CommitListItemOverflowMenu', () => {
           icon: 'copy-to-clipboard',
           action: expect.any(Function),
         });
+        expect(copyShaItem.attributes('data-clipboard-text')).toBe(mockCommit.sha);
       });
 
       it('shows successful toast on copy', async () => {

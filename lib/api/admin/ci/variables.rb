@@ -13,7 +13,9 @@ module API
         namespace 'admin' do
           namespace 'ci' do
             namespace 'variables' do
-              desc 'List all instance-level variables' do
+              desc 'List all instance variables' do
+                detail 'Lists all instance-level variables. Use the `page` and `per_page` pagination parameters to ' \
+                  'control the pagination of results.'
                 success Entities::Ci::Variable
                 tags %w[ci_variables]
               end
@@ -27,7 +29,8 @@ module API
                 present paginate(variables), with: Entities::Ci::Variable
               end
 
-              desc 'Get the details of a specific instance-level variable' do
+              desc 'Retrieve instance variable details' do
+                detail 'Retrieves details of a specified instance-level variable.'
                 success Entities::Ci::Variable
                 failure [{ code: 404, message: 'Instance Variable Not Found' }]
                 tags %w[ci_variables]
@@ -45,7 +48,9 @@ module API
                 present variable, with: Entities::Ci::Variable
               end
 
-              desc 'Create a new instance-level variable' do
+              desc 'Create instance variable' do
+                detail 'Creates a instance-level variable. The maximum number of instance-level variables can be ' \
+                  'changed.'
                 success Entities::Ci::Variable
                 failure [{ code: 400, message: '400 Bad Request' }]
                 tags %w[ci_variables]
@@ -94,7 +99,8 @@ module API
                 end
               end
 
-              desc 'Update an instance-level variable' do
+              desc 'Update an instance variable' do
+                detail 'Updates a specified instance variable.'
                 success Entities::Ci::Variable
                 failure [{ code: 404, message: 'Instance Variable Not Found' }]
                 tags %w[ci_variables]
@@ -145,7 +151,8 @@ module API
                 end
               end
 
-              desc 'Delete an existing instance-level variable' do
+              desc 'Delete instance variable' do
+                detail 'Deletes a specified instance variable.'
                 success Entities::Ci::Variable
                 failure [{ code: 404, message: 'Instance Variable Not Found' }]
                 tags %w[ci_variables]

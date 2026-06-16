@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::IncidentsController, feature_category: :incident_management do
   let_it_be_with_refind(:project) { create(:project) }
-  let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: project) }
   let_it_be(:anonymous) { nil }
 
   before do

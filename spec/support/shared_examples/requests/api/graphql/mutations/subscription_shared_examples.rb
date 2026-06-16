@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'a subscribable resource api' do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
   let(:project) { resource.project }
   let(:input) { { subscribed_state: true } }
   let(:resource_ref) { resource.class.name.camelize(:lower) }
@@ -50,7 +50,7 @@ RSpec.shared_examples 'a subscribable resource api' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response).to eq(true)
+      expect(mutation_response).to be(true)
     end
 
     context 'when passing subscribe false as input' do
@@ -62,7 +62,7 @@ RSpec.shared_examples 'a subscribable resource api' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response).to eq(false)
+        expect(mutation_response).to be(false)
       end
     end
   end

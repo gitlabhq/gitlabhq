@@ -25,6 +25,10 @@ export default {
     routeName() {
       return this.$route.meta.getName();
     },
+    intermediaryRoutes() {
+      const { getParents } = this.$route.meta;
+      return getParents ? getParents() : [];
+    },
     rootRoutePath() {
       return this.rootRoute.path;
     },
@@ -36,13 +40,19 @@ export default {
         },
       ];
 
-      if (!this.isRootRoute && this.routeName) {
-        crumbs.push({
-          text: this.routeName,
-          // Setting this to undefined allows us to keep the query params in
-          // the event the user clicks on the breadcrumb for the current route
-          to: undefined,
-        });
+      if (!this.isRootRoute) {
+        // Add all intermediary routes (between the root and the current route)
+        crumbs.push(...this.intermediaryRoutes);
+
+        // Add current route
+        if (this.routeName) {
+          crumbs.push({
+            text: this.routeName,
+            // Setting this to undefined allows us to keep the query params in
+            // the event the user clicks on the breadcrumb for the current route
+            to: undefined,
+          });
+        }
       }
 
       return [...this.staticBreadcrumbs, ...crumbs];

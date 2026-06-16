@@ -24,11 +24,11 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      pageSize: DEFAULT_PAGE_SIZE,
-    };
+    pageSize: {
+      type: Number,
+      required: false,
+      default: DEFAULT_PAGE_SIZE,
+    },
   },
   computed: {
     hasNextPage() {

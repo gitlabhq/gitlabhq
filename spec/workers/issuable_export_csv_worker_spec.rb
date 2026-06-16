@@ -43,7 +43,7 @@ RSpec.describe IssuableExportCsvWorker, feature_category: :team_planning do
 
       it 'allows symbol access for IssuesFinder' do
         expect(IssuesFinder).to receive(:new).and_wrap_original do |method, user, params|
-          expect(params[:test_key]).to eq(true)
+          expect(params[:test_key]).to be(true)
           expect(params[:not][:label_name]).to eq(['SomeLabel'])
 
           method.call(user, params)

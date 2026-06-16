@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../rubocop/check_graceful_task'
 
-RSpec.describe RuboCop::CheckGracefulTask do
+RSpec.describe RuboCop::CheckGracefulTask, feature_category: :tooling do
   let(:output) { StringIO.new }
 
   subject(:task) { described_class.new(output) }

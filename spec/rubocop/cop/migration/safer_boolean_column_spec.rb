@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/safer_boolean_column'
 
-RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn do
+RSpec.describe RuboCop::Cop::Migration::SaferBooleanColumn, feature_category: :database do
   context 'in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

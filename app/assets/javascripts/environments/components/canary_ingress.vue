@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import { CANARY_UPDATE_MODAL } from '../constants';
 
 export default {
+  name: 'CanaryIngress',
   components: {
     GlCollapsibleListbox,
   },

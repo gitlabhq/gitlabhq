@@ -161,7 +161,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
             end
 
             it 'does not log any audit event' do
-              expect { subject }.not_to change(AuditEvent, :count)
+              expect { subject }.not_to change { AuditEvent.count }
             end
           end
         end
@@ -383,7 +383,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         it 'redirects to sign_in' do
           stub_application_setting(signup_enabled: false)
 
-          expect { subject }.not_to change(User, :count)
+          expect { subject }.not_to change { User.count }
           expect(response).to redirect_to(new_user_session_path)
           expect(flash[:alert]).to eq(_('New accounts are not permitted. Please contact a GitLab administrator if you need an account.'))
         end
@@ -454,7 +454,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       describe 'the honeypot has not been filled and the signup form has not been submitted too quickly' do
         it 'creates an account' do
           travel_to(submit_time) do
-            expect { post(:create, params: user_params, session: session_params) }.to change(User, :count).by(1)
+            expect { post(:create, params: user_params, session: session_params) }.to change { User.count }.by(1)
           end
         end
       end
@@ -469,7 +469,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
               .with(:bot_blocked_by_invisible_captcha_honeypot, 'Counter of blocked sign up attempts with filled honeypot')
               .and_call_original
             expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
-            expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
+            expect { post(:create, params: user_params, session: session_params) }.not_to change { User.count }
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to be_empty
           end
@@ -488,7 +488,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
                 .with(:bot_blocked_by_invisible_captcha_timestamp, 'Counter of blocked sign up attempts with invalid timestamp')
                 .and_call_original
               expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
-              expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
+              expect { post(:create, params: user_params, session: session_params) }.not_to change { User.count }
               expect(response).to redirect_to(new_user_session_path)
               expect(flash[:alert]).to eq(I18n.t('invisible_captcha.timestamp_error_message'))
             end
@@ -504,7 +504,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
                 .with(:bot_blocked_by_invisible_captcha_timestamp, 'Counter of blocked sign up attempts with invalid timestamp')
                 .and_call_original
               expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
-              expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
+              expect { post(:create, params: user_params, session: session_params) }.not_to change { User.count }
               expect(response).to redirect_to(new_user_session_path)
               expect(flash[:alert]).to eq(I18n.t('invisible_captcha.timestamp_error_message'))
             end
@@ -588,7 +588,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       subject(:post_create) { post(:create, params: new_user_params) }
 
       it 'renders the form with errors' do
-        expect { post_create }.not_to change(User, :count)
+        expect { post_create }.not_to change { User.count }
 
         expect(controller.current_user).to be_nil
         expect(response).to render_template(:new)

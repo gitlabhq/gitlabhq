@@ -8,7 +8,7 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
   describe '.validate_project_settings!' do
     include JiraIntegrationHelpers
 
-    let_it_be(:project, reload: true) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     let(:additional_params) { {} }
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
       let(:additional_params) { { user: user } }
 
       context 'when user has permission to run import' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
           let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
           context 'when issues feature is disabled' do
-            let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+            let_it_be_with_reload(:project) { create(:project, :issues_disabled) }
 
             it_behaves_like 'raise Jira import error', 'Cannot import because issues are not available in this project.'
           end
@@ -97,7 +97,9 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
       context 'when user does not have permissions to run the import' do
         before do
           create(:jira_integration, project: project, active: true)
+        end
 
+        before_all do
           project.add_developer(user)
         end
 

@@ -6,8 +6,8 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project)  { create :project, :repository }
-  let_it_be(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:project, freeze: false)  { create :project, :repository }
+  let_it_be(:resource, freeze: false) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user)     { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }

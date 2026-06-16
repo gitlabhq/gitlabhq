@@ -19,8 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "freezolite", "~> 0.6"
-  # There is a bug in require-hooks 0.3.0 https://github.com/ruby-next/freezolite/issues/5
-  spec.add_dependency "require-hooks", "~> 0.2.3"
 
   spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pry-byebug", "~> 3.12"

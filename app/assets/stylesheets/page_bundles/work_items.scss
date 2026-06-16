@@ -14,7 +14,7 @@ $work-item-overview-gap-width: 2rem;
 }
 
 
-// stylelint-disable-next-line gitlab/no-gl-class
+// stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to a specific work-item-view element
 .gl-modal .work-item-view,
 :where(.page-with-panels) .work-item-view, // when it's in a panel, treat work items like drawers
 .work-item-detail-panel .work-item-view:not(:has(.design-detail)) {
@@ -23,21 +23,40 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-detail-panel {
+  @apply gl-pt-0;
+  // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
+  // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+  @apply gl-pb-3;
+  @apply gl-h-full;
+  @apply gl-bg-default;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  contain: layout;
   transition: none;
 }
 
 .work-item-detail-panel-header {
   @apply gl-flex;
-  @apply gl-items-start;
+  @apply gl-items-center;
   @apply gl-gap-x-2;
   @apply gl-bg-default;
   @apply gl-shadow-none;
   @apply gl-relative;
-  @apply gl-px-[--container-padding-x];
-  @apply gl-py-3;
+  @apply gl-pl-[--container-padding-x];
+  @apply gl-pr-3;
   @apply gl-border-b;
-  @apply lg:gl-px-5;
   z-index: $panel-header-inner-z-index;
+  min-height: $panel-header-inner-height;
+}
+
+.work-item-detail-panel-content {
+  @apply gl-flex-1;
+  @apply gl-px-[--container-padding-x];
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 @include gl-container-width-down(md, panel) {
@@ -47,14 +66,6 @@ $work-item-overview-gap-width: 2rem;
 
   .work-item-container-xs-hidden {
     display: none !important;
-  }
-
-  .work-item-attributes-wrapper {
-    position: static !important;
-    overflow-y: initial !important;
-    margin-bottom: 0 !important;
-    height: auto !important;
-    @apply gl-mt-5;
   }
 }
 
@@ -71,15 +82,40 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-overview-right-sidebar {
-  margin-top: $gl-spacing-scale-5;
-
-  .work-item-attributes-item {
+   .work-item-attributes-item {
     @apply gl-mb-4;
 
     &:not(:first-child) {
       @apply gl-pt-4;
       @apply gl-border-t;
       @apply gl-border-subtle;
+    }
+  }
+}
+
+// 2-column layout for attributes at sm container widths, where the sidebar
+// sits below content full-width. Reverts to single column at md+, where the
+// sidebar becomes a narrow right column.
+.work-item-attributes-wrapper {
+  @include gl-container-width-up(sm) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gl-detail-layout-gap, $gl-spacing-scale-7);
+
+    // First item of the right column has nothing above it within its column,
+    // so drop the separator border applied by the sidebar rule above.
+    > .work-item-attributes-item:nth-child(2) {
+      @apply gl-border-t-0;
+      @apply gl-pt-0;
+    }
+  }
+
+  @include gl-container-width-up(md) {
+    display: block;
+
+    > .work-item-attributes-item:nth-child(2) {
+      @apply gl-border-t;
+      @apply gl-pt-4;
     }
   }
 }
@@ -94,14 +130,8 @@ $work-item-overview-gap-width: 2rem;
 }
 
 @include gl-container-width-up(md) {
-  .work-item-attributes-wrapper {
-    top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
-    height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
-    margin-bottom: calc(#{$content-wrapper-padding} * -1);
+   .work-item-attributes-wrapper {
     padding-inline: $gl-spacing-scale-3;
-    position: sticky;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 
   .work-item-overview-right-sidebar {
@@ -109,6 +139,7 @@ $work-item-overview-gap-width: 2rem;
     grid-row-start: 1;
     grid-column-start: 2;
     grid-row-end: 50;
+    @apply gl-pb-10;
 
     &.is-modal {
       .work-item-attributes-wrapper {
@@ -129,6 +160,21 @@ $work-item-overview-gap-width: 2rem;
   a, a:hover {
     @apply gl-text-default;
     text-decoration: none;
+  }
+}
+
+.work-item-display-settings-drawer {
+  .work-item-dropdown-toggle {
+    @apply gl-px-0;
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-new-dropdown-item-content {
+      @apply gl-px-0;
+    }
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-new-dropdown-item-text-wrapper {
+      padding-block: 6px;
+      padding-inline: 12px;
+    }
   }
 }
 
@@ -293,32 +339,6 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   overflow: hidden;
 }
 
-.description-more {
-  position: absolute;
-  bottom: 0;
-  pointer-events: none;
-
-  &::before {
-    content: '';
-    display: block;
-    height: 3rem;
-    width: 100%;
-    background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-default) 100%);
-  }
-
-  .show-all-btn {
-    pointer-events: auto;
-    background-color: var(--gl-background-color-default);
-
-    &::before, &::after {
-      content: '';
-      height: 1px;
-      flex: 1;
-      border-top: 1px solid var(--gl-border-color-subtle);
-    }
-  }
-}
-
 .is-ghost {
   opacity: 0.3;
   pointer-events: none;
@@ -388,6 +408,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     @apply gl-py-3;
     @apply gl-px-5;
   }
+}
+
+.work-item-display-settings-drawer {
+  width: 20rem !important;
 }
 
 .work-item-sidebar-container {
@@ -503,6 +527,7 @@ ul.content-list {
   }
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific work-item-detail element
 [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(#{$calc-application-header-height} + var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
@@ -511,11 +536,12 @@ ul.content-list {
   top: 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to a specific work-item-detail element
 .work-item-detail-panel [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
 
-/* stylelint-disable-next-line gitlab/no-gl-class */
+/* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to specific dropdown items */
 .gl-new-dropdown-item:has(.sidebar-participant-disabled),
 /* stylelint-disable-next-line gitlab/no-gl-class */
 .gl-dropdown-item:has(.sidebar-participant-disabled) {

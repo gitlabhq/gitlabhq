@@ -37,6 +37,7 @@ export default {
       default: '',
     },
   },
+  emits: ['input'],
   data() {
     return {
       // If we have already enabled, let's consider warning not necessary

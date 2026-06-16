@@ -10,7 +10,6 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
     subject(:jwt_strategy) { described_class.new({}) }
 
     let(:timestamp) { Time.now.to_i }
-    let(:jwt_config) { Devise.omniauth_configs[:jwt] }
     let(:claims) do
       {
         id: 123,
@@ -21,7 +20,7 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
     end
 
     let(:algorithm) { 'HS256' }
-    let(:secret) { jwt_config.strategy.secret }
+    let(:secret) { 'jwt-spec-test-secret' }
     let(:private_key) { secret }
     let(:payload) { JWT.encode(claims, private_key, algorithm) }
 
@@ -58,13 +57,13 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
               private_key_class.generate(ecdsa_named_curves[algorithm])
                 .to_pem
             else
-              private_key_class.new(jwt_config.strategy.secret)
+              private_key_class.new('jwt-spec-test-secret')
             end
           end
 
           let(:private_key) { private_key_class ? private_key_class.new(secret) : secret }
 
-          it 'decodes the user information', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463691' do
+          it 'decodes the user information' do
             result = subject.decoded
 
             expect(result).to eq(claims.stringify_keys)
@@ -82,7 +81,7 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
         }
       end
 
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463692' do
+      it 'raises error' do
         expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
@@ -101,7 +100,7 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
         subject.options[:valid_within] = 2.days.to_s
       end
 
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463693' do
+      it 'raises error' do
         expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
@@ -121,7 +120,7 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
         subject.options[:valid_within] = 2.seconds.to_s
       end
 
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463694' do
+      it 'raises error' do
         expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
@@ -140,7 +139,7 @@ RSpec.describe OmniAuth::Strategies::Jwt, feature_category: :system_access do
         }
       end
 
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16824' do
+      it 'raises error' do
         expect { jwt_strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::JwtTooLarge)
       end
     end

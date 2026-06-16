@@ -239,13 +239,13 @@ class Notify < ApplicationMailer
     return unless object.respond_to?(:work_item_type)
     # Introduce a configuration check for the default type when we switched to system-defined types
     # See https://gitlab.com/groups/gitlab-org/-/epics/19879
-    return unless %w[issue ticket].include?(object.work_item_type&.base_type)
+    return unless %w[issue ticket].include?(object.work_item_type.base_type)
 
     prefix = "X-GitLab-Issue"
 
     headers["#{prefix}-ID"] = object.id
-    headers["#{prefix}-IID"] = object.iid if object.respond_to?(:iid)
-    headers["#{prefix}-State"] = object.state if object.respond_to?(:state)
+    headers["#{prefix}-IID"] = object.iid
+    headers["#{prefix}-State"] = object.state
   end
 
   def add_project_headers

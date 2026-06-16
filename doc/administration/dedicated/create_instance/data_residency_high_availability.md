@@ -130,7 +130,7 @@ You can deploy your instance in the following AWS regions:
 | US West (Oregon)          | `us-west-2`      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | C                     |
 
 If you need a region that is not listed, contact your account representative or
-[GitLab Support](https://about.gitlab.com/support/).
+[GitLab Support](https://support.gitlab.com/).
 
 #### ClickHouse Cloud
 

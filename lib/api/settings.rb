@@ -19,17 +19,28 @@ module API
       end
     end
 
-    desc 'Get the current application settings' do
+    desc 'Retrieve application settings' do
+      detail 'Retrieves the current application settings for this GitLab instance.'
       tags ['instance']
       success Entities::ApplicationSetting
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
     end
+    route_setting :authorization, permissions: :read_application_setting, boundary_type: :instance
     get "application/settings" do
       present current_settings, with: Entities::ApplicationSetting
     end
 
-    desc 'Modify application settings' do
+    desc 'Update application settings' do
+      detail 'Updates the current application settings for this GitLab instance.'
       tags ['instance']
       success Entities::ApplicationSetting
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
     end
     params do
       optional :admin_mode, type: Boolean, desc: 'Require admin users to re-authenticate for administrative (i.e. potentially dangerous) operations'
@@ -48,6 +59,7 @@ module API
       optional :asset_proxy_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically allowed.'
       optional :authn_data_retention_cleanup_enabled, type: Boolean, desc: 'Enable authentication data retention cleanup workers to enforce retention policies'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
+      optional :oauth_access_token_expires_in, type: Integer, desc: 'Lifetime of OAuth access tokens in seconds.'
       optional :decompress_archive_file_timeout, type: Integer, desc: 'Default timeout for decompressing archived files, in seconds. Set to 0 to disable timeouts.'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :default_ci_config_path, type: String, desc: 'The instance default CI/CD configuration file and path for new projects'
@@ -72,12 +84,16 @@ module API
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
+      optional :dependency_management_settings, type: Hash, desc: 'Dependency management settings' do
+        optional :security_update_scheduler_max_concurrency, type: Integer, desc: 'Maximum number of dependency management security update scheduler jobs that run concurrently across the Sidekiq fleet'
+      end
       optional :disable_admin_oauth_scopes, type: Boolean, desc: 'Stop administrators from connecting to non-trusted OAuth applications.'
       optional :disable_feed_token, type: Boolean, desc: 'Disable display of RSS/Atom and Calendar `feed_tokens`'
       optional :disabled_oauth_sign_in_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Disable certain OAuth sign-in sources'
       optional :domain_denylist_enabled, type: Boolean, desc: 'Enable domain denylist for sign ups'
       optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
+      optional :email_otp_enabled, type: Boolean, desc: 'Enable Email-based one-time passwords (OTP) as a multi-factor authentication method.'
       optional :iframe_rendering_enabled, type: Boolean, desc: 'Allow rendering of iframes in Markdown.'
       optional :iframe_rendering_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Allowed iframe src host[:port] entries. Enter multiple entries separated by commas or on separate lines.'
       optional :iframe_rendering_allowlist_raw, type: String, desc: 'Raw newline- or comma-separated list of allowed iframe src host[:port] entries.'
@@ -281,6 +297,7 @@ module API
       optional(*Helpers::SettingsHelpers.optional_attributes)
       at_least_one_of(*Helpers::SettingsHelpers.optional_attributes)
     end
+    route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance
     put "application/settings" do
       attrs = declared_params(include_missing: false)
 

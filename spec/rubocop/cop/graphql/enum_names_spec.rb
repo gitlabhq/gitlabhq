@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/graphql/enum_names'
 
-RSpec.describe RuboCop::Cop::Graphql::EnumNames do
+RSpec.describe RuboCop::Cop::Graphql::EnumNames, feature_category: :api do
   describe 'class name' do
     it 'adds an offense when class name does not end with `Enum`' do
       expect_offense(<<~RUBY)

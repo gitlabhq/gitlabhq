@@ -58,6 +58,13 @@ RSpec.describe API::Organizations, feature_category: :organization do
 
     let(:params) { base_params }
 
+    context 'when on GitLab.com', :saas do
+      it_behaves_like 'authorizing granular token permissions', :create_organization do
+        let(:boundary_object) { :instance }
+        let(:request) { post api('/organizations', personal_access_token: pat), params: base_params }
+      end
+    end
+
     context 'when user is not authorized' do
       it 'returns unauthorized' do
         post api("/organizations"), params: params
@@ -78,7 +85,15 @@ RSpec.describe API::Organizations, feature_category: :organization do
       end
     end
 
-    context 'when user is authorized' do
+    context 'when on self-managed' do
+      it 'returns forbidden' do
+        post api("/organizations", user), params: params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when user is authorized', :saas do
       it_behaves_like 'organization avatar upload' do
         def make_upload_request
           params_with_file_upload = params.merge(avatar: fixture_file_upload(file_path))
@@ -121,6 +136,23 @@ RSpec.describe API::Organizations, feature_category: :organization do
         expect(json_response['name']).to eq('New Organization')
         expect(json_response['path']).to eq('new-org')
         expect(json_response['description']).to eq('A new organization')
+        expect(json_response['visibility']).to eq('private')
+      end
+
+      context 'when visibility is provided' do
+        it 'creates a public organization' do
+          post api("/organizations", user), params: base_params.merge(visibility: 'public')
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['visibility']).to eq('public')
+        end
+
+        it 'returns error for internal organization' do
+          post api("/organizations", user), params: base_params.merge(visibility: 'internal')
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('visibility does not have a valid value')
+        end
       end
 
       context 'when optional params are missing' do

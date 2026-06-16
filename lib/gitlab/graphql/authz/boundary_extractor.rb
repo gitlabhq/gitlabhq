@@ -13,13 +13,12 @@ module Gitlab
         STANDALONE_BOUNDARIES = %w[user instance].freeze
         VALID_BOUNDARY_ACCESSOR_METHODS = %w[project group itself owner].freeze
 
-        def initialize(object:, arguments:, context:, directive:, boundary_proc: nil)
+        def initialize(object:, arguments:, context:, directive:)
           @object = object
           @arguments = arguments
           @context = context
           @directive = directive
           @boundary_accessor = directive.arguments[:boundary]
-          @boundary_proc = boundary_proc
         end
 
         def extract
@@ -40,9 +39,6 @@ module Gitlab
           boundary_arg = @directive.arguments[:boundary_argument]
           return extract_from_argument(boundary_arg) if boundary_arg
 
-          # Proc-based extraction: proc handles everything, no id fallback applies.
-          return extract_from_method if @boundary_proc
-
           # Method-based extraction: may fall back to :id argument for unresolved query fields.
           if @boundary_accessor
             return extract_from_id_argument if should_use_id_fallback?
@@ -61,8 +57,6 @@ module Gitlab
         end
 
         def extract_from_method
-          return @boundary_proc.call(unwrap_object(@object)) if @boundary_proc
-
           obj = unwrap_object(@object)
 
           return obj if object_matches_boundary_type?(obj)
@@ -113,6 +107,21 @@ module Gitlab
           return obj.project if obj.respond_to?(:project) && obj.project
           return obj.group if obj.respond_to?(:group) && obj.group
           return obj.owner if obj.respond_to?(:owner) && obj.owner
+
+          extract_from_namespace(obj)
+        end
+
+        def extract_from_namespace(obj)
+          return unless obj.respond_to?(:namespace)
+
+          boundary_from_namespace(obj.namespace)
+        end
+
+        # A namespace's boundary is decided by its own type. A UserNamespace has no
+        # project/group boundary (and its owner is a User, not a boundary), so deny.
+        def boundary_from_namespace(namespace)
+          return namespace if namespace.is_a?(::Group)
+          return namespace.project if namespace.is_a?(::Namespaces::ProjectNamespace)
 
           nil
         end

@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe Organizations::GroupsController, '(JavaScript fixtures)', type: :controller, feature_category: :organization do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:organization_user) { create(:organization_user, organization: organization, user: current_user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:organization, freeze: false) { create(:organization) }
+  let_it_be(:organization_user, freeze: false) do
+    create(:organization_user, organization: organization, user: current_user)
+  end
 
   before do
     sign_in(current_user)
@@ -32,31 +34,41 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:organizations) { create_list(:organization, 3) }
-    let_it_be(:organization) { organizations.first }
+    let_it_be(:organizations, freeze: false) { create_list(:organization, 3) }
+    let_it_be(:organization, freeze: false) { organizations.first }
     let_it_be_with_reload(:current_user) { create(:admin, organization: organization, organizations: []) }
-    let_it_be(:user) { create(:user, organization: organization, organizations: []) }
-    let_it_be(:groups) { create_list(:group, 3, organization: organization) }
+    let_it_be(:user, freeze: false) { create(:user, organization: organization, organizations: []) }
 
-    let_it_be(:group) { groups.first }
-    let_it_be(:group_user) { create(:user, organization: organization) }
-    let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: group_user) }
-    let_it_be(:deletion_schedule) do
-      create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.yesterday)
+    let_it_be(:group_user, freeze: false) { create(:user, organization: organization) }
+    let_it_be(:group, freeze: false) do
+      create(:group_with_deletion_schedule, :deletion_scheduled, organization: organization, owners: [group_user])
     end
 
-    let_it_be(:projects) do
+    let_it_be(:groups, freeze: false) { create_list(:group, 2, organization: organization).prepend(group) }
+
+    let_it_be(:projects, freeze: false) do
       groups.map do |group|
         create(:project, :public, namespace: group, organization: organization)
       end
     end
 
-    let_it_be(:organization_user_1) { create(:organization_user, organization: organization, user: current_user) }
-    let_it_be(:organization_user_2) { create(:organization_owner, organization: organizations[1], user: current_user) }
-    let_it_be(:organization_user_3) { create(:organization_user, organization: organizations[2], user: current_user) }
-    let_it_be(:organization_user_4) { create(:organization_user, organization: organizations[1], user: user) }
+    let_it_be(:organization_user_1, freeze: false) do
+      create(:organization_user, organization: organization, user: current_user)
+    end
 
-    let_it_be(:organization_details) do
+    let_it_be(:organization_user_2, freeze: false) do
+      create(:organization_owner, organization: organizations[1], user: current_user)
+    end
+
+    let_it_be(:organization_user_3, freeze: false) do
+      create(:organization_user, organization: organizations[2], user: current_user)
+    end
+
+    let_it_be(:organization_user_4, freeze: false) do
+      create(:organization_user, organization: organizations[1], user: user)
+    end
+
+    let_it_be(:organization_details, freeze: false) do
       organizations.map do |organization|
         create(:organization_detail, organization: organization)
       end
@@ -202,9 +214,11 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
       base_output_path = 'graphql/organizations/'
       query_name = 'organization_users.query.graphql'
 
-      let_it_be(:organization_user_4) { create(:organization_user, organization: organization) }
-      let_it_be(:admin) { create(:user, :admin) }
-      let_it_be(:organization_user_5) { create(:organization_user, organization: organization, user: admin) }
+      let_it_be(:organization_user_4, freeze: false) { create(:organization_user, organization: organization) }
+      let_it_be(:admin, freeze: false) { create(:user, :admin) }
+      let_it_be(:organization_user_5, freeze: false) do
+        create(:organization_user, organization: organization, user: admin)
+      end
 
       it "#{base_output_path}#{query_name}.json" do
         query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
@@ -219,7 +233,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
       end
     end
 
-    describe 'organization create' do
+    describe 'organization create', :saas do
       base_input_path = 'organizations/new/graphql/mutations/'
       base_output_path = 'graphql/organizations/'
       mutation_name = 'organization_create.mutation.graphql'

@@ -3,7 +3,11 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
-import { VALID_TOKEN_BACKGROUND, INVALID_TOKEN_BACKGROUND } from '~/invite_members/constants';
+import {
+  VALID_TOKEN_BACKGROUND,
+  INVALID_TOKEN_BACKGROUND,
+  MAX_INVITES,
+} from '~/invite_members/constants';
 import * as MembersUtils from '~/invite_members/utils/member_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -46,6 +50,10 @@ describe('MembersTokenSelect', () => {
 
       expect(findTokenSelector().props()).toEqual(expect.objectContaining(expectedProps));
     });
+
+    it('renders with a taller minimum height', () => {
+      expect(findTokenSelector().props('containerClass')).toContain('gl-min-h-13');
+    });
   });
 
   describe('when there are invalidMembers', () => {
@@ -65,15 +73,12 @@ describe('MembersTokenSelect', () => {
     });
 
     it('does not change class when invalid members are cleared', async () => {
-      // arrange - invalidMembers is non-empty and then tokens are added
       await wrapper.setProps({ invalidMembers: { one_1: 'bad stuff' } });
       findTokenSelector().vm.$emit('input', [user1, user2]);
       await waitForPromises();
 
-      // act - invalidMembers clears out
       await wrapper.setProps({ invalidMembers: {} });
 
-      // assert - we didn't try to update the tokens
       expect(findTokenSelector().props('selectedTokens')).toEqual([user1, user2]);
     });
   });
@@ -99,19 +104,34 @@ describe('MembersTokenSelect', () => {
       tokenSelector = findTokenSelector();
     });
 
-    describe('when input is manually focused', () => {
-      it('calls the API and sets dropdown items as request result', async () => {
-        tokenSelector.vm.$emit('focus');
+    describe('minimum character search threshold', () => {
+      it('does NOT trigger a search when typing 1 character', async () => {
+        tokenSelector.vm.$emit('text-input', 'a');
 
         await waitForPromises();
 
-        expect(tokenSelector.props('dropdownItems')).toMatchObject(allUsers);
-        expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
+        expect(MembersUtils.searchUsers).not.toHaveBeenCalled();
+      });
+
+      it('does NOT trigger a search when typing 2 characters', async () => {
+        tokenSelector.vm.$emit('text-input', 'ab');
+
+        await waitForPromises();
+
+        expect(MembersUtils.searchUsers).not.toHaveBeenCalled();
+      });
+
+      it('triggers a search when typing 3+ characters', async () => {
+        tokenSelector.vm.$emit('text-input', 'abc');
+
+        await waitForPromises();
+
+        expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, 'abc');
       });
     });
 
     describe('when text input is typed in', () => {
-      it('calls the API with search parameter', async () => {
+      it('calls the API with search parameter when 3+ characters', async () => {
         const searchParam = 'One';
 
         tokenSelector.vm.$emit('text-input', searchParam);
@@ -119,26 +139,19 @@ describe('MembersTokenSelect', () => {
         await waitForPromises();
 
         expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, searchParam);
-        expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
-      });
-
-      it('calls the API with search parameter with whitespaces and is trimmed', async () => {
-        tokenSelector.vm.$emit('text-input', ' foo@bar.com ');
-
-        await waitForPromises();
-
-        expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, 'foo@bar.com');
-        expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 
       describe('when input text is an email', () => {
         it.each`
-          email             | result
-          ${'foo@bar.com'}  | ${true}
-          ${'foo@bar.com '} | ${false}
-          ${' foo@bar.com'} | ${false}
-          ${'foo@ba r.com'} | ${false}
-          ${'fo o@bar.com'} | ${false}
+          email              | result
+          ${'foo@bar.com'}   | ${true}
+          ${' foo@bar.com'}  | ${false}
+          ${'foo@ba r.com'}  | ${false}
+          ${'fo o@bar.com'}  | ${false}
+          ${'foo@bar'}       | ${true}
+          ${'a@b.c'}         | ${true}
+          ${'a@@b.c'}        | ${false}
+          ${'user@host@.co'} | ${false}
         `(`with token creation validation on $email`, async ({ email, result }) => {
           tokenSelector.vm.$emit('text-input', email);
 
@@ -218,14 +231,76 @@ describe('MembersTokenSelect', () => {
   });
 
   describe('when text input is blurred', () => {
-    it('clears text input', async () => {
+    it('hides dropdown when no valid email or users', async () => {
       const tokenSelector = findTokenSelector();
 
       tokenSelector.vm.$emit('blur');
 
       await nextTick();
 
-      expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
+      expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(true);
+    });
+  });
+
+  describe('invite cap', () => {
+    const generateTokens = (count) =>
+      Array.from({ length: count }, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        username: `user_${i + 1}`,
+        avatar_url: '',
+      }));
+
+    it(`disables input after adding ${MAX_INVITES} tokens`, async () => {
+      createComponent();
+      const tokens = generateTokens(MAX_INVITES);
+
+      findTokenSelector().vm.$emit('input', tokens);
+
+      await nextTick();
+
+      expect(findTokenSelector().props('textInputAttrs')).toMatchObject({ readonly: true });
+    });
+
+    it('emits invite-cap-reached when limit is reached', async () => {
+      createComponent();
+      const tokens = generateTokens(MAX_INVITES);
+
+      findTokenSelector().vm.$emit('input', tokens);
+
+      await nextTick();
+
+      expect(wrapper.emitted('invite-cap-reached').at(-1)[0]).toBe(true);
+    });
+
+    it('re-enables input after removing a token below the cap', async () => {
+      createComponent();
+      const tokens = generateTokens(MAX_INVITES);
+
+      findTokenSelector().vm.$emit('input', tokens);
+      await nextTick();
+
+      expect(findTokenSelector().props('textInputAttrs')).toMatchObject({ readonly: true });
+
+      findTokenSelector().vm.$emit('input', tokens.slice(0, MAX_INVITES - 1));
+      await nextTick();
+
+      expect(findTokenSelector().props('textInputAttrs')).not.toHaveProperty('readonly');
+      expect(wrapper.emitted('invite-cap-reached').at(-1)[0]).toBe(false);
+    });
+
+    it('short-circuits handleTextInput when cap is reached', async () => {
+      jest.spyOn(MembersUtils, 'searchUsers').mockResolvedValue({ data: allUsers });
+      createComponent();
+      const tokens = generateTokens(MAX_INVITES);
+
+      findTokenSelector().vm.$emit('input', tokens);
+      await nextTick();
+
+      findTokenSelector().vm.$emit('text-input', 'newuser@example.com');
+      await waitForPromises();
+
+      expect(MembersUtils.searchUsers).not.toHaveBeenCalled();
     });
   });
 });

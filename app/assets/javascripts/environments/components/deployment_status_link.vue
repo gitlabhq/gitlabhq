@@ -2,6 +2,7 @@
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 
 export default {
+  name: 'DeploymentStatusLink',
   components: {
     DeploymentStatusBadge,
   },

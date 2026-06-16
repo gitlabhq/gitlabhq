@@ -1,0 +1,10 @@
+---
+name: audit_event_pat_unseen_ip
+description: Record an audit event when a personal access token is used from a previously unseen IP address
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588994
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233712
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/599247
+milestone: '19.1'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

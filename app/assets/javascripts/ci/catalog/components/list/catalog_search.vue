@@ -16,6 +16,7 @@ import {
   SORT_OPTION_POPULARITY,
 } from '../../constants';
 import TopicToken from '../tokens/topic_token.vue';
+import GroupToken from '../tokens/group_token.vue';
 import VerificationLevelToken from '../tokens/verification_level_token.vue';
 
 export default {
@@ -40,6 +41,11 @@ export default {
       required: false,
       type: Array,
     },
+    initialGroups: {
+      default: () => [],
+      required: false,
+      type: Array,
+    },
   },
   emits: ['update-sorting', 'update-filters'],
   data() {
@@ -56,6 +62,13 @@ export default {
       filteredSearchValue.push({
         type: 'topic',
         value: { data: this.initialTopics, operator: OPERATOR_OR },
+      });
+    }
+
+    if (this.initialGroups.length) {
+      filteredSearchValue.push({
+        type: 'group',
+        value: { data: this.initialGroups, operator: OPERATOR_OR },
       });
     }
 
@@ -99,16 +112,20 @@ export default {
       const verificationLevel =
         filters.find((f) => f.type === 'verificationLevel')?.value?.data || null;
 
-      const topicFilter = filters.find((f) => f.type === 'topic');
-      const topics = topicFilter ? [topicFilter.value?.data].flat().filter(Boolean) : [];
+      const topics = this.getFilterValue(filters, 'topic');
+      const groups = this.getFilterValue(filters, 'group');
 
-      this.$emit('update-filters', { searchTerm, verificationLevel, topics });
+      this.$emit('update-filters', { searchTerm, verificationLevel, topics, groups });
     },
     onSortDirectionChange() {
       this.isAscending = !this.isAscending;
     },
     setSelectedSortOption(sortingItem) {
       this.currentSortOption = sortingItem;
+    },
+    getFilterValue(filters, type) {
+      const filter = filters.find((f) => f.type === type);
+      return filter ? [filter.value?.data].flat().filter(Boolean) : [];
     },
   },
   tokens: [
@@ -125,6 +142,14 @@ export default {
       unique: true,
       multiSelect: true,
       token: TopicToken,
+      operators: OPERATORS_OR,
+    },
+    {
+      type: 'group',
+      title: s__('CiCatalog|Group'),
+      unique: true,
+      multiSelect: true,
+      token: GroupToken,
       operators: OPERATORS_OR,
     },
   ],
@@ -146,6 +171,7 @@ export default {
       terms-as-tokens
       show-friendly-text
       data-testid="catalog-search-bar"
+      class="gl-min-w-0"
       @submit="onSubmit"
     />
     <gl-sorting

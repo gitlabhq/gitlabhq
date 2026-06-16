@@ -49,5 +49,28 @@ describe('Pipeline Source Token', () => {
     it('renders all pipeline sources available', () => {
       expect(findAllFilteredSearchSuggestions()).toHaveLength(PIPELINE_SOURCES.length);
     });
+
+    it.each(PIPELINE_SOURCES)(
+      'renders a suggestion for "$text" with value "$value"',
+      ({ text, value }) => {
+        const match = findAllFilteredSearchSuggestions().wrappers.find(
+          (s) => s.props('value') === value,
+        );
+
+        expect(match).toBeDefined();
+        expect(match.text()).toBe(text);
+      },
+    );
+
+    it('includes the dependency_management_security_update source', () => {
+      const source = PIPELINE_SOURCES.find(
+        (s) => s.value === 'dependency_management_security_update',
+      );
+
+      expect(source).toMatchObject({
+        value: 'dependency_management_security_update',
+        text: 'Dependency Management Security Update',
+      });
+    });
   });
 });

@@ -97,14 +97,35 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
     include_context 'with openapi v3 generator setup'
 
     it 'generates the OpenAPI v3 documentation' do
+      stub_env('OPENAPI_SIMULATE_SAAS', nil)
+
       expect(Gitlab::GrapeOpenapi::Generator).to receive(:new).with(
         api_classes: api_descendants
       ).and_return(generator)
 
       expect(generator).to receive(:generate).and_return(generated_spec)
       expect(File).to receive(:write).with('doc/api/openapi/openapi_v3.yaml', yaml_v3_doc_introduction + yaml_content)
+      expect(ENV).to receive(:[]=).with('GITLAB_SIMULATE_SAAS', 'false').and_call_original
+      allow(ENV).to receive(:[]=).and_call_original
 
-      run_rake_task('gitlab:openapi:v3:generate')
+      expect { run_rake_task('gitlab:openapi:v3:generate') }
+        .to output(/GITLAB_SIMULATE_SAAS=false/).to_stdout
+    end
+
+    context 'when OPENAPI_SIMULATE_SAAS is set' do
+      before do
+        stub_env('OPENAPI_SIMULATE_SAAS', 'true')
+      end
+
+      it 'forwards the value to GITLAB_SIMULATE_SAAS' do
+        allow(generator).to receive(:generate).and_return(generated_spec)
+        allow(File).to receive(:write)
+        expect(ENV).to receive(:[]=).with('GITLAB_SIMULATE_SAAS', 'true').and_call_original
+        allow(ENV).to receive(:[]=).and_call_original
+
+        expect { run_rake_task('gitlab:openapi:v3:generate') }
+          .to output(/GITLAB_SIMULATE_SAAS=true/).to_stdout
+      end
     end
 
     context 'when not on test or development environments' do
@@ -146,6 +167,24 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
     it 'passes when documentation is up to date' do
       expect { run_rake_task('gitlab:openapi:v3:check_docs') }.to output(
         /OpenAPI v3 documentation is up to date/).to_stdout
+    end
+
+    it 'defaults GITLAB_SIMULATE_SAAS to false' do
+      stub_env('OPENAPI_SIMULATE_SAAS', nil)
+      expect(ENV).to receive(:[]=).with('GITLAB_SIMULATE_SAAS', 'false').and_call_original
+      allow(ENV).to receive(:[]=).and_call_original
+
+      expect { run_rake_task('gitlab:openapi:v3:check_docs') }
+        .to output(/GITLAB_SIMULATE_SAAS=false/).to_stdout
+    end
+
+    it 'forwards OPENAPI_SIMULATE_SAAS to GITLAB_SIMULATE_SAAS when set' do
+      stub_env('OPENAPI_SIMULATE_SAAS', 'true')
+      expect(ENV).to receive(:[]=).with('GITLAB_SIMULATE_SAAS', 'true').and_call_original
+      allow(ENV).to receive(:[]=).and_call_original
+
+      expect { run_rake_task('gitlab:openapi:v3:check_docs') }
+        .to output(/GITLAB_SIMULATE_SAAS=true/).to_stdout
     end
 
     context 'when documentation is outdated' do

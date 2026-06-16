@@ -1,5 +1,6 @@
 import htmlMergeRequestList from 'test_fixtures_static/merge_request_list.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import DropdownUser from '~/filtered_search/dropdown_user';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
@@ -59,15 +60,16 @@ describe('Dropdown User', () => {
       expect(dropdown.config.AjaxFilter.endpoint).toBe('/-/autocomplete/users.json');
     });
 
-    it('should return endpoint with relative url when available', () => {
-      window.gon = {
-        relative_url_root: '/gitlab_directory',
-      };
-      const dropdown = new DropdownUser();
+    describe('when relative URL root is configured', () => {
+      useConfigurePathHelpers('/gitlab_directory');
 
-      expect(dropdown.config.AjaxFilter.endpoint).toBe(
-        '/gitlab_directory/-/autocomplete/users.json',
-      );
+      it('should return endpoint with relative url when available', () => {
+        const dropdown = new DropdownUser();
+
+        expect(dropdown.config.AjaxFilter.endpoint).toBe(
+          '/gitlab_directory/-/autocomplete/users.json',
+        );
+      });
     });
   });
 

@@ -23,6 +23,7 @@ import { projectMergeRequestsPath } from '~/lib/utils/path_helpers/merge_request
 import { projectIssuesPath } from '~/lib/utils/path_helpers/issues';
 
 export default {
+  name: 'ProjectsListItem',
   i18n: {
     stars: __('Stars'),
     forks: __('Forks'),

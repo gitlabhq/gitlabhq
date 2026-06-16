@@ -13,7 +13,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, :clean_gitlab_redi
   end
 
   describe '#perform' do
-    let_it_be(:jira_import, reload: true) { create(:jira_import_state, :scheduled, project: project) }
+    let_it_be_with_reload(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
 
     before do
       stub_jira_integration_test

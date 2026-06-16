@@ -49,7 +49,6 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:project) }
-    it { is_expected.to validate_presence_of(:namespace) }
 
     context 'when note is on a personal snippet' do
       before do
@@ -61,6 +60,22 @@ RSpec.describe Note, feature_category: :team_planning do
       it { is_expected.not_to validate_presence_of(:namespace) }
 
       it { is_expected.not_to validate_presence_of(:project) }
+    end
+
+    context 'when note is on a group-level noteable' do
+      before do
+        allow(subject).to receive_messages(for_personal_snippet?: false, for_project_noteable?: false)
+      end
+
+      it { is_expected.to validate_presence_of(:namespace) }
+    end
+
+    context 'when note is on a project-scoped noteable' do
+      before do
+        allow(subject).to receive_messages(for_personal_snippet?: false, for_project_noteable?: true)
+      end
+
+      it { is_expected.not_to validate_presence_of(:namespace) }
     end
 
     context 'when note is on commit' do
@@ -119,7 +134,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     describe 'max notes limit' do
       let_it_be(:noteable) { create(:issue) }
-      let_it_be(:existing_note) { create(:note, project: noteable.project, noteable: noteable) }
+      let_it_be(:existing_note, freeze: false) { create(:note, project: noteable.project, noteable: noteable) }
 
       before do
         stub_const('Noteable::MAX_NOTES_LIMIT', 1)
@@ -166,7 +181,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     describe 'confidentiality' do
       context 'for existing public note' do
-        let_it_be(:existing_note) { create(:note) }
+        let_it_be(:existing_note, freeze: false) { create(:note) }
 
         it 'is not possible to change the note to confidential' do
           existing_note.confidential = true
@@ -183,7 +198,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'for existing confidential note' do
-        let_it_be(:existing_note) { create(:note, confidential: true) }
+        let_it_be(:existing_note, freeze: false) { create(:note, confidential: true) }
 
         it 'is not possible to change the note to public' do
           existing_note.confidential = false
@@ -449,15 +464,16 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     describe '#ensure_namespace_id' do
-      context 'for issues' do
+      context 'for project-level issues' do
         let_it_be(:issue) { create(:issue) }
 
-        it 'copies the namespace_id of the issue' do
-          note = build(:note, noteable: issue)
+        it 'does not set namespace_id and keeps project_id set', :aggregate_failures do
+          note = build(:note, noteable: issue, project: issue.project)
 
           note.valid?
 
-          expect(note.namespace_id).to eq(issue.namespace_id)
+          expect(note.namespace_id).to be_nil
+          expect(note.project_id).to eq(issue.project.id)
         end
       end
 
@@ -475,27 +491,29 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'for a project noteable' do
-        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request) }
 
-        it 'copies the project_namespace_id of the project' do
+        it 'does not set namespace_id and keeps project_id set', :aggregate_failures do
           note = build(:note, noteable: merge_request, project: merge_request.project)
 
           note.valid?
 
-          expect(note.namespace_id).to eq(merge_request.project.project_namespace_id)
+          expect(note.namespace_id).to be_nil
+          expect(note.project_id).to eq(merge_request.project.id)
         end
 
         context 'when noteable is changed' do
           let_it_be(:another_mr) { create(:merge_request) }
 
-          it 'updates the namespace_id' do
+          it 'keeps namespace_id nil and updates project_id', :aggregate_failures do
             note = create(:note, noteable: merge_request, project: merge_request.project)
 
             note.noteable = another_mr
             note.project = another_mr.project
             note.valid?
 
-            expect(note.namespace_id).to eq(another_mr.project.project_namespace_id)
+            expect(note.namespace_id).to be_nil
+            expect(note.project_id).to eq(another_mr.project.id)
           end
         end
 
@@ -505,6 +523,21 @@ RSpec.describe Note, feature_category: :team_planning do
 
             expect { note.valid? }.not_to raise_error
           end
+        end
+      end
+
+      # Regression spec: ensure no dual-write on the update path either.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+      context 'for a project noteable on the update path' do
+        let_it_be(:merge_request) { create(:merge_request) }
+
+        it 'keeps namespace_id nil and project_id set after a subsequent save', :aggregate_failures do
+          note = create(:note, noteable: merge_request, project: merge_request.project)
+
+          note.update!(note: note.note)
+
+          expect(note.namespace_id).to be_nil
+          expect(note.project_id).to eq(merge_request.project.id)
         end
       end
 
@@ -638,7 +671,7 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
     let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
     let_it_be(:project_work_item) { create(:work_item, :task, project: project) }
 
@@ -727,7 +760,7 @@ RSpec.describe Note, feature_category: :team_planning do
   describe "noteable_author?" do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
-    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
     context 'when note is on commit' do
       let(:noteable) { create(:commit, project: project, author: user1) }
@@ -812,7 +845,7 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe '#last_edited_by' do
-    let_it_be(:note, reload: true) do
+    let_it_be_with_reload(:note) do
       create_timestamp = 1.day.ago
       create(:note, created_at: create_timestamp, updated_at: create_timestamp)
     end
@@ -942,8 +975,8 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe "#system_note_viewable_by?(user)" do
     let_it_be(:group) { create(:group, :private) }
-    let_it_be(:project) { create(:project, group: group) }
-    let_it_be(:note) { create(:note, project: project) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
+    let_it_be(:note, freeze: false) { create(:note, project: project) }
     let_it_be(:user) { create(:user) }
 
     let(:action) { "commit" }
@@ -1256,7 +1289,7 @@ RSpec.describe Note, feature_category: :team_planning do
       let_it_be(:milestone2) { create(:milestone, project: create(:project, :private)) }
       let_it_be(:milestone3) { create(:milestone, project: create(:project, :private)) }
       let_it_be(:milestone_event) { create(:resource_milestone_event, issue: issue, milestone: milestone1) }
-      let_it_be(:note) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
+      let_it_be(:note, freeze: false) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
 
       it { expect(note.system_note_visible_for?(user)).to be false }
 
@@ -1268,7 +1301,7 @@ RSpec.describe Note, feature_category: :team_planning do
       let_it_be(:milestone2) { create(:milestone, group: create(:group, :private)) }
       let_it_be(:milestone3) { create(:milestone, group: create(:group, :private)) }
       let_it_be(:milestone_event) { create(:resource_milestone_event, issue: issue, milestone: milestone1) }
-      let_it_be(:note) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
+      let_it_be(:note, freeze: false) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
 
       it { expect(note.system_note_visible_for?(user)).to be false }
 
@@ -1295,7 +1328,7 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe '#check_for_spam' do
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:group)   { create(:group, :public) }
     let(:issue)     { create(:issue, project: project) }
     let(:note)      { create(:note, note: "test", noteable: issue, project: project) }
@@ -1396,9 +1429,9 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe ".grouped_diff_discussions" do
-    let_it_be(:merge_request) { create(:merge_request) }
-    let_it_be(:project) { merge_request.project }
-    let_it_be(:active_position2) do
+    let_it_be(:merge_request, freeze: false) { create(:merge_request) }
+    let_it_be(:project, freeze: false) { merge_request.project }
+    let_it_be(:active_position2, freeze: false) do
       Gitlab::Diff::Position.new(
         old_path: "files/ruby/popen.rb",
         new_path: "files/ruby/popen.rb",
@@ -1420,7 +1453,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     let_it_be(:active_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
     let_it_be(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: active_diff_note1) }
-    let_it_be(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
+    let_it_be(:active_diff_note3, freeze: false) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
     let_it_be(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
     let_it_be(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: outdated_diff_note1) }
 
@@ -1815,7 +1848,7 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     context 'for merge requests' do
-      let_it_be(:merge_request) { create(:merge_request) }
+      let_it_be(:merge_request, freeze: false) { create(:merge_request) }
 
       context 'when adding a note to the MR' do
         let(:note) { build(:note, noteable: merge_request, project: merge_request.project) }
@@ -1946,7 +1979,7 @@ RSpec.describe Note, feature_category: :team_planning do
       subject { note.noteable.notes.inc_relations_for_view(noteable) }
 
       context 'when noteable can not have diffs' do
-        let_it_be(:note) { create(:note_on_issue) }
+        let_it_be(:note, freeze: false) { create(:note_on_issue) }
         let(:noteable) { note.noteable }
 
         it 'does not include additional associations' do
@@ -1965,7 +1998,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'when noteable can have diffs' do
-        let_it_be(:note) { create(:note_on_commit) }
+        let_it_be(:note, freeze: false) { create(:note_on_commit) }
         let(:noteable) { note.noteable }
 
         it 'includes additional diff associations' do
@@ -2166,7 +2199,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe '#exportable_record?' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:project, freeze: false) { create(:project, :private) }
     let_it_be(:noteable) { create(:issue, project: project) }
 
     subject { note.exportable_record?(user) }
@@ -2200,8 +2233,8 @@ RSpec.describe Note, feature_category: :team_planning do
     subject { note.human_max_access }
 
     context 'when parent is a project' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:noteable) { create(:wiki_page_meta, project: project) }
+      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be(:noteable, freeze: false) { create(:wiki_page_meta, project: project) }
       let(:note) { create(:note, project: project, author: user, noteable: noteable) }
 
       before_all do
@@ -2271,7 +2304,7 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe '#show_outdated_changes?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:noteable) { create(:merge_request, source_project: project) }
     let_it_be(:note) { build(:note, noteable: noteable, system: true) }
 

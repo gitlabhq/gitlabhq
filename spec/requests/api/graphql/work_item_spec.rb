@@ -274,7 +274,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         context 'for N+1 queries checks' do
-          let_it_be(:work_item) { create(:work_item, project: project) }
+          let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
           let_it_be(:another_project) { create(:project, :repository) }
           let_it_be(:another_label) { create(:label, project: another_project) }
           let_it_be(:another_milestone) do
@@ -343,7 +343,10 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
 
         context 'when requesting child item' do
-          let_it_be(:work_item) { create(:work_item, :task, project: project, description: '- List item') }
+          let_it_be(:work_item, freeze: false) do
+            create(:work_item, :task, project: project, description: '- List item')
+          end
+
           let_it_be(:parent_link) { create(:parent_link, work_item: work_item) }
 
           it 'returns parent information' do
@@ -704,7 +707,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             created_at: Time.current + 1.day)
         end
 
-        let_it_be(:link2) do
+        let_it_be(:link2, freeze: false) do
           create(:work_item_link, source: work_item, target: blocked_item, link_type: 'blocks',
             created_at: Time.current + 2.days)
         end
@@ -836,7 +839,10 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       describe 'linked resources widget' do
         # already have linked resources
         let_it_be(:linked_resources_type) { build(:work_item_system_defined_type, :task) }
-        let_it_be(:work_item) { create(:work_item, project: project, work_item_type: linked_resources_type) }
+        let_it_be(:work_item, freeze: false) do
+          create(:work_item, project: project, work_item_type: linked_resources_type)
+        end
+
         let_it_be(:resource1) do
           create(:zoom_meeting, issue_id: work_item.id, project: project, url: 'https://zoom.us/j/123456789')
         end
@@ -986,7 +992,9 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           GRAPHQL
         end
 
-        let_it_be(:note) { create(:note, project: work_item.project, noteable: work_item, author: developer) }
+        let_it_be(:note, freeze: false) do
+          create(:note, project: work_item.project, noteable: work_item, author: developer)
+        end
 
         before_all do
           create(:award_emoji, awardable: note, name: 'rocket', user: developer)
@@ -1697,7 +1705,9 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
     describe 'external author' do
       let_it_be(:email) { 'user@example.com' }
-      let_it_be(:work_item) { create(:work_item, :ticket, project: project, service_desk_reply_to: email) }
+      let_it_be(:work_item, freeze: false) do
+        create(:work_item, :ticket, project: project, service_desk_reply_to: email)
+      end
 
       let(:work_item_fields) do
         <<~GRAPHQL

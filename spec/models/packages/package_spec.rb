@@ -23,11 +23,11 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
 
-    let!(:package1) do
+    let_it_be(:package1) do
       create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1")
     end
 
-    let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
+    let_it_be(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
     let(:package3) { create(:maven_package, project: project, version: '1.1.1', name: 'zzz') }
 
     before do
@@ -173,7 +173,7 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
   end
 
   describe '.by_name_and_file_name' do
-    let!(:package) { create(:npm_package) }
+    let_it_be(:package) { create(:npm_package) }
     let!(:package_file) { package.package_files.first }
 
     it 'finds a package with correct arguments' do

@@ -31,10 +31,10 @@
       %table.table.b-table.gl-table.b-table-stacked-md.gl-table-no-top-border.gl-mb-7
         %thead
           %tr{ role: 'row' }
-            %th.border-bottom{ role: 'cell' }= _('Migration')
-            %th.border-bottom{ role: 'cell' }= _('Progress')
-            %th.border-bottom{ role: 'cell' }= _('Status')
-            %th.border-bottom{ role: 'cell' }= _('Actions')
+            %th{ role: 'cell', class: '!gl-border-b' }= _('Migration')
+            %th{ role: 'cell', class: '!gl-border-b' }= _('Progress')
+            %th{ role: 'cell', class: '!gl-border-b' }= _('Status')
+            %th{ role: 'cell', class: '!gl-border-b' }= _('Actions')
         %tbody
           = render partial: 'migration', collection: @migrations
     = paginate_collection @migrations

@@ -100,10 +100,17 @@ can result in malformed data or broken packages.
 
 ### For a group
 
+Prerequisites:
+
+- The Reporter, Security Manager, Developer, Maintainer, or Owner role on at least one project in the group hierarchy.
+
 Lists all packages for a specified group.
 When accessed without authentication, only packages of public projects are returned.
 By default, packages with `default`, `deprecated`, and `error` status are returned. Use the `status` parameter to view other
 packages.
+
+This permission model matches the GraphQL `Group.packages` field, so the REST and GraphQL endpoints
+return the same packages for the same caller.
 
 ```plaintext
 GET /groups/:id/packages

@@ -112,12 +112,16 @@ module Git
       return unless default_branch?
 
       commits_changing_ci_config.each do |commit|
+        source = ci_config_author_source(commit)
+
         track_internal_event(
           'commit_change_to_ciconfigfile',
           user: commit.author,
           project: commit.project,
-          additional_properties: { author_source: ci_config_author_source(commit) }
+          additional_properties: { author_source: source }
         )
+
+        Ci::ProjectMetric.track_ai_generated_config!(commit.project.id, author_source: source)
       end
     end
 
@@ -126,13 +130,17 @@ module Git
         author = commit.author
         next unless author
 
+        source = ci_config_author_source(commit)
+
         track_internal_event(
           'create_ci_config_file',
           user: author,
           project: commit.project,
           namespace: commit.project.namespace,
-          additional_properties: { author_source: ci_config_author_source(commit) }
+          additional_properties: { author_source: source }
         )
+
+        Ci::ProjectMetric.track_ai_generated_config!(commit.project.id, author_source: source)
       end
     end
 

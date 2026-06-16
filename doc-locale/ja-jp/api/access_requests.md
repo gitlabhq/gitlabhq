@@ -1,8 +1,8 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: グループとプロジェクトのアクセスリクエストAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: グループおよびプロジェクトのアクセスリクエストAPI
 ---
 
 {{< details >}}
@@ -12,24 +12,11 @@ title: グループとプロジェクトのアクセスリクエストAPI
 
 {{< /details >}}
 
-このAPIを使用して、グループとプロジェクトのアクセスリクエストを操作します。
+このAPIを使用して、グループおよびプロジェクトのアクセスリクエストを操作します。
 
-## 有効なアクセスレベル {#valid-access-levels}
+## グループまたはプロジェクトのすべてのアクセスリクエストをリスト表示 {#list-all-access-requests-for-a-group-or-project}
 
-アクセスレベルは`Gitlab::Access`モジュールで定義されており、次のレベルが認識されます:
-
-- アクセスなし（`0`）
-- 最小アクセス（`5`）
-- ゲスト（`10`）
-- プランナー（`15`）
-- レポーター（`20`）
-- デベロッパー（`30`）
-- メンテナー（`40`）
-- オーナー（`50`）
-
-## グループまたはプロジェクトのアクセスリクエストをリスト表示 {#list-access-requests-for-a-group-or-project}
-
-認証済みユーザーが表示できるアクセスリクエストのリストを取得します。
+指定されたグループまたはプロジェクトに対して、認証済みユーザーが表示できるすべてのアクセスリクエストをリスト表示します。
 
 ```plaintext
 GET /groups/:id/access_requests
@@ -40,7 +27,7 @@ GET /projects/:id/access_requests
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -50,7 +37,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -77,9 +64,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## グループまたはプロジェクトへのアクセスをリクエスト {#request-access-to-a-group-or-project}
+## グループまたはプロジェクトへのアクセスをリクエストする {#request-access-to-a-group-or-project}
 
-認証済みユーザーに、グループまたはプロジェクトへのアクセスをリクエストします。
+指定されたグループまたはプロジェクトへの認証済みユーザーのアクセスをリクエストします。
 
 ```plaintext
 POST /groups/:id/access_requests
@@ -88,9 +75,9 @@ POST /projects/:id/access_requests
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | ID、または[グループまたはプロジェクトのURLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`      | 整数または文字列 | はい      | そのIDまたは[グループまたはプロジェクトのURLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -101,7 +88,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -114,9 +101,9 @@ curl --request POST \
 }
 ```
 
-## アクセスリクエストを承認 {#approve-an-access-request}
+## アクセスリクエストを承認する {#approve-an-access-request}
 
-指定されたユーザーのアクセスリクエストを承認します。
+指定されたグループまたはプロジェクト内の指定されたユーザーのアクセスリクエストを承認します。
 
 ```plaintext
 PUT /groups/:id/access_requests/:user_id/approve
@@ -127,9 +114,9 @@ PUT /projects/:id/access_requests/:user_id/approve
 |----------------|----------------|----------|-------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `user_id`      | 整数        | はい      | アクセスリクエスタのユーザーID |
-| `access_level` | 整数        | いいえ       | 有効なアクセスレベル（デフォルト: `30`、デベロッパーロール） |
+| `access_level` | 整数        | いいえ       | 有効な[アクセスレベル](../user/permissions.md#default-roles)。使用可能な値: `0` (アクセスなし), `5` (最小アクセス), `10` (ゲスト), `15` (プランナー), `20` (レポーター), `25` (セキュリティマネージャー), `30` (デベロッパー), `40` (メンテナー), `50` (オーナー)。デフォルトは`30`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -140,7 +127,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id/approve?access_level=20"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -153,9 +140,9 @@ curl --request PUT \
 }
 ```
 
-## アクセスリクエストを拒否 {#deny-an-access-request}
+## アクセスリクエストを拒否する {#deny-an-access-request}
 
-指定されたユーザーのアクセスリクエストを拒否します。
+指定されたグループまたはプロジェクト内の指定されたユーザーのアクセスリクエストを拒否します。
 
 ```plaintext
 DELETE /groups/:id/access_requests/:user_id
@@ -167,7 +154,7 @@ DELETE /projects/:id/access_requests/:user_id
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `user_id` | 整数        | はい      | アクセスリクエスタのユーザーID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

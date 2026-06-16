@@ -122,6 +122,40 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       end
     end
 
+    describe 'fluid_layout' do
+      context 'when there is no current_user' do
+        it 'sets gon.fluid_layout to false' do
+          expect(gon).to receive(:fluid_layout=).with(false)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when current_user prefers a fluid layout' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, layout: :fluid))
+        end
+
+        it 'sets gon.fluid_layout to true' do
+          expect(gon).to receive(:fluid_layout=).with(true).ordered
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when current_user prefers a fixed layout' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, layout: :fixed))
+        end
+
+        it 'sets gon.fluid_layout to false' do
+          expect(gon).to receive(:fluid_layout=).with(false).twice
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
     describe 'instance_token_prefix' do
       it 'exposes instance_token_prefix' do
         stub_application_setting(instance_token_prefix: 'instanceprefix')

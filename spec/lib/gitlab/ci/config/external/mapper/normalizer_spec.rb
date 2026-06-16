@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_categor
     end
   end
 
-  let_it_be(:context) do
+  let_it_be(:context, freeze: false) do
     Gitlab::Ci::Config::External::Context.new(
       project: project, sha: project.commit.sha, user: user, variables: variables
     )

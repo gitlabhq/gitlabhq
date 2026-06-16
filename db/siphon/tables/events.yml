@@ -4,6 +4,7 @@ database: main
 replication_targets:
   - name: clickhouse_main
     target: siphon_events
+    dedup_by_columns_lookup_table: siphon_events_pg_pkey_ordered
     dedup_by:
       - id
     reconcile:

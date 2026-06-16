@@ -8,12 +8,10 @@ import (
 	"time"
 
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc"
@@ -33,9 +31,6 @@ const maxClientNameLength = 255
 
 // defaultClientName is the client name workhorse sends to DWS when there is no client name header present in request.
 const defaultClientName = "gitlab-duo-workflow"
-
-// ErrServerUnavailable is returned when the workflow server cannot be reached.
-var ErrServerUnavailable = fmt.Errorf("server is unavailable")
 
 // Client is a gRPC client for the Duo Workflow service.
 type Client struct {
@@ -114,11 +109,7 @@ func (c *Client) ExecuteWorkflow(ctx context.Context) (pb.DuoWorkflow_ExecuteWor
 
 	stream, err := c.grpcClient.ExecuteWorkflow(ctx)
 	if err != nil {
-		st, ok := status.FromError(err)
-		if ok && st.Code() == codes.Unavailable {
-			return nil, ErrServerUnavailable
-		}
-		return nil, err
+		return nil, fmt.Errorf("failed to open workflow stream: %w", err)
 	}
 
 	return stream, nil
@@ -130,11 +121,7 @@ func (c *Client) TrackSelfHostedExecuteWorkflow(ctx context.Context) (grpc.BidiS
 
 	stream, err := c.grpcClient.TrackSelfHostedExecuteWorkflow(ctx)
 	if err != nil {
-		st, ok := status.FromError(err)
-		if ok && st.Code() == codes.Unavailable {
-			return nil, ErrServerUnavailable
-		}
-		return nil, err
+		return nil, fmt.Errorf("failed to open self-hosted tracking stream: %w", err)
 	}
 
 	return stream, nil

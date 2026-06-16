@@ -143,7 +143,7 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
 
       context 'with gitlab.com gitlab-org/security/gitlab project' do
         let_it_be(:sub_group)        { create(:group, parent: group, path: 'security') }
-        let_it_be(:security_project) { create(:project, :empty_repo, group: sub_group, path: 'gitlab') }
+        let_it_be(:security_project, freeze: false) { create(:project, :empty_repo, group: sub_group, path: 'gitlab') }
         let(:ci_project_namespace)   { 'gitlab-org/security' }
         let(:pipeline_project)       { security_project }
 
@@ -208,7 +208,7 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       end
 
       context 'with gitlab.com gitlab-org gitlab-foss project' do
-        let_it_be(:foss_project) { create(:project, :empty_repo, group: group, path: 'gitlab-foss') }
+        let_it_be(:foss_project, freeze: false) { create(:project, :empty_repo, group: group, path: 'gitlab-foss') }
         let(:pipeline_project)   { foss_project }
 
         context 'with master pipeline triggered by push' do

@@ -5,6 +5,7 @@ import MrCollapsibleExtension from '../mr_collapsible_extension.vue';
 import Deployment from './deployment.vue';
 
 export default {
+  name: 'DeploymentList',
   components: {
     Deployment,
     GlSprintf,

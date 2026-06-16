@@ -112,6 +112,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
       it 'does not create any environments' do
         expect { subject }.not_to change { Environment.count }
       end
+
+      it 'does not call CreateForJobService' do
+        expect(Environments::CreateForJobService).not_to receive(:new)
+
+        subject
+      end
     end
   end
 end

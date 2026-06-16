@@ -30,6 +30,7 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_OK,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
 } from '~/lib/utils/http_status';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
@@ -497,6 +498,35 @@ describe('DiffsStoreActions', () => {
           expect(mock.history.get[0].url).toEqual(finalPath);
         });
       });
+
+      describe('on 503 Gitaly error', () => {
+        const gitalyErrorMessage = 'The git server, Gitaly, is not available at this time.';
+
+        it('should set gitaly error message when response is 503 with error', async () => {
+          mock
+            .onGet(diffForPath)
+            .reply(HTTP_STATUS_SERVICE_UNAVAILABLE, { error: gitalyErrorMessage });
+
+          await diffActions.fetchFileByFile({ state, getters, commit });
+          await waitForPromises();
+
+          expect(commit).toHaveBeenCalledWith(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+          expect(commit).toHaveBeenCalledWith(types.SET_BATCH_LOADING_STATE, 'error');
+        });
+
+        it('should not set gitaly error message when 503 response has no error field', async () => {
+          mock.onGet(diffForPath).reply(HTTP_STATUS_SERVICE_UNAVAILABLE, {});
+
+          await diffActions.fetchFileByFile({ state, getters, commit });
+          await waitForPromises();
+
+          expect(commit).not.toHaveBeenCalledWith(
+            types.SET_GITALY_ERROR_MESSAGE,
+            expect.anything(),
+          );
+          expect(commit).toHaveBeenCalledWith(types.SET_BATCH_LOADING_STATE, 'error');
+        });
+      });
     });
   });
 
@@ -538,6 +568,7 @@ describe('DiffsStoreActions', () => {
         [
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
           { type: types.SET_RETRIEVING_BATCHES, payload: true },
+          { type: types.SET_GITALY_ERROR_MESSAGE, payload: null },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loaded' },
           { type: types.SET_CURRENT_DIFF_FILE, payload: 'test' },
@@ -548,6 +579,61 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
+    });
+
+    describe('on 503 Gitaly error', () => {
+      const endpointBatch = '/fetch/diffs_batch';
+      const gitalyErrorMessage = 'The git server, Gitaly, is not available at this time.';
+
+      it('should set gitaly error message when response is 503 with error', async () => {
+        const commit = jest.fn();
+        const state = { endpointBatch, diffViewType: 'inline', diffFiles: [], perPage: 5 };
+
+        mock
+          .onGet(
+            mergeUrlParams(
+              {
+                w: '1',
+                view: 'inline',
+                page: 0,
+                per_page: 5,
+              },
+              endpointBatch,
+            ),
+          )
+          .reply(HTTP_STATUS_SERVICE_UNAVAILABLE, { error: gitalyErrorMessage });
+
+        await expect(
+          diffActions.fetchDiffFilesBatch({ commit, state, dispatch: jest.fn() }),
+        ).rejects.toThrow();
+
+        expect(commit).toHaveBeenCalledWith(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+      });
+
+      it('should not set gitaly error message for non-503 errors', async () => {
+        const commit = jest.fn();
+        const state = { endpointBatch, diffViewType: 'inline', diffFiles: [], perPage: 5 };
+
+        mock
+          .onGet(
+            mergeUrlParams(
+              {
+                w: '1',
+                view: 'inline',
+                page: 0,
+                per_page: 5,
+              },
+              endpointBatch,
+            ),
+          )
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: 'Some other error' });
+
+        await expect(
+          diffActions.fetchDiffFilesBatch({ commit, state, dispatch: jest.fn() }),
+        ).rejects.toThrow();
+
+        expect(commit).not.toHaveBeenCalledWith(types.SET_GITALY_ERROR_MESSAGE, expect.anything());
+      });
     });
   });
 
@@ -2138,6 +2224,7 @@ describe('DiffsStoreActions', () => {
         [
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
           { type: types.SET_RETRIEVING_BATCHES, payload: true },
+          { type: types.SET_GITALY_ERROR_MESSAGE, payload: null },
           {
             type: types.SET_DIFF_DATA_BATCH,
             payload: { diff_files: diffFiles, updatePosition: false },
@@ -2168,13 +2255,14 @@ describe('DiffsStoreActions', () => {
           [
             { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
             { type: types.SET_RETRIEVING_BATCHES, payload: true },
+            { type: types.SET_GITALY_ERROR_MESSAGE, payload: null },
             { type: types.SET_BATCH_LOADING_STATE, payload: 'error' },
             { type: types.SET_RETRIEVING_BATCHES, payload: false },
           ],
           [],
         );
       } catch (error) {
-        expect(error.response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        expect(error.response?.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       }
 
       jest.runAllTimers();
@@ -2196,6 +2284,35 @@ describe('DiffsStoreActions', () => {
         fileHash: linkedFile.file_hash,
         oldLine: 10,
         newLine: 10,
+      });
+    });
+
+    describe('on 503 Gitaly error', () => {
+      const linkedFileHref = `${TEST_HOST}/linked-file`;
+      const gitalyErrorMessage = 'The git server, Gitaly, is not available at this time.';
+
+      it('should set gitaly error message when response is 503 with error', async () => {
+        const commit = jest.fn();
+        mock
+          .onGet(new RegExp(linkedFileHref))
+          .reply(HTTP_STATUS_SERVICE_UNAVAILABLE, { error: gitalyErrorMessage });
+
+        await expect(
+          diffActions.fetchLinkedFile({ commit, state: {}, dispatch: jest.fn() }, linkedFileHref),
+        ).rejects.toThrow();
+
+        expect(commit).toHaveBeenCalledWith(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+      });
+
+      it('should not set gitaly error message when 503 response has no error field', async () => {
+        const commit = jest.fn();
+        mock.onGet(new RegExp(linkedFileHref)).reply(HTTP_STATUS_SERVICE_UNAVAILABLE, {});
+
+        await expect(
+          diffActions.fetchLinkedFile({ commit, state: {}, dispatch: jest.fn() }, linkedFileHref),
+        ).rejects.toThrow();
+
+        expect(commit).not.toHaveBeenCalledWith(types.SET_GITALY_ERROR_MESSAGE, expect.anything());
       });
     });
   });

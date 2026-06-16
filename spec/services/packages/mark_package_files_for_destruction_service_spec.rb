@@ -25,25 +25,25 @@ RSpec.describe Packages::MarkPackageFilesForDestructionService, :aggregate_failu
     end
 
     context 'with no package files' do
-      let_it_be(:package_files) { ::Packages::PackageFile.none }
+      let_it_be(:package_files, freeze: false) { ::Packages::PackageFile.none }
 
       it_behaves_like 'executing successfully'
     end
 
     context 'with a single package file' do
-      let_it_be(:package_file) { create(:package_file) }
-      let_it_be(:package_files) { ::Packages::PackageFile.id_in(package_file.id) }
+      let_it_be(:package_file, freeze: false) { create(:package_file) }
+      let_it_be(:package_files, freeze: false) { ::Packages::PackageFile.id_in(package_file.id) }
 
       it_behaves_like 'executing successfully', marked_package_files_count: 1
     end
 
     context 'with many package files' do
-      let_it_be(:package_files) { ::Packages::PackageFile.id_in(create_list(:package_file, 3).map(&:id)) }
+      let_it_be(:package_files, freeze: false) { ::Packages::PackageFile.id_in(create_list(:package_file, 3).map(&:id)) }
 
       it_behaves_like 'executing successfully', marked_package_files_count: 3
 
       context 'with a batch deadline' do
-        let_it_be(:batch_deadline) { 250.seconds.from_now }
+        let_it_be(:batch_deadline, freeze: false) { 250.seconds.from_now }
 
         context 'when the deadline is not hit' do
           before do
@@ -65,7 +65,7 @@ RSpec.describe Packages::MarkPackageFilesForDestructionService, :aggregate_failu
       end
 
       context 'when a batch size is defined' do
-        let_it_be(:batch_deadline) { 250.seconds.from_now }
+        let_it_be(:batch_deadline, freeze: false) { 250.seconds.from_now }
 
         let(:batch_size) { 2 }
 
@@ -80,7 +80,7 @@ RSpec.describe Packages::MarkPackageFilesForDestructionService, :aggregate_failu
     end
 
     context 'with an error during the update' do
-      let_it_be(:package_files) { ::Packages::PackageFile.none }
+      let_it_be(:package_files, freeze: false) { ::Packages::PackageFile.none }
 
       before do
         expect(package_files).to receive(:each_batch).and_raise('error!')

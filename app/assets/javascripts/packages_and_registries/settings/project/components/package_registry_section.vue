@@ -7,6 +7,7 @@ import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/co
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 
 export default {
+  name: 'PackageRegistrySection',
   components: {
     DependencyProxyPackagesSettings,
     GlLink,

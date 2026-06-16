@@ -4,17 +4,17 @@ require 'spec_helper'
 
 RSpec.describe 'Every API endpoint', feature_category: :scalability do
   context 'feature categories' do
-    let_it_be(:feature_categories) do
+    let_it_be(:feature_categories, freeze: false) do
       Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set
     end
 
-    let_it_be(:api_endpoints) do
+    let_it_be(:api_endpoints, freeze: false) do
       Gitlab::RequestEndpoints.all_api_endpoints.map do |route|
         [route.app.options[:for], API::Base.path_for_app(route.app)]
       end
     end
 
-    let_it_be(:routes_without_category) do
+    let_it_be(:routes_without_category, freeze: false) do
       api_endpoints.map do |(klass, path)|
         next if klass.try(:feature_category_for_action, path)
 

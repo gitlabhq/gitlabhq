@@ -6,7 +6,20 @@ RSpec.describe Ci::PartitionableFinder, feature_category: :continuous_integratio
   let_it_be(:project, freeze: true) { create(:project) }
   let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project) }
 
-  describe 'Ci::Pipeline.find_by_id' do
+  let(:test_model_class) do
+    Class.new(Ci::ApplicationRecord) do
+      include Ci::PartitionableFinder
+
+      self.table_name = :p_ci_pipelines
+      self.primary_key = :id
+
+      def self.name
+        'TestPartitionableModel'
+      end
+    end
+  end
+
+  describe '.find_by_id' do
     context 'when the record is in the current partition' do
       before do
         allow(Ci::Partition)
@@ -14,13 +27,13 @@ RSpec.describe Ci::PartitionableFinder, feature_category: :continuous_integratio
           .and_return(build_stubbed(:ci_partition, id: pipeline.partition_id))
       end
 
-      it 'finds pipeline with partition pruning' do
-        expect(Ci::Pipeline.find_by_id(pipeline.id)).to eq(pipeline)
+      it 'finds the record with partition pruning' do
+        expect(test_model_class.find_by_id(pipeline.id)&.id).to eq(pipeline.id)
       end
 
       it 'does only one query' do
         expect do
-          Ci::Pipeline.find_by_id(pipeline.id)
+          test_model_class.find_by_id(pipeline.id)
         end.not_to exceed_query_limit(1).for_query(/SELECT.*p_ci_pipelines/)
       end
     end
@@ -38,21 +51,21 @@ RSpec.describe Ci::PartitionableFinder, feature_category: :continuous_integratio
             .and_return([pipeline.partition_id])
         end
 
-        it 'finds pipeline in active partitions and logs the fallback' do
+        it 'finds the record in active partitions and logs the fallback' do
           expect(Gitlab::AppLogger).to receive(:info).with(
             hash_including(
               message: 'Failed to find the record in the current partition',
               record_id: pipeline.id,
-              'class_name' => 'Ci::Pipeline'
+              'class_name' => 'TestPartitionableModel'
             )
           )
 
-          expect(Ci::Pipeline.find_by_id(pipeline.id)).to eq(pipeline)
+          expect(test_model_class.find_by_id(pipeline.id)&.id).to eq(pipeline.id)
         end
 
         it 'does two queries' do
           expect do
-            Ci::Pipeline.find_by_id(pipeline.id)
+            test_model_class.find_by_id(pipeline.id)
           end.not_to exceed_query_limit(2).for_query(/SELECT.*p_ci_pipelines/)
         end
       end
@@ -68,30 +81,30 @@ RSpec.describe Ci::PartitionableFinder, feature_category: :continuous_integratio
             hash_including(
               message: 'Failed to find the record in the current partition',
               record_id: pipeline.id,
-              'class_name' => 'Ci::Pipeline'
+              'class_name' => 'TestPartitionableModel'
             )
           )
           expect(Gitlab::AppLogger).to receive(:info).with(
             hash_including(
               message: 'Failed to find the record in the latest active partitions',
               record_id: pipeline.id,
-              'class_name' => 'Ci::Pipeline'
+              'class_name' => 'TestPartitionableModel'
             )
           )
 
-          expect(Ci::Pipeline.find_by_id(pipeline.id)).to eq(pipeline)
+          expect(test_model_class.find_by_id(pipeline.id)&.id).to eq(pipeline.id)
         end
 
         it 'does three queries' do
           expect do
-            Ci::Pipeline.find_by_id(pipeline.id)
+            test_model_class.find_by_id(pipeline.id)
           end.not_to exceed_query_limit(3).for_query(/SELECT.*p_ci_pipelines/)
         end
       end
     end
 
     it 'returns nil when record not found' do
-      result = Ci::Pipeline.find_by_id(non_existing_record_id)
+      result = test_model_class.find_by_id(non_existing_record_id)
       expect(result).to be_nil
     end
   end

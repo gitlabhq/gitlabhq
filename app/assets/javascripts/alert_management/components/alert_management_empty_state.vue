@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import alertsHelpUrlQuery from '../graphql/queries/alert_help_url.query.graphql';
 
 export default {
+  name: 'AlertManagementEmptyState',
   i18n: {
     emptyState: {
       title: s__('AlertManagement|Surface alerts in GitLab'),

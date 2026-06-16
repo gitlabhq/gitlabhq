@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
+  name: 'CompareDropdown',
   components: {
     GlCollapsibleListbox,
   },

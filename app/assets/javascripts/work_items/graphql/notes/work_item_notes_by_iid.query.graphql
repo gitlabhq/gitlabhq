@@ -8,6 +8,7 @@ query workItemNotesByIid(
   $after: String
   $pageSize: Int
   $sort: WorkItemDiscussionsSort
+  $useWorkItemFeatures: Boolean = false
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -17,7 +18,35 @@ query workItemNotesByIid(
       namespace {
         id
       }
-      widgets(onlyTypes: [NOTES]) {
+      features @include(if: $useWorkItemFeatures) {
+        notes {
+          type
+          discussionLocked
+          discussions(first: $pageSize, after: $after, filter: ALL_NOTES, sort: $sort) {
+            pageInfo {
+              ...PageInfo
+            }
+            nodes {
+              id
+              resolved
+              resolvable
+              resolvedBy {
+                id
+                name
+              }
+              userPermissions {
+                resolveNote
+              }
+              notes {
+                nodes {
+                  ...WorkItemNote
+                }
+              }
+            }
+          }
+        }
+      }
+      widgets(onlyTypes: [NOTES]) @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetNotes {
           type
           discussionLocked

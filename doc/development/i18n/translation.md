@@ -18,12 +18,12 @@ The GitLab contributor platform has a [leaderboard](https://contributors.gitlab.
 and [rewards store](https://rewards.gitlab.com).
 
 For your Crowdin contributions to be recognized by GitLab,
-your Crowdin username must be mapped to your GitLab username:
+your Crowdin username must match your GitLab username, or be linked to it:
 
 - If you do not have a GitLab username, you can
   [sign up for a free account](https://gitlab.com/users/sign_up).
-- Complete and submit [this form](https://docs.google.com/forms/d/15XDNFFLhbBJgB4U3u44yRwdiecRAe2ykNl0kRtPFkO0/edit?ts=68000e25)
-  to map your Crowdin username to your GitLab username.
+- If your Crowdin username differs from your GitLab username, link your Crowdin account
+  from your [contributor profile](https://contributors.gitlab.com/users/me#link-crowdin).
 
 Crowdin translators earn points for the translations they submit.
 These points combine with any other contributions to GitLab (merge requests,

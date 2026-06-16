@@ -17,6 +17,11 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker, featur
     expect(described_class.get_deduplication_options).to include({ including_scheduled: true })
   end
 
+  it 'is a high urgency CPU bound worker', :aggregate_failures do
+    expect(described_class.get_urgency).to eq(:high)
+    expect(described_class.get_worker_resource_boundary).to eq(:cpu)
+  end
+
   describe '#perform' do
     subject { worker.perform(resource_group_id) }
 

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_concurrent_index'
 
-RSpec.describe RuboCop::Cop::Migration::AddConcurrentIndex do
+RSpec.describe RuboCop::Cop::Migration::AddConcurrentIndex, feature_category: :database do
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

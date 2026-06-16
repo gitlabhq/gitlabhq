@@ -3,7 +3,10 @@
 module Gitlab
   module ApplicationRateLimiter
     class IncrementResourceUsagePerAction < BaseStrategy
+      attr_reader :resource_key
+
       def initialize(key)
+        @resource_key = key
         @usage = ::Gitlab::SafeRequestStore[key.to_sym].to_f
       end
 

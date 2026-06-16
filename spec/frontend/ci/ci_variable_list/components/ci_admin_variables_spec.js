@@ -29,7 +29,7 @@ describe('Ci Project Variable wrapper', () => {
     expect(findCiShared().props()).toEqual({
       areScopedVariablesAvailable: false,
       componentName: 'InstanceVariables',
-      entity: '',
+      entity: 'instance',
       hideEnvironmentScope: true,
       mutationData: {
         [ADD_MUTATION_ACTION]: addAdminVariable,

@@ -1,0 +1,8 @@
+---
+migration_job_name: DeleteNullProjectIdPushRules
+description: Deletes push_rules rows where project_id IS NULL to prepare for NOT NULL constraint
+feature_category: source_code_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236788
+milestone: '19.2'
+queued_migration_version: 20260615053722
+gitlab_schema: gitlab_main_org

@@ -6,11 +6,16 @@ RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request, feature_c
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'gitlab-test') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
-  let_it_be(:project_empty) { create(:project_empty_repo, namespace: namespace, path: 'lorem-ipsum-empty') }
-  let_it_be(:user) { project.owner }
-  let_it_be(:personal_projects) { create_list(:project, 3, namespace: user.namespace, topics: create_list(:topic, 5)) }
+  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'gitlab-test') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
+  let_it_be(:project_empty, freeze: false) do
+    create(:project_empty_repo, namespace: namespace, path: 'lorem-ipsum-empty')
+  end
+
+  let_it_be(:user, freeze: false) { project.owner }
+  let_it_be(:personal_projects, freeze: false) do
+    create_list(:project, 3, namespace: user.namespace, topics: create_list(:topic, 5))
+  end
 
   it 'api/projects/get.json' do
     get api("/projects/#{project.id}", user)

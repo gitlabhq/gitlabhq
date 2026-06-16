@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Lfs::Client do
   subject(:lfs_client) { described_class.new(base_url, credentials: credentials) }
 
   describe '#batch' do
-    let_it_be(:objects) { create_list(:lfs_object, 3) }
+    let_it_be(:objects, freeze: false) { create_list(:lfs_object, 3) }
 
     context 'server returns 200 OK' do
       it 'makes a successful batch request' do
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Lfs::Client do
   end
 
   describe "#upload" do
-    let_it_be(:object) { create(:lfs_object) }
+    let_it_be(:object, freeze: false) { create(:lfs_object) }
 
     context 'server returns 200 OK to an authenticated request' do
       it "makes an HTTP PUT with expected parameters" do
@@ -237,7 +237,7 @@ RSpec.describe Gitlab::Lfs::Client do
   end
 
   describe "#verify" do
-    let_it_be(:object) { create(:lfs_object) }
+    let_it_be(:object, freeze: false) { create(:lfs_object) }
 
     context 'server returns 200 OK to an authenticated request' do
       it "makes an HTTP POST with expected parameters" do

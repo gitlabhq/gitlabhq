@@ -109,6 +109,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         it_behaves_like 'storing arguments in the application context for the API' do
           let(:expected_params) { { client_id: "runner/#{runner.id}" } }
+
+          # TODO: remove this once the following issue is resolved
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/599571
+          before do
+            allow(Gitlab::AppLogger).to receive(:info).with(
+              a_hash_including(
+                Labkit::Fields::CLASS_NAME => "Ci::Runners::PartitionedTokenFinder"
+              )
+            )
+          end
         end
 
         context 'with a group runner' do

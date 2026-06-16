@@ -29,6 +29,11 @@ module Mutations
         description: 'Work item after mutation.'
 
       authorize :update_work_item
+      authorize_granular_token permissions: :update_work_item,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary_type: :group }
+        ]
 
       def ready?(**args)
         return super if args.slice(:move_after_id, :move_before_id).compact.present?

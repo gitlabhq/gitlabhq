@@ -5,6 +5,9 @@ module Mutations
     class SetLocked < Base
       graphql_name 'IssueSetLocked'
 
+      authorize_granular_token permissions: :update_issue,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :locked,
         GraphQL::Types::Boolean,
         required: true,

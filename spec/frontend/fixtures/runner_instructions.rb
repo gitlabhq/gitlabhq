@@ -12,7 +12,7 @@ RSpec.describe 'Runner Instructions (JavaScript fixtures)', feature_category: :r
 
   describe GraphQL::Query do
     describe 'get_runner_platforms.query.graphql', type: :request do
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}/get_runner_platforms.query.graphql")
       end
 
@@ -24,7 +24,7 @@ RSpec.describe 'Runner Instructions (JavaScript fixtures)', feature_category: :r
     end
 
     describe 'get_runner_setup.query.graphql', type: :request do
-      let_it_be(:query) do
+      let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{query_path}/get_runner_setup.query.graphql")
       end
 

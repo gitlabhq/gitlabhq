@@ -20,8 +20,10 @@ Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint
 # adding :line has some overhead because a regexp on the backtrace has
 # to be run on every SQL query. Only enable this in development and test because
 # we've seen it slow things down.
+#
+# In CI the overhead is significant at scale, so :line is opt-in there via
+# MARGINALIA_LINE=true. Locally it remains opt-out via MARGINALIA_LINE=false.
 if Gitlab.dev_or_test_env?
-  Marginalia::Comment.components << :line
   Marginalia::Comment.lines_to_ignore = Regexp.union(
     Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w[
       lib/ruby/gems/
@@ -32,6 +34,9 @@ if Gitlab.dev_or_test_env?
       lib/gitlab/database/load_balancing/connection_proxy.rb
       app/models/concerns/use_sql_function_for_primary_key_lookups.rb
     ])
+
+  line_enabled = Gitlab::Utils.to_boolean(ENV['MARGINALIA_LINE'], default: !Gitlab::Utils.to_boolean(ENV['CI']))
+  Marginalia::Comment.components << :line if line_enabled
 end
 
 Gitlab::Marginalia.set_application_name

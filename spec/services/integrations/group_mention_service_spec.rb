@@ -5,18 +5,18 @@ require 'spec_helper'
 RSpec.describe Integrations::GroupMentionService, feature_category: :integrations do
   subject(:execute) { described_class.new(mentionable, hook_data: hook_data, is_confidential: is_confidential).execute }
 
-  let_it_be(:author) { create(:user) }
-  let_it_be(:member) { create(:user) }
-  let_it_be(:group_1) { create(:group) }
-  let_it_be(:group_2) { create(:group) }
-  let_it_be(:group_3) { create(:group) }
-  let_it_be(:groups) { nil }
-  let_it_be(:all_groups) { [group_1, group_2, group_3] }
-  let_it_be(:groups_with_integrations) { [group_1, group_2] }
-  let_it_be(:public_project_with_group) { create(:project, :public) }
-  let_it_be(:public_project_without_group) { create(:project, :public) }
-  let_it_be(:private_project_with_group) { create(:project, :private) }
-  let_it_be(:private_project_without_group) { create(:project, :private) }
+  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be(:member, freeze: false) { create(:user) }
+  let_it_be(:group_1, freeze: false) { create(:group) }
+  let_it_be(:group_2, freeze: false) { create(:group) }
+  let_it_be(:group_3, freeze: false) { create(:group) }
+  let_it_be(:groups, freeze: false) { nil }
+  let_it_be(:all_groups, freeze: false) { [group_1, group_2, group_3] }
+  let_it_be(:groups_with_integrations, freeze: false) { [group_1, group_2] }
+  let_it_be(:public_project_with_group, freeze: false) { create(:project, :public) }
+  let_it_be(:public_project_without_group, freeze: false) { create(:project, :public) }
+  let_it_be(:private_project_with_group, freeze: false) { create(:project, :private) }
+  let_it_be(:private_project_without_group, freeze: false) { create(:project, :private) }
 
   before_all do
     group_1.add_developer(member)
@@ -397,7 +397,7 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
           it_behaves_like 'confidential_group_mention_hooks'
 
           context 'for groups with a Guest member' do
-            let_it_be(:member_guest) { create(:user) }
+            let_it_be(:member_guest, freeze: false) { create(:user) }
 
             before_all do
               group_1.add_guest(member_guest)
@@ -447,9 +447,9 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
   end
 
   context 'for invalid mentionables' do
-    let_it_be(:mentionable) { Object.new }
-    let_it_be(:hook_data) { {} }
-    let_it_be(:is_confidential) { false }
+    let_it_be(:mentionable, freeze: false) { Object.new }
+    let_it_be(:hook_data, freeze: false) { {} }
+    let_it_be(:is_confidential, freeze: false) { false }
 
     it_behaves_like 'no_success'
 
@@ -461,9 +461,9 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
   end
 
   context 'when mentionable is nil' do
-    let_it_be(:mentionable) { nil }
-    let_it_be(:hook_data) { {} }
-    let_it_be(:is_confidential) { false }
+    let_it_be(:mentionable, freeze: false) { nil }
+    let_it_be(:hook_data, freeze: false) { {} }
+    let_it_be(:is_confidential, freeze: false) { false }
 
     it 'returns success without executing any integrations' do
       expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)

@@ -39,6 +39,7 @@ Prerequisites:
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431) in GitLab 17.9.
 - [GitLab session cookies added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022) in GitLab 17.9.
 - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077) in GitLab 17.9.
+- [SCIM access tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231880) in GitLab 19.1.
 
 {{< /history >}}
 

@@ -114,6 +114,51 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
             instance.save!
           end
         end
+
+        context 'when attribute value is blank' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:was, :is, :destroys, :creates) do
+            nil    | nil    | false | false
+            ''     | ''     | false | false
+            nil    | ''     | false | false
+            ''     | nil    | false | false
+            'old'  | nil    | true  | false
+            'old'  | ''     | true  | false
+            nil    | 'new'  | false | true
+            ''     | 'new'  | false | true
+          end
+
+          with_them do
+            it 'creates and destroys claims only for present values', :aggregate_failures do
+              instance.path = is
+              allow(instance).to receive(:saved_change_to_attribute?).with(:path).and_return(true)
+              allow(instance).to receive(:saved_change_to_attribute).with(:path).and_return([was, is])
+
+              if destroys
+                expect(transaction_record).to receive(:destroy_record).with(
+                  a_hash_including(bucket: {
+                    type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: was
+                  })
+                )
+              else
+                expect(transaction_record).not_to receive(:destroy_record)
+              end
+
+              if creates
+                expect(transaction_record).to receive(:create_record).with(
+                  a_hash_including(bucket: {
+                    type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: is
+                  })
+                )
+              else
+                expect(transaction_record).not_to receive(:create_record)
+              end
+
+              instance.send(:cells_claims_save_changes)
+            end
+          end
+        end
       end
 
       context 'when feature flag is disabled' do
@@ -153,6 +198,24 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
               type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: old_path
             }))
           instance.destroy!
+        end
+
+        context 'when attribute value is blank' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:value) do
+            [nil, '']
+          end
+
+          with_them do
+            it 'does not destroy a claim' do
+              instance.path = value
+
+              expect(transaction_record).not_to receive(:destroy_record)
+
+              instance.send(:cells_claims_destroy_changes)
+            end
+          end
         end
       end
 

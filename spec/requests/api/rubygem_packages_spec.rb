@@ -102,14 +102,175 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:project_id/packages/rubygems/:filename' do
-    let(:url) { api("/projects/#{project.id}/packages/rubygems/specs.4.8.gz") }
+    let_it_be(:file_name) { 'specs.4.8.gz' }
+    let_it_be(:spec_file) { create(:rubygems_spec_file, project: project, file_name: file_name) }
+
+    let(:url) { api("/projects/#{project.id}/packages/rubygems/#{file_name}") }
 
     subject { get(url, headers: headers) }
 
-    it_behaves_like 'an unimplemented route'
+    context 'with valid project' do
+      where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do
+        :public  | :guest      | true  | :personal_access_token | true  | :success
+        :public  | :guest      | true  | :personal_access_token | false | :unauthorized
+        :public  | :guest      | false | :personal_access_token | true  | :success
+        :public  | :guest      | false | :personal_access_token | false | :unauthorized
+        :public  | :anonymous  | false | :personal_access_token | true  | :success
+        :private | :guest      | true  | :personal_access_token | true  | :success
+        :private | :guest      | true  | :personal_access_token | false | :unauthorized
+        :private | :guest      | false | :personal_access_token | true  | :not_found
+        :private | :guest      | false | :personal_access_token | false | :unauthorized
+        :private | :anonymous  | false | :personal_access_token | true  | :not_found
+        :public  | :guest      | true  | :job_token             | true  | :success
+        :public  | :guest      | true  | :job_token             | false | :unauthorized
+        :private | :guest      | true  | :job_token             | true  | :success
+        :private | :guest      | true  | :job_token             | false | :unauthorized
+        :private | :guest      | false | :job_token             | true  | :not_found
+        :public  | :guest      | true  | :deploy_token          | true  | :success
+        :public  | :guest      | true  | :deploy_token          | false | :unauthorized
+        :private | :guest      | true  | :deploy_token          | true  | :success
+        :private | :guest      | true  | :deploy_token          | false | :unauthorized
+      end
+
+      with_them do
+        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
+        let(:headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          project.send("add_#{user_role}", user) if member && user_role != :anonymous
+        end
+
+        it_behaves_like 'returning response status', params[:expected_status]
+      end
+    end
+
+    context 'with successful download' do
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it 'returns the spec file', :aggregate_failures do
+        subject
+
+        expect(response.media_type).to eq('application/octet-stream')
+        expect(response.headers['X-Sendfile']).to eq(spec_file.file.path)
+      end
+    end
+
+    context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'with a guest' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'denies download when not enough permissions' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with a reporter' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns the spec file', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['X-Sendfile']).to eq(spec_file.file.path)
+        end
+      end
+    end
+
+    context 'with credentials sent as HTTP Basic auth' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        project.add_guest(user)
+      end
+
+      context 'with a personal access token (the form gem and bundle send)' do
+        let(:headers) { basic_auth_header('__token__', personal_access_token.token) }
+
+        it 'returns the spec file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['X-Sendfile']).to eq(spec_file.file.path)
+        end
+      end
+
+      context 'with a deploy token' do
+        let(:headers) { deploy_token_basic_auth_header(deploy_token) }
+
+        it 'returns the spec file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'when the spec file does not exist' do
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/latest_specs.4.8.gz") }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it 'enqueues a regeneration and returns not found', :aggregate_failures do
+        expect(::Packages::Rubygems::CreateSpecFilesWorker).to receive(:perform_async).with(project.id)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with an invalid spec index file name' do
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/not_a_spec_index.gz") }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it 'does not enqueue a regeneration and returns bad request', :aggregate_failures do
+        expect(::Packages::Rubygems::CreateSpecFilesWorker).not_to receive(:perform_async)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    it_behaves_like 'when feature flag is disabled'
+    it_behaves_like 'when package feature is disabled'
 
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => pat.token } }
+      let(:request) { get(url, headers: headers) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
@@ -190,6 +351,40 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+    end
+
+    context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'with a guest' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'denies download when not enough permissions' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with a reporter' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns the gemspec file', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['X-Sendfile']).to eq(gemspec_file.file.path)
+        end
+      end
     end
 
     context 'with invalid gemspec file name' do
@@ -308,6 +503,31 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'Rubygems gem download', :anonymous, :success
+    end
+
+    context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'with a guest' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'denies download when not enough permissions' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with a reporter' do
+        it_behaves_like 'Rubygems gem download', :reporter, :success
+      end
     end
 
     context 'with package files pending destruction' do
@@ -617,6 +837,90 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
       before do
         project.add_developer(user)
       end
+    end
+  end
+
+  describe 'X-Error-Message header' do
+    let(:auth_headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'with a "NNN StatusPhrase - detail" error (failed package creation)' do
+      include_context 'workhorse headers'
+
+      let(:url) { "/projects/#{project.id}/packages/rubygems/api/v1/gems" }
+      let(:expected_status) { :bad_request }
+      let(:headers) { auth_headers.merge(workhorse_headers) }
+
+      subject do
+        workhorse_finalize(
+          api(url),
+          method: :post,
+          file_key: :file,
+          params: { file: temp_file('package.gem') },
+          headers: headers,
+          send_rewritten_field: true
+        )
+      end
+
+      before do
+        stub_package_file_object_storage(enabled: false)
+        error_response = ServiceResponse.error(message: 'Package creation failed', reason: :bad_request)
+        allow_next_instance_of(::Packages::Rubygems::CreatePackageFileService) do |service|
+          allow(service).to receive(:execute).and_return(error_response)
+        end
+      end
+
+      it_behaves_like 'setting the X-Error-Message header on error responses',
+        expected_message: 'Package creation failed'
+    end
+
+    context 'with a custom error message without a status prefix (dependency resolver)' do
+      # Requesting a gem the project does not have makes the real DependencyResolverService
+      # return ServiceResponse.error(message: "<gem> not found", http_status: :not_found).
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/api/v1/dependencies") }
+      let(:expected_status) { :not_found }
+
+      subject { get(url, headers: auth_headers, params: { gems: 'nonexistent' }) }
+
+      it_behaves_like 'setting the X-Error-Message header on error responses',
+        expected_message: 'nonexistent not found'
+    end
+
+    context 'with a bare status phrase' do
+      context 'on a not found response' do
+        let(:url) { api("/projects/#{project.id}/packages/rubygems/specs.4.8.gz") }
+        let(:expected_status) { :not_found }
+
+        subject { get(url, headers: auth_headers) }
+
+        it_behaves_like 'not setting the X-Error-Message header on the response'
+      end
+
+      context 'on a forbidden response (workhorse-bypassed authorize)' do
+        include_context 'workhorse headers'
+
+        let(:url) { api("/projects/#{project.id}/packages/rubygems/api/v1/gems/authorize") }
+        let(:expected_status) { :forbidden }
+        let(:headers) do
+          auth_headers.merge(workhorse_headers).tap { |h| h.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER) }
+        end
+
+        subject { post(url, headers: headers) }
+
+        it_behaves_like 'not setting the X-Error-Message header on the response'
+      end
+    end
+
+    context 'with a successful response' do
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/api/v1/dependencies") }
+      let(:expected_status) { :ok }
+
+      subject { get(url, headers: auth_headers, params: {}) }
+
+      it_behaves_like 'not setting the X-Error-Message header on the response'
     end
   end
 end

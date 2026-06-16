@@ -6,7 +6,7 @@ require 'email_spec'
 RSpec.describe Emails::Pipelines do
   include EmailSpec::Matchers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   shared_examples_for 'correct pipeline information' do
     let(:expected_email_subject) do

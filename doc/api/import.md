@@ -197,6 +197,12 @@ Returns the following status codes:
 
 ## Import repository from Bitbucket Server
 
+{{< history >}}
+
+- Validation of `bitbucket_server_project` and `bitbucket_server_repo` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/429234) in GitLab 19.1.
+
+{{< /history >}}
+
 Imports a repository from Bitbucket Server to GitLab.
 
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
@@ -213,8 +219,8 @@ POST /import/bitbucket_server
 
 | Attribute                   | Type   | Required | Description |
 |-----------------------------|--------|----------|-------------|
-| `bitbucket_server_project`  | string | Yes      | Bitbucket project key. |
-| `bitbucket_server_repo`     | string | Yes      | Bitbucket repository name. |
+| `bitbucket_server_project`  | string | Yes      | Bitbucket project key. Must contain only letters, numbers, hyphens, underscores, periods, or whitespace characters. Personal project keys start with `~`. |
+| `bitbucket_server_repo`     | string | Yes      | Bitbucket repository name. Must contain only letters, numbers, hyphens, underscores, periods, or whitespace characters. |
 | `bitbucket_server_url`      | string | Yes      | Bitbucket Server URL. |
 | `bitbucket_server_username` | string | Yes      | Bitbucket Server username. |
 | `personal_access_token`     | string | Yes      | Bitbucket Server personal access token or password. |

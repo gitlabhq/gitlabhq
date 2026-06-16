@@ -66,12 +66,6 @@ cache:
 
 ### Use a variable to control a job's cache policy
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371480) in GitLab 16.1.
-
-{{< /history >}}
-
 To reduce duplication of jobs where the only difference is the pull policy, you can use a [CI/CD variable](../variables/_index.md).
 
 For example:

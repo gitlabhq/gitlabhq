@@ -38,7 +38,7 @@ RSpec.describe ProjectPresenter do
       let_it_be(:user) { nil }
 
       context 'when repository is empty' do
-        let_it_be(:project) { create(:project_empty_repo, :public) }
+        let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
 
         it 'returns wiki if user has repository access and can read wiki, which exists' do
           allow(project).to receive(:wiki_repository_exists?).and_return(true)
@@ -66,7 +66,7 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'when repository is not empty' do
-        let_it_be(:project) { create(:project, :public, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
         it 'returns files and readme if user has repository access' do
           allow(presenter).to receive(:can?).with(nil, :read_code, project).and_return(true)
@@ -165,7 +165,7 @@ RSpec.describe ProjectPresenter do
 
   describe '#can_current_user_push_code?' do
     context 'empty repo' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
 
       it 'returns true if user can push_code' do
         project.add_developer(user)
@@ -208,7 +208,7 @@ RSpec.describe ProjectPresenter do
   end
 
   context 'statistics anchors (empty repo)' do
-    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
 
     describe '#storage_anchor_data' do
       it 'does not return storage data' do
@@ -260,8 +260,8 @@ RSpec.describe ProjectPresenter do
   end
 
   context 'statistics anchors' do
-    let_it_be(:user)    { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user, freeze: false)    { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let_it_be(:release) { create(:release, project: project, author: user) }
 
     let(:presenter) { described_class.new(project, current_user: user) }
@@ -470,7 +470,7 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'when the project is empty' do
-        let_it_be(:project) { create(:project, :empty_repo) }
+        let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
 
         # Since we protect the default branch for empty repos
         it 'is empty for a developer' do
@@ -994,7 +994,7 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'initialized repo' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
 
       it 'orders the items correctly' do
         expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
@@ -1079,7 +1079,7 @@ RSpec.describe ProjectPresenter do
   describe '#has_review_app?' do
     subject { presenter.has_review_app? }
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     context 'when review apps exist' do
       let!(:environment) do

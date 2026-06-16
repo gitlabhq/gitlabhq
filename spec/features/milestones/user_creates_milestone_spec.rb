@@ -39,7 +39,7 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
   end
 
   context 'when project is public' do
-    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
 
     context 'and issues and merge requests are private' do
       before_all do
@@ -66,7 +66,7 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
   end
 
   context 'when project is private' do
-    let_it_be(:project) { create(:project, :private, group: group) }
+    let_it_be(:project, freeze: false) { create(:project, :private, group: group) }
 
     context 'and user is a direct project member' do
       before_all do

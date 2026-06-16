@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/rescue_query_canceled'
 
-RSpec.describe RuboCop::Cop::Database::RescueQueryCanceled do
+RSpec.describe RuboCop::Cop::Database::RescueQueryCanceled, feature_category: :database do
   it 'flags the use of ActiveRecord::QueryCanceled' do
     expect_offense(<<~RUBY)
       begin

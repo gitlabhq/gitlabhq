@@ -31,26 +31,31 @@ export default {
 
     <div class="panel-header-inner-actions-portal-target js-panel-actions-portal-target"></div>
 
-    <div class="panel-header-panel-actions">
-      <gl-button
-        v-if="maximizeUrl"
-        v-gl-tooltip.bottom="$options.i18n.maximizePanelText"
-        :href="maximizeUrl"
-        category="tertiary"
-        icon="maximize"
-        size="small"
-        :aria-label="$options.i18n.maximizePanelText"
-        @click="$emit('maximize', $event)"
-      />
+    <div class="panel-header-controls">
+      <template v-if="$scopedSlots['panel-controls']">
+        <slot name="panel-controls"></slot>
+      </template>
+      <template v-else>
+        <gl-button
+          v-if="maximizeUrl"
+          v-gl-tooltip.bottom="$options.i18n.maximizePanelText"
+          :href="maximizeUrl"
+          category="tertiary"
+          icon="maximize"
+          size="small"
+          :aria-label="$options.i18n.maximizePanelText"
+          @click="$emit('maximize', $event)"
+        />
 
-      <gl-button
-        v-gl-tooltip.bottom="$options.i18n.closePanelText"
-        category="tertiary"
-        icon="close"
-        size="small"
-        :aria-label="$options.i18n.closePanelText"
-        @click="$emit('close')"
-      />
+        <gl-button
+          v-gl-tooltip.bottom="$options.i18n.closePanelText"
+          category="tertiary"
+          icon="close"
+          size="small"
+          :aria-label="$options.i18n.closePanelText"
+          @click="$emit('close')"
+        />
+      </template>
     </div>
   </div>
 </template>

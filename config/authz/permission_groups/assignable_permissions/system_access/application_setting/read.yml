@@ -1,0 +1,9 @@
+---
+name: read_application_setting
+description: Grants the ability to read application settings
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_application_setting

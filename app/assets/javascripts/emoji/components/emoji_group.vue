@@ -2,6 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 
 export default {
+  name: 'EmojiGroup',
   components: {
     GlButton,
   },

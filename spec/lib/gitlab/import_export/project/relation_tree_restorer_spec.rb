@@ -10,7 +10,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:importable, reload: true) do
+  let_it_be_with_reload(:importable) do
     create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
   end
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
     let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
-    let_it_be(:group) do
+    let_it_be(:group, freeze: false) do
       create(:group, :shared_runners_disabled_and_unoverridable, maintainers: user)
     end
 
@@ -85,6 +85,21 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
     end
 
     it_behaves_like 'import project successfully'
+
+    context 'when the export contains has_external_issue_tracker' do
+      let(:attributes) do
+        relation_reader.consume_attributes(importable_name).merge('has_external_issue_tracker' => true)
+      end
+
+      it 'does not overwrite has_external_issue_tracker' do
+        expect(relation_tree_restorer.restore).to eq(true)
+
+        project = Project.find_by_path('project')
+
+        expect(project.integrations.active.external_issue_trackers).to be_empty
+        expect(project.has_external_issue_tracker).to be_falsy
+      end
+    end
 
     context 'when importing an archived project' do
       let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
@@ -180,7 +195,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
   end
 
   describe '#restore_single_relation' do
-    let_it_be(:importable) { create(:project) }
+    let_it_be(:importable, freeze: false) { create(:project) }
 
     let(:relation_reader) do
       Gitlab::ImportExport::Json::NdjsonReader.new(

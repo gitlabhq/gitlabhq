@@ -6,8 +6,8 @@ RSpec.describe Ci::ChangeVariableService, feature_category: :pipeline_compositio
   let(:service) { described_class.new(container: container, current_user: user, params: params) }
   let_it_be(:user) { create(:user) }
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   shared_examples 'create variable flow' do
     context 'with no extra attributes' do

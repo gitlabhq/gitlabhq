@@ -7,6 +7,7 @@ import DiffDiscussions from './diff_discussions.vue';
 import DiffLineNoteForm from './diff_line_note_form.vue';
 
 export default {
+  name: 'DiffCommentCell',
   components: {
     DiffDiscussions,
     DiffLineNoteForm,

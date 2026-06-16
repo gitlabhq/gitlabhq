@@ -2,6 +2,7 @@
 import { GlButton, GlButtonGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 
 export default {
+  name: 'CodeDropdownDownloadItems',
   components: {
     GlButton,
     GlButtonGroup,

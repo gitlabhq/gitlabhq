@@ -6,7 +6,7 @@ RSpec.describe ContainerExpirationPolicyPolicy do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   subject { described_class.new(user, project.container_expiration_policy) }
 

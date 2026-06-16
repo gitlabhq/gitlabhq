@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/database/establish_connection'
 
-RSpec.describe RuboCop::Cop::Database::EstablishConnection do
+RSpec.describe RuboCop::Cop::Database::EstablishConnection, feature_category: :database do
   it 'flags the use of ActiveRecord::Base.establish_connection' do
     expect_offense(<<~RUBY)
       ActiveRecord::Base.establish_connection

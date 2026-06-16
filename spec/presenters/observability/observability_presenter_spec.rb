@@ -224,33 +224,52 @@ RSpec.describe Observability::ObservabilityPresenter, :use_clean_rails_memory_st
     end
 
     describe '.reactive_cache_worker_finder' do
-      let(:group_id) { group.id }
-      let(:found_group) { instance_double(Group, id: group_id) }
+      let(:namespace_id) { group.id }
+      let(:found_namespace) { instance_double(Group, id: namespace_id) }
 
-      context 'when group exists' do
+      context 'when namespace exists' do
         before do
-          allow(Group).to receive(:id_in).with([group_id]).and_return(instance_double(ActiveRecord::Relation,
-            first: found_group))
+          allow(Namespace).to receive(:id_in).with([namespace_id]).and_return(
+            instance_double(ActiveRecord::Relation, first: found_namespace)
+          )
         end
 
-        it 'reconstructs presenter from group id' do
-          result = described_class.reactive_cache_worker_finder.call(group_id)
+        it 'reconstructs presenter from namespace id' do
+          result = described_class.reactive_cache_worker_finder.call(namespace_id)
 
           expect(result).to be_a(described_class)
-          expect(result.id).to eq(group_id)
-          expect(result.instance_variable_get(:@group)).to eq(found_group)
+          expect(result.id).to eq(namespace_id)
+          expect(result.instance_variable_get(:@group)).to eq(found_namespace)
           expect(result.instance_variable_get(:@path)).to be_nil
         end
       end
 
-      context 'when group does not exist' do
+      context 'when namespace is a personal (user) namespace' do
+        let(:user_namespace) { instance_double(Namespaces::UserNamespace, id: namespace_id) }
+
         before do
-          allow(Group).to receive(:id_in).with([group_id]).and_return(instance_double(ActiveRecord::Relation,
-            first: nil))
+          allow(Namespace).to receive(:id_in).with([namespace_id]).and_return(
+            instance_double(ActiveRecord::Relation, first: user_namespace)
+          )
+        end
+
+        it 'reconstructs the presenter from the user namespace id' do
+          result = described_class.reactive_cache_worker_finder.call(namespace_id)
+
+          expect(result).to be_a(described_class)
+          expect(result.instance_variable_get(:@group)).to eq(user_namespace)
+        end
+      end
+
+      context 'when namespace does not exist' do
+        before do
+          allow(Namespace).to receive(:id_in).with([namespace_id]).and_return(
+            instance_double(ActiveRecord::Relation, first: nil)
+          )
         end
 
         it 'returns nil' do
-          result = described_class.reactive_cache_worker_finder.call(group_id)
+          result = described_class.reactive_cache_worker_finder.call(namespace_id)
 
           expect(result).to be_nil
         end

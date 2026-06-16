@@ -23,6 +23,7 @@ module Gitlab
                   https: false
                 },
                 ingress: {
+                  enabled: true,
                   configureCertmanager: false,
                   tls: {
                     enabled: false
@@ -35,14 +36,6 @@ module Gitlab
                   }
                 }
               },
-              postgresql: {
-                metrics: { enabled: false },
-                primary: {
-                  extraEnvVars: [
-                    { name: "POSTGRESQL_MAX_CONNECTIONS", value: "200" }
-                  ]
-                }
-              },
               gitlab: {
                 "gitlab-exporter": { enabled: false },
                 "gitlab-shell": {
@@ -50,7 +43,6 @@ module Gitlab
                   config: { proxyProtocol: true }
                 }
               },
-              redis: { metrics: { enabled: false } },
               prometheus: { install: false },
               "gitlab-runner": { install: false },
               installCertmanager: false

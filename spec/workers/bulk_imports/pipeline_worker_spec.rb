@@ -23,7 +23,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
-  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
   let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
 
@@ -839,7 +839,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
     end
 
-    let_it_be(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration) }
+    let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import, :with_offline_configuration) }
     let_it_be_with_reload(:offline_entity) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
 
     let(:pipeline_tracker) do
@@ -884,18 +884,36 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       expect(pipeline_tracker.reload.status_name).to eq(:finished)
     end
 
-    context 'when export status is failed' do
+    context 'when the relation export file is missing' do
       before do
         allow(export_status).to receive(:failed?).and_return(true)
         allow(export_status).to receive(:error).and_return('Export files not found for relation: test')
       end
 
-      it 'raises with offline error message' do
+      it 'marks tracker as skipped and logs the missing export file', :aggregate_failures do
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          allow(logger).to receive(:info)
+
+          expect(logger)
+            .to receive(:info)
+            .with(hash_including(
+              message: 'Skipping pipeline due to missing export file. Export files not found for relation: test'
+            ))
+        end
+
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id)
+
+        expect(pipeline_tracker.reload.status_name).to eq(:skipped)
+      end
+
+      it 'does not run the pipeline or create a failure record', :aggregate_failures do
+        expect(file_extraction_pipeline).not_to receive(:new)
+        expect(BulkImports::Failure).not_to receive(:create)
+
         expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id) }
-          .to raise_error(
-            BulkImports::Pipeline::FailedError,
-            'Export file error: Export files not found for relation: test'
-          )
+          .not_to raise_error
+
+        expect(offline_entity.reload.failed?).to eq(false)
       end
     end
 

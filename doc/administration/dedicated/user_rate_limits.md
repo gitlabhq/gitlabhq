@@ -43,8 +43,8 @@ GitLab automatically sets these limits based on your reference architecture size
 | Reference architecture | API requests per minute | Web requests per minute |
 | ---------------------- | ----------------------- | ----------------------- |
 | 1,000 users            | 1,200                   | 120                     |
-| 2,000 users            | 2,400                   | 240                     |
-| 3,000 users            | 3,600                   | 360                     |
+| 2,000 users            | 2,400                   | 480                     |
+| 3,000 users            | 3,600                   | 600                     |
 | 5,000 users            | 6,000                   | 600                     |
 | 10,000 users           | 12,000                  | 1,200                   |
 | 25,000 users           | 30,000                  | 3,000                   |

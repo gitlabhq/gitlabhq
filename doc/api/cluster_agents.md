@@ -485,7 +485,7 @@ DELETE /projects/:id/cluster_agents/:agent_id/tokens/:token_id
 Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                      |
-|------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------- -|
+|------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
 | `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                 |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                 |

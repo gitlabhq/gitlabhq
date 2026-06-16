@@ -5,7 +5,7 @@ RSpec.describe DesignManagement::DesignCollection do
   include DesignManagementTestHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:issue, refind: true) { create(:issue) }
+  let_it_be_with_refind(:issue) { create(:issue) }
 
   subject(:collection) { described_class.new(issue) }
 

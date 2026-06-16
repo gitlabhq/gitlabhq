@@ -176,6 +176,9 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
+.if-per-test-coverage-delta: &if-per-test-coverage-delta
+  if: '$GLCI_PER_TEST_COVERAGE_DELTA == "true"'
+
 .if-merge-request-no-tier: &if-merge-request-no-tier
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
 
@@ -217,6 +220,16 @@
 
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+
+# Non-default PG versions run nightly in their own schedules, gated per role relative to the current default (PG17).
+# PREVIOUS = previous still-supported version (PG16); NEXT = upcoming version (PG18). Each schedule sets only its own
+# variable, so each PG version runs in an independent nightly pipeline and stays under the 2000-job limit. On the yearly
+# bump, update the literal here and the *-base-pgXX the job families extend.
+.if-default-branch-schedule-nightly-pg-previous: &if-default-branch-schedule-nightly-pg-previous
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $PREVIOUS_NIGHTLY_PG_VERSION == "16"'
+
+.if-default-branch-schedule-nightly-pg-next: &if-default-branch-schedule-nightly-pg-next
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $NEXT_NIGHTLY_PG_VERSION == "18"'
 
 .if-default-branch-schedule-weekly: &if-default-branch-schedule-weekly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
@@ -429,7 +442,8 @@
 
 .docs-release-note-categories-patterns: &docs-release-note-categories-patterns
   - "doc/releases/**/*"
-  - "scripts/lint/validate_release_categories.py"
+  - "scripts/lint/validate_release_categories.rb"
+  - "spec/scripts/lint/validate_release_categories_spec.rb"
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
@@ -1074,11 +1088,10 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .permissions-patterns: &permissions-patterns
-  - "config/authz/permissions/**/*.yml"
-  - "config/authz/permission_groups/**/*.yml"
-  - "config/authz/roles/**/*.yml"
+  - "config/authz/**/*"
   - "lib/tasks/gitlab/permissions/**/*.rb"
   - "{,ee/}app/policies/**/*.rb"
+  - "{,ee/}app/graphql/**/*.rb"
   - "{,ee/}lib/api/**/*.rb"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
@@ -1112,14 +1125,43 @@
 # When adding new runtime dependencies to doctor, add their paths here
 # in the same MR.
 .ai-harness-doctor-patterns: &ai-harness-doctor-patterns
+  # Parity / .ai-reference inputs (check_parity.rb, check_ai_references.rb)
   - "**/AGENTS.md"
   - "**/CLAUDE.md"
   - ".ai/**/*"
   - "**/.ai/**/*"
+  # Doctor implementation
   - "scripts/ai_harness/doctor"
   - "tooling/ai_harness/doctor/**/*"
   - "tooling/ai_harness/config.yml"
   - "lib/gitlab/fp/**/*"
+
+# Paths the doctor reacts to but which (by design) do not match a file
+# currently in the repo. Kept under a non-`-patterns` key name so the
+# `rules_spec.rb` dead-pattern existence check skips this list
+#
+# `.gitignore` is included here despite existing in the repo because the
+# spec's `no_matching_needed_files` exemption removes it from the universe
+# of files before pattern matching, which makes it indistinguishable from
+# an intentionally-absent path for the purposes of that check.
+.ai-harness-doctor-forbidden-paths: &ai-harness-doctor-forbidden-paths
+  # .gitignore coverage (check_gitignore.rb) — see note above
+  - ".gitignore"
+  # Forbidden-files check (check_forbidden_files.rb FORBIDDEN_PATTERNS)
+  - "AGENTS.local.md"
+  - "**/AGENTS.local.md"
+  - "CLAUDE.local.md"
+  - "**/CLAUDE.local.md"
+  - ".claude/rules/**"
+  - ".claude/skills/**"
+  - ".claude/agents/**"
+  - ".claude/commands/**"
+  - ".claude/settings.json"
+  - ".claude/settings.local.json"
+  - ".claude/settings.local.jsonc"
+  - ".opencode/**"
+  - ".gitlab/duo/chat-rules.md"
+  - ".gitlab/duo/mcp.json"
 
 ##################
 # Conditions set #
@@ -1137,6 +1179,7 @@
       changes: *ci-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-group-global-search
       changes: *ci-patterns
     - <<: *if-merge-request-labels-run-search-tests
@@ -1331,27 +1374,8 @@
 ######################
 .build-images:rules:build-qa-image-merge-requests:
   rules:
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
-    - <<: *if-merge-request
-      changes: *qa-patterns
-    - <<: *if-merge-request
-      changes: *gitaly-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-merge-request
-      changes: *ci-build-images-patterns
-    - !reference [".prevent-tier-1", rules]
-    - <<: *if-merge-request
-      changes: *code-qa-patterns
-    # Rules to support .qa:rules:test-on-omnibus-ee
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
     - <<: *if-merge-request
@@ -1775,7 +1799,7 @@
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # For tier-1 pipelines, only run when jest predictive jobs would
+    # For tier-1 pipelines, only run when relevant storybook files change
     - <<: *if-merge-request-tier-1-or-no-tier
       changes:
         - '{,ee/}app/**/*.vue'
@@ -3004,6 +3028,34 @@
       when: never
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
 
+.rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules:
+  rules:
+    - <<: *if-default-branch-schedule-nightly-pg-previous
+
+.rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage:
+  rules:
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules", rules]
+
+.rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules", rules]
+
+.rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules:
+  rules:
+    - <<: *if-default-branch-schedule-nightly-pg-next
+
+.rails:rules:default-branch-schedule-nightly-pg-next--code-backstage:
+  rules:
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules", rules]
+
+.rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules", rules]
+
 .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
@@ -3193,6 +3245,12 @@
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
       when: never
+    # Only run on tier-3 MR pipelines to save CI minutes. A merge request runs a
+    # tier-3 pipeline before it is merged, so pre-merge coverage is preserved.
+    # Default branch / scheduled pipelines are unaffected (the tier prevent rules
+    # only match merge_request_event pipelines).
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/602388.
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-default-refs
       changes:
         # this list should match https://gitlab.com/gitlab-org/gitlab/blob/aa896069360f/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L53-53
@@ -3258,22 +3316,6 @@
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
     - <<: *if-merge-request
-
-.reports:rules:package_hunter-yarn:
-  rules:
-    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
-      when: never
-    - <<: *if-schedule-maintenance
-    - <<: *if-merge-request
-      changes: ["yarn.lock"]
-
-.reports:rules:package_hunter-bundler:
-  rules:
-    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
-      when: never
-    - <<: *if-schedule-maintenance
-    - <<: *if-merge-request
-      changes: ["Gemfile.lock", "Gemfile.next.lock"]
 
 .reports:rules:pajamas_adoption:
   rules:
@@ -3407,6 +3449,20 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
+
+# Detects unique_by declarations that reference indexes not available at deploy time
+# See: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/9604
+.preflight:rules:unique-by-index-check:
+  rules:
+    - <<: *if-merge-request
+      changes:
+        - "{,ee/,jh/}app/models/**/*.rb"
+        - "{,ee/,jh/}app/services/**/*.rb"
+        - "{,ee/,jh/}app/workers/**/*.rb"
+        - "{,ee/,jh/}lib/gitlab/background_migration/**/*.rb"
+        - "{,ee/,jh/}lib/gitlab/database/**/*.rb"
+        - "{,ee/,jh/}lib/gitlab/ingestion/**/*.rb"
+        - "{,ee/,jh/}ee/lib/gitlab/ingestion/**/*.rb"
 
 .preflight:rules:pipeline-tier-1:
   rules:
@@ -3682,6 +3738,17 @@
   rules:
     - <<: *if-default-branch-refs
 
+####################################
+# AI principles sync rules #
+####################################
+.ai-principles-sync:rules:weekly:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
+      when: never
+    - <<: *if-default-branch-schedule-weekly
+
 ###################
 # Benchmark rules #
 ###################
@@ -3801,6 +3868,15 @@
       changes:
         - "doc/api/openapi/openapi_v3.yaml"
 
+.rails:rules:api-high-impact-entity-baseline-check:
+  rules:
+    - <<: *if-default-branch-schedule-weekly
+
+.rails:rules:api-high-impact-entity-baseline-check:notify:
+  rules:
+    - <<: *if-default-branch-schedule-weekly
+      when: on_failure
+
 .test-metadata:rules:export-predictive-test-metrics:
   rules:
     - <<: *if-merge-request-tier-3
@@ -3813,7 +3889,16 @@
   rules:
     - <<: *if-default-refs
       changes: *ai-harness-doctor-patterns
+    - <<: *if-default-refs
+      changes: *ai-harness-doctor-forbidden-paths
 
 .test-metadata:rules:export-diff-stats:
   rules:
     - *if-merge-request
+
+###############################
+# Per-test coverage rules     #
+###############################
+.per-test-coverage:rules:delta:
+  rules:
+    - <<: *if-per-test-coverage-delta

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::PackageFileable, type: :model, feature_category: :package_registry do
-  let_it_be(:instance) { build(:conan_recipe_revision) }
+  let_it_be(:instance, freeze: false) { build(:conan_recipe_revision) }
 
   describe 'associations' do
     subject { instance }
@@ -27,7 +27,7 @@ RSpec.describe Packages::Conan::PackageFileable, type: :model, feature_category:
     end
 
     context 'when package_files is not empty' do
-      let_it_be(:package_file) do
+      let_it_be(:package_file, freeze: false) do
         create(:conan_package_file, :conan_recipe_file, package: instance.package, conan_recipe_revision: instance)
       end
 

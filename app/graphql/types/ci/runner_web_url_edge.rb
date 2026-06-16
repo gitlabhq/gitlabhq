@@ -39,6 +39,15 @@ module Types
           return Gitlab::Routing.url_helpers.edit_project_runner_url(owner, @runner) if url_type == :edit_url
 
           Gitlab::Routing.url_helpers.project_runner_url(owner, @runner)
+        when ::User
+          # When the runner is listed in the context of a user (e.g. currentUser.runners),
+          # use the runner's owner project to generate the URL
+          owner_project = @runner.owner
+          return unless owner_project.is_a?(::Project)
+
+          return Gitlab::Routing.url_helpers.edit_project_runner_url(owner_project, @runner) if url_type == :edit_url
+
+          Gitlab::Routing.url_helpers.project_runner_url(owner_project, @runner)
         end
       end
     end

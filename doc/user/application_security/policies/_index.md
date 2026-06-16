@@ -545,3 +545,22 @@ mutation {
 ```
 
 Set `fullPath` to the path of the project or group to which the security policy project is assigned.
+
+#### Resynchronize projects with the GraphQL API
+
+If the affected project inherits the policy from a group or subgroup, you can resynchronize only that project:
+
+```graphql
+mutation {
+  resyncSecurityPolicies(
+    input: {
+      fullPath: "project-path"
+      relationship: INHERITED
+    }
+  ) {
+    errors
+  }
+}
+```
+
+Set `fullPath` to the path of the project that inherits the policy. Use `relationship: INHERITED` to resynchronize policies inherited by that project without resynchronizing the entire group or subgroup.

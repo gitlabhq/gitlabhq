@@ -29,7 +29,7 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
   end
 
   describe 'unique index' do
-    let!(:link) { create(:ci_job_token_group_scope_link) }
+    let_it_be(:link) { create(:ci_job_token_group_scope_link) }
 
     it 'raises an error, when not unique' do
       expect do
@@ -108,8 +108,8 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
   describe '.with_source' do
     let(:group_scope_link) { described_class.with_source(project) }
 
-    let!(:source_link) { create(:ci_job_token_group_scope_link, source_project: project) }
-    let!(:target_link) { create(:ci_job_token_group_scope_link, target_group: group) }
+    let_it_be(:source_link) { create(:ci_job_token_group_scope_link, source_project: project) }
+    let_it_be(:target_link) { create(:ci_job_token_group_scope_link, target_group: group) }
 
     it 'returns only the links having the given source project' do
       expect(group_scope_link).to contain_exactly(source_link)
@@ -119,8 +119,8 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
   describe '.with_target' do
     let(:group_scope_link) { described_class.with_target(group) }
 
-    let!(:source_link) { create(:ci_job_token_group_scope_link, source_project: project) }
-    let!(:target_link) { create(:ci_job_token_group_scope_link, target_group: group) }
+    let_it_be(:source_link) { create(:ci_job_token_group_scope_link, source_project: project) }
+    let_it_be(:target_link) { create(:ci_job_token_group_scope_link, target_group: group) }
 
     it 'returns only the links having the given target group' do
       expect(group_scope_link).to contain_exactly(target_link)

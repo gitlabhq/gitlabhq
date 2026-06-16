@@ -15,7 +15,7 @@
           user_namespace_id: current_user.namespace_id } }
       - else
         .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
-          .input-group-text.border-0
+          %div{ class: "input-group-text !gl-border-0" }
             #{user_url(current_user.username)}/
         = hidden_field_tag :namespace_id, current_user.namespace_id
       .gl-self-center.gl-pl-5 /

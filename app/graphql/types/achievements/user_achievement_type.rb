@@ -58,6 +58,13 @@ module Types
         GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether or not the achievement is shown on the profile.'
+
+      field :award_message,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Message associated with the awarded achievement.'
+
+      markdown_field :award_message_html, null: true
     end
   end
 end

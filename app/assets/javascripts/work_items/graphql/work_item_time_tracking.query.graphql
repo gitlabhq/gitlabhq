@@ -23,6 +23,7 @@ query workItemTimeTracking($fullPath: ID!, $iid: String!, $useWorkItemFeatures: 
       }
       features @include(if: $useWorkItemFeatures) {
         timeTracking {
+          type
           timeEstimate
           humanReadableAttributes {
             timeEstimate

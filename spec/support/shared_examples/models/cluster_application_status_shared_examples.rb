@@ -301,7 +301,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
   describe '#available?' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:cluster) { create(:cluster, :provided_by_gcp) }
+    let_it_be(:cluster, freeze: false) { create(:cluster, :provided_by_gcp) }
 
     where(:trait, :available) do
       :not_installable   | false

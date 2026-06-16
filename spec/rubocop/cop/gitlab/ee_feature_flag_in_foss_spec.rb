@@ -151,4 +151,10 @@ RSpec.describe RuboCop::Cop::Gitlab::EeFeatureFlagInFoss, feature_category: :sca
       RUBY
     end
   end
+
+  describe '#external_dependency_checksum' do
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
 end

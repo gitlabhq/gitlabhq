@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../../rubocop/cop/gitlab/event_store_subscriber'
 
-RSpec.describe RuboCop::Cop::Gitlab::EventStoreSubscriber do
+RSpec.describe RuboCop::Cop::Gitlab::EventStoreSubscriber, feature_category: :scalability do
   context 'when an event store subscriber overrides #perform' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

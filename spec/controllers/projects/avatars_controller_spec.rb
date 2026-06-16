@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::AvatarsController do
   describe 'GET #show' do
-    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
     before do
       controller.instance_variable_set(:@project, project)

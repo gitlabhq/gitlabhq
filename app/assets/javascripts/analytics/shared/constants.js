@@ -1,3 +1,4 @@
+import { defaultAreaOpacity } from '@gitlab/ui/src/utils/charts/config';
 import dateFormat, { masks } from '~/lib/dateformat';
 import {
   nDaysBefore,
@@ -523,3 +524,34 @@ export const SUPPORTED_CODE_SUGGESTIONS_DIMENSION_KEYS = [
 ];
 
 export const MIN_SEARCH_CHARS = 3;
+
+export const PANEL_TROUBLESHOOTING_URL = helpPagePath('/user/analytics/analytics_dashboards.md');
+
+export const VISUALIZATION_SLUG_DORA_PERFORMERS_SCORE = 'dora_performers_score';
+export const VISUALIZATION_SLUG_DORA_PROJECTS_COMPARISON = 'dora_projects_comparison';
+export const VISUALIZATION_SLUG_VSD_DORA_METRICS_TABLE = 'vsd_dora_metrics_table';
+export const VISUALIZATION_SLUG_VSD_SECURITY_METRICS_TABLE = 'vsd_security_metrics_table';
+
+export const VISUALIZATION_DOCUMENTATION_LINKS = {
+  [VISUALIZATION_SLUG_DORA_PERFORMERS_SCORE]: helpPagePath(
+    'user/analytics/value_streams_dashboard.md#dora-performers-score',
+  ),
+  [VISUALIZATION_SLUG_DORA_PROJECTS_COMPARISON]: helpPagePath(
+    'user/analytics/value_streams_dashboard.md#projects-by-dora-metric',
+  ),
+  [VISUALIZATION_SLUG_VSD_DORA_METRICS_TABLE]: helpPagePath(
+    'user/analytics/value_streams_dashboard.md#devsecops-metrics-comparison',
+  ),
+  [VISUALIZATION_SLUG_VSD_SECURITY_METRICS_TABLE]: helpPagePath(
+    'user/analytics/value_streams_dashboard.md#devsecops-metrics-comparison',
+  ),
+};
+
+export const NULL_SERIES_ID = 'nullSeries';
+
+export const EVENT_LABEL_CLICK_METRIC_IN_DASHBOARD_TABLE = 'click_metric_in_dashboard_table';
+
+export const AREA_CHART_SERIES_OPTIONS = {
+  areaStyle: { opacity: defaultAreaOpacity },
+  type: 'line',
+};

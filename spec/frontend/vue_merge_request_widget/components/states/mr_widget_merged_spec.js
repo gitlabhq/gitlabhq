@@ -6,7 +6,6 @@ import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_fra
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
 import MergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
-import eventHub from '~/vue_merge_request_widget/event_hub';
 
 describe('MRWidgetMerged', () => {
   let wrapper;
@@ -63,7 +62,6 @@ describe('MRWidgetMerged', () => {
 
   beforeEach(() => {
     jest.spyOn(document, 'dispatchEvent');
-    jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
   });
 
   const findButtonByText = (text) =>
@@ -83,7 +81,7 @@ describe('MRWidgetMerged', () => {
       expect(findRemoveSourceBranchButton()).toBe(undefined);
     });
 
-    it('is not displayed when canRemoveSourceBranch is true', () => {
+    it('is not displayed when canRemoveSourceBranch is false', () => {
       createComponent({ sourceBranchRemoved: false, canRemoveSourceBranch: false });
 
       expect(findRemoveSourceBranchButton()).toBe(undefined);
@@ -108,7 +106,7 @@ describe('MRWidgetMerged', () => {
     });
   });
 
-  it('should set flag and call service then request main component to update the widget when branch is removed', async () => {
+  it('should remove the button when branch is successfully deleted', async () => {
     createComponent({ sourceBranchRemoved: false });
     jest.spyOn(service, 'removeSourceBranch').mockResolvedValue({
       data: {
@@ -120,10 +118,7 @@ describe('MRWidgetMerged', () => {
 
     await waitForPromises();
 
-    const args = eventHub.$emit.mock.calls[0];
-
-    expect(args[0]).toEqual('MRWidgetUpdateRequested');
-    expect(args[1]).not.toThrow();
+    expect(findRemoveSourceBranchButton()).toBe(undefined);
   });
 
   it('calls dispatchDocumentEvent to load in the modal component', () => {

@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
-  let_it_be(:guest) { create(:user, guest_of: project) }
-  let_it_be(:planner) { create(:user, planner_of: project) }
-  let_it_be(:reporter) { create(:user, reporter_of: project) }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: project) }
+  let_it_be(:planner, freeze: false) { create(:user, planner_of: project) }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
   let(:serializer) { IssueSerializer.new(current_user: user, project: project) }
@@ -18,10 +18,9 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   it 'contains keys related to issuables' do
     expect(entity).to include(
       :id, :iid, :type, :author_id, :project_id, :discussion_locked, :reference, :milestone,
-      :labels, :current_user, :issuable_json_path, :namespace_path, :project_path,
-      :project_full_path, :project_issuables_path, :create_todo_path, :project_milestones_path,
+      :labels, :current_user, :issuable_json_path, :project_full_path, :project_issuables_path,
       :project_labels_path, :toggle_subscription_path, :move_issue_path, :projects_autocomplete_path,
-      :project_emails_disabled, :create_note_email, :supports_time_tracking, :supports_milestone,
+      :create_note_email, :supports_time_tracking, :supports_milestone,
       :supports_severity, :supports_escalation
     )
   end
@@ -78,11 +77,11 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   end
 
   describe 'current_user' do
-    let_it_be(:incident) { create(:issue, :incident, project: project, assignees: [user]) }
+    let_it_be(:incident, freeze: false) { create(:issue, :incident, project: project, assignees: [user]) }
 
     it 'contains attributes related to the current user' do
       expect(entity[:current_user]).to include(
-        :id, :name, :username, :state, :avatar_url, :web_url, :todo,
+        :id, :name, :username, :state, :avatar_url, :web_url,
         :can_edit, :can_move, :can_admin_label
       )
     end
@@ -95,7 +94,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
       end
 
       context 'for an incident issue' do
-        let_it_be(:issue) { incident }
+        let_it_be(:issue, freeze: false) { incident }
 
         it 'is present and true' do
           expect(entity[:current_user][:can_update_escalation_status]).to be(true)
@@ -132,7 +131,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
       end
 
       context 'for a incident issue' do
-        let_it_be(:issue) { incident }
+        let_it_be(:issue, freeze: false) { incident }
 
         context 'with edit permissions' do
           let(:user) { reporter }

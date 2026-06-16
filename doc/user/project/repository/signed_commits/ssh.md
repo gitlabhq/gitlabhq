@@ -110,12 +110,9 @@ To sign a commit:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384473) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `render_ssh_signed_tags_verification_status`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/561452) in GitLab 18.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/596049) in GitLab 19.1. Feature flag `render_ssh_signed_tags_verification_status` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 After you [configure Git to sign commits and tags](#configure-git-to-sign-commits-and-tags-with-your-ssh-key)
 with your SSH key, you can sign your tags:

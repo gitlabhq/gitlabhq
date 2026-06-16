@@ -1,0 +1,9 @@
+---
+name: update_feature
+description: Grants the ability to set instance feature flags
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_feature

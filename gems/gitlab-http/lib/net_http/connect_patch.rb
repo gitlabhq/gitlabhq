@@ -150,6 +150,29 @@ module Net
       raise
     end
     private :connect
+
+    # Override Net::HTTP#proxy_uri to fix incorrect proxy env var lookup
+    # for SSL connections.
+    #
+    # Upstream hardcodes "http" as the scheme, so find_proxy always
+    # consults http_proxy instead of https_proxy for SSL connections.
+    # We use "https" when use_ssl? is true.
+    #
+    # Upstream (net-http v0.6.0): https://github.com/ruby/net-http/blob/v0.6.0/lib/net/http.rb#L1870-L1876
+    # Still broken in v0.9.1:    https://github.com/ruby/net-http/blob/v0.9.1/lib/net/http.rb#L1893-L1899
+    # Context: https://gitlab.com/gitlab-com/request-for-help/-/work_items/4801
+    #
+    # When upgrading net-http, check whether the upstream proxy_uri
+    # has been fixed to use the correct scheme. If so, remove this override.
+    def proxy_uri # rubocop:disable Layout/ClassStructure -- must be public; placed after `private :connect` which only affects connect
+      return if @proxy_uri == false
+
+      @proxy_uri ||= URI::HTTP.new(
+        use_ssl? ? "https" : "http", nil, address, port, nil, nil, nil, nil, nil
+      ).find_proxy || false
+      @proxy_uri || nil
+    end
+
     # rubocop:enable Cop/LineBreakAroundConditionalBlock
     # rubocop:enable Layout/ArgumentAlignment
     # rubocop:enable Layout/AssignmentIndentation

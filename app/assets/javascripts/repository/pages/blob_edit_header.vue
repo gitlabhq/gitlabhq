@@ -23,6 +23,7 @@ import {
 } from '../utils/blob_edit_redirect_utils';
 
 export default {
+  name: 'BlobEditHeader',
   UPDATE_FILE_PATH: '/api/:version/projects/:id/repository/files/:file_path',
   COMMIT_FILE_PATH: '/api/:version/projects/:id/repository/commits',
   components: {

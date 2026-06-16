@@ -327,7 +327,28 @@ describe('ReviewDrawer', () => {
     await waitForPromises();
 
     expect(diffsEventHub.$emit).toHaveBeenCalledWith('mr:reviewDrawer:submit:approval', {
-      summary: true,
+      summary: 1,
+      comments: 1,
+    });
+  });
+
+  it('emits approval event with summary 0 when submitting without a note', async () => {
+    jest.spyOn(diffsEventHub, '$emit');
+
+    useBatchComments().drawerOpened = true;
+    useBatchComments().drafts = [{ id: 1 }];
+
+    createComponent();
+
+    await waitForPromises();
+    await wrapper.find('.custom-control-input[value="approved"]').trigger('change');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    await waitForPromises();
+
+    expect(diffsEventHub.$emit).toHaveBeenCalledWith('mr:reviewDrawer:submit:approval', {
+      summary: 0,
       comments: 1,
     });
   });

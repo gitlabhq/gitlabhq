@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab, feature_category: :settings do
-  include SaasTestHelper
-
   %w[root extensions ee? jh?].each do |method_name|
     it "delegates #{method_name} to GitlabEdition" do
       expect(GitlabEdition).to receive(method_name)
@@ -86,12 +84,6 @@ RSpec.describe Gitlab, feature_category: :settings do
     subject { described_class.root_domain }
 
     it { is_expected.to eq('gitlab.com') }
-  end
-
-  describe '.canary_toggle_com_url' do
-    subject { described_class.canary_toggle_com_url }
-
-    it { is_expected.to eq(get_next_url) }
   end
 
   describe '.promo_host' do

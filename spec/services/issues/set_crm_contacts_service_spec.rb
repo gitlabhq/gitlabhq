@@ -7,7 +7,7 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: create(:group, parent: group)) }
   let_it_be(:contacts) { create_list(:contact, 4, group: group) }
-  let_it_be(:issue, reload: true) { create(:issue, project: project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let_it_be(:issue_contact_1) do
     create(:issue_customer_relations_contact, issue: issue, contact: contacts[0]).contact
   end

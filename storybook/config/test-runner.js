@@ -7,13 +7,19 @@ const { getStoryContext } = require('@storybook/test-runner');
  * to learn more about the test-runner hooks API.
  */
 module.exports = {
-  async preVisit(page) {
-    await injectAxe(page);
-  },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context);
 
     if (!storyContext.parameters?.a11y?.disable) {
+      // Inject axe here (postVisit), after the story has rendered, rather than
+      // in preVisit. The test-runner renders stories in-place via
+      // `setCurrentStory`, and the first story's render fires a `framenavigated`
+      // event (the no-id -> `?id=...` URL transition). If axe is already
+      // injected at that point, that navigation tears down the execution
+      // context the in-flight render evaluation depends on, surfacing as
+      // "Execution context was destroyed" on the first story in each file.
+      await injectAxe(page);
+
       // Merge story-specific rules with global rules
       const storyRules = storyContext.parameters?.a11y?.config?.rules || [];
       const globalRules = [

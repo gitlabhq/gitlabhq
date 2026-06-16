@@ -6,7 +6,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
   feature_category: :continuous_delivery do
   include KubernetesHelpers
 
-  let_it_be(:project, refind: true) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
 

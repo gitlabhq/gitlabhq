@@ -155,3 +155,7 @@ Use the following commands for different purposes:
   a new logical change to your stack.
 - `glab stack amend`: Modifies the current diff. Use this when responding to review feedback
   or fixing the current change.
+
+## Related topics
+
+- [Stacked merge requests](reviews/stacked_merge_requests.md)

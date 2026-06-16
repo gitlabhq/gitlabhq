@@ -15,28 +15,28 @@ RSpec.describe 'Admin updates reporting settings', :request_store, :enable_admin
     visit reporting_admin_application_settings_path
   end
 
-  it 'change Spam settings' do
+  it 'change Spam settings', :aggregate_failures do
     within_testid('spam-settings') do
-      fill_in 'reCAPTCHA site key', with: 'key'
-      fill_in 'reCAPTCHA private key', with: 'key'
-      find('#application_setting_recaptcha_enabled').set(true)
-      find('#application_setting_login_recaptcha_protection_enabled').set(true)
-      fill_in 'IP addresses per user', with: 15
-      check 'Enable Spam Check via external API endpoint'
-      fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'
-      fill_in 'Spam Check API key', with: 'SPAM_CHECK_API_KEY'
+      fill_field_with_new_value(_('reCAPTCHA site key'), 'key')
+      fill_field_with_new_value(_('reCAPTCHA private key'), 'key')
+      # 'Enable reCAPTCHA' is ambiguous with 'Enable reCAPTCHA for login.' - use field name instead.
+      click_unchecked_field('application_setting_recaptcha_enabled')
+      click_unchecked_field(_('Enable reCAPTCHA for login.'))
+      fill_field_with_new_value(_('IP addresses per user'), '15')
+      click_unchecked_field(_('Enable Spam Check via external API endpoint'))
+      fill_field_with_new_value(_('URL of the external Spam Check endpoint'), 'grpc://www.example.com/spamcheck')
+      fill_field_with_new_value(_('Spam Check API key'), 'SPAM_CHECK_API_KEY')
+
+      expect_save_settings
+
+      expect_field_value(_('reCAPTCHA site key'), 'key')
+      expect_field_value(_('reCAPTCHA private key'), 'key')
+      expect_field_checked('application_setting_recaptcha_enabled')
+      expect_field_checked(_('Enable reCAPTCHA for login.'))
+      expect_field_value(_('IP addresses per user'), '15')
+      expect_field_checked(_('Enable Spam Check via external API endpoint'))
+      expect_field_value(_('URL of the external Spam Check endpoint'), 'grpc://www.example.com/spamcheck')
+      expect_field_value(_('Spam Check API key'), 'SPAM_CHECK_API_KEY')
     end
-
-    expect_save_settings('spam-settings')
-
-    expect(current_settings.recaptcha_enabled).to be true
-    expect(current_settings.login_recaptcha_protection_enabled).to be true
-    expect(current_settings.unique_ips_limit_per_user).to eq(15)
-    expect(current_settings.spam_check_endpoint_enabled).to be true
-    expect(current_settings.spam_check_endpoint_url).to eq 'grpc://www.example.com/spamcheck'
-  end
-
-  def current_settings
-    ApplicationSetting.current_without_cache
   end
 end

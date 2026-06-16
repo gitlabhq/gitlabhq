@@ -32,6 +32,7 @@ module ApplicationSettings
       update_terms(@params.delete(:terms))
       update_default_branch_protection_defaults(@params[:default_branch_protection_defaults])
       update_legacy_default_branch_protection_defaults(@params[:default_branch_protection])
+      update_dependency_management_settings(@params[:dependency_management_settings])
 
       add_to_outbound_local_requests_whitelist(@params.delete(:add_to_outbound_local_requests_whitelist))
 
@@ -100,6 +101,15 @@ module ApplicationSettings
       return unless default_branch_protection_defaults.present?
 
       @application_setting.default_branch_protection_defaults.merge!(default_branch_protection_defaults)
+    end
+
+    # Merge into the existing blob so a partial update doesn't reset the other
+    # keys stored in the `dependency_management_settings` jsonb column.
+    def update_dependency_management_settings(dependency_management_settings)
+      return unless dependency_management_settings.present?
+
+      @params[:dependency_management_settings] =
+        @application_setting.dependency_management_settings.merge(dependency_management_settings.stringify_keys)
     end
 
     def process_performance_bar_allowed_group_id

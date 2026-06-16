@@ -3,6 +3,7 @@ import { GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'NoteableWarning',
   docsLinks: {
     locked: helpPagePath('user/discussions/_index', {
       anchor: 'prevent-comments-by-locking-the-discussion',

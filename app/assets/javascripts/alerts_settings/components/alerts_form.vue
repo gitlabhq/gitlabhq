@@ -15,6 +15,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'AlertsForm',
   components: {
     GlButton,
     GlSprintf,

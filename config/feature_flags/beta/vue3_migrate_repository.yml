@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_repository
+description: Enables Vue 3 for repository views (tree, blob, project overview) with automatic Vue 2 fallback on error.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20939
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224264
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588786
+milestone: '19.1'
+group: group::source code
+type: beta
+default_enabled: false

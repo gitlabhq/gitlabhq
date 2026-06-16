@@ -23,15 +23,15 @@ RSpec.shared_examples 'a GraphQL type with labels' do
 end
 
 RSpec.shared_examples 'querying a GraphQL type with labels' do
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
-  let_it_be(:label_a) { create(label_factory, :described, **label_attrs) }
-  let_it_be(:label_b) { create(label_factory, :described, description: 'matching', **label_attrs) }
-  let_it_be(:label_c) do
+  let_it_be(:label_a, freeze: false) { create(label_factory, :described, **label_attrs) }
+  let_it_be(:label_b, freeze: false) { create(label_factory, :described, description: 'matching', **label_attrs) }
+  let_it_be(:label_c, freeze: false) do
     create(label_factory, :described, :scoped, description: 'test', prefix: 'matching', **label_attrs)
   end
 
-  let_it_be(:label_d) do
+  let_it_be(:label_d, freeze: false) do
     create(label_factory, :described, :scoped, description: 'test', prefix: 'matching', **label_attrs)
   end
 
@@ -125,7 +125,7 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
     end
 
     context 'with archived label' do
-      let_it_be(:label_archived) do
+      let_it_be(:label_archived, freeze: false) do
         create(label_factory, :described, :scoped, description: 'test', prefix: 'matching', archived: true,
 **label_attrs)
       end

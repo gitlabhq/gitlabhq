@@ -1,0 +1,107 @@
+/**
+ * CSS Custom properties
+ */
+:root {
+  --application-chrome-nav-item-foreground-color-default: var(--gl-text-color-default);
+  --application-chrome-nav-item-background-color-default: transparent;
+  --application-chrome-nav-item-foreground-color-hover: var(--application-chrome-nav-item-foreground-color-default);
+  --application-chrome-nav-item-background-color-hover: var(--gl-color-alpha-dark-6);
+  --application-chrome-nav-item-foreground-color-focus: var(--application-chrome-nav-item-foreground-color-hover);
+  --application-chrome-nav-item-background-color-focus: var(--application-chrome-nav-item-background-color-hover);
+  --application-chrome-nav-item-foreground-color-active: var(--application-chrome-nav-item-foreground-color-focus);
+  --application-chrome-nav-item-background-color-active: var(--application-chrome-nav-item-background-color-focus);
+
+  --application-chrome-nav-item-selected-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
+  --application-chrome-nav-item-selected-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
+  --application-chrome-nav-item-selected-foreground-color-hover: var(--gl-text-color-default);
+  --application-chrome-nav-item-selected-background-color-hover: var(--gl-color-alpha-dark-6);
+  --application-chrome-nav-item-selected-foreground-color-focus: var(--application-chrome-nav-item-selected-foreground-color-hover);
+  --application-chrome-nav-item-selected-background-color-focus: var(--application-chrome-nav-item-selected-background-color-hover);
+  --application-chrome-nav-item-selected-foreground-color-active: var(--application-chrome-nav-item-selected-foreground-color-focus);
+  --application-chrome-nav-item-selected-background-color-active: var(--application-chrome-nav-item-selected-background-color-focus);
+}
+
+:root.gl-dark {
+  --application-chrome-nav-item-foreground-color-default: var(--gl-text-color-default);
+  --application-chrome-nav-item-background-color-default: transparent;
+  --application-chrome-nav-item-foreground-color-hover: var(--application-chrome-nav-item-foreground-color-default);
+  --application-chrome-nav-item-background-color-hover: var(--gl-color-alpha-light-8);
+  --application-chrome-nav-item-foreground-color-focus: var(--application-chrome-nav-item-foreground-color-hover);
+  --application-chrome-nav-item-background-color-focus: var(--application-chrome-nav-item-background-color-hover);
+  --application-chrome-nav-item-foreground-color-active: var(--application-chrome-nav-item-foreground-color-focus);
+  --application-chrome-nav-item-background-color-active: var(--application-chrome-nav-item-background-color-focus);
+
+  --application-chrome-nav-item-selected-foreground-color-default: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
+  --application-chrome-nav-item-selected-background-color-default: hsla(from var(--super-sidebar-theme-accent-color) h s calc(l + 20) / 25%);
+  --application-chrome-nav-item-selected-foreground-color-hover: var(--gl-text-color-default);
+  --application-chrome-nav-item-selected-background-color-hover: var(--gl-color-alpha-light-8);
+  --application-chrome-nav-item-selected-foreground-color-focus: var(--application-chrome-nav-item-selected-foreground-color-hover);
+  --application-chrome-nav-item-selected-background-color-focus: var(--application-chrome-nav-item-selected-background-color-hover);
+  --application-chrome-nav-item-selected-foreground-color-active: var(--application-chrome-nav-item-selected-foreground-color-focus);
+  --application-chrome-nav-item-selected-background-color-active: var(--application-chrome-nav-item-selected-background-color-focus);
+}
+
+/**
+ * Utility class
+ */
+.application-chrome-nav-item,
+.gl-button.gl-button.application-chrome-nav-item {
+  color: var(--application-chrome-nav-item-foreground-color-default);
+  background-color: var(--application-chrome-nav-item-background-color-default);
+  border-radius: var(--gl-action-border-radius);
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition-duration: .2s;
+    transition-timing-function: $gl-easing-out-cubic;
+    transition-property: color, background-color;
+  }
+
+  &:hover,
+  &.with-mouse-over-flyout {
+    color: var(--application-chrome-nav-item-foreground-color-hover);
+    background-color: var(--application-chrome-nav-item-background-color-hover);
+  }
+
+  &:focus {
+    color: var(--application-chrome-nav-item-foreground-color-focus);
+    background-color: var(--application-chrome-nav-item-background-color-focus);
+  }
+
+  &:active,
+  &:focus:active {
+    color: var(--application-chrome-nav-item-foreground-color-active);
+    background-color: var(--application-chrome-nav-item-background-color-active);
+  }
+
+  &.selected,
+  &.super-sidebar-nav-item-current {
+    color: var(--application-chrome-nav-item-selected-foreground-color-default);
+    background-color: var(--application-chrome-nav-item-selected-background-color-default);
+    border: 0;
+    box-shadow: none;
+
+    &:hover,
+    &.with-mouse-over-flyout {
+      color: var(--application-chrome-nav-item-selected-foreground-color-hover);
+      background-color: var(--application-chrome-nav-item-selected-background-color-hover);
+      border: 0;
+      box-shadow: none;
+    }
+
+    &:focus {
+      color: var(--application-chrome-nav-item-selected-foreground-color-focus);
+      background-color: var(--application-chrome-nav-item-selected-background-color-focus);
+      border: 0;
+      box-shadow: none;
+      @apply gl-focus;
+    }
+
+    &:active,
+    &:focus:active {
+      color: var(--application-chrome-nav-item-selected-foreground-color-active);
+      background-color: var(--application-chrome-nav-item-selected-background-color-active);
+      border: 0;
+      box-shadow: none;
+    }
+  }
+}

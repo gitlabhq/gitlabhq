@@ -87,6 +87,7 @@ export default {
       default: false,
     },
   },
+  emits: ['close', 'editRule'],
   data() {
     return {
       updatedGroups: this.groups,

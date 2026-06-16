@@ -8,18 +8,28 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
   subject { described_class.new(Gitlab::Database::PostgresIndex.all).to_a }
 
   let(:connection) { ApplicationRecord.connection }
+  let(:bloat_sizes) { {} }
 
   before do
-    swapout_view_for_table(:postgres_index_bloat_estimates, connection: connection)
     swapout_view_for_table(:postgres_indexes, connection: connection)
 
+    allow_any_instance_of(Gitlab::Database::PostgresIndex).to receive(:bloat_size) do |index| # rubocop:disable RSpec/AnyInstanceOf -- PostgresIndex instances are materialized by ActiveRecord via .allocate + init_with, so allow_next_instance_of does not intercept them
+      bloat_sizes[index.identifier] || 0
+    end
+
     create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
-      create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabytes * (i + 1))
+      bloat_sizes[index.identifier] = 2.gigabytes * (i + 1)
     end
   end
 
   def execute(sql)
     connection.execute(sql)
+  end
+
+  def create_index_with_bloat(bloat_size_bytes:, **attrs)
+    index = create(:postgres_index, **attrs)
+    bloat_sizes[index.identifier] = bloat_size_bytes
+    index
   end
 
   it 'orders by highest relative bloat first' do
@@ -29,33 +39,30 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
   end
 
   it 'excludes indexes with a relative bloat level below 20%' do
-    excluded = create(
-      :postgres_index_bloat_estimate,
-      index: create(:postgres_index, ondisk_size_bytes: 10.gigabytes),
+    excluded = create_index_with_bloat(
+      ondisk_size_bytes: 10.gigabytes,
       bloat_size_bytes: 1.9.gigabytes # 19% relative index bloat
     )
 
-    expect(subject).not_to include(excluded.index)
+    expect(subject).not_to include(excluded)
   end
 
   it 'excludes indexes smaller than 1 GiB ondisk size' do
-    excluded = create(
-      :postgres_index_bloat_estimate,
-      index: create(:postgres_index, ondisk_size_bytes: 0.99.gigabytes),
+    excluded = create_index_with_bloat(
+      ondisk_size_bytes: 0.99.gigabytes,
       bloat_size_bytes: 0.8.gigabytes
     )
 
-    expect(subject).not_to include(excluded.index)
+    expect(subject).not_to include(excluded)
   end
 
   it 'includes indexes larger than 100 GiB ondisk size' do
-    included = create(
-      :postgres_index_bloat_estimate,
-      index: create(:postgres_index, ondisk_size_bytes: 101.gigabytes),
+    included = create_index_with_bloat(
+      ondisk_size_bytes: 101.gigabytes,
       bloat_size_bytes: 25.gigabytes
     )
 
-    expect(subject).to include(included.index)
+    expect(subject).to include(included)
   end
 
   context 'with time frozen' do
@@ -69,7 +76,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       end
 
       create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
-        create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabytes * (i + 1))
+        bloat_sizes[index.identifier] = 2.gigabytes * (i + 1)
         create(:reindex_action, index: index, action_end: Time.zone.now)
       end
 
@@ -79,27 +86,27 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
 
   context 'with restricted tables for saas', :saas do
     let!(:ci_builds) do
-      create(
-        :postgres_index_bloat_estimate,
-        index: create(:postgres_index, ondisk_size_bytes: 100.gigabytes, tablename: 'ci_builds'),
+      create_index_with_bloat(
+        ondisk_size_bytes: 100.gigabytes,
+        tablename: 'ci_builds',
         bloat_size_bytes: 20.gigabytes
       )
     end
 
     context 'when executed on Fridays', time_travel_to: '2022-12-16T09:44:07Z' do
-      it { expect(subject).not_to include(ci_builds.index) }
+      it { expect(subject).not_to include(ci_builds) }
     end
 
     context 'when executed on Saturdays', time_travel_to: '2022-12-17T09:44:07Z' do
-      it { expect(subject).to include(ci_builds.index) }
+      it { expect(subject).to include(ci_builds) }
     end
 
     context 'when executed on Sundays', time_travel_to: '2022-12-18T09:44:07Z' do
-      it { expect(subject).not_to include(ci_builds.index) }
+      it { expect(subject).not_to include(ci_builds) }
     end
 
     context 'when executed on Mondays', time_travel_to: '2022-12-19T09:44:07Z' do
-      it { expect(subject).not_to include(ci_builds.index) }
+      it { expect(subject).not_to include(ci_builds) }
     end
   end
 
@@ -110,9 +117,9 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     end
 
     let!(:parent_index) do
-      create(
-        :postgres_index_bloat_estimate,
-        index: create(:postgres_index, tablename: '_test_partitioned_parent', ondisk_size_bytes: 100.gigabytes),
+      create_index_with_bloat(
+        tablename: '_test_partitioned_parent',
+        ondisk_size_bytes: 100.gigabytes,
         bloat_size_bytes: 40.gigabytes
       )
     end

@@ -43,6 +43,7 @@ export default {
       default: '',
     },
   },
+  emits: ['edit-issuable'],
   data() {
     return {
       stickyTitleVisible: false,

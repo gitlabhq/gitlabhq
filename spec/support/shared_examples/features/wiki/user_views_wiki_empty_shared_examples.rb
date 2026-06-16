@@ -35,7 +35,7 @@ RSpec.shared_examples 'User views empty wiki' do
       if confluence
         expect(element).to have_link(confluence_link)
       else
-        expect(element).not_to have_link(confluence_link)
+        expect(element).to have_no_link(confluence_link)
       end
 
       if writable
@@ -43,7 +43,7 @@ RSpec.shared_examples 'User views empty wiki' do
 
         expect(page).to have_button('Create page')
       else
-        expect(element).not_to have_link('Create your first page')
+        expect(element).to have_no_link('Create your first page')
       end
     end
   end

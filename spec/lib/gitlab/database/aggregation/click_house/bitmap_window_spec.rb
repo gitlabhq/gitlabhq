@@ -110,6 +110,39 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::BitmapWindow, feature_
         expect(sql).to include('lagInFrame(aeq_users_count, 3, [])')
       end
     end
+
+    context 'with partition_aliases' do
+      it 'includes PARTITION BY in lag window SQL' do
+        sql = lag_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: ['aeq_feature'])
+
+        expect(sql).to eq("lagInFrame(aeq_users_count, 1, 0) OVER (" \
+          "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC)")
+      end
+
+      it 'includes PARTITION BY in intersection window SQL' do
+        sql = intersection_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: ['aeq_feature'])
+
+        expect(sql).to eq("length(arrayIntersect(aeq_users_count, lagInFrame(aeq_users_count, 1, []) OVER (" \
+          "PARTITION BY aeq_feature ORDER BY aeq_event_date_daily ASC)))")
+      end
+
+      it 'supports multiple partition columns' do
+        sql = lag_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: %w[aeq_feature aeq_event])
+
+        expect(sql).to eq("lagInFrame(aeq_users_count, 1, 0) OVER (" \
+          "PARTITION BY aeq_feature, aeq_event ORDER BY aeq_event_date_daily ASC)")
+      end
+
+      it 'omits PARTITION BY when partition_aliases is empty' do
+        sql = lag_metric.build_window_sql(context, 'aeq_users_count',
+          over_alias: 'aeq_event_date_daily', partition_aliases: [])
+
+        expect(sql).to eq('lagInFrame(aeq_users_count, 1, 0) OVER (ORDER BY aeq_event_date_daily ASC)')
+      end
+    end
   end
 
   describe '#finalization_sql' do

@@ -1,8 +1,9 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: エピックリンクAPI
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: エピックリンクAPI (非推奨)
+description: エピックリンクのGitLab APIドキュメントをレビューします。親と子エピックの関連性を効率的にプログラムで管理、作成、削除する方法を確認します。
 ---
 
 {{< details >}}
@@ -12,23 +13,20 @@ title: エピックリンクAPI
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> エピックREST APIはGitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)になり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
 
-エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
+親子の[エピックの関連性](../user/work_items/child_items.md#work-with-multi-level-hierarchies)を管理します。
 
-{{< /alert >}}
+`epic_links`へのすべてのAPIコールは認証される必要があります。
 
-親と子エピックの[エピック関係](../user/group/epics/manage_epics.md#multi-level-child-epics)を管理します。
+ユーザーがプライベートグループのメンバーでない場合、そのグループへの`GET`リクエストは`404`ステータスコードを返します。
 
-APIコールに対するすべての`epic_links`は、認証されている必要があります。
+多層エピックは[GitLab Ultimate](https://about.gitlab.com/pricing/)でのみ利用可能です。多層エピック機能が利用できない場合、`403`ステータスコードが返されます。
 
-ユーザーがプライベートグループのメンバーではない場合、そのグループに対する`GET`リクエストの結果は、`404`ステータスコードになります。
+## エピックのすべての子エピックをリスト表示する {#list-all-child-epics-of-an-epic}
 
-複数レベルのエピックは、[GitLab Ultimate](https://about.gitlab.com/pricing/)でのみ使用できます。複数レベルのエピック機能が利用できない場合、`403`ステータスコードが返されます。
-
-## 特定のエピックに関連付けられたエピックを一覧表示する {#list-epics-related-to-a-given-epic}
-
-エピックのすべての子エピックを取得します。
+エピックのすべての子エピックをリスト表示します。
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/epics
@@ -37,14 +35,14 @@ GET /groups/:id/epics/:epic_iid/epics
 | 属性  | 型           | 必須 | 説明                                                                                                   |
 | ---------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
 | `id`       | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `epic_iid` | 整数        | はい      | エピックの内部ID                                                                                  |
+| `epic_iid` | 整数        | はい      | エピックの内部ID。                                                                                  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/epics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -83,7 +81,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## 子エピックを割り当てる {#assign-a-child-epic}
 
-2つのエピック間の関連付けを作成し、一方を親エピック、もう一方を子エピックとして指定します。親エピックは、複数の子エピックを持つことができます。新しい子エピックがすでに別のエピックに属している場合、その以前の親から割り当て解除されます。
+2つのエピック間の関連を作成し、一方を親エピックとして、もう一方を子エピックとして指定します。親エピックは複数の子エピックを持つことができます。新しい子エピックがすでに別のエピックに属していた場合、その前の親から割り当てが解除されます。
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
@@ -92,8 +90,8 @@ POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | 属性       | 型           | 必須 | 説明                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`            | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)      |
-| `epic_iid`      | 整数        | はい      | エピックの内部ID                                                                                       |
-| `child_epic_id` | 整数        | はい      | 子エピックのグローバルID。内部IDは、他のグループのエピックと競合する可能性があるため、使用できません。 |
+| `epic_iid`      | 整数        | はい      | エピックの内部ID。                                                                                       |
+| `child_epic_id` | 整数        | はい      | 子エピックのグローバルID。他のグループのエピックと競合する可能性があるため、内部IDは使用できません。 |
 
 ```shell
 curl --request POST \
@@ -102,7 +100,7 @@ curl --request POST \
 
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -139,7 +137,7 @@ curl --request POST \
 
 ## 子エピックを作成して割り当てる {#create-and-assign-a-child-epic}
 
-新しいエピックを作成し、指定された親エピックに関連付けます。応答はLinkedEpicオブジェクトです。
+新しいエピックを作成し、指定された親エピックに関連付けます。応答は`LinkedEpic`オブジェクトです。
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/epics
@@ -148,9 +146,9 @@ POST /groups/:id/epics/:epic_iid/epics
 | 属性       | 型           | 必須 | 説明                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`            | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)      |
-| `epic_iid`      | 整数        | はい      | （将来の親）エピックの内部ID。                                                                       |
+| `epic_iid`      | 整数        | はい      | (将来の親) エピックの内部ID。                                                                       |
 | `title`         | 文字列         | はい      | 新しく作成されたエピックのタイトル。                                                                                 |
-| `confidential`  | ブール値        | いいえ       | エピックを機密にするかどうか。`confidential_epics`機能フラグが無効になっている場合、パラメータは無視されます。親エピックの機密状態にデフォルト設定されます。  |
+| `confidential`  | ブール値        | いいえ       | エピックを機密にするかどうか。`confidential_epics`機能フラグが無効になっている場合、パラメータは無視されます。デフォルトでは、親エピックの機密性ステートに設定されます。  |
 
 ```shell
 curl --request POST \
@@ -158,7 +156,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/epics?title=Newpic"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -175,7 +173,7 @@ curl --request POST \
 }
 ```
 
-## 子エピックの順序を変更する {#re-order-a-child-epic}
+## 子エピックを並べ替える {#re-order-a-child-epic}
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
@@ -184,10 +182,10 @@ PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | 属性        | 型           | 必須 | 説明                                                                                                        |
 | ---------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`             | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。     |
-| `epic_iid`       | 整数        | はい      | エピックの内部ID                                                                                       |
-| `child_epic_id`  | 整数        | はい      | 子エピックのグローバルID。内部IDは、他のグループのエピックと競合する可能性があるため、使用できません。 |
-| `move_before_id` | 整数        | いいえ       | 子エピックの前に配置する必要がある兄弟エピックのグローバルID。                                       |
-| `move_after_id`  | 整数        | いいえ       | 子エピックの後に配置する必要がある兄弟エピックのグローバルID。                                        |
+| `epic_iid`       | 整数        | はい      | エピックの内部ID。                                                                                       |
+| `child_epic_id`  | 整数        | はい      | 子エピックのグローバルID。他のグループのエピックと競合する可能性があるため、内部IDは使用できません。 |
+| `move_before_id` | 整数        | いいえ       | 子エピックの前に配置されるべき兄弟エピックのグローバルID。                                       |
+| `move_after_id`  | 整数        | いいえ       | 子エピックの後に配置されるべき兄弟エピックのグローバルID。                                        |
 
 ```shell
 curl --request PUT \
@@ -195,7 +193,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -243,8 +241,8 @@ DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | 属性       | 型           | 必須 | 説明                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`            | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。     |
-| `epic_iid`      | 整数        | はい      | エピックの内部ID                                                                                       |
-| `child_epic_id` | 整数        | はい      | 子エピックのグローバルID。内部IDは、他のグループのエピックと競合する可能性があるため、使用できません。 |
+| `epic_iid`      | 整数        | はい      | エピックの内部ID。                                                                                       |
+| `child_epic_id` | 整数        | はい      | 子エピックのグローバルID。他のグループのエピックと競合する可能性があるため、内部IDは使用できません。 |
 
 ```shell
 curl --request DELETE \
@@ -252,7 +250,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -10,7 +10,18 @@
 #   3. Updates SPECIFICATION/04_scenarios.md if a new scenario emerges
 allowed_committed_files:
   # Project-scope skill committed by !232403. Auto-generated from
-  # .ai/principles/sources.yml; loaded by both OpenCode (.agents/skills/)
+  # .ai/principles/manifest.yml; loaded by both OpenCode (.agents/skills/)
   # and Claude Code (.claude/skills/) to provide the routing table for
   # the gitlab-coding-principles content.
   - .claude/skills/gitlab-coding-principles/SKILL.md
+  # Project-scope explainer for the shared Claude Code skills directory
+  # (gitlab-org/gitlab#20880). Committed so every contributor sees the
+  # same conventions; the directory itself is auto-discovered by Claude
+  # Code with no install step.
+  - .claude/skills/README.md
+  # Project-scope glab skill (gitlab-org/gitlab#601836). The directory prefix
+  # allows all of the skill's files.
+  - .claude/skills/glab/
+  # Project-scope skill for extending dependency management auto remediation
+  # to new ecosystems. The directory prefix allows all of the skill's files.
+  - .claude/skills/dependency-management-auto-remediation/

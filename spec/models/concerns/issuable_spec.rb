@@ -93,9 +93,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     describe '#validate_assignee_length' do
-      let(:assignee_1) { create(:user) }
-      let(:assignee_2) { create(:user) }
-      let(:assignee_3) { create(:user) }
+      let_it_be(:assignee_1) { create(:user) }
+      let_it_be(:assignee_2) { create(:user) }
+      let_it_be(:assignee_3) { create(:user) }
 
       subject { create(:merge_request) }
 
@@ -119,8 +119,13 @@ RSpec.describe Issuable, feature_category: :team_planning do
     describe '.non_archived' do
       let_it_be(:archived_project) { create(:project, :archived) }
       let_it_be(:non_archived_project) { create(:project) }
-      let_it_be(:mr_in_archived_project) { create(:merge_request, source_project: archived_project, target_project: archived_project) }
-      let_it_be(:mr_in_non_archived_project) { create(:merge_request, source_project: non_archived_project, target_project: non_archived_project) }
+      let_it_be(:mr_in_archived_project) do
+        create(:merge_request, source_project: archived_project, target_project: archived_project)
+      end
+
+      let_it_be(:mr_in_non_archived_project) do
+        create(:merge_request, source_project: non_archived_project, target_project: non_archived_project)
+      end
 
       it 'excludes merge requests from archived projects' do
         expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
@@ -215,8 +220,8 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe ".search" do
-    let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
-    let!(:searchable_issue2) { create(:issue, title: 'Aw') }
+    let_it_be(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
+    let_it_be(:searchable_issue2) { create(:issue, title: 'Aw') }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.search(searchable_issue.title))
@@ -242,11 +247,11 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe ".full_search" do
-    let!(:searchable_issue) do
+    let_it_be(:searchable_issue) do
       create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
 
-    let!(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
+    let_it_be(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.full_search(searchable_issue.title))
@@ -397,7 +402,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe "#sort_by_attribute" do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     context "by milestone due date" do
       # Correct order is:
@@ -405,12 +410,13 @@ RSpec.describe Issuable, feature_category: :team_planning do
       # Issues/MRs with milestones without dates
       # Issues/MRs without milestones
 
-      let!(:issue) { create(:issue, project: project) }
-      let!(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
-      let!(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
-      let!(:issue1) { create(:issue, project: project, milestone: early_milestone) }
-      let!(:issue2) { create(:issue, project: project, milestone: late_milestone) }
-      let!(:issue3) { create(:issue, project: project) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+      let_it_be(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+      let_it_be(:issue1) { create(:issue, project: project, milestone: early_milestone) }
+      let_it_be(:issue2) { create(:issue, project: project, milestone: late_milestone) }
+      let_it_be(:issue3) { create(:issue, project: project) }
 
       it "sorts desc" do
         issues = project.issues.sort_by_attribute('milestone_due_desc')
@@ -438,10 +444,11 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     context 'by title' do
-      let!(:issue1) { create(:issue, project: project, title: 'foo') }
-      let!(:issue2) { create(:issue, project: project, title: 'bar') }
-      let!(:issue3) { create(:issue, project: project, title: 'baz') }
-      let!(:issue4) { create(:issue, project: project, title: 'Baz 2') }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:issue1) { create(:issue, project: project, title: 'foo') }
+      let_it_be(:issue2) { create(:issue, project: project, title: 'bar') }
+      let_it_be(:issue3) { create(:issue, project: project, title: 'baz') }
+      let_it_be(:issue4) { create(:issue, project: project, title: 'Baz 2') }
 
       it 'sorts asc' do
         issues = project.issues.sort_by_attribute('title_asc')
@@ -595,7 +602,8 @@ RSpec.describe Issuable, feature_category: :team_planning do
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::DataBuilder::Issuable#build', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16826' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16826' do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
@@ -657,7 +665,8 @@ RSpec.describe Issuable, feature_category: :team_planning do
               ]
             ]
           ))
-        merge_request.to_hook_data(user, old_associations: { reviewers_hook_attrs: [user.hook_attrs.merge(state: 'unreviewed', re_requested: false)] }, action: 'update')
+        merge_request.to_hook_data(user,
+          old_associations: { reviewers_hook_attrs: [user.hook_attrs.merge(state: 'unreviewed', re_requested: false)] }, action: 'update')
       end
     end
 
@@ -774,7 +783,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     context 'merge_request saved twice' do
-      let(:merge_request) { create(:merge_request, :unchanged, target_branch: "initial-branch", title: "initial title") }
+      let(:merge_request) do
+        create(:merge_request, :unchanged, target_branch: "initial-branch", title: "initial title")
+      end
 
       before do
         merge_request.update!(target_branch: "some-other-branch")
@@ -834,9 +845,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#labels_array' do
-    let(:project) { create(:project) }
-    let(:bug) { create(:label, project: project, title: 'bug') }
-    let(:issue) { create(:issue, project: project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:bug) { create(:label, project: project, title: 'bug') }
+    let_it_be(:issue) { create(:issue, project: project) }
 
     before do
       issue.labels << bug
@@ -848,9 +859,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe "#labels_hook_attrs" do
-    let(:project) { create(:project) }
-    let(:label) { create(:label) }
-    let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:label) { create(:label) }
+    let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label]) }
 
     it "returns a list of label hook attributes" do
       expect(issue.labels_hook_attrs).to match_array([label.hook_attrs])
@@ -858,9 +869,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '.labels_hash' do
-    let(:feature_label) { create(:label, title: 'Feature') }
-    let(:second_label) { create(:label, title: 'Second Label') }
-    let!(:issues) { create_list(:labeled_issue, 3, labels: [feature_label, second_label]) }
+    let_it_be(:feature_label) { create(:label, title: 'Feature') }
+    let_it_be(:second_label) { create(:label, title: 'Second Label') }
+    let_it_be(:issues) { create_list(:labeled_issue, 3, labels: [feature_label, second_label]) }
     let(:issue_id) { issues.first.id }
 
     it 'maps issue ids to labels titles' do
@@ -892,9 +903,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#user_notes_count' do
-    let(:project) { create(:project) }
-    let(:issue1) { create(:issue, project: project) }
-    let(:issue2) { create(:issue, project: project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue1) { create(:issue, project: project) }
+    let_it_be(:issue2) { create(:issue, project: project) }
 
     before do
       create_list(:note, 3, noteable: issue1, project: project)
@@ -922,7 +933,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '.order_due_date_and_labels_priority' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     def create_issue(milestone, labels)
       create(:labeled_issue, milestone: milestone, labels: labels, project: project)
@@ -976,15 +987,15 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe ".with_label" do
-    let(:project) { create(:project, :public) }
-    let(:bug) { create(:label, project: project, title: 'bug') }
-    let(:feature) { create(:label, project: project, title: 'feature') }
-    let(:enhancement) { create(:label, project: project, title: 'enhancement') }
-    let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
-    let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
-    let(:issue3) { create(:issue, title: "Feature1", project: project) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:bug) { create(:label, project: project, title: 'bug') }
+    let_it_be(:feature) { create(:label, project: project, title: 'feature') }
+    let_it_be(:enhancement) { create(:label, project: project, title: 'enhancement') }
+    let_it_be(:issue1) { create(:issue, title: "Bugfix1", project: project) }
+    let_it_be(:issue2) { create(:issue, title: "Bugfix2", project: project) }
+    let_it_be(:issue3) { create(:issue, title: "Feature1", project: project) }
 
-    before do
+    before_all do
       issue1.labels << bug
       issue1.labels << feature
       issue2.labels << bug
@@ -1076,19 +1087,28 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#first_contribution?', feature_category: :code_review_workflow do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, namespace: group) }
-    let(:other_project) { create(:project) }
-    let(:guest) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:guest) { create(:user) }
 
-    let(:contributor) { create(:user) }
-    let(:first_time_contributor) { create(:user) }
+    let_it_be(:contributor) { create(:user) }
+    let_it_be(:first_time_contributor) { create(:user) }
 
-    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
-    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+    let_it_be(:merged_mr) do
+      create(:merge_request, :merged, author: contributor, target_project: project, source_project: project)
+    end
 
-    before do
+    let_it_be(:open_mr) do
+      create(:merge_request, author: first_time_contributor, target_project: project, source_project: project)
+    end
+
+    let_it_be(:merged_mr_other_project) do
+      create(:merge_request, :merged, author: first_time_contributor, target_project: other_project,
+        source_project: other_project)
+    end
+
+    before_all do
       project.add_guest(guest)
       project.add_guest(contributor)
       project.add_guest(first_time_contributor)

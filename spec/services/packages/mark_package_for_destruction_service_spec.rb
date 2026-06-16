@@ -46,6 +46,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(package).to receive(:mark_package_files_for_destruction).and_call_original
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
+          expect(Packages::Rubygems::CreateSpecFilesWorker).not_to receive(:perform_async)
           expect(Packages::Helm::BulkSyncHelmMetadataCacheService).not_to receive(:new)
           expect { execute }.to change { package.status }.from('default').to('pending_destruction')
         end
@@ -77,6 +78,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
+          expect(Packages::Rubygems::CreateSpecFilesWorker).not_to receive(:perform_async)
           expect(Packages::Helm::BulkSyncHelmMetadataCacheService).not_to receive(:new)
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_error
@@ -90,6 +92,18 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
         it 'returns a success ServiceResponse' do
           expect(package).to receive(:sync_npm_metadata_cache).and_call_original
+          expect(execute).to be_success
+        end
+
+        it_behaves_like 'an instrumented service'
+      end
+
+      context 'with rubygems package' do
+        let_it_be_with_reload(:package) { create(:rubygems_package) }
+
+        it 'enqueues spec file generation' do
+          expect(Packages::Rubygems::CreateSpecFilesWorker).to receive(:perform_async).with(package.project_id)
+
           expect(execute).to be_success
         end
 

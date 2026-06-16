@@ -269,6 +269,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SECURITY_MANAGER",
+              "description": "Security manager access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DEVELOPER",
               "description": "Developer access.",
               "isDeprecated": false,
@@ -1989,6 +1995,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -4378,6 +4447,16 @@
               "defaultValue": null
             },
             {
+              "name": "mvccManifest",
+              "description": "Delete jobs matching mvcc_manifest in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "subscriptionPlan",
               "description": "Delete jobs matching subscription_plan in the context metadata.",
               "type": {
@@ -5000,6 +5079,24 @@
             {
               "name": "MERGE_REQUEST_READY",
               "description": "Flow trigger merge_request_ready event.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_CODE_CONFLICT",
+              "description": "Flow trigger merge_request_code_conflict event.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST",
+              "description": "Flow trigger merge_request event.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM",
+              "description": "Flow trigger work_item event.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -11013,6 +11110,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -21727,6 +21887,18 @@
               "deprecationReason": null
             },
             {
+              "name": "hidden",
+              "description": "Indicates whether the variable is hidden.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the variable.",
               "args": [],
@@ -23039,7 +23211,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -23787,7 +23959,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -28752,7 +28924,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -32665,6 +32837,63 @@
               "deprecationReason": null
             },
             {
+              "name": "commenters",
+              "description": "All commenters on the noteable.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "UserCoreConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "committedDate",
               "description": "Timestamp of when the commit was committed.",
               "args": [],
@@ -32745,6 +32974,63 @@
               "deprecationReason": null
             },
             {
+              "name": "discussions",
+              "description": "All discussions on the noteable.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DiscussionConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "fullTitle",
               "description": "Full title of the commit message.",
               "args": [],
@@ -32764,6 +33050,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hasAgentSession",
+              "description": "Indicates the commit was authored during a GitLab Duo Agent Platform flow.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -32804,6 +33106,73 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notes",
+              "description": "All notes on this noteable.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "NotesFilterType",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL_NOTES"
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "NoteConnection",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -33116,6 +33485,11 @@
           ],
           "inputFields": null,
           "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "NoteableInterface",
+              "ofType": null
+            },
             {
               "kind": "INTERFACE",
               "name": "Todoable",
@@ -33937,36 +34311,6 @@
               "description": "Pipeline Execution Schedule Policies of the compliance framework.",
               "args": [
                 {
-                  "name": "relationship",
-                  "description": "Filter policies by the given policy relationship. Default is DIRECT.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "SecurityPolicyRelationType",
-                    "ofType": null
-                  },
-                  "defaultValue": "DIRECT"
-                },
-                {
-                  "name": "includeUnscoped",
-                  "description": "Filter policies that are scoped to the project.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": "true"
-                },
-                {
-                  "name": "deduplicatePolicies",
-                  "description": "Remove duplicate policies when the same policy is applied via multiple routes.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": "false"
-                },
-                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -34753,9 +35097,126 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "ComplianceFrameworkTemplate",
+          "description": "Represents a compliance framework template that can be used to create a compliance framework.",
+          "fields": [
+            {
+              "name": "color",
+              "description": "Hexadecimal representation of the template's label color.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Description of the compliance framework template.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Unique identifier of the template.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "json",
+              "description": "Full JSON representation of the compliance framework template.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the compliance framework template.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "templateVersion",
+              "description": "Version of the template.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "ComplianceManagementFrameworkID",
           "description": "A `ComplianceManagementFrameworkID` is a global ID. It is encoded as a string.\n\nAn example `ComplianceManagementFrameworkID` is: `\"gid://gitlab/ComplianceManagement::Framework/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "ComplianceManagementFrameworksTemplateRegistryTemplateID",
+          "description": "A `ComplianceManagementFrameworksTemplateRegistryTemplateID` is a global ID. It is encoded as a string.\n\nAn example `ComplianceManagementFrameworksTemplateRegistryTemplateID` is: `\"gid://gitlab/ComplianceManagement::Frameworks::TemplateRegistry::Template/1\"`.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -39194,7 +39655,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -46178,6 +46639,69 @@
               "deprecationReason": null
             },
             {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "github",
               "description": "GitHub profile name of the user.",
               "args": [],
@@ -48384,6 +48908,18 @@
               "deprecationReason": null
             },
             {
+              "name": "slug",
+              "description": "Dashboard url slug.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "system",
               "description": "Whether the dashboard is a built-in GitLab dashboard.",
               "args": [],
@@ -48512,6 +49048,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "slug",
+              "description": "Dashboard url slug.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -49088,6 +49636,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "slug",
+              "description": "Dashboard url slug.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -56705,7 +57265,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -62761,6 +63321,105 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "DiffLine",
+          "description": "A single line of a diff displayed above a diff note.",
+          "fields": [
+            {
+              "name": "canReceiveSuggestion",
+              "description": "Indicates whether the line can receive a suggestion.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lineCode",
+              "description": "Line code of the diff line.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "newLine",
+              "description": "Line number on the HEAD SHA.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "oldLine",
+              "description": "Line number on the start SHA.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "richText",
+              "description": "Syntax-highlighted HTML of the diff line.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "text",
+              "description": "Raw text of the diff line, including the leading diff sign.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the diff line, such as 'new' or 'old'. Null for unchanged context lines.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "DiffNoteID",
           "description": "A `DiffNoteID` is a global ID. It is encoded as a string.\n\nAn example `DiffNoteID` is: `\"gid://gitlab/DiffNote/1\"`.",
@@ -63521,6 +64180,26 @@
                 "kind": "OBJECT",
                 "name": "UserCore",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "truncatedDiffLines",
+              "description": "At most 16 highlighted diff lines above the diff note, up to and including the commented line. Null for non-diff discussions.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DiffLine",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -64376,6 +65055,26 @@
               "deprecationReason": null
             },
             {
+              "name": "allExecutorLogsUrls",
+              "description": "List of all the executor logs for the workflow.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "allowAgentToRequestUser",
               "description": "Allow the agent to request user input.",
               "args": [],
@@ -64514,6 +65213,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequest",
+              "description": "Associated merge request, if any.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequest",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -64684,6 +65395,18 @@
               "deprecationReason": null
             },
             {
+              "name": "title",
+              "description": "Title of the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "toolCallApprovals",
               "description": "Tools approval per session policy.",
               "args": [],
@@ -64691,6 +65414,51 @@
                 "kind": "SCALAR",
                 "name": "JSON",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toolCallApproved",
+              "description": "Whether the specified tool call is approved for the session.",
+              "args": [
+                {
+                  "name": "toolCallArgs",
+                  "description": "JSON-serialized arguments for the tool call.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to check.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -64707,6 +65475,18 @@
                   "name": "Time",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "User who created the session.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -64746,6 +65526,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItem",
+              "description": "Associated work item (issue or epic), if any.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItem",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -73182,6 +73974,18 @@
               "deprecationReason": null
             },
             {
+              "name": "pushEventPayload",
+              "description": "Payload of the push event, when the event represents a push. `null` for non-push events.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "PushEventPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "target",
               "description": "Target of the event.",
               "args": [],
@@ -73292,6 +74096,12 @@
             {
               "name": "APPROVED",
               "description": "Approved action",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TRANSFERRED",
+              "description": "Transferred action",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -76702,6 +77512,12 @@
             {
               "name": "REPORTER",
               "description": "Reporter.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECURITY_MANAGER",
+              "description": "Security manager access.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -88497,46 +89313,6 @@
                 "ofType": null
               },
               "defaultValue": null
-            },
-            {
-              "name": "duoFeaturesEnabled",
-              "description": "Indicates whether GitLab Duo features are enabled for the group. Introduced in GitLab 16.10: **Status**: Experiment.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lockDuoFeaturesEnabled",
-              "description": "Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. Introduced in GitLab 16.10: **Status**: Experiment.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "toolApprovalForSessionEnabled",
-              "description": "Indicates whether tool approval for session is enabled for the group. Introduced in GitLab 18.11: **Status**: Experiment.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lockToolApprovalForSessionEnabled",
-              "description": "Indicates if the tool approval for session setting is enforced for all subgroups. Introduced in GitLab 18.11: **Status**: Experiment.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -88868,7 +89644,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -89800,6 +90576,12 @@
             {
               "name": "JIRA",
               "description": "Jira",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "OFFLINE_TRANSFER",
+              "description": "Offline Transfer",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -98798,12 +99580,6 @@
               "deprecationReason": null
             },
             {
-              "name": "SCIP",
-              "description": "SCIP job artifact file type.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "CYCLONEDX",
               "description": "CYCLONEDX job artifact file type.",
               "isDeprecated": false,
@@ -98926,12 +99702,6 @@
             {
               "name": "SARIF",
               "description": "SARIF job artifact file type.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ENVIRONMENT_KEY",
-              "description": "ENVIRONMENT KEY job artifact file type.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -99204,7 +99974,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -101099,7 +101869,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -102206,6 +102976,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SECURITY_MANAGER",
+              "description": "The Security Manager role is for security team members who need to view and manage security features for the group or project.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DEVELOPER",
               "description": "The Developer role gives users access to contribute code while restricting sensitive administrative actions.",
               "isDeprecated": false,
@@ -102255,6 +103031,12 @@
             {
               "name": "REPORTER",
               "description": "Reporter access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECURITY_MANAGER",
+              "description": "Security Manager access.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -103055,6 +103837,12 @@
             {
               "name": "READ_VIRTUAL_REGISTRY",
               "description": "Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATE_SEC_AI_WORKFLOW_SETTINGS",
+              "description": "Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -105484,6 +106272,26 @@
               "deprecationReason": null
             },
             {
+              "name": "stack",
+              "description": "Other open merge requests in the same stack as this merge request, ordered from the top of the stack to the bottom. Returns null if this merge request is not part of a stack.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MergeRequest",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "state",
               "description": "State of the merge request.",
               "args": [],
@@ -107521,6 +108329,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -110912,6 +111783,69 @@
               "deprecationReason": null
             },
             {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "github",
               "description": "GitHub profile name of the user.",
               "args": [],
@@ -113463,7 +114397,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -115012,6 +115946,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -118723,6 +119720,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -123795,7 +124855,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -123985,7 +125045,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -124191,7 +125251,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -124381,7 +125441,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -124700,7 +125760,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -129820,33 +130880,6 @@
               "deprecationReason": null
             },
             {
-              "name": "productAnalyticsProjectSettingsUpdate",
-              "description": null,
-              "args": [
-                {
-                  "name": "input",
-                  "description": "Parameters for ProductAnalyticsProjectSettingsUpdate",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "ProductAnalyticsProjectSettingsUpdateInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductAnalyticsProjectSettingsUpdatePayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "projectCiCdSettingsUpdate",
               "description": null,
               "args": [
@@ -129868,33 +130901,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ProjectCiCdSettingsUpdatePayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "projectInitializeProductAnalytics",
-              "description": null,
-              "args": [
-                {
-                  "name": "input",
-                  "description": "Parameters for ProjectInitializeProductAnalytics",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "ProjectInitializeProductAnalyticsInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProjectInitializeProductAnalyticsPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -131542,6 +132548,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SetLicenseConfigurationSourcePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "setLicenseScanningForCyclonedx",
+              "description": "Enable/disable license scanning for CycloneDX SBOM files for the given project.\n",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for SetLicenseScanningForCyclonedx",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SetLicenseScanningForCyclonedxInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SetLicenseScanningForCyclonedxPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -137895,6 +138928,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "Commit",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "CountableVulnerability",
               "ofType": null
             },
@@ -137956,7 +138994,22 @@
           "possibleTypes": [
             {
               "kind": "OBJECT",
+              "name": "AlertManagementAlert",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Commit",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "Design",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Epic",
               "ofType": null
             },
             {
@@ -137967,6 +139020,26 @@
             {
               "kind": "OBJECT",
               "name": "MergeRequest",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "ProjectComplianceViolation",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Snippet",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Vulnerability",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "WikiPage",
               "ofType": null
             }
           ]
@@ -139523,11 +140596,11 @@
           "fields": [
             {
               "name": "visibility",
-              "description": "Visibility level of the organization.",
+              "description": "Visibility of the organization.",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "ENUM",
+                "name": "OrganizationVisibility",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -139655,6 +140728,29 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OrganizationVisibility",
+          "description": "Visibilities available to an organization.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "private",
+              "description": "Private visibility.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "public",
+              "description": "Public visibility.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -141973,7 +143069,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -143872,7 +144968,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -144286,7 +145382,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -145262,7 +146358,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -146658,7 +147754,7 @@
             },
             {
               "name": "downstream",
-              "description": "Pipelines the pipeline will trigger.",
+              "description": "Latest pipelines triggered by the pipeline. Pipelines from trigger jobs that have since been retried are excluded.",
               "args": [
                 {
                   "name": "after",
@@ -148386,7 +149482,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -149647,6 +150743,18 @@
           "description": null,
           "fields": [
             {
+              "name": "commit",
+              "description": "Git commit of the pipeline.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Commit",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the pipeline.",
               "args": [],
@@ -150047,6 +151155,18 @@
           "name": "PipelineMinimalAccess",
           "description": null,
           "fields": [
+            {
+              "name": "commit",
+              "description": "Git commit of the pipeline.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Commit",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "id",
               "description": "ID of the pipeline.",
@@ -154116,235 +155236,6 @@
         },
         {
           "kind": "OBJECT",
-          "name": "ProductAnalyticsProjectSettings",
-          "description": "Project-level settings for product analytics provider.",
-          "fields": [
-            {
-              "name": "cubeApiBaseUrl",
-              "description": "Base URL for the Cube API.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "cubeApiKey",
-              "description": "API key for the Cube API.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "productAnalyticsConfiguratorConnectionString",
-              "description": "Connection string for the product analytics configurator.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "productAnalyticsDataCollectorHost",
-              "description": "Host for the product analytics data collector.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "ProductAnalyticsProjectSettingsUpdateInput",
-          "description": "Autogenerated input type of ProductAnalyticsProjectSettingsUpdate",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "fullPath",
-              "description": "Full path of the project the settings belong to.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "productAnalyticsConfiguratorConnectionString",
-              "description": "Connection string for the product analytics configurator.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "productAnalyticsDataCollectorHost",
-              "description": "Host for the product analytics data collector.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "cubeApiBaseUrl",
-              "description": "Base URL for the Cube API.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "cubeApiKey",
-              "description": "API key for the Cube API.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ProductAnalyticsProjectSettingsUpdatePayload",
-          "description": "Autogenerated return type of ProductAnalyticsProjectSettingsUpdate.",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "cubeApiBaseUrl",
-              "description": "Base URL for the Cube API.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "cubeApiKey",
-              "description": "API key for the Cube API.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "errors",
-              "description": "Errors encountered during the mutation.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "productAnalyticsConfiguratorConnectionString",
-              "description": "Connection string for the product analytics configurator.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "productAnalyticsDataCollectorHost",
-              "description": "Host for the product analytics data collector.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "Project",
           "description": null,
           "fields": [
@@ -156771,6 +157662,24 @@
                     "kind": "SCALAR",
                     "name": "AiDuoWorkflowsWorkflowID",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "Filter flows by a list of IDs.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "AiDuoWorkflowsWorkflowID",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -161987,18 +162896,6 @@
               "deprecationReason": null
             },
             {
-              "name": "productAnalyticsSettings",
-              "description": "Project-level settings for product analytics.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductAnalyticsProjectSettings",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "projectMembers",
               "description": "Members of the project.",
               "args": [
@@ -162963,6 +163860,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "securityConfigurationPath",
+              "description": "Path to project's security configuration.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -166110,100 +167019,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "INPUT_OBJECT",
-          "name": "ProjectInitializeProductAnalyticsInput",
-          "description": "Autogenerated input type of ProjectInitializeProductAnalytics",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectPath",
-              "description": "Full path of the project to initialize.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "ProjectInitializeProductAnalyticsPayload",
-          "description": "Autogenerated return type of ProjectInitializeProductAnalytics.",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "errors",
-              "description": "Errors encountered during the mutation.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "project",
-              "description": "Project on which the initialization took place.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Project",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "INTERFACE",
           "name": "ProjectInterface",
           "description": null,
@@ -168159,7 +168974,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -171857,7 +172672,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -172876,6 +173691,179 @@
         },
         {
           "kind": "OBJECT",
+          "name": "PushEventCommit",
+          "description": "Commit details associated with a push event.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of commits in the push.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "from",
+              "description": "SHA of the ref tip before the push. `null` when the ref was created.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the most recent commit in the push.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "to",
+              "description": "SHA of the ref tip after the push. `null` when the ref was removed.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PushEventPayload",
+          "description": "Represents the payload of a push event.",
+          "fields": [
+            {
+              "name": "action",
+              "description": "Action performed on the ref. One of `created`, `removed`, or `pushed`.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commit",
+              "description": "Commit details for the push.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PushEventCommit",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ref",
+              "description": "Ref (branch or tag) involved in the push.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PushEventRef",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PushEventRef",
+          "description": "Ref (branch or tag) involved in a push event.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of refs pushed when more than one ref was pushed at once.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the ref (branch or tag) that was pushed.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the ref. One of `branch` or `tag`.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "PushRules",
           "description": "Represents rules that commit pushes must follow.",
           "fields": [
@@ -173710,6 +174698,37 @@
               "deprecationReason": null
             },
             {
+              "name": "complianceFrameworkTemplates",
+              "description": "List of available compliance framework templates.",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Filter by template ID.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ComplianceManagementFrameworksTemplateRegistryTemplateID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ComplianceFrameworkTemplate",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "complianceRequirementControls",
               "description": "Get the list of all the compliance requirement controls.",
               "args": [],
@@ -173897,6 +174916,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CustomDashboardInterfaceConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "customSystemDashboard",
+              "description": "Find a GitLab-provided system dashboard by slug.",
+              "args": [
+                {
+                  "name": "slug",
+                  "description": "Slug of the system dashboard (e.g. \"duo_and_sdlc_trends\").",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CustomSystemDashboard",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -177211,6 +178257,11 @@
             {
               "kind": "OBJECT",
               "name": "WikiPage",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "WorkItem",
               "ofType": null
             }
           ]
@@ -187760,6 +188811,18 @@
               "deprecationReason": null
             },
             {
+              "name": "licenseScanningForCyclonedxEnabled",
+              "description": "Whether license scanning for CycloneDX SBOM files is enabled.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "maxTrackedRefs",
               "description": "Maximum number of refs that can be tracked for security scanning.",
               "args": [],
@@ -192354,6 +193417,114 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "SetLicenseScanningForCyclonedxInput",
+          "description": "Autogenerated input type of SetLicenseScanningForCyclonedx",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectPath",
+              "description": "Full path of the project.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "enable",
+              "description": "Desired status for license scanning for CycloneDX files.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SetLicenseScanningForCyclonedxPayload",
+          "description": "Autogenerated return type of SetLicenseScanningForCyclonedx.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "licenseScanningForCyclonedxEnabled",
+              "description": "Whether license scanning for CycloneDX files is enabled.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "SetPagesForceHttpsInput",
           "description": "Autogenerated input type of SetPagesForceHttps",
           "fields": null,
@@ -194720,7 +195891,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -198377,7 +199548,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -207160,7 +208331,7 @@
           "fields": [
             {
               "name": "count",
-              "description": "Limited count of collection. Returns limit + 1 for counts greater than the limit.",
+              "description": "Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`.",
               "args": [
                 {
                   "name": "limit",
@@ -208770,6 +209941,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -211646,12 +212880,6 @@
               "deprecationReason": null
             },
             {
-              "name": "VULNERABILITY_REPORT_GROUPING",
-              "description": "Callout feature name for vulnerability_report_grouping.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "JOINING_A_PROJECT_ALERT",
               "description": "Callout feature name for joining_a_project_alert.",
               "isDeprecated": false,
@@ -211786,6 +213014,12 @@
             {
               "name": "INLINE_BLAME_POPOVER",
               "description": "Callout feature name for inline_blame_popover.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECURITY_MANAGER_ROLE",
+              "description": "Callout feature name for security_manager_role.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -213151,6 +214385,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EmailConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "events",
+              "description": "Activity events visible to the current user, most recent first.",
+              "args": [
+                {
+                  "name": "filter",
+                  "description": "Filter events by type. Defaults to all events.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "UserEventFilter",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EventConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -215229,6 +216526,65 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "UserEventFilter",
+          "description": "Filter for user activity events.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALL",
+              "description": "All events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PUSH",
+              "description": "Push events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGED",
+              "description": "Merge events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ISSUE",
+              "description": "Issue events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMMENTS",
+              "description": "Comment events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TEAM",
+              "description": "Team events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WIKI",
+              "description": "Wiki page events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESIGNS",
+              "description": "Design events.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "UserGroupCallout",
           "description": null,
@@ -215640,6 +216996,12 @@
             {
               "name": "END_OF_TRIAL_MODAL",
               "description": "Callout feature name for end_of_trial_modal.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_CODE_REVIEW_ENABLED_BY_DEFAULT",
+              "description": "Callout feature name for duo_code_review_enabled_by_default.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -232800,6 +234162,12 @@
               "deprecationReason": null
             },
             {
+              "name": "VARIABLE_DEFINITION",
+              "description": "Location adjacent to a variable definition.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SCHEMA",
               "description": "Location adjacent to a schema definition.",
               "isDeprecated": false,
@@ -232862,12 +234230,6 @@
             {
               "name": "INPUT_FIELD_DEFINITION",
               "description": "Location adjacent to an input object field definition.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "VARIABLE_DEFINITION",
-              "description": "Location adjacent to a variable definition.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -233948,6 +235310,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "traversal",
+              "description": "When true, this directive only verifies the token is scoped to the boundary (read_boundary), without enforcing the listed permissions. Use for entry-point fields like Query.group(fullPath:) where downstream fields enforce the real permissions. Only applies to project and group boundary types. All other boundary types fall back to the regular permission check.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "defaultValue": null

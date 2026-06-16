@@ -26,7 +26,7 @@ title: 完全一致コードの検索
 {{< /history >}}
 
 > [!warning]
-> この機能は[限定提供](../../policy/development_stages_support.md#limited-availability)です。詳細については、[エピック9404](https://gitlab.com/groups/gitlab-org/-/epics/9404)を参照してください。[イシュー420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920)でフィードバックを提供してください。
+> この機能は[限定的な提供](../../policy/development_stages_support.md#limited-availability)です。詳細については、[エピック9404](https://gitlab.com/groups/gitlab-org/-/epics/9404)を参照してください。[イシュー420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920)でフィードバックを提供してください。
 
 完全一致コードの検索を使用すると、完全一致モードと正規表現モードを使用して、GitLab全体または特定のプロジェクト内のコードを検索できます。
 
@@ -90,6 +90,12 @@ GitLabには2つの検索モードがあります。
 
 ### 構文 {#syntax}
 
+{{< history >}}
+
+- `repo:`フィルターは、GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/488467)されました。
+
+{{< /history >}}
+
 <!-- Remember to also update the table in `doc/drawers/exact_code_search_syntax.md` -->
 
 次の表は、完全一致モードと正規表現モードのクエリの例を示しています。
@@ -110,7 +116,7 @@ GitLabには2つの検索モードがあります。
 | `foo file:\.js$`     | `.js`で終わる名前のファイル内の`foo`                                   | `.js`で終わる名前のファイル内の`foo`                                   |
 | `foo.*bar`           | `foo.*bar`（リテラル）                                                            | `foo.*bar`（正規表現）                                                 |
 | `sym:foo`            | クラス、メソッド、変数名などのシンボル内の`foo`                         | クラス、メソッド、変数名などのシンボル内の`foo`                         |
-| `test repo:(?i)foo`  | 名前に`foo`を含むプロジェクト（大文字と小文字を区別しない）で`test`を検索します。`repo:`は正規表現をサポートします。 | 名前に`foo`を含むプロジェクト（大文字と小文字を区別しない）で`test`を検索します。`repo:`は正規表現をサポートします。 |
+| `test repo:(?i)foo`  | `test`プロジェクト名に`foo`を含むプロジェクトで（大文字/小文字を区別しない） | `test`プロジェクト名に`foo`を含むプロジェクトで（大文字/小文字を区別しない） |
 
 ## 既知の問題 {#known-issues}
 

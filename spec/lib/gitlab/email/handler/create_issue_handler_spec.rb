@@ -67,6 +67,11 @@ RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
 
     it_behaves_like "a new issue"
 
+    it_behaves_like 'an incoming email handler that logs its execution' do
+      let(:expected_log_namespace) { project.project_namespace }
+      let(:expected_additional_log_data) { { Labkit::Fields::GL_PROJECT_ID => project.id } }
+    end
+
     context "creates a new issue with legacy email address" do
       let(:email_raw) { fixture_file('emails/valid_new_issue_legacy.eml') }
 

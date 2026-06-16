@@ -37,6 +37,8 @@ module Gitlab
             span: span,
             lineno: line_number
           }
+        else
+          groups.last[:span] += span
         end
 
         groups.last[:lines] << current_line(highlight, line, line_number)

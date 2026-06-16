@@ -17,6 +17,15 @@ module UpdateRepositoryStorageMethods
 
   def execute
     response = repository_storage_move.with_lock do
+      # Mark the move as failed if it is stuck in a processing state after a Sidekiq restart.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/602389
+      if repository_storage_move.started?
+        message = s_('UpdateRepositoryStorage|Repository storage move was interrupted')
+        repository_storage_move.update_column(:error_message, message.truncate(MAX_ERROR_LENGTH))
+        repository_storage_move.do_fail!
+        next ServiceResponse.error(message: message)
+      end
+
       next ServiceResponse.success unless repository_storage_move.scheduled?
 
       repository_storage_move.start!

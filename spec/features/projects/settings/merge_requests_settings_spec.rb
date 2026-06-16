@@ -10,46 +10,41 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
 
   before do
     sign_in(user)
-
-    visit(project_settings_merge_requests_path(project))
   end
 
-  it 'shows "Merge commit" strategy' do
-    page.within '.merge-request-settings-form' do
-      expect(page).to have_content 'Merge commit'
+  context 'when visiting the merge requests settings page' do
+    before do
+      visit(project_settings_merge_requests_path(project))
     end
-  end
 
-  it 'shows "Merge commit with semi-linear history " strategy' do
-    page.within '.merge-request-settings-form' do
-      expect(page).to have_content 'Merge commit with semi-linear history'
-    end
-  end
+    it 'shows merge strategy options, squash commit options, and fast-forward merge train message',
+      :aggregate_failures do
+      page.within '.merge-request-settings-form' do
+        # Merge strategies
+        expect(page).to have_content 'Merge commit'
+        expect(page).to have_content 'Merge commit with semi-linear history'
+        expect(page).to have_content 'Fast-forward merge'
 
-  it 'shows "Fast-forward merge" strategy' do
-    page.within '.merge-request-settings-form' do
-      expect(page).to have_content 'Fast-forward merge'
-    end
-  end
+        # Squash commit options
+        expect(page).to have_content 'Do not allow'
+        expect(page).to have_content 'Squashing is never performed and the checkbox is hidden.'
+        expect(page).to have_content 'Allow'
+        expect(page).to have_content 'Checkbox is visible and unselected by default.'
+        expect(page).to have_content 'Encourage'
+        expect(page).to have_content 'Checkbox is visible and selected by default.'
+        expect(page).to have_content 'Require'
 
-  it 'shows Squash commit options', :aggregate_failures do
-    page.within '.merge-request-settings-form' do
-      expect(page).to have_content 'Do not allow'
-      expect(page).to have_content 'Squashing is never performed and the checkbox is hidden.'
-
-      expect(page).to have_content 'Allow'
-      expect(page).to have_content 'Checkbox is visible and unselected by default.'
-
-      expect(page).to have_content 'Encourage'
-      expect(page).to have_content 'Checkbox is visible and selected by default.'
-
-      expect(page).to have_content 'Require'
+        # fast forward merge train
+        expect(page).to have_content 'merging is only possible if the branch can be rebased without conflicts.'
+      end
     end
   end
 
   context 'when Merge Request and Pipelines are initially enabled', :js do
     context 'when Pipelines are initially enabled' do
       it 'shows the Merge Requests settings' do
+        visit project_settings_merge_requests_path(project)
+
         expect(page).to have_content 'Pipelines must succeed'
         expect(page).to have_content 'All threads must be resolved'
 
@@ -106,12 +101,6 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
     end
   end
 
-  it 'displays the fast forward merge train message' do
-    page.within '.merge-request-settings-form' do
-      expect(page).to have_content 'merging is only possible if the branch can be rebased without conflicts.'
-    end
-  end
-
   context 'when Merge Request are initially disabled', :js do
     before do
       project.project_feature.update_attribute('merge_requests_access_level', ProjectFeature::DISABLED)
@@ -144,6 +133,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
   end
 
   describe 'Checkbox to enable merge request link', :js do
+    before do
+      visit project_settings_merge_requests_path(project)
+    end
+
     it 'is initially checked' do
       checkbox = find_field('project_printing_merge_request_link_enabled')
       expect(checkbox).to be_checked
@@ -167,6 +160,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
   end
 
   describe 'Checkbox to remove source branch after merge', :js do
+    before do
+      visit project_settings_merge_requests_path(project)
+    end
+
     it 'is initially checked' do
       checkbox = find_field('project_remove_source_branch_after_merge')
       expect(checkbox).to be_checked
@@ -190,6 +187,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
   end
 
   describe 'Squash commits when merging', :js do
+    before do
+      visit project_settings_merge_requests_path(project)
+    end
+
     it 'initially has :squash_option set to :default_off' do
       radio = find_field('project_project_setting_attributes_squash_option_default_off')
       expect(radio).to be_checked
@@ -302,6 +303,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
 
       let(:project) { fork_project(upstream, user) }
 
+      before do
+        visit project_settings_merge_requests_path(project)
+      end
+
       it 'allows to change merge request target project behavior' do
         expect(page).to have_content 'The default target project for merge requests'
 
@@ -325,6 +330,8 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
     end
 
     it 'does not show target project section' do
+      visit project_settings_merge_requests_path(project)
+
       expect(page).not_to have_content 'The default target project for merge requests'
     end
   end

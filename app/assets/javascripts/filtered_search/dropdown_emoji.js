@@ -1,5 +1,6 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { autocompleteAwardEmojisPath } from '~/lib/utils/path_helpers/autocomplete';
 import Ajax from './droplab/plugins/ajax';
 import Filter from './droplab/plugins/filter';
 import DropdownUtils from './dropdown_utils';
@@ -10,7 +11,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
     super(options);
     this.config = {
       Ajax: {
-        endpoint: `${gon.relative_url_root || ''}/-/autocomplete/award_emojis`,
+        endpoint: autocompleteAwardEmojisPath(),
         method: 'setData',
         loadingTemplate: this.loadingTemplate,
         onError() {

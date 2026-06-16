@@ -82,18 +82,22 @@ describe('WorkItemDevelopment CE', () => {
   const createComponent = ({
     workItemQueryHandler = workItemSuccessQueryHandler,
     workItemDevelopmentQueryHandler = devWidgetSuccessQueryHandlerWithOneMR,
+    workItemDevelopmentUpdatedSubscriptionHandler:
+      subscriptionHandler = workItemDevelopmentUpdatedSubscriptionHandler,
     namespaceMergeRequestsEnabledHandler = defaultNamespaceMergeRequestsEnabledHandler,
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDevelopment, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [workItemDevelopmentQuery, workItemDevelopmentQueryHandler],
-        [workItemDevelopmentUpdatedSubscription, workItemDevelopmentUpdatedSubscriptionHandler],
+        [workItemDevelopmentUpdatedSubscription, subscriptionHandler],
         [namespaceMergeRequestsEnabledQuery, namespaceMergeRequestsEnabledHandler],
       ]),
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      provide,
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
@@ -271,6 +275,79 @@ describe('WorkItemDevelopment CE', () => {
             items: [expect.objectContaining({ text: 'Create branch' })],
           },
         ]);
+      });
+    });
+  });
+
+  describe('workItemFeaturesField feature flag', () => {
+    describe('when the feature flag is disabled', () => {
+      let queryHandler;
+      let subscriptionHandler;
+
+      beforeEach(async () => {
+        queryHandler = jest.fn().mockResolvedValue(devWidgetWithOneMR);
+        subscriptionHandler = jest.fn().mockResolvedValue({ data: { workItemUpdated: null } });
+        createComponent({
+          workItemDevelopmentQueryHandler: queryHandler,
+          workItemDevelopmentUpdatedSubscriptionHandler: subscriptionHandler,
+        });
+        await waitForPromises();
+      });
+
+      it('passes useWorkItemFeatures as false to the query', () => {
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/WorkItem/1',
+          useWorkItemFeatures: false,
+        });
+      });
+
+      it('passes useWorkItemFeatures as false to the subscription', () => {
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/WorkItem/1',
+          useWorkItemFeatures: false,
+        });
+      });
+    });
+
+    describe('when the feature flag is enabled', () => {
+      let queryHandler;
+
+      beforeEach(async () => {
+        queryHandler = jest.fn().mockResolvedValue({
+          data: {
+            workItem: {
+              __typename: 'WorkItem',
+              id: 'gid://gitlab/WorkItem/1',
+              iid: '1',
+              namespace: { __typename: 'Project', id: '1' },
+              features: {
+                development: workItemDevelopmentFragmentResponse({
+                  mrNodes: [workItemDevelopmentMRNodes[0]],
+                  willAutoCloseByMergeRequest: true,
+                  featureFlagNodes: null,
+                  branchNodes: [],
+                  relatedMergeRequests: [],
+                }),
+              },
+            },
+          },
+        });
+        createComponent({
+          workItemDevelopmentQueryHandler: queryHandler,
+          provide: { glFeatures: { workItemFeaturesField: true } },
+        });
+        await waitForPromises();
+      });
+
+      it('passes useWorkItemFeatures as true to the query', () => {
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/WorkItem/1',
+          useWorkItemFeatures: true,
+        });
+      });
+
+      it('renders the relationship list with features.development data', () => {
+        expect(findRelationshipList().exists()).toBe(true);
       });
     });
   });

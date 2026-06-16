@@ -7,6 +7,7 @@ import { __, s__ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 
 export default {
+  name: 'TagCreate',
   components: {
     GlButton,
     GlFormGroup,

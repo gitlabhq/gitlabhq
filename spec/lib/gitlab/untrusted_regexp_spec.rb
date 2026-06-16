@@ -130,25 +130,7 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       it { is_expected.to eq(false) }
     end
 
-    context 'when nil is passed with allow_empty_string' do
-      subject { create_regex(regexp).match?(text, allow_empty_string: true) }
-
-      let(:regexp) { '\w{0,2}' }
-      let(:text) { nil }
-
-      it { is_expected.to eq(false) }
-    end
-
     context 'when a matching empty string is passed' do
-      let(:regexp) { '\w{0,2}' }
-      let(:text) { '' }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when a matching empty string is passed is passed with allow_empty_string' do
-      subject { create_regex(regexp).match?(text, allow_empty_string: true) }
-
       let(:regexp) { '\w{0,2}' }
       let(:text) { '' }
 
@@ -156,15 +138,6 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
     end
 
     context 'when a matching string only containing spaces is passed' do
-      let(:regexp) { '^\s{0,2}$' }
-      let(:text) { ' ' }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when a matching string only containing spaces is passed with allow_empty_string' do
-      subject { create_regex(regexp).match?(text, allow_empty_string: true) }
-
       let(:regexp) { '^\s{0,2}$' }
       let(:text) { ' ' }
 
@@ -178,25 +151,7 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       it { is_expected.to eq(false) }
     end
 
-    context 'when a non-matching empty string is passed is passed with allow_empty_string' do
-      subject { create_regex(regexp).match?(text, allow_empty_string: true) }
-
-      let(:regexp) { '\w{1,2}' }
-      let(:text) { '' }
-
-      it { is_expected.to eq(false) }
-    end
-
     context 'when a non-matching string only containing spaces is passed' do
-      let(:regexp) { '^\s{2,4}$' }
-      let(:text) { ' ' }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when a non-matching string only containing spaces is passed with allow_empty_string' do
-      subject { create_regex(regexp).match?(text, allow_empty_string: true) }
-
       let(:regexp) { '^\s{2,4}$' }
       let(:text) { ' ' }
 

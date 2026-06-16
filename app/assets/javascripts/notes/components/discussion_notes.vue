@@ -56,6 +56,7 @@ export default {
       default: false,
     },
   },
+  emits: ['deleteNote', 'start-replying'],
   computed: {
     ...mapState(useNotes, ['userCanReply']),
     hasReplies() {

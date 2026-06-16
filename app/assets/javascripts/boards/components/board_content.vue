@@ -85,6 +85,7 @@ export default {
       highlightedLists: [],
       columnsThatCannotFindActiveItem: 0,
       draggedItemId: null,
+      focusedListId: null,
     };
   },
   computed: {
@@ -94,6 +95,15 @@ export default {
     boardListsToUse() {
       const lists = this.boardLists;
       return sortBy([...Object.values(lists)], 'position');
+    },
+    visibleBoardLists() {
+      return this.boardListsToUse.filter((list) => !list.collapsed);
+    },
+    effectiveFocusedListId() {
+      if (this.focusedListId && this.visibleBoardLists.some((l) => l.id === this.focusedListId)) {
+        return this.focusedListId;
+      }
+      return this.visibleBoardLists[0]?.id ?? null;
     },
     canDragColumns() {
       return this.canAdminList;
@@ -140,6 +150,14 @@ export default {
     },
   },
   methods: {
+    focusAdjacentList(currentListId, direction) {
+      const lists = this.visibleBoardLists;
+      const currentIndex = lists.findIndex((list) => list.id === currentListId);
+      if (currentIndex === -1) return;
+      const targetIndex = currentIndex + direction;
+      if (targetIndex < 0 || targetIndex >= lists.length) return;
+      this.focusedListId = lists[targetIndex].id;
+    },
     afterFormEnters() {
       const formEl = this.$refs.addColumnForm?.$el;
       if (formEl) {
@@ -303,6 +321,7 @@ export default {
           :lists="boardListsById"
           :can-admin-list="canAdminList"
           :dragged-item-id="draggedItemId"
+          :focused="list.id === effectiveFocusedListId"
           @dragStart="handleDragStart"
           @dragStop="handleDragStop"
           @highlight-list="highlightList"
@@ -310,6 +329,7 @@ export default {
           @setFilters="$emit('setFilters', $event)"
           @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
           @cannot-find-active-item="handleCannotFindActiveItem"
+          @focus-adjacent="focusAdjacentList(list.id, $event)"
         />
       </component>
       <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">

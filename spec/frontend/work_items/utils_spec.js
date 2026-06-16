@@ -9,6 +9,7 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_DEVELOPMENT,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_HIERARCHY,
@@ -41,7 +42,10 @@ import {
   findAssigneesWidget,
   findAwardEmojiWidget,
   findBlockerLinkedItems,
+  findDevelopmentWidget,
   findErrorTrackingWidget,
+  findHierarchyWidget,
+  findMilestoneWidget,
   findNotificationsWidget,
   findNotesWidget,
   findOpenChildItemsCountsByType,
@@ -1102,6 +1106,54 @@ describe('getSortValue', () => {
   });
 });
 
+describe('findMilestoneWidget', () => {
+  const milestoneWidget = { type: WIDGET_TYPE_MILESTONE, milestone: { id: 'gid://m/1' } };
+  const featuresMilestone = { milestone: { id: 'gid://m/2' } };
+
+  it('returns features.milestone when present', () => {
+    const workItem = {
+      features: { milestone: featuresMilestone },
+      widgets: [milestoneWidget],
+    };
+
+    expect(findMilestoneWidget(workItem)).toBe(featuresMilestone);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [milestoneWidget] };
+
+    expect(findMilestoneWidget(workItem)).toBe(milestoneWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findMilestoneWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findHierarchyWidget', () => {
+  const hierarchyWidget = { type: WIDGET_TYPE_HIERARCHY, hasChildren: true };
+  const featuresHierarchy = { hasChildren: false };
+
+  it('returns features.hierarchy when present', () => {
+    const workItem = {
+      features: { hierarchy: featuresHierarchy },
+      widgets: [hierarchyWidget],
+    };
+
+    expect(findHierarchyWidget(workItem)).toBe(featuresHierarchy);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [hierarchyWidget] };
+
+    expect(findHierarchyWidget(workItem)).toBe(hierarchyWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findHierarchyWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
 describe('findAwardEmojiWidget', () => {
   const awardEmojiWidget = { type: WIDGET_TYPE_AWARD_EMOJI, awardEmoji: { nodes: [] } };
   const featuresAwardEmoji = { upvotes: 0, downvotes: 0, awardEmoji: { nodes: [] } };
@@ -1324,6 +1376,37 @@ describe('findLabelsWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findLabelsWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findDevelopmentWidget', () => {
+  const developmentWidget = {
+    type: WIDGET_TYPE_DEVELOPMENT,
+    willAutoCloseByMergeRequest: false,
+    closingMergeRequests: { count: 0, nodes: [] },
+  };
+  const featuresDevelopment = {
+    willAutoCloseByMergeRequest: true,
+    closingMergeRequests: { count: 1, nodes: [] },
+  };
+
+  it('returns features.development when present', () => {
+    const workItem = {
+      features: { development: featuresDevelopment },
+      widgets: [developmentWidget],
+    };
+
+    expect(findDevelopmentWidget(workItem)).toBe(featuresDevelopment);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [developmentWidget] };
+
+    expect(findDevelopmentWidget(workItem)).toBe(developmentWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findDevelopmentWidget({ widgets: [] })).toBeUndefined();
   });
 });
 

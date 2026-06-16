@@ -115,9 +115,11 @@ export const FORM_TYPES = {
   add: 'add',
 };
 
-export const DEFAULT_PAGE_SIZE_NOTES = 20; // Set to 20 to not exceed query complexity
+export const DEFAULT_PAGE_SIZE_NOTES = 15; // Reduced from 20 to lower query complexity
 export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 50;
+export const DEFAULT_PAGE_SIZE_BOARD_COLUMN = 20;
+export const DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT = 100;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
 
@@ -229,6 +231,9 @@ export const NO_WORK_ITEM_IID = 'no-work-item-iid';
 
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
+
+export const WORK_ITEM_DETAIL_PANEL = 'work-item-detail';
+export const AGENT_PLAN_PANEL = 'agent-plan';
 export const ROUTES = {
   index: 'planningView',
   workItem: 'workItem',
@@ -417,6 +422,9 @@ export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
     isPresentInGroup: true,
   },
 ];
+
+export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED =
+  WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.toSorted((a, b) => a.label.localeCompare(b.label));
 
 export const WORK_ITEM_CREATE_SOURCES = {
   GLOBAL_NAV: 'global_nav',

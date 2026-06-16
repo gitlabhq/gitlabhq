@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Logging field schema settings including active version and dual-emit target.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "logging_field_schema_version": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Logging field schema version (v0, v1, …). Cannot be downgraded."
+    },
+    "logging_field_dual_emit_target": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Version to dual-emit alongside schema_version. Must be strictly greater than schema_version, or null to disable."
+    }
+  }
+}

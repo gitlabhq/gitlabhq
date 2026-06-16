@@ -121,7 +121,10 @@ export default {
         v-if="isStickyHeaderShowing"
         ref="stickyHeader"
         class="issue-sticky-header gl-border-b gl-z-3 gl-bg-default gl-py-2"
-        :class="{ 'gl-absolute gl-left-0 gl-top-10': isDrawer, 'gl-fixed': !isDrawer }"
+        :class="{
+          'panel-top-offset-panel-header-height gl-absolute gl-left-0': isDrawer,
+          'gl-fixed': !isDrawer,
+        }"
         data-testid="work-item-sticky-header"
       >
         <div class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3">

@@ -14,6 +14,7 @@ import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'CloneWikiModal',
   i18n: {
     steps: {
       step1: __('Clone repository'),

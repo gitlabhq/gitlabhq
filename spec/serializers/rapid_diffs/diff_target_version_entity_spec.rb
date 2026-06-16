@@ -45,7 +45,7 @@ RSpec.describe RapidDiffs::DiffTargetVersionEntity, feature_category: :code_revi
       expect(serialized).to include(
         :id,
         :version_index,
-        :head,
+        :is_merge_head,
         :latest,
         :short_commit_sha,
         :commits_count,

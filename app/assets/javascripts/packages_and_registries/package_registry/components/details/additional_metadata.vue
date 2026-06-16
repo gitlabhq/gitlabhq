@@ -18,6 +18,7 @@ import getPackageMetadataQuery from '../../graphql/queries/get_package_metadata.
 import AdditionalMetadataLoader from './additional_metadata_loader.vue';
 
 export default {
+  name: 'AdditionalMetadata',
   components: {
     Composer,
     Conan,

@@ -136,6 +136,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Level: info
   - Arguments:
     - `response_from_llm: response_body`
+    - `latency_seconds: latency_seconds`
+    - `user_id: user.id`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no

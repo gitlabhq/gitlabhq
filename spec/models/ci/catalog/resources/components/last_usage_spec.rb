@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feature_category: :pipeline_composition do
-  let_it_be(:component) { create(:ci_catalog_resource_component) }
+  let_it_be(:component, freeze: false) { create(:ci_catalog_resource_component) }
   let(:component_usage) { build(:catalog_resource_component_last_usage, component: component) }
 
   it { is_expected.to belong_to(:component).class_name('Ci::Catalog::Resources::Component') }
@@ -46,15 +46,17 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
   end
 
   describe '.for_catalog_resource_with_component_versions' do
-    let_it_be(:catalog_resource) { component.catalog_resource }
-    let_it_be(:other_catalog_resource) { create(:ci_catalog_resource) }
-    let_it_be(:other_component) { create(:ci_catalog_resource_component, catalog_resource: other_catalog_resource) }
+    let_it_be(:catalog_resource, freeze: false) { component.catalog_resource }
+    let_it_be(:other_catalog_resource, freeze: false) { create(:ci_catalog_resource) }
+    let_it_be(:other_component, freeze: false) do
+      create(:ci_catalog_resource_component, catalog_resource: other_catalog_resource)
+    end
 
-    let_it_be(:usage) do
+    let_it_be(:usage, freeze: false) do
       create(:catalog_resource_component_last_usage, component: component, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:other_usage) do
+    let_it_be(:other_usage, freeze: false) do
       create(:catalog_resource_component_last_usage, component: other_component,
         catalog_resource: other_catalog_resource)
     end
@@ -80,33 +82,33 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
   end
 
   describe '.by_version_ids' do
-    let_it_be(:catalog_resource) { create(:ci_catalog_resource) }
-    let_it_be(:version_a) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:version_b) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:version_c) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:component_in_version_a) do
+    let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource) }
+    let_it_be(:version_a, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:version_b, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:version_c, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:component_in_version_a, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_a, name: 'comp')
     end
 
-    let_it_be(:component_in_version_b) do
+    let_it_be(:component_in_version_b, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_b, name: 'comp')
     end
 
-    let_it_be(:component_in_version_c) do
+    let_it_be(:component_in_version_c, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_c, name: 'comp')
     end
 
-    let_it_be(:usage_in_version_a) do
+    let_it_be(:usage_in_version_a, freeze: false) do
       create(:catalog_resource_component_last_usage,
         component: component_in_version_a, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:usage_in_version_b) do
+    let_it_be(:usage_in_version_b, freeze: false) do
       create(:catalog_resource_component_last_usage,
         component: component_in_version_b, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:usage_in_version_c) do
+    let_it_be(:usage_in_version_c, freeze: false) do
       create(:catalog_resource_component_last_usage,
         component: component_in_version_c, catalog_resource: catalog_resource)
     end
@@ -136,23 +138,23 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
   end
 
   describe '.by_version_id' do
-    let_it_be(:catalog_resource) { create(:ci_catalog_resource) }
-    let_it_be(:version_a) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:version_b) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:component_in_version_a) do
+    let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource) }
+    let_it_be(:version_a, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:version_b, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:component_in_version_a, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_a, name: 'comp')
     end
 
-    let_it_be(:component_in_version_b) do
+    let_it_be(:component_in_version_b, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_b, name: 'comp')
     end
 
-    let_it_be(:usage_in_version_a) do
+    let_it_be(:usage_in_version_a, freeze: false) do
       create(:catalog_resource_component_last_usage,
         component: component_in_version_a, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:usage_in_version_b) do
+    let_it_be(:usage_in_version_b, freeze: false) do
       create(:catalog_resource_component_last_usage,
         component: component_in_version_b, catalog_resource: catalog_resource)
     end
@@ -177,30 +179,30 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
   end
 
   describe '.by_component_name' do
-    let_it_be(:catalog_resource) { create(:ci_catalog_resource) }
-    let_it_be(:version_a) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:version_b) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
-    let_it_be(:rails_in_v_a) do
+    let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource) }
+    let_it_be(:version_a, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:version_b, freeze: false) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource) }
+    let_it_be(:rails_in_v_a, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_a, name: 'rails')
     end
 
-    let_it_be(:rails_in_v_b) do
+    let_it_be(:rails_in_v_b, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_b, name: 'rails')
     end
 
-    let_it_be(:node_in_v_a) do
+    let_it_be(:node_in_v_a, freeze: false) do
       create(:ci_catalog_resource_component, catalog_resource: catalog_resource, version: version_a, name: 'node')
     end
 
-    let_it_be(:rails_usage_v_a) do
+    let_it_be(:rails_usage_v_a, freeze: false) do
       create(:catalog_resource_component_last_usage, component: rails_in_v_a, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:rails_usage_v_b) do
+    let_it_be(:rails_usage_v_b, freeze: false) do
       create(:catalog_resource_component_last_usage, component: rails_in_v_b, catalog_resource: catalog_resource)
     end
 
-    let_it_be(:node_usage_v_a) do
+    let_it_be(:node_usage_v_a, freeze: false) do
       create(:catalog_resource_component_last_usage, component: node_in_v_a, catalog_resource: catalog_resource)
     end
 

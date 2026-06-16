@@ -1,0 +1,9 @@
+---
+name: read_feature
+description: Grants the ability to read instance feature flags
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_feature

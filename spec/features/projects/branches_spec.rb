@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Branches', feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   context 'when logged in as reporter' do
     before do
@@ -317,9 +317,9 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
   end
 
   describe 'merge request badge', :js do
-    let_it_be(:project) { create(:project, :public, :repository) }
-    let_it_be(:repository) { project.repository }
-    let_it_be(:merge_request) do
+    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+    let_it_be(:repository, freeze: false) { project.repository }
+    let_it_be(:merge_request, freeze: false) do
       create(
         :merge_request,
         source_project: project,
@@ -373,8 +373,8 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
   end
 
   context 'with one or more pipeline', :js do
-    let_it_be(:project) { create(:project, :public, :empty_repo) }
-    let_it_be(:repository) { project.repository }
+    let_it_be(:project, freeze: false) { create(:project, :public, :empty_repo) }
+    let_it_be(:repository, freeze: false) { project.repository }
 
     before do
       sha = create_file(branch_name: "branch")

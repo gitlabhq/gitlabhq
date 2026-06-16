@@ -19,6 +19,7 @@ import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 export default {
+  name: 'ContainerProtectionTagRuleForm',
   components: {
     GlAlert,
     GlButton,

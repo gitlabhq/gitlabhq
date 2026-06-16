@@ -27,9 +27,9 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     context 'when deployment is not persisted' do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:commits) { project.repository.commits('master', limit: 2) }
-      let_it_be(:environment) { create(:environment, project: project) }
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:commits, freeze: false) { project.repository.commits('master', limit: 2) }
+      let_it_be(:environment, freeze: false) { create(:environment, project: project) }
 
       let(:unpersisted_deployment) do
         FactoryBot.build(
@@ -47,7 +47,7 @@ RSpec.shared_examples 'a deployable job' do
       end
 
       it 'returns false to ignore the Build and not take any Deployment-related action' do
-        expect(unpersisted_deployment.job.has_outdated_deployment?).to eq(false)
+        expect(unpersisted_deployment.job.has_outdated_deployment?).to be(false)
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         it 'returns true for disallowing rollback' do
-          expect(subject).to eq(true)
+          expect(subject).to be(true)
         end
       end
     end
@@ -343,7 +343,7 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_permanent_metadata' do
-    let_it_be(:environment) { create(:environment, name: 'production') }
+    let_it_be(:environment, freeze: false) { create(:environment, name: 'production') }
 
     let(:options) { { script: 'script', environment: { name: 'production', action: 'prepare' } } }
     let(:job) { create(factory_type, project: project, environment: 'production', options: options) }
@@ -408,7 +408,7 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#link_to_environment' do
-    let_it_be(:environment) { create(:environment, name: 'production', project: project) }
+    let_it_be(:environment, freeze: false) { create(:environment, name: 'production', project: project) }
 
     let(:job) { create(factory_type, environment: environment.name, project: project) }
 
@@ -944,6 +944,12 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#deployment_status' do
+    context 'when job does not interact with an environment' do
+      let(:job) { create(factory_type, pipeline: pipeline) }
+
+      it { expect(job.deployment_status).to be_nil }
+    end
+
     context 'when job is a last deployment' do
       let(:job) { create(factory_type, :success, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: job.project) }
@@ -975,6 +981,48 @@ RSpec.shared_examples 'a deployable job' do
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
 
       it { expect(job.deployment_status).to eq(:creating) }
+    end
+
+    context 'when job with deployment has been canceled' do
+      let(:job) { create(factory_type, :canceled, environment: 'production', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'production', project: job.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
+
+      it { expect(job.deployment_status).to eq(:canceled) }
+    end
+
+    context 'when job interacts with environment via non-deployment action' do
+      %w[access prepare verify stop].each do |env_action|
+        context "with '#{env_action}' action" do
+          before do
+            stub_ci_job_definition(job, options: { environment: { name: 'production', action: env_action } })
+          end
+
+          context 'when job is running' do
+            let(:job) { create(factory_type, environment: 'production', pipeline: pipeline) }
+
+            it { expect(job.deployment_status).to eq(:creating) }
+          end
+
+          context 'when job has succeeded' do
+            let(:job) { create(factory_type, :success, environment: 'production', pipeline: pipeline) }
+
+            it { expect(job.deployment_status).to eq(:out_of_date) }
+          end
+
+          context 'when job has failed' do
+            let(:job) { create(factory_type, :failed, environment: 'production', pipeline: pipeline) }
+
+            it { expect(job.deployment_status).to eq(:failed) }
+          end
+
+          context 'when job has been canceled' do
+            let(:job) { create(factory_type, :canceled, environment: 'production', pipeline: pipeline) }
+
+            it { expect(job.deployment_status).to eq(:canceled) }
+          end
+        end
+      end
     end
   end
 

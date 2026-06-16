@@ -34,6 +34,10 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
 
       context 'when using keyboard shortcuts' do
         it 'supports label shortcuts' do
+          within_testid 'work-item-labels' do
+            expect(page).to have_button('Edit')
+          end
+
           find('body').native.send_key('l')
 
           expect(find('.js-labels')).to have_selector('.gl-new-dropdown-panel')

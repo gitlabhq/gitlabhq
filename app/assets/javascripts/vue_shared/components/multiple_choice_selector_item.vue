@@ -3,6 +3,7 @@ import { GlFormCheckbox } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
+  name: 'MultipleChoiceSelectorItem',
   components: { GlFormCheckbox },
   directives: {
     SafeHtml,

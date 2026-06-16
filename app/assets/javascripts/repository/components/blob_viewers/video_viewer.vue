@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'VideoViewer',
   props: {
     blob: {
       type: Object,

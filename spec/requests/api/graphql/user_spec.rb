@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User', feature_category: :user_profile do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
   shared_examples 'a working user query' do
     it_behaves_like 'a working graphql query' do

@@ -106,6 +106,7 @@
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
 // we need to disable this when we show dropdowns and other elements which extend past a diff file
+// stylelint-disable-next-line gitlab/no-has -- scoped to diff file elements
 .rd-diff-file:where([data-virtual], [data-collapsed]):has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
 .rd-diff-file[data-virtual]:has(.zen-backdrop.fullscreen) {
   --rd-content-visibility-auto: visible;
@@ -119,6 +120,7 @@
   container-type: scroll-state;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to diff file sticky header
 .rd-diff-file-header-sticky:has([data-options-toggle] button[aria-expanded='true']) {
   z-index: constants.$diff-file-header-active-z-index;
 }

@@ -5,6 +5,7 @@ import {
   buildSeries,
   buildStackedByDimension,
   buildStackedByMetric,
+  tooltipContentFromParams,
 } from '~/glql/utils/chart_data';
 
 const LANGUAGE = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
@@ -57,6 +58,28 @@ describe('dimensionValue', () => {
   it('falls back to username when a UserCore value has no name', () => {
     const userValue = { __typename: 'UserCore', username: 'i-user-1' };
     expect(dimensionValue({ language: userValue }, LANGUAGE)).toBe('i-user-1');
+  });
+
+  it('formats Project values via nameWithNamespace', () => {
+    const projectValue = {
+      __typename: 'Project',
+      fullPath: 'gitlab-org/gitlab',
+      nameWithNamespace: 'GitLab Org / GitLab',
+    };
+    expect(dimensionValue({ language: projectValue }, LANGUAGE)).toBe('GitLab Org / GitLab');
+  });
+
+  it('falls back to fullPath, then name, when a Project has no nameWithNamespace', () => {
+    expect(
+      dimensionValue(
+        { language: { __typename: 'Project', fullPath: 'gitlab-org/gitlab', name: 'GitLab' } },
+        LANGUAGE,
+      ),
+    ).toBe('gitlab-org/gitlab');
+
+    expect(dimensionValue({ language: { __typename: 'Project', name: 'GitLab' } }, LANGUAGE)).toBe(
+      'GitLab',
+    );
   });
 
   it('returns an empty label for object shapes without a registered formatter', () => {
@@ -216,5 +239,67 @@ describe('buildStackedByMetric', () => {
     { scenario: 'empty metrics', nodes: [{}], dim: LANGUAGE, metrics: [] },
   ])('returns empty groups and bars with $scenario', ({ nodes, dim, metrics }) => {
     expect(buildStackedByMetric(nodes, dim, metrics)).toEqual({ groups: [], bars: [] });
+  });
+});
+
+describe('tooltipContentFromParams', () => {
+  it('returns an empty object when params is missing', () => {
+    expect(tooltipContentFromParams(null)).toEqual({});
+    expect(tooltipContentFromParams(undefined)).toEqual({});
+    expect(tooltipContentFromParams({})).toEqual({});
+  });
+
+  it('extracts the numeric value from [label, num] tuples (column chart shape)', () => {
+    const params = {
+      seriesData: [
+        { seriesName: 'Success rate', value: ['ruby', 0.819], color: '#aaa' },
+        { seriesName: 'Duration quantile', value: ['ruby', 5380], color: '#bbb' },
+      ],
+    };
+
+    expect(tooltipContentFromParams(params)).toEqual({
+      'Success rate': { value: 0.819, color: '#aaa' },
+      'Duration quantile': { value: 5380, color: '#bbb' },
+    });
+  });
+
+  it('passes scalar values through unchanged (stacked chart shape)', () => {
+    const params = {
+      seriesData: [
+        { seriesName: 'Success rate', value: 0.819, color: '#aaa' },
+        { seriesName: 'Duration quantile', value: 5380, color: '#bbb' },
+        { seriesName: 'Total count', value: 2568670, color: '#ccc' },
+      ],
+    };
+
+    expect(tooltipContentFromParams(params)).toEqual({
+      'Success rate': { value: 0.819, color: '#aaa' },
+      'Duration quantile': { value: 5380, color: '#bbb' },
+      'Total count': { value: 2568670, color: '#ccc' },
+    });
+  });
+
+  it('prefers borderColor over color when both are present', () => {
+    const params = {
+      seriesData: [{ seriesName: 'A', value: 1, color: '#aaa', borderColor: '#bbb' }],
+    };
+
+    expect(tooltipContentFromParams(params).A.color).toBe('#bbb');
+  });
+
+  it('coerces missing values to 0 to avoid NaN in formatted output', () => {
+    const params = {
+      seriesData: [
+        { seriesName: 'scalar undefined', value: undefined, color: '#aaa' },
+        { seriesName: 'scalar null', value: null, color: '#bbb' },
+        { seriesName: 'tuple missing num', value: ['ruby', undefined], color: '#ccc' },
+      ],
+    };
+
+    expect(tooltipContentFromParams(params)).toEqual({
+      'scalar undefined': { value: 0, color: '#aaa' },
+      'scalar null': { value: 0, color: '#bbb' },
+      'tuple missing num': { value: 0, color: '#ccc' },
+    });
   });
 });

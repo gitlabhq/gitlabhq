@@ -12,7 +12,7 @@ import { createAlert } from '~/alert';
 import { pinia } from '~/pinia/instance';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 
-function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) {
+function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, showWhitespace }) {
   if (lineRow.nextElementSibling?.dataset.discussionRow === 'true') return;
   const [rowOldLine, rowNewLine] = getLineNumbers(lineRow);
   const changed = lineRow.querySelector('[data-change]') !== null;
@@ -26,6 +26,8 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) 
       return {
         store,
         userPermissions: appData.userPermissions,
+        sourceBranch: appData.sourceBranch,
+        iid: appData.iid,
         endpoints: {
           discussions: appData.discussionsEndpoint,
           previewMarkdown: appData.previewMarkdownEndpoint,
@@ -41,6 +43,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) 
         defaultSuggestionCommitMessage: appData.defaultSuggestionCommitMessage,
         linkedFileData: appData.linkedFileData,
         newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
+        showWhitespace,
       };
     },
     render(h) {
@@ -96,7 +99,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id }) 
 export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData, trigger, id } = this;
-    const { oldPath, newPath, blobRawPath } = this.data;
+    const { oldPath, newPath, blobRawPath, showWhitespace } = this.data;
     const stopWatcher = watch(
       () => store.findLinePositionsForFile({ oldPath, newPath }),
       (matchedPositions) => {
@@ -111,6 +114,7 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
               store,
               trigger,
               id,
+              showWhitespace,
             });
           } catch (error) {
             createAlert({

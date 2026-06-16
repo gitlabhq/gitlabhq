@@ -41,6 +41,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(tool_names).to include(
         'get_pipeline_jobs',
+        'get_job_log',
         'search',
         'get_issue',
         'create_issue',
@@ -208,7 +209,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       read_only_tools = %w[
         get_mcp_server_version get_issue get_merge_request
         get_merge_request_commits get_merge_request_diffs
-        get_merge_request_pipelines get_pipeline_jobs
+        get_merge_request_pipelines get_pipeline_jobs get_job_log
         get_workitem_notes search search_labels
       ]
 
@@ -253,7 +254,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
         expect(pipeline_jobs_tool).to include(
           'name' => 'get_pipeline_jobs',
-          'description' => 'Get pipeline jobs',
+          'description' => 'List all jobs by pipeline',
           'inputSchema' => {
             'type' => 'object',
             'properties' => {
@@ -332,6 +333,16 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
           'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project' },
           'title' => { 'type' => 'string', 'description' => 'The title of an issue' }
         )
+        properties = create_issue_tool['inputSchema']['properties']
+        expect(properties['milestone_id']).to include(
+          'type' => 'integer',
+          'description' => 'The ID of a milestone to assign issue'
+        )
+        expect(properties['milestone']).to include(
+          'type' => 'string',
+          'description' => 'The title of a project or ancestor-group milestone to assign the issue to. ' \
+            'Mutually exclusive with `milestone_id`.'
+        )
       end
 
       it 'returns create_merge_request tool with correct structure including annotations' do
@@ -382,6 +393,11 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         expect(properties['milestone_id']).to include(
           'type' => 'integer',
           'description' => 'The global ID of a milestone to assign the merge request to.'
+        )
+        expect(properties['milestone']).to include(
+          'type' => 'string',
+          'description' => 'The title of a project or ancestor-group milestone to assign the merge request to. ' \
+            'Mutually exclusive with `milestone_id`.'
         )
       end
 

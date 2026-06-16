@@ -325,7 +325,7 @@ credentials, and then configure SMTP for the Linux package:
 
 1. Edit `/etc/gitlab/gitlab.rb` and set up the rest of the SMTP settings.
    Make sure `gitlab_rails['smtp_user_name']` and `gitlab_rails['smtp_password']`
-   are **not** present, as we've already set them up as encrypted.
+   are not present, as we've already set them up as encrypted.
 
    ```ruby
    gitlab_rails['smtp_enable'] = true

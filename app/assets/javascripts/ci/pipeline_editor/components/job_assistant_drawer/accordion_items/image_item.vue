@@ -10,6 +10,7 @@ import {
 import { i18n, HELP_PATHS } from '../constants';
 
 export default {
+  name: 'ImageItem',
   i18n,
   helpPath: HELP_PATHS.imageHelpPath,
   placeholderText: i18n.ENTRYPOINT_PLACEHOLDER_TEXT,

@@ -44,6 +44,7 @@ export default {
       default: 'small',
     },
   },
+  emits: ['archive-selected-designs'],
   data() {
     return {
       modalId: uniqueId('design-archive-confirmation-'),

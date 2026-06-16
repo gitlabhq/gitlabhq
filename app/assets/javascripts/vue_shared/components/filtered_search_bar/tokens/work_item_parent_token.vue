@@ -37,6 +37,7 @@ export default {
       allowedParentTypes: [],
       workItems: this.config.initialWorkItems || [],
       loading: false,
+      allowedParentTypesPromise: null,
     };
   },
   apollo: {
@@ -57,8 +58,12 @@ export default {
           .filter((type) => Boolean(type));
         return unionBy(allowedParentTypes, 'id');
       },
+      result() {
+        this.resolveAllowedParentTypes();
+      },
       error(error) {
         Sentry.captureException(error);
+        this.resolveAllowedParentTypes();
       },
     },
   },
@@ -75,6 +80,13 @@ export default {
         : this.config.fullPath;
     },
   },
+  created() {
+    // Gate searches until the allowedParentTypes query has settled, otherwise
+    // workItemTypeIds would be sent as an empty array (causes flaky behavior).
+    this.allowedParentTypesPromise = new Promise((resolve) => {
+      this.resolveAllowedParentTypes = resolve;
+    });
+  },
   methods: {
     async fetchWorkItemsBySearchTerm(search = '') {
       this.loading = true;
@@ -82,6 +94,10 @@ export default {
       const refinedSearchText = isSearchedById ? '' : search;
 
       try {
+        // Ensure allowedParentTypes has resolved before searching, otherwise
+        // workItemTypeIds would be sent as an empty array.
+        await this.allowedParentTypesPromise;
+
         // The logic to fetch the Parent seems to be different than other pages
         // Below issue targets to have a common logic across work items app
         // https://gitlab.com/gitlab-org/gitlab/-/issues/571302

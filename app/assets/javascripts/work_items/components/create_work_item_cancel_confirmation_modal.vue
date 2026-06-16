@@ -17,6 +17,7 @@ export default {
       required: true,
     },
   },
+  emits: ['continueEditing', 'discardDraft'],
   computed: {
     cancelConfirmationText() {
       return sprintf(

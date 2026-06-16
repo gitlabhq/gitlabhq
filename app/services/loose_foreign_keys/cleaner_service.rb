@@ -48,7 +48,8 @@ module LooseForeignKeys
                 return ""
               end
 
-      unless query.include?(%{"#{loose_foreign_key_definition.column}" IN (})
+      quoted_fk_col = connection.quote_column_name(loose_foreign_key_definition.column)
+      unless query.include?(%(= "parent".#{quoted_fk_col})) || query.include?("#{quoted_fk_col} IN (")
         logger.error("FATAL: foreign key condition is missing from the generated query: #{query}")
         return ""
       end
@@ -91,9 +92,7 @@ module LooseForeignKeys
       query.set([[arel_table[column], value]])
 
       columns = Arel::Nodes::Grouping.new(primary_keys)
-      in_query = in_query_with_limit(UPDATE_LIMIT)
-      in_query.where(arel_table[column].not_eq(value))
-      query.where(columns.in(in_query)).to_sql
+      query.where(columns.in(in_query_with_limit(UPDATE_LIMIT, exclude_condition: [column, value]))).to_sql
     end
 
     # IN query with one or composite primary key
@@ -103,15 +102,71 @@ module LooseForeignKeys
       query.where(columns.in(in_query_with_limit(limit))).to_sql
     end
 
-    # Builds the following sub-query
-    # SELECT primary_keys FROM table WHERE foreign_key IN (1, 2, 3) LIMIT N
-    def in_query_with_limit(limit)
+    def in_query_with_limit(limit, exclude_condition: nil)
+      if Feature.enabled?(:loose_foreign_keys_lateral_query, Feature.current_request)
+        lateral_in_query_with_limit(limit, exclude_condition: exclude_condition)
+      else
+        legacy_in_query_with_limit(limit, exclude_condition: exclude_condition)
+      end
+    end
+
+    # Builds a lateral sub-query to avoid plan flip / sequential scans.
+    # The LATERAL join forces one index seek per parent ID instead
+    # of a single scan for all IDs, and the outer LIMIT caps total rows returned.
+    #
+    # SELECT "lateral_rows".pk FROM (VALUES (1), (2), (3)) AS parent(fk),
+    # LATERAL (
+    #   SELECT "table".pk FROM "table"
+    #   WHERE "table".fk = "parent".fk
+    #   LIMIT N
+    #   [FOR UPDATE SKIP LOCKED]
+    # ) lateral_rows
+    # LIMIT N
+    def lateral_in_query_with_limit(limit, exclude_condition: nil)
+      fk_col = loose_foreign_key_definition.column
+      parent_table = Arel::Table.new('parent')
+      lateral_table = Arel::Table.new('lateral_rows')
+
+      inner = Arel::SelectManager.new
+      inner.from(quoted_table_name)
+      inner.projections = primary_keys
+      inner.where(arel_table[fk_col].eq(parent_table[fk_col]))
+      loose_foreign_key_definition.options[:conditions]&.each do |condition|
+        inner.where(arel_table[condition[:column]].eq(condition[:value]))
+      end
+
+      if exclude_condition
+        col, val = exclude_condition
+        inner.where(arel_table[col].not_eq(val))
+      end
+
+      inner.lock(Arel.sql('FOR UPDATE SKIP LOCKED')) if with_skip_locked
+      inner.take(limit)
+
+      quoted_fk_col = connection.quote_column_name(fk_col)
+      values_list = Arel::Nodes::ValuesList.new(deleted_parent_records.map { |r| [r.primary_key_value] })
+
+      outer = Arel::SelectManager.new
+      outer.from(Arel.sql("(#{values_list.to_sql}) AS parent(#{quoted_fk_col}), LATERAL (#{inner.to_sql}) lateral_rows"))
+      outer.projections = primary_keys.map { |pk| lateral_table[pk.name] }
+      outer.take(limit)
+      outer
+    end
+
+    # Builds: SELECT primary_keys FROM table WHERE foreign_key IN (1, 2, 3) LIMIT N
+    def legacy_in_query_with_limit(limit, exclude_condition: nil)
       in_query = Arel::SelectManager.new
       in_query.from(quoted_table_name)
       in_query.where(arel_table[loose_foreign_key_definition.column].in(deleted_parent_records.map(&:primary_key_value)))
       loose_foreign_key_definition.options[:conditions]&.each do |condition|
         in_query.where(arel_table[condition[:column]].eq(condition[:value]))
       end
+
+      if exclude_condition
+        col, val = exclude_condition
+        in_query.where(arel_table[col].not_eq(val))
+      end
+
       in_query.projections = primary_keys
       in_query.take(limit)
       in_query.lock(Arel.sql('FOR UPDATE SKIP LOCKED')) if with_skip_locked

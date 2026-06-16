@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
@@ -43,11 +44,11 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     end
 
     context 'when there are two feature flags' do
-      let!(:feature_flag_1) do
+      let_it_be(:feature_flag_1) do
         create(:operations_feature_flag, project: project)
       end
 
-      let!(:feature_flag_2) do
+      let_it_be(:feature_flag_2) do
         create(:operations_feature_flag, project: project)
       end
 
@@ -82,15 +83,15 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     end
 
     context 'with version 2 feature flags' do
-      let!(:feature_flag) do
+      let_it_be(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature1')
       end
 
-      let!(:strategy) do
+      let_it_be(:strategy) do
         create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
       end
 
-      let!(:scope) do
+      let_it_be(:scope) do
         create(:operations_scope, strategy: strategy, environment_scope: 'production')
       end
 
@@ -122,19 +123,20 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     end
 
     context 'with user_list strategy feature flags' do
-      let!(:feature_flag) do
+      let_it_be(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature1')
       end
 
-      let!(:user_list) do
+      let_it_be(:user_list) do
         create(:operations_feature_flag_user_list, project: project)
       end
 
-      let!(:strategy) do
-        create(:operations_strategy, :gitlab_userlist, user_list: user_list, feature_flag: feature_flag, name: 'gitlabUserList', parameters: {})
+      let_it_be(:strategy) do
+        create(:operations_strategy, :gitlab_userlist, user_list: user_list, feature_flag: feature_flag,
+          name: 'gitlabUserList', parameters: {})
       end
 
-      let!(:scope) do
+      let_it_be(:scope) do
         create(:operations_scope, strategy: strategy, environment_scope: 'production')
       end
 
@@ -175,7 +177,7 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     subject { get api("/projects/#{project.id}/feature_flags/#{feature_flag.name}", user) }
 
     context 'when there is a feature flag' do
-      let!(:feature_flag) { create_flag(project, 'awesome-feature') }
+      let_it_be(:feature_flag) { create_flag(project, 'awesome-feature') }
 
       it_behaves_like 'authorizing granular token permissions', :read_feature_flag do
         let(:user) { developer }
@@ -231,19 +233,20 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     end
 
     context 'with user_list strategy feature flag' do
-      let!(:feature_flag) do
+      let_it_be(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature1')
       end
 
-      let(:user_list) do
+      let_it_be(:user_list) do
         create(:operations_feature_flag_user_list, project: project)
       end
 
-      let!(:strategy) do
-        create(:operations_strategy, :gitlab_userlist, user_list: user_list, feature_flag: feature_flag, name: 'gitlabUserList', parameters: {})
+      let_it_be(:strategy) do
+        create(:operations_strategy, :gitlab_userlist, user_list: user_list, feature_flag: feature_flag,
+          name: 'gitlabUserList', parameters: {})
       end
 
-      let!(:scope) do
+      let_it_be(:scope) do
         create(:operations_scope, strategy: strategy, environment_scope: 'production')
       end
 
@@ -294,7 +297,10 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
     it_behaves_like 'authorizing granular token permissions', :create_feature_flag do
       let(:user) { developer }
       let(:boundary_object) { project }
-      let(:request) { post api("/projects/#{project.id}/feature_flags", personal_access_token: pat), params: { name: 'gpat-test-feature' } }
+      let(:request) do
+        post api("/projects/#{project.id}/feature_flags", personal_access_token: pat),
+          params: { name: 'gpat-test-feature' }
+      end
     end
 
     it 'creates a new feature flag' do
@@ -435,7 +441,9 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
           name: 'gradualRolloutUserId',
           parameters: { groupId: 'default', percentage: '50' }
         }])
-        expect(feature_flag.strategies.first.scopes.map { |s| s.slice(:environment_scope).deep_symbolize_keys }).to eq([{
+        expect(feature_flag.strategies.first.scopes.map do |s|
+          s.slice(:environment_scope).deep_symbolize_keys
+        end).to eq([{
           environment_scope: 'staging'
         }])
       end
@@ -465,7 +473,9 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
           name: 'flexibleRollout',
           parameters: { groupId: 'default', rollout: '50', stickiness: 'default' }
         }])
-        expect(feature_flag.strategies.first.scopes.map { |s| s.slice(:environment_scope).deep_symbolize_keys }).to eq([{
+        expect(feature_flag.strategies.first.scopes.map do |s|
+          s.slice(:environment_scope).deep_symbolize_keys
+        end).to eq([{
           environment_scope: 'staging'
         }])
       end
@@ -511,7 +521,7 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
   describe 'PUT /projects/:id/feature_flags/:name' do
     context 'with a version 2 feature flag' do
-      let!(:feature_flag) do
+      let_it_be_with_reload(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag,
           project: project, active: true, name: 'feature1', description: 'old description')
       end
@@ -524,7 +534,8 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
         let(:user) { developer }
         let(:boundary_object) { project }
         let(:request) do
-          put api("/projects/#{project.id}/feature_flags/feature1", personal_access_token: pat), params: { description: 'updated' }
+          put api("/projects/#{project.id}/feature_flags/feature1", personal_access_token: pat),
+            params: { description: 'updated' }
         end
       end
 
@@ -820,7 +831,9 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/feature_flag')
-        result = feature_flag.reload.strategies.first.scopes.map { |s| s.slice(:id, :environment_scope).deep_symbolize_keys }
+        result = feature_flag.reload.strategies.first.scopes.map do |s|
+          s.slice(:id, :environment_scope).deep_symbolize_keys
+        end
         expect(result).to eq([{
           id: scope.id,
           environment_scope: 'production'

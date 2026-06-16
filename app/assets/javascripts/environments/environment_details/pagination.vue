@@ -5,6 +5,7 @@ import { setUrlParams } from '~/lib/utils/url_utility';
 import { translations } from './constants';
 
 export default {
+  name: 'EnvironmentDetailsPagination',
   components: {
     GlKeysetPagination,
   },

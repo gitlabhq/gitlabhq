@@ -108,6 +108,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
       before do
         allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return(redirect_url)
+        allow(helper).to receive(:current_user).and_return(build(:user))
       end
 
       it { is_expected.to include(*fields, *slack_app_fields) }
@@ -282,9 +283,11 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
     before do
       allow(helper).to receive(:form_authenticity_token).and_return('a token')
+      allow(helper).to receive(:current_user).and_return(build(:user))
     end
 
     it 'returns the endpoint URL with all needed params' do
+      stub_feature_flags(slack_duo_agent: false)
       expect(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
       expect(slack_link).to include('&state=a%20token')
       expect(slack_link).to start_with(Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL)
@@ -295,6 +298,28 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
         'redirect_uri' => 'http://redirect',
         'state' => 'a token'
       )
+    end
+
+    context 'when the slack_duo_agent flag is disabled' do
+      before do
+        stub_feature_flags(slack_duo_agent: false)
+        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
+      end
+
+      it 'requests the base SCOPES' do
+        expect(query).to include('scope' => SlackIntegration::SCOPES.join(','))
+      end
+    end
+
+    context 'when the slack_duo_agent flag is enabled for current_user' do
+      before do
+        stub_feature_flags(slack_duo_agent: true)
+        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
+      end
+
+      it 'requests the DUO_SCOPES' do
+        expect(query).to include('scope' => SlackIntegration::DUO_SCOPES.join(','))
+      end
     end
 
     context 'when passed a group' do
@@ -387,7 +412,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
   describe '#integration_issue_type' do
     using RSpec::Parameterized::TableSyntax
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue, freeze: false) { create(:issue) }
 
     where(:issue_type, :expected_i18n_issue_type) do
       "issue"           | _('Issue')

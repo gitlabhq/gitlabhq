@@ -109,7 +109,7 @@ RSpec.describe Gitlab::HTTP_V2::NewConnectionAdapter, feature_category: :shared 
 
     context 'when proxy is enabled' do
       before do
-        stub_env('http_proxy', 'http://proxy.example.com')
+        stub_env('https_proxy', 'http://proxy.example.com')
       end
 
       it 'proxy stays configured' do

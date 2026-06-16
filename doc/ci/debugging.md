@@ -18,7 +18,7 @@ GitLab provides several tools to help make it easier to debug your CI/CD configu
 If you are unable to resolve pipeline issues, you can get help from:
 
 - The [GitLab community forum](https://forum.gitlab.com/)
-- GitLab [Support](https://about.gitlab.com/support/)
+- GitLab [Support](https://support.gitlab.com/)
 
 If you are having issues with a specific CI/CD feature, see the related troubleshooting section
 for that feature:
@@ -334,7 +334,7 @@ If you are using pull mirroring, you can check the [troubleshooting entry for pu
 
 ### Pipeline with many jobs fails to start
 
-A Pipeline that has more jobs than the instance's defined [CI/CD limits](../administration/settings/continuous_integration.md#set-cicd-limits)
+A Pipeline that has more jobs than the instance's defined [CI/CD limits](../administration/cicd/limits.md#maximum-number-of-jobs-in-a-pipeline)
 fails to start.
 
 To reduce the number of jobs in a single pipeline, you can split your `.gitlab-ci.yml`
@@ -411,8 +411,6 @@ message that does not disappear after a few minutes, you can try one of these wo
 - If you have already confirmed the merge request is ready to be merged, you can merge
   it with the `/merge` quick action.
 
-This issue is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/229352) in GitLab 15.5.
-
 ### `Checking pipeline status` message
 
 This message displays with a spinning status icon ({{< icon name="spinner" >}}) when the merge request
@@ -463,7 +461,7 @@ To reduce the configuration size, you can:
 - Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some
   work to jobs in an independent child pipeline.
 
-On GitLab Self-Managed, you can [increase the size limits](../administration/instance_limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).
+On GitLab Self-Managed, you can [increase the size limits](../administration/cicd/limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).
 
 ### `500` error when editing the `.gitlab-ci.yml` file
 
@@ -473,12 +471,6 @@ with the [web editor](../user/project/repository/web_editor.md).
 Ensure that included configuration files do not create a loop of references to each other.
 
 ### `Failed to pull image` messages
-
-{{< history >}}
-
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
-
-{{< /history >}}
 
 A runner might return a `Failed to pull image` message when trying to pull a container image
 in a CI/CD job.

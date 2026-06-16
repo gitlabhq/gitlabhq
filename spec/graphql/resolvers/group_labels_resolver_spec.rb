@@ -9,10 +9,10 @@ RSpec.describe Resolvers::GroupLabelsResolver, feature_category: :team_planning 
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:organization) { create(:common_organization) }
-  let_it_be(:group, reload: true) { create(:group, :private, organization: organization) }
-  let_it_be(:subgroup, reload: true) { create(:group, :private, parent: group, organization: organization) }
-  let_it_be(:sub_subgroup, reload: true) { create(:group, :private, parent: subgroup, organization: organization) }
-  let_it_be(:project, reload: true) { create(:project, :private, group: sub_subgroup, organization: organization) }
+  let_it_be_with_reload(:group) { create(:group, :private, organization: organization) }
+  let_it_be_with_reload(:subgroup) { create(:group, :private, parent: group, organization: organization) }
+  let_it_be_with_reload(:sub_subgroup) { create(:group, :private, parent: subgroup, organization: organization) }
+  let_it_be_with_reload(:project) { create(:project, :private, group: sub_subgroup, organization: organization) }
   let_it_be(:label1) { create(:label, project: project, name: 'project feature') }
   let_it_be(:label2) { create(:label, project: project, name: 'new project feature') }
   let_it_be(:group_label1) { create(:group_label, group: group, name: 'group feature') }

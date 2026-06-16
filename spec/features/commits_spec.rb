@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Commits', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   describe 'CI' do
@@ -65,6 +65,12 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
 
         describe 'Project commits' do
+          before do
+            # The new Vue UI resolves pipeline status differently (latest pipeline
+            # regardless of ref), so these ref-specific status tests need the old UI
+            stub_feature_flags(project_commits_refactor: false)
+          end
+
           let!(:pipeline_from_other_branch) do
             create(
               :ci_pipeline,
@@ -261,6 +267,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
     end
 
     before do
+      stub_feature_flags(project_commits_refactor: false)
       project.add_maintainer(user)
       sign_in(user)
       project.repository.create_branch(ref_with_hash, branch_name)
@@ -301,6 +308,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
     let(:commits) { project.repository.commits(nil, author: author, limit: 40) }
 
     before do
+      stub_feature_flags(project_commits_refactor: false)
       project.add_maintainer(user)
       sign_in(user)
       visit project_commits_path(project, nil, author: author)

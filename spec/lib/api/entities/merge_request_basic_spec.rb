@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
-  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request, freeze: false) { create(:merge_request) }
   let_it_be(:labels) { create_list(:label, 3) }
   let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
   let_it_be(:entity) { described_class.new(merge_request) }
@@ -46,7 +46,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
 
       query = scope.all
       batch = ActiveRecord::QueryRecorder.new do
-        entities = query.map(&method(:present))
+        entities = query.map { |record| present(record) }
 
         entities.to_json
       end

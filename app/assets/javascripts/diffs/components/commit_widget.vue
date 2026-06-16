@@ -2,6 +2,7 @@
 import CommitItem from './commit_item.vue';
 
 export default {
+  name: 'CommitWidget',
   components: {
     CommitItem,
   },

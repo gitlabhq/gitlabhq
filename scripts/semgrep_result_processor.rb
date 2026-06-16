@@ -4,6 +4,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 require_relative '../gems/gitlab-utils/lib/gitlab/utils/strong_memoize'
+require_relative 'sast_triage_classifier'
 
 # rubocop:disable Layout/LineLength -- we need to construct the URLs
 
@@ -14,6 +15,7 @@ class SemgrepResultProcessor
   ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
   APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
+  TRIAGE_VERDICTS_ARTIFACT = 'gl-sast-triage-verdicts.json'
 
   LABEL_INSTRUCTION = 'Apply the ~"appsec-sast-ping::resolved" label after reviewing.'
 
@@ -58,12 +60,55 @@ class SemgrepResultProcessor
     end
 
     puts "Found the following unique results: #{unique_results}"
+    triage_findings(unique_results)
     create_inline_comments(unique_results)
 
   rescue StandardError => e
     puts "An error occurred: #{e.message}"
 
     exit 0
+  end
+
+  # Shadow-mode Duo triage. Classifies each finding and writes verdicts to a CI
+  # artifact for AppSec to backtest against. Does not affect inline comment
+  # posting: every classifier failure logs and returns, the existing pipeline
+  # continues unchanged.
+  # Gated by SAST_TRIAGE_ENABLED so we can land code before flipping behavior.
+  def triage_findings(findings)
+    return if findings.empty?
+    return unless ENV['SAST_TRIAGE_ENABLED'] == '1'
+
+    puts "Running shadow-mode SAST triage on #{findings.size} finding(s)"
+    verdicts = SastTriageClassifier.new.classify(findings)
+    write_triage_verdicts(records_from(findings, verdicts))
+  rescue StandardError => e
+    puts "Triage step failed (continuing without verdicts): #{e.class}: #{e.message}"
+  end
+
+  def records_from(findings, verdicts)
+    findings.map do |fingerprint, finding|
+      verdict = verdicts[fingerprint] || {}
+      {
+        fingerprint: fingerprint,
+        check_id: finding[:check_id],
+        path: finding[:path],
+        line: finding[:line],
+        verdict: verdict[:verdict],
+        confidence: verdict[:confidence],
+        rationale: verdict[:rationale],
+        latency_ms: verdict[:latency_ms],
+        error: verdict[:error],
+        raw_response: verdict[:raw_response]
+      }
+    end
+  end
+
+  def write_triage_verdicts(records)
+    artifact_path = File.join(ENV['CI_PROJECT_DIR'].to_s, TRIAGE_VERDICTS_ARTIFACT)
+    File.write(artifact_path, JSON.pretty_generate(records))
+    puts "Wrote #{records.size} triage verdict(s) to #{TRIAGE_VERDICTS_ARTIFACT}"
+  rescue StandardError => e
+    puts "Failed to write triage verdicts artifact: #{e.class}: #{e.message}"
   end
 
   def perform_allowlist_check

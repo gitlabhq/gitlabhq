@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_strings'
 
-RSpec.describe RuboCop::Cop::Migration::PreventStrings do
+RSpec.describe RuboCop::Cop::Migration::PreventStrings, feature_category: :database do
   context 'when in migration' do
     before do
       allow(cop).to receive(:in_migration?).and_return(true)

@@ -146,18 +146,57 @@ To delete a package, you can either:
 - [Use the UI](../package_registry/reduce_package_registry_storage.md#delete-a-package).
 - [Use the API](../../../api/packages.md#delete-a-project-package).
 
-## Download gems
+## Install a Ruby gem
 
-You can't install Ruby gems from the GitLab package registry. However, you can download gem files for local use.
+Prerequisites:
 
-To do this:
+- You must [authenticate to the package registry](#authenticate-to-the-package-registry).
+
+To install a gem, pass your credentials in the source URL as HTTP Basic authentication.
+Use `__token__` as the username and your personal access token, deploy token, or CI/CD job
+token as the password.
+
+In the following examples:
+
+- `<token>` is your personal access token, deploy token, or CI/CD job token.
+- `<project_id>` is displayed on the [project overview page](../../project/working_with_projects.md#find-the-project-id). 
+
+{{< tabs >}}
+
+{{< tab title="With the gem command" >}}
+
+Run a command like:
+
+```shell
+gem install my_gem --source "https://__token__:<token>@gitlab.example.com/api/v4/projects/<project_id>/packages/rubygems"
+```
+
+{{< /tab >}}
+
+{{< tab title="With Bundler" >}}
+
+In your `Gemfile`, add a `source` block:
+
+```ruby
+source "https://__token__:<token>@gitlab.example.com/api/v4/projects/<project_id>/packages/rubygems" do
+  gem "my_gem"
+end
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+## Download a gem file
+
+To download a gem file for local use without installing it:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Deploy** > **Package registry**.
 1. Select the package name and version.
 1. Under **Assets**, select the Ruby gem you want to download.
 
-To download Ruby gems, you can also [use the API](../../../api/packages/rubygems.md#download-a-gem-file).
+To download a gem file, you can also [use the API](../../../api/packages/rubygems.md#download-a-gem-file).
 
 ## Related topics
 

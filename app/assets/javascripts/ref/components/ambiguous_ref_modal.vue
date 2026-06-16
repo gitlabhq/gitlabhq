@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlModal, GlButton, GlSprintf } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
@@ -6,6 +5,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { REF_TYPE_PARAM_NAME, TAG_REF_TYPE, BRANCH_REF_TYPE } from '../constants';
 
 export default {
+  name: 'AmbiguousRefModal',
   i18n: {
     title: s__('AmbiguousRef|Which reference do you want to view?'),
     description: sprintf(

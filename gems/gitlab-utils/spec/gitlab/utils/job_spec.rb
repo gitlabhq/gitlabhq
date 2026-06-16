@@ -52,4 +52,25 @@ RSpec.describe Gitlab::Utils::Job, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe '#parallel_suffix' do
+    using RSpec::Parameterized::TableSyntax
+    where(:name, :parallel_suffix) do
+      'rspec1'                              | ''
+      'rspec1 0/2'                          | ' 0/2'
+      'build 1/3'                           | ' 1/3'
+      'build: [aws]'                        | ': [aws]'
+      'build: [aws] 1/3'                    | ': [aws] 1/3'
+      'rspec:windows'                       | ''
+      'rspec:windows 0/1'                   | ' 0/1'
+      'rspec:windows: [name, other]'        | ': [name, other]'
+      'rspec:windows: [name, other] 0/1'    | ': [name, other] 0/1'
+    end
+
+    with_them do
+      it "returns the trailing parallel marker for #{params[:name]}" do
+        expect(described_class.parallel_suffix(name)).to eq(parallel_suffix)
+      end
+    end
+  end
 end

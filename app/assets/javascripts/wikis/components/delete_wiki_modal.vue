@@ -5,6 +5,7 @@ import { s__, __, sprintf } from '~/locale';
 import { isTemplate } from '../utils';
 
 export default {
+  name: 'DeleteWikiModal',
   components: {
     GlModal,
     GlButton,

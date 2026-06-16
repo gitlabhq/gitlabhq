@@ -33,8 +33,9 @@ If you select a specific model for a feature, the feature uses that model until 
 
 {{< /history >}}
 
-You can select a model for a feature that applies to the entire instance. If you don't select a specific model,
-all GitLab Duo features use the default GitLab model.
+You can select a default model for a feature and that default applies to the
+entire instance. If you do not select a specific model, all GitLab Duo features
+use the default GitLab model.
 
 > [!note]
 > For GitLab Self-Managed instances with an offline license, to change the model for features in the GitLab Duo Agent Platform,
@@ -49,5 +50,33 @@ To select a model for a feature:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
-1. For the feature you want to configure, select a model from the dropdown list.
+1. For the feature you want to configure, select a model from the dropdown list
+   to set as the default model.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
+
+### Select a model for Agentic Chat
+
+{{< history >}}
+
+- Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
+
+{{< /history >}}
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. On **Configure AI features**, go to the **GitLab Duo Agentic Chat** section.
+1. Select a model from the dropdown list to set as the default model. If you plan
+   to restrict access to other models, select a GitLab-managed model as the default.
+1. Optional. To restrict what other models users can select for Agentic Chat:
+
+   1. Under **Available models**, select **Configure**.
+   1. In the **Available models: Agentic Chat** dialog, select the
+      **Restrict to specific models** checkbox.
+   1. Select the models that you want Agentic Chat to be able to use.
+   1. Select **Save**.
+
+   > [!note]
+   > To restrict Agentic Chat to specific models, you must select a GitLab-managed
+     model as the default model.
+   > If you do not restrict Agentic Chat to specific models, users can choose from
+   > all GitLab-managed models.

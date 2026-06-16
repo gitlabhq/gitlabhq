@@ -20,7 +20,7 @@ For advanced searching and filtering of this deprecation information, try
 [REST API deprecations](../api/rest/deprecations.md) are documented separately.
 
 {{< icon name="rss" >}} **To be notified of upcoming breaking changes**,
-add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+add this URL to your RSS feed reader: `https://docs.gitlab.com/releases/breaking-changes.xml`
 
 <!-- vale off -->
 <!--

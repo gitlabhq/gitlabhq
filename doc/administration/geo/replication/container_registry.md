@@ -12,11 +12,11 @@ title: Container registry for a secondary site
 
 {{< /details >}}
 
-You can set up a container registry on your **secondary** Geo site that replicates container images from the one on the **primary** Geo site. This container image replication is used only for disaster recovery purposes.
+You can set up a container registry on your secondary Geo site that replicates container images from the one on the primary Geo site. This container image replication is used only for disaster recovery purposes.
 
-Do not push to the container registry on the **secondary** Geo site, because the data is not propagated to the **primary** site.
+Do not push to the container registry on the secondary Geo site, because the data is not propagated to the primary site.
 
-We do not recommend pulling container registry data from the **secondary** site because it may be stale. The feature request [issue 365864](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) would solve this problem. You are encouraged to upvote the issue to register your interest.
+We do not recommend pulling container registry data from the secondary site because it may be stale. The feature request [issue 365864](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) would solve this problem. You are encouraged to upvote the issue to register your interest.
 
 > [!warning]
 > **Important:** The container registry metadata database is separate from container image replication. While container images replicate from primary to secondary sites, the metadata database does not. When using GitLab Geo with the container registry metadata database enabled, you must configure separate, external PostgreSQL instances for the container registry at each Geo site (both primary and secondary). The container registry metadata database cannot use the default GitLab-managed PostgreSQL database. Each site's metadata database operates independently without replication between them. For setup instructions, see [Using an external database](../../packages/container_registry_metadata_database.md#using-an-external-database).
@@ -66,25 +66,25 @@ For more information, see the [OCI Distribution Specification](https://github.co
 
 You can enable a storage-agnostic replication so it
 can be used for cloud or local storage. Whenever a new image is pushed to the
-**primary** site, each **secondary** site pulls it to its own container
+primary site, each secondary site pulls it to its own container
 repository.
 
 To configure container registry replication:
 
-1. Configure the [**primary** site](#configure-primary-site).
-1. Configure the [**secondary** site](#configure-secondary-site).
+1. Configure the [primary site](#configure-primary-site).
+1. Configure the [secondary site](#configure-secondary-site).
 1. Verify container registry [replication](#verify-replication).
 
 ### Configure primary site
 
 Make sure that you have container registry set up and working on
-the **primary** site before following the next steps.
+the primary site before following the next steps.
 
 To be able to replicate new container images, the container registry must send notification events to the
-**primary** site for every push. The token shared between the container registry and the web nodes on the
-**primary** is used to make communication more secure.
+primary site for every push. The token shared between the container registry and the web nodes on the
+primary is used to make communication more secure.
 
-1. SSH into your GitLab **primary** server and sign in as root (for GitLab HA, you only need a Registry node):
+1. SSH into your GitLab primary server and sign in as root (for GitLab HA, you only need a Registry node):
 
    ```shell
    sudo -i
@@ -101,7 +101,7 @@ To be able to replicate new container images, the container registry must send n
        'name' => 'geo_event',
        'url' => 'https://<example.com>/api/v4/container_registry_event/events',
        'timeout' => '500ms',
-       'threshold' => 5,
+       'maxretries' => 5,
        'backoff' => '1s',
        'headers' => {
          'Authorization' => ['<replace_with_a_secret_token>']
@@ -134,18 +134,18 @@ To be able to replicate new container images, the container registry must send n
 ### Configure secondary site
 
 Make sure you have container registry set up and working on
-the **secondary** site before following the next steps.
+the secondary site before following the next steps.
 
-The following steps should be done on each **secondary** site you're
+The following steps should be done on each secondary site you're
 expecting to see the container images replicated.
 
-Because we need to allow the **secondary** site to communicate securely with
-the **primary** site container registry, we need to have a single key
-pair for all the sites. The **secondary** site uses this key to
+Because we need to allow the secondary site to communicate securely with
+the primary site container registry, we need to have a single key
+pair for all the sites. The secondary site uses this key to
 generate a short-lived JWT that is pull-only-capable to access the
-**primary** site container registry.
+primary site container registry.
 
-For each application and Sidekiq node on the **secondary** site:
+For each application and Sidekiq node on the secondary site:
 
 1. SSH into the node and sign in as the `root` user:
 
@@ -153,7 +153,7 @@ For each application and Sidekiq node on the **secondary** site:
    sudo -i
    ```
 
-1. Copy `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` from the **primary** to the node.
+1. Copy `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` from the primary to the node.
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
@@ -170,15 +170,46 @@ For each application and Sidekiq node on the **secondary** site:
    gitlab-ctl reconfigure
    ```
 
+### Disable container registry replication
+
+> [!note]
+> When the container registry service is disabled, Geo automatically skips
+> verification attempts for container repositories. Container registry metrics
+> are hidden from the Geo dashboard. Existing verification states remain in
+> the database but are not displayed.
+
+To stop replicating container images to a secondary site and disable the local container registry:
+
+1. SSH into the primary server node and sign in as the `root` user:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   # Disable Geo replication for the container registry
+   gitlab_rails['geo_registry_replication_enabled'] = false
+   # Disable the container registry service itself
+   registry['enable'] = false
+   ```
+
+1. Reconfigure the node for the change to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 ### Verify replication
 
-To verify container registry replication is working, on the **secondary** site:
+To verify container registry replication is working, on the secondary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Nodes**.
    The initial replication, or "backfill", is probably still in progress.
 
-You can monitor the synchronization process on each Geo site from the **primary** site's **Geo Nodes** dashboard in your browser.
+You can monitor the synchronization process on each Geo site from the primary site's **Geo Nodes** dashboard in your browser.
 
 ## Troubleshooting
 
@@ -267,7 +298,7 @@ The `state` field represents sync state:
 If container registry replication was disabled for a period of time,
 either through the `geo_container_repository_replication` feature flag
 or a misconfiguration, images pushed during that period might not
-automatically sync to the **secondary** site.
+automatically sync to the secondary site.
 
 New container repositories created during the downtime are
 automatically picked up by the backfill worker after replication is
@@ -278,7 +309,7 @@ replication because the sync status is based on the registry entry
 state, not on content verification.
 
 Updated container repositories eventually resync after the
-**primary** site reverification cycle detects a checksum mismatch.
+primary site reverification cycle detects a checksum mismatch.
 For more information about the reverification interval, see
 [repository re-verification](../disaster_recovery/background_verification.md#repository-re-verification).
 

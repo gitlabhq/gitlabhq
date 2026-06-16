@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with an approval rule and approver' do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:environment) { create(:environment, project: project) }
-  let_it_be(:approver) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:environment, freeze: false) { create(:environment, project: project) }
+  let_it_be(:approver, freeze: false) { create(:user) }
 
   let!(:protected_environment) do
     create(
@@ -24,5 +24,5 @@ RSpec.shared_context 'with an approval rule and approver' do
 end
 
 RSpec.shared_context 'with a non approver' do
-  let_it_be(:non_approver) { create(:user) }
+  let_it_be(:non_approver, freeze: false) { create(:user) }
 end

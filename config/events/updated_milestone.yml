@@ -2,6 +2,8 @@
 description: Tracks when a user successfully updates the milestone for a work item.
 action: updated_milestone
 product_group: project_management
+product_categories:
+- team_planning
 milestone: '16.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140636
 tiers:

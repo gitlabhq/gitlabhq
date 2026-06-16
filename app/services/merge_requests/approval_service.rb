@@ -34,6 +34,15 @@ module MergeRequests
         )
       )
 
+      # CloudEvent consumed by AI flow trigger workers
+      Gitlab::EventStore.publish(
+        MergeRequests::ApprovedCloudEvent.build(
+          merge_request: merge_request,
+          current_user: current_user,
+          approval: approval
+        )
+      )
+
       success
     end
 

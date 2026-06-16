@@ -31,7 +31,7 @@ module Organizations
     private
 
     def allowed?
-      current_user&.can?(:admin_organization, organization)
+      current_user&.can?(:update_organization, organization)
     end
 
     def error_no_permissions

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/service_response'
 
-RSpec.describe RuboCop::Cop::Gitlab::ServiceResponse do
+RSpec.describe RuboCop::Cop::Gitlab::ServiceResponse, feature_category: :tooling do
   it 'does not flag the `http_status:` param on a homonym method' do
     expect_no_offenses("MyClass.error(http_status: :ok)")
   end

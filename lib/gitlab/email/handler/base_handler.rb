@@ -4,6 +4,8 @@ module Gitlab
   module Email
     module Handler
       class BaseHandler
+        include ::Gitlab::Loggable
+
         attr_reader :mail, :mail_key
 
         HANDLER_ACTION_BASE_REGEX = /(?<project_slug>.+)-(?<project_id>\d+)/
@@ -34,6 +36,26 @@ module Gitlab
         end
 
         private
+
+        def additional_log_data
+          {}
+        end
+
+        def log_email_handler
+          logger.info(
+            build_structured_payload_labkit(
+              **additional_log_data.merge(
+                Labkit::Fields::LOG_MESSAGE => 'Incoming email handler execution',
+                Labkit::Fields::GL_NAMESPACE_ID => parent_namespace.id,
+                Labkit::Fields::GL_ROOT_NAMESPACE_ID => parent_namespace.root_ancestor.id
+              )
+            )
+          )
+        end
+
+        def logger
+          @logger ||= ::Gitlab::AppJsonLogger.build
+        end
 
         def reopen_issue_on_external_participant_note(noteable:, author:, project:, support_bot:)
           return unless noteable.respond_to?(:closed?)

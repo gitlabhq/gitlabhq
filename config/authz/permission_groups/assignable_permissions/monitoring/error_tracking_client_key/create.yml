@@ -1,0 +1,9 @@
+---
+name: create_error_tracking_client_key
+description: Grants the ability to create error tracking client keys
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_error_tracking_client_key

@@ -70,6 +70,13 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'addIssuableFinishEntry',
+    'addIssuableFormBlur',
+    'addIssuableFormCancel',
+    'addIssuableFormInput',
+    'pendingIssuableRemoveRequest',
+  ],
   data() {
     return {
       isInputFocused: false,

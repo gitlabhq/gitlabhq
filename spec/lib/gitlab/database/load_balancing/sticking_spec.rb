@@ -143,8 +143,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
         allow(ActiveRecord::Base.load_balancer)
           .to receive(:primary_only?)
           .and_return(false)
-
-        stub_feature_flags(db_load_balancing_atomic_sticking: false)
       end
 
       it 'sticks an entity to the primary', :aggregate_failures do
@@ -210,56 +208,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
         .and_return(false)
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(db_load_balancing_atomic_sticking: true)
-      end
-
-      it 'uses atomic set_write_location_for' do
-        expect(sticking).to receive(:set_atomic_write_location_for).with(:user, 42, primary_write_location)
-                                                                   .and_call_original
-
-        sticking.stick(:user, 42)
-
-        Gitlab::Redis::DbLoadBalancing.with do |redis|
-          expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/42"))
-            .to eq(primary_write_location)
-        end
-      end
-    end
-
-    context 'when feature flag is disabled (default)' do
-      before do
-        stub_feature_flags(db_load_balancing_atomic_sticking: false)
-      end
-
-      it 'uses regular redis set' do
-        expect(sticking).not_to receive(:set_atomic_write_location_for)
-
-        sticking.stick(:user, 42)
-
-        Gitlab::Redis::DbLoadBalancing.with do |redis|
-          expect(redis.get("database-load-balancing/write-location/#{load_balancer.name}/user/42"))
-              .to eq(primary_write_location)
-        end
-      end
-    end
-  end
-
-  describe '#set_atomic_write_location_for' do
-    let(:redis_key) { "database-load-balancing/write-location/#{load_balancer.name}/user/42" }
-
-    before do
-      allow(ActiveRecord::Base.load_balancer)
-        .to receive(:primary_only?)
-        .and_return(false)
-
-      stub_feature_flags(db_load_balancing_atomic_sticking: true)
-    end
-
     context 'when no existing LSN is stored' do
       it 'stores the new LSN and returns 1' do
-        result = sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+        result = sticking.send(:set_write_location_for, :user, 42, '0/2000')
 
         expect(result).to eq(1)
 
@@ -277,7 +228,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
       end
 
       it 'updates to the new LSN and returns 1' do
-        result = sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+        result = sticking.send(:set_write_location_for, :user, 42, '0/2000')
 
         expect(result).to eq(1)
 
@@ -295,7 +246,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
       end
 
       it 'keeps the current LSN and returns 0' do
-        result = sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+        result = sticking.send(:set_write_location_for, :user, 42, '0/2000')
 
         expect(result).to eq(0)
 
@@ -309,7 +260,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
           redis.set(redis_key, '0/3000', ex: 5)
           initial_ttl = redis.ttl(redis_key)
 
-          sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+          sticking.send(:set_write_location_for, :user, 42, '0/2000')
 
           new_ttl = redis.ttl(redis_key)
           expect(new_ttl).to be > initial_ttl
@@ -326,7 +277,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
       end
 
       it 'keeps the current LSN and returns 0' do
-        result = sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+        result = sticking.send(:set_write_location_for, :user, 42, '0/2000')
 
         expect(result).to eq(0)
 
@@ -339,7 +290,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
     context 'when LSN format is invalid' do
       it 'returns an error for invalid format' do
         expect do
-          sticking.send(:set_atomic_write_location_for, :user, 42, 'invalid-lsn')
+          sticking.send(:set_write_location_for, :user, 42, 'invalid-lsn')
         end.to raise_error(Redis::CommandError, /ERR ARGV\[1\] must be a valid LSN/)
       end
     end
@@ -350,7 +301,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
           redis.set(redis_key, 'FFFFFFFF/FFFFFFFE', ex: 30)
         end
 
-        result = sticking.send(:set_atomic_write_location_for, :user, 42, 'FFFFFFFF/FFFFFFFF')
+        result = sticking.send(:set_write_location_for, :user, 42, 'FFFFFFFF/FFFFFFFF')
 
         expect(result).to eq(1)
 
@@ -365,7 +316,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
         stub_const("#{described_class}::EXPIRATION", 0)
 
         expect do
-          sticking.send(:set_atomic_write_location_for, :user, 42, '0/2000')
+          sticking.send(:set_write_location_for, :user, 42, '0/2000')
         end.to raise_error(Redis::CommandError, /ERR ARGV\[2\] \(TTL\) must be a positive integer/)
       end
     end

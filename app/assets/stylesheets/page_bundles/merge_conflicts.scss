@@ -20,6 +20,7 @@
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific line_content element
   .line_content:has(button) {
     padding-right: $gl-spacing-scale-13;
   }

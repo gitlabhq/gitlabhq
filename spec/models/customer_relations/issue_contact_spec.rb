@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe CustomerRelations::IssueContact, feature_category: :team_planning do
-  let_it_be(:issue_contact, reload: true) { create(:issue_customer_relations_contact) }
+  let_it_be_with_reload(:issue_contact) { create(:issue_customer_relations_contact) }
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: group) }

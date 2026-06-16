@@ -85,6 +85,11 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
 
       it_behaves_like "a new merge request"
 
+      it_behaves_like 'an incoming email handler that logs its execution' do
+        let(:expected_log_namespace) { project.project_namespace }
+        let(:expected_additional_log_data) { { Labkit::Fields::GL_PROJECT_ID => project.id } }
+      end
+
       context "creates a new merge request with legacy email address" do
         let(:email_raw) { fixture_file('emails/valid_new_merge_request_legacy.eml') }
 
@@ -175,14 +180,6 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
           merge_request = project.merge_requests.find_by!(source_branch: 'new-branch-with-a-patch')
 
           expect(merge_request.target_branch).to eq('with-codeowners')
-        end
-
-        it 'based the merge request of the target_branch' do
-          receiver.execute
-
-          merge_request = project.merge_requests.find_by!(source_branch: 'new-branch-with-a-patch')
-
-          expect(merge_request.diff_base_commit).to eq(project.repository.commit('with-codeowners'))
         end
       end
     end

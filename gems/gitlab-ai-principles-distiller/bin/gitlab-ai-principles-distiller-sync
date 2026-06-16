@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+
+require 'gitlab/principles_distiller/sync'
+
+# Disable stdout buffering so progress lines appear in CI logs in
+# real time. By default, Ruby block-buffers stdout when not attached
+# to a TTY, which causes long silences during workflow polling.
+# Kept in the bin script (not the library) so embedding the gem in a
+# host process doesn't silently change that host's IO buffering.
+$stdout.sync = true
+$stderr.sync = true
+
+Gitlab::PrinciplesDistiller::Sync.run

@@ -1,3 +1,13 @@
+CREATE DICTIONARY banned_users_dict
+(
+    `user_id` Int64,
+    `banned` Bool DEFAULT false
+)
+PRIMARY KEY user_id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY 'SELECT user_id, true FROM (\n      SELECT user_id FROM $DICTIONARY_DATABASE.siphon_banned_users\n      GROUP BY user_id\n      HAVING argMax(_siphon_deleted, _siphon_replicated_at) = false\n    )'))
+LIFETIME(MIN 300 MAX 3600)
+LAYOUT(HASHED_ARRAY());
+
 CREATE DICTIONARY namespace_traversal_paths_dict
 (
     `id` UInt64,
@@ -732,6 +742,20 @@ PRIMARY KEY (traversal_path, awardable_type, awardable_id, id)
 ORDER BY (traversal_path, awardable_type, awardable_id, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
+CREATE TABLE siphon_banned_users
+(
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `user_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `projects_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY user_id
+ORDER BY user_id
+SETTINGS index_granularity = 2048;
+
 CREATE TABLE siphon_bulk_import_entities
 (
     `id` Int64,
@@ -760,6 +784,35 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_ci_pipeline_metadata
+(
+    `project_id` Int64,
+    `pipeline_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `name` Nullable(String),
+    `auto_cancel_on_new_commit` Int16 DEFAULT 0,
+    `auto_cancel_on_job_failure` Int16 DEFAULT 0,
+    `partition_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, pipeline_id)
+ORDER BY (traversal_path, pipeline_id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_ci_pipeline_metadata_pg_pkey_ordered
+(
+    `pipeline_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (pipeline_id, traversal_path)
+ORDER BY (pipeline_id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_ci_runner_namespaces
 (
@@ -860,6 +913,43 @@ PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
+CREATE TABLE siphon_container_repositories
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `project_id` Int64,
+    `name` String,
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `status` Nullable(Int16),
+    `expiration_policy_started_at` Nullable(DateTime64(6, 'UTC')),
+    `expiration_policy_cleanup_status` Int16 DEFAULT 0,
+    `expiration_policy_completed_at` Nullable(DateTime64(6, 'UTC')),
+    `last_cleanup_deleted_tags_count` Nullable(Int64),
+    `delete_started_at` Nullable(DateTime64(6, 'UTC')),
+    `status_updated_at` Nullable(DateTime64(6, 'UTC')),
+    `failed_deletion_count` Int64 DEFAULT 0,
+    `next_delete_attempt_at` Nullable(DateTime64(6, 'UTC')),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_container_repositories_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, traversal_path)
+ORDER BY (id, traversal_path)
+SETTINGS index_granularity = 1024;
+
 CREATE TABLE siphon_deployment_merge_requests
 (
     `deployment_id` Int64,
@@ -941,6 +1031,7 @@ CREATE TABLE siphon_duo_workflows_workflows
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `messaging_callback_context` Nullable(String),
     `summary` Nullable(String),
+    `title` Nullable(String),
     PROJECTION pg_pkey_ordered
     (
         SELECT *
@@ -1004,18 +1095,25 @@ CREATE TABLE siphon_events
     `personal_namespace_id` Nullable(Int64),
     `path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', group_id, '0/'), coalesce(personal_namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', personal_namespace_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY id
-    )
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PARTITION BY toYear(created_at)
 PRIMARY KEY (path, id)
 ORDER BY (path, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_events_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, path)
+ORDER BY (id, path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_group_audit_events
 (
@@ -1308,14 +1406,7 @@ CREATE TABLE siphon_merge_request_diff_files
     `project_id` Nullable(Int64),
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY
-            merge_request_diff_id,
-            relative_order
-    )
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, merge_request_diff_id, relative_order)
@@ -1495,6 +1586,7 @@ CREATE TABLE siphon_merge_requests_closing_issues
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `link_type` Int8 DEFAULT 0,
     PROJECTION pg_pkey_ordered
     (
         SELECT *
@@ -1650,17 +1742,26 @@ CREATE TABLE siphon_notes
     `organization_id` Nullable(Int64),
     `traversal_path` String DEFAULT multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', namespace_id, '0/'), coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY id
-    )
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, noteable_type, noteable_id, id)
 ORDER BY (traversal_path, noteable_type, noteable_id, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_notes_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `noteable_type` LowCardinality(String),
+    `noteable_id` Int64,
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, noteable_type, noteable_id, traversal_path)
+ORDER BY (id, noteable_type, noteable_id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_organizations
 (
@@ -1734,10 +1835,24 @@ CREATE TABLE siphon_p_ci_builds
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
+    PROJECTION by_traversal_path_started_at
     (
-        SELECT *
+        SELECT
+            id,
+            partition_id,
+            traversal_path,
+            started_at,
+            finished_at,
+            name,
+            stage_id,
+            status,
+            type,
+            commit_id,
+            _siphon_replicated_at,
+            _siphon_deleted
         ORDER BY
+            traversal_path,
+            started_at,
             id,
             partition_id
     )
@@ -1747,37 +1862,18 @@ PRIMARY KEY (traversal_path, id, partition_id)
 ORDER BY (traversal_path, id, partition_id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
-CREATE TABLE siphon_p_ci_builds_metadata
+CREATE TABLE siphon_p_ci_builds_pg_pkey_ordered
 (
-    `project_id` Int64,
-    `timeout` Nullable(Int64),
-    `timeout_source` Int64 DEFAULT 1,
-    `interruptible` Nullable(Bool) CODEC(ZSTD(1)),
-    `config_options` Nullable(String),
-    `config_variables` Nullable(String),
-    `has_exposed_artifacts` Nullable(Bool) CODEC(ZSTD(1)),
-    `environment_auto_stop_in` Nullable(String),
-    `expanded_environment_name` Nullable(String),
-    `build_id` Int64,
     `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `partition_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
-    `debug_trace_enabled` Bool DEFAULT false CODEC(ZSTD(1)),
-    `exit_code` Nullable(Int16),
-    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY
-            id,
-            partition_id
-    )
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
-PRIMARY KEY (traversal_path, id, partition_id)
-ORDER BY (traversal_path, id, partition_id)
-SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+PRIMARY KEY (id, partition_id, traversal_path)
+ORDER BY (id, partition_id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_p_ci_pipelines
 (
@@ -1816,10 +1912,23 @@ CREATE TABLE siphon_p_ci_pipelines
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
+    PROJECTION by_traversal_path_started_at
     (
-        SELECT *
+        SELECT
+            id,
+            partition_id,
+            traversal_path,
+            started_at,
+            finished_at,
+            duration,
+            status,
+            source,
+            ref,
+            _siphon_replicated_at,
+            _siphon_deleted
         ORDER BY
+            traversal_path,
+            started_at,
             id,
             partition_id
     )
@@ -1828,6 +1937,19 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id, partition_id)
 ORDER BY (traversal_path, id, partition_id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_p_ci_pipelines_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `partition_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, partition_id, traversal_path)
+ORDER BY (id, partition_id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_p_ci_stages
 (
@@ -1843,19 +1965,87 @@ CREATE TABLE siphon_p_ci_stages
     `pipeline_id` Nullable(Int64),
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY
-            id,
-            partition_id
-    )
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id, partition_id)
 ORDER BY (traversal_path, id, partition_id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_p_ci_stages_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `partition_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, partition_id, traversal_path)
+ORDER BY (id, partition_id, traversal_path)
+SETTINGS index_granularity = 1024;
+
+CREATE TABLE siphon_packages_build_infos
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `package_id` Int64,
+    `pipeline_id` Nullable(Int64),
+    `project_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_packages_build_infos_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, traversal_path)
+ORDER BY (id, traversal_path)
+SETTINGS index_granularity = 1024;
+
+CREATE TABLE siphon_packages_packages
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `project_id` Int64,
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `name` String,
+    `version` Nullable(String),
+    `package_type` Int16,
+    `creator_id` Nullable(Int64),
+    `status` Int16 DEFAULT 0,
+    `last_downloaded_at` Nullable(DateTime64(6, 'UTC')),
+    `status_message` Nullable(String),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, package_type, id)
+ORDER BY (traversal_path, package_type, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_packages_packages_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `package_type` Int16,
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, package_type, traversal_path)
+ORDER BY (id, package_type, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_project_authorizations
 (
@@ -1865,15 +2055,7 @@ CREATE TABLE siphon_project_authorizations
     `is_unique` Nullable(Bool),
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
-    `_siphon_deleted` Bool DEFAULT false,
-    PROJECTION pg_pkey_ordered
-    (
-        SELECT *
-        ORDER BY
-            user_id,
-            project_id,
-            access_level
-    )
+    `_siphon_deleted` Bool DEFAULT false
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, user_id, project_id, access_level)
@@ -2062,6 +2244,7 @@ CREATE TABLE siphon_security_scans
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `scanner_external_id` Nullable(String),
     PROJECTION pg_pkey_ordered
     (
         SELECT *
@@ -2072,6 +2255,37 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_system_note_metadata
+(
+    `commit_count` Nullable(Int64),
+    `action` Nullable(String),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `description_version_id` Nullable(Int64),
+    `note_id` Int64,
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `namespace_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', namespace_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_system_note_metadata_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, traversal_path)
+ORDER BY (id, traversal_path)
+SETTINGS index_granularity = 1024;
 
 CREATE TABLE siphon_users
 (
@@ -2244,6 +2458,7 @@ CREATE TABLE siphon_vulnerability_occurrence_identifiers
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `partition_id` Nullable(Int64) DEFAULT 1,
     PROJECTION pg_pkey_ordered
     (
         SELECT *
@@ -3644,6 +3859,48 @@ SELECT
 FROM cte
 INNER JOIN namespaces_cte ON namespaces_cte.id = cte.project_namespace_id;
 
+CREATE MATERIALIZED VIEW siphon_ci_pipeline_metadata_pg_pkey_ordered_mv TO siphon_ci_pipeline_metadata_pg_pkey_ordered
+(
+    `pipeline_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    pipeline_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_ci_pipeline_metadata;
+
+CREATE MATERIALIZED VIEW siphon_container_repositories_pg_pkey_ordered_mv TO siphon_container_repositories_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_container_repositories;
+
+CREATE MATERIALIZED VIEW siphon_events_pg_pkey_ordered_mv TO siphon_events_pg_pkey_ordered
+(
+    `id` Int64,
+    `path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_events;
+
 CREATE MATERIALIZED VIEW siphon_merge_request_diff_files_pg_pkey_ordered_mv TO siphon_merge_request_diff_files_pg_pkey_ordered
 (
     `merge_request_diff_id` Int64,
@@ -3659,6 +3916,102 @@ AS SELECT
     _siphon_replicated_at,
     _siphon_deleted
 FROM siphon_merge_request_diff_files;
+
+CREATE MATERIALIZED VIEW siphon_notes_pg_pkey_ordered_mv TO siphon_notes_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `noteable_type` LowCardinality(String),
+    `noteable_id` Int64,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    noteable_type,
+    noteable_id,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_notes;
+
+CREATE MATERIALIZED VIEW siphon_p_ci_builds_pg_pkey_ordered_mv TO siphon_p_ci_builds_pg_pkey_ordered
+(
+    `id` Int64,
+    `partition_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    partition_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_p_ci_builds;
+
+CREATE MATERIALIZED VIEW siphon_p_ci_pipelines_pg_pkey_ordered_mv TO siphon_p_ci_pipelines_pg_pkey_ordered
+(
+    `id` Int64,
+    `partition_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    partition_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_p_ci_pipelines;
+
+CREATE MATERIALIZED VIEW siphon_p_ci_stages_pg_pkey_ordered_mv TO siphon_p_ci_stages_pg_pkey_ordered
+(
+    `id` Int64,
+    `partition_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    partition_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_p_ci_stages;
+
+CREATE MATERIALIZED VIEW siphon_packages_build_infos_pg_pkey_ordered_mv TO siphon_packages_build_infos_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_packages_build_infos;
+
+CREATE MATERIALIZED VIEW siphon_packages_packages_pg_pkey_ordered_mv TO siphon_packages_packages_pg_pkey_ordered
+(
+    `id` Int64,
+    `package_type` Int16,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    package_type,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_packages_packages;
 
 CREATE MATERIALIZED VIEW siphon_project_authorizations_pg_pkey_ordered_mv TO siphon_project_authorizations_pg_pkey_ordered
 (
@@ -3677,6 +4030,20 @@ AS SELECT
     _siphon_replicated_at,
     _siphon_deleted
 FROM siphon_project_authorizations;
+
+CREATE MATERIALIZED VIEW siphon_system_note_metadata_pg_pkey_ordered_mv TO siphon_system_note_metadata_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_system_note_metadata;
 
 CREATE MATERIALIZED VIEW user_addon_assignments_history_mv TO user_addon_assignments_history
 (

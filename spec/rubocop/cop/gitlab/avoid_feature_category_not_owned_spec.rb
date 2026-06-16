@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/avoid_feature_category_not_owned'
 
-RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
+RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned, feature_category: :tooling do
   shared_examples 'defining feature category on a class' do
     it 'flags a method call on a class' do
       expect_offense(<<~RUBY)

@@ -6,17 +6,9 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
   using RSpec::Parameterized::TableSyntax
 
   let(:omniauth_provider_config) do
-    GitlabSettings::Options.new(
-      name: "openid_connect",
-      step_up_auth: {
-        admin_mode: {
-          id_token: {
-            required: required_id_token_claims,
-            included: included_id_token_claims
-          }
-        }
-      }
-    )
+    build(:omniauth_provider_config,
+      id_token_required: required_id_token_claims,
+      id_token_included: included_id_token_claims)
   end
 
   let(:required_id_token_claims) { nil }
@@ -282,47 +274,17 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
 
   describe '.failed_step_up_auth_flows' do
     let(:scope) { 'admin_mode' }
-    let(:openid_connect_config) do
-      GitlabSettings::Options.new(
-        name: 'openid_connect',
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: { claim_1: 'gold' }
-            }
-          }
-        }
-      )
-    end
-
+    let(:openid_connect_config) { build(:omniauth_provider_config, id_token_required: { claim_1: 'gold' }) }
     let(:saml_config) do
-      GitlabSettings::Options.new(
-        name: 'saml',
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: { claim_2: 'silver' }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, provider_name: 'saml', id_token_required: { claim_2: 'silver' })
     end
 
     let(:auth0_config) do
-      GitlabSettings::Options.new(
-        name: 'auth0',
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: { claim_3: 'bronze' }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, provider_name: 'auth0', id_token_required: { claim_3: 'bronze' })
     end
 
     let(:no_step_up_provider_config) do
-      GitlabSettings::Options.new(name: 'no_step_up_provider')
+      build(:omniauth_provider_config, :no_step_up_auth, provider_name: 'no_step_up_provider')
     end
 
     subject(:failed_flows) { described_class.failed_step_up_auth_flows(session, scope: scope) }
@@ -362,41 +324,9 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
   describe '.enabled_providers' do
     subject { described_class.enabled_providers(scope: scope) }
 
-    let(:omniauth_provider_oidc) do
-      GitlabSettings::Options.new(
-        name: "openid_connect",
-        step_up_auth: {
-          admin_mode: {
-            id_token: {
-              required: {
-                acr: 'gold'
-              }
-            }
-          },
-          namespace: {
-            id_token: {
-              required: {
-                acr: 'gold'
-              }
-            }
-          }
-        }
-      )
-    end
-
+    let(:omniauth_provider_oidc) { build(:omniauth_provider_config, :with_both_scopes) }
     let(:omniauth_provider_oidc_only_namespace) do
-      GitlabSettings::Options.new(
-        name: "openid_connect_aad",
-        step_up_auth: {
-          namespace: {
-            id_token: {
-              required: {
-                acr: 'gold'
-              }
-            }
-          }
-        }
-      )
+      build(:omniauth_provider_config, :with_namespace_scope, provider_name: 'openid_connect_aad')
     end
 
     before do

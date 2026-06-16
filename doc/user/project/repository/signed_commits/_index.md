@@ -70,29 +70,20 @@ GitLab uses SSH to sign commits created through the web UI.
 To verify these commits locally, obtain the GitLab public key for signing web commits
 using the [web commits API](../../../../api/web_commits.md#retrieve-public-signing-key).
 
-### Mailmap email detection for signed commits
+### Warning badge for unverified committer email
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags/_index.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/481441) in GitLab 18.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/481441) in GitLab 19.1. Feature flag `check_for_mailmapped_commit_emails` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This flag enables the infrastructure for `mailmap` detection. Full `mailmap` support requires
-> additional configuration and is not yet enabled by default.
 
 When a verified signed commit's committer email is no longer verified to the signing user,
 GitLab displays an orange verified badge with a warning sign ({{< icon name="warning" >}} **Verified**).
 
-This can occur when:
-
-- The committer email was removed from the user's verified emails.
-- A [`.mailmap`](https://git-scm.com/docs/gitmailmap) file remaps the committer
-  email to an address not verified by the signing user.
+This can occur when the committer email was removed from the user's verified emails.
 
 To restore the green **Verified** badge, add the committer email address to your
 GitLab profile and verify it.

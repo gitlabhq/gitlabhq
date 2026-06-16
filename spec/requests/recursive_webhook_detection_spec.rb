@@ -6,7 +6,7 @@ RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_red
   feature_category: :webhooks do
   include StubRequests
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace, creator: user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:project_hook) { create(:project_hook, project: project, merge_requests_events: true) }

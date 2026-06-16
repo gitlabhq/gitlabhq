@@ -42,7 +42,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       wait_for_requests
 
-      find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+      find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
 
       expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
 
@@ -104,7 +104,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
         # All of the Diff helpers like click_diff_line (or write_diff_comment)
         #     fail very badly when run a second time.
         # This recreates the relevant logic.
-        line = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+        line = find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
         line.hover
         line.find('.js-add-diff-note-button').click
 
@@ -288,14 +288,14 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   def write_diff_comment(...)
-    click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
+    click_diff_line(find_in_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
 
     write_comment(...)
   end
 
   def write_parallel_comment(line, **params)
-    line_element = find_in_page_or_panel_by_scrolling("[id='#{line}']")
-    scroll_to_elements_bottom(line_element)
+    line_element = find_in_panel_by_scrolling("[id='#{line}']")
+    scroll_to_panel_elements_bottom(line_element)
     line_element.hover
     find(".js-add-diff-note-button").click
 
@@ -329,9 +329,5 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     end
 
     wait_for_requests
-  end
-
-  def find_in_page_or_panel_by_scrolling(selector, **options)
-    find_in_panel_by_scrolling(selector, **options)
   end
 end

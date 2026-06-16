@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Duration'] do
+RSpec.describe GitlabSchema.types['Duration'], feature_category: :continuous_integration do
   let(:duration) { 17.minutes }
 
   it 'presents information as a floating point number' do

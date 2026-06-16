@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Email::Hook::DisableEmailInterceptor do
 
   it 'does not send emails' do
     allow(Gitlab.config.gitlab).to receive(:email_enabled).and_return(false)
-    expect { deliver_mail }.not_to change(ActionMailer::Base.deliveries, :count)
+    expect { deliver_mail }.not_to change { ActionMailer::Base.deliveries.count }
   end
 
   def deliver_mail

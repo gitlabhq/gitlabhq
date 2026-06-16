@@ -47,9 +47,9 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
   anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget metadata request at package name level')
   anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
 
-  let_it_be(:package_name) { 'Dummy.Package' }
-  let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: package_name, project: project) }
-  let_it_be(:tags) { packages.each { |pkg| create(:packages_tag, package: pkg, name: 'test') } }
+  let_it_be(:package_name, freeze: false) { 'Dummy.Package' }
+  let_it_be(:packages, freeze: false) { create_list(:nuget_package, 5, :with_metadatum, name: package_name, project: project) }
+  let_it_be(:tags, freeze: false) { packages.each { |pkg| create(:packages_tag, package: pkg, name: 'test') } }
 
   subject { get api(url) }
 
@@ -113,9 +113,9 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
   anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget metadata request at package name and package version level')
   anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
 
-  let_it_be(:package_name) { 'Dummy.Package' }
-  let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
-  let_it_be(:tag) { create(:packages_tag, package: package, name: 'test') }
+  let_it_be(:package_name, freeze: false) { 'Dummy.Package' }
+  let_it_be(:package, freeze: false) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
+  let_it_be(:tag, freeze: false) { create(:packages_tag, package: package, name: 'test') }
 
   subject { get api(url) }
 
@@ -177,12 +177,12 @@ RSpec.shared_examples 'handling nuget search requests' do |example_names_with_st
   anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget search request')
   anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
 
-  let_it_be(:package_a) { create(:nuget_package, :with_metadatum, name: 'Dummy.PackageA', project: project) }
-  let_it_be(:tag) { create(:packages_tag, package: package_a, name: 'test') }
-  let_it_be(:packages_b) { create_list(:nuget_package, 5, name: 'Dummy.PackageB', project: project) }
-  let_it_be(:packages_c) { create_list(:nuget_package, 5, name: 'Dummy.PackageC', project: project) }
-  let_it_be(:package_d) { create(:nuget_package, name: 'Dummy.PackageD', version: '5.0.5-alpha', project: project) }
-  let_it_be(:package_e) { create(:nuget_package, name: 'Foo.BarE', project: project) }
+  let_it_be(:package_a, freeze: false) { create(:nuget_package, :with_metadatum, name: 'Dummy.PackageA', project: project) }
+  let_it_be(:tag, freeze: false) { create(:packages_tag, package: package_a, name: 'test') }
+  let_it_be(:packages_b, freeze: false) { create_list(:nuget_package, 5, name: 'Dummy.PackageB', project: project) }
+  let_it_be(:packages_c, freeze: false) { create_list(:nuget_package, 5, name: 'Dummy.PackageC', project: project) }
+  let_it_be(:package_d, freeze: false) { create(:nuget_package, name: 'Dummy.PackageD', version: '5.0.5-alpha', project: project) }
+  let_it_be(:package_e, freeze: false) { create(:nuget_package, name: 'Foo.BarE', project: project) }
 
   let(:search_term) { 'uMmy' }
   let(:take) { 26 }

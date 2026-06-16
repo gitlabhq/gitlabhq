@@ -112,6 +112,13 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         ])
     end
 
+    it 'contains oauth parameters' do
+      expected_fields = %i[
+        oauth_access_token_expires_in
+      ]
+      expect(helper.visible_attributes).to include(*expected_fields)
+    end
+
     it 'contains search parameters' do
       expected_fields = %i[
         global_search_snippet_titles_enabled
@@ -454,7 +461,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#global_search_settings_checkboxes', feature_category: :global_search do
-    let_it_be(:application_setting) { build(:application_setting) }
+    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
 
     before do
       application_setting.global_search_work_items_enabled = true
@@ -479,7 +486,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#restricted_level_checkboxes' do
-    let_it_be(:application_setting) { build_stubbed(:application_setting) }
+    let_it_be(:application_setting, freeze: false) { build_stubbed(:application_setting) }
 
     before do
       allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
@@ -527,7 +534,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '.deletion_protection_data' do
-    let_it_be(:application_setting) { build(:application_setting) }
+    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
 
     before do
       application_setting.deletion_adjourned_period = 1

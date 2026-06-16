@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 
 export default {
+  name: 'LinkCell',
   props: {
     href: {
       type: String,

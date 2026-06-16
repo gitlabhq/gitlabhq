@@ -18,97 +18,59 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
     let(:ci_ref) { create(:ci_ref, ref_path: ref_path) }
     let(:project) { ci_ref.project }
     let(:source_job) { create(:ci_build, pipeline: pipeline) }
-
-    let!(:old_unlocked_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :unlocked) }
-    let!(:older_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:older_ambiguous_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: !tag, project: project, locked: :artifacts_locked) }
-    let!(:code_coverage_pipeline) { create(:ci_pipeline, :with_coverage_report_artifact, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:child_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, child_of: pipeline, project: project, locked: :artifacts_locked) }
-    let!(:newer_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:other_ref_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: 'other_ref', tag: tag, project: project, locked: :artifacts_locked) }
-    let!(:sources_pipeline) { create(:ci_sources_pipeline, source_job: source_job, source_project: project, pipeline: child_pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+    let(:older_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+    let(:newer_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
 
     before do
       stub_const("#{described_class}::BATCH_SIZE", 1)
     end
 
     describe '#execute' do
+      let!(:old_unlocked_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :unlocked) }
+      let!(:older_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+      let!(:older_ambiguous_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: !tag, project: project, locked: :artifacts_locked) }
+      let!(:code_coverage_pipeline) { create(:ci_pipeline, :with_coverage_report_artifact, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+      let!(:pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+      let!(:child_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, child_of: pipeline, project: project, locked: :artifacts_locked) }
+      let!(:newer_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: ref, tag: tag, project: project, locked: :artifacts_locked) }
+      let!(:other_ref_pipeline) { create(:ci_pipeline, :with_persisted_artifacts, ref: 'other_ref', tag: tag, project: project, locked: :artifacts_locked) }
+      let!(:sources_pipeline) { create(:ci_sources_pipeline, source_job: source_job, source_project: project, pipeline: child_pipeline, project: project) }
+
       subject(:execute) { described_class.new(pipeline.project, pipeline.user).execute(ci_ref, before_pipeline) }
 
       context 'when running on a ref before a pipeline' do
         let(:before_pipeline) { pipeline }
 
-        it 'unlocks artifacts from older pipelines' do
-          expect { execute }.to change { older_pipeline.reload.locked }.from('artifacts_locked').to('unlocked')
-        end
+        it 'unlocks expected artifacts and does not touch unrelated pipelines', :aggregate_failures do
+          expect { execute }
+            .to change { ::Ci::JobArtifact.artifact_unlocked.count }.from(0).to(2)
+            .and change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
 
-        it 'does not unlock artifacts for tag or branch with same name as ref' do
-          expect { execute }.not_to change { older_ambiguous_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'does not unlock artifacts from newer pipelines' do
-          expect { execute }.not_to change { newer_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'does not lock artifacts from old unlocked pipelines' do
-          expect { execute }.not_to change { old_unlocked_pipeline.reload.locked }.from('unlocked')
-        end
-
-        it 'does not unlock artifacts from the same pipeline' do
-          expect { execute }.not_to change { pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'does not unlock artifacts for other refs' do
-          expect { execute }.not_to change { other_ref_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'does not unlock artifacts for child pipeline' do
-          expect { execute }.not_to change { child_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'unlocks job artifact records' do
-          expect { execute }.to change { ::Ci::JobArtifact.artifact_unlocked.count }.from(0).to(2)
-        end
-
-        it 'unlocks pipeline artifact records' do
-          expect { execute }.to change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
+          expect(older_pipeline.reload.locked).to eq('unlocked')
+          expect(older_ambiguous_pipeline.reload.locked).to eq('artifacts_locked')
+          expect(newer_pipeline.reload.locked).to eq('artifacts_locked')
+          expect(old_unlocked_pipeline.reload.locked).to eq('unlocked')
+          expect(pipeline.reload.locked).to eq('artifacts_locked')
+          expect(other_ref_pipeline.reload.locked).to eq('artifacts_locked')
+          expect(child_pipeline.reload.locked).to eq('artifacts_locked')
         end
       end
 
       context 'when running on just the ref' do
         let(:before_pipeline) { nil }
 
-        it 'unlocks artifacts from older pipelines' do
-          expect { execute }.to change { older_pipeline.reload.locked }.from('artifacts_locked').to('unlocked')
-        end
+        it 'unlocks expected artifacts and does not touch unrelated pipelines', :aggregate_failures do
+          expect { execute }
+            .to change { ::Ci::JobArtifact.artifact_unlocked.count }.from(0).to(8)
+            .and change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
 
-        it 'unlocks artifacts from newer pipelines' do
-          expect { execute }.to change { newer_pipeline.reload.locked }.from('artifacts_locked').to('unlocked')
-        end
-
-        it 'unlocks artifacts from the same pipeline' do
-          expect { execute }.to change { pipeline.reload.locked }.from('artifacts_locked').to('unlocked')
-        end
-
-        it 'does not unlock artifacts for tag or branch with same name as ref' do
-          expect { execute }.not_to change { older_ambiguous_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'does not lock artifacts from old unlocked pipelines' do
-          expect { execute }.not_to change { old_unlocked_pipeline.reload.locked }.from('unlocked')
-        end
-
-        it 'does not unlock artifacts for other refs' do
-          expect { execute }.not_to change { other_ref_pipeline.reload.locked }.from('artifacts_locked')
-        end
-
-        it 'unlocks job artifact records' do
-          expect { execute }.to change { ::Ci::JobArtifact.artifact_unlocked.count }.from(0).to(8)
-        end
-
-        it 'unlocks pipeline artifact records' do
-          expect { execute }.to change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
+          expect(older_pipeline.reload.locked).to eq('unlocked')
+          expect(newer_pipeline.reload.locked).to eq('unlocked')
+          expect(pipeline.reload.locked).to eq('unlocked')
+          expect(older_ambiguous_pipeline.reload.locked).to eq('artifacts_locked')
+          expect(old_unlocked_pipeline.reload.locked).to eq('unlocked')
+          expect(other_ref_pipeline.reload.locked).to eq('artifacts_locked')
         end
       end
     end

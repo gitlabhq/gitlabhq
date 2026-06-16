@@ -41,8 +41,6 @@ export const isInMRPage = () =>
   checkPageAndAction('merge_requests', 'reports');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 
-export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
-
 export const rstrip = (val) => {
   if (val) {
     return val.replace(/\s+$/, '');
@@ -678,7 +676,7 @@ export const setCookie = (name, value, attributes) => {
 
 export const getCookie = (name) => Cookies.get(name);
 
-export const removeCookie = (name) => Cookies.remove(name);
+export const removeCookie = (name, attributes) => Cookies.remove(name, attributes);
 
 /**
  * This method takes in array with snake_case strings

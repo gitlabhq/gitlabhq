@@ -54,24 +54,6 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
     end
   end
 
-  describe '#has_pill?' do
-    context 'when show_work_items_sidebar_count is enabled' do
-      it 'returns true' do
-        stub_feature_flags(show_work_items_sidebar_count: true)
-
-        expect(menu.has_pill?).to be(true)
-      end
-    end
-
-    context 'when show_work_items_sidebar_count is disabled' do
-      it 'returns false' do
-        stub_feature_flags(show_work_items_sidebar_count: false)
-
-        expect(menu.has_pill?).to be(false)
-      end
-    end
-  end
-
   describe '#pill_count_field' do
     it 'returns the correct GraphQL field name' do
       expect(menu.pill_count_field).to eq('openWorkItemsCount')
@@ -100,7 +82,7 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
         ] },
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
-        has_pill: menu.has_pill?,
+        has_pill: true,
         super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu
       }
     end

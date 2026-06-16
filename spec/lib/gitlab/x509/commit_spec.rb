@@ -27,16 +27,6 @@ RSpec.describe Gitlab::X509::Commit, feature_category: :source_code_management d
       expect(signature.committer_email).to eq("r.meier@siemens.com")
     end
 
-    context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
-      before do
-        stub_feature_flags(check_for_mailmapped_commit_emails: false)
-      end
-
-      it 'x509 commit signature does not contain an committer email' do
-        expect(signature.committer_email).to be_nil
-      end
-    end
-
     it 'sets project for signature' do
       expect(signature.project).to eq(project)
     end
@@ -54,18 +44,6 @@ RSpec.describe Gitlab::X509::Commit, feature_category: :source_code_management d
       expect { described_class.new(commit).update_signature!(stored_signature) }.to(
         change { signature.reload.committer_email }.from(nil).to('r.meier@siemens.com')
       )
-    end
-
-    context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
-      before do
-        stub_feature_flags(check_for_mailmapped_commit_emails: false)
-      end
-
-      it 'does not update committer_email with signature_data committer_email' do
-        expect { described_class.new(commit).update_signature!(stored_signature) }.not_to change {
-          stored_signature.reload.committer_email
-        }
-      end
     end
   end
 
@@ -155,14 +133,6 @@ RSpec.describe Gitlab::X509::Commit, feature_category: :source_code_management d
           it 'updates the cached signature' do
             result = x509_commit_with_cached_signature.signature
             expect(result.committer_email).to eq('r.meier@siemens.com')
-          end
-
-          context "when check_for_mailmapped_commit_emails is disabled" do
-            before do
-              stub_feature_flags(check_for_mailmapped_commit_emails: false)
-            end
-
-            it_behaves_like "does not update the cached signature"
           end
         end
       end

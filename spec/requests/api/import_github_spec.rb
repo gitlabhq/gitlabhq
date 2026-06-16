@@ -260,7 +260,7 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
     end
 
     it_behaves_like 'authorizing granular token permissions', :create_github_import do
-      let_it_be(:target_namespace) { create(:group) }
+      let_it_be(:target_namespace, freeze: false) { create(:group) }
       let(:boundary_object) { target_namespace }
 
       before_all do

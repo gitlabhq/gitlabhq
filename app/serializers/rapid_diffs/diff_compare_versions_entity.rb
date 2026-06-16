@@ -11,7 +11,8 @@ module RapidDiffs
         merge_request: merge_request,
         merge_request_diffs: viewable_recent_merge_request_diffs(merge_request),
         diff_id: options[:diff_id],
-        start_sha: options[:start_sha]
+        start_sha: options[:start_sha],
+        only_context_commits: only_context_commits?
       )
     end
 
@@ -23,6 +24,27 @@ module RapidDiffs
         diff_id: options[:diff_id],
         start_sha: options[:start_sha]
       )
+    end
+
+    expose :context_commits do |merge_request|
+      context_commits_diff = merge_request.context_commits_diff
+      next if context_commits_diff.empty?
+
+      project = merge_request.target_project
+      next unless project
+
+      diff_refs = context_commits_diff.diff_refs
+
+      {
+        href: diffs_project_merge_request_path(project, merge_request, only_context_commits: true),
+        commits_count: context_commits_diff.commits_count,
+        selected: only_context_commits?,
+        diff_refs: {
+          base_sha: diff_refs.base_sha,
+          head_sha: diff_refs.head_sha,
+          start_sha: diff_refs.start_sha
+        }
+      }
     end
 
     expose :commit, if: ->(_, opts) { opts[:commit_id].present? } do |merge_request|
@@ -43,6 +65,10 @@ module RapidDiffs
     end
 
     private
+
+    def only_context_commits?
+      Gitlab::Utils.to_boolean(options[:only_context_commits], default: false)
+    end
 
     def viewable_target_versions(merge_request)
       return viewable_recent_merge_request_diffs(merge_request) unless merge_request.diffable_merge_ref?

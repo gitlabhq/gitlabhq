@@ -11,6 +11,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'BlobDefaultActionsGroup',
   i18n,
   components: {
     GlDisclosureDropdownItem,

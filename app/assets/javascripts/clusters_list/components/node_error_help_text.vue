@@ -3,6 +3,7 @@ import { GlIcon, GlPopover } from '@gitlab/ui';
 import { CLUSTER_ERRORS } from '../constants';
 
 export default {
+  name: 'NodeErrorHelpText',
   components: {
     GlIcon,
     GlPopover,

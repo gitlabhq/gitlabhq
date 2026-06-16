@@ -19,8 +19,8 @@ module API
     end
 
     resource :project_repository_storage_moves do
-      desc 'Get a list of all project repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.0.'
+      desc 'List all project repository storage moves' do
+        detail 'Lists all project repository storage moves.'
         tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Projects::RepositoryStorageMove
@@ -35,8 +35,8 @@ module API
         present paginate(storage_moves), with: Entities::Projects::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Get a project repository storage move' do
-        detail 'This feature was introduced in GitLab 13.0.'
+      desc 'Retrieve a project repository storage move' do
+        detail 'Retrieves a specified project repository storage move.'
         tags ['storage_moves']
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
@@ -50,8 +50,9 @@ module API
         present storage_move, with: Entities::Projects::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Schedule bulk project repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.7.'
+      desc 'Create repository storage moves for all projects on a storage shard' do
+        detail 'Creates repository storage moves for each project repository stored on the source storage shard. ' \
+          'This endpoint migrates all projects at once.'
         tags ['storage_moves']
         success code: 202
       end
@@ -78,8 +79,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of all project repository storage moves' do
-        detail 'This feature was introduced in GitLab 13.1.'
+      desc 'List all repository storage moves for a project' do
+        detail 'Lists all repository storage moves for a project.'
         tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Projects::RepositoryStorageMove
@@ -94,8 +95,8 @@ module API
         present paginate(storage_moves), with: Entities::Projects::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Get a project repository storage move' do
-        detail 'This feature was introduced in GitLab 13.1.'
+      desc 'Retrieve a repository storage move for a project' do
+        detail 'Retrieves a specified repository storage move for a project.'
         tags ['storage_moves']
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
@@ -109,8 +110,8 @@ module API
         present storage_move, with: Entities::Projects::RepositoryStorageMove, current_user: current_user
       end
 
-      desc 'Schedule a project repository storage move' do
-        detail 'This feature was introduced in GitLab 13.1.'
+      desc 'Create a repository storage move for a project' do
+        detail 'Creates a repository storage move for a specified project.'
         tags ['storage_moves']
         success code: 201, model: Entities::Projects::RepositoryStorageMove
       end

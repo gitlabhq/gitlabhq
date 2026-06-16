@@ -10,7 +10,7 @@ RSpec.describe Ci::PipelineSchedules::TakeOwnershipService, feature_category: :c
     create(:project, :public, :repository, maintainers: [user, owner], reporters: reporter)
   end
 
-  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: owner) }
+  let_it_be(:pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project, owner: owner) }
 
   describe '#execute' do
     context 'when user does not have permission' do

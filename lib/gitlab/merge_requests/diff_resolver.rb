@@ -19,6 +19,14 @@ module Gitlab
         merge_request_diff_by_id
       end
 
+      def latest?
+        return false if merge_request.compare
+        return false if commit.present?
+        return true if merge_head_diff?
+
+        diff_id.blank? || latest_diff_id?
+      end
+
       private
 
       attr_reader :merge_request, :params
@@ -40,7 +48,11 @@ module Gitlab
       strong_memoize_attr :commit
 
       def merge_request_diff_by_id
-        found_diff = merge_request.find_viewable_diff_by_id(diff_id)
+        # An :empty diff (no changes between source and target) is a real version
+        # but is excluded from the viewable scope. Look it up among all diffs so an
+        # empty version resolves to itself and renders as an empty diff, instead of
+        # raising RecordNotFound (a 404) downstream. A genuinely unknown id still raises.
+        found_diff = merge_request.merge_request_diffs.find(diff_id)
 
         if start_sha.present?
           comparable_diffs = viewable_merge_request_diffs.select { |diff| diff.id < found_diff.id }

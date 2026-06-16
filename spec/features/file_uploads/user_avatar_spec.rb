@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Upload a user avatar', :js, feature_category: :user_profile do
-  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }
 

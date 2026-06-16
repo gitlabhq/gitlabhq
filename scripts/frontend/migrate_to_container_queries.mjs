@@ -6,7 +6,6 @@ import { program } from 'commander';
 import {
   isFileExcluded,
   migrateCSSUtils,
-  migrateMediaQueries,
 } from './lib/container_queries_migration.mjs';
 
 program.argument('<files...>').parse();
@@ -59,9 +58,6 @@ function processFiles(files) {
     let newContents;
     if (isMarkupExtension(file)) {
       newContents = migrateCSSUtils(file, contents);
-    }
-    if (isScssExtension(file)) {
-      newContents = migrateMediaQueries(file, contents);
     }
 
     if (contents !== newContents) {

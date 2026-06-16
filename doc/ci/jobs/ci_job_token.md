@@ -37,6 +37,7 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 {{< history >}}
 
 - Permission to get a single tag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216463) in GitLab 18.8.
+- Permission to access the Badges API [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/326910) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -44,6 +45,7 @@ CI/CD job tokens can access the following resources:
 
 | Resource                                                                                              | Notes |
 | ----------------------------------------------------------------------------------------------------- | ----- |
+| [Badges API](../../api/project_badges.md)                                                             | Can access all endpoints in this API. |
 | [Branches API](../../api/branches.md)                                                                 | Can access the `GET /projects/:id/repository/branches` endpoint. |
 | [Commits API](../../api/commits.md)                                                                   | Can access the `GET /projects/:id/repository/commits/:sha` and `GET /projects/:id/repository/commits/:sha/merge_requests` endpoints. |
 | [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
@@ -109,9 +111,6 @@ When the setting is enforced, the CI/CD job token is always restricted to the pr
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../administration/feature_flags/_index.md), enabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 - [**Authorized groups and projects** setting renamed to **CI/CD job token allowlist**](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078) in GitLab 17.3.
@@ -152,7 +151,6 @@ You can also add a group or project to the allowlist [with the API](../../api/gr
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405369) in GitLab 16.6.
 - Access to the repository [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439158) in GitLab 17.0.
 
 {{< /history >}}
@@ -191,7 +189,6 @@ To set a feature to be only visible to project members:
 
 {{< history >}}
 
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 - [**Authorized groups and projects** setting renamed to **CI/CD job token allowlist**](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078) in GitLab 17.3.
 
@@ -273,12 +270,9 @@ the [projects API](../../api/projects.md#update-a-project).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479907) in GitLab 19.0 [with a flag](../../administration/feature_flags/_index.md) named `allow_push_to_allowlisted_projects`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/597258) in GitLab 19.1. Feature flag `allow_push_to_allowlisted_projects` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can allow CI/CD job tokens from allowlisted projects to push to your project repository.
 This is useful for GitOps workflows, submodule tagging, and cross-repository CI/CD pipelines

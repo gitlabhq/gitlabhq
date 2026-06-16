@@ -118,7 +118,7 @@ end
 
 RSpec.shared_examples 'prevents access to project-level {issues|work_items} with type Epic' do |factory|
   context 'with Epic work item type' do
-    let_it_be(:with_epic_type) do
+    let_it_be(:with_epic_type, freeze: false) do
       create(
         factory,
         :epic,

@@ -14,6 +14,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-model-version'],
   methods: {
     deleteModelVersion(modelVersion) {
       this.$emit('delete-model-version', modelVersion);

@@ -85,7 +85,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
     context 'when the docs are up to date' do
       it 'outputs a success message' do
         expect { check_docs }
-          .to output("Granular Personal Access Token allowed endpoints documentation is up to date.\n")
+          .to output("REST endpoint documentation is up-to-date\n")
           .to_stdout
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
         <<~OUTPUT
           ##########
           #
-          # Granular Personal Access Token allowed endpoints documentation is outdated! Please update it by running `bundle exec rake gitlab:permissions:routes:compile_docs`.
+          # REST endpoint documentation is outdated! Please update it by running `bundle exec rake gitlab:permissions:routes:compile_docs`.
           #
           ##########
         OUTPUT
@@ -119,7 +119,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
         <<~OUTPUT
           ##########
           #
-          # Granular Personal Access Token allowed endpoints documentation is outdated! Please update it by running `bundle exec rake gitlab:permissions:routes:compile_docs`.
+          # REST endpoint documentation is outdated! Please update it by running `bundle exec rake gitlab:permissions:routes:compile_docs`.
           #
           ##########
         OUTPUT
@@ -140,7 +140,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
 
     it 'outputs a success message' do
       expect { compile_docs }
-        .to output("Granular Personal Access Token allowed endpoints documentation compiled.\n")
+        .to output("REST endpoint documentation compiled\n")
         .to_stdout
     end
 
@@ -232,6 +232,30 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
 
         expect(markdown.scan('`GET` | `/path/to/read_job_route`').length).to eq(1)
         expect(markdown).to eq(expected_markdown)
+      end
+    end
+
+    context 'when multiple routes share resource, action, boundary, and request method but differ in path' do
+      let(:download_package_route_a) do
+        create_route_double(%i[download_package], :project, 'GET', '/api/:version/path/to/package_a')
+      end
+
+      let(:download_package_route_b) do
+        create_route_double(%i[download_package], :project, 'GET', '/api/:version/path/to/package_b')
+      end
+
+      it 'orders rows the same way regardless of the input route order' do
+        allow(::API::API).to receive(:endpoints).and_return(
+          [instance_double(Grape::Endpoint, routes: [download_package_route_b, download_package_route_a])]
+        )
+        descending_input = described_class.new.allowed_endpoints
+
+        allow(::API::API).to receive(:endpoints).and_return(
+          [instance_double(Grape::Endpoint, routes: [download_package_route_a, download_package_route_b])]
+        )
+        ascending_input = described_class.new.allowed_endpoints
+
+        expect(descending_input).to eq(ascending_input)
       end
     end
   end

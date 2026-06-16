@@ -3,10 +3,10 @@
 RSpec.shared_context 'with pipelines executed on different projects' do
   let_it_be_with_reload(:project1) { create(:project) } # reload required to calculate traversal path
   let_it_be_with_reload(:project2) { create(:project) }
-  let_it_be(:current_user) { create(:user, reporter_of: [project1, project2]) }
+  let_it_be(:current_user, freeze: false) { create(:user, reporter_of: [project1, project2]) }
 
-  let_it_be(:starting_time) { Time.utc(2023) }
-  let_it_be(:ending_time) { 1.week.after(starting_time) }
+  let_it_be(:starting_time, freeze: false) { Time.utc(2023) }
+  let_it_be(:ending_time, freeze: false) { 1.week.after(starting_time) }
 
   let(:pipelines) do
     [

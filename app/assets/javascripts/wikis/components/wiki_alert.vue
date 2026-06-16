@@ -2,6 +2,7 @@
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 
 export default {
+  name: 'WikiAlert',
   components: {
     GlAlert,
     GlLink,

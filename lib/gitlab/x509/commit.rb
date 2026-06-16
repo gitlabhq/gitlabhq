@@ -29,10 +29,9 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           x509_certificate_id: signature.x509_certificate.id,
-          verification_status: signature.verification_status
-        }.tap do |attrs|
-          attrs[:committer_email] = @commit.committer_email if check_for_mailmapped_commit_emails?
-        end
+          verification_status: signature.verification_status,
+          committer_email: @commit.committer_email
+        }
       end
     end
   end

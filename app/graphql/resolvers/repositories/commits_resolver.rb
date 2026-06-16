@@ -73,6 +73,7 @@ module Resolvers
           pagination_params[:limit] = limit
           pagination_params[:page_token] = Base64.decode64(page_token) if page_token
         end
+        arguments[:literal_pathspec] = true
 
         arguments
       end

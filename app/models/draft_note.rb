@@ -7,19 +7,16 @@ class DraftNote < ApplicationRecord
   include BulkInsertSafe
 
   PUBLISH_ATTRS = %i[noteable type note internal].freeze
-  DIFF_ATTRS = %i[position original_position change_position commit_id].freeze
+  DIFF_ATTRS = %i[position original_position change_position commit_id line_code].freeze
 
   sha_attribute :commit_id
 
   # Attribute used to store quick actions changes and users referenced.
   attr_accessor :commands_changes
-  attr_accessor :users_referenced
-  attr_accessor :suggestions
+  attr_accessor :users_referenced, :suggestions, :review
 
   # Text with quick actions filtered out
   attr_accessor :rendered_note
-
-  attr_accessor :review
 
   belongs_to :author, class_name: 'User'
   belongs_to :merge_request

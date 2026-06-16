@@ -5,6 +5,7 @@ import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import { dashboardTodosPath } from '~/lib/utils/path_helpers/dashboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   TABS_INDICES,
@@ -101,9 +102,7 @@ export default {
       return this.todos.slice(0, N_TODOS);
     },
     todosPath() {
-      // Safe access to global `gon` which may be undefined in some environments
-      const root = typeof gon !== 'undefined' && gon.relative_url_root ? gon.relative_url_root : '';
-      return `${root}/dashboard/todos`;
+      return dashboardTodosPath();
     },
   },
   apollo: {

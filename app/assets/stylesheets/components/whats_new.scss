@@ -45,6 +45,11 @@ h4.whats-new-release-heading:not(:first-of-type) {
   @apply gl-mt-6;
 }
 
+.whats-new-promo-card {
+  background-color: var(--gl-banner-promo-background-color);
+  border-color: var(--gl-banner-promo-border-color);
+}
+
 .whats-new-modal-backdrop {
   z-index: 699;
 }

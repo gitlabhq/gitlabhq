@@ -142,6 +142,19 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
       it_behaves_like 'denying the mutation request'
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_package do
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:destroy_package_file, { id: id }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before do
+        project.add_maintainer(user)
+      end
+    end
+
     context 'when an error occurs' do
       let(:error_messages) { ['some error'] }
 

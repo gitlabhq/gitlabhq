@@ -6,7 +6,7 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
   include DesignManagementTestHelpers
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
     let_it_be(:merge_request) { create(:merge_request, :merge_when_checks_pass, source_project: project) }
 
@@ -141,8 +141,8 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
         let_it_be(:design) { create(:design, :with_file, issue: create(:issue, project: project)) }
         let_it_be(:user_1) { create(:user, developer_of: project) }
         let_it_be(:user_2) { create(:user, developer_of: project) }
-        let_it_be(:discussion_1) { create(:diff_note_on_design, noteable: design, project: project, author: user_1).to_discussion }
-        let_it_be(:discussion_2) { create(:diff_note_on_design, noteable: design, project: project, author: user_2).to_discussion }
+        let_it_be(:discussion_1, freeze: false) { create(:diff_note_on_design, noteable: design, project: project, author: user_1).to_discussion }
+        let_it_be(:discussion_2, freeze: false) { create(:diff_note_on_design, noteable: design, project: project, author: user_2).to_discussion }
 
         before do
           enable_design_management

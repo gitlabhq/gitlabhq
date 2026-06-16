@@ -126,5 +126,120 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
         expect(response.message).to eq('offline_transfer_imports feature flag must be enabled.')
       end
     end
+
+    describe 'cross-organization destination validation' do
+      let_it_be_with_reload(:request_organization) { create(:organization, path: 'request-org') }
+      let_it_be_with_reload(:other_organization) { create(:organization, path: 'other-org') }
+      let_it_be(:request_org_group) do
+        create(:group, organization: request_organization, path: 'request-org-group', owners: user)
+      end
+
+      let_it_be(:other_org_group) do
+        create(:group, organization: other_organization, path: 'other-org-group', owners: user)
+      end
+
+      let(:destination_namespace) { other_org_group.full_path }
+
+      subject(:service) do
+        described_class.new(
+          object_storage_configuration,
+          params,
+          current_user: user,
+          fallback_organization: request_organization
+        )
+      end
+
+      shared_examples 'rejects the cross-organization import' do
+        it 'rejects the import and does not create a BulkImport' do
+          result = nil
+          expect { result = service.execute }.not_to change { BulkImport.count }
+          expect(result).to be_error
+          expect(result.message).to include(other_org_group.full_path)
+          expect(result.message).to match(/belongs to a different organization than the current one/)
+        end
+      end
+
+      context 'when neither organization is isolated' do
+        it 'allows the cross-organization import (preserves today’s behavior)' do
+          expect(service.execute).to be_success
+        end
+      end
+
+      context 'when the destination resolves to the request organization' do
+        let(:destination_namespace) { request_org_group.full_path }
+
+        before do
+          request_organization.mark_as_isolated!
+        end
+
+        it 'allows the import to proceed' do
+          expect(service.execute).to be_success
+        end
+      end
+
+      context 'when the request organization is isolated' do
+        before do
+          request_organization.mark_as_isolated!
+        end
+
+        it_behaves_like 'rejects the cross-organization import'
+      end
+
+      context 'when the destination organization is isolated' do
+        before do
+          other_organization.mark_as_isolated!
+        end
+
+        it_behaves_like 'rejects the cross-organization import'
+      end
+
+      context 'when the destination namespace casing differs from the canonical path' do
+        let(:destination_namespace) { other_org_group.full_path.upcase }
+
+        before do
+          request_organization.mark_as_isolated!
+        end
+
+        it 'still resolves the destination and rejects the import' do
+          result = nil
+          expect { result = service.execute }.not_to change { BulkImport.count }
+          expect(result).to be_error
+          expect(result.message).to match(/belongs to a different organization than the current one/)
+        end
+      end
+
+      context 'when one of multiple entities targets a cross-organization destination' do
+        let(:params) do
+          {
+            entities: [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'grp1',
+                destination_namespace: request_org_group.full_path,
+                destination_slug: 'slug-1'
+              },
+              {
+                source_type: 'group_entity',
+                source_full_path: 'grp2',
+                destination_namespace: other_org_group.full_path,
+                destination_slug: 'slug-2'
+              }
+            ]
+          }
+        end
+
+        before do
+          request_organization.mark_as_isolated!
+        end
+
+        it 'rejects the import and does not create a BulkImport even when the first entity is in-organization' do
+          result = nil
+          expect { result = service.execute }.not_to change { BulkImport.count }
+          expect(result).to be_error
+          expect(result.message).to include(other_org_group.full_path)
+          expect(result.message).to match(/belongs to a different organization than the current one/)
+        end
+      end
+    end
   end
 end

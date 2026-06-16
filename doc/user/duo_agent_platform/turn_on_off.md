@@ -21,6 +21,8 @@ You can turn Agent Platform on or off:
 - On GitLab.com: For top-level groups.
 - On GitLab Self-Managed: For instances.
 
+To configure tool governance for Agent Platform, see [agent tool governance](agents/tool-governance.md).
+
 ## Turn GitLab Duo Agent Platform on or off
 
 ### On GitLab.com
@@ -51,8 +53,11 @@ To turn Agent Platform on or off for a top-level group:
 
 Agent Platform availability changes for all subgroups and projects.
 
-When Agent Platform is turned off, related settings for flows and
-[foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
+When Agent Platform is turned off, the following features are hidden:
+
+- Related settings for flows and
+  [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off).
+- The AI Catalog.
 
 ### On GitLab Self-Managed
 
@@ -68,8 +73,68 @@ To turn Agent Platform on or off for an instance:
 1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Agentic Chat, agents, and flows** checkbox.
 1. Select **Save changes**.
 
-When Agent Platform is turned off, related settings for flows and
-[foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off) are hidden.
+When Agent Platform is turned off, the following features are hidden:
+
+- Related settings for flows and
+  [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off).
+- The AI Catalog.
+
+## Lock GitLab Duo on
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21844) in GitLab 19.1.
+
+{{< /history >}}
+
+Turn GitLab Duo on for all users, regardless of group or project settings.
+
+When you set GitLab Duo availability to **Always on**,
+experiment and beta features are not automatically turned on.
+To use experiment and beta features, you must
+[turn them on separately](#turn-on-beta-and-experimental-features).
+
+{{< tabs >}}
+
+{{< tab title="On GitLab.com" >}}
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+
+To lock GitLab Duo on for a top-level group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo availability**, select **Always on**.
+1. Select **Save changes**.
+
+GitLab Duo is locked on for all subgroups and projects.
+Users with the Owner role for a subgroup or project cannot turn GitLab Duo off.
+
+{{< /tab >}}
+
+{{< tab title="On GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To lock GitLab Duo on for an instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo availability**, select **Always on**.
+1. Select **Save changes**.
+
+GitLab Duo is locked on for all groups, subgroups, and projects.
+Users with the Owner role for a group, subgroup, or project cannot turn GitLab Duo off.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Turn GitLab Duo on or off
 
@@ -324,3 +389,49 @@ To turn on GitLab Duo experiment and beta features for an instance:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Troubleshooting
+
+When you turn Agent Platform on or off, you might encounter the following issues.
+
+### **Change configuration** missing on GitLab Self-Managed
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+On GitLab Self-Managed, **Change configuration** might not display.
+**Change configuration** appears only when your instance has one of the following:
+
+- An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license
+- Active GitLab Credits
+
+Without these requirements, you cannot control the availability of GitLab Duo through the UI.
+To turn GitLab Duo off, use the Rails console or the API instead.
+
+In a Rails console session, run the following command:
+
+```ruby
+ApplicationSetting.current.update!(duo_features_enabled: false, lock_duo_features_enabled: true)
+```
+
+To verify the change, run the following command:
+
+```ruby
+Gitlab::CurrentSettings.duo_features_enabled    # => false
+Gitlab::CurrentSettings.duo_never_on?           # => true
+```
+
+Alternatively, send a `PUT` request to the application settings API with an
+administrator token that has the `api` scope:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <admin_token>" \
+  --data "duo_availability=never_on" \
+  "https://<your-gitlab-host>/api/v4/application_settings"
+```
+
+You might have to refresh your browser before the GitLab Duo panel disappears.

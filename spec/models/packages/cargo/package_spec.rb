@@ -34,37 +34,40 @@ RSpec.describe Packages::Cargo::Package, feature_category: :package_registry do
       end
     end
 
-    describe '.with_normalized_cargo_name' do
-      let_it_be(:cargo_package) { create(:cargo_package, name: 'Foo-bAr_BAZ_buz') }
-      let_it_be(:cargo_metadatum) { create(:cargo_metadatum, package: cargo_package) }
-
-      subject(:packages_with_normalized_name) { described_class.with_normalized_cargo_name('foo-bar-baz-buz') }
-
-      it { is_expected.to match_array([cargo_package]) }
-
-      context 'when package has no metadatum' do
-        let_it_be(:cargo_package_without_metadatum) { create(:cargo_package, name: 'Foo-bAr_BAZ_buz') }
-
-        it 'does not include packages without metadatum' do
-          expect(packages_with_normalized_name).not_to include(cargo_package_without_metadatum)
-        end
+    describe '.with_normalized_cargo_metadata' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:cargo_package) do
+        create(:cargo_package, name: 'Foo-bAr_BAZ_buz', version: '1.0.0+build999', project: project)
       end
-    end
 
-    describe '.with_normalized_cargo_version' do
-      let_it_be(:cargo_package) { create(:cargo_package, version: '1.0.0+build999') }
       let_it_be(:cargo_metadatum) { create(:cargo_metadatum, package: cargo_package) }
 
-      subject(:packages_with_normalized_version) { described_class.with_normalized_cargo_version('1.0.0') }
+      subject(:packages_with_normalized_metadata) do
+        described_class.with_normalized_cargo_metadata(project.id, 'foo-bar-baz-buz', '1.0.0')
+      end
 
       it { is_expected.to match_array([cargo_package]) }
 
-      context 'when package has no metadatum' do
-        let_it_be(:cargo_package_without_metadatum) { create(:cargo_package, version: '1.0.0+build999') }
+      context 'when the project does not match' do
+        let_it_be(:other_project) { create(:project) }
 
-        it 'does not include packages without metadatum' do
-          expect(packages_with_normalized_version).not_to include(cargo_package_without_metadatum)
+        subject do
+          described_class.with_normalized_cargo_metadata(other_project.id, 'foo-bar-baz-buz', '1.0.0')
         end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'when package has no metadatum' do
+        let_it_be(:cargo_package_without_metadatum) do
+          create(:cargo_package, name: 'no-meta-crate', version: '2.0.0', project: project)
+        end
+
+        subject do
+          described_class.with_normalized_cargo_metadata(project.id, 'no-meta-crate', '2.0.0')
+        end
+
+        it { is_expected.not_to include(cargo_package_without_metadatum) }
       end
     end
 

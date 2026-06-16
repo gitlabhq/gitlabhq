@@ -206,10 +206,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         organization_owner.update!(admin: true)
       end
 
-      it { expect_disallowed(:admin_organization) }
+      it { expect_disallowed(:update_organization) }
 
       context 'with admin mode', :enable_admin_mode do
-        it { expect_allowed(:admin_organization) }
+        it { expect_allowed(:update_organization) }
       end
     end
   end
@@ -427,7 +427,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         let(:current_user) { owner }
 
         context 'when group is marked for deletion' do
-          let(:group) { create(:group_with_deletion_schedule, organization: organization) }
+          let(:group) { create(:group, :deletion_scheduled, organization: organization) }
 
           before do
             group.add_owner(owner)
@@ -437,7 +437,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         end
 
         context 'when group ancestor is marked for deletion' do
-          let(:ancestor) { create(:group_with_deletion_schedule, organization: group.organization) }
+          let(:ancestor) { create(:group, :deletion_scheduled, organization: group.organization) }
 
           before do
             group.parent = ancestor
@@ -757,7 +757,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       context 'maintainer' do
         let(:current_user) { maintainer }
 
-        it { is_expected.to be_allowed(:import_projects) }
+        it { is_expected.to be_disallowed(:import_projects) }
       end
 
       context 'owner' do
@@ -2038,6 +2038,55 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       with_them do
         it { is_expected.to be_disallowed(:create_saved_view) }
       end
+    end
+  end
+
+  describe ':request_access' do
+    let_it_be(:public_group)   { create(:group, :public) }
+    let_it_be(:internal_group) { create(:group, :internal) }
+    let_it_be(:private_group)  { create(:group, :private) }
+    let_it_be(:logged_in_user) { create(:user) }
+    let_it_be(:external_user)  { create(:user, :external) }
+
+    subject { described_class.new(current_user, group) }
+
+    context 'when user can request access' do
+      where(:case_name, :current_user, :group) do
+        'logged-in non-member on public group'   | lazy { logged_in_user } | lazy { public_group }
+        'logged-in non-member on internal group' | lazy { logged_in_user } | lazy { internal_group }
+        'external user on public group'          | lazy { external_user }  | lazy { public_group }
+      end
+
+      with_them do
+        it { expect_allowed(:request_access) }
+      end
+    end
+
+    context 'when user cannot request access' do
+      where(:case_name, :current_user, :group) do
+        'anonymous on public group'             | lazy { nil }            | lazy { public_group }
+        'anonymous on internal group'           | lazy { nil }            | lazy { internal_group }
+        'anonymous on private group'            | lazy { nil }            | lazy { private_group }
+        'external user on internal group'       | lazy { external_user }  | lazy { internal_group }
+        'external user on private group'        | lazy { external_user }  | lazy { private_group }
+        'logged-in non-member on private group' | lazy { logged_in_user } | lazy { private_group }
+      end
+
+      with_them do
+        it { expect_disallowed(:request_access) }
+      end
+    end
+
+    context 'when the group has request_access_enabled disabled' do
+      subject { described_class.new(logged_in_user, create(:group, :public, request_access_enabled: false)) }
+
+      it { expect_disallowed(:request_access) }
+    end
+
+    context 'when the user is already a member' do
+      subject { described_class.new(guest, group) }
+
+      it { expect_disallowed(:request_access) }
     end
   end
 end

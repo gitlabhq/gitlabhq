@@ -68,7 +68,7 @@ module Gitlab
         return unless model_tree
 
         model_tree
-          .map(&method(:resolve_model))
+          .map { |key, tree| resolve_model(key, tree) }
       end
 
       def resolve_model(model_key, model_tree)

@@ -23,6 +23,7 @@ module RequestPayloadLogger
     if logged_user.present?
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
+      payload[:user_is_bot] = logged_user.try(:bot?)
     end
 
     payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]

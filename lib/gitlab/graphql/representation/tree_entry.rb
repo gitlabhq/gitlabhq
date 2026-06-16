@@ -27,6 +27,10 @@ module Gitlab
 
           super(raw_entry)
         end
+
+        def project
+          repository&.project
+        end
       end
     end
   end

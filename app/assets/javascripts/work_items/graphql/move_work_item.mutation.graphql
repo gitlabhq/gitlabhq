@@ -4,6 +4,7 @@ mutation workItemMove(
   $input: workItemsHierarchyReorderInput!
   $pageSize: Int = 100
   $endCursor: String = ""
+  $useWorkItemFeatures: Boolean = false
 ) {
   workItemsHierarchyReorder(input: $input) {
     workItem {

@@ -31,6 +31,11 @@ export default {
       required: false,
       default: '',
     },
+    userId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -52,10 +57,12 @@ export default {
       // Enriches the raw results with any FE computed fields we need
       return this.dashboards.map((data) => ({
         ...data,
-        dashboardUrl: joinPaths(
-          this.exploreAnalyticsDashboardsPath,
-          String(getDashboardIdFromGraphQLId(data.id)),
-        ),
+        dashboardUrl: data.system
+          ? joinPaths(this.exploreAnalyticsDashboardsPath, data.slug)
+          : joinPaths(
+              this.exploreAnalyticsDashboardsPath,
+              String(getDashboardIdFromGraphQLId(data.id)),
+            ),
         isStarred: false,
       }));
     },
@@ -67,6 +74,7 @@ export default {
         return {
           search: this.search,
           scope: this.scope || undefined,
+          createdById: this.userId || undefined,
         };
       },
       update({ customDashboards }) {

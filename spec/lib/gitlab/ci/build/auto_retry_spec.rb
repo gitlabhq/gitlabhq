@@ -74,8 +74,6 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
         build.failure_reason = failure_reason
       end
 
-      subject { auto_retry.allowed? }
-
       where(:retry_when, :failure_reason, :result) do
         # each legacy alias matches every specific reason that replaced it
         'stuck_or_timeout_failure' | :stuck_pending_with_matching_runners | true

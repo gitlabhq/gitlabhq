@@ -133,7 +133,7 @@ module MigrationsHelpers
     # Reset column information for the most offending classes **after** we
     # migrated the schema up, otherwise, column information could be
     # outdated. We have a separate method for this so we can override it in EE.
-    active_record_base.descendants.each(&method(:reset_column_information))
+    active_record_base.descendants.each { |model| reset_column_information(model) }
   end
 
   def refresh_attribute_methods

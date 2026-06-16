@@ -1,8 +1,8 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: クラスター検出API（証明書ベース）（非推奨）
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: クラスター発見API (証明書ベース) (非推奨)
 ---
 
 {{< details >}}
@@ -12,15 +12,12 @@ title: クラスター検出API（証明書ベース）（非推奨）
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> この機能はGitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
 
-この機能は、GitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
+## 証明書ベースのクラスターを取得する {#retrieve-certificate-based-clusters}
 
-{{< /alert >}}
-
-## 証明書ベースのクラスターを検出 {#discover-certificate-based-clusters}
-
-グループ、サブグループ、またはプロジェクトに登録されている証明書ベースのクラスターを取得します。無効および有効なクラスターも返されます。
+グループ、サブグループ、またはプロジェクトに登録されている証明書ベースのクラスターを取得する。無効になっているクラスターと有効になっているクラスターも返されます。
 
 ```plaintext
 GET /discover-cert-based-clusters
@@ -32,13 +29,13 @@ GET /discover-cert-based-clusters
 | --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
 | `group_id`      | 整数または文字列 | はい      | グループのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/discover-cert-based-clusters?group_id=1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -63,7 +60,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "name": "subsubgroup-project-cluster"
       }
     ],
-    "my-clusters-group/project1-with-clustser": [
+    "my-clusters-group/project1-with-cluster": [
       {
         "id": 1,
         "name": "test"

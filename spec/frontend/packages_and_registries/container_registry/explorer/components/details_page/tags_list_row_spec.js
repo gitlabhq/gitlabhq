@@ -47,6 +47,7 @@ describe('tags list row', () => {
   const findPublishedDateDetail = () => wrapper.findByTestId('published-date-detail');
   const findManifestDetail = () => wrapper.findByTestId('manifest-detail');
   const findManifestMediaType = () => wrapper.findByTestId('manifest-media-type');
+  const findManifestPlatformsRow = () => wrapper.findByTestId('manifest-platforms-row');
   const findConfigurationDetail = () => wrapper.findByTestId('configuration-detail');
   const findSignaturesDetails = () => wrapper.findAllByTestId('signatures-detail');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
@@ -59,7 +60,7 @@ describe('tags list row', () => {
   const findProtectedBadge = () => wrapper.findByTestId('protected-badge');
   const findProtectedPopover = () => wrapper.findByTestId('protected-popover');
 
-  const mountComponent = (propsData = defaultProps) => {
+  const mountComponent = (propsData = defaultProps, provide = {}) => {
     wrapper = shallowMountExtended(TagsListRow, {
       stubs: {
         GlSprintf,
@@ -68,6 +69,7 @@ describe('tags list row', () => {
         GlDisclosureDropdown,
         GlDisclosureDropdownItem,
       },
+      provide,
       propsData,
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
@@ -460,6 +462,48 @@ describe('tags list row', () => {
 
         await nextTick();
         expect(findDetailsRows()).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('supported platforms display', () => {
+    describe('when the feature flag is disabled', () => {
+      it('is not rendered for index tags', async () => {
+        mountComponent({ ...defaultProps, tag: tagWithListMediaType });
+        await nextTick();
+
+        expect(findManifestPlatformsRow().exists()).toBe(false);
+      });
+    });
+
+    describe('when the feature flag is enabled', () => {
+      const provide = { glFeatures: { containerRegistryDisplaySupportedPlatforms: true } };
+
+      it('is not rendered for non-index tags', async () => {
+        mountComponent(defaultProps, provide);
+        await nextTick();
+
+        expect(findManifestPlatformsRow().exists()).toBe(false);
+      });
+
+      describe.each`
+        description                               | image
+        ${'with OCI index media type'}            | ${tagWithOCIMediaType}
+        ${'with Docker manifest list media type'} | ${tagWithListMediaType}
+      `('$description', ({ image }) => {
+        it('renders the supported platforms row', async () => {
+          mountComponent({ ...defaultProps, tag: image }, provide);
+          await nextTick();
+
+          expect(findManifestPlatformsRow().exists()).toBe(true);
+        });
+
+        it('passes the tag prop to the supported platforms row', async () => {
+          mountComponent({ ...defaultProps, tag: image }, provide);
+          await nextTick();
+
+          expect(findManifestPlatformsRow().props('tag')).toEqual(image);
+        });
       });
     });
   });

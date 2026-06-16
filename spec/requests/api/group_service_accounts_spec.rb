@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate_failures,
   :clean_gitlab_redis_rate_limiting, feature_category: :user_management do
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
 
   before do
     stub_application_setting_enum('email_confirmation_setting', 'hard')

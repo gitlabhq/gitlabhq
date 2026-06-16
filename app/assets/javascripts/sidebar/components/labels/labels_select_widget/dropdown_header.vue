@@ -2,6 +2,7 @@
 import { GlButton, GlSearchBoxByType } from '@gitlab/ui';
 
 export default {
+  name: 'DropdownHeader',
   components: {
     GlButton,
     GlSearchBoxByType,

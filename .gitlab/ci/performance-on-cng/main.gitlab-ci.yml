@@ -93,6 +93,7 @@ run-performance-tests:
       pipeline_variables: true
       yaml_variables: true
   variables:
+    PARENT_PIPELINE_ID: $PARENT_PIPELINE_ID
     JOB_WITH_ARTIFACTS: $JOB_WITH_ARTIFACTS
     JOB_WITH_ARTIFACTS_ID: $JOB_WITH_ARTIFACTS_ID
     PARENT_PIPELINE_BRANCH_NAME: $CI_COMMIT_REF_NAME

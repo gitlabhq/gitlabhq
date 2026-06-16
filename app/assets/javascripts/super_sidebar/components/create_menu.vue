@@ -17,10 +17,6 @@ import {
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
-import { DROPDOWN_Y_OFFSET } from '../constants';
-
-// Left offset required for the dropdown to be aligned
-const DROPDOWN_X_OFFSET_BASE = -8;
 
 export default {
   CREATION_CONTEXT_SUPER_SIDEBAR,
@@ -50,14 +46,6 @@ export default {
       isCreateWorkItemModalVisible: false,
       loadCreateWorkItemModal: false,
     };
-  },
-  computed: {
-    dropdownOffset() {
-      return {
-        mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: DROPDOWN_X_OFFSET_BASE,
-      };
-    },
   },
   methods: {
     isInvitedMembers(groupItem) {
@@ -99,7 +87,6 @@ export default {
     text-sr-only
     :toggle-text="$options.i18n.createNew"
     :toggle-id="$options.toggleId"
-    :dropdown-offset="dropdownOffset"
     class="super-sidebar-new-menu-dropdown gl-self-center"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"

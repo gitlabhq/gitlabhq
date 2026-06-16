@@ -2,6 +2,8 @@
 import api from '~/api';
 import showGlobalToast from '~/vue_shared/plugins/global_toast';
 
+import sourceBranchRemovalMixin from '../../mixins/source_branch_removal';
+import { POST_CLOSE_DELETE_BRANCH_EVENT } from '../../constants';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 import StateContainer from '../state_container.vue';
 
@@ -10,6 +12,7 @@ import {
   MR_WIDGET_CLOSED_REOPENING,
   MR_WIDGET_CLOSED_RELOADING,
   MR_WIDGET_CLOSED_REOPEN_FAILURE,
+  MR_WIDGET_DELETE_SOURCE_BRANCH,
 } from '../../i18n';
 
 export default {
@@ -18,6 +21,7 @@ export default {
     MrWidgetAuthorTime,
     StateContainer,
   },
+  mixins: [sourceBranchRemovalMixin],
   props: {
     mr: {
       type: Object,
@@ -47,7 +51,7 @@ export default {
         return [];
       }
 
-      return [
+      const actionsList = [
         {
           text: this.reopenText,
           loading: this.isPending || this.isReloading,
@@ -55,6 +59,16 @@ export default {
           testId: 'extension-actions-reopen-button',
         },
       ];
+
+      if (this.shouldShowRemoveSourceBranch) {
+        actionsList.push({
+          text: MR_WIDGET_DELETE_SOURCE_BRANCH,
+          class: 'js-remove-branch-button',
+          onClick: () => this.removeSourceBranch(POST_CLOSE_DELETE_BRANCH_EVENT),
+        });
+      }
+
+      return actionsList;
     },
   },
   methods: {

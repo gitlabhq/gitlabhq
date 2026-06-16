@@ -7,25 +7,25 @@ RSpec.describe 'Admin (GraphQL fixtures)', feature_category: :organization do
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:current_user) { create(:user, :admin) }
-    let_it_be(:owner) { create(:user) }
-    let_it_be(:groups) do
+    let_it_be(:current_user, freeze: false) { create(:user, :admin) }
+    let_it_be(:owner, freeze: false) { create(:user) }
+    let_it_be(:groups, freeze: false) do
       create_list(:group, 3, :with_avatar, owners: [owner, current_user], description: 'foo bar')
     end
 
-    let_it_be(:pending_deletion_group) do
-      create(:group_with_deletion_schedule, owners: [owner, current_user], marked_for_deletion_on: Date.yesterday)
+    let_it_be(:pending_deletion_group, freeze: false) do
+      create(:group_with_deletion_schedule, :deletion_scheduled, owners: [owner, current_user])
     end
 
-    let_it_be(:projects) do
+    let_it_be(:projects, freeze: false) do
       create_list(:project, 3, :with_avatar, owners: [owner, current_user], description: 'foo bar')
     end
 
-    let_it_be(:pending_deletion_project) do
+    let_it_be(:pending_deletion_project, freeze: false) do
       create(:project, :aimed_for_deletion, owners: [owner, current_user])
     end
 
-    let_it_be(:project) do
+    let_it_be(:project, freeze: false) do
       create(:project,
         namespace: groups.first,
         statistics: build(

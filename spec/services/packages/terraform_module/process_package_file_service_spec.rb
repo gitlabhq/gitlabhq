@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_category: :package_registry do
-  let_it_be(:package, refind: true) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
-  let_it_be(:package_file, refind: true) { create(:package_file, :terraform_module, package:) }
+  let_it_be_with_refind(:package) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
+  let_it_be_with_refind(:package_file) { create(:package_file, :terraform_module, package:) }
 
   subject(:service) { described_class.new(package_file) }
 
@@ -51,7 +51,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
       end
 
       context 'with a zip archive' do
-        let_it_be(:package_file, refind: true) { create(:package_file, :terraform_module, zip: true, package: package) }
+        let_it_be_with_refind(:package_file) { create(:package_file, :terraform_module, zip: true, package: package) }
 
         it_behaves_like 'extracting metadata', Zip::File
 

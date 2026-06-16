@@ -21,9 +21,8 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
   let_it_be(:issue) { create(:issue, project: project, description: description) }
 
   let(:expected) do
-    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" \
-      '/-/sandbox/mermaid_v'
-    %r{<iframe src="#{Regexp.escape(src_prefix)}\d+(?:\?darkMode=true)?" sandbox="allow-scripts allow-popups"}
+    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{organization_sandbox_mermaid_v11_path(project.organization)}"
+    %r{<iframe src="#{Regexp.escape(src_prefix)}(?:\?darkMode=true)?" sandbox="allow-scripts allow-popups"}
   end
 
   context 'in an issue' do

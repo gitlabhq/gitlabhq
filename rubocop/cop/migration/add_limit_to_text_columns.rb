@@ -160,7 +160,13 @@ module RuboCop
         end
 
         def value_or_const_name(node)
-          node.const_type? ? node.const_name : node.value
+          if node.const_type?
+            node.const_name
+          elsif node.type?(:lvar, :send)
+            node.source.to_s
+          else
+            node.value
+          end
         end
 
         def encrypted_attribute_name?(attribute_name)

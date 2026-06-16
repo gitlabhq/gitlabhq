@@ -11,14 +11,14 @@ RSpec.describe Admin::OrganizationsController, type: :request, feature_category:
     end
 
     context 'as an admin', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
+      let_it_be(:user, freeze: false) { create(:admin) }
 
       it_behaves_like 'organization - successful response'
       it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     context 'as a regular user' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       it_behaves_like 'organization - not found response'
       it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'

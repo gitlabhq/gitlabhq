@@ -45,6 +45,7 @@ export default {
       default: '',
     },
   },
+  emits: ['editItem', 'removeItem'],
   computed: {
     fields() {
       const fullPath = {

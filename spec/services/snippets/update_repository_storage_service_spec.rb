@@ -139,5 +139,19 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
         end.not_to change { repository_storage_move.state }
       end
     end
+
+    context 'when the repository move was interrupted in started state' do
+      let(:repository_storage_move_state) { :started }
+
+      it 'marks the move as failed and restores repository writability', :aggregate_failures do
+        result = subject.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq(s_('UpdateRepositoryStorage|Repository storage move was interrupted'))
+        expect(repository_storage_move.reload).to be_failed
+        expect(repository_storage_move.error_message).to eq(s_('UpdateRepositoryStorage|Repository storage move was interrupted'))
+        expect(snippet.reload).not_to be_repository_read_only
+      end
+    end
   end
 end

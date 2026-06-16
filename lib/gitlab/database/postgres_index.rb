@@ -9,7 +9,6 @@ module Gitlab
       self.primary_key = 'identifier'
       self.inheritance_column = :_type_disabled
 
-      has_one :bloat_estimate, class_name: 'Gitlab::Database::PostgresIndexBloatEstimate', foreign_key: :identifier
       has_many :reindexing_actions, class_name: 'Gitlab::Database::Reindexing::ReindexAction', foreign_key: :index_identifier
       has_many :queued_reindexing_actions, class_name: 'Gitlab::Database::Reindexing::QueuedAction', foreign_key: :index_identifier
 
@@ -57,7 +56,13 @@ module Gitlab
       end
 
       def bloat_size
-        strong_memoize(:bloat_size) { bloat_estimate&.bloat_size || 0 }
+        strong_memoize(:bloat_size) do
+          self.class.connection.select_value(
+            'SELECT postgres_index_bloat_estimate($1, $2)',
+            nil,
+            [schema, name]
+          ).to_i
+        end
       end
 
       def relative_bloat_level

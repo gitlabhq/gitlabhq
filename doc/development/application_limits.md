@@ -18,6 +18,16 @@ There is a guide about [introducing application limits](https://handbook.gitlab.
 
 ## Implement plan limits
 
+The `plan_limits` table is **cell-scoped configuration**: each cell has its own
+copy of the table, and limits are not migrated between cells. New cells start
+with the column default for each limit, and administrators tune limits per cell
+via the [admin Plan Limits API](../api/plan_limits.md). Because of this, every
+new plan limit **must** be settable through that API — otherwise a new limit
+can only ever take its column default on each cell.
+
+Do not introduce a plan limit that must stay consistent across cells —
+`plan_limits` is cell-local, so there is no way to keep it in sync.
+
 ### Insert database plan limits
 
 In the `plan_limits` table, create a new column and insert the limit values.
@@ -72,6 +82,15 @@ It's recommended to create two separate migration script files.
    To set limits in your migration only for GitLab.com and allow other instances
    to use the default limits, add `return unless Gitlab.com?` to the start of
    the `#up` and `#down` methods to make the migration a no-op for other instances.
+1. Expose the new column through the [admin Plan Limits API](../api/plan_limits.md):
+
+   - Add it as an `optional` parameter on `PUT /application/plan_limits`
+     ([`lib/api/admin/plan_limits.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/admin/plan_limits.rb))
+     so administrators can tune the limit per cell.
+   - Add it to the response entity
+     ([`lib/api/entities/plan_limit.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/entities/plan_limit.rb))
+     so the limit can be read back.
+   - Document the attribute on the [Plan Limits API page](../api/plan_limits.md).
 
 ### Plan limits validation
 

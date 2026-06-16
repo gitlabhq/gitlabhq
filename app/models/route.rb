@@ -30,6 +30,11 @@ class Route < ApplicationRecord
   after_update :delete_conflicting_redirects, if: :saved_change_to_path?
   after_update :create_redirect_for_old_path
   after_update :rename_descendants
+  # Anchored on Route (rather than a service) to catch every path-vacating flow
+  # in one place. Callback bypasses (e.g. upsert_all in RenameDescendantsService)
+  # are handled explicitly via Authn::BurnedProjectRoute.bulk_burn!.
+  after_update :burn_vacated_project_path, if: -> { saved_change_to_path? && project_route? }
+  before_destroy :burn_project_path, if: :project_route?
 
   scope :by_paths, ->(paths) { where(arel_table[:path].lower.in(paths.map(&:downcase))) }
   scope :inside_path, ->(path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
@@ -82,6 +87,57 @@ class Route < ApplicationRecord
 
   def create_redirect_for_old_path
     create_redirect(path_before_last_save) if saved_change_to_path?
+  end
+
+  def burn_vacated_project_path
+    old_path = path_before_last_save
+    return if old_path.blank?
+
+    ::Authn::BurnedProjectRoute.burn!(
+      organization_id: burn_organization_id,
+      path: old_path,
+      project_id: burn_project_id
+    )
+  end
+
+  def burn_project_path
+    ::Authn::BurnedProjectRoute.burn!(
+      organization_id: burn_organization_id,
+      path: path,
+      project_id: burn_project_id
+    )
+  end
+
+  # Project destroy services may nullify the polymorphic association in
+  # memory before the route's own before_destroy fires; fall back to the
+  # persisted column so the burn record is never orphaned.
+  def burn_project_id
+    source_id_in_database || source_id
+  end
+
+  # Resolve organization_id from the persisted project row. We re-read it from
+  # the database (rather than going through the in-memory association) because
+  # destroy services may have already detached `source` by the time the route's
+  # own before_destroy callback fires.
+  #
+  # When the project is being transferred across organizations and renamed at
+  # the same time, the in-memory source carries the previous organization_id
+  # via dirty tracking. Prefer that value so the burn lands under the *source*
+  # organization (where the path was vacated), not the destination one.
+  def burn_organization_id
+    pid = burn_project_id
+    return if pid.blank?
+
+    if source.is_a?(Project)
+      prior_org_id = source.organization_id_before_last_save
+      return prior_org_id if prior_org_id.present?
+    end
+
+    Project.unscoped.where(id: pid).pick(:organization_id)
+  end
+
+  def project_route?
+    (source_type_in_database || source_type) == 'Project'
   end
 
   def unique_attributes

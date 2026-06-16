@@ -63,6 +63,14 @@ RSpec.describe 'Query.group.pipelineAnalytics', :aggregate_failures, :click_hous
 
   it_behaves_like 'pipeline analytics graphql query', :group
 
+  context 'with pipeline_analytics_siphon flag disabled' do
+    before do
+      stub_feature_flags(pipeline_analytics_siphon: false)
+    end
+
+    it_behaves_like 'pipeline analytics graphql query', :group
+  end
+
   describe 'subgroupFullPaths argument' do
     let_it_be(:sub_group2, freeze: true) { create(:group, parent: group) }
     let_it_be(:project_in_sub_group2, freeze: true) { create(:project, group: sub_group2) }

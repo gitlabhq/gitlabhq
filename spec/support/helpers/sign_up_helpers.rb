@@ -23,6 +23,13 @@ module SignUpHelpers
     visit user_confirmation_path(confirmation_token: new_user_token)
   end
 
+  # Waits until a User record with the given email is persisted. Useful
+  # after a signup form submission to avoid racing the still-in-flight
+  # server request.
+  def wait_for_user_to_be_created(email)
+    wait_for('user to be created') { User.exists?(email: email) }
+  end
+
   private
 
   def expect_username_to_be_validated

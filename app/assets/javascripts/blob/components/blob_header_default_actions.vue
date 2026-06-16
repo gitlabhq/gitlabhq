@@ -1,19 +1,27 @@
 <script>
-import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
+  BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
+  BTN_DOWNLOAD_AS_PDF_TITLE,
   BTN_RAW_TITLE,
+  MARKDOWN_EXTENSIONS,
   RICH_BLOB_VIEWER,
   SIMPLE_BLOB_VIEWER,
 } from './constants';
 
 export default {
+  i18n: {
+    BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
+    BTN_DOWNLOAD_AS_PDF_TITLE,
+  },
   components: {
     GlButtonGroup,
     GlButton,
+    GlDisclosureDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -99,6 +107,35 @@ export default {
     isPdfFile() {
       return this.fileType?.includes('pdf');
     },
+    isMarkdownFile() {
+      if (!this.rawPath) return false;
+      const pathWithoutQuery = this.rawPath.split('?')[0];
+      const ext = pathWithoutQuery.split('.').pop()?.toLowerCase();
+      return MARKDOWN_EXTENSIONS.includes(ext);
+    },
+    showDownloadDropdown() {
+      return !this.isEmpty && this.canDownloadCode && this.isMarkdownFile;
+    },
+    downloadDropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
+          href: this.downloadUrl,
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          extraAttrs: { rel: 'noopener noreferrer' },
+        },
+        {
+          text: this.$options.i18n.BTN_DOWNLOAD_AS_PDF_TITLE,
+          action: () => {
+            document.querySelectorAll('img').forEach((img) => img.setAttribute('loading', 'eager'));
+            document
+              .querySelectorAll('details')
+              .forEach((detail) => detail.setAttribute('open', ''));
+            window.print();
+          },
+        },
+      ];
+    },
     openInNewWindowUrl() {
       return setUrlParams(
         { inline: true },
@@ -123,6 +160,7 @@ export default {
     class="gl-hidden @sm/panel:gl-inline-flex"
     data-testid="default-actions-container"
   >
+    <slot name="prepend"></slot>
     <gl-button
       v-if="!isEmpty && showCopyButton"
       v-gl-tooltip.hover
@@ -148,8 +186,19 @@ export default {
       category="primary"
       variant="default"
     />
+    <gl-disclosure-dropdown
+      v-if="showDownloadDropdown"
+      v-gl-tooltip.hover
+      :title="$options.BTN_DOWNLOAD_TITLE"
+      :aria-label="$options.BTN_DOWNLOAD_TITLE"
+      :items="downloadDropdownItems"
+      icon="download"
+      category="primary"
+      variant="default"
+      data-testid="download-dropdown"
+    />
     <gl-button
-      v-if="!isEmpty && canDownloadCode"
+      v-else-if="!isEmpty && canDownloadCode"
       v-gl-tooltip.hover
       :aria-label="$options.BTN_DOWNLOAD_TITLE"
       :title="$options.BTN_DOWNLOAD_TITLE"

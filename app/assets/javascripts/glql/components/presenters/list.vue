@@ -1,5 +1,6 @@
 <script>
 import { GlIntersperse, GlSkeletonLoader } from '@gitlab/ui';
+import { titleFieldFor } from './presenter_registry';
 import FieldPresenter from './field.vue';
 
 const DEFAULT_PAGE_SIZE = 5;
@@ -35,14 +36,22 @@ export default {
     },
   },
   computed: {
-    hasTitle() {
-      return this.fields?.some((field) => field.key === 'title');
-    },
-    visibleFields() {
-      return this.hasTitle ? this.fields.filter((field) => field.key !== 'title') : this.fields;
-    },
     items() {
       return this.data.nodes || [];
+    },
+    titleFieldKey() {
+      // Assumes a homogeneous typename for the result set: a single GLQL query
+      // returns rows of one shape, so peeking at the first item is safe.
+      // eslint-disable-next-line no-underscore-dangle
+      return titleFieldFor(this.items[0]?.__typename);
+    },
+    hasTitle() {
+      return this.fields?.some((field) => field.key === this.titleFieldKey);
+    },
+    visibleFields() {
+      return this.hasTitle
+        ? this.fields.filter((field) => field.key !== this.titleFieldKey)
+        : this.fields;
     },
     pageSize() {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
@@ -63,7 +72,7 @@ export default {
     >
       <div class="gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top">
         <h3 v-if="hasTitle" class="!gl-heading-5 !gl-mb-1 gl-truncate">
-          <field-presenter :item="item" field-key="title" />
+          <field-presenter :item="item" :field-key="titleFieldKey" />
         </h3>
         <div>
           <gl-intersperse separator=" · ">

@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['model-versions-update'],
   computed: {
     computedFields() {
       return [

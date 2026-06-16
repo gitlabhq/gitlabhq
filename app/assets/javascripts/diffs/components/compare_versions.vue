@@ -15,6 +15,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 
 export default {
+  name: 'CompareVersions',
   components: {
     FileBrowserToggle,
     CompareDropdownLayout,

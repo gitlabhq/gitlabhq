@@ -75,7 +75,7 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
           sudo\s-u\s.+?\s-H\sbundle\sexec\srake\s
           #{truncate_tasks}
           For\smore\sinformation\ssee:\s+
-          doc/development/database/multiple_databases.md\sin\ssection\s'Truncating\stables'\s+
+          http.+/help/development/database/multiple_databases.md\#truncating-tables\s+
           Please\sfix\sthe\serror\sabove\sand\srerun\sthe\schecks.\s+
         }x
 

@@ -52,6 +52,7 @@ diff-file[data-line-range-dragging] {
 
 // Disable per-tbody content-visibility when it hosts a discussion row or a
 // new-discussion toggle, since those extend beyond the tbody's paint container.
+// stylelint-disable-next-line gitlab/no-has -- scoped to text view content within virtual diff files
 .rd-diff-file[data-virtual] .rd-text-view-content:has([data-discussion-row]),
 .rd-diff-file[data-virtual] .rd-text-view-content:has([data-has-new-discussion-toggle]) {
   --rd-content-visibility-auto: visible;
@@ -359,13 +360,15 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
   inset: 1px 0;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to diff line number cells
 .rd-line-number:has(> .rd-line-link:focus-visible) {
   z-index: constants.$diff-file-cell-focused-z-index;
 }
 
 .rd-line-content,
 .rd-hunk-header-content {
-  padding: 0 1.5em;
+  --rd-row-inline-padding: 1.5em;
+  padding: 0 var(--rd-row-inline-padding);
   word-break: break-word;
 }
 
@@ -378,11 +381,13 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
 }
 
 .rd-line-content {
+  display: flex;
   white-space: break-spaces;
 
   &::before {
     position: absolute;
-    margin-left: -13px;
+    margin-left: var(--rd-line-sign-offset, -13px);
+    pointer-events: none;
   }
 }
 
@@ -423,6 +428,68 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
 // Jupyter images
 .rd-line-text img {
   max-width: 100%;
+}
+
+[data-line-coverage] {
+  --rd-line-coverage-size: 2px;
+  --rd-line-coverage-inline-padding: 7px;
+  position: relative;
+  flex: none;
+  display: none;
+  padding: 0 var(--rd-line-coverage-inline-padding);
+  width: var(--rd-line-coverage-size);
+  margin-right: calc((var(--rd-line-coverage-size) + var(--rd-line-coverage-inline-padding) * 2) * -1);
+  vertical-align: top;
+  transform: translateX(calc((var(--rd-row-inline-padding) + var(--rd-line-coverage-inline-padding)) * -1 - 1px));
+  background-clip: content-box;
+  box-sizing: content-box;
+}
+
+[data-line-coverage][data-coverage] {
+  display: inline-block;
+}
+
+[data-coverage=hit] {
+  background-color: var(--gl-color-green-400);
+}
+
+[data-coverage=miss] {
+  --rd-line-coverage-size: 4px;
+  --rd-line-coverage-inline-padding: 6px;
+  background-color: var(--gl-color-red-400);
+}
+
+[data-line-codequality] {
+  display: none;
+}
+
+[data-codequality-has-findings] {
+  --rd-codequality-slot-width: 20px;
+  --rd-codequality-slot-gap: calc(var(--rd-codequality-slot-width) / 1.5);
+  --rd-line-sign-offset: calc(var(--rd-codequality-slot-gap) - 9px);
+}
+
+[data-codequality-has-findings] [data-line-codequality] {
+  display: flex;
+  position: relative;
+  flex: none;
+  align-items: flex-start;
+  justify-content: center;
+  width: var(--rd-codequality-slot-width);
+  margin-left: calc(var(--rd-codequality-slot-width) * -1 + 4px);
+  margin-right: var(--rd-codequality-slot-gap);
+}
+
+.rd-codequality-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rd-codequality-slot-width);
+  height: var(--rd-codequality-slot-width);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 [data-disable-diff-side=old] [data-position=old],

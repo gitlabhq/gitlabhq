@@ -1,7 +1,7 @@
 ---
-stage: Growth
-group: Engagement
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab To-DoリストAPI
 ---
 
@@ -12,11 +12,11 @@ title: GitLab To-DoリストAPI
 
 {{< /details >}}
 
-このAPIを使用して、[To-Do](../user/todos.md)とやり取りします。
+APIを使用して、[To-Do項目](../user/todos.md)を操作します。
 
-## To-Doのリストを取得 {#get-a-list-of-to-do-items}
+## すべてのTo-Do項目を一覧表示 {#list-all-to-do-items}
 
-To-Doのリストを返します。フィルターが適用されていない場合、現在のユーザーの保留中のTo-Doをすべて返します。別のフィルターを使用すると、ユーザーはリクエストを絞り込むことができます。
+すべてのTo-Do項目を一覧表示します。フィルターが適用されていない場合、現在のユーザーの保留中のすべてのTo-Do項目が返されます。異なるフィルターにより、ユーザーはリクエストを絞り込むことができます。
 
 ```plaintext
 GET /todos
@@ -26,12 +26,12 @@ GET /todos
 
 | 属性 | 型 | 必須 | 説明                                                                                                                                                                                        |
 | --------- | ---- | -------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `action` | 文字列 | いいえ | フィルタリングするアクション。`assigned`、`mentioned`、`build_failed`、`marked`、`approval_required`、`unmergeable`、`directly_addressed`、`merge_train_removed`、または`member_access_requested`を指定できます。 |
-| `author_id` | 整数 | いいえ | 作成者のID。                                                                                                                                                                                |
-| `project_id` | 整数 | いいえ | プロジェクトのID。                                                                                                                                                                                |
-| `group_id` | 整数 | いいえ | グループのID。                                                                                                                                                                                  |
-| `state` | 文字列 | いいえ | To-Doアイテムの状態。`pending`または`done`のいずれかになります                                                                                                                                     |
-| `type` | 文字列 | いいえ | To-Doのタイプ。`Issue`、`MergeRequest`、`Commit`、`Epic`、`DesignManagement::Design`、`AlertManagement::Alert`、`Project`、`Namespace`、`Vulnerability`、または`WikiPage::Meta`のいずれかになります。  |
+| `action` | 文字列 | いいえ | フィルタリングするアクション。`assigned`、`mentioned`、`build_failed`、`marked`、`approval_required`、`unmergeable`、`directly_addressed`、`merge_train_removed`、または`member_access_requested`です。 |
+| `author_id` | 整数 | いいえ | 作成者のID                                                                                                                                                                                |
+| `project_id` | 整数 | いいえ | プロジェクトのID                                                                                                                                                                                |
+| `group_id` | 整数 | いいえ | グループのID                                                                                                                                                                                  |
+| `state` | 文字列 | いいえ | To-Do項目の状態。`pending`または`done`のいずれかになります                                                                                                                                     |
+| `type` | 文字列 | いいえ | To-Do項目のタイプ。`Issue`、`MergeRequest`、`Commit`、`Epic`、`DesignManagement::Design`、`AlertManagement::Alert`、`Project`、`Namespace`、`Vulnerability`、または`WikiPage::Meta`のいずれかです。  |
 
 ```shell
 curl --request GET \
@@ -194,9 +194,9 @@ curl --request GET \
 ]
 ```
 
-## To-Doアイテムを完了としてマーク {#mark-a-to-do-item-as-done}
+## to-do項目を完了としてマークする {#mark-a-to-do-item-as-done}
 
-現在のユーザーに対して、IDで指定された単一の保留中のTo-Doを完了としてマークします。完了としてマークされたTo-Doがレスポンスで返されます。
+現在のユーザーの、指定されたIDを持つ保留中の単一のTo-Do項目を完了としてマークします。完了とマークされたTo-Do項目は応答で返されます。
 
 ```plaintext
 POST /todos/:id/mark_as_done
@@ -206,7 +206,7 @@ POST /todos/:id/mark_as_done
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数 | はい | To-DoのID |
+| `id` | 整数 | はい | To-Do項目のID |
 
 ```shell
 curl --request POST \
@@ -294,9 +294,9 @@ curl --request POST \
 }
 ```
 
-## すべてのTo-Doを完了としてマーク {#mark-all-to-do-items-as-done}
+## すべてのTo-Do項目を完了としてマークする {#mark-all-to-do-items-as-done}
 
-現在のユーザーの保留中のTo-Doをすべて完了としてマークします。空のレスポンスでHTTPステータスコード`204`を返します。
+現在のユーザーの保留中のすべてのTo-Do項目を完了としてマークします。空の応答とともにHTTPステータスコード`204`を返します。
 
 ```plaintext
 POST /todos/mark_as_done

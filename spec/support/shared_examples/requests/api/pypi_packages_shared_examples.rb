@@ -272,7 +272,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
   end
 
   context 'with a normalized package name' do
-    let_it_be(:package) { create(:pypi_package, project: project, name: 'my.package') }
+    let_it_be(:package, freeze: false) { create(:pypi_package, project: project, name: 'my.package') }
 
     let(:url) { "/projects/#{project.id}/packages/pypi/simple/my-package" }
     let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
@@ -292,7 +292,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
     end
 
     with_them do
-      let_it_be(:package) { create(:pypi_package, project: project, name: 'foobar') }
+      let_it_be(:package, freeze: false) { create(:pypi_package, project: project, name: 'foobar') }
 
       let(:package_name) do
         if package_in_project

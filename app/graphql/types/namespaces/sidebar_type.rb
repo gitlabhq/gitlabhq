@@ -49,8 +49,6 @@ module Types
       end
 
       def open_work_items_count
-        return unless Feature.enabled?(:show_work_items_sidebar_count, context[:current_user])
-
         case namespace
         when ::Group
           group_open_work_items_count

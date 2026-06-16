@@ -4,6 +4,7 @@ import { GlAvatar, GlAvatarLink, GlLink, GlTooltipDirective as GlTooltip } from 
 import { escape } from 'lodash-es';
 
 export default {
+  name: 'EnvironmentsCommit',
   components: {
     GlAvatar,
     GlAvatarLink,

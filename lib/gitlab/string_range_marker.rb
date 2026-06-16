@@ -22,7 +22,11 @@ module Gitlab
 
       marker_ranges = ranges.map { |range| Gitlab::MarkerRange.from_range(range) }
 
-      if html_escaped
+      # identity_mapping? skips position mapping entirely when raw and rich line lengths are equal,
+      # since equal lengths guarantee 1:1 position mapping
+      if !html_escaped || identity_mapping?
+        rich_marker_ranges = marker_ranges
+      else
         rich_marker_ranges = []
         marker_ranges.each do |range|
           if use_safe_position_mapping?
@@ -38,8 +42,6 @@ module Gitlab
 
           rich_marker_ranges.concat(collapse_ranges(rich_positions, range.mode))
         end
-      else
-        rich_marker_ranges = marker_ranges
       end
 
       offset = 0
@@ -66,6 +68,10 @@ module Gitlab
     end
     strong_memoize_attr :use_safe_position_mapping?
 
+    def identity_mapping?
+      raw_line.length == rich_line.length
+    end
+
     def position_mapping
       @position_mapping ||= if use_safe_position_mapping?
                               safe_position_mapping
@@ -77,18 +83,28 @@ module Gitlab
     def safe_position_mapping
       mapping = []
       rich_pos = 0
+      rich_length = rich_line.length
 
       (0..raw_line.length).each do |raw_pos|
-        rich_pos = skip_html_tags(rich_pos)
-        break if rich_pos.nil?
+        # Skip HTML tags
+        while rich_pos < rich_length && rich_line[rich_pos] == '<'
+          rich_pos += 1 while rich_pos < rich_length && rich_line[rich_pos] != '>'
+          break if rich_pos >= rich_length # unclosed tag - bail out
 
-        rich_char = rich_char_at(rich_pos)
-        break if rich_char.nil?
+          rich_pos += 1
+        end
+
+        break if rich_pos >= rich_length
+
+        rich_char = rich_line[rich_pos]
 
         if rich_char == '&'
-          entity_positions = html_entity_positions(rich_pos)
-          mapping[raw_pos] = entity_positions
-          rich_pos = entity_positions.last + 1
+          # Collect HTML entity positions
+          entity_end = rich_pos
+          entity_end += 1 while entity_end < rich_length && rich_line[entity_end] != ';'
+
+          mapping[raw_pos] = (rich_pos..entity_end).to_a
+          rich_pos = entity_end + 1
         else
           mapping[raw_pos] = rich_pos
           rich_pos += 1
@@ -134,34 +150,6 @@ module Gitlab
       end
 
       mapping
-    end
-
-    def rich_char_at(pos)
-      pos < rich_line.length ? rich_line[pos] : nil
-    end
-
-    def html_entity_positions(rich_pos)
-      entity_end = rich_pos
-
-      loop do
-        char = rich_char_at(entity_end)
-        break if char.nil? || char == ';'
-
-        entity_end += 1
-      end
-
-      (rich_pos..entity_end).to_a
-    end
-
-    def skip_html_tags(rich_pos)
-      while rich_char_at(rich_pos) == '<'
-        rich_pos += 1 while rich_char_at(rich_pos)&.!= '>'
-        return if rich_char_at(rich_pos).nil?
-
-        rich_pos += 1
-      end
-
-      rich_pos
     end
 
     def collapse_ranges(positions, mode)

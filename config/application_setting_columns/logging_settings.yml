@@ -1,0 +1,12 @@
+---
+api_type:
+attr: logging_settings
+clusterwide: true
+column: logging_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: 'Logging field schema settings including active version and dual-emit target.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

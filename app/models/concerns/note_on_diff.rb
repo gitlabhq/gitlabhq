@@ -20,10 +20,6 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
-  def diff_attributes
-    raise NotImplementedError
-  end
-
   def active?(diff_refs = nil)
     raise NotImplementedError
   end

@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Charts, :freeze_time, feature_category: :fleet_visibi
   end
 
   context 'weekchart_utc' do
-    let_it_be(:today) { Date.today }
+    let_it_be(:today, freeze: false) { Date.today }
     let_it_be(:end_of_today) do
       Time.use_zone(Time.find_zone('UTC')) { today.end_of_day }
     end
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::Ci::Charts, :freeze_time, feature_category: :fleet_visibi
   end
 
   context 'weekchart_non_utc' do
-    let_it_be(:today) { Date.today }
+    let_it_be(:today, freeze: false) { Date.today }
     let_it_be(:end_of_today) do
       Time.use_zone(Time.find_zone('Asia/Dubai')) { today.end_of_day }
     end

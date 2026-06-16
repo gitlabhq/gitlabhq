@@ -649,6 +649,11 @@ In order to push images to this location:
 
    1. Configure the following project settings:
 
+      - `Settings -> Packages and registries`
+        - `Protected container image tags`
+          - Ensure there are no protected container image tags. The setting should read: `No container image tags are protected.`
+
+            See [this comment](https://gitlab.com/groups/gitlab-org/-/work_items/15608#note_2347527499) explaining the rationale for this setting.
       - `Settings -> General -> Visibility, project features, permissions`
         - `Project visibility`
           - `Public`

@@ -38,7 +38,7 @@ success(){
   echo >&2 -e "${GREEN} ${1-}${NC}"
 }
 
-# Relies on globals: KUBECTL, NAMESPACE, PG_POD, PG_PASS.
+# Relies on globals: KUBECTL, PG_NAMESPACE, PG_POD.
 create_db_from_production() {
   local db_name="$1"
 
@@ -46,8 +46,8 @@ create_db_from_production() {
   echo "==> Creating $db_name database (if it does not exist)..."
 
   local db_exists
-  db_exists=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
+  db_exists=$($KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+    psql -U postgres -d postgres -tAc \
       "SELECT 1 FROM pg_database WHERE datname='$db_name'" 2>/dev/null || true)
 
   if [[ "$db_exists" =~ 1 ]]; then
@@ -57,15 +57,15 @@ create_db_from_production() {
 
   echo "  Terminating active sessions on gitlabhq_production..."
   local terminated
-  terminated=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -tAc \
+  terminated=$($KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+    psql -U postgres -d postgres -tAc \
       "SELECT count(*) FROM (SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='gitlabhq_production' AND pid <> pg_backend_pid()) t" || echo "?")
   echo "  Terminated $terminated sessions."
 
   echo "  Creating $db_name from template gitlabhq_production..."
-  if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-    env PGPASSWORD="$PG_PASS" psql -U postgres -d postgres -c \
-      "CREATE DATABASE \"$db_name\" TEMPLATE gitlabhq_production OWNER gitlab"; then
+  if $KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+    psql -U postgres -d postgres -c \
+      "CREATE DATABASE \"$db_name\" TEMPLATE gitlabhq_production OWNER \"gitlab-dev-stack\""; then
     success "  ✓ $db_name created successfully."
   else
     error "Failed to create $db_name."
@@ -78,6 +78,7 @@ create_db_from_production() {
 # 0. Parse arguments / set defaults
 
 NAMESPACE="${NAMESPACE:-gitlab}"
+PG_NAMESPACE="${PG_NAMESPACE:-gitlab-dev-stack}"
 KUBE_CONTEXT=""
 GITLAB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 POD_BASE="/srv/gitlab"
@@ -423,27 +424,21 @@ fi
 echo ""
 echo "==> Locating PostgreSQL pod..."
 
-PG_POD=$($KUBECTL get pod -n "$NAMESPACE" -l app.kubernetes.io/name=postgresql \
+PG_POD_LABEL="cnpg.io/cluster=gitlab-dev-stack-gitlab,role=primary"
+PG_POD=$($KUBECTL get pod -n "$PG_NAMESPACE" \
+  -l "$PG_POD_LABEL" \
   -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
 
 if [[ -z "$PG_POD" ]]; then
-  error "No PostgreSQL pod found in namespace '$NAMESPACE'."
-  error "Check: $KUBECTL get pods -n $NAMESPACE -l app.kubernetes.io/name=postgresql"
+  error "No PostgreSQL pod found in namespace '$PG_NAMESPACE'."
+  error "Check: $KUBECTL get pods -n $PG_NAMESPACE -l $PG_POD_LABEL"
   exit 1
 fi
 
 echo "  Found PostgreSQL pod: $PG_POD"
 
-PG_PASS=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-  sh -c 'echo "$POSTGRES_POSTGRES_PASSWORD"' 2>/dev/null || true)
-
-if [[ -z "$PG_PASS" ]]; then
-  error "Could not read POSTGRES_POSTGRES_PASSWORD from pod $PG_POD."
-  exit 1
-fi
-
-AUTH_CHECK=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-  env PGPASSWORD="$PG_PASS" psql -U postgres -tAc "SELECT 1" 2>&1 || true)
+AUTH_CHECK=$($KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+  psql -U postgres -tAc "SELECT 1" 2>&1 || true)
 
 if [[ "$AUTH_CHECK" != "1" ]]; then
   error "PostgreSQL authentication failed. psql output:"
@@ -469,8 +464,8 @@ create_db_from_production gitlabhq_development
 echo ""
 echo "==> Dropping amcheck extension from gitlabhq_development..."
 
-if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-  env PGPASSWORD="$PG_PASS" psql -U postgres -d gitlabhq_development -c \
+if $KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+  psql -U postgres -d gitlabhq_development -c \
     "DROP EXTENSION IF EXISTS amcheck;" >/dev/null; then
   echo "  ✓ amcheck dropped (or already absent)"
 else
@@ -496,8 +491,8 @@ fi
 echo ""
 echo "==> Mirroring gitlabhq_development extensions into template1..."
 
-EXT_ROWS=$($KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-  env PGPASSWORD="$PG_PASS" psql -U postgres -d gitlabhq_development -tAF '|' -c \
+EXT_ROWS=$($KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+  psql -U postgres -d gitlabhq_development -tAF '|' -c \
     "SELECT e.extname, n.nspname \
      FROM pg_extension e \
      JOIN pg_namespace n ON e.extnamespace = n.oid \
@@ -509,8 +504,8 @@ if [[ -z "$EXT_ROWS" ]]; then
 else
   while IFS='|' read -r ext schema; do
     [[ -z "$ext" ]] && continue
-    if $KUBECTL exec -n "$NAMESPACE" "$PG_POD" -- \
-      env PGPASSWORD="$PG_PASS" psql -U postgres -d template1 -c \
+    if $KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+      psql -U postgres -d template1 -c \
         "CREATE SCHEMA IF NOT EXISTS \"$schema\"; CREATE EXTENSION IF NOT EXISTS \"$ext\" WITH SCHEMA \"$schema\";" >/dev/null; then
       echo "  ✓ $ext (schema $schema)"
     else
@@ -649,31 +644,58 @@ if [[ -f "$GITLAB_YML" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 6. Write static vite.gdk.json
+# 5f. Disable object_store.enabled in every block of the test: section
 #
-#    vite.gdk.json is committed to the repo and should always use 127.0.0.1
-#    so that the Vite dev server is reachable via port-forward.  Writing it
-#    here is a no-op in most cases but ensures correctness if the file was
-#    regenerated or replaced (e.g. by gdk rake generate_config_files).
+#     The cluster config points uploads/artifacts/LFS/external_diffs/etc. at
+#     the in-cluster minio (gitlab-minio-svc.gitlab.svc:9000) with
+#     object_store.enabled: true. RSpec loads WebMock and blocks real HTTP,
+#     so fixtures that touch storage (e.g. Duo Bot avatar upload during user
+#     seeding) fail with WebMock::NetConnectNotAllowedError.
+#
+#     GitLab CI / GDK seed test config from config/gitlab.yml.example, whose
+#     test: block sets object_store.enabled: false at every level. We can't
+#     swap to .example wholesale (we'd lose the cluster-derived development:
+#     section), so flip every object_store.enabled within the test: block.
 # ---------------------------------------------------------------------------
 
-echo ""
-echo "==> Writing static config/vite.gdk.json..."
+if [[ -f "$GITLAB_YML" ]]; then
+  echo ""
+  echo "==> Disabling object_store.enabled in the test: block of config/gitlab.yml..."
+  awk '
+    BEGIN { in_test = 0; in_object_store = 0; os_indent = -1 }
+    /^test:/                             { in_test = 1; in_object_store = 0; print; next }
+    in_test && /^[a-zA-Z]/               { in_test = 0; in_object_store = 0 }
+    in_test && /^[[:space:]]+object_store:[[:space:]]*$/ {
+      match($0, /^ +/)
+      os_indent = RLENGTH
+      in_object_store = 1
+      print; next
+    }
+    in_test && in_object_store {
+      match($0, /^ */)
+      this_indent = RLENGTH
+      if ($0 !~ /^[[:space:]]*$/ && this_indent <= os_indent) {
+        in_object_store = 0
+      } else if ($0 ~ /^[[:space:]]+enabled:[[:space:]]+true[[:space:]]*$/) {
+        sub(/true/, "false")
+      }
+    }
+    { print }
+  ' "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
+  echo "  ✓ config/gitlab.yml"
+fi
 
-cat > "$GITLAB_DIR/config/vite.gdk.json" <<'EOF'
-{
-  "enabled": true,
-  "public_host": "127.0.0.1",
-  "host": "127.0.0.1",
-  "port": 3038,
-  "hmr": {
-    "clientPort": 3038,
-    "host": "127.0.0.1",
-    "protocol": "ws"
-  }
-}
-EOF
-echo "  ✓ config/vite.gdk.json"
+# ---------------------------------------------------------------------------
+# 6. Remove leftover config/vite.gdk.json from earlier versions of this script.
+# ---------------------------------------------------------------------------
+
+VITE_GDK_JSON="$GITLAB_DIR/config/vite.gdk.json"
+if [[ -f "$VITE_GDK_JSON" ]]; then
+  echo ""
+  echo "==> Removing leftover config/vite.gdk.json from previous setup runs..."
+  rm -f "$VITE_GDK_JSON"
+  echo "  ✓ removed config/vite.gdk.json"
+fi
 
 # ---------------------------------------------------------------------------
 # 7. Summary

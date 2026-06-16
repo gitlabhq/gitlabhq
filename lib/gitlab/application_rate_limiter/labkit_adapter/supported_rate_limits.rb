@@ -27,9 +27,11 @@ module Gitlab
       # blocked on labkit's `Limiter#peek`. Both peek and non-peek callers
       # of these keys route through the adapter so the labkit and legacy
       # counters increment from the same call sites and shadow comparisons
-      # remain meaningful. `web_hook_calls{,_low,_mid}` are deliberately
-      # excluded: every caller passes a `threshold:` override which the
-      # adapter cannot honour and routes to legacy via record_override.
+      # remain meaningful. `web_hook_calls{,_low,_mid}` also have peek
+      # callers and are registered in cohort 6; their threshold arrives
+      # per call from PlanLimits and is declared as `threshold_from_caller:
+      # true` below. The adapter forwards the caller's value via
+      # rule_context instead of treating it as an override.
       #
       # Keys deliberately not registered (EE-only without a current call
       # site; partner APIs with sub-second intervals) are documented in
@@ -321,6 +323,13 @@ module Gitlab
               characteristics: %i[user],
               action: :block
             },
+            notification_emails: {
+              limiter_name: 'applimiter_notification_emails',
+              rule_name: 'limit_notification_emails_by_parent_user',
+              characteristics: %i[project group user],
+              action: :block,
+              flag_scope: :cohort_2
+            },
             oauth_dynamic_registration: {
               limiter_name: 'applimiter_oauth_dynamic_registration',
               rule_name: 'limit_oauth_registrations_by_ip',
@@ -429,6 +438,13 @@ module Gitlab
               limiter_name: 'applimiter_project_fork_sync',
               rule_name: 'limit_project_fork_syncs_by_project_user',
               characteristics: %i[project user],
+              action: :block,
+              flag_scope: :cohort_2
+            },
+            project_generate_new_export: {
+              limiter_name: 'applimiter_project_generate_new_export',
+              rule_name: 'limit_project_export_generations_by_user',
+              characteristics: %i[user],
               action: :block,
               flag_scope: :cohort_2
             },
@@ -557,6 +573,13 @@ module Gitlab
               action: :block,
               flag_scope: :cohort_3
             },
+            token_exchange: {
+              limiter_name: 'applimiter_token_exchange',
+              rule_name: 'limit_token_exchanges_by_user',
+              characteristics: %i[user],
+              action: :block,
+              flag_scope: :cohort_6
+            },
             update_environment_canary_ingress: {
               limiter_name: 'applimiter_update_environment_canary_ingress',
               rule_name: 'limit_canary_ingress_updates_by_environment',
@@ -674,6 +697,37 @@ module Gitlab
               characteristics: %i[user],
               action: :block
             },
+            # web_hook_calls{,_low,_mid} carry no static threshold: the limit
+            # is looked up per namespace from PlanLimits and passed in via the
+            # caller's `threshold:` argument. `threshold_from_caller: true`
+            # opts the entry out of the adapter's threshold-override bail so
+            # the caller's value is forwarded through to labkit's one-arity
+            # limit callable via rule_context. The `1.minute` interval is the
+            # registry value and is not caller-controlled.
+            web_hook_calls: {
+              limiter_name: 'applimiter_web_hook_calls',
+              rule_name: 'limit_web_hook_calls_by_namespace',
+              characteristics: %i[namespace],
+              threshold_from_caller: true,
+              action: :block,
+              flag_scope: :cohort_6
+            },
+            web_hook_calls_low: {
+              limiter_name: 'applimiter_web_hook_calls_low',
+              rule_name: 'limit_web_hook_calls_low_by_namespace',
+              characteristics: %i[namespace],
+              threshold_from_caller: true,
+              action: :block,
+              flag_scope: :cohort_6
+            },
+            web_hook_calls_mid: {
+              limiter_name: 'applimiter_web_hook_calls_mid',
+              rule_name: 'limit_web_hook_calls_mid_by_namespace',
+              characteristics: %i[namespace],
+              threshold_from_caller: true,
+              action: :block,
+              flag_scope: :cohort_6
+            },
             web_hook_event_resend: {
               limiter_name: 'applimiter_web_hook_event_resend',
               rule_name: 'limit_web_hook_event_resends_by_parent_user',
@@ -687,6 +741,37 @@ module Gitlab
               characteristics: %i[project group user],
               action: :block,
               flag_scope: :cohort_2
+            },
+            # Cohort 5: per-database Sidekiq resource-usage (DB duration) limits,
+            # one Limiter per database. Cost-mode (the per-job DB duration is the
+            # `check(cost:)` value, not a call count). threshold and interval are
+            # both caller-supplied: SidekiqLimits.limits_for resolves the worker's
+            # urgency rule and any ApplicationSetting override upstream, so the
+            # labkit Rule must use that resolved value (not a static constant) for
+            # the shadow comparison against legacy to be meaningful.
+            main_db_duration_limit_per_worker: {
+              limiter_name: 'applimiter_main_db_duration_limit_per_worker',
+              rule_name: 'limit_main_db_duration_per_worker',
+              characteristics: %i[worker_name],
+              action: :block,
+              flag_scope: :cohort_5,
+              cost_mode: true
+            },
+            ci_db_duration_limit_per_worker: {
+              limiter_name: 'applimiter_ci_db_duration_limit_per_worker',
+              rule_name: 'limit_ci_db_duration_per_worker',
+              characteristics: %i[worker_name],
+              action: :block,
+              flag_scope: :cohort_5,
+              cost_mode: true
+            },
+            sec_db_duration_limit_per_worker: {
+              limiter_name: 'applimiter_sec_db_duration_limit_per_worker',
+              rule_name: 'limit_sec_db_duration_per_worker',
+              characteristics: %i[worker_name],
+              action: :block,
+              flag_scope: :cohort_5,
+              cost_mode: true
             }
           }
         end

@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:developer) { create(:user) { |u| project.add_developer(u) } }
-  let_it_be(:remote_mirror) { create(:remote_mirror, :host_keys, enabled: true, project: project) }
+  let_it_be(:remote_mirror, freeze: false) { create(:remote_mirror, :host_keys, enabled: true, project: project) }
 
   let(:host_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' }
   # rubocop:disable Layout/LineLength -- SSH key format requires long lines
@@ -354,9 +354,9 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
         }
 
         expect(response).to have_gitlab_http_status(:success)
-        expect(json_response['enabled']).to eq(false)
-        expect(json_response['only_protected_branches']).to eq(true)
-        expect(json_response['keep_divergent_refs']).to eq(true)
+        expect(json_response['enabled']).to be(false)
+        expect(json_response['only_protected_branches']).to be(true)
+        expect(json_response['keep_divergent_refs']).to be(true)
       end
 
       context 'when auth method is invalid' do

@@ -9,6 +9,7 @@ export const TYPES = {
 };
 
 export default {
+  name: 'EmptyResult',
   i18n: {
     titleSearch: __('No results found'),
     descriptionSearch: __('Edit your search and try again.'),

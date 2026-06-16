@@ -18,7 +18,7 @@ RSpec.describe Ci::PipelineSchedules::CalculateNextRunService, feature_category:
     let(:daily_limit_of_24_runs) { 1.day / 1.hour }
 
     before do
-      allow(Settings).to receive(:cron_jobs) { { 'pipeline_schedule_worker' => { 'cron' => worker_cron } } }
+      allow(Gitlab::SidekiqConfig).to receive(:cron_jobs) { { 'pipeline_schedule_worker' => { 'cron' => worker_cron } } }
       create(:plan_limits, :default_plan, ci_daily_pipeline_schedule_triggers: plan_limit) if plan_limit
     end
 

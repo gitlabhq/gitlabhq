@@ -41,7 +41,8 @@ module API
           ::MetricImageUploader.workhorse_authorize(**params)
         end
 
-        desc 'Upload a metric image for an alert' do
+        desc 'Upload a metric image' do
+          detail 'Uploads a metric image for a specified alert.'
           consumes ['multipart/form-data']
           success code: 200, model: Entities::MetricImage
           failure [
@@ -79,7 +80,8 @@ module API
           end
         end
 
-        desc 'Metric Images for alert' do
+        desc 'List all metric images' do
+          detail 'Lists all metric images for a specified alert.'
           success code: 200, model: Entities::MetricImage
           is_array true
           failure [
@@ -95,7 +97,8 @@ module API
           end
         end
 
-        desc 'Update a metric image for an alert' do
+        desc 'Update a metric image' do
+          detail 'Updates a specified metric image for an alert.'
           consumes ['multipart/form-data']
           success code: 200, model: Entities::MetricImage
           failure [
@@ -126,7 +129,8 @@ module API
           end
         end
 
-        desc 'Remove a metric image for an alert' do
+        desc 'Delete a metric image' do
+          detail 'Deletes a specified metric image for an alert.'
           success code: 204, model: Entities::MetricImage
           failure [
             { code: 403, message: 'Forbidden' },

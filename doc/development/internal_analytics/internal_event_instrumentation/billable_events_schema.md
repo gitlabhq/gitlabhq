@@ -90,7 +90,7 @@ The following fields are critical for billing calculations and must be present i
 | `execution_environment` | String | Environment where the workflow was executed (e.g., `duo_agent_platform`) | Yes |
 | `llm_operations` | Array | List of LLM operations performed during the workflow | Yes |
 | `llm_operations[].token_count` | Integer | Total number of tokens used in the operation | Yes |
-| `llm_operations[].model_id` | String | Identifier of the LLM model used (e.g., `claude-3-sonnet-20240229`) | Yes |
+| `llm_operations[].model_id` | String | Identifier of the LLM model used (e.g., `claude-3-7-sonnet-20250219`) | Yes |
 | `llm_operations[].prompt_tokens` | Integer | Number of tokens in the prompt | Yes |
 | `llm_operations[].completion_tokens` | Integer | Number of tokens in the completion/response | Yes |
 | `orbit_called` | Boolean | Whether any Orbit tools were called during the workflow session | No |
@@ -106,7 +106,7 @@ The following fields are critical for billing calculations and must be present i
     "llm_operations": [
         {
             "token_count": 5328,
-            "model_id": "claude-3-sonnet-20240229",
+            "model_id": "claude-3-7-sonnet-20250219",
             "prompt_tokens": 3150,
             "completion_tokens": 2178
         },

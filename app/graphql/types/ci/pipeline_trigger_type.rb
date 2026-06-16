@@ -9,6 +9,7 @@ module Types
       connection_type_class Types::CountableConnectionType
 
       authorize :manage_trigger
+      authorize_granular_token permissions: :read_trigger, boundary: :project, boundary_type: :project
 
       field :can_access_project, GraphQL::Types::Boolean,
         null: false,

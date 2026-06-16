@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Projects::PipelineHelper do
   include Ci::BuildsHelper
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, owners: user) }
-  let_it_be(:raw_pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-  let_it_be(:pipeline) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, owners: user) }
+  let_it_be(:raw_pipeline, freeze: false) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+  let_it_be(:pipeline, freeze: false) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user) }
 
   describe '#js_pipeline_tabs_data' do
     subject(:pipeline_tabs_data) { helper.js_pipeline_tabs_data(project, pipeline, user) }

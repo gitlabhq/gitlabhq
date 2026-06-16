@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'timebox(milestone or iteration) resource events creator' do |timebox_event_class|
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     resource.system_note_timestamp = created_at_time

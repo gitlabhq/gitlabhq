@@ -9,7 +9,7 @@ title: Configure LLM platforms
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -21,6 +21,7 @@ title: Configure LLM platforms
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
 - Generally available in GitLab 17.9.
 - Changed to include Premium in GitLab 18.0.
+- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -158,7 +159,7 @@ This change has been observed to notably improve response times in internal benc
 GitLab has validated and tested the following providers. The AI Gateway supports LLM providers that are compatible with [LiteLLM](https://docs.litellm.ai/docs/providers).
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
-- [Google Vertex AI](https://cloud.google.com/vertex-ai)
+- [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
@@ -421,19 +422,19 @@ docker run -d \
 
 For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html).
 
-### Configure authentication with Google Vertex AI
+### Configure authentication with Gemini Enterprise Agent Platform
 
-To use models from Google Vertex AI, you must authenticate your AI Gateway instance. You can use any of the following mechanisms:
+To use models from Gemini Enterprise Agent Platform, you must authenticate your AI Gateway instance. You can use any of the following mechanisms:
 
 - Export the environment variables when starting the Docker container. To do this, set the following environment variables when running the AI Gateway container:
 
   ```shell
   GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json
   VERTEXAI_PROJECT=<gcp-project-id>
-  VERTEXAI_LOCATION=global
+  VERTEXAI_LOCATION=global # or any specific location, e.g., "europe-west1"
   ```
 
-- Run the AI Gateway container on Google Cloud Run and use the [Cloud Run service account](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) for Vertex AI access.
+- Run the AI Gateway container on Google Cloud Run and use the [Cloud Run service account](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) for Gemini Enterprise Agent Platform access.
 
 ## Related topics
 

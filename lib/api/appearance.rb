@@ -16,6 +16,10 @@ module API
     desc 'Get the current appearance' do
       tags ['instance']
       success Entities::Appearance
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
     end
     route_setting :authorization, permissions: :read_application_appearance, boundary_type: :instance
     get "application/appearance" do
@@ -25,6 +29,11 @@ module API
     desc 'Modify appearance' do
       tags ['instance']
       success Entities::Appearance
+      failure [
+        { code: 400, message: 'Bad request' },
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
       consumes ['multipart/form-data']
     end
     params do

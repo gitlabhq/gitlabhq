@@ -31,7 +31,7 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
     describe 'behavior based on access level setting' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project, freeze: false) { create(:project) }
       let(:enabled) { Featurable::PRIVATE }
       let(:disabled) { Featurable::DISABLED }
 

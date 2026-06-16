@@ -6,7 +6,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:note, reload: true) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+  let_it_be_with_reload(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
   let_it_be(:user) { create(:user) }
 
   let(:request_params) do
@@ -80,7 +80,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
       context 'when user is the issuable author' do
         let_it_be(:project) { create(:project, :public) }
         let_it_be(:issue) { create(:issue, project: project, author: user) }
-        let_it_be(:note, reload: true) { create(:discussion_note_on_issue, confidential: true, noteable: issue, project: project) }
+        let_it_be_with_reload(:note) { create(:discussion_note_on_issue, confidential: true, noteable: issue, project: project) }
 
         let(:request_params) do
           {
@@ -157,7 +157,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
         end
 
         context 'with confidential discussion' do
-          let_it_be(:note, reload: true) { create(:discussion_note_on_merge_request, :confidential, noteable: merge_request, project: project) }
+          let_it_be_with_reload(:note) { create(:discussion_note_on_merge_request, :confidential, noteable: merge_request, project: project) }
 
           it 'resolves the discussion and returns status 200' do
             post :resolve, params: request_params
@@ -179,7 +179,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
       end
 
       context 'on an Issue' do
-        let_it_be(:note, reload: true) { create(:discussion_note_on_issue, noteable: issue, project: project) }
+        let_it_be_with_reload(:note) { create(:discussion_note_on_issue, noteable: issue, project: project) }
 
         let(:request_params) do
           {
@@ -199,7 +199,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
         end
 
         context 'with confidential discussion' do
-          let_it_be(:note, reload: true) { create(:discussion_note_on_issue, :confidential, noteable: issue, project: project) }
+          let_it_be_with_reload(:note) { create(:discussion_note_on_issue, :confidential, noteable: issue, project: project) }
 
           it 'resolves the discussion and returns status 200' do
             post :resolve, params: request_params
@@ -276,7 +276,7 @@ RSpec.describe Projects::DiscussionsController, feature_category: :team_planning
       end
 
       context 'on an Issue' do
-        let_it_be(:note, reload: true) { create(:discussion_note_on_issue, noteable: issue, project: project) }
+        let_it_be_with_reload(:note) { create(:discussion_note_on_issue, noteable: issue, project: project) }
 
         let(:request_params) do
           {

@@ -1,0 +1,8 @@
+---
+name: duo_session_chat_bubbles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237426
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601252
+milestone: '19.1'
+type: ops
+group: group::agent foundations
+default_enabled: false

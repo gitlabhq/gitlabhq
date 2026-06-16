@@ -21,7 +21,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     worker.perform(project.id)
 
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(project.reload.last_repository_check_failed).to be(false)
   end
 
   it 'fails when the project has push events and a broken repository' do
@@ -36,7 +36,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     worker.perform(project.id)
 
-    expect(project.reload.last_repository_check_failed).to eq(true)
+    expect(project.reload.last_repository_check_failed).to be(true)
   end
 
   it 'succeeds when the project repo is valid' do
@@ -53,7 +53,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
       worker.perform(project.id)
     end.to change { project.reload.last_repository_check_at }
 
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(project.reload.last_repository_check_failed).to be(false)
   end
 
   it 'fails if the wiki repository is broken' do
@@ -63,7 +63,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     # Test sanity: everything should be fine before the wiki repo is broken
     worker.perform(project.id)
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(project.reload.last_repository_check_failed).to be(false)
 
     repository = project.wiki.repository.raw
     expect(repository).to receive(:fsck).and_raise(::Gitlab::Git::Repository::GitError)
@@ -73,7 +73,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     worker.perform(project.id)
 
-    expect(project.reload.last_repository_check_failed).to eq(true)
+    expect(project.reload.last_repository_check_failed).to be(true)
   end
 
   it 'skips wikis when disabled' do
@@ -86,7 +86,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     subject.perform(project.id)
 
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(project.reload.last_repository_check_failed).to be(false)
   end
 
   it 'creates missing wikis' do
@@ -95,7 +95,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
 
     subject.perform(project.id)
 
-    expect(project.reload.last_repository_check_failed).to eq(false)
+    expect(project.reload.last_repository_check_failed).to be(false)
   end
 
   def create_push_event(project)

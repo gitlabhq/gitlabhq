@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlSprintf } from '@gitlab/ui';
+import SecretsCount from 'ee_component/delete_modal/components/delete_modal_secrets_count.vue';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
@@ -8,7 +9,7 @@ import { InternalEvents } from '~/tracking';
 export default {
   name: 'GroupDeleteModal',
   RESOURCE_TYPES,
-  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf },
+  components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf, SecretsCount },
   mixins: [InternalEvents.mixin()],
   inject: ['triggerDeleteLocation'],
   model: {
@@ -53,10 +54,10 @@ export default {
     },
   },
   emits: ['primary', 'change'],
-  computed: {
-    hasStats() {
-      return this.subgroupsCount !== null || this.projectsCount !== null;
-    },
+  data() {
+    return {
+      showSecretsCountFetchError: false,
+    };
   },
   methods: {
     numberToMetricPrefix,
@@ -87,7 +88,16 @@ export default {
   >
     <template #alert>
       <gl-alert
-        v-if="hasStats"
+        v-if="showSecretsCountFetchError"
+        data-testid="secrets-count-error"
+        class="gl-mb-5"
+        variant="warning"
+        :dismissible="false"
+      >
+        {{ s__('SecretsManager|Failed to fetch secrets count.') }}
+      </gl-alert>
+      <gl-alert
+        data-testid="group-delete-modal-stats-alert"
         class="gl-mb-5"
         variant="danger"
         :dismissible="false"
@@ -104,6 +114,11 @@ export default {
               <template #count>{{ numberToMetricPrefix(projectsCount) }}</template>
             </gl-sprintf>
           </li>
+          <secrets-count
+            :full-path="confirmPhrase"
+            :resource-type="$options.RESOURCE_TYPES.GROUP"
+            @fetch-error="showSecretsCountFetchError = true"
+          />
         </ul>
         <p class="gl-mb-0">
           {{

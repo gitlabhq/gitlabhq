@@ -5,6 +5,9 @@ module API
   class MergeRequestDiffs < ::API::Base
     include PaginationParams
     include Helpers::Unidiff
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 
@@ -14,8 +17,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of merge request diff versions' do
-        detail 'This feature was introduced in GitLab 8.12.'
+      desc 'Retrieve merge request diff versions' do
+        detail 'Retrieves merge request diff versions.'
         success Entities::MergeRequestDiff
         tags %w[merge_requests]
         is_array true
@@ -32,8 +35,8 @@ module API
         present paginate(merge_request.merge_request_diffs.order_id_desc), with: Entities::MergeRequestDiff
       end
 
-      desc 'Get a single merge request diff version' do
-        detail 'This feature was introduced in GitLab 8.12.'
+      desc 'Retrieve a merge request diff version' do
+        detail 'Retrieves a merge request diff version.'
         success Entities::MergeRequestDiffFull
         tags %w[merge_requests]
       end

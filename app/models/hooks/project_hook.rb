@@ -49,7 +49,7 @@ class ProjectHook < WebHook
 
   override :application_context
   def application_context
-    super.merge(project: project)
+    super.merge(project: project, organization: project.organization)
   end
 
   override :parent

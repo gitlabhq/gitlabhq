@@ -30,18 +30,82 @@
       "minItems": 1,
       "description": "List of components that make up the flow",
       "items": {
-        "oneOf": [
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "AgentComponent",
+              "DeterministicStepComponent",
+              "OneOffComponent",
+              "HumanInputComponent"
+            ],
+            "description": "Component type discriminator"
+          }
+        },
+        "allOf": [
           {
-            "$ref": "#/definitions/AgentComponent"
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "AgentComponent"
+                }
+              }
+            },
+            "then": {
+              "$ref": "#/definitions/AgentComponent"
+            }
           },
           {
-            "$ref": "#/definitions/DeterministicStepComponent"
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "DeterministicStepComponent"
+                }
+              }
+            },
+            "then": {
+              "$ref": "#/definitions/DeterministicStepComponent"
+            }
           },
           {
-            "$ref": "#/definitions/OneOffComponent"
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "OneOffComponent"
+                }
+              }
+            },
+            "then": {
+              "$ref": "#/definitions/OneOffComponent"
+            }
           },
           {
-            "$ref": "#/definitions/HumanInputComponent"
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "HumanInputComponent"
+                }
+              }
+            },
+            "then": {
+              "$ref": "#/definitions/HumanInputComponent"
+            }
           }
         ]
       }

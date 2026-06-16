@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Profiles::CommentTemplatesController, feature_category: :user_profile do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     sign_in(user)

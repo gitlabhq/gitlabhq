@@ -797,9 +797,9 @@ RSpec.shared_examples 'no-op relative positioning' do
     create(factory, params.merge(default_params))
   end
 
-  let_it_be(:item1) { create_item }
-  let_it_be(:item2) { create_item }
-  let_it_be(:new_item) { create_item(relative_position: nil) }
+  let_it_be(:item1, freeze: false) { create_item }
+  let_it_be(:item2, freeze: false) { create_item }
+  let_it_be(:new_item, freeze: false) { create_item(relative_position: nil) }
 
   def any_relative_positions
     new_item.class.reorder(:relative_position, :id).pluck(:id, :relative_position)

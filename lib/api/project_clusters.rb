@@ -16,8 +16,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List project clusters' do
-        detail 'This feature was introduced in GitLab 11.7. Returns a list of project clusters.'
+      desc 'List all clusters in a project' do
+        detail 'Lists all clusters in a specified project.'
         success Entities::Cluster
         failure [
           { code: 403, message: 'Forbidden' }
@@ -35,8 +35,8 @@ module API
         present paginate(clusters_for_current_user), with: Entities::Cluster
       end
 
-      desc 'Get a single project cluster' do
-        detail 'This feature was introduced in GitLab 11.7. Gets a single project cluster.'
+      desc 'Retrieve a cluster from a project' do
+        detail 'Retrieves a specified cluster in a project.'
         success Entities::ClusterProject
         failure [
           { code: 403, message: 'Forbidden' },
@@ -54,8 +54,8 @@ module API
         present cluster, with: Entities::ClusterProject
       end
 
-      desc 'Add existing cluster to project' do
-        detail 'This feature was introduced in GitLab 11.7. Adds an existing Kubernetes cluster to the project.'
+      desc 'Add a cluster to a project' do
+        detail 'Adds a cluster to a specified project.'
         success Entities::ClusterProject
         failure [
           { code: 400, message: 'Validation error' },
@@ -95,8 +95,8 @@ module API
         end
       end
 
-      desc 'Edit project cluster' do
-        detail 'This feature was introduced in GitLab 11.7. Updates an existing project cluster.'
+      desc 'Update a cluster in a project' do
+        detail 'Updates a cluster in a specified project.'
         success Entities::ClusterProject
         failure [
           { code: 400, message: 'Validation error' },
@@ -134,8 +134,9 @@ module API
         end
       end
 
-      desc 'Delete project cluster' do
-        detail 'This feature was introduced in GitLab 11.7. Deletes an existing project cluster. Does not remove existing resources within the connected Kubernetes cluster.'
+      desc 'Delete cluster from a project' do
+        detail 'Deletes a specified cluster from a project. Does not remove existing resources in the connected ' \
+          'Kubernetes cluster.'
         success Entities::ClusterProject
         failure [
           { code: 403, message: 'Forbidden' },

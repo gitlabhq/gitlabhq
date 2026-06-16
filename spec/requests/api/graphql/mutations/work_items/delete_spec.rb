@@ -85,6 +85,16 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
         let(:current_user) { owner }
 
         it_behaves_like 'mutation that deletes work item'
+
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_work_item do
+          let(:user) { current_user }
+          let(:boundary_object) { project }
+          let(:mutation) do
+            graphql_mutation(:workItemDelete, { 'id' => work_item.to_global_id.to_s }, 'errors')
+          end
+
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
       end
     end
 

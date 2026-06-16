@@ -3,32 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_shared_state, feature_category: :team_planning do
-  let_it_be(:project, reload: true) { create(:project, :repository_disabled, skip_disk_validation: true) }
+  let_it_be_with_reload(:project) { create(:project, :repository_disabled, skip_disk_validation: true) }
   let_it_be(:user) { project.creator }
   let_it_be(:start) { RelativePositioning::START_POSITION }
   let_it_be(:max_pos) { RelativePositioning::MAX_POSITION }
   let_it_be(:min_pos) { RelativePositioning::MIN_POSITION }
   let_it_be(:clump_size) { 300 }
 
-  let_it_be(:unclumped, reload: true) do
+  let_it_be_with_reload(:unclumped) do
     (1..clump_size).to_a.map do |i|
       create(:issue, project: project, author: user, relative_position: start + (1024 * i))
     end
   end
 
-  let_it_be(:end_clump, reload: true) do
+  let_it_be_with_reload(:end_clump) do
     (1..clump_size).to_a.map do |i|
       create(:issue, project: project, author: user, relative_position: max_pos - i)
     end
   end
 
-  let_it_be(:start_clump, reload: true) do
+  let_it_be_with_reload(:start_clump) do
     (1..clump_size).to_a.map do |i|
       create(:issue, project: project, author: user, relative_position: min_pos + i)
     end
   end
 
-  let_it_be(:nil_clump, reload: true) do
+  let_it_be_with_reload(:nil_clump) do
     (1..100).to_a.map do |i|
       create(:issue, project: project, author: user, relative_position: nil)
     end

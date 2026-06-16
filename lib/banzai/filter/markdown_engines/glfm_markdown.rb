@@ -20,7 +20,6 @@ module Banzai
           escaped_char_spans: true,
           footnotes: true,
           full_info_string: true,
-          github_pre_lang: true,
           hardbreaks: false,
           header_accessibility: true,
           header_ids: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
@@ -67,10 +66,13 @@ module Banzai
         private
 
         def render_options
-          unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled? ||
-              placeholders_disabled?
-            return OPTIONS
-          end
+          customized_options.merge(
+              github_pre_lang: Feature.disabled?(:use_css_language_classes, resolve_project)
+            )
+        end
+
+        def customized_options
+          return OPTIONS unless any_options_customized?
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
@@ -80,6 +82,10 @@ module Banzai
             placeholder_detection: !placeholders_disabled?,
             unsafe: !raw_html_disabled?
           )
+        end
+
+        def any_options_customized?
+          sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled? || placeholders_disabled?
         end
 
         def headers_disabled?

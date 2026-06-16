@@ -7,6 +7,7 @@ import ContainerProtectionRepositoryRules from '~/packages_and_registries/settin
 import ContainerProtectionTagRules from 'ee_else_ce/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 export default {
+  name: 'ContainerRegistrySection',
   components: {
     GlLink,
     GlSprintf,

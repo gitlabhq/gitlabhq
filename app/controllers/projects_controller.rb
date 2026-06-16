@@ -55,6 +55,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
+    push_frontend_feature_flag(:vue3_migrate_repository, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
@@ -485,9 +486,11 @@ class ProjectsController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def load_events
     projects = Project.where(id: @project.id)
+    transfer_options = {}
+    transfer_options[:ancestor_group_ids] = @project.group.self_and_ancestors.select(:id) if @project.group
 
     @events = EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .new(projects, offset: params[:offset].to_i, filter: event_filter, transfer_options: transfer_options)
       .to_a
       .map(&:present)
   end

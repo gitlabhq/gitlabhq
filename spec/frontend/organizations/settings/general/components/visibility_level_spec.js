@@ -4,6 +4,7 @@ import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
 } from '~/visibility_level/constants';
 
@@ -60,10 +61,10 @@ describe('VisibilityLevel', () => {
     });
   });
 
-  it('renders visibility level field with the current visibility as the only option', () => {
+  it('renders visibility level field with private and public options', () => {
     expect(findVisibilityLevelRadioButtons().props()).toEqual({
       checked: VISIBILITY_LEVEL_PRIVATE_INTEGER,
-      visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER],
+      visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER, VISIBILITY_LEVEL_PUBLIC_INTEGER],
       visibilityLevelDescriptions: ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
     });
   });

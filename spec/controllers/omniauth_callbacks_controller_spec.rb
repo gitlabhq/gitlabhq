@@ -408,7 +408,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
 
         context 'when fragment has encoded content' do
-          let_it_be(:malicious_redirect_fragment, reload: true) { '#code%3Dtest_code&L90' }
+          let(:malicious_redirect_fragment) { '#code%3Dtest_code&L90' }
 
           it 'fails login and redirects to login path' do
             post provider, session: { user_return_to: '/fake/url#replaceme' }
@@ -682,6 +682,71 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           end
         end
       end
+
+      context 'for chatgpt' do
+        let(:extern_uid) { 'my-uid' }
+        let(:provider) { :chatgpt }
+        let(:additional_info) { { extra: { raw_info: { 'email_verified' => false } } } }
+
+        before do
+          prepare_provider_route('chatgpt')
+        end
+
+        context 'without verified email' do
+          it 'does not allow sign in' do
+            post 'chatgpt'
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(response).to have_gitlab_http_status(:found)
+            expect(controller).to set_flash[:alert].to('Email not verified. Please verify your email in your ChatGPT account.')
+          end
+        end
+
+        context 'when email_verified is absent' do
+          let(:additional_info) { { extra: { raw_info: {} } } }
+
+          it 'does not allow sign in' do
+            post 'chatgpt'
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(response).to have_gitlab_http_status(:found)
+            expect(controller).to set_flash[:alert].to('Email not verified. Please verify your email in your ChatGPT account.')
+          end
+        end
+
+        context 'when email_verified is the string "false"' do
+          let(:additional_info) { { extra: { raw_info: { 'email_verified' => 'false' } } } }
+
+          it 'does not allow sign in' do
+            post 'chatgpt'
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(response).to have_gitlab_http_status(:found)
+            expect(controller).to set_flash[:alert].to('Email not verified. Please verify your email in your ChatGPT account.')
+          end
+        end
+
+        context 'with verified email' do
+          include_context 'with sign_up'
+          let(:additional_info) { { extra: { raw_info: { 'email_verified' => true } } } }
+
+          it_behaves_like 'omniauth sign in that remembers user with two factor disabled' do
+            let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+          end
+
+          it 'allows sign in' do
+            post 'chatgpt'
+
+            expect(request.env['warden']).to be_authenticated
+          end
+
+          context 'when a user has 2FA enabled' do
+            let(:user) { create(:omniauth_user, :two_factor, extern_uid: extern_uid, provider: provider) }
+
+            it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
+          end
+        end
+      end
     end
 
     context 'with snowplow tracking', :snowplow do
@@ -835,17 +900,9 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         using RSpec::Parameterized::TableSyntax
 
         let(:ommiauth_provider_config_with_step_up_auth) do
-          GitlabSettings::Options.new(
-            name: "openid_connect",
-            step_up_auth: {
-              admin_mode: {
-                id_token: {
-                  required: required_id_token_claims,
-                  included: included_id_token_claims
-                }
-              }
-            }
-          )
+          build(:omniauth_provider_config,
+            id_token_required: required_id_token_claims,
+            id_token_included: included_id_token_claims)
         end
 
         before do
@@ -921,7 +978,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
 
       context 'without step-up authentication configuration' do
-        let(:ommiauth_provider_config_with_step_up_auth) { GitlabSettings::Options.new(name: "openid_connect") }
+        let(:ommiauth_provider_config_with_step_up_auth) { build(:omniauth_provider_config, :no_step_up_auth) }
 
         it 'does not add session key "step_up_auth"' do
           get provider
@@ -934,17 +991,9 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         using RSpec::Parameterized::TableSyntax
 
         let(:ommiauth_provider_config_with_namespace_step_up_auth) do
-          GitlabSettings::Options.new(
-            name: "openid_connect",
-            step_up_auth: {
-              namespace: {
-                id_token: {
-                  required: required_id_token_claims,
-                  included: included_id_token_claims
-                }
-              }
-            }
-          )
+          build(:omniauth_provider_config, :with_namespace_scope,
+            id_token_required: required_id_token_claims,
+            id_token_included: included_id_token_claims)
         end
 
         before do
@@ -995,21 +1044,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       context 'with both admin_mode and namespace scopes configured' do
         let(:ommiauth_provider_config_with_both_scopes) do
-          GitlabSettings::Options.new(
-            name: "openid_connect",
-            step_up_auth: {
-              admin_mode: {
-                id_token: {
-                  required: { claim_1: 'gold' }
-                }
-              },
-              namespace: {
-                id_token: {
-                  required: { claim_1: 'silver' }
-                }
-              }
-            }
-          )
+          build(:omniauth_provider_config, :with_both_scopes)
         end
 
         before do

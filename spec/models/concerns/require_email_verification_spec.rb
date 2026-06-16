@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
-  let_it_be(:model) do
+  let_it_be(:model, freeze: false) do
     Class.new(ApplicationRecord) do
       self.table_name = 'users'
 

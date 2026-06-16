@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::RawController, feature_category: :source_code_management do
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
   let(:inline) { nil }
   let(:params) { {} }
@@ -141,7 +141,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
       end
 
       context 'when the user is authenticated' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         before do
           sign_in(user)
@@ -157,9 +157,9 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
     end
 
     context 'as a sessionless user' do
-      let_it_be(:project) { create(:project, :private, :repository) }
-      let_it_be(:user) { create(:user, static_object_token: 'very-secure-token') }
-      let_it_be(:file_path) { 'master/README.md' }
+      let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+      let_it_be(:user, freeze: false) { create(:user, static_object_token: 'very-secure-token') }
+      let_it_be(:file_path, freeze: false) { 'master/README.md' }
 
       let(:token) { user.static_object_token }
 
@@ -187,7 +187,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
           end
 
           context 'when user with expired password' do
-            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+            let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
             it 'redirects to sign in page' do
               get_show
@@ -199,7 +199,9 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
           context 'when password expiration is not applicable' do
             context 'when ldap user' do
-              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+              let_it_be(:user, freeze: false) do
+                create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago)
+              end
 
               it 'calls the action normally' do
                 get_show
@@ -235,7 +237,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
           end
 
           context 'when user with expired password' do
-            let_it_be(:user) { create(:user, password_expires_at: 2.minutes.ago) }
+            let_it_be(:user, freeze: false) { create(:user, password_expires_at: 2.minutes.ago) }
 
             it 'redirects to sign in page' do
               get_show
@@ -247,7 +249,9 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
           context 'when password expiration is not applicable' do
             context 'when ldap user' do
-              let_it_be(:user) { create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago) }
+              let_it_be(:user, freeze: false) do
+                create(:omniauth_user, provider: 'ldap', password_expires_at: 2.minutes.ago)
+              end
 
               it 'calls the action normally' do
                 get_show

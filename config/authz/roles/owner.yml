@@ -32,6 +32,7 @@ project:
   - manage_owners
   - mark_issue_for_publication
   - modify_security_policy
+  - read_ai_tool_rule
   - read_compliance_adherence_report
   - read_compliance_dashboard
   - read_compliance_violations_report
@@ -47,6 +48,7 @@ project:
   - set_show_default_award_emojis
   - set_show_diff_preview_in_email
   - set_warn_about_potentially_unwanted_characters
+  - update_ai_tool_rule
   - update_group_link
   - update_security_orchestration_policy_project
 group:
@@ -67,6 +69,7 @@ group:
   - admin_group_model_selection
   - admin_group_saml
   - admin_integrations
+  - admin_ldap_group_links
   - admin_licensed_seat
   - admin_member_access_request
   - admin_member_role
@@ -88,14 +91,16 @@ group:
   - change_prevent_group_forking
   - change_prevent_sharing_groups_outside_hierarchy
   - change_seat_control
+  - change_share_with_group_lock
   - change_visibility_level
+  - create_approval_rule
   - create_deploy_token
   - create_group_link
   - create_placeholder_reassignment
   - create_runners
   - create_secrets_manager_enrollment
   - create_service_account
-  - create_subgroup
+  - delete_approval_rule
   - delete_enterprise_user
   - delete_group_link
   - delete_secrets_manager_enrollment
@@ -105,6 +110,7 @@ group:
   - deprovision_secrets_manager
   - destroy_deploy_token
   - destroy_epic
+  - destroy_group_member
   - destroy_issue
   - destroy_resource_access_tokens
   - destroy_user_achievement
@@ -115,9 +121,11 @@ group:
   - manage_deploy_tokens
   - manage_merge_request_settings
   - modify_security_policy
+  - override_group_member
   - provision_secrets_manager
   - read_add_on_purchase
   - read_ai_domain_settings
+  - read_ai_tool_rule
   - read_any_audit_event
   - read_billable_member
   - read_billing
@@ -131,6 +139,7 @@ group:
   - read_group_saml_identity
   - read_group_scim_identity
   - read_member_access_request
+  - read_model_selection_allowlist
   - read_placeholder_reassignment
   - read_resource_access_tokens
   - read_runners
@@ -138,6 +147,7 @@ group:
   - read_saml_user
   - read_secrets_manager_enrollment
   - read_service_account
+  - read_statistics
   - read_subscription_usage
   - read_usage_quotas
   - read_web_hook
@@ -152,13 +162,17 @@ group:
   - set_show_diff_preview_in_email
   - unban_group_member
   - update_ai_domain_settings
+  - update_ai_tool_rule
   - update_approval_rule
   - update_default_branch_protection
   - update_enterprise_user
   - update_git_access_protocol
   - update_group_link
+  - update_group_member
+  - update_group_organization
   - update_knowledge_graph_setting
   - update_member_invitation_setting
+  - update_model_selection_allowlist
   - update_runners_registration_token
   - update_secrets_permission
   - update_security_orchestration_policy_project

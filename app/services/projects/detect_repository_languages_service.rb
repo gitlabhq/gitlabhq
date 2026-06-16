@@ -15,10 +15,12 @@ module Projects
         RepositoryLanguage.where(project_id: project.id, programming_language_id: detection.deletions).delete_all
 
         detection.updates.each do |update|
+          attrs = { share: update[:share], language_id: update[:language_id] }
+
           RepositoryLanguage
             .where(project_id: project.id)
             .where(programming_language_id: update[:programming_language_id])
-            .update_all(share: update[:share])
+            .update_all(attrs)
         end
 
         ApplicationRecord.legacy_bulk_insert( # rubocop:disable Gitlab/BulkInsert

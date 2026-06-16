@@ -15,7 +15,7 @@ module Gitlab
           # This will load all tags in one Redis roundtrip
           # the maximum number of tags is configurable and is set to 200 by default.
           # https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/packages/container_registry/index.md#set-cleanup-limits-to-conserve-resources
-          keys = tags.map(&method(:cache_key))
+          keys = tags.map { |tag| cache_key(tag) }
           cached_tags_count = 0
 
           with_redis do |redis|

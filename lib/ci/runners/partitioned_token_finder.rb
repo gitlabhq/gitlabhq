@@ -33,7 +33,7 @@ module Ci
       end
 
       def known_non_runner_token_types
-        ::Authn::AgnosticTokenIdentifier::TOKEN_TYPES - [::Authn::Tokens::RunnerAuthenticationToken]
+        ::Authn::AgnosticTokenIdentifier.token_types - [::Authn::Tokens::RunnerAuthenticationToken]
       end
     end
   end

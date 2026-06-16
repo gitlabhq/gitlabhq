@@ -60,12 +60,7 @@ To view the security dashboard for a project or a group you must have:
 
 ### Viewing the security dashboard
 
-The security dashboard shows filterable charts and panels built with data from vulnerabilities detected in the default branch. Charts include vulnerabilities over time and severity counts. The data in many charts is grouped into two categories:
-
-- Open: Includes vulnerabilities with the Needs triage or Confirmed statuses
-- Closed: Includes vulnerabilities with the Dismissed and Resolved statuses
-
-Charts and panels include only open vulnerabilities unless otherwise noted.
+The security dashboard shows filterable charts and panels built with data from vulnerabilities detected in the default branch. Charts and panels include only open (needs triage or confirmed status) vulnerabilities and exclude those that are no longer detected.
 
 You can view a security dashboard for a project or a group. Each dashboard provides a unique viewpoint into your security posture.
 
@@ -131,12 +126,6 @@ To view details:
    - **Severity**: Critical, high, medium, low, info, and unknown.
    - **Report type**: SAST, DAST, and dependency scanning and others.
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
-1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
-
-> [!note]
-> Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
->
-> Due to [issue 590022](https://gitlab.com/gitlab-org/gitlab/-/issues/590022) and [issue 590018](https://gitlab.com/gitlab-org/gitlab/-/issues/590018), vulnerability counts in the **Vulnerabilities over time** chart may not be accurate. The first issue affects dependency scanning and container scanning vulnerabilities. The second issue affects vulnerabilities that were dismissed or resolved, and then confirmed.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
@@ -395,3 +384,4 @@ There are additional vulnerability metrics available in the [value streams dashb
 - [Security center](../security_center/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - [Vulnerability Page](../vulnerabilities/_index.md)
+- [Auto-resolve vulnerabilities](../../application_security/policies/vulnerability_management_policy.md)

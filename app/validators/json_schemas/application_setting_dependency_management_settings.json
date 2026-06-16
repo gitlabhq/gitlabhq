@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "GitLab dependency management settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "security_update_scheduler_max_concurrency": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of security update scheduler jobs that run concurrently across the Sidekiq fleet"
+    }
+  }
+}

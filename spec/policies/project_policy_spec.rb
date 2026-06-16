@@ -8,22 +8,15 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   include_context 'ProjectPolicy context'
 
   let_it_be_with_reload(:project_with_runner_registration_token) do
-    create(:project, :public, :allow_runner_registration_token)
+    create(:project, :public, :allow_runner_registration_token,
+      guests: guest, planners: planner, reporters: reporter,
+      security_managers: security_manager, developers: developer,
+      maintainers: maintainer, owners: owner)
   end
 
   let(:project) { public_project }
 
   subject { described_class.new(current_user, project) }
-
-  before_all do
-    project_with_runner_registration_token.add_guest(guest)
-    project_with_runner_registration_token.add_planner(planner)
-    project_with_runner_registration_token.add_reporter(reporter)
-    project_with_runner_registration_token.add_security_manager(security_manager)
-    project_with_runner_registration_token.add_developer(developer)
-    project_with_runner_registration_token.add_maintainer(maintainer)
-    project_with_runner_registration_token.add_owner(owner)
-  end
 
   context 'with no project feature' do
     let(:current_user) { owner }
@@ -323,18 +316,11 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'with self or ancestor archived' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
-    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group) }
-    let_it_be_with_reload(:subgroup_project) { create(:project, :repository, group: subgroup) }
-    let_it_be_with_reload(:user_namespace_project) { create(:project, :repository) }
+    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, :repository, group: subgroup, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project, :repository, developers: developer, maintainers: maintainer) }
 
     let(:current_user) { maintainer }
-
-    before_all do
-      [group_project, subgroup_project, user_namespace_project].each do |project|
-        project.add_developer(developer)
-        project.add_maintainer(maintainer)
-      end
-    end
 
     shared_examples 'archived project behavior' do
       it 'disallows write operations' do
@@ -449,16 +435,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
   context 'when project is scheduled for deletion' do
     let_it_be_with_reload(:group) { create(:group) }
-    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group) }
     let_it_be(:project_owner) { create(:user) }
+    let_it_be_with_reload(:group_project) do
+      create(:project, :repository, group: group, developers: developer, maintainers: maintainer, owners: project_owner)
+    end
 
     let(:current_user) { maintainer }
-
-    before_all do
-      group_project.add_developer(developer)
-      group_project.add_maintainer(maintainer)
-      group_project.add_owner(project_owner)
-    end
 
     shared_examples 'deletion scheduled project behavior' do
       it 'disallows write operations' do
@@ -1524,7 +1506,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'deploy key access' do
     context 'private project' do
       let(:project) { private_project }
-      let!(:deploy_key) { create(:deploy_key, user: owner) }
+      let_it_be(:deploy_key) { create(:deploy_key, user: owner) }
 
       subject { described_class.new(deploy_key, project) }
 
@@ -2176,27 +2158,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
 
     context 'with various analytics features' do
-      let_it_be(:project_with_analytics_disabled) { create(:project, :analytics_disabled) }
-      let_it_be(:project_with_analytics_private) { create(:project, :analytics_private) }
-      let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled) }
-
-      before_all do
-        project_with_analytics_disabled.add_guest(guest)
-        project_with_analytics_private.add_guest(guest)
-        project_with_analytics_enabled.add_guest(guest)
-
-        project_with_analytics_disabled.add_guest(planner)
-        project_with_analytics_private.add_guest(planner)
-        project_with_analytics_enabled.add_guest(planner)
-
-        project_with_analytics_disabled.add_reporter(reporter)
-        project_with_analytics_private.add_reporter(reporter)
-        project_with_analytics_enabled.add_reporter(reporter)
-
-        project_with_analytics_disabled.add_developer(developer)
-        project_with_analytics_private.add_developer(developer)
-        project_with_analytics_enabled.add_developer(developer)
-      end
+      let_it_be(:project_with_analytics_disabled) { create(:project, :analytics_disabled, guests: [guest, planner], reporters: reporter, developers: developer) }
+      let_it_be(:project_with_analytics_private) { create(:project, :analytics_private, guests: [guest, planner], reporters: reporter, developers: developer) }
+      let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled, guests: [guest, planner], reporters: reporter, developers: developer) }
 
       context 'when analytics is disabled for the project' do
         let(:project) { project_with_analytics_disabled }
@@ -2744,7 +2708,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
 
     let(:maintainer_permissions) do
-      developer_permissions + [:create_cluster, :read_cluster, :update_cluster, :admin_cluster, :admin_terraform_state, :admin_project_google_cloud]
+      developer_permissions + [:create_cluster, :read_cluster, :update_cluster, :admin_cluster, :admin_terraform_state, :update_terraform_state_protection_rule, :admin_project_google_cloud]
     end
 
     shared_context 'with permission matrix' do
@@ -2830,7 +2794,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
 
         let(:maintainer_permissions) do
-          developer_permissions + [:admin_terraform_state]
+          developer_permissions + [:admin_terraform_state, :update_terraform_state_protection_rule]
         end
 
         it 'always disallows the terraform_state feature' do
@@ -3008,7 +2972,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context "when the project is public or internal and not on the allowlist" do
       let_it_be(:current_user) { create(:user) }
       let_it_be(:project) { public_project }
-      let_it_be(:scope_project) { create(:project, :private) }
+      let_it_be(:scope_project, freeze: false) { create(:project, :private) }
       let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
       context 'with all features enabled' do
@@ -4221,19 +4185,16 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'with cross-project push via allowlisted project' do
       let(:current_user) { developer }
-      let_it_be(:source_project) { create(:project, :private) }
+      let_it_be(:source_project) { create(:project, :private, developers: developer, reporters: reporter) }
       let(:project) { public_project }
       let(:job) { build_stubbed(:ci_build, project: source_project, user: current_user) }
 
       def enable_cross_project_push_gates!(
-        feature_flag: project,
         push_repository: true,
         cross_project_push: true,
         inbound_scope: true,
         link: { default_permissions: false, job_token_policies: %w[admin_repositories] }
       )
-        stub_feature_flags(allow_push_to_allowlisted_projects: feature_flag)
-
         project.ci_cd_settings.update!(
           push_repository_for_job_token_allowed: push_repository,
           cross_project_push_for_job_token_allowed: cross_project_push
@@ -4249,30 +4210,17 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           **link)
       end
 
-      before_all do
-        source_project.add_developer(developer)
-        source_project.add_reporter(reporter)
-      end
-
       before do
         allow(current_user).to receive(:ci_job_token_scope)
           .and_return(current_user.set_ci_job_token_scope!(job))
       end
 
-      context 'when all four gates are satisfied' do
+      context 'when all gates are satisfied' do
         before do
           enable_cross_project_push_gates!
         end
 
         it { is_expected.to be_allowed(:build_push_code) }
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          enable_cross_project_push_gates!(feature_flag: false)
-        end
-
-        it { is_expected.to be_disallowed(:build_push_code) }
       end
 
       context 'when cross_project_push setting is disabled' do
@@ -4408,7 +4356,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'link_forked_project' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: top_level_group) }
     let_it_be(:personal_project) { create(:project, namespace: user.namespace) }

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.shared_examples 'Debian Distributions Finder' do |factory, can_freeze|
   let_it_be(:distribution_with_suite, freeze: can_freeze) { create(factory, :with_suite) }
-  let_it_be(:container) { distribution_with_suite.container }
+  let_it_be(:container, freeze: false) { distribution_with_suite.container }
   let_it_be(:distribution_with_same_container, freeze: can_freeze) { create(factory, container: container) }
   let_it_be(:distribution_with_same_codename, freeze: can_freeze) { create(factory, codename: distribution_with_suite.codename) }
   let_it_be(:distribution_with_same_suite, freeze: can_freeze) { create(factory, suite: distribution_with_suite.suite) }

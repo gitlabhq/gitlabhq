@@ -10,14 +10,14 @@ module Gitlab
       private
 
       def link_dependencies
-        link_json('name', json["name"], &method(:package_url))
-        link_json('license', &method(:license_url))
+        link_json('name', json["name"]) { |value| package_url(value) }
+        link_json('license') { |value| license_url(value) }
         link_json(%w[homepage git], URL_REGEX, &:itself)
 
-        link_packages_at_key("dependencies", &method(:package_url))
+        link_packages_at_key("dependencies") { |value| package_url(value) }
 
         json["subspecs"]&.each do |subspec|
-          link_packages_at_key("dependencies", subspec, &method(:package_url))
+          link_packages_at_key("dependencies", subspec) { |value| package_url(value) }
         end
       end
 

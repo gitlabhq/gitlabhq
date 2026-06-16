@@ -99,7 +99,7 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
 
   describe '#readable_by?' do
     let(:meta) { create(:wiki_page_meta, container: container, canonical_slug: current_slug) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     subject { meta.readable_by?(user) }
 

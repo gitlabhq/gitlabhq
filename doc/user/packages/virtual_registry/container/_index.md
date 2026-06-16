@@ -269,3 +269,88 @@ To resolve these errors:
 1. Confirm the virtual registry ID is correct.
 1. Check that the virtual registry has at least one upstream configured.
 1. Verify the image exists in the upstream registry.
+
+### Error: `unexpected EOF` when the S3 bucket has Object Lock enabled
+
+When the object storage bucket for the Dependency Proxy has S3 Object Lock
+enabled, container image pulls might fail with `unexpected EOF` partway through
+a layer.
+
+Example error from the Docker client:
+
+```plaintext
+sha256:9db411d588e2: Downloading [==================================================>]  12.18MB/12.18MB
+unexpected EOF
+```
+
+The GitLab Workhorse log shows a `400` response from the upstream S3
+`PutObject` call:
+
+```plaintext
+operation error S3: PutObject, https response error StatusCode: 400, ...
+InvalidRequest: Content-MD5 OR x-amz-checksum- HTTP header is required for
+Put Object requests with Object Lock parameters
+```
+
+When a bucket has Object Lock configured, S3 requires every `PutObject`
+request to include an integrity header. By default, the AWS SDK used by
+Workhorse does not send these headers. The upload fails, which truncates the
+response Workhorse is streaming to the Docker client.
+
+To verify the cause:
+
+1. Check whether the Dependency Proxy bucket has Object Lock enabled:
+
+   ```shell
+   aws s3api get-object-lock-configuration --bucket DEPENDENCY_PROXY_BUCKET
+   ```
+
+   If Object Lock is enabled, the response contains
+   `"ObjectLockEnabled": "Enabled"`.
+1. Inspect the Workhorse log during a failing pull. The
+   `InvalidRequest: Content-MD5 OR x-amz-checksum-` message confirms the cause.
+
+To resolve the issue:
+
+1. Configure the AWS SDK in Workhorse to send checksum headers. Set both of the following environment variables on the Workhorse container:
+
+   - `AWS_REQUEST_CHECKSUM_CALCULATION=when_supported`
+   - `AWS_RESPONSE_CHECKSUM_VALIDATION=when_supported`
+
+1. For:
+   - GitLab installed with the Helm chart, add the variables to your
+`values.yaml`:
+
+   ```yaml
+   gitlab:
+     webservice:
+       extraEnv:
+         AWS_REQUEST_CHECKSUM_CALCULATION: when_supported
+         AWS_RESPONSE_CHECKSUM_VALIDATION: when_supported
+   ```
+
+   Then, apply the values:
+
+   ```shell
+   helm upgrade gitlab gitlab/gitlab -f values.yaml
+   ```
+
+   - GitLab installed with the Linux package, add the variables to
+`/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_workhorse['env'] = {
+     'AWS_REQUEST_CHECKSUM_CALCULATION' => 'when_supported',
+     'AWS_RESPONSE_CHECKSUM_VALIDATION' => 'when_supported'
+   }
+   ```
+
+   Then, reconfigure:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+After Workhorse restarts with the new environment variables, retry the pull.
+The next request stores the blob in S3 and returns the full layer to the
+Docker client.

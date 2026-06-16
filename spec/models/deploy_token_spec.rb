@@ -83,6 +83,10 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
   end
 
+  describe '#bot?' do
+    it { expect(deploy_token.bot?).to be_truthy }
+  end
+
   describe '#ensure_at_least_one_scope' do
     context 'with at least one scope' do
       it { is_expected.to be_valid }

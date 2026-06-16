@@ -12,6 +12,8 @@ module Ci
     self.table_name = 'ci_runner_machines'
     self.primary_key = :id
 
+    query_constraints :id, :runner_type
+
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
     AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
 
@@ -125,10 +127,6 @@ module Ci
         .group(:runner_id)
         .maximum(:status)
         .transform_values { |s| Ci::RunnerVersion.statuses.key(s).to_sym }
-    end
-
-    def self.ip_address_exists?(ip_address)
-      exists?(ip_address:)
     end
 
     def self.version_regex_expression_for_version(version)

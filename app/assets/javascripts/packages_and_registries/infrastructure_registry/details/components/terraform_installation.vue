@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 export default {
+  name: 'TerraformInstallation',
   components: {
     CodeInstruction,
     GlLink,

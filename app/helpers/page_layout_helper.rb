@@ -127,23 +127,11 @@ module PageLayoutHelper
     @force_fluid_layout == true || (current_user && current_user.layout == "fluid")
   end
 
-  def blank_container(enabled = false)
-    if @blank_container.nil?
-      @blank_container = enabled
-    else
-      @blank_container
-    end
-  end
-
   def container_class
     css_class = ["container-fluid"]
 
     unless fluid_layout
       css_class << "container-limited"
-    end
-
-    if blank_container
-      css_class << "container-blank"
     end
 
     css_class.join(' ')

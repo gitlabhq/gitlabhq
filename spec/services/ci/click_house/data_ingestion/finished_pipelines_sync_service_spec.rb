@@ -191,7 +191,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
       # In production, a pipeline can have finished_at set when the sync event is
       # created (via PipelineFinishedWorker), but finished_at becomes NULL by the time
       # the sync service queries it (e.g. pipeline was retried or reset).
-      let_it_be(:pipeline_retried) do
+      let_it_be(:pipeline_retried, freeze: false) do
         create(:ci_pipeline, :failed, project: project1, ref: 'master', source: :push,
           started_at: 1.hour.ago, finished_at: 1.hour.ago)
       end

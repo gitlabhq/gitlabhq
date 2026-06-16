@@ -1,15 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import component from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Infrastructure Search', () => {
   let wrapper;
+  let pinia;
   let store;
 
   const sortableFields = () => [
@@ -29,24 +31,19 @@ describe('Infrastructure Search', () => {
   const findUrlSync = () => wrapper.findComponent(UrlSync);
 
   const createStore = () => {
-    const state = {
-      sorting: {
-        orderBy: 'version',
-        sort: 'desc',
-      },
+    pinia = createTestingPinia();
+    store = useInfrastructureList();
+    store.$patch({
+      sorting: { orderBy: 'version', sort: 'desc' },
       filter: [],
-    };
-    store = new Vuex.Store({
-      state,
     });
-    store.dispatch = jest.fn();
   };
 
   const mountComponent = (isGroupPage = false) => {
     createStore();
 
     wrapper = shallowMount(component, {
-      store,
+      pinia,
       provide: {
         isGroupPage,
       },
@@ -61,8 +58,8 @@ describe('Infrastructure Search', () => {
 
     expect(findRegistrySearch().exists()).toBe(true);
     expect(findRegistrySearch().props()).toMatchObject({
-      filters: store.state.filter,
-      sorting: store.state.sorting,
+      filters: store.filter,
+      sorting: store.sorting,
       tokens: [],
       sortableFields: sortableFields(),
     });
@@ -76,32 +73,32 @@ describe('Infrastructure Search', () => {
     mountComponent(isGroupPage);
 
     expect(findRegistrySearch().props()).toMatchObject({
-      filters: store.state.filter,
-      sorting: store.state.sorting,
+      filters: store.filter,
+      sorting: store.sorting,
       tokens: [],
       sortableFields: fields,
     });
   });
 
-  it('on sorting:changed emits update event and calls vuex setSorting', () => {
+  it('on sorting:changed emits update event and calls setSorting', () => {
     const payload = { sort: 'foo' };
 
     mountComponent();
 
     findRegistrySearch().vm.$emit('sorting:changed', payload);
 
-    expect(store.dispatch).toHaveBeenCalledWith('setSorting', payload);
+    expect(store.setSorting).toHaveBeenCalledWith(payload);
     expect(wrapper.emitted('update')).toEqual([[]]);
   });
 
-  it('on filter:changed calls vuex setFilter', () => {
+  it('on filter:changed calls setFilter', () => {
     const payload = ['foo'];
 
     mountComponent();
 
     findRegistrySearch().vm.$emit('filter:changed', payload);
 
-    expect(store.dispatch).toHaveBeenCalledWith('setFilter', payload);
+    expect(store.setFilter).toHaveBeenCalledWith(payload);
   });
 
   it('on filter:submit emits update event', () => {

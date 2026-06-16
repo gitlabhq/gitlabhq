@@ -48,12 +48,9 @@ For a click-through demo, see [Custom Compliance frameworks](https://gitlab.nava
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16808) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_framework_templates`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239045) in GitLab 19.1. Feature flag `compliance_framework_templates` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Instead of building a compliance framework from scratch, you can create one from a predefined
 out-of-the-box (OOTB) template. Templates include preconfigured requirements and controls

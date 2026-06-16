@@ -19,6 +19,7 @@ module Backup
       :repositories, # Repositories
       :packages, # Packages
       :ci_secure_files, # Project-level Secure Files
+      :agent_plan_content, # Agent Plan content for work items
       :external_diffs, # External Merge Request diffs
       keyword_init: true
     )
@@ -249,6 +250,7 @@ module Backup
       list << 'repositories' if skippable_tasks.repositories
       list << 'packages' if skippable_tasks.packages
       list << 'ci_secure_files' if skippable_tasks.ci_secure_files
+      list << 'agent_plan_content' if skippable_tasks.agent_plan_content
       list << 'external_diffs' if skippable_tasks.external_diffs
       list.join(',')
     end
@@ -279,6 +281,7 @@ module Backup
       skippable_operations.remote_storage ||= list.include?('remote') # SKIP=remote
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity -- TODO: Complexity will be solved in the Unified Backup implementation (https://gitlab.com/groups/gitlab-org/-/epics/11635)
     def extract_skippable_tasks(list)
       skippable_tasks.db ||= list.include?('db') # SKIP=db
       skippable_tasks.uploads ||= list.include?('uploads') # SKIP=uploads
@@ -291,7 +294,9 @@ module Backup
       skippable_tasks.repositories ||= list.include?('repositories') # SKIP=repositories
       skippable_tasks.packages ||= list.include?('packages') # SKIP=packages
       skippable_tasks.ci_secure_files ||= list.include?('ci_secure_files') # SKIP=ci_secure_files
+      skippable_tasks.agent_plan_content ||= list.include?('agent_plan_content') # SKIP=agent_plan_content
       skippable_tasks.external_diffs ||= list.include?('external_diffs') # SKIP=external_diffs
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

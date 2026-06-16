@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects::SavedViews', feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
 
   before do
     sign_in(user)

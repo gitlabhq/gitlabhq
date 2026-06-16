@@ -170,7 +170,6 @@ Lint/UnusedBlockArgument:
     - 'lib/gitlab/health_checks/server.rb'
     - 'lib/gitlab/import_export/members_mapper.rb'
     - 'lib/gitlab/metrics/exporter/base_exporter.rb'
-    - 'lib/gitlab/pagination/gitaly_keyset_pager.rb'
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/suggestions/commit_message.rb'

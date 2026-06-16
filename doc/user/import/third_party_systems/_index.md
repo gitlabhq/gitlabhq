@@ -20,6 +20,6 @@ Migrate to GitLab from third-party systems.
 - [From Concurrent Versions System (CVS)](cvs.md)
 - [From Perforce P4](perforce.md)
 - [From Team Foundation Version Control (TFVC)](tfvc.md)
-- [From Jira](../../project/import/jira.md)
+- [From Jira](jira.md)
 
 {{< /cards >}}

@@ -10,6 +10,7 @@ import { s__ } from '~/locale';
 import setEnvironmentToRollback from '../graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
 export default {
+  name: 'EnvironmentRollback',
   components: {
     GlDisclosureDropdownItem,
   },

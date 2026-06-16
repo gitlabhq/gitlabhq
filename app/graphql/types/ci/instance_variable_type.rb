@@ -33,12 +33,20 @@ module Types
         null: true,
         description: 'Indicates whether the variable is masked.'
 
+      field :hidden, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether the variable is hidden.'
+
       field :raw, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates whether the variable is raw.'
 
       def environment_scope
         nil
+      end
+
+      def value
+        ::Ci::VariableValue.new(object).evaluate
       end
     end
   end

@@ -8,11 +8,9 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
@@ -36,11 +34,9 @@ const ActionResponseBodyLimit = MaxMessageSize - 4096
 const httpRequestTimeout = 5 * time.Second
 
 type runHTTPActionHandler struct {
-	rails                     *api.API
 	backend                   http.Handler
 	token                     string
 	originalReq               *http.Request
-	action                    *pb.Action
 	shouldTimeoutHTTPRequests bool
 }
 
@@ -115,16 +111,16 @@ func serveHTTPSafe(h http.Handler, w http.ResponseWriter, r *http.Request) (err 
 	return nil
 }
 
-func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, error) {
-	req, err := a.buildRequest(ctx)
+func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (*pb.ClientEvent, error) {
+	req, err := a.buildRequest(ctx, action)
 	if err != nil {
 		return nil, err
 	}
 
 	logger := log.WithContextFields(a.originalReq.Context(), log.Fields{
-		"path":       a.action.GetRunHTTPRequest().Path,
-		"method":     a.action.GetRunHTTPRequest().Method,
-		"request_id": a.action.GetRequestID(),
+		"path":       action.GetRunHTTPRequest().Path,
+		"method":     action.GetRunHTTPRequest().Method,
+		"request_id": action.GetRequestID(),
 	})
 
 	logger.Info("Executing HTTP request")
@@ -143,7 +139,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	if a.shouldTimeoutHTTPRequests && errors.Is(req.Context().Err(), context.DeadlineExceeded) {
 		err = errRequestTimedOut
 	}
-	clientEvent := a.buildClientEvent(nrw, err)
+	clientEvent := a.buildClientEvent(nrw, err, action)
 
 	logger.WithFields(log.Fields{
 		"status_code":          nrw.status,
@@ -156,7 +152,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	return clientEvent, nil
 }
 
-func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err error) *pb.ClientEvent {
+func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err error, action *pb.Action) *pb.ClientEvent {
 	headers := make(map[string]string, len(nrw.Header()))
 	for k, v := range nrw.Header() {
 		headers[k] = strings.Join(v, ", ")
@@ -165,7 +161,7 @@ func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err err
 	ce := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
-				RequestID: a.action.RequestID,
+				RequestID: action.RequestID,
 				ResponseType: &pb.ActionResponse_HttpResponse{
 					HttpResponse: &pb.HttpResponse{
 						Body:       nrw.body.String(),
@@ -184,21 +180,15 @@ func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err err
 	return ce
 }
 
-func (a *runHTTPActionHandler) buildRequest(ctx context.Context) (*http.Request, error) {
-	action := a.action.GetRunHTTPRequest()
+func (a *runHTTPActionHandler) buildRequest(ctx context.Context, action *pb.Action) (*http.Request, error) {
+	actionRequest := action.GetRunHTTPRequest()
 
 	var bodyBuffer bytes.Buffer
-	if action.Body != nil {
-		bodyBuffer.WriteString(*action.Body)
+	if actionRequest.Body != nil {
+		bodyBuffer.WriteString(*actionRequest.Body)
 	}
 
-	actionURL, err := url.Parse(action.Path)
-	if err != nil {
-		return nil, err
-	}
-
-	reqURL := a.rails.URL.ResolveReference(actionURL).String()
-	req, err := http.NewRequestWithContext(ctx, action.Method, reqURL, &bodyBuffer)
+	req, err := http.NewRequestWithContext(ctx, actionRequest.Method, actionRequest.Path, &bodyBuffer)
 	if err != nil {
 		return nil, err
 	}

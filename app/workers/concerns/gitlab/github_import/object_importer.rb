@@ -39,7 +39,8 @@ module Gitlab
           info(
             project.id,
             message: 'Project import is no longer running. Stopping worker.',
-            import_status: project.import_state.status
+            import_status: project.import_state.status,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           )
 
           return
@@ -51,18 +52,22 @@ module Gitlab
 
         # To better express in the logs what object is being imported.
         self.github_identifiers = object.github_identifiers
-        info(project.id, message: 'starting importer')
+        info(project.id, message: 'starting importer', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
 
         importer_class.new(object, project, client).execute
 
         increment_object_counter(object, project) if increment_object_counter?(object)
 
-        info(project.id, message: 'importer finished')
+        info(project.id, message: 'importer finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue ActiveRecord::RecordInvalid, NotRetriableError, NoMethodError => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
       rescue UserFinder::FailedToObtainLockError
-        warn(project.id, message: 'Failed to obtaing lock for user finder. Retrying later.')
+        warn(
+          project.id,
+          message: 'Failed to obtaing lock for user finder. Retrying later.',
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+        )
 
         raise
       rescue StandardError => e

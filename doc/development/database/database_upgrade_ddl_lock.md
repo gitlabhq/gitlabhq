@@ -17,13 +17,32 @@ database upgrade process from breaking schema modifications.
 
 ## How it works
 
-The DDL lock is configured in `config/database_upgrade_ddl_lock.yml` and enforced by a
+The DDL lock is configured in `config/database_change_lock.yml` and enforced by a
 Danger check that runs in CI/CD pipelines. The configuration includes:
 
 - Merge requests that modify `db/structure.sql` are automatically blocked by Danger.
 - A warning appears on affected merge requests several days before the lock begins.
 - The lock only affects DDL changes. Other changes can still be merged and deployed.
 - The Danger check fails during the lock period, preventing the merge request from being merged.
+
+## Post-deployment migrations during a soft PCL
+
+The same `config/database_change_lock.yml` file also blocks new
+[post-deployment migrations](post_deployment_migrations.md) (PDMs) when a lock entry
+has `block_level: only_pdm`. This is intended for soft Production Change Locks
+during which PDMs are not executed.
+
+PDMs are not executed during a soft PCL. Merging new PDMs anyway grows the backlog
+that runs once the PCL ends, increasing the size and risk of that post-PCL migration run.
+
+When `block_level: only_pdm` is set:
+
+- Merge requests that add files under `db/post_migrate/` or `ee/db/post_migrate/` are blocked.
+- The block applies to added files only. Modifications and deletions to existing PDMs are not blocked.
+- A warning appears during the warning period and a failure during the lock period.
+- DDL changes are not blocked by a `only_pdm` lock.
+
+The default `block_level` is `only_ddl`, which matches the original PostgreSQL upgrade behavior.
 
 ## When a DDL lock is active
 

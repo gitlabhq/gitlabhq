@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
   let(:board_data) do
     {
@@ -47,7 +47,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
   end
 
   context 'when issue board belongs to a project' do
-    let_it_be(:entity) do
+    let_it_be(:entity, freeze: false) do
       create(
         :bulk_import_entity,
         source_type: :project_entity,
@@ -73,7 +73,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
   end
 
   context 'when issue board belongs to a group' do
-    let_it_be(:entity) do
+    let_it_be(:entity, freeze: false) do
       create(
         :bulk_import_entity,
         group: group,

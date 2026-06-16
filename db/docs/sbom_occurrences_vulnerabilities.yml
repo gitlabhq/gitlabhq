@@ -4,6 +4,8 @@ classes:
 - Sbom::OccurrencesVulnerability
 feature_categories:
 - dependency_management
+description: Links SBOM component occurrences to known vulnerabilities for dependency
+  security tracking.
 milestone: '16.7'
 gitlab_schema: gitlab_sec
 sharding_key:

@@ -1,0 +1,9 @@
+# @feature_category: pipeline_composition
+query getGroupNamesByIds($ids: [ID!]) {
+  groups(ids: $ids) {
+    nodes {
+      id
+      fullName
+    }
+  }
+}

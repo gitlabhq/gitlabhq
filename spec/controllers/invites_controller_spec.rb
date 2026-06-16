@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe InvitesController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:member, reload: true) { create(:project_member, :invited, invite_email: user.email) }
+  let_it_be_with_reload(:member) { create(:project_member, :invited, invite_email: user.email) }
 
   let(:raw_invite_token) { member.raw_invite_token }
   let(:project_members) { member.source.users }

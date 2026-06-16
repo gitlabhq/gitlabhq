@@ -10,6 +10,8 @@ module Mutations
           include FindsProject
 
           authorize :admin_package
+          authorize_granular_token permissions: :update_package_cleanup_policy,
+            boundary_argument: :project_path, boundary_type: :project
 
           argument :project_path,
             GraphQL::Types::ID,

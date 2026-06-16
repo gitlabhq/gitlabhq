@@ -1,0 +1,40 @@
+# Post a comment on any noteable GitLab resource (epic, issue, MR, etc.).
+#
+# Pass values as GraphQL variables (glab api graphql -f ...), NOT by string
+# substitution. Variables avoid all escaping traps (newlines, backticks, $, em
+# dashes) and are accepted by every GitLab GraphQL version.
+#
+# Variables:
+#   noteableId  global ID of the resource, e.g. "gid://gitlab/Epic/3436066"
+#   body        comment body text (any content; no escaping needed)
+#
+# Get an epic's global ID:
+#   EPIC_ID=$(glab api "groups/<group_id>/epics/<epic_iid>" | jq '.id')
+#   NOTEABLE_ID="gid://gitlab/Epic/${EPIC_ID}"
+#
+# Usage (use -f, raw string: -F coerces a numeric-looking body to Int):
+#   glab api graphql -f noteableId="$NOTEABLE_ID" -f body="$BODY" \
+#     -f query="$(cat create-note.graphql)"
+#
+# See scripts/create-epic-note.sh for a ready-to-run wrapper.
+#
+# Source of truth: this is a hand-maintained mirror. The canonical schema lives in
+# doc/api/graphql/reference (and the frontend mutation
+# app/assets/javascripts/work_items/graphql/notes/create_work_item_note.mutation.graphql),
+# but that is an Apollo build-loader document that `glab api graphql` cannot execute,
+# so this self-contained copy is maintained by hand. No CI hook validates it against
+# the schema — verify against the reference if a field stops resolving.
+
+mutation($noteableId: NoteableID!, $body: String!) {
+  createNote(input: { noteableId: $noteableId, body: $body }) {
+    note {
+      id
+      body
+      author {
+        username
+      }
+      createdAt
+    }
+    errors
+  }
+}

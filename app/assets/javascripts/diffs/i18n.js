@@ -71,7 +71,7 @@ export const SAVING_THE_COMMENT_FAILED = s__(
 export const ERROR_LOADING_FULL_DIFF = s__(
   'MergeRequest|Error loading full diff. Please try again.',
 );
-export const ERROR_DISMISSING_SUGESTION_POPOVER = s__(
+export const ERROR_DISMISSING_SUGGESTION_POPOVER = s__(
   'MergeRequest|Error dismissing suggestion popover. Please try again.',
 );
 export const ENCODED_FILE_PATHS_TITLE = __('Some changes are not shown.');

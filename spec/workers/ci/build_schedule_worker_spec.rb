@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Ci::BuildScheduleWorker, feature_category: :continuous_integration do
   subject { described_class.new.perform(build.id) }
 
+  it 'is a high urgency CPU bound worker', :aggregate_failures do
+    expect(described_class.get_urgency).to eq(:high)
+    expect(described_class.get_worker_resource_boundary).to eq(:cpu)
+  end
+
   context 'when build is found' do
     context 'when build is scheduled' do
       let(:build) { create(:ci_build, :scheduled) }

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: CI/CDジョブトークンスコープAPI
 ---
 
@@ -12,42 +12,41 @@ title: CI/CDジョブトークンスコープAPI
 
 {{< /details >}}
 
-このAPIを使用して、[CI/CDジョブトークン](../ci/jobs/ci_job_token.md)スコープを操作します。
+このAPIを使用して、[CI/CDジョブトークン](../ci/jobs/ci_job_token.md)のスコープを操作します。
 
-{{< alert type="note" >}}
+> [!note]
+> CI/CDジョブトークンスコープAPIエンドポイントへのすべてのリクエストは、[認証されている](rest/authentication.md)必要があります。認証済みユーザーは、プロジェクトに対してメンテナーまたはオーナーのロールを持っている必要があります。
 
-CI/CDジョブトークンスコープAPIエンドポイントに対するすべてのリクエストは、[認証](rest/authentication.md)されている必要があります。認証済みユーザーは、プロジェクトのメンテナーロール以上を持っている必要があります。
+## プロジェクトのCI/CDジョブトークンアクセス設定を取得する {#retrieve-the-cicd-job-token-access-settings-for-a-project}
 
-{{< /alert >}}
-
-## プロジェクトのCI/CDジョブトークンアクセス設定を取得 {#get-a-projects-cicd-job-token-access-settings}
-
-プロジェクトの[CI/CDジョブトークンアクセス設定](../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)（ジョブトークンスコープ）をフェッチします。
+指定されたプロジェクトの[CI/CDジョブトークンアクセス設定](../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)（ジョブトークンスコープ）を取得します。
 
 ```plaintext
 GET /projects/:id/job_token_scope
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性          | 型    | 説明 |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | ブール値 | [**Limit access to this project**設定](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)が有効になっているかどうかを示します。無効になっている場合、[すべてのプロジェクトがアクセスできます](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project)。 |
-| `outbound_enabled` | ブール値 | このプロジェクトで生成されたCI/CDジョブトークンが、他のプロジェクトへのアクセス権を持っているかどうかを示します。[非推奨となり、GitLab 18.0で削除される予定です。](../update/deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) |
+| `inbound_enabled`  | ブール値 | [**認証されたグループとプロジェクト**](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)の設定が許可リストに対して有効になっているかどうかを示します。無効になっている場合、[すべてのプロジェクトがアクセスできます](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project)。この値は、許可リストが現在アクティブであるかどうかを示します。これは、[**Enforce job token allowlist**](../administration/settings/continuous_integration.md#enforce-job-token-allowlist)インスタンス設定により`true`になる場合があります。 |
+| `outbound_enabled` | ブール値 | このプロジェクトで生成されたCI/CDジョブトークンが他のプロジェクトにアクセスできるかどうかを示します。[非推奨であり、GitLab 18.0で削除される予定です](../update/deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -56,31 +55,33 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## プロジェクトのCI/CDジョブトークンアクセス設定にパッチを適用 {#patch-a-projects-cicd-job-token-access-settings}
+## プロジェクトのCI/CDジョブトークンアクセス設定を更新します {#update-the-cicd-job-token-access-settings-for-a-project}
 
 {{< history >}}
 
-- GitLab 16.3で、**Allow access to this project with a CI_JOB_TOKEN**（CI_JOB_TOKENでこのプロジェクトへのアクセスを許可する）から**Limit access to this project**（このプロジェクトへのアクセスを制限）に[名称変更](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)されました。
-- GitLab 17.2で名前が「**Limit access to this project**」から「**Authorized groups and projects**」に[名称変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)。
+- [名称が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)（GitLab 16.3で**Allow access to this project with a CI_JOB_TOKEN**から**Limit access to this project**へ）。
+- [名称が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)（GitLab 17.2で**Limit access to this project**から**認証されたグループとプロジェクト**へ）。
 
 {{< /history >}}
 
-プロジェクトの[**認証されたグループとプロジェクト**設定](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)（ジョブトークンスコープ）にパッチを適用します。
+指定されたプロジェクトの[**認証されたグループとプロジェクト**の設定](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)（ジョブトークンスコープ）を更新します。
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
-| 属性 | 型           | 必須 | 説明 |
-|-----------|----------------|----------|-------------|
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `enabled` | ブール値        | はい      | 選択する[**認証されたグループとプロジェクト**設定](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)の状態。`true`に設定すると、**This project and any groups and projects in the allowlist**（このプロジェクトと許可リスト内のすべてのグループとプロジェクト）オプションが選択され、`false`に設定すると、**全グループとプロジェクト**が選択されます。 |
+| `enabled` | ブール値           | はい      | ジョブトークンアクセスを許可リストに登録されたプロジェクトのみに制限します。`false`に設定すると、すべてのプロジェクトからのアクセスを許可します。このパラメータは、[**Enforce job token allowlist**](../administration/settings/continuous_integration.md#enforce-job-token-allowlist)インスタンス設定によって上書きされる場合があります。 |
 
 成功した場合、[`204`](rest/troubleshooting.md#status-codes)を返し、レスポンスボディはありません。
 
-リクエスト例:
+もし**Enforce job token allowlist**インスタンス設定が有効で、`enabled`を`false`に設定しようとすると、エラーメッセージとともに[`400`](rest/troubleshooting.md#status-codes)が返されます。
+
+リクエスト例: 
 
 ```shell
 curl --request PATCH \
@@ -90,31 +91,33 @@ curl --request PATCH \
   --data '{ "enabled": false }'
 ```
 
-## プロジェクトのCI/CDジョブトークン受信許可リストを取得 {#get-a-projects-cicd-job-token-inbound-allowlist}
+## CI/CDジョブトークン許可リスト内のすべてのプロジェクトを一覧表示する {#list-all-projects-in-a-cicd-job-token-allowlist}
 
-プロジェクトの[CI/CDジョブトークン受信許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)（ジョブトークンスコープ）をフェッチします。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)内のすべてのプロジェクトを一覧表示します。
 
 ```plaintext
 GET /projects/:id/job_token_scope/allowlist
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-このエンドポイントは、[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
+このエンドポイントは[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と、プロジェクトごとに制限されたフィールドを持つプロジェクトのリストを返します。
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と、各プロジェクトの限られたフィールドを持つプロジェクトのリストが返されます。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -157,29 +160,29 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
   }
 ```
 
-## CI/CDジョブトークン受信許可リストにプロジェクトを追加 {#add-a-project-to-a-cicd-job-token-inbound-allowlist}
+## CI/CDジョブトークン許可リストにプロジェクトを追加する {#add-a-project-to-a-cicd-job-token-allowlist}
 
-プロジェクトの[CI/CDジョブトークン受信許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)にプロジェクトを追加します。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)にプロジェクトを追加します。
 
 ```plaintext
 POST /projects/:id/job_token_scope/allowlist
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
 | `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `target_project_id` | 整数        | はい      | CI/CDジョブトークン受信許可リストに追加されたプロジェクトのID。 |
 
-成功した場合、[`201`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`201`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
 | `source_project_id` | 整数 | 更新するCI/CDジョブトークン受信許可リストを含むプロジェクトのID。 |
 | `target_project_id` | 整数 | ソースプロジェクトの受信許可リストに追加されるプロジェクトのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -189,7 +192,7 @@ curl --request POST \
   --data '{ "target_project_id": 2 }'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -198,15 +201,15 @@ curl --request POST \
 }
 ```
 
-## CI/CDジョブトークン受信許可リストからプロジェクトを削除 {#remove-a-project-from-a-cicd-job-token-inbound-allowlist}
+## CI/CDジョブトークン許可リストからプロジェクトを削除する {#delete-a-project-from-a-cicd-job-token-allowlist}
 
-プロジェクトの[CI/CDジョブトークン受信許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)からプロジェクトを削除します。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)からプロジェクトを削除します。
 
 ```plaintext
 DELETE /projects/:id/job_token_scope/allowlist/:target_project_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型           | 必須 | 説明 |
 |---------------------|----------------|----------|-------------|
@@ -215,7 +218,7 @@ DELETE /projects/:id/job_token_scope/allowlist/:target_project_id
 
 成功した場合、[`204`](rest/troubleshooting.md#status-codes)を返し、レスポンスボディはありません。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -224,31 +227,33 @@ curl --request DELETE \
   --header 'Content-Type: application/json'
 ```
 
-## グループのプロジェクトのCI/CDジョブトークン許可リストを取得 {#get-a-projects-cicd-job-token-allowlist-of-groups}
+## CI/CDジョブトークン許可リスト内のすべてのグループを一覧表示する {#list-all-groups-in-a-cicd-job-token-allowlist}
 
-プロジェクトのグループのCI/CDジョブトークン許可リスト（ジョブトークンスコープ）をフェッチします。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)内のすべてのグループを一覧表示します。
 
 ```plaintext
 GET /projects/:id/job_token_scope/groups_allowlist
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-このエンドポイントは、[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
+このエンドポイントは[オフセットベースのページネーション](rest/_index.md#offset-based-pagination)をサポートしています。
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と、プロジェクトごとに制限されたフィールドを持つグループのリストを返します。
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と、各プロジェクトの限られたフィールドを持つグループのリストが返されます。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -263,29 +268,29 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## CI/CDジョブトークン許可リストにグループを追加 {#add-a-group-to-a-cicd-job-token-allowlist}
+## CI/CDジョブトークン許可リストにグループを追加する {#add-a-group-to-a-cicd-job-token-allowlist}
 
-プロジェクトのCI/CDジョブトークン許可リストにグループを追加します。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)にグループを追加します。
 
 ```plaintext
 POST /projects/:id/job_token_scope/groups_allowlist
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型           | 必須 | 説明 |
 |-------------------|----------------|----------|-------------|
 | `id`              | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `target_group_id` | 整数        | はい      | CI/CDジョブトークングループの許可リストに追加されたグループのID。 |
+| `target_group_id` | 整数        | はい      | CI/CDジョブトークングループ許可リストに追加されたグループのID。 |
 
-成功した場合、[`201`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`201`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型    | 説明 |
 |---------------------|---------|-------------|
 | `source_project_id` | 整数 | 更新するCI/CDジョブトークン受信許可リストを含むプロジェクトのID。 |
-| `target_group_id`   | 整数 | ソースプロジェクトのグループの許可リストに追加されるグループのID。 |
+| `target_group_id`   | 整数 | ソースプロジェクトのグループ許可リストに追加されるグループのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -295,7 +300,7 @@ curl --request POST \
   --data '{ "target_group_id": 2 }'
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -304,24 +309,24 @@ curl --request POST \
 }
 ```
 
-## CI/CDジョブトークン許可リストからグループを削除 {#remove-a-group-from-a-cicd-job-token-allowlist}
+## CI/CDジョブトークン許可リストからグループを削除する {#delete-a-group-from-a-cicd-job-token-allowlist}
 
-プロジェクトのCI/CDジョブトークン許可リストからグループを削除します。
+指定されたプロジェクトの[CI/CDジョブトークン許可リスト](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)からグループを削除します。
 
 ```plaintext
 DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型           | 必須 | 説明 |
 |-------------------|----------------|----------|-------------|
 | `id`              | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `target_group_id` | 整数        | はい      | CI/CDジョブトークングループの許可リストから削除されるグループのID。 |
+| `target_group_id` | 整数        | はい      | CI/CDジョブトークングループ許可リストから削除されるグループのID。 |
 
 成功した場合、[`204`](rest/troubleshooting.md#status-codes)を返し、レスポンスボディはありません。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

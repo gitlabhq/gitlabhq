@@ -44,7 +44,10 @@ module QA
             click_element('topbar-admin-link')
             expand_sidebar_if_collapsed
 
-            return unless has_text?('Enter admin mode', wait: 1.0)
+            # The admin-mode interstitial can take several seconds to render under CI load. A short
+            # wait here caused admin mode to be silently skipped, which made subsequent admin sidebar
+            # navigation fail with a missing "Overview" menu-section-button. See gitlab-org/gitlab#594514.
+            return unless has_text?('Enter admin mode', wait: 10)
 
             Admin::NewSession.perform do |new_session|
               new_session.set_password(Runtime::User.admin_password)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Groups::SavedViews', feature_category: :portfolio_management do
   let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user, developer_of: group) }
+  let_it_be(:user, freeze: false) { create(:user, developer_of: group) }
 
   before do
     sign_in(user)

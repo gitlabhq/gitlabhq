@@ -199,6 +199,10 @@ describe('NewEditForm', () => {
     it('sets `Group URL` when typing in `Group name`', () => {
       expect(findPathField().props('value')).toBe('foo-bar');
     });
+
+    it('passes auto-generated class to `Group URL` field', () => {
+      expect(findPathField().props('inputClass')).toBe('!gl-bg-feedback-info');
+    });
   });
 
   describe('when `Group URL` has been manually set', () => {
@@ -211,6 +215,10 @@ describe('NewEditForm', () => {
 
     it('does not modify `Group URL` when typing in `Group name`', () => {
       expect(findPathField().props('value')).toBe('foo-bar-baz');
+    });
+
+    it('does not pass auto-generated class to `Group URL` field', () => {
+      expect(findPathField().props('inputClass')).toBe('');
     });
   });
 

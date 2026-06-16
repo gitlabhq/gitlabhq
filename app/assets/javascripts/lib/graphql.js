@@ -183,10 +183,12 @@ function createApolloClient(resolvers = {}, config = {}) {
     typeDefs,
     httpHeaders = {},
     fetchCredentials = 'same-origin',
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- default GraphQL API path template, not a navigational URL
     path = '/api/graphql',
   } = config;
 
   let ac = null;
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- URL construction for GraphQL client endpoint
   let uri = `${gon.relative_url_root || ''}${path}`;
 
   if (baseUrl) {

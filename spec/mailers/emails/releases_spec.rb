@@ -9,9 +9,9 @@ RSpec.describe Emails::Releases do
 
   describe '#new_release_email' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
-    let(:release) { create(:release, project: project) }
+    let_it_be_with_reload(:release) { create(:release, project: project) }
 
     subject { Notify.new_release_email(user.id, release) }
 

@@ -40,7 +40,8 @@ module Gitlab
           info(
             project.id,
             message: 'Delaying finalization as placeholder references are pending',
-            placeholder_store_count: placeholder_reference_store.count
+            placeholder_store_count: placeholder_reference_store.count,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           )
 
           true
@@ -53,7 +54,8 @@ module Gitlab
             project.id,
             message: "GitHub project import finished",
             duration_s: metrics.duration.round(2),
-            object_counts: ::Gitlab::GithubImport::ObjectCounter.summary(project)
+            object_counts: ::Gitlab::GithubImport::ObjectCounter.summary(project),
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           )
         end
 

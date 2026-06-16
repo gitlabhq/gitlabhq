@@ -89,14 +89,14 @@ or `jq` to count workers in the [Sidekiq logs](../../../administration/logs/_ind
 ```shell
 $ fast-stats --print-fields=count,score sidekiq/current
 WORKER                            COUNT   SCORE
-ElasticIndexBulkCronWorker          234  123456
-ElasticIndexInitialBulkCronWorker   345   12345
-Some::OtherWorker                    12     123
+Search::Elastic::IndexBulkCronWorker  234  123456
+ElasticIndexInitialBulkCronWorker     345   12345
+Some::OtherWorker                      12     123
 ...
 
 $ jq '.class' sidekiq/current | sort | uniq -c | sort -nr
  234 "ElasticIndexInitialBulkCronWorker"
- 345 "ElasticIndexBulkCronWorker"
+ 345 "Search::Elastic::IndexBulkCronWorker"
   12 "Some::OtherWorker"
 ...
 ```

@@ -2,7 +2,7 @@
 - if !lazy?
   - prefetch_endpoints.each do |endpoint|
     - helpers.add_page_startup_api_call endpoint
-  - if diffs_stream_url
+  - if diffs_stream_url && !file_by_file_mode?
     - helpers.content_for :startup_js do
       - javascript_tag nonce: content_security_policy_nonce do
         :plain
@@ -25,7 +25,6 @@
         = helpers.gl_loading_icon(size: 'sm')
     -# using label produces better results in VoiceOver than labelledby + hidden h2
     %section.rd-app-content{ aria: { label: content_label } }
-      .rd-app-content-header{ data: { hidden_files_warning: true } }
       - if empty_state_visible?
         - if empty_state?
           = empty_state
@@ -33,6 +32,7 @@
           = render RapidDiffs::EmptyStateComponent.new
       .rd-app-diffs-list
         = before_diffs_list
+        .rd-app-content-header{ data: { hidden_files_warning: true } }
         -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
         .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
         .flash-container{ data: { diffs_list_alert: true } }
@@ -46,7 +46,7 @@
                 = diffs_list
               - else
                 = render RapidDiffs::DiffFileComponent.with_collection(diff_collection, parallel_view: parallel_view?, environment: environment)
-            - if diffs_stream_url
+            - if diffs_stream_url && !file_by_file_mode?
               %div{ data: { stream_remaining_diffs: true } }
             - else
               = javascript_tag nonce: content_security_policy_nonce do
@@ -55,6 +55,7 @@
                     window.performance.mark('rapid-diffs-list-loaded');
                     window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
                   })
-        .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
+        %div{ data: { file_by_file_navigation: true } }
+        .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url || file_by_file_mode? }
           = render Pajamas::SpinnerComponent.new(size: :lg)
         = after_diffs_list

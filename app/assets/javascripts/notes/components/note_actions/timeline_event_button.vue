@@ -25,6 +25,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-promote-comment-to-event'],
   methods: {
     handleButtonClick() {
       this.$emit('click-promote-comment-to-event', {

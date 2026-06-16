@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
   describe 'clickhouse pipeline analytics' do
-    let_it_be(:pipelines) do
+    let_it_be(:pipelines, freeze: false) do
       pipelines_data.map { |data| create_pipeline(**data) }
     end
 
@@ -120,7 +120,7 @@ RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
           end
 
           context 'when ref exists as a reserved ref' do
-            let_it_be(:merge_request) do
+            let_it_be(:merge_request, freeze: false) do
               create(:merge_request, source_project: project, source_branch: 'my-mr-branch-ref',
                 target_branch: 'main')
             end
@@ -138,7 +138,7 @@ RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
             end
 
             context 'when pipeline on merge request with matching source branch exists' do
-              let_it_be(:mr_pipelines) do
+              let_it_be(:mr_pipelines, freeze: false) do
                 [
                   create_pipeline(
                     status: :failed, started_at: 5.minutes.before(Time.utc(2024, 5, 11)),

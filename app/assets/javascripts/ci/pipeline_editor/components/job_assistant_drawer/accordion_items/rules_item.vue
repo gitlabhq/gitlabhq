@@ -11,6 +11,7 @@ import {
 import { i18n, HELP_PATHS, JOB_RULES_WHEN, JOB_RULES_START_IN } from '../constants';
 
 export default {
+  name: 'RulesItem',
   i18n,
   helpPath: HELP_PATHS.rulesHelpPath,
   whenOptions: Object.values(JOB_RULES_WHEN),

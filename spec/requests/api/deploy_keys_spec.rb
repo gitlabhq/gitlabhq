@@ -376,7 +376,7 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       let(:api_user) { user }
 
       it 'does not update a public deploy key' do
-        expect { subject }.not_to change(deploy_key, :title)
+        expect { subject }.not_to change { deploy_key.title }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

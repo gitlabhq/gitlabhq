@@ -11,10 +11,10 @@
             .gl-ml-auto
               = link_to _('Edit file'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
         = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
-      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-2.gl-bg-default.gl-border-t.gl-border-t-default.gl-px-6.gl-rounded-b-lg.gl-cursor-pointer
-        = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-flex gl-items-center gl-gap-1', button_options: { class: 'gl-mt-4 -gl-ml-1', 'aria-label': _("Expand Readme") }) do
-          = sprite_icon('chevron-down', size: 14)
-          = _("Read more")
+      .js-read-more-trigger.read-more-trigger.description-more.gl-inset-x-6.gl-z-2
+        .show-all-btn.gl-flex.gl-w-full.gl-items-center.gl-justify-center.gl-pb-2
+          = render Pajamas::ButtonComponent.new(variant: :confirm, category: :tertiary, button_options: { 'aria-label': _("Expand Readme") }) do
+            = _("Read more")
 
 - if can?(current_user, :read_cross_project)
   .gl-self-start.gl-overflow-hidden

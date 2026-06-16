@@ -1,4 +1,5 @@
 import { ACTIVE_AND_BLOCKED_USER_STATES } from '~/users_select/constants';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
 
@@ -6,7 +7,7 @@ export default class DropdownUser extends DropdownAjaxFilter {
   constructor(options = {}) {
     super({
       ...options,
-      endpoint: `${gon.relative_url_root || ''}/-/autocomplete/users.json`,
+      endpoint: autocompleteUsersPath({ format: 'json' }),
       symbol: '@',
     });
   }

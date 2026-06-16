@@ -34,11 +34,19 @@ TARGET_DEPLOYMENT="deploy/gitlab-toolbox"
 TARGET="$TARGET_DEPLOYMENT/container/toolbox"
 NAMESPACE="gitlab"
 QUOTED_ARGS=$(printf '%q ' "$@")
-COMMAND="cd $MONOLITH_DIR && mise exec -- $QUOTED_ARGS"
+
+# Skip dynamic Postgres partition creation during Rails boot. The sync issues
+# ~1300 queries / ~9s, meaning skipping it cuts boot time of `rake environment`
+# by a third. Partitions are otherwise created by migrations and the
+# PartitionManagementWorker cron job in the cluster.
+#
+# Partition syncing can be enabled by setting DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP to 0.
+SKIP_PARTITION_CREATION="${DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP:-1}"
+COMMAND="export DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP=$SKIP_PARTITION_CREATION && cd $MONOLITH_DIR && mise exec -- $QUOTED_ARGS"
 
 if [[ $OSTYPE == 'darwin'* ]]; then
   if command -v brew >/dev/null 2>&1; then
-    libpq_prefix="$(brew --prefix --installed libpq@16 2>/dev/null || brew --prefix --installed libpq 2>/dev/null || true)"
+    libpq_prefix="$(brew --prefix --installed libpq@17 2>/dev/null || brew --prefix --installed libpq 2>/dev/null || true)"
     if [[ -n "$libpq_prefix" && -d "$libpq_prefix/bin" ]]; then
       export PATH="$libpq_prefix/bin:$PATH"
     fi

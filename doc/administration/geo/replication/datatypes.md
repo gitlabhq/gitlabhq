@@ -154,7 +154,7 @@ as well as permissions and credentials.
 PostgreSQL can also hold some level of cached data like HTML-rendered Markdown and cached merge-requests diff.
 This can also be configured to be offloaded to object storage.
 
-We use PostgreSQL's own replication functionality to replicate data from the **primary** to **secondary** sites.
+We use PostgreSQL's own replication functionality to replicate data from the primary to secondary sites.
 
 We use Redis both as a cache store and to hold persistent data for our background jobs system. Because both
 use-cases have data that are exclusive to the same Geo site, we don't replicate it between sites.
@@ -200,9 +200,9 @@ Feature.enable(:geo_package_file_replication)
 
 > [!warning]
 > Features not on this list, or with **No** in the **Replicated** column,
-> are not replicated to a **secondary** site. Failing over without manually
+> are not replicated to a secondary site. Failing over without manually
 > replicating data from those features causes the data to be **lost**.
-> To use those features on a **secondary** site, or to execute a failover
+> To use those features on a secondary site, or to execute a failover
 > successfully, you must replicate their data using some other means.
 
 | Feature                                                                                                               | Replicated (added in GitLab version)                                          | Verified (added in GitLab version)                                            | GitLab-managed object storage replication (added in GitLab version)             | GitLab-managed object storage verification (added in GitLab version)            | Notes |
@@ -237,7 +237,7 @@ Feature.enable(:geo_package_file_replication)
 | [Vulnerability Export](../../../user/application_security/vulnerability_report/_index.md#exporting) | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/3111)              | No                                                                            | No                                                                              | No                                                                              | Not planned because they are ephemeral and sensitive information. They can be regenerated on demand. |
 | Packages NPM metadata cache                                                                                           | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/408278)           | No                                                                            | No                                                                              | No                                                                              | Not planned because it would not notably improve disaster recovery capabilities nor response times at secondary sites. |
 | Packages Debian GroupComponentFile                                                                                    | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/556945)           | No                                                                            | No                                                                              | No                                                                              |       |
-| Packages Debian ProjectComponentFile                                                                                  | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/333611)           | No                                                                            | No                                                                              | No                                                                              |       |
+| Packages Debian ProjectComponentFile                                                                                  | [**Yes** (19.1)](https://gitlab.com/gitlab-org/gitlab/-/issues/333611)       | [**Yes** (19.1)](https://gitlab.com/gitlab-org/gitlab/-/issues/333611)       | [**Yes** (19.1)](https://gitlab.com/gitlab-org/gitlab/-/issues/333611)         | [**Yes** (19.1)](https://gitlab.com/gitlab-org/gitlab/-/issues/333611)         | Behind feature flag `geo_packages_debian_project_component_file_replication`, disabled by default. |
 | Packages Debian GroupDistribution                                                                                     | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/556947)           | No                                                                            | No                                                                              | No                                                                              |       |
 | Packages Debian ProjectDistribution                                                                                   | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/556946)           | No                                                                            | No                                                                              | No                                                                              |       |
 | Packages RPM RepositoryFile                                                                                           | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/379055)           | No                                                                            | No                                                                              | No                                                                              |       |

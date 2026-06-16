@@ -163,7 +163,7 @@ This error can happen if your merge request:
 
 Users on GitLab Self-Managed can request an administrator review server logs
 to determine the cause of the error. GitLab.com users should
-[contact Support](https://about.gitlab.com/support/#contact-support) for help.
+[contact Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support) for help.
 
 ## Cached merge request count
 

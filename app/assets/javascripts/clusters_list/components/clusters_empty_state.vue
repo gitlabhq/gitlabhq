@@ -5,6 +5,7 @@ import PromoPageLink from '~/vue_shared/components/promo_page_link/promo_page_li
 import { I18N_CLUSTERS_EMPTY_STATE } from '../constants';
 
 export default {
+  name: 'ClustersEmptyState',
   i18n: I18N_CLUSTERS_EMPTY_STATE,
   components: {
     GlEmptyState,

@@ -9,6 +9,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:diff_file_endpoint) { '/diff_file' }
   let(:mr_path) { '/group/project/-/merge_requests/1' }
   let(:project_path) { 'group/project' }
+  let(:project_name) { 'Group / Project' }
   let(:merge_request) { build_stubbed(:merge_request) }
   let(:code_review_enabled) { false }
   let(:discussions_endpoint) { '/discussions' }
@@ -22,6 +23,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:versions) { { 'source_versions' => [], 'target_versions' => [] } }
   let(:suggestions_help_path) { '/help/suggestions' }
   let(:default_suggestion_commit_message) { 'Apply suggestion' }
+  let(:coverage_endpoint) { nil }
+  let(:codequality_endpoint) { nil }
   let(:new_comment_template_paths) do
     [{
       text: 'Your comment templates',
@@ -30,7 +33,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   end
 
   let(:presenter) do
-    double( # rubocop:disable RSpec/VerifiedDoubles -- preparing? is delegated via SimpleDelegator at runtime
+    double( # rubocop:disable RSpec/VerifiedDoubles -- initial_preparation? is delegated at runtime
       ::RapidDiffs::MergeRequestPresenter,
       diffs_stats_endpoint: diffs_stats_endpoint,
       diff_files_endpoint: diff_files_endpoint,
@@ -48,12 +51,16 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       resource: merge_request,
       mr_path: mr_path,
       project_path: project_path,
+      project_name: project_name,
       versions: versions,
       suggestions_help_path: suggestions_help_path,
       default_suggestion_commit_message: default_suggestion_commit_message,
       new_comment_template_paths: new_comment_template_paths,
       linked_file: nil,
-      preparing?: false
+      initial_preparation?: false,
+      coverage_endpoint: coverage_endpoint,
+      codequality_endpoint: codequality_endpoint,
+      empty_state_type: nil
     )
   end
 
@@ -73,6 +80,9 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       extra_app_data: {
         mr_path: mr_path,
         project_path: project_path,
+        project_name: project_name,
+        source_branch: merge_request.source_branch,
+        iid: merge_request.iid,
         code_review_enabled: false,
         user_permissions: user_permissions,
         discussions_endpoint: discussions_endpoint,
@@ -85,11 +95,39 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
         suggestions_help_path: suggestions_help_path,
         default_suggestion_commit_message: default_suggestion_commit_message,
         new_comment_template_paths: new_comment_template_paths,
-        versions: versions
+        versions: versions,
+        coverage_endpoint: coverage_endpoint,
+        codequality_endpoint: codequality_endpoint
       }
     )
 
     render_component
+  end
+
+  context 'when coverage_endpoint is set' do
+    let(:coverage_endpoint) { '/coverage_reports.json' }
+
+    it 'forwards coverage_endpoint via extra_app_data' do
+      expect(RapidDiffs::AppComponent).to receive(:new).with(
+        presenter,
+        extra_app_data: hash_including(coverage_endpoint: coverage_endpoint)
+      )
+
+      render_component
+    end
+  end
+
+  context 'when codequality_endpoint is set' do
+    let(:codequality_endpoint) { '/codequality_mr_diff_reports.json' }
+
+    it 'forwards codequality_endpoint via extra_app_data' do
+      expect(RapidDiffs::AppComponent).to receive(:new).with(
+        presenter,
+        extra_app_data: hash_including(codequality_endpoint: codequality_endpoint)
+      )
+
+      render_component
+    end
   end
 
   it "renders diffs_list slot with merge request diff files" do
@@ -152,9 +190,9 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     end
   end
 
-  context 'when merge request is preparing' do
+  context 'when presenter reports initial_preparation empty_state_type' do
     before do
-      allow(presenter).to receive(:preparing?).and_return(true)
+      allow(presenter).to receive(:empty_state_type).and_return(:initial_preparation)
       allow(app_component).to receive(:with_empty_state).and_yield
     end
 
@@ -165,10 +203,32 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     end
   end
 
-  it 'does not render building message when not preparing' do
+  it 'does not render building message when empty_state_type is nil' do
     render_component
 
     expect(page).not_to have_text('Building your merge request')
+  end
+
+  context 'when presenter reports already_merged empty_state_type' do
+    let(:merge_request) { build_stubbed(:merge_request, source_branch: 'feature', target_branch: 'main') }
+
+    before do
+      allow(presenter).to receive(:empty_state_type).and_return(:already_merged)
+      allow(app_component).to receive(:with_empty_state).and_yield
+    end
+
+    it 'renders the already-merged title and description', :aggregate_failures do
+      render_component
+
+      expect(page).to have_text('Changes already merged')
+      expect(page).to have_text('All changes from feature are already present in main.')
+    end
+  end
+
+  it 'does not render the already-merged message when empty_state_type is nil' do
+    render_component
+
+    expect(page).not_to have_text('Changes already merged')
   end
 
   context "when user has permission to create notes" do

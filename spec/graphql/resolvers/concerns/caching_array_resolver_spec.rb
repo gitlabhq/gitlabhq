@@ -83,7 +83,7 @@ RSpec.describe ::CachingArrayResolver do
           resolve(resolver, args: { username: users.map(&:username) }, schema: schema, arg_style: :internal)
         end
 
-        expect(results.flat_map(&method(:force))).to match_array(users)
+        expect(results.flat_map { |result| force(result) }).to match_array(users)
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe ::CachingArrayResolver do
 
       it 'batches the queries' do
         expect do
-          [resolve_users(admin: true), resolve_users(admin: false)].each(&method(:force))
+          [resolve_users(admin: true), resolve_users(admin: false)].each { |result| force(result) }
         end.to issue_same_number_of_queries_as { force(resolve_users(admin: nil)) }
       end
 
@@ -112,7 +112,7 @@ RSpec.describe ::CachingArrayResolver do
     it 'does not perform a union of a query with itself' do
       expect(User).to receive(:where).once.and_call_original
 
-      [resolve_users(admin: false), resolve_users(admin: false)].each(&method(:force))
+      [resolve_users(admin: false), resolve_users(admin: false)].each { |result| force(result) }
     end
 
     context 'one of the queries returns no results' do
@@ -161,7 +161,7 @@ RSpec.describe ::CachingArrayResolver do
         found_admins = resolve_users(admin: true, resolver: with_item_found)
         found_all = resolve_users(admin: nil, resolver: with_item_found)
 
-        [found_admins, found_all].each(&method(:force))
+        [found_admins, found_all].each { |result| force(result) }
 
         expect(context[:found]).to match({
           true => match_array(admins),

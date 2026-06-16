@@ -5,6 +5,7 @@ import { CANARY_UPDATE_MODAL } from '../constants';
 import updateCanaryIngress from '../graphql/mutations/update_canary_ingress.mutation.graphql';
 
 export default {
+  name: 'CanaryUpdateModal',
   components: {
     GlAlert,
     GlModal,

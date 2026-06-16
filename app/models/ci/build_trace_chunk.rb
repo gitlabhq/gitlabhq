@@ -205,10 +205,6 @@ module Ci
       !live?
     end
 
-    def migrated?
-      flushed?
-    end
-
     def live?
       LIVE_STORES.include?(data_store.to_sym)
     end

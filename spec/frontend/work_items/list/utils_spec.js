@@ -48,6 +48,7 @@ import {
   getSortOptions,
   groupMultiSelectFilterTokens,
   getSavedViewFilterTokens,
+  isCursorCompatibleWithApi,
   saveSavedView,
   handleEnforceSubscriptionLimit,
   updateCacheAfterViewReorder,
@@ -158,6 +159,52 @@ describe('getInitialPageParams', () => {
     );
 
     expect(pageParams).toEqual({ lastPageSize, beforeCursor });
+  });
+});
+
+describe('isCursorCompatibleWithApi', () => {
+  const graphqlCursor = btoa(
+    JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000', id: '203' }),
+  );
+
+  const restCursor = btoa(
+    JSON.stringify({
+      created_at: '2025-12-14 17:09:52.000000000 +0000',
+      id: '203',
+      _kd: 'n',
+    }),
+  );
+
+  it.each([null, undefined, ''])('returns true when cursor is %p', (cursor) => {
+    expect(isCursorCompatibleWithApi(cursor, true)).toBe(true);
+    expect(isCursorCompatibleWithApi(cursor, false)).toBe(true);
+  });
+
+  it('returns true when a REST cursor is used with REST API mode', () => {
+    expect(isCursorCompatibleWithApi(restCursor, true)).toBe(true);
+  });
+
+  it('returns false when a GraphQL cursor is used with REST API mode', () => {
+    expect(isCursorCompatibleWithApi(graphqlCursor, true)).toBe(false);
+  });
+
+  it('returns true when a GraphQL cursor is used with GraphQL API mode', () => {
+    expect(isCursorCompatibleWithApi(graphqlCursor, false)).toBe(true);
+  });
+
+  it('returns false when a REST cursor is used with GraphQL API mode', () => {
+    expect(isCursorCompatibleWithApi(restCursor, false)).toBe(false);
+  });
+
+  it('returns true (passes through) when the cursor cannot be base64-decoded', () => {
+    expect(isCursorCompatibleWithApi('not-a-valid-cursor!!!', true)).toBe(true);
+    expect(isCursorCompatibleWithApi('not-a-valid-cursor!!!', false)).toBe(true);
+  });
+
+  it('returns true (passes through) when the decoded cursor is not a JSON object', () => {
+    const nonObjectCursor = btoa('"just a string"');
+    expect(isCursorCompatibleWithApi(nonObjectCursor, true)).toBe(true);
+    expect(isCursorCompatibleWithApi(nonObjectCursor, false)).toBe(true);
   });
 });
 

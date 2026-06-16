@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 import getManifestDetailsQuery from '../../graphql/queries/get_manifest_details.query.graphql';
 
 export default {
+  name: 'SignatureDetailsModal',
   components: { GlLoadingIcon, GlAlert, GlModal, CodeBlockHighlighted },
   props: {
     visible: {

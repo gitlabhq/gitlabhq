@@ -5,14 +5,14 @@ RSpec.shared_examples 'checker size above limit' do
     let(:current_size) { 100 }
 
     it 'returns true' do
-      expect(subject.above_size_limit?).to eq(true)
+      expect(subject.above_size_limit?).to be(true)
     end
   end
 end
 
 RSpec.shared_examples 'checker size not over limit' do
   it 'returns false when not over the limit' do
-    expect(subject.above_size_limit?).to eq(false)
+    expect(subject.above_size_limit?).to be(false)
   end
 end
 

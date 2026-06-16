@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ユーザーAPI
-description: GitLabのAPIは、ユーザーアカウントの作成、変更、検索、および削除が可能です。管理者操作とSCIMプロビジョニングもサポートしています。
+description: GitLab Users APIは、ユーザーアカウントの作成、変更、検索、削除が可能です。管理者操作とSCIMプロビジョニングもサポートしています。
 ---
 
 {{< details >}}
@@ -52,7 +52,6 @@ GET /users
 | `exclude_humans`       | ブール値  | いいえ       | ボットまたは内部ユーザーのみをフィルタリングします。デフォルトは`false`です。 |
 | `exclude_internal`     | ブール値  | いいえ       | 内部ユーザーではないユーザーのみをフィルタリングします。デフォルトは`false`です。 |
 | `without_project_bots` | ブール値  | いいえ       | プロジェクトボットのないユーザーをフィルタリングします。デフォルトは`false`です。 |
-| `saml_provider_id`     | 数値   | いいえ       | GitLab 18.2で削除されました。代わりに[`GET /groups/:id/saml_users`](groups.md#list-all-saml-users)を使用してください。 |
 
 レスポンス例: 
 
@@ -155,7 +154,7 @@ GET /users?without_project_bots=true
 - 応答の`scim_identities`フィールドは、GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/324247)されました。
 - 応答の`auditors`フィールドは、GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418023)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- 応答内の`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
@@ -353,13 +352,13 @@ GET /users?with_custom_attributes=true
 
 返された値が`null`の場合、自分でアカウントを登録したユーザーによって作成されています。
 
-## 単一ユーザーを取得する {#retrieve-a-single-user}
+## 単一のユーザーを取得する {#retrieve-a-single-user}
 
-単一ユーザーを取得します。
+単一のユーザーを取得します。
 
-### 通常ユーザーとして単一ユーザーを取得する {#retrieve-a-single-user-as-a-regular-user}
+### 通常のユーザーとして単一のユーザーを取得する {#retrieve-a-single-user-as-a-regular-user}
 
-通常ユーザーとして単一ユーザーを取得します。
+通常のユーザーとして単一のユーザーを取得します。
 
 前提条件: 
 
@@ -420,11 +419,11 @@ GET /users/:id
 
 - 応答の`created_by`フィールドは、GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- 応答内の`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
-管理者として単一ユーザーを取得します。
+管理者として単一のユーザーを取得します。
 
 ```plaintext
 GET /users/:id
@@ -562,7 +561,7 @@ GET /users/:id?with_custom_attributes=true
 
 ### 標準ユーザーとして {#as-a-regular-user-1}
 
-あなたのユーザー詳細を取得します。
+ユーザーの詳細を取得します。
 
 ```plaintext
 GET /user
@@ -634,11 +633,11 @@ GET /user
 
 - 応答の`created_by`フィールドは、GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- 応答内の`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
-あなたのユーザー詳細、または他のユーザーの詳細を取得します。
+ユーザーの詳細、または別のユーザーの詳細を取得します。
 
 ```plaintext
 GET /user
@@ -728,7 +727,7 @@ GET /user
 - 管理者である必要があります。
 
 > [!note]
-> `private_profile`は[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)設定の値にデフォルトで設定されます。`bio`は`null`の代わりに`""`にデフォルトで設定されます。
+> `private_profile`は、[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)設定の値にデフォルトで設定されます。`bio`は`null`ではなく`""`にデフォルトで設定されます。
 
 ```plaintext
 POST /users
@@ -810,7 +809,7 @@ PUT /users/:id
 | `bio`                                | いいえ       | ユーザーの経歴 |
 | `can_create_group`                   | いいえ       | ユーザーがグループを作成できるかどうか（trueまたはfalse） |
 | `color_scheme_id`                    | いいえ       | ファイルビューアーのユーザーの配色（詳細については、[ユーザー設定のドキュメント](../user/profile/preferences.md#change-the-syntax-highlighting-theme)を参照してください） |
-| `commit_email`                       | いいえ       | ユーザーのコミットメール。非公開のコミットメールを使用するには、`_private`に設定します。GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/375148)。 |
+| `commit_email`                       | いいえ       | ユーザーのコミットメール。非公開のコミットメールを使用するには、`_private`に設定します。GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/375148)されました。 |
 | `email`                              | いいえ       | ユーザーのメールアドレス |
 | `extern_uid`                         | いいえ       | 外部UID |
 | `external`                           | いいえ       | ユーザーを外部としてフラグ設定します（trueまたはfalse（デフォルト）） |
@@ -874,9 +873,9 @@ DELETE /users/:id
 | `id`          | 整数 | はい      | ユーザーのID |
 | `hard_delete` | ブール値 | いいえ       | trueの場合、通常は[Ghostユーザーに移動](../user/profile/account/delete_account.md#associated-records)されるコントリビュートは削除され、このユーザーのみが所有するグループも削除されます。 |
 
-## あなたのユーザー状態を取得する {#retrieve-your-user-status}
+## ユーザーのステータスを取得する {#retrieve-your-user-status}
 
-あなたのユーザー状態を取得します。
+ユーザーのステータスを取得します。
 
 前提条件: 
 
@@ -889,7 +888,8 @@ GET /user/status
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
@@ -905,9 +905,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## ユーザーの状態を取得する {#retrieve-the-status-of-a-user}
+## ユーザーのステータスを取得する {#retrieve-the-status-of-a-user}
 
-ユーザーの状態を取得します。このエンドポイントには認証なしでアクセスできます。
+ユーザーのステータスを取得します。このエンドポイントには認証なしでアクセスできます。
 
 ```plaintext
 GET /users/:id_or_username/status
@@ -922,7 +922,8 @@ GET /users/:id_or_username/status
 リクエスト例: 
 
 ```shell
-curl --url "https://gitlab.example.com/users/<username>/status"
+curl --request GET \
+  --url "https://gitlab.example.com/users/<username>/status"
 ```
 
 レスポンス例: 
@@ -939,7 +940,7 @@ curl --url "https://gitlab.example.com/users/<username>/status"
 
 ## ユーザーのステータスを設定する {#set-your-user-status}
 
-あなたのユーザー状態を設定します。
+ユーザーのステータスを設定します。
 
 前提条件: 
 
@@ -969,10 +970,11 @@ PATCH /user/status
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/status" \
   --data "clear_status_after=1_day" \
   --data "emoji=coffee" \
-  --data "message=I crave coffee" --data "availability=busy" \
-  --url "https://gitlab.example.com/api/v4/user/status"
+  --data "message=I crave coffee" \
+  --data "availability=busy"
 ```
 
 レスポンス例: 
@@ -987,9 +989,9 @@ curl --request PUT \
 }
 ```
 
-## あなたのユーザー設定を取得する {#retrieve-your-user-preferences}
+## ユーザー設定を取得する {#retrieve-your-user-preferences}
 
-あなたのユーザー設定を取得します。
+ユーザー設定を取得します。
 
 前提条件: 
 
@@ -1013,7 +1015,7 @@ GET /user/preferences
 
 ## ユーザー設定を更新する {#update-your-user-preferences}
 
-あなたのユーザー設定を更新します。
+ユーザー設定を更新します。
 
 前提条件: 
 
@@ -1049,7 +1051,7 @@ PUT /user/preferences
 
 {{< /history >}}
 
-あなたのアバターをアップロードします。
+自分のアバターをアップロードします。
 
 前提条件: 
 
@@ -1080,8 +1082,8 @@ PUT /user/avatar
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --form "avatar=@/path/to/your/avatar.png" \
-  --url "https://gitlab.example.com/api/v4/user/avatar"
+  --url "https://gitlab.example.com/api/v4/user/avatar" \
+  --form "avatar=@/path/to/your/avatar.png"
 ```
 
 レスポンス例: 
@@ -1122,7 +1124,8 @@ GET /user_counts
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user_counts"
 ```
 
@@ -1140,7 +1143,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## ユーザーのプロジェクト、グループ、イシュー、およびマージリクエストの数を取得する {#retrieve-a-count-of-a-users-projects-groups-issues-and-merge-requests}
 
-ユーザーの以下のカウントのリストを取得します:
+ユーザーの以下の数の一覧を取得します:
 
 - プロジェクト。
 - グループ。
@@ -1208,7 +1211,8 @@ GET /user/activities
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/activities"
 ```
 
@@ -1276,7 +1280,8 @@ GET /users/:id/memberships
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
@@ -1342,7 +1347,8 @@ PATCH /users/:id/disable_two_factor
 リクエスト例: 
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
 ```
 
@@ -1362,7 +1368,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-現在のユーザーにリンクされたRunnerを作成します。監査目的でユーザーがオーナーとしてリストされますが、Runnerの可用性は`runner_type`に基づきます。詳細については、[Runnerの管理](../ci/runners/runners_scope.md)を参照してください。
+現在のユーザーにリンクされたRunnerを作成します。ユーザーは監査目的でオーナーとしてリストされますが、Runnerの可用性は`runner_type`に基づきます。詳細については、[Manage runners](../ci/runners/runners_scope.md)を参照してください。
 
 前提条件: 
 
@@ -1392,14 +1398,16 @@ POST /user/runners
 | `access_level`     | 文字列       | いいえ       | Runnerのアクセスレベル（`not_protected`または`ref_protected`）。 |
 | `maximum_timeout`  | 整数      | いいえ       | Runnerがジョブを実行できる時間（秒単位）を制限する最大タイムアウト。 |
 | `maintenance_note` | 文字列       | いいえ       | Runnerの自由形式のメンテナンスノート（1024文字）。 |
+| `token_expires_at` | 日時     | いいえ       | Runner認証トークンの有効期限はISO 8601形式です。将来の5分から15日の間である必要があります。インスタンス、グループ、またはプロジェクトレベルの制限が設定されている場合、これを超えることはできません。初期トークンにのみ適用されます。ローテーションされたトークンは、設定から計算された有効期限を使用します。**(PREMIUM ALL)** |
+| `token_rotation_deadline` | 日時 | いいえ | トークンローテーションのリクエストが拒否される期限。`token_expires_at`が必要です。`token_expires_at`以下である必要があります。両方を同じ値に設定すると、トークンローテーションが無効になります。成功したローテーションでクリアされます。**(PREMIUM ALL)** |
 
 リクエスト例: 
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --data "runner_type=instance_type" \
-  --url "https://gitlab.example.com/api/v4/user/runners"
+  --url "https://gitlab.example.com/api/v4/user/runners" \
+  --data "runner_type=instance_type"
 ```
 
 レスポンス例: 
@@ -1421,7 +1429,7 @@ curl --request POST \
 
 {{< /details >}}
 
-その認証に関連付けられたプロバイダー名を使用して、ユーザーの認証IDを削除します。
+認証に関連付けられたプロバイダー名を使用して、ユーザーの認証IDを削除します。
 
 前提条件: 
 
@@ -1466,7 +1474,7 @@ POST /user/support_pin
 リクエスト例: 
 
 ```shell
-curl --request POST |
+curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
@@ -1508,7 +1516,8 @@ GET /user/support_pin
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
 
@@ -1549,7 +1558,8 @@ GET /users/:id/support_pin
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1234/support_pin"
 ```
 

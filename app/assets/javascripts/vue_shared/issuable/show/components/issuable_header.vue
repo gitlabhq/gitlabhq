@@ -120,6 +120,7 @@ export default {
       default: '',
     },
   },
+  emits: ['toggle'],
   data() {
     return {
       isTicketCalloutDismissed: localStorage.getItem(TICKET_CALLOUT_DISMISSED_KEY) === 'true',
@@ -276,7 +277,7 @@ export default {
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="js-sidebar-toggle gl-ml-auto gl-block @sm/panel:!gl-hidden"
+        class="js-sidebar-toggle gl-ml-auto gl-block @sm/content-panels:!gl-hidden"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />

@@ -4,7 +4,6 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import BaseToken from './base_token.vue';
@@ -18,7 +17,6 @@ export default {
     GlFilteredSearchSuggestion,
     WorkItemTypeIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     active: {
       type: Boolean,
@@ -86,9 +84,7 @@ export default {
       return types.find((type) => this.getTypeValue(type) === data);
     },
     getTypeValue(type) {
-      return this.glFeatures.workItemConfigurableTypes
-        ? String(getIdFromGraphQLId(type.id))
-        : type.name.toUpperCase().replace(/\s+/g, '_'); // 'Key Results' -> 'KEY_RESULTS');
+      return String(getIdFromGraphQLId(type.id));
     },
   },
 };

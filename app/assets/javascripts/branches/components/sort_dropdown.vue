@@ -25,6 +25,7 @@ export default {
     })[0];
     return {
       searchTerm: searchFromUrl || '',
+      hasSearched: Boolean(searchFromUrl),
     };
   },
   computed: {
@@ -50,9 +51,18 @@ export default {
 
       if (urlParams.search) {
         urlParams.state = 'all';
+        this.hasSearched = true;
       }
 
       const newUrl = mergeUrlParams(urlParams, this.projectBranchesFilteredPath);
+      visitUrl(newUrl);
+    },
+    clearSearch() {
+      if (!this.hasSearched) return;
+      const newUrl = mergeUrlParams(
+        { search: null, sort: this.selectedKey, state: 'all' },
+        this.projectBranchesFilteredPath,
+      );
       visitUrl(newUrl);
     },
   },
@@ -66,6 +76,7 @@ export default {
       class="gl-mr-3"
       data-testid="branch-search"
       @submit="visitUrlFromOption(selectedKey)"
+      @clear="clearSearch"
     />
 
     <gl-collapsible-listbox

@@ -398,6 +398,11 @@ export function getBoardQuery(boardType) {
   return boardQuery[boardType].query;
 }
 
+export function getBoardListTitleId(listId) {
+  if (!listId) return null;
+  return `board-list-title-${listId.replace(/[^\w-]/g, '-')}`;
+}
+
 export function getListByTypeId(lists, type, id) {
   // type can be assignee/label/milestone/iteration/status
   if (type && id) return find(lists, (l) => l.listType === ListType[type] && l[type]?.id === id);

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/redis_queue_usage'
 
-RSpec.describe RuboCop::Cop::RedisQueueUsage do
+RSpec.describe RuboCop::Cop::RedisQueueUsage, feature_category: :scalability do
   let(:msg) { described_class::MSG }
 
   context 'when assigning Gitlab::Redis::Queues as a variable' do

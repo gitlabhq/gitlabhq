@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::OfflineController, feature_category: :importers do
   describe 'GET show' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     before do
       login_as(user)

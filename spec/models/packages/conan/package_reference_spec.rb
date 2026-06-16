@@ -184,4 +184,38 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
       it { is_expected.to have_attributes(size: 1) }
     end
   end
+
+  describe '.without_recipe_revision' do
+    let_it_be(:package) do
+      create(:conan_package, without_package_files: true, without_revisions: true, without_package_references: true)
+    end
+
+    let_it_be(:recipe_revision) { create(:conan_recipe_revision, package: package) }
+    let_it_be(:v1_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
+    let_it_be(:v2_reference) { create(:conan_package_reference, package: package, recipe_revision: recipe_revision) }
+
+    subject { described_class.id_in([v1_reference.id, v2_reference.id]).without_recipe_revision }
+
+    it { is_expected.to contain_exactly(v1_reference) }
+  end
+
+  describe '.with_installable_package_files' do
+    let_it_be(:package) do
+      create(:conan_package, without_package_files: true, without_revisions: true, without_package_references: true)
+    end
+
+    let_it_be(:reference_with_file) { create(:conan_package_reference, package: package, recipe_revision: nil) }
+    let_it_be(:orphaned_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
+
+    before_all do
+      create(:conan_package_file, :conan_package, package: package, conan_package_reference: reference_with_file,
+        conan_recipe_revision: nil, conan_package_revision: nil)
+      create(:conan_package_file, :conan_package, :pending_destruction, package: package,
+        conan_package_reference: orphaned_reference, conan_recipe_revision: nil, conan_package_revision: nil)
+    end
+
+    subject { described_class.id_in([reference_with_file.id, orphaned_reference.id]).with_installable_package_files }
+
+    it { is_expected.to contain_exactly(reference_with_file) }
+  end
 end

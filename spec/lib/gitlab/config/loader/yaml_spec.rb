@@ -335,4 +335,64 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
       end
     end
   end
+
+  context 'when yaml content has a UTF-8 BOM' do
+    let(:yml) { "\xEF\xBB\xBFimage: 'image:1.0'" }
+
+    it 'strips the BOM and returns a valid hash' do
+      expect(loader.load!).to eq(image: 'image:1.0')
+    end
+  end
+
+  context 'when yaml content has non-UTF-8 encoding' do
+    # We skip strip_bom for non-UTF-8 input because the UTF-8 BOM regex would
+    # raise Encoding::CompatibilityError or risk mojibake. The customer
+    # scenario (binary/octet-stream remote include returning ASCII-8BIT) and
+    # exotic encodings (Windows-1252, ISO-8859-1, Shift_JIS) all flow through
+    # the normal YAML parser without an encoding crash.
+    context 'when content is ASCII-8BIT with valid UTF-8 byte sequences' do
+      let(:yml) { (+"image: 'café'").force_encoding(Encoding::ASCII_8BIT) }
+
+      it 'parses the content without raising an encoding error' do
+        expect { loader.load! }.not_to raise_error
+      end
+    end
+
+    context 'when content is Windows-1252 encoded with high bytes' do
+      let(:yml) { (+"key: caf\xE9").force_encoding('Windows-1252') }
+
+      it 'does not raise Encoding::CompatibilityError' do
+        expect { loader.load! }.not_to raise_error
+      end
+    end
+
+    context 'when content is ISO-8859-1 encoded with high bytes' do
+      let(:yml) { (+"key: caf\xE9").force_encoding('ISO-8859-1') }
+
+      it 'does not raise Encoding::CompatibilityError' do
+        expect { loader.load! }.not_to raise_error
+      end
+    end
+
+    context 'when content is Shift_JIS encoded' do
+      let(:yml) { (+"key: \x83\x4F").force_encoding('Shift_JIS') }
+
+      it 'does not raise an encoding error' do
+        # Psych transcodes Shift_JIS during parsing, so this succeeds. The
+        # important assertion is that strip_bom is skipped and no
+        # Encoding::CompatibilityError reaches the caller.
+        expect(loader.load!).to be_a(Hash)
+      end
+    end
+
+    context 'when content is ASCII-8BIT with non-UTF-8 high bytes' do
+      let(:yml) { (+"key: caf\xE9").force_encoding(Encoding::ASCII_8BIT) }
+
+      it 'fails through the YAML parser rather than crashing on encoding' do
+        # No Encoding::CompatibilityError - failure goes through the normal
+        # YAML error path that surfaces as a FormatError to the caller.
+        expect { loader.load! }.to raise_error(Gitlab::Config::Loader::FormatError)
+      end
+    end
+  end
 end

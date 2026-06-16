@@ -5,6 +5,7 @@ import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/cons
 import searchProjectNameAvailabilityQuery from '../queries/search_project_name_availability.query.graphql';
 
 export default {
+  name: 'ProjectNameValidator',
   components: {
     GlAlert,
   },
@@ -46,6 +47,7 @@ export default {
       default: null,
     },
   },
+  emits: ['on-validation'],
   data() {
     return {
       namespace: [],
@@ -83,7 +85,7 @@ export default {
         this.projectName && newNamespace.find((project) => project.name === this.projectName),
       );
 
-      this.$emit('onValidation', this.fieldsValid);
+      this.$emit('on-validation', this.fieldsValid);
     },
   },
 };

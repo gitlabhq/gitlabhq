@@ -5,9 +5,12 @@ require 'spec_helper'
 RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, developer_of: project) }
-  let_it_be(:first_alert) { create(:alert_management_alert, project: project, assignees: [current_user]) }
+  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:current_user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:first_alert, freeze: false) do
+    create(:alert_management_alert, project: project, assignees: [current_user])
+  end
+
   let_it_be(:second_alert) { create(:alert_management_alert, project: project) }
 
   let(:params) { {} }

@@ -22,12 +22,17 @@ module Ci
 
     def reset_source_bridge
       @pipeline.reset_source_bridge!(current_user)
-    rescue ActiveRecord::StaleObjectError
+    rescue ActiveRecord::StaleObjectError, StateMachines::InvalidTransition
       # We deliberately do not retry here. This service can be called from
-      # multiple jobs concurrently, and a StaleObjectError means another
-      # process has already updated the associated bridge record. The bridge
-      # is continually updated as part of normal processing, and retrying the
-      # reset here risks undoing unrelated changes.
+      # multiple jobs concurrently, and both errors mean another process has
+      # already updated the bridge. StaleObjectError surfaces directly from
+      # the lock_version conflict; InvalidTransition surfaces because
+      # Gitlab::OptimisticLocking.retry_lock in EnqueueJobService reloads the
+      # bridge on conflict, so the retried enqueue! runs against the
+      # already-advanced state (e.g. :pending) and the transition guard
+      # rejects it. The bridge is continually updated as part of normal
+      # processing, and retrying the reset here risks undoing unrelated
+      # changes.
       Gitlab::AppJsonLogger.info(
         class: self.class.to_s,
         message: 'Skipping reset of stale source bridge',

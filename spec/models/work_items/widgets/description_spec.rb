@@ -12,7 +12,7 @@ RSpec.describe WorkItems::Widgets::Description do
     DESC
   end
 
-  let_it_be(:work_item, refind: true) do
+  let_it_be_with_refind(:work_item) do
     create(:work_item, description: description, last_edited_at: 10.days.ago, last_edited_by: user)
   end
 

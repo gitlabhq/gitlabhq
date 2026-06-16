@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectEvents, feature_category: :user_profile do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:private_project, freeze: false) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let_it_be(:closed_issue_event) { create(:closed_issue_event, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
 
@@ -130,7 +130,7 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
     end
 
     context 'when exists some events' do
-      let_it_be(:merge_request1) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
+      let_it_be(:merge_request1, freeze: false) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
       let_it_be(:merge_request2) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
 
       let_it_be(:token) { create(:personal_access_token, user: user) }

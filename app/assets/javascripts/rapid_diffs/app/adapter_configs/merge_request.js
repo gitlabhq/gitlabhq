@@ -3,6 +3,7 @@ import { createLineDiscussionsAdapter } from '~/rapid_diffs/adapters/line_discus
 import { createFileDiscussionsAdapter } from '~/rapid_diffs/adapters/file_discussions';
 import { createNoPreviewDiscussionsAdapter } from '~/rapid_diffs/adapters/no_preview_discussions';
 import { lineHighlightingAdapter } from '~/rapid_diffs/adapters/line_highlighting';
+import { lineCoverageAdapter } from '~/rapid_diffs/adapters/line_coverage';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 import { viewedAdapter } from '~/rapid_diffs/adapters/viewed';
 import { pinia } from '~/pinia/instance';
@@ -34,6 +35,7 @@ export const adapters = {
     inlineDiscussionsAdapter,
     lineHighlightingAdapter,
     fileDiscussionsAdapter,
+    lineCoverageAdapter,
   ],
   text_parallel: [
     ...MR_HEADER_ADAPTERS,
@@ -41,6 +43,7 @@ export const adapters = {
     parallelDiscussionsAdapter,
     lineHighlightingAdapter,
     fileDiscussionsAdapter,
+    lineCoverageAdapter,
   ],
   image: [
     ...MR_HEADER_ADAPTERS,

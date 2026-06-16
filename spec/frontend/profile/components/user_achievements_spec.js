@@ -70,6 +70,28 @@ describe('UserAchievements', () => {
     expect(findUserAchievement().findComponent(GlBadge).text()).toBe('2x');
   });
 
+  it('renders the most recent award message for grouped achievements', () => {
+    const response = { data: { user: { userAchievements: { nodes: [] } } } };
+    const [olderAchievement, newerAchievement] =
+      getUserAchievementsLongResponse.data.user.userAchievements.nodes;
+
+    response.data.user.userAchievements.nodes = [
+      {
+        ...newerAchievement,
+        achievement: olderAchievement.achievement,
+        createdAt: '2024-01-02T00:00:00Z',
+        awardMessageHtml: '<p>Newer</p>',
+      },
+      { ...olderAchievement, createdAt: '2024-01-01T00:00:00Z', awardMessageHtml: '<p>Older</p>' },
+    ];
+
+    createComponent();
+
+    expect(
+      wrapper.vm.processNodes(response.data.user.userAchievements.nodes)[0].awardMessageHtml,
+    ).toBe('<p>Newer</p>');
+  });
+
   it('renders correctly if the achievement is from a private namespace', async () => {
     createComponent({
       queryHandler: jest.fn().mockResolvedValue(getUserAchievementsPrivateGroupResponse),

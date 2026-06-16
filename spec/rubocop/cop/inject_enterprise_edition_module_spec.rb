@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/inject_enterprise_edition_module'
 
-RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
+RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :tooling do
   it 'flags the use of `prepend_mod_with` in the middle of a file' do
     expect_offense(<<~RUBY)
     class Foo

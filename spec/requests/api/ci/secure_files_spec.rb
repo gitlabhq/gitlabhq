@@ -13,7 +13,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   let_it_be(:anonymous) { create(:user) }
   let_it_be(:unconfirmed) { create(:user, :unconfirmed) }
   let_it_be(:project) { create(:project, creator_id: maintainer.id, maintainers: maintainer, developers: developer, guests: guest) }
-  let_it_be(:secure_file) { create(:ci_secure_file, project: project) }
+  let_it_be(:secure_file, freeze: false) { create(:ci_secure_file, project: project) }
 
   let(:file_params) do
     {

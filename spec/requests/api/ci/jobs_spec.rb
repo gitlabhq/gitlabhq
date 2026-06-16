@@ -11,11 +11,11 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   let_it_be(:namespace) { create(:namespace) }
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :repository, namespace: namespace, public_builds: false)
   end
 
-  let_it_be(:pipeline, reload: true) do
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 

@@ -16,6 +16,7 @@ title: Configurable work item types
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/7897) in GitLab 19.0 [with a flag](../../administration/feature_flags/_index.md) named `work_item_configurable_types`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/600185) in GitLab 19.1. Feature flag `work_item_configurable_types` removed.
 
 {{< /history >}}
 
@@ -30,8 +31,8 @@ Their widgets and hierarchy restrictions match those
 of issues. You can associate new types with
 [custom fields](custom_fields.md) and
 [status lifecycles](status.md). You can also filter
-by work item type in
-[saved views](saved_views.md) and issue boards.
+by work item type in [work item lists](_index.md#view-all-work-items),
+[saved views](saved_views.md), and issue boards.
 
 ## Limits and naming rules
 
@@ -45,7 +46,7 @@ and sha are reserved names that cannot be used.
 When you rename a type (for example, rename `Feature` to `Enhancement`), the original name is
 available for a new type. You can rename a type back to its original name if that name has not been taken.
 
-## Work item type states
+This conversion continues to return Global IDs in the format: `gid://gitlab/WorkItems::/<type identifier>` to maintain compatibility with existing customer automations.
 
 Each work item type has one of the following states:
 
@@ -87,6 +88,9 @@ To create a work item type:
    **New type**.
 1. Enter a name for the type.
 1. Select an icon.
+1. Optional. Select **Enable for new projects** to automatically
+   enable this type in any new projects created under the group.
+   Existing projects are not affected.
 1. Select **Save**.
 
 ## Edit a work item type

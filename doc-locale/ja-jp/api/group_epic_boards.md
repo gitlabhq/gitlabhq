@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループエピックボードAPI
 ---
 
@@ -18,13 +18,13 @@ title: グループエピックボードAPI
 
 {{< /history >}}
 
-[グループエピックボード](../user/group/epics/epic_boards.md)へのすべてのAPIコールは、認証されなければなりません。
+このAPIを使用して、[グループエピックボード](../user/group/epics/epic_boards.md)を管理します。このAPIへのすべてのリクエストは、認証される必要があります。
 
-ユーザーがグループのメンバーではなく、グループがプライベートである場合、そのグループに対する`GET`リクエストの結果として、`404`ステータスコードが返されます。
+ユーザーがグループのメンバーではなく、そのグループがプライベートである場合、`GET`リクエストは`404`ステータスコードになります。
 
-## グループ内のすべてのエピックボードをリスト表示 {#list-all-epic-boards-in-a-group}
+## グループ内のすべてのエピックボードをリスト表示する {#list-all-epic-boards-in-a-group}
 
-指定されたグループ内のエピックボードをリスト表示します。
+指定されたグループのすべてのエピックボードをリスト表示します。
 
 ```plaintext
 GET /groups/:id/epic_boards
@@ -32,13 +32,14 @@ GET /groups/:id/epic_boards
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/epic_boards"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -107,9 +108,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## 単一のグループエピックボード {#single-group-epic-board}
+## グループエピックボードを取得する {#retrieve-a-group-epic-board}
 
-単一のグループエピックボードを取得します。
+指定されたグループエピックボードを取得します。
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id
@@ -117,14 +118,15 @@ GET /groups/:id/epic_boards/:board_id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `board_id` | 整数 | はい | エピックボードのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/epic_boards/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
   {
@@ -189,7 +191,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
   }
 ```
 
-## グループエピックボードのリストをリスト表示 {#list-group-epic-board-lists}
+## グループエピックボードリストを表示する {#list-group-epic-board-lists}
 
 {{< history >}}
 
@@ -197,7 +199,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /history >}}
 
-エピックボードのリストのリストを取得します。`open`および`closed`リストは含まれません。
+指定されたボードのすべてのグループエピックボードリストをリスト表示します。`open`と`closed`のリストは含まれません。
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id/lists
@@ -205,14 +207,15 @@ GET /groups/:id/epic_boards/:board_id/lists
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `board_id` | 整数 | はい | エピックボードのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards/1/lists"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/epic_boards/1/lists"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -252,7 +255,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## 単一グループエピックボードリスト {#single-group-epic-board-list}
+## グループエピックボードリストを取得する {#retrieve-a-group-epic-board-list}
 
 {{< history >}}
 
@@ -260,7 +263,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /history >}}
 
-単一ボードリストを取得します。
+指定されたグループエピックボードリストを取得します。
 
 ```plaintext
 GET /groups/:id/epic_boards/:board_id/lists/:list_id
@@ -268,15 +271,16 @@ GET /groups/:id/epic_boards/:board_id/lists/:list_id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id` | 整数または文字列 | はい | 認証済みユーザーがアクセスできるグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `board_id` | 整数 | はい | エピックボードのID |
-| `list_id` | 整数 | はい | エピックボードのリストのID |
+| `list_id` | 整数 | はい | エピックボードリストのID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards/1/lists/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/epic_boards/1/lists/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

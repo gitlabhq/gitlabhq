@@ -66,10 +66,10 @@ module Packages
       BUILD_ATTRIBUTES_METHOD_NAMES.each do |resource|
         define_method("build_#{resource}") do
           resource_keys = self.class.const_get("#{resource.upcase}_RPM_KEYS", false).dup
-          return [] if resource_keys.any? { package_tags[_1].blank? }
+          return [] if resource_keys.any? { |resource_key| package_tags[resource_key].blank? }
 
           first_attributes = package_tags[resource_keys.first]
-          zipped_data = first_attributes.zip(*resource_keys[1..].map { package_tags[_1] })
+          zipped_data = first_attributes.zip(*resource_keys[1..].map { |resource_key| package_tags[resource_key] })
           build_hashes(resource_keys, zipped_data)
         end
       end

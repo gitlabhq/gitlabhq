@@ -37,7 +37,7 @@ RSpec.shared_examples 'packages can be deleted' do
 end
 
 RSpec.shared_examples 'pipelines on packages list' do |is_group_page: false|
-  let_it_be(:pipelines) do
+  let_it_be(:pipelines, freeze: false) do
     %w[c83d6e391c22777fca1ed3012fce84f633d7fed0
       d83d6e391c22777fca1ed3012fce84f633d7fed0].map do |sha|
       create(:ci_pipeline, project: project, user: user, sha: sha)
@@ -85,8 +85,8 @@ RSpec.shared_examples 'package details link' do |property|
   end
 
   context 'with other versions' do
-    let_it_be(:npm_package1) { create(:npm_package, project: project, name: 'zzz', version: '1.1.0') }
-    let_it_be(:npm_package2) { create(:npm_package, project: project, name: 'zzz', version: '1.2.0') }
+    let_it_be(:npm_package1, freeze: false) { create(:npm_package, project: project, name: 'zzz', version: '1.1.0') }
+    let_it_be(:npm_package2, freeze: false) { create(:npm_package, project: project, name: 'zzz', version: '1.2.0') }
 
     before do
       page.within(packages_table_selector) do

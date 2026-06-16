@@ -563,7 +563,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
         context 'when triggered from request specs', type: :request do
           # ideally, this spec should be completed with a new controller generated inside the test
           let_it_be(:project) { create(:project, :repository) }
-          let_it_be(:user) { create(:user, maintainer_of: project) }
+          let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
 
           subject do
             sign_in(user)

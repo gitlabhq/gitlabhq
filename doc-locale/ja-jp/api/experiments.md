@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 実験API
 ---
 
@@ -12,15 +12,15 @@ title: 実験API
 
 {{< /details >}}
 
-このAPIを使用して、A/B実験を操作します。このAPIは、内部使用のみを目的としています。
+このAPIを使用してA/B実験を操作します。このAPIは内部使用のみを目的としています。
 
-前提要件: 
+前提条件: 
 
 - [GitLabチームメンバー](https://gitlab.com/groups/gitlab-com/-/group_members)である必要があります。
 
-## すべての実験をリストする {#list-all-experiments}
+## すべての実験をリスト表示 {#list-all-experiments}
 
-すべての実験のリストを取得します。各実験には、`enabled`ステータスがあり、実験がグローバルに有効になっているか、特定のコンテキストでのみ有効になっているかを示します。
+GitLabインスタンス上のすべての実験をリスト表示します。各実験には、`enabled`ステータスがあり、その実験がグローバルに有効になっているか、特定のコンテキストでのみ有効になっているかを示します。
 
 ```plaintext
 GET /experiments
@@ -32,7 +32,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/experiments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [

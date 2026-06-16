@@ -1,10 +1,9 @@
 import { rest } from 'msw';
 import { handleWorkItemOperation, workItemRestEndpoints } from './work_items/handlers';
-import { handleAiDuoPanelOperation } from './work_items/ai_duo_panel';
-import { captureRequest } from './test_helpers';
+import { captureMissingOperation, captureRequest } from './test_helpers';
 
 // CE-only endpoints and handlers should be added here
-export const featureHandlers = [handleWorkItemOperation, handleAiDuoPanelOperation];
+export const featureHandlers = [handleWorkItemOperation];
 export const restEndpoints = [...workItemRestEndpoints];
 
 export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
@@ -33,8 +32,7 @@ export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
         if (result) return result;
       }
 
-      // eslint-disable-next-line no-console
-      console.log(`No handler for operationName: ${operationName}`);
+      captureMissingOperation(operationName);
       return res(ctx.status(400));
     }),
 

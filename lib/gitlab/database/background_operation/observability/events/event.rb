@@ -30,11 +30,9 @@ module Gitlab
             # BackgroundOperation::Job,
             # BackgroundOperation::JobCellLocal
             def shared_payload
-              partition, id = record.id
-
               {
-                id: id,
-                partition: partition,
+                id: record.id,
+                partition: record.partition,
                 record_type: record.class.name,
                 min_cursor: record.min_cursor,
                 max_cursor: record.max_cursor,

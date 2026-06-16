@@ -6,7 +6,7 @@ RSpec.describe JiraImport::StartImportService, feature_category: :integrations d
   include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:key) { 'KEY' }
   let(:mapping) do

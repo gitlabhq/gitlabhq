@@ -41,6 +41,8 @@ module Packages
             ::Packages::Rubygems::CreateDependenciesService.new(package, gemspec).execute
             cleanup_temp_package
           end
+
+          package.sync_rubygems_spec_files
         end
 
         true

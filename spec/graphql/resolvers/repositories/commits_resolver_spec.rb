@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   it { expect(described_class).to have_nullable_graphql_type(Types::Repositories::CommitType.connection_type) }
 
@@ -102,6 +102,16 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
 
             commits
           end
+        end
+      end
+
+      describe 'literal_pathspec' do
+        it 'passes literal_pathspec: true to list_commits' do
+          expect(repository).to receive(:list_commits)
+            .with(hash_including(literal_pathspec: true))
+            .and_call_original
+
+          commits
         end
       end
 
@@ -337,7 +347,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
   describe 'commits filtering with author display name' do
     let_it_be_with_reload(:user) { create(:user, name: 'Original Name', email: 'original@example.com') }
 
-    let_it_be(:project_with_user_commits) do
+    let_it_be(:project_with_user_commits, freeze: false) do
       project = create(:project, :repository)
       project.repository.create_file(
         user,

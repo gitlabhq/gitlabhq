@@ -64,4 +64,48 @@ RSpec.describe 'RunnerWebUrlEdge', feature_category: :fleet_visibility do
       end
     end
   end
+
+  describe 'inside a Query.currentUser' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    let(:edges_graphql_data) { graphql_data.dig('currentUser', 'runners', 'edges') }
+
+    let(:query) do
+      <<~GQL
+        {
+          currentUser {
+            runners {
+              edges {
+                editUrl
+                webUrl
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    subject(:request) do
+      post_graphql(query, current_user: user)
+    end
+
+    it_behaves_like 'a working graphql query' do
+      before do
+        request
+      end
+    end
+
+    it 'returns project-scoped URLs for project runners' do
+      request
+
+      expect(edges_graphql_data).to match_array [
+        {
+          'editUrl' => Gitlab::Routing.url_helpers.edit_project_runner_url(project, project_runner),
+          'webUrl' => Gitlab::Routing.url_helpers.project_runner_url(project, project_runner)
+        }
+      ]
+    end
+  end
 end

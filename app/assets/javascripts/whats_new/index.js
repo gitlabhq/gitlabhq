@@ -5,12 +5,18 @@ import { useWhatsNew } from './store';
 
 let whatsNewApp;
 
-export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
+export default (dataset = {}, updateHelpMenuUnreadBadge) => {
   if (whatsNewApp) {
     useWhatsNew().openDrawer();
   } else {
-    const { versionDigest, initialReadArticles, markAsReadPath, mostRecentReleaseItemsCount } =
-      dataset;
+    const {
+      versionDigest,
+      initialReadArticles,
+      markAsReadPath,
+      mostRecentReleaseItemsCount,
+      showTranscendPromo,
+      placement,
+    } = dataset;
     const el = document.createElement('div');
     document.body.append(el);
     whatsNewApp = new Vue({
@@ -24,8 +30,9 @@ export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
             initialReadArticles,
             markAsReadPath,
             mostRecentReleaseItemsCount,
-            withClose,
             updateHelpMenuUnreadBadge,
+            showTranscendPromo,
+            placement,
           },
         });
       },

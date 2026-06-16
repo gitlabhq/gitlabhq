@@ -9,6 +9,7 @@ import {
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 
 export default {
+  name: 'DeletePackageModal',
   components: {
     GlModal,
     GlSprintf,

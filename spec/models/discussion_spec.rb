@@ -53,6 +53,35 @@ RSpec.describe Discussion, feature_category: :team_planning do
     end
   end
 
+  describe '#can_reply_to_system_note?' do
+    let(:noteable) { build_stubbed(:issue) }
+    let(:note) { build_stubbed(:note, noteable: noteable, system: system) }
+
+    subject(:discussion) { described_class.new([note]) }
+
+    context 'when the first note is not a system note' do
+      let(:system) { false }
+
+      it { expect(discussion.can_reply_to_system_note?).to be(true) }
+    end
+
+    context 'when the first note is a system note' do
+      let(:system) { true }
+
+      context 'and the noteable does not support replying to system notes' do
+        it { expect(discussion.can_reply_to_system_note?).to be(false) }
+      end
+
+      context 'and the noteable supports replying to system notes' do
+        before do
+          allow(noteable).to receive(:supports_replying_to_system_notes?).and_return(true)
+        end
+
+        it { expect(discussion.can_reply_to_system_note?).to be(true) }
+      end
+    end
+  end
+
   describe '#cache_key' do
     let(:notes_sha) { Digest::SHA1.hexdigest("#{subject.notes[0].post_processed_cache_key}:#{subject.notes[1].post_processed_cache_key}:#{subject.notes[2].post_processed_cache_key}") }
 
@@ -93,7 +122,7 @@ RSpec.describe Discussion, feature_category: :team_planning do
     end
 
     context 'with discussions on issue' do
-      let_it_be(:note_1, refind: true) { create(:note) }
+      let_it_be_with_refind(:note_1) { create(:note) }
       let_it_be(:noteable) { note_1.noteable }
 
       context 'with a single Note' do
@@ -107,8 +136,8 @@ RSpec.describe Discussion, feature_category: :team_planning do
       end
 
       context 'with multiple Notes' do
-        let_it_be(:note_1, refind: true) { create(:note, type: 'DiscussionNote') }
-        let_it_be(:note_2, refind: true) { create(:note, in_reply_to: note_1) }
+        let_it_be_with_refind(:note_1) { create(:note, type: 'DiscussionNote') }
+        let_it_be_with_refind(:note_2) { create(:note, in_reply_to: note_1) }
 
         it 'returns GID on Discussion class' do
           discussion = described_class.build([note_1, note_2], noteable)
@@ -121,7 +150,7 @@ RSpec.describe Discussion, feature_category: :team_planning do
     end
 
     context 'with system notes' do
-      let_it_be(:system_note, refind: true) { create(:note, system: true) }
+      let_it_be_with_refind(:system_note) { create(:note, system: true) }
       let_it_be(:noteable) { system_note.noteable }
 
       it 'returns GID on Discussion class' do

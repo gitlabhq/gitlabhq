@@ -38,7 +38,7 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
     end
 
     context 'when the max number of exports have already started' do
-      let_it_be(:existing_export) { create(:bulk_import_export_batch, :started) }
+      let_it_be(:existing_export, freeze: false) { create(:bulk_import_export_batch, :started) }
 
       before do
         stub_application_setting(concurrent_relation_batch_export_limit: 1)

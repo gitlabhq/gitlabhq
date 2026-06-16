@@ -6,7 +6,7 @@ import { __, s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import {
   CONTRIBUTION_TYPE_FILTER_TYPE,
@@ -25,7 +25,7 @@ export default {
     contributionType: __('Contribution type'),
   },
   components: {
-    FilteredSearch,
+    FilteredSearchBar,
     ContributionEvents,
     GlEmptyState,
     GlKeysetPagination,
@@ -130,7 +130,7 @@ export default {
 
 <template>
   <div>
-    <filtered-search
+    <filtered-search-bar
       :recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY"
       :namespace="$options.FILTERED_SEARCH_NAMESPACE"
       :tokens="availableTokens"

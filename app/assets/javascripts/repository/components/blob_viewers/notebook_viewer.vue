@@ -3,6 +3,7 @@ import { stripPathTail } from '~/lib/utils/url_utility';
 import NotebookViewer from '~/blob/notebook/notebook_viewer.vue';
 
 export default {
+  name: 'RepositoryNotebookViewer',
   components: { NotebookViewer },
   provide() {
     // `relativeRawPath` is injected in app/assets/javascripts/notebook/cells/markdown.vue

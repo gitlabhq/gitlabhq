@@ -3,8 +3,8 @@
 RSpec.shared_context 'with policy sync state', :clean_gitlab_redis_shared_state do
   include Security::PolicyCspHelpers
 
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:policy_configuration) { create(:security_orchestration_policy_configuration, :namespace) }
+  let_it_be(:organization, freeze: false) { create(:organization) }
+  let_it_be(:policy_configuration, freeze: false) { create(:security_orchestration_policy_configuration, :namespace) }
 
   let(:policy_configuration_id) { policy_configuration.id }
   let(:state) { Security::SecurityOrchestrationPolicies::PolicySyncState::State.new(policy_configuration_id) }

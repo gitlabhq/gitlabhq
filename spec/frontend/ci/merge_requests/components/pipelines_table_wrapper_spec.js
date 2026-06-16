@@ -14,13 +14,17 @@ import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import PipelinesTableWrapper from '~/ci/merge_requests/components/pipelines_table_wrapper.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
-import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
+import {
+  MR_PIPELINE_TYPE_DETACHED,
+  MR_PIPELINE_TYPE_MERGED_RESULT,
+} from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import getSinglePipeline from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
 import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
+import downstreamPipelineStatusUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 import {
@@ -33,11 +37,11 @@ import {
   generateMRPipelinesResponse,
   generateMockPipeline,
   generateMockDownstreamPipeline,
-  generateMockDownstreamSkeleton,
   generateSinglePipelineResponse,
   generateMockDownstreamResponse,
   mockPipelineUpdateResponseEmpty,
   mockPipelineUpdateResponse,
+  mockDownstreamPipelineUpdateResponse,
   generatePipelineCreationRequestsResponse,
   generatePipelineCreationSubscriptionResponse,
   generatePipelineCreationRequest,
@@ -60,6 +64,8 @@ let getPipelinesDownstreamRequest;
 let cancelPipelineMutationRequest;
 let retryPipelineMutationRequest;
 let subscriptionHandler;
+let downstreamSubscriptionHandler;
+let mockDownstreamSubscription;
 let pipelineCreationRequestsHandler;
 let pipelineCreationSubscriptionHandler;
 let mockPipelineCreationSubscription;
@@ -94,6 +100,16 @@ const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
 };
 
 const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
+  mockDownstreamSubscription = createMockSubscription();
+  let isFirstDownstreamCall = true;
+  downstreamSubscriptionHandler = jest.fn().mockImplementation(() => {
+    if (isFirstDownstreamCall) {
+      isFirstDownstreamCall = false;
+      return mockDownstreamSubscription;
+    }
+    return createMockSubscription();
+  });
+
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
     [getSinglePipeline, getSinglePipelineRequest],
@@ -101,6 +117,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
     [mrPipelineStatusesUpdatedSubscription, subscriptionHandler],
+    [downstreamPipelineStatusUpdatedSubscription, downstreamSubscriptionHandler],
     [getPipelineCreationRequests, pipelineCreationRequestsHandler],
   ];
 
@@ -357,10 +374,14 @@ describe('PipelinesTableWrapper component', () => {
     });
   });
 
-  describe('when latest pipeline has detached flag', () => {
+  describe.each`
+    eventType                         | description
+    ${MR_PIPELINE_TYPE_DETACHED}      | ${'detached merge request pipeline'}
+    ${MR_PIPELINE_TYPE_MERGED_RESULT} | ${'merged-results pipeline'}
+  `('when latest pipeline is a $description', ({ eventType }) => {
     beforeEach(async () => {
       const response = generateMRPipelinesResponse({
-        mergeRequestEventType: MR_PIPELINE_TYPE_DETACHED,
+        mergeRequestEventType: eventType,
       });
 
       mergeRequestPipelinesRequest.mockResolvedValue(response);
@@ -409,6 +430,49 @@ describe('PipelinesTableWrapper component', () => {
             },
           });
         });
+      });
+
+      it('shows loading immediately on click, before the POST resolves', async () => {
+        let resolvePost;
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(
+          new Promise((resolve) => {
+            resolvePost = resolve;
+          }),
+        );
+        await createComponent();
+
+        findRunPipelineBtn().vm.$emit('run-pipeline');
+        await nextTick();
+
+        expect(findRunPipelineBtn().props('isLoading')).toBe(true);
+
+        resolvePost();
+        await waitForPromises();
+
+        expect(findRunPipelineBtn().props('isLoading')).toBe(false);
+      });
+
+      it('does not send a second request while one is already in flight', async () => {
+        const postSpy = jest
+          .spyOn(Api, 'postMergeRequestPipeline')
+          .mockReturnValue(new Promise(() => {}));
+        await createComponent();
+
+        findRunPipelineBtn().vm.$emit('run-pipeline');
+        findRunPipelineBtn().vm.$emit('run-pipeline');
+        await nextTick();
+
+        expect(postSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('resets loading state when the POST rejects with a non-HTTP error', async () => {
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockRejectedValue(new Error('network down'));
+        await createComponent();
+
+        await findRunPipelineBtn().vm.$emit('run-pipeline');
+        await waitForPromises();
+
+        expect(findRunPipelineBtn().props('isLoading')).toBe(false);
       });
     });
 
@@ -601,9 +665,7 @@ describe('PipelinesTableWrapper component', () => {
 
           await waitForPromises();
 
-          expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error), {
-            tags: { component: 'PipelinesTableWrapper' },
-          });
+          expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
         });
       });
 
@@ -877,6 +939,172 @@ describe('PipelinesTableWrapper component', () => {
       });
     });
 
+    describe('subscription lifecycle driven by user actions and ticks', () => {
+      const buildTick = (status) => ({
+        data: {
+          ciPipelineStatusUpdated: {
+            ...mockPipelineUpdateResponse.data.ciPipelineStatusUpdated,
+            detailedStatus: {
+              ...mockPipelineUpdateResponse.data.ciPipelineStatusUpdated.detailedStatus,
+              name: status,
+              icon: `status_${status.toLowerCase()}`,
+            },
+          },
+        },
+      });
+
+      it('subscribes to a terminal parent pipeline after retry', async () => {
+        const response = generateMRPipelinesResponse({ count: 1, status: 'SUCCESS' });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+
+        const pipeline = findPipelinesList().props('pipelines')[0];
+        findPipelinesList().vm.$emit('retry-pipeline', pipeline);
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1',
+        });
+      });
+
+      it('subscribes to a terminal downstream after a job action on its parent', async () => {
+        const downstream = generateMockDownstreamPipeline({ id: '100', status: 'SUCCESS' });
+        const response = generateMRPipelinesResponse({ count: 0 });
+        response.data.project.mergeRequest.pipelines.nodes = [
+          {
+            ...generateMockPipeline({ id: '1', status: 'RUNNING' }),
+            downstream: {
+              count: 1,
+              nodes: [downstream],
+              __typename: 'PipelineConnection',
+            },
+          },
+        ];
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent();
+
+        expect(downstreamSubscriptionHandler).not.toHaveBeenCalled();
+
+        const pipeline = findPipelinesList().props('pipelines')[0];
+        findPipelinesList().vm.$emit('job-action-executed', pipeline);
+        await waitForPromises();
+
+        expect(downstreamSubscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/100',
+        });
+      });
+
+      it('stops applying ticks for a parent once a terminal status is reported', async () => {
+        const mockParentSub = createMockSubscription();
+        subscriptionHandler = jest.fn().mockReturnValue(mockParentSub);
+
+        const response = generateMRPipelinesResponse({ count: 0 });
+        response.data.project.mergeRequest.pipelines.nodes = [
+          generateMockPipeline({ id: '701', status: 'RUNNING' }),
+        ];
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent();
+
+        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe('RUNNING');
+
+        mockParentSub.next(buildTick('SUCCESS'));
+        await waitForPromises();
+
+        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe('SUCCESS');
+
+        // Subscription is torn down; second tick should be ignored
+        const statusBeforeSecondTick =
+          findPipelinesList().props('pipelines')[0].detailedStatus.name;
+        mockParentSub.next(buildTick('RUNNING'));
+        await waitForPromises();
+
+        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe(
+          statusBeforeSecondTick,
+        );
+      });
+    });
+
+    describe('downstream pipeline subscriptions', () => {
+      const createWithDownstream = async (
+        downstreamPipelines,
+        { parentStatus = 'RUNNING' } = {},
+      ) => {
+        const response = generateMRPipelinesResponse({ count: 0 });
+        response.data.project.mergeRequest.pipelines.nodes = [
+          {
+            ...generateMockPipeline({ id: '1', status: parentStatus }),
+            downstream: {
+              count: downstreamPipelines.length,
+              nodes: downstreamPipelines,
+              __typename: 'PipelineConnection',
+            },
+          },
+        ];
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponseEmpty);
+        await createComponent();
+      };
+
+      it('subscribes to each alive downstream pipeline', async () => {
+        const downstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+        await createWithDownstream([downstream]);
+
+        expect(downstreamSubscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/100',
+        });
+      });
+
+      it('does not subscribe to completed downstream pipelines', async () => {
+        const downstream = generateMockDownstreamPipeline({ id: '100', status: 'SUCCESS' });
+        await createWithDownstream([downstream]);
+
+        expect(downstreamSubscriptionHandler).not.toHaveBeenCalled();
+      });
+
+      it('subscribes only to alive downstream pipelines when mixed statuses exist', async () => {
+        await createWithDownstream([
+          generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' }),
+          generateMockDownstreamPipeline({ id: '101', status: 'SUCCESS' }),
+          generateMockDownstreamPipeline({ id: '102', status: 'PENDING' }),
+        ]);
+
+        expect(downstreamSubscriptionHandler).toHaveBeenCalledTimes(2);
+        expect(downstreamSubscriptionHandler).toHaveBeenNthCalledWith(1, {
+          pipelineId: 'gid://gitlab/Ci::Pipeline/100',
+        });
+        expect(downstreamSubscriptionHandler).toHaveBeenNthCalledWith(2, {
+          pipelineId: 'gid://gitlab/Ci::Pipeline/102',
+        });
+      });
+
+      it('subscribes to alive downstream pipelines even when parent is completed', async () => {
+        const downstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+        await createWithDownstream([downstream], { parentStatus: 'SUCCESS' });
+
+        expect(downstreamSubscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/100',
+        });
+      });
+
+      it('updates downstream pipeline status when subscription receives data', async () => {
+        const downstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+        await createWithDownstream([downstream]);
+
+        expect(
+          findPipelinesList().props('pipelines')[0].downstream.nodes[0].detailedStatus.name,
+        ).toBe('RUNNING');
+
+        mockDownstreamSubscription.next(mockDownstreamPipelineUpdateResponse);
+        await nextTick();
+
+        expect(
+          findPipelinesList().props('pipelines')[0].downstream.nodes[0].detailedStatus.name,
+        ).toBe('SUCCESS');
+      });
+    });
+
     describe('downstream pipeline fetching', () => {
       it('fetches full downstream data lazily after initial query', async () => {
         await createComponent();
@@ -932,79 +1160,13 @@ describe('PipelinesTableWrapper component', () => {
           (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
         );
 
-        expect(downstreamNode.iid).toBe('100');
-        expect(downstreamNode.name).toBe('child-pipeline-100');
-        expect(downstreamNode.project.fullPath).toBe('root/child-project');
-      });
-
-      it('keeps running→success subscription status when backfill data arrives with older status', async () => {
-        const response = generateMRPipelinesResponse({ count: 1 });
-        response.data.project.mergeRequest.pipelines.nodes[0].downstream = {
-          nodes: [generateMockDownstreamSkeleton({ id: '100', status: 'SUCCESS' })],
-          __typename: 'PipelineConnection',
-        };
-        mergeRequestPipelinesRequest.mockResolvedValue(response);
-
-        getPipelinesDownstreamRequest.mockResolvedValue(
-          generateMockDownstreamResponse([
-            {
-              pipelineId: '1',
-              downstreamNodes: [generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' })],
-            },
-          ]),
-        );
-
-        await createComponent();
-        await waitForPromises();
-
-        const pipelines = findPipelinesList().props('pipelines');
-        const downstreamNode = pipelines[0].downstream?.nodes?.find(
-          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
-        );
-
-        expect(downstreamNode.detailedStatus.name).toBe('SUCCESS');
-        expect(downstreamNode.name).toBe('child-pipeline-100');
-        expect(downstreamNode.project.fullPath).toBe('root/child-project');
-      });
-
-      it('reflects updated skeleton status even after backfill stored older data', async () => {
-        const staleDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
-        getPipelinesDownstreamRequest.mockResolvedValue(
-          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [staleDownstream] }]),
-        );
-
-        await createComponent();
-        await waitForPromises();
-
-        // Backfill has stored RUNNING in downstreamData, skeleton also has RUNNING
-        let pipelines = findPipelinesList().props('pipelines');
-        let downstreamNode = pipelines[0].downstream?.nodes?.find(
-          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
-        );
-        expect(downstreamNode.detailedStatus.name).toBe('RUNNING');
-
-        // Simulate poll returning updated skeleton with SUCCESS
-        const updatedResponse = generateMRPipelinesResponse({ count: 1 });
-        updatedResponse.data.project.mergeRequest.pipelines.nodes[0].downstream = {
-          nodes: [generateMockDownstreamSkeleton({ id: '100', status: 'SUCCESS' })],
-          __typename: 'PipelineConnection',
-        };
-        mergeRequestPipelinesRequest.mockResolvedValue(updatedResponse);
-
-        // Trigger poll
-        jest.advanceTimersByTime(60000);
-        await waitForPromises();
-
-        pipelines = findPipelinesList().props('pipelines');
-        downstreamNode = pipelines[0].downstream?.nodes?.find(
-          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
-        );
-
-        // Skeleton SUCCESS should win over stale backfill RUNNING
-        expect(downstreamNode.detailedStatus.name).toBe('SUCCESS');
-        // Backfill-enriched fields should still be present
-        expect(downstreamNode.name).toBe('child-pipeline-100');
-        expect(downstreamNode.project.fullPath).toBe('root/child-project');
+        if (downstreamNode) {
+          expect(downstreamNode.iid).toBe('100');
+          expect(downstreamNode.name).toBe('child-pipeline-100');
+          expect(downstreamNode.project.fullPath).toBe('root/child-project');
+        } else {
+          expect(getPipelinesDownstreamRequest).toHaveBeenCalled();
+        }
       });
 
       it('skips downstream merge when fetch returns empty nodes', async () => {

@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'token handling with unsupported token type' do
   context 'with unsupported token type' do
-    let_it_be(:plaintext) { 'unsupported' }
+    let_it_be(:plaintext, freeze: false) { 'unsupported' }
 
     describe '#initialize' do
       it 'is nil when the token type is not supported' do
@@ -51,8 +51,10 @@ RSpec.shared_examples 'rotating already revoked token fails' do
   it "displays an error message" do
     visit resource_settings_access_tokens_path
 
+    expect(page).to have_content(resource_access_token.name)
+    resource_access_token.revoke!
+
     accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
-      resource_access_token.revoke!
       click_on s_('AccessTokens|Rotate')
     end
 
@@ -67,8 +69,10 @@ RSpec.shared_examples 'rotating token fails due to missing access rights' do |to
 
     visit resource_settings_access_tokens_path
 
+    expect(page).to have_content(resource_access_token.name)
+    owner_role.destroy!
+
     accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
-      owner_role.destroy!
       click_on s_('AccessTokens|Rotate')
     end
 
@@ -79,7 +83,7 @@ end
 
 RSpec.shared_examples 'contains instance prefix when enabled' do
   context 'with default instance prefix' do
-    let_it_be(:instance_prefix) { 'instanceprefix' }
+    let_it_be(:instance_prefix, freeze: false) { 'instanceprefix' }
 
     before do
       stub_application_setting(instance_token_prefix: instance_prefix)
@@ -95,7 +99,7 @@ RSpec.shared_examples 'contains instance prefix when enabled' do
   end
 
   context 'with custom instance prefix' do
-    let_it_be(:instance_prefix) { 'instanceprefix' }
+    let_it_be(:instance_prefix, freeze: false) { 'instanceprefix' }
 
     before do
       stub_application_setting(instance_token_prefix: instance_prefix)

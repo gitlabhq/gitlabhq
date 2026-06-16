@@ -1,6 +1,14 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteButton from './components/shared/delete_button.vue';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export default (selector = '#js-project-delete-button') => {
   const el = document.querySelector(selector);
@@ -25,6 +33,7 @@ export default (selector = '#js-project-delete-button') => {
   new Vue({
     el,
     name: 'DeleteButtonRoot',
+    apolloProvider,
     provide: { triggerDeleteLocation: 'setting' },
     render(createElement) {
       return createElement(DeleteButton, {

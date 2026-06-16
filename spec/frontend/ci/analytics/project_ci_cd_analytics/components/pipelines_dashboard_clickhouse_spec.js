@@ -268,8 +268,10 @@ describe('PipelinesDashboardClickhouse', () => {
 
       expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
       expect(findAllSingleStats().at(1).text()).toBe('Median duration 30m');
-      expect(findAllSingleStats().at(2).text()).toBe('Failure rate 25%');
-      expect(findAllSingleStats().at(3).text()).toBe('Success rate 25%');
+      // Rate denominator excludes canceled/skipped (count = 8, success = 2, failed = 2, other = 4),
+      // so each rate is 2 / (2 + 2) = 50%.
+      expect(findAllSingleStats().at(2).text()).toBe('Failure rate 50%');
+      expect(findAllSingleStats().at(3).text()).toBe('Success rate 50%');
     });
 
     it('renders with no branch selected', () => {

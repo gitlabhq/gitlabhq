@@ -6,9 +6,9 @@ RSpec.describe 'Project > Settings > access tokens', :js, feature_category: :use
   include Spec::Support::Helpers::ModalHelpers
   include Features::AccessTokenHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project) { create(:project, group: group, maintainers: user) }
   let_it_be(:resource_settings_access_tokens_path) { project_settings_access_tokens_path(project) }
 

@@ -18,6 +18,7 @@ import { __ } from '~/locale';
  *
  */
 export default {
+  name: 'RunnerDetail',
   props: {
     label: {
       type: String,

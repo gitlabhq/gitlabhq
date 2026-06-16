@@ -181,6 +181,182 @@ RSpec.describe Authz::Role, feature_category: :permissions do
         expect(role.permissions(:all)).to contain_exactly(:read_issue, :read_group)
       end
     end
+
+    context 'with `conditionally_enables` declarations' do
+      let(:role_data) do
+        {
+          name: 'test_role', inherits_from: [],
+          project: { raw_permissions: [:read_issue], permissions: [] },
+          group: { raw_permissions: [], permissions: [] }
+        }
+      end
+
+      before do
+        allow(described_class).to receive(:load_role_data).with(:test_role).and_return(role_data)
+      end
+
+      context 'when the role holds the broader permission' do
+        before do
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _read_authored_issue: Set.new([:read_issue])
+          )
+        end
+
+        it 'grants the narrower permission' do
+          role = described_class.get(:test_role)
+
+          expect(role.permissions(:project)).to contain_exactly(:read_issue, :_read_authored_issue)
+        end
+
+        context 'and multiple narrower permissions share the broader' do
+          before do
+            allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+              _read_authored_issue: Set.new([:read_issue]),
+              _read_assigned_issue: Set.new([:read_issue])
+            )
+          end
+
+          it 'grants every narrower permission' do
+            role = described_class.get(:test_role)
+
+            expect(role.permissions(:project)).to contain_exactly(
+              :read_issue, :_read_authored_issue, :_read_assigned_issue
+            )
+          end
+        end
+      end
+
+      context 'when a narrower permission has multiple broader permissions' do
+        before do
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _contribute_security_policy_project: Set.new(
+              [:push_code, :create_merge_request_from, :create_merge_request_in]
+            )
+          )
+        end
+
+        context 'and the role holds them all' do
+          let(:role_data) do
+            {
+              name: 'test_role', inherits_from: [],
+              project: {
+                raw_permissions: [:push_code, :create_merge_request_from, :create_merge_request_in],
+                permissions: []
+              },
+              group: { raw_permissions: [], permissions: [] }
+            }
+          end
+
+          it 'grants the narrower permission' do
+            role = described_class.get(:test_role)
+
+            expect(role.permissions(:project)).to contain_exactly(
+              :push_code, :create_merge_request_from, :create_merge_request_in,
+              :_contribute_security_policy_project
+            )
+          end
+        end
+
+        context 'and the role is missing one' do
+          let(:role_data) do
+            {
+              name: 'test_role', inherits_from: [],
+              project: { raw_permissions: [:push_code, :create_merge_request_from], permissions: [] },
+              group: { raw_permissions: [], permissions: [] }
+            }
+          end
+
+          it 'does not grant the narrower permission' do
+            role = described_class.get(:test_role)
+
+            expect(role.permissions(:project)).to contain_exactly(
+              :push_code, :create_merge_request_from
+            )
+          end
+        end
+      end
+
+      context 'when broader permissions chain through narrower permissions' do
+        before do
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _read_authored_issue: Set.new([:read_issue]),
+            _read_authored_confidential_issue: Set.new([:_read_authored_issue])
+          )
+        end
+
+        it 'expands transitively' do
+          role = described_class.get(:test_role)
+
+          expect(role.permissions(:project)).to contain_exactly(
+            :read_issue, :_read_authored_issue, :_read_authored_confidential_issue
+          )
+        end
+      end
+
+      context 'when the narrower/broader relationship forms a cycle' do
+        before do
+          # _a lists _b as broader; _b lists _a as broader -- neither can ever be satisfied.
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _a: Set.new([:_b]),
+            _b: Set.new([:_a])
+          )
+        end
+
+        it 'terminates without infinite recursion' do
+          role = described_class.get(:test_role)
+
+          expect(role.permissions(:project)).to contain_exactly(:read_issue)
+        end
+      end
+
+      context 'when the role does not hold the broader permission' do
+        before do
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _some_other_conditional: Set.new([:some_other_permission])
+          )
+        end
+
+        it 'does not grant the narrower permission' do
+          role = described_class.get(:test_role)
+
+          expect(role.permissions(:project)).to contain_exactly(:read_issue)
+        end
+      end
+
+      context 'when the broader permission is inherited' do
+        let(:parent_role_data) do
+          {
+            name: 'parent_role', inherits_from: [],
+            project: { raw_permissions: [:read_issue], permissions: [] },
+            group: { raw_permissions: [], permissions: [] }
+          }
+        end
+
+        let(:child_role_data) do
+          {
+            name: 'child_role', inherits_from: [:parent_role],
+            project: { raw_permissions: [:create_issue], permissions: [] },
+            group: { raw_permissions: [], permissions: [] }
+          }
+        end
+
+        before do
+          allow(described_class).to receive(:load_role_data).with(:parent_role).and_return(parent_role_data)
+          allow(described_class).to receive(:load_role_data).with(:child_role).and_return(child_role_data)
+          allow(described_class).to receive(:conditionally_enables_requirements).and_return(
+            _read_authored_issue: Set.new([:read_issue])
+          )
+        end
+
+        it 'grants the narrower permission to the inheriting role' do
+          role = described_class.get(:child_role)
+
+          expect(role.permissions(:project)).to contain_exactly(
+            :read_issue, :create_issue, :_read_authored_issue
+          )
+        end
+      end
+    end
   end
 
   describe '#direct_permissions' do

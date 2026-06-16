@@ -61,6 +61,12 @@ module Gitlab
               @possible_retry_when_values ||= ::Ci::Build.failure_reasons.keys.map(&:to_s) + ['always']
             end
 
+            def compose!(deps = nil)
+              super do
+                warn_on_deprecated_retry_when_values
+              end
+            end
+
             def value
               super.tap do |config|
                 # make sure that `when` and `exit_codes` are arrays, because we allow them to
@@ -77,6 +83,23 @@ module Gitlab
 
             def location
               'retry'
+            end
+
+            private
+
+            # The legacy reasons mapped in `Enums::Ci::CommitStatus.failure_reason_aliases`
+            # were split into more specific reasons in 19.0. They still work as aliases in
+            # `retry:when` (see Gitlab::Ci::Build::AutoRetry), but we warn users to migrate
+            # to the specific reasons. https://gitlab.com/gitlab-org/gitlab/-/issues/602133
+            def warn_on_deprecated_retry_when_values
+              deprecated = Array.wrap(self.when) & Enums::Ci::CommitStatus.failure_reason_aliases.keys
+              return if deprecated.empty?
+
+              add_warning(
+                "uses deprecated `when` value(s): #{deprecated.join(', ')}. " \
+                  "These match the more specific failure reasons that replaced them; " \
+                  "migrate to those reasons. See https://docs.gitlab.com/ci/yaml/#retrywhen"
+              )
             end
           end
 

@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/api/base'
 
-RSpec.describe RuboCop::Cop::API::Base do
+RSpec.describe RuboCop::Cop::API::Base, feature_category: :api do
   let(:corrected) do
     <<~CORRECTED
       class SomeAPI < ::API::Base

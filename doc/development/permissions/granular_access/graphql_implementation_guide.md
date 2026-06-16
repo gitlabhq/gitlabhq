@@ -109,10 +109,11 @@ authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_a
 
 | Parameter | Description |
 |-----------|-------------|
-| `permissions` | **(Required)** Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions` — validated by the `gitlab:permissions:validate` Rake task. |
+| `permissions` | **(Required)** Symbol representing the required permission (for example, `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions`. The `gitlab:permissions:validate` Rake task validates this. |
 | `boundary_type` | **(Required)** Symbol declaring the type of authorization boundary (`:project`, `:group`, `:user`, `:instance`). Validated against the assignable permission boundaries by the `gitlab:permissions:validate` Rake task. |
-| `boundary` | Symbol representing the method to call on the resolved object to extract the boundary (e.g., `:project`). Use `:user` or `:instance` for standalone resources. |
-| `boundary_argument` | Symbol representing the argument name containing the boundary path (e.g., `:project_path`). |
+| `boundary` | Symbol representing the method to call on the resolved object to extract the boundary (for example, `:project`). Use `:user` or `:instance` for standalone resources. |
+| `boundary_argument` | Symbol representing the argument name containing the boundary path (for example, `:project_path`). |
+| `traversal` | Set to `true` on a per-field directive (passed through `granular_scope_directive`) for entry-point fields. The token is checked for boundary visibility (`read_boundary`) only. The listed permissions are not enforced. For more details, see [Entry-point fields](#entry-point-fields). |
 
 **For object types:**
 
@@ -160,11 +161,79 @@ end
 
 #### Choosing Between `boundary` and `boundary_argument`
 
-| Use `boundary` when... | Use `boundary_argument` when... |
-|------------------------|-------------------------------|
-| The type has a method to get the boundary (e.g., `issue.project`) | The boundary is passed as a field argument (e.g., `projectPath`) |
-| Protecting an object type's fields | Protecting a mutation |
-| Protecting a query field with `:id` argument | Protecting a query field with a path argument |
+| Use `boundary` when                                                             | Use `boundary_argument` when                                          |
+|---------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| The type has a method to get the boundary (for example, `issue.project`).      | The boundary is passed as a field argument (for example, `projectPath`). |
+| Protecting an object type's fields.                                             | Protecting a mutation.                                                |
+| Protecting a query field with `:id` argument.                                   | Protecting a query field with a path argument.                        |
+
+#### Entry-point fields
+
+Top-level fields that resolve a boundary from a path argument, such as
+`Query.group(fullPath:)` and `Query.project(fullPath:)`, do not expose data
+themselves. Downstream fields enforce the actual permissions. Use
+`traversal: true` on the directive so the entry point requires only that the
+token is scoped to the boundary, not the listed permission.
+
+```ruby
+field :group, Types::GroupType,
+  null: true,
+  resolver: Resolvers::GroupResolver,
+  description: "Find a group.",
+  directives: granular_scope_directive(
+    permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
+    traversal: true
+  )
+```
+
+Without `traversal: true`, a token scoped to a child resource (for example,
+`read_member`) cannot reach the parent in GraphQL, even though the equivalent
+REST endpoint allows it. With `traversal: true`, the token reaches the parent
+and only the downstream fields the user queries enforce specific permissions.
+
+The `permissions:` argument is still required because it documents the boundary
+the entry point operates on, even though the field itself does not enforce it.
+
+`traversal: true` only applies to `project` and `group` boundary types. For all
+other boundary types, the listed permissions are enforced as normal.
+
+#### Traversal between authorized types
+
+When a field on an authorized type returns another type that also declares
+`authorize_granular_token`, the owner type's directive is automatically skipped.
+The child type's directive enforces authorization when fields on the child
+object are resolved.
+
+For example, `GroupType.groupMembers` returns `GroupMemberType`. Both types
+declare granular-token directives. A token with `read_member` (and no
+`read_group`) can resolve:
+
+```graphql
+query {
+  group(fullPath: "gitlab-org") {
+    groupMembers {
+      nodes { id }
+    }
+  }
+}
+```
+
+Data fields on `GroupType` itself (for example, `name`, `description`,
+`visibility`) still require `read_group` because their return types do not
+declare their own granular-token directive.
+
+This skip is automatic. You do not need to mark traversal fields manually. If
+you do not want the skip to apply to a particular field, attach an explicit
+field-level directive with `directives: granular_scope_directive(...)`. An
+explicit field-level directive always wins.
+
+**Leaf types**: The skip only applies when the return type has at least one
+field whose own return type carries a granular-token directive. Types whose
+fields all return plain scalars (for example, `RepositoryLanguageType`,
+`PushRulesType`) are leaf types. For leaf types, the skip does not apply and
+the collection-level check always fires. This is required because an empty
+collection or `nil` result produces no per-item resolvers, so the
+collection-level check is the only enforcement point.
 
 ### Step 6: Add Authorization Tests
 

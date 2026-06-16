@@ -1029,27 +1029,51 @@ To turn on container scanning for the GitLab container registry:
 
 ### Use with offline or air-gapped environments
 
-To use container scanning for registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
+For instances in an environment with limited, restricted, or intermittent access to external
+resources through the internet, you need to make some adjustments to run container scanning for
+registry successfully. For more information, see [offline environments](../offline_deployments/_index.md).
 
-Instead, you must override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD
-variable in the GitLab UI. The dynamically-created scanning job inherits variables defined in the
-UI. You can use a project, group, or instance CI/CD variable.
+Because container scanning for registry is managed by the GitLab Security Policy Bot,
+you cannot configure the analyzer image by editing the `.gitlab-ci.yml` file. Instead,
+override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD variable
+in the GitLab UI. The dynamically-created scanning job inherits variables defined in
+the UI. You can use a project, group, or instance CI/CD variable.
 
 Prerequisites:
 
 - The Maintainer or Owner role for the project or group.
+- A GitLab Runner with the Docker or Kubernetes executor.
+- A local copy of the container scanning analyzer image.
+- Access to the [Package Metadata Database (PMDB)](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
 
-To configure a custom scanner image:
+  Required to have advisory data for the components detected in your container images.
+  Container scanning for registry relies on [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md)
+  to populate vulnerabilities, which requires synchronized advisory data. Without PMDB synchronization, container scanning for
+  registry does not populate the vulnerability report even if scans complete successfully.
 
-1. In the top bar, select **Search or go to** and find your project or group.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand the **Variables** section.
-1. Select **Add variable** and fill in the details:
-   - Key: `CS_ANALYZER_IMAGE`
-   - Value: The full URL to your mirrored container scanning image. For example, `my.local.registry:5000/analyzers/container-scanning:7`.
-1. Select **Add variable**.
+To use the container scanning analyzer in an offline environment:
 
-The GitLab Security Policy Bot will use the specified image when it triggers a scan.
+1. Import the container scanning image from `registry.gitlab.com` into your
+   [local container registry](../../packages/container_registry/_index.md), as described in
+   [Copy container image](#copy-container-image).
+
+   The process for importing images into a local container registry depends on your network security policy.
+   Consult your IT team to find an accepted and approved process by which external resources can be imported
+   or temporarily accessed.
+
+1. Configure the GitLab Security Policy Bot to use the local analyzer image by setting the
+   `CS_ANALYZER_IMAGE` CI/CD variable:
+
+   1. In the top bar, select **Search or go to** and find your project or group.
+   1. In the left sidebar, select **Settings** > **CI/CD**.
+   1. Expand the **Variables** section.
+   1. Select **Add variable** and fill in the details:
+      - Key: `CS_ANALYZER_IMAGE`
+      - Value: The full URL to your mirrored container scanning image. For example,
+        `my.local.registry:5000/analyzers/container-scanning:8`.
+   1. Select **Add variable**.
+
+The GitLab Security Policy Bot uses the specified image when it triggers a scan.
 
 ## Vulnerabilities database
 

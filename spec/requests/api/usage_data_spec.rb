@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::UsageData, feature_category: :service_ping do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   shared_examples 'does not allow web request without CSRF token' do
     it 'returns 401 response when CSRF check fails on web request' do

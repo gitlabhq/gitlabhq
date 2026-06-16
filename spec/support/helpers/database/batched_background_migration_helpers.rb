@@ -20,6 +20,10 @@ module Database
           migrate_down_to_finalized_version!
         end
       end
+
+      # Force a refresh to avoid schema failures.
+      reset_column_in_all_models
+      refresh_attribute_methods
     end
 
     def background_migration?

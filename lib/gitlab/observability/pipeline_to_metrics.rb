@@ -7,6 +7,13 @@ module Gitlab
 
       HISTOGRAM_BUCKETS = [1, 5, 10, 30, 60, 300, 600, 1800, 3600].freeze
 
+      PIPELINE_RESULT_MAP = {
+        'success' => 'success',
+        'failed' => 'failure',
+        'canceled' => 'cancellation',
+        'skipped' => 'skip'
+      }.freeze
+
       def initialize(integration, pipeline_data)
         @integration = integration
         @pipeline_data = pipeline_data
@@ -49,7 +56,14 @@ module Gitlab
             { key: 'gitlab.project.id', value: { intValue: pipeline_data.dig(:project, :id) } },
             { key: 'gitlab.project.name', value: { stringValue: pipeline_data.dig(:project, :name) } },
             { key: 'gitlab.pipeline.id', value: { intValue: pipeline[:id] } },
-            { key: 'gitlab.pipeline.ref', value: { stringValue: pipeline[:ref] } }
+            { key: 'gitlab.pipeline.ref', value: { stringValue: pipeline[:ref] } },
+            { key: 'cicd.pipeline.name', value: { stringValue: pipeline_name } },
+            { key: 'vcs.repository.name', value: { stringValue: pipeline_data.dig(:project, :name) } },
+            { key: 'vcs.repository.url.full', value: { stringValue: pipeline_data.dig(:project, :web_url) } },
+            { key: 'vcs.owner.name', value: { stringValue: pipeline_data.dig(:project, :namespace) } },
+            { key: 'vcs.provider.name', value: { stringValue: 'gitlab' } },
+            { key: 'vcs.ref.head.name', value: { stringValue: pipeline[:ref] } },
+            { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
           ]
         }
       end
@@ -64,15 +78,30 @@ module Gitlab
       def build_metrics
         metrics = []
 
-        metrics << build_pipeline_duration_metric if pipeline[:duration] && pipeline[:duration] > 0
+        if pipeline[:duration] && pipeline[:duration] > 0
+          metrics << build_pipeline_duration_metric
+          metrics << build_pipeline_run_duration_histogram
+        end
 
         metrics << build_pipeline_status_counter
 
+        metrics << build_pipeline_run_count
+
         metrics << build_job_count_gauge
 
-        metrics << build_job_duration_histogram if builds.any?
+        metrics << build_pipeline_task_total
 
-        metrics << build_queue_duration_metric if pipeline[:queued_duration] && pipeline[:queued_duration] > 0
+        if builds.any?
+          metrics << build_job_duration_histogram
+          metrics << build_pipeline_task_duration_histogram
+        end
+
+        if pipeline[:queued_duration] && pipeline[:queued_duration] > 0
+          metrics << build_queue_duration_metric
+          metrics << build_pipeline_run_queue_duration_metric
+        end
+
+        metrics << build_pipeline_run_errors if pipeline_result == 'failure'
 
         metrics
       end
@@ -93,6 +122,29 @@ module Gitlab
                 ]
               }
             ]
+          }
+        }
+      end
+
+      def build_pipeline_run_duration_histogram
+        duration_seconds = pipeline[:duration] / 1000.0
+
+        {
+          name: 'cicd.pipeline.run.duration',
+          description: 'Duration of the pipeline run in seconds',
+          unit: 's',
+          histogram: {
+            dataPoints: [
+              {
+                timeUnixNano: current_time_nanoseconds,
+                count: 1,
+                sum: duration_seconds,
+                bucketCounts: build_histogram_buckets([pipeline[:duration]]),
+                explicitBounds: HISTOGRAM_BUCKETS,
+                attributes: semconv_pipeline_attributes
+              }
+            ],
+            aggregationTemporality: 'AGGREGATION_TEMPORALITY_DELTA'
           }
         }
       end
@@ -119,6 +171,25 @@ module Gitlab
         }
       end
 
+      def build_pipeline_run_count
+        {
+          name: 'cicd.pipeline.run.count',
+          description: 'Total number of pipeline runs',
+          unit: '1',
+          sum: {
+            isMonotonic: true,
+            aggregationTemporality: 'AGGREGATION_TEMPORALITY_DELTA',
+            dataPoints: [
+              {
+                timeUnixNano: current_time_nanoseconds,
+                asInt: 1,
+                attributes: semconv_pipeline_attributes
+              }
+            ]
+          }
+        }
+      end
+
       def build_job_count_gauge
         {
           name: 'pipeline.jobs_total',
@@ -133,6 +204,23 @@ module Gitlab
                   { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
                   { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } }
                 ]
+              }
+            ]
+          }
+        }
+      end
+
+      def build_pipeline_task_total
+        {
+          name: 'cicd.pipeline.task.total',
+          description: 'Total number of tasks in the pipeline',
+          unit: '1',
+          gauge: {
+            dataPoints: [
+              {
+                timeUnixNano: current_time_nanoseconds,
+                asInt: builds.count,
+                attributes: semconv_pipeline_attributes
               }
             ]
           }
@@ -172,6 +260,41 @@ module Gitlab
         }
       end
 
+      def build_pipeline_task_duration_histogram
+        jobs_by_stage = builds.group_by { |build| build[:stage] }
+
+        data_points = jobs_by_stage.filter_map do |stage, stage_jobs|
+          durations = stage_jobs.filter_map { |job| job[:duration] }
+          next if durations.empty?
+
+          {
+            timeUnixNano: current_time_nanoseconds,
+            count: durations.length,
+            sum: durations.sum,
+            bucketCounts: build_histogram_buckets(durations),
+            explicitBounds: HISTOGRAM_BUCKETS,
+            attributes: [
+              { key: 'job.stage', value: { stringValue: stage } },
+              { key: 'cicd.pipeline.result', value: { stringValue: pipeline_result } },
+              { key: 'cicd.pipeline.trigger.type', value: { stringValue: trigger_type } },
+              { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
+            ]
+          }
+        end
+
+        return if data_points.empty?
+
+        {
+          name: 'cicd.pipeline.task.duration',
+          description: 'Duration of task execution by stage in seconds',
+          unit: 's',
+          histogram: {
+            dataPoints: data_points,
+            aggregationTemporality: 'AGGREGATION_TEMPORALITY_DELTA'
+          }
+        }
+      end
+
       def build_queue_duration_metric
         {
           name: 'pipeline.queue_duration_seconds',
@@ -192,12 +315,60 @@ module Gitlab
         }
       end
 
+      def build_pipeline_run_queue_duration_metric
+        {
+          name: 'cicd.pipeline.run.queue_duration',
+          description: 'Time spent in queue before pipeline run execution',
+          unit: 's',
+          gauge: {
+            dataPoints: [
+              {
+                timeUnixNano: current_time_nanoseconds,
+                asDouble: pipeline[:queued_duration] / 1000.0,
+                attributes: semconv_pipeline_attributes
+              }
+            ]
+          }
+        }
+      end
+
+      def build_pipeline_run_errors
+        {
+          name: 'cicd.pipeline.run.errors',
+          description: 'The number of errors encountered in pipeline runs',
+          unit: '{error}',
+          sum: {
+            isMonotonic: true,
+            aggregationTemporality: 'AGGREGATION_TEMPORALITY_DELTA',
+            dataPoints: [
+              {
+                timeUnixNano: current_time_nanoseconds,
+                asInt: 1,
+                attributes: [
+                  { key: 'cicd.pipeline.name', value: { stringValue: pipeline_name } },
+                  { key: 'error.type', value: { stringValue: '_OTHER' } }
+                ]
+              }
+            ]
+          }
+        }
+      end
+
+      def semconv_pipeline_attributes
+        [
+          { key: 'cicd.pipeline.name', value: { stringValue: pipeline_name } },
+          { key: 'cicd.pipeline.run.state', value: { stringValue: 'finalizing' } },
+          { key: 'cicd.pipeline.result', value: { stringValue: pipeline_result } },
+          { key: 'cicd.pipeline.trigger.type', value: { stringValue: trigger_type } },
+          { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
+        ]
+      end
+
       def build_histogram_buckets(durations)
         bounds = HISTOGRAM_BUCKETS
         buckets = Array.new(bounds.length + 1, 0)
 
         durations.each do |duration|
-          # Convert milliseconds to seconds for comparison and bucket indexing
           bucket_index = bounds.find_index { |bound| duration <= bound * 1000 }
           bucket_index = bounds.length if bucket_index.nil?
           buckets[bucket_index] += 1
@@ -217,6 +388,24 @@ module Gitlab
       def current_time_nanoseconds
         Time.current.to_i * 1_000_000_000
       end
+
+      def ref_head_type
+        pipeline[:tag] ? 'tag' : 'branch'
+      end
+
+      def trigger_type
+        pipeline[:source] || 'unknown'
+      end
+
+      def pipeline_name
+        pipeline[:name] || pipeline[:ref]
+      end
+      strong_memoize_attr :pipeline_name
+
+      def pipeline_result
+        PIPELINE_RESULT_MAP.fetch(pipeline[:status], pipeline[:status])
+      end
+      strong_memoize_attr :pipeline_result
     end
   end
 end

@@ -27,6 +27,7 @@ const allowedFields = [
 ];
 
 export default {
+  name: 'AlertDetailsTable',
   components: {
     GlLink,
     GlLoadingIcon,

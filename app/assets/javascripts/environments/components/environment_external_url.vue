@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
  * Renders the external url link in environments table.
  */
 export default {
+  name: 'EnvironmentExternalUrl',
   components: {
     GlButton,
   },

@@ -10,25 +10,28 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
   let(:commit_message) { 'New commit message' }
 
-  let_it_be(:protected_branch) { 'protected-branch' }
+  let_it_be(:protected_branch, freeze: false) { 'protected-branch' }
 
-  let_it_be(:project) { create(:project, :repository, name: 'Shop') }
-  let_it_be(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
-  let_it_be(:project3) do
+  let_it_be(:project, freeze: false) { create(:project, :repository, name: 'Shop') }
+  let_it_be(:project2, freeze: false) do
+    create(:project, :repository, name: 'Another Project', path: 'another-project')
+  end
+
+  let_it_be(:project3, freeze: false) do
     create(:project, :repository, name: 'Test project with protected branch', path: 'protected-branch')
   end
 
-  let_it_be(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
-  let_it_be(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
-  let_it_be(:project2_non_default_branch_tree_path) do
+  let_it_be(:project_tree_path_root_ref, freeze: false) { project_tree_path(project, project.repository.root_ref) }
+  let_it_be(:project2_tree_path_root_ref, freeze: false) { project_tree_path(project2, project2.repository.root_ref) }
+  let_it_be(:project2_non_default_branch_tree_path, freeze: false) do
     project_tree_path(project2, 'non-default-branch')
   end
 
-  let_it_be(:project3_protected_branch_tree_path_root_ref) do
+  let_it_be(:project3_protected_branch_tree_path_root_ref, freeze: false) do
     project_tree_path(project3, 'protected-branch', project3.repository.root_ref)
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     sign_in(user)

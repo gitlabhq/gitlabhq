@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Commit (JavaScript fixtures)', feature_category: :source_code_management do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { project.first_owner }
-  let_it_be(:commit)  { project.commit("master") }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false)    { project.first_owner }
+  let_it_be(:commit, freeze: false)  { project.commit("master") }
 
   before do
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')

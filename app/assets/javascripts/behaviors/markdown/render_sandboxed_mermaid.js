@@ -1,11 +1,7 @@
 import { countBy, debounce } from 'lodash-es';
 import { __ } from '~/locale';
-import {
-  getBaseURL,
-  relativePathToAbsolute,
-  setUrlParams,
-  joinPaths,
-} from '~/lib/utils/url_utility';
+import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { sandboxMermaidV11Path } from '~/lib/utils/path_helpers/routes';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
@@ -26,8 +22,6 @@ import { unrestrictedPages } from './constants';
 //    C-- > D;
 // </pre>
 //
-
-const SANDBOX_FRAME_PATH_V11 = '/-/sandbox/mermaid_v11';
 
 // This is an arbitrary number; Can be iterated upon when suitable.
 export const MAX_CHAR_LIMIT = 2000;
@@ -76,13 +70,11 @@ function fixElementSource(el) {
 }
 
 export function getSandboxFrameSrc() {
-  const framePath = SANDBOX_FRAME_PATH_V11;
-  const path = joinPaths(gon.relative_url_root || '', framePath);
-  let absoluteUrl = relativePathToAbsolute(path, getBaseURL());
-  if (darkModeEnabled()) {
-    absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, { url: absoluteUrl });
-  }
-  return absoluteUrl;
+  const relativeURL = darkModeEnabled()
+    ? sandboxMermaidV11Path({ darkMode: true })
+    : sandboxMermaidV11Path();
+
+  return relativePathToAbsolute(relativeURL, getBaseURL());
 }
 
 function renderMermaidEl(el, source) {
@@ -125,6 +117,7 @@ function renderMermaidEl(el, source) {
     // Potential risk associated with '*' discussed in below thread
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74414#note_735183398
     iframeEl.contentWindow?.postMessage(
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls
       { source, proxiedUrls, relativeRootPath: window.gon?.relative_url_root || null },
       '*',
     );

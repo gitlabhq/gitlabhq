@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Helm API
 ---
 
@@ -12,29 +12,19 @@ title: Helm API
 
 {{< /details >}}
 
-このAPIを使用して、[Helmパッケージクライアント](../../user/packages/helm_repository/_index.md)とやり取りします。
+このAPIを使用して、[Helmパッケージクライアント](../../user/packages/helm_repository/_index.md)と対話します。
 
-{{< alert type="warning" >}}
+> [!warning]
+> このAPIは、Helm関連のパッケージクライアント（[Helm](https://helm.sh/)や[`helm-push`](https://github.com/chartmuseum/helm-push/#readme)など）で使用され、通常は手動での利用を意図していません。
 
-このAPIは、[Helm](https://helm.sh/)や[`helm-push`](https://github.com/chartmuseum/helm-push/#readme)などのHelm関連パッケージクライアントで使用され、通常は手動での使用を意図していません。
+これらのエンドポイントは、標準のAPI認証方法に準拠していません。サポートされているヘッダーとトークンタイプについては、[Helmレジストリドキュメント](../../user/packages/helm_repository/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
 
-{{< /alert >}}
+## チャートインデックスのダウンロード {#download-a-chart-index}
 
-{{< alert type="note" >}}
+> [!note]
+> 一貫したチャートダウンロードURLを確保するため、APIへのアクセスにプロジェクトIDを使用するか、完全なプロジェクトパスを使用するかにかかわらず、`contextPath`フィールドは`index.yaml`レスポンスで常に数値のプロジェクトIDを使用します。
 
-これらのエンドポイントは、標準のAPI認証方式に準拠していません。サポートされているヘッダーおよびトークンの種類の詳細については、[Helmレジストリドキュメント](../../user/packages/helm_repository/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
-
-{{< /alert >}}
-
-## チャートインデックスをダウンロード {#download-a-chart-index}
-
-{{< alert type="note" >}}
-
-チャートのダウンロードURLの一貫性を確保するため、`index.yaml`の応答の`contextPath`フィールドは、プロジェクトIDまたは完全なプロジェクトパスでAPIにアクセスするかどうかにかかわらず、常に数値プロジェクトIDを使用します。
-
-{{< /alert >}}
-
-チャートインデックスをダウンロード:
+指定されたチャートインデックスをプロジェクト用にダウンロードします。
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/index.yaml
@@ -50,7 +40,7 @@ curl --user <username>:<personal_access_token> \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/helm/stable/index.yaml"
 ```
 
-出力をファイルに書き込み:
+出力をファイルに書き込みます:
 
 ```shell
 curl --user <username>:<personal_access_token> \
@@ -58,9 +48,9 @@ curl --user <username>:<personal_access_token> \
      --remote-name
 ```
 
-## チャートをダウンロード {#download-a-chart}
+## チャートのダウンロード {#download-a-chart}
 
-チャートをダウンロード:
+指定されたチャートをプロジェクト用にダウンロードします。
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/charts/:file_name.tgz
@@ -78,9 +68,9 @@ curl --user <username>:<personal_access_token> \
      --remote-name
 ```
 
-## チャートをアップロード {#upload-a-chart}
+## チャートのアップロード {#upload-a-chart}
 
-チャートをアップロード:
+指定されたチャートをプロジェクト用にアップロードします。
 
 ```plaintext
 POST projects/:id/packages/helm/api/:channel/charts
@@ -90,7 +80,7 @@ POST projects/:id/packages/helm/api/:channel/charts
 | --------- | ------ | -------- | ----------- |
 | `id`      | 文字列 | はい      | プロジェクトのIDまたは完全なパス。 |
 | `channel` | 文字列 | はい      | Helmリポジトリチャンネル。 |
-| `chart`   | ファイル   | はい      | チャート（`multipart/form-data`として）。 |
+| `chart`   | ファイル   | はい      | チャート (`multipart/form-data`として)。 |
 
 ```shell
 curl --request POST \

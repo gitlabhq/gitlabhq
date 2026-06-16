@@ -124,7 +124,7 @@ describe('Old Notes (~/deprecated_notes.js)', () => {
     });
   });
 
-  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/208441
+  // gitlab:quarantine_issue_url=https://gitlab.com/gitlab-org/gitlab/-/issues/208441
   // eslint-disable-next-line jest/no-disabled-tests
   describe.skip('mass-quarantined', () => {
     it('loads the Notes class into the DOM', () => {

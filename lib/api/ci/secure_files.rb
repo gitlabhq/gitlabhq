@@ -22,7 +22,8 @@ module API
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get list of secure files in a project' do
+        desc 'List all secure files for a project' do
+          detail 'Lists all secure files for a specified project.'
           success Entities::Ci::SecureFile
           tags %w[secure_files]
         end
@@ -37,7 +38,8 @@ module API
           present paginate(secure_files), with: Entities::Ci::SecureFile
         end
 
-        desc 'Get the details of a specific secure file in a project' do
+        desc 'Retrieve details of a secure file' do
+          detail 'Retrieves details of a specified secure file in a project.'
           success Entities::Ci::SecureFile
           tags %w[secure_files]
           failure [{ code: 404, message: '404 Not found' }]
@@ -54,7 +56,8 @@ module API
           present secure_file, with: Entities::Ci::SecureFile
         end
 
-        desc 'Download secure file' do
+        desc 'Download a secure file' do
+          detail 'Downloads the contents of a specified secure file in a project.'
           failure [{ code: 404, message: '404 Not found' }]
           tags %w[secure_files]
         end
@@ -80,6 +83,7 @@ module API
           end
 
           desc 'Create a secure file' do
+            detail 'Creates a secure file in a specified project.'
             success Entities::Ci::SecureFile
             tags %w[secure_files]
             failure [{ code: 400, message: '400 Bad Request' }]
@@ -109,7 +113,9 @@ module API
             end
           end
 
-          desc 'Remove a secure file' do
+          desc 'Delete a secure file' do
+            detail 'Deletes a specified secure file from a project.'
+            success code: 204, message: 'Resource deleted'
             tags %w[secure_files]
             failure [{ code: 404, message: '404 Not found' }]
           end

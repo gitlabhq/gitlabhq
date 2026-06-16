@@ -157,7 +157,7 @@ module API
       def self.create_merge_request_mcp_params
         [
           :id, :title, :source_branch, :target_branch, :target_project_id,
-          :assignee_ids, :reviewer_ids, :description, :labels, :milestone_id
+          :assignee_ids, :reviewer_ids, :description, :labels, :milestone_id, :milestone
         ]
       end
 

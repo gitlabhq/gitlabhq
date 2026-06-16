@@ -107,6 +107,53 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
     end
   end
 
+  describe '#after_perform' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let(:worker) { described_class.new }
+
+    before do
+      allow(merge_request).to receive(:diff_head_pipeline).and_return(pipeline)
+    end
+
+    subject(:after_perform) { worker.send(:after_perform, merge_request) }
+
+    context 'when no pipeline was created' do
+      let(:pipeline) { nil }
+
+      it 'publishes PipelineCreationCompletedEvent with nil pipeline_id' do
+        expect { after_perform }
+          .to publish_event(::MergeRequests::PipelineCreationCompletedEvent)
+          .with(merge_request_id: merge_request.id, project_id: project.id)
+      end
+
+      context 'when trigger_auto_merge_after_pipeline_creation is disabled' do
+        before do
+          stub_feature_flags(trigger_auto_merge_after_pipeline_creation: false)
+        end
+
+        it 'does not publish the event' do
+          expect { after_perform }
+            .not_to publish_event(::MergeRequests::PipelineCreationCompletedEvent)
+        end
+      end
+    end
+
+    context 'when a pipeline was created' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it 'publishes PipelineCreationCompletedEvent with pipeline_id set' do
+        expect { after_perform }
+          .to publish_event(::MergeRequests::PipelineCreationCompletedEvent)
+          .with(
+            merge_request_id: merge_request.id,
+            project_id: project.id,
+            pipeline_id: pipeline.id
+          )
+      end
+    end
+  end
+
   describe 'retry behavior' do
     let(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project) }

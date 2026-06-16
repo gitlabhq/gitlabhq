@@ -17,6 +17,8 @@ export default () => {
     initialEndsAt,
     maxNamespaceIds,
     messagesPath,
+    roleOptions,
+    initialRoles,
   } = el.dataset;
 
   return new Vue({
@@ -33,6 +35,8 @@ export default () => {
           initialEndsAt,
           maxNamespaceIds: parseInt(maxNamespaceIds, 10),
           messagesPath,
+          roleOptions: JSON.parse(roleOptions || '[]'),
+          initialRoles: JSON.parse(initialRoles || '[]'),
         },
       });
     },

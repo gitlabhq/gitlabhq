@@ -66,6 +66,23 @@ RSpec.describe DiffFileBaseEntity do
         expect(entity[:submodule_compare]).to eq(nil)
       end
     end
+
+    context 'when submodule blob cannot be resolved' do
+      let(:commit_sha) { "cfe32cf61b73a0d5e9f13e774abde7ff789b1660" }
+
+      before do
+        allow(diff_file).to receive_messages(submodule?: true, blob: nil)
+      end
+
+      it 'does not raise and omits submodule links' do
+        expect { entity }.not_to raise_error
+
+        expect(entity[:submodule]).to eq(true)
+        expect(entity[:submodule_link]).to eq(nil)
+        expect(entity[:submodule_tree_url]).to eq(nil)
+        expect(entity[:submodule_compare]).to eq(nil)
+      end
+    end
   end
 
   context 'contains raw sizes for the blob' do

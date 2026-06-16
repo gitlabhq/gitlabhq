@@ -4,6 +4,7 @@ import readyToMergeQuery from '../../queries/states/new_ready_to_merge.query.gra
 import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
+  name: 'NewReadyToMerge',
   apollo: {
     canMerge: {
       query: readyToMergeQuery,

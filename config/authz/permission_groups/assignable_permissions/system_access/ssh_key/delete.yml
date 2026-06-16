@@ -2,6 +2,8 @@
 name: delete_ssh_key
 description: Grants the ability to delete SSH keys
 boundaries:
+  - instance
+  - group
   - user
 available_for:
   - granular_access_token

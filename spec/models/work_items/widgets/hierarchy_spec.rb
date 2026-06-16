@@ -35,12 +35,12 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
       specify do
         create(:parent_link, work_item: task, work_item_parent: work_item_parent)
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
     context 'when parent is not present' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

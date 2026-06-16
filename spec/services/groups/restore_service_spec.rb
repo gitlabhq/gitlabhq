@@ -5,12 +5,9 @@ require 'spec_helper'
 RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) do
-    create(:group_with_deletion_schedule,
-      :deletion_scheduled,
-      marked_for_deletion_on: 1.day.ago,
-      deleting_user: user).tap do |g|
-        g.update!(path: "group-1-deletion_scheduled-#{g.id}", name: "Group1 Name-deletion_scheduled-#{g.id}")
-      end
+    create(:group, :deletion_scheduled).tap do |g|
+      g.update!(path: "group-1-deletion_scheduled-#{g.id}", name: "Group1 Name-deletion_scheduled-#{g.id}")
+    end
   end
 
   subject(:execute) { described_class.new(group, user).execute }
@@ -26,7 +23,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
           execute
 
           expect(group.deletion_schedule).to be_nil
-          expect(group.marked_for_deletion_on).to be_nil
+          expect(group.self_deletion_scheduled_deletion_created_on).to be_nil
           expect(group.deleting_user).to be_nil
         end
 
@@ -75,10 +72,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context "when the original group path does not contain the -deletion_scheduled- suffix" do
           let(:group) do
-            create(:group_with_deletion_schedule,
-              :deletion_scheduled,
-              marked_for_deletion_on: 1.day.ago,
-              deleting_user: user)
+            create(:group, :deletion_scheduled)
           end
 
           it 'renames the group back to its original path' do
@@ -121,9 +115,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when deletion_schedule is already nil after cancel_deletion succeeds' do
           before do
-            group.update!(state: :deletion_scheduled)
-            group.deletion_schedule.destroy!
-            group.reload
+            group.deletion_scheduled_at = nil
           end
 
           it 'returns success' do
@@ -149,7 +141,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when deletion_schedule.destroy fails' do
           before do
-            allow(group.deletion_schedule).to receive(:destroy).and_return(false)
+            allow(group).to receive(:update!).and_raise(ActiveRecord::RecordInvalid)
             allow(group).to receive_message_chain(:errors, :full_messages).and_return(['destroy error'])
           end
 
@@ -163,8 +155,15 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
       end
 
       context 'when the group is deletion is in progress' do
+        let(:group) { create(:group, :deletion_scheduled, owners: [user]) }
+
         before do
-          group.update!(state: :deletion_in_progress)
+          # Legacy requirement that must be removed after we rollout the feature flag
+          stub_feature_flags(replace_group_deletion_schedule: false)
+          create(:group_deletion_schedule, group: group, deleting_user: user)
+          # Ends here
+
+          group.start_deletion!(transition_user: user)
         end
 
         it 'returns error' do

@@ -21,7 +21,7 @@ module Gitlab
       end
 
       def metrics
-        result, elapsed = with_timing(&method(:check))
+        result, elapsed = with_timing { check }
         return if result.nil?
 
         Gitlab::AppLogger.error("#{human_name} check returned unexpected result #{result}") unless successful?(result)

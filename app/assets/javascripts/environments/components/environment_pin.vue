@@ -8,6 +8,7 @@ import { __ } from '~/locale';
 import cancelAutoStopMutation from '../graphql/mutations/cancel_auto_stop.mutation.graphql';
 
 export default {
+  name: 'EnvironmentPin',
   components: {
     GlDisclosureDropdownItem,
   },

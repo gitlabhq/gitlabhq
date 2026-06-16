@@ -22,6 +22,12 @@ You can use these tools to interact directly with GitLab and perform common GitL
 
 ## `get_mcp_server_version`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200105) in GitLab 18.3.
+
+{{< /history >}}
+
 Returns the current version of the GitLab MCP server.
 
 Example:
@@ -31,6 +37,12 @@ What version of the GitLab MCP server am I connected to?
 ```
 
 ## `create_issue`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+
+{{< /history >}}
 
 Creates a new issue in a GitLab project.
 
@@ -53,6 +65,12 @@ Create a new issue titled "Fix login bug" in project 123 with description
 ```
 
 ## `get_issue`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) in GitLab 18.4.
+
+{{< /history >}}
 
 Retrieves detailed information about a specific GitLab issue.
 
@@ -100,6 +118,12 @@ from branch "fix/specs-broken" into "master" and enable squash
 
 ## `get_merge_request`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) in GitLab 18.4.
+
+{{< /history >}}
+
 Retrieves detailed information about a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
@@ -114,6 +138,12 @@ Get details for merge request 15 in project gitlab-org/gitlab
 ```
 
 ## `get_merge_request_commits`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+
+{{< /history >}}
 
 Retrieves the list of commits in a specific GitLab merge request.
 
@@ -132,6 +162,12 @@ Show me all commits in merge request 42 from project 123
 
 ## `get_merge_request_diffs`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+
+{{< /history >}}
+
 Retrieves the diffs for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
@@ -149,6 +185,12 @@ What files were changed in merge request 25 in the gitlab project?
 
 ## `get_merge_request_pipelines`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+
+{{< /history >}}
+
 Retrieves the pipelines for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
@@ -164,6 +206,12 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 ## `get_pipeline_jobs`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+
+{{< /history >}}
+
 Retrieves the jobs for a specific GitLab CI/CD pipeline.
 
 | Parameter     | Type    | Required | Description |
@@ -177,6 +225,27 @@ Example:
 
 ```plaintext
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
+```
+
+## `get_job_log`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/596588) in GitLab 19.1.
+
+{{< /history >}}
+
+Retrieves the trace (log output) for a specific CI/CD job.
+
+| Parameter | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | string  | Yes      | ID or URL-encoded path of the project. |
+| `job_id`  | integer | Yes      | ID of the job. |
+
+Example:
+
+```plaintext
+Show me the log output for job 88 in project gitlab-org/gitlab
 ```
 
 ## `manage_pipeline`

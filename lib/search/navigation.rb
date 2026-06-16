@@ -12,10 +12,7 @@ module Search
     end
 
     def tab_enabled_for_project?(tab)
-      return false unless project.present?
-
-      abilities = Array(search_tab_ability_map[tab])
-      Array.wrap(project).any? { |p| abilities.any? { |ability| can?(user, ability, p) } }
+      Search::Scopes.scope_allowed_for_project?(tab, user, project)
     end
 
     def tabs
@@ -73,21 +70,6 @@ module Search
     end
 
     attr_reader :user, :project, :group, :options
-
-    def search_tab_ability_map
-      {
-        milestones: :read_milestone,
-        snippets: :read_snippet,
-        issues: :read_issue, # API backward compatibility
-        work_items: :read_work_item,
-        blobs: :read_code,
-        commits: :read_code,
-        merge_requests: :read_merge_request,
-        notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
-        users: :read_project_member,
-        wiki_blobs: :read_wiki
-      }
-    end
 
     def show_user_search_tab?
       return true if tab_enabled_for_project?(:users)

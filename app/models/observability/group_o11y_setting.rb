@@ -9,7 +9,11 @@ module Observability
     }.freeze
     SETUP_WINDOW = 5.minutes
 
-    belongs_to :group, inverse_of: :observability_group_o11y_setting
+    belongs_to :namespace, foreign_key: :group_id, inverse_of: :observability_group_o11y_setting
+    # Deprecated aliases retained until Part 2 (issue #119) lands and call sites are
+    # migrated to `namespace`. The underlying FK column is still `group_id`.
+    alias_method :group, :namespace
+    alias_method :group=, :namespace=
 
     validates :o11y_service_url, length: { maximum: 255 }, addressable_url: { message: 'is invalid' }
     validate :validate_email_format
@@ -27,7 +31,9 @@ module Observability
         message: 'is invalid'
       }
 
-    scope :with_group, -> { includes(:group) }
+    scope :with_namespace, -> { includes(:namespace) }
+    # Deprecated alias retained until call sites migrate to `with_namespace`.
+    scope :with_group, -> { with_namespace }
     scope :search_by_group_id, ->(group_id) { where(group_id: group_id) }
 
     attr_writer :o11y_service_name
@@ -43,14 +49,16 @@ module Observability
     def self.observability_setting_for(resource)
       return unless resource
 
-      group = resource.is_a?(Project) ? resource.group : resource
-      return unless group.is_a?(Group)
+      namespace = resource.is_a?(Project) ? resource.namespace : resource
+      return unless namespace.is_a?(Namespace)
 
-      ancestor_ids = group.traversal_ids.reverse
+      ancestor_ids = namespace.traversal_ids.reverse
       return if ancestor_ids.empty?
 
       # Find the first setting matching any ancestor, maintaining hierarchy order
-      # by using array_position to preserve the order from ancestor_ids
+      # by using array_position to preserve the order from ancestor_ids.
+      # For personal (user) namespaces, traversal_ids is [id], so this matches
+      # only a setting on the user namespace itself.
       group_id_attribute = arel_table[:group_id]
       array_sql = "array_position(ARRAY[#{ancestor_ids.join(',')}]::bigint[], " \
         "#{group_id_attribute.relation.name}.#{group_id_attribute.name})"
@@ -85,7 +93,9 @@ module Observability
     end
 
     def gitlab_observability_export_variable
-      group&.variables&.by_key('GITLAB_OBSERVABILITY_EXPORT')&.first
+      return unless namespace.is_a?(Group)
+
+      namespace.variables.by_key('GITLAB_OBSERVABILITY_EXPORT').first
     end
     strong_memoize_attr :gitlab_observability_export_variable
 

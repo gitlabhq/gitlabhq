@@ -6,7 +6,7 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:wiki) { create(:project_wiki, project: project) }
+  let_it_be(:wiki, freeze: false) { create(:project_wiki, project: project) }
   let_it_be(:group) { create(:group) }
 
   context 'when link is not external or to a wiki' do

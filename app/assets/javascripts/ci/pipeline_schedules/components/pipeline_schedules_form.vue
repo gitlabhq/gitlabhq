@@ -1,11 +1,14 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlFormCheckbox,
   GlForm,
   GlFormGroup,
   GlFormInput,
+  GlLink,
   GlLoadingIcon,
+  GlSprintf,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
@@ -32,12 +35,15 @@ const EVENT_PROPERTY = 'form_submission';
 export default {
   name: 'PipelineSchedulesForm',
   components: {
+    GlAlert,
     GlButton,
     GlForm,
     GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
+    GlLink,
     GlLoadingIcon,
+    GlSprintf,
     IntervalPatternInput,
     PipelineInputsForm,
     VariablesForm,
@@ -157,6 +163,9 @@ export default {
     scheduleFetchError: s__(
       'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
+    readOnlyVariablesNotice: s__(
+      'PipelineSchedules|Pipeline variables are restricted by the project %{linkStart}CI/CD settings%{linkEnd}. Existing schedule variables are still injected into scheduled pipelines and are shown here as read-only.',
+    ),
   },
   computed: {
     dropdownTranslations() {
@@ -171,6 +180,8 @@ export default {
       return this.updatedVariables.filter((variable) => variable.key !== '' && !variable.empty);
     },
     preparedVariablesUpdate() {
+      if (!this.canSetPipelineVariables) return [];
+
       return this.filledVariables.map((variable) => {
         return {
           id: variable.id,
@@ -199,6 +210,9 @@ export default {
       return this.editing
         ? this.$options.i18n.saveScheduleBtnText
         : this.$options.i18n.createScheduleBtnText;
+    },
+    showVariablesForm() {
+      return this.canSetPipelineVariables || (this.editing && this.variables.length > 0);
     },
   },
   methods: {
@@ -379,13 +393,22 @@ export default {
       @update-inputs-metadata="handleInputsMetadataUpdate"
     />
     <!--Variable List-->
-    <variables-form
-      v-if="canSetPipelineVariables"
-      :initial-variables="variables"
-      :editing="editing"
-      @update-variables="updatedVariables = $event"
-      @validity-change="handleValidityChange"
-    />
+    <template v-if="showVariablesForm">
+      <gl-alert v-if="!canSetPipelineVariables" variant="info" :dismissible="false" class="gl-mb-5">
+        <gl-sprintf :message="$options.i18n.readOnlyVariablesNotice">
+          <template #link="{ content }">
+            <gl-link :href="settingsLink">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
+      <variables-form
+        :initial-variables="variables"
+        :editing="editing"
+        :read-only="!canSetPipelineVariables"
+        @update-variables="updatedVariables = $event"
+        @validity-change="handleValidityChange"
+      />
+    </template>
 
     <!--Activated-->
     <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">

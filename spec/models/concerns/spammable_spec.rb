@@ -19,7 +19,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
   end
 
   let(:spammable_model) { SpammableModel.new }
-  let(:issue) { create(:issue, description: 'Test Desc.') }
+  let(:issue) { build_stubbed(:issue, description: 'Test Desc.') }
 
   describe 'Associations' do
     subject { build(:issue) }

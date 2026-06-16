@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: パイプラインスケジュールAPI
 ---
 
@@ -14,9 +14,9 @@ title: パイプラインスケジュールAPI
 
 このAPIを使用して、[パイプラインスケジュール](../ci/pipelines/schedules.md)を操作します。
 
-## すべてのパイプラインスケジュールを取得 {#get-all-pipeline-schedules}
+## すべてのパイプラインスケジュールを一覧表示する {#list-all-pipeline-schedules}
 
-プロジェクトのパイプラインスケジュールのリストを取得します。
+プロジェクトのすべてのパイプラインスケジュールを一覧表示します。
 
 ```plaintext
 GET /projects/:id/pipeline_schedules
@@ -25,7 +25,7 @@ GET /projects/:id/pipeline_schedules
 | 属性 | 型              | 必須 | 説明 |
 | --------- | ----------------- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `scope`   | 文字列            | いいえ       | パイプラインスケジュールのスコープ。次のいずれかである必要があります。`active`、`inactive`。 |
+| `scope`   | 文字列            | いいえ       | パイプラインスケジュールのスコープ。次のいずれかである必要があります: `active`, `inactive`。 |
 
 ```shell
 curl --request GET \
@@ -52,12 +52,25 @@ curl --request GET \
             "state": "active",
             "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
             "web_url": "https://gitlab.example.com/root"
-        }
+        },
+        "inputs": [
+            {
+                "name": "deploy_strategy",
+                "value": "blue-green"
+            },
+            {
+                "name": "feature_flags",
+                "value": ["flag1", "flag2"]
+            }
+        ]
     }
 ]
 ```
 
-## 単一のパイプラインスケジュールを取得 {#get-a-single-pipeline-schedule}
+> [!note]
+> `inputs`フィールドは、メンテナーまたはオーナーロールを持つユーザー、またはスケジュールオーナーの応答にのみ含まれます。
+
+## パイプラインスケジュールを取得する {#retrieve-a-pipeline-schedule}
 
 プロジェクトのパイプラインスケジュールを取得します。
 
@@ -122,22 +135,32 @@ curl --request GET \
 }
 ```
 
-## パイプラインスケジュールによってトリガーされたすべてのパイプラインを取得 {#get-all-pipelines-triggered-by-a-pipeline-schedule}
+> [!note]
+> `inputs`および`variables`フィールドは、メンテナーまたはオーナーロールを持つユーザー、またはスケジュールオーナーの応答にのみ含まれます。
 
-プロジェクト内のパイプラインスケジュールによってトリガーされたすべてのパイプラインを取得します。
+## パイプラインスケジュールによってトリガーされたすべてのパイプラインを一覧表示する {#list-all-pipelines-triggered-by-a-pipeline-schedule}
+
+プロジェクト内のパイプラインスケジュールによってトリガーされたすべてのパイプラインを一覧表示します。
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性              | 型              | 必須 | 説明 |
 | ---------------------- | ----------------- | -------- | ----------- |
 | `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
+| `scope`                | 文字列            | いいえ       | パイプラインのスコープ。次のいずれか: `running`, `pending`, `finished`, `branches`, `tags`。 |
+| `sort`                 | 文字列            | いいえ       | パイプラインを`asc`または`desc`の順にソートします。デフォルトは`asc`です。 |
+| `status`               | 文字列            | いいえ       | パイプラインのステータス。次のいずれか: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled`。 |
+| `updated_after`        | 日時          | いいえ       | 指定された日付より後に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_before`       | 日時          | いいえ       | 指定された日付より前に更新されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_after`        | 日時          | いいえ       | 指定された日付より後に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_before`       | 日時          | いいえ       | 指定された日付より前に作成されたパイプラインを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -145,7 +168,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/pipelines"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -176,11 +199,11 @@ curl --request GET \
 ]
 ```
 
-## 新しいパイプラインスケジュールを作成 {#create-a-new-pipeline-schedule}
+## 新しいパイプラインスケジュールを作成する {#create-a-new-pipeline-schedule}
 
 {{< history >}}
 
-- `inputs`属性は、GitLab 17.11で`ci_inputs_for_pipelines`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/525504)されました。デフォルトでは有効になっています。
+- `inputs`属性は、GitLab 17.11で[導入され](https://gitlab.com/gitlab-org/gitlab/-/issues/525504)、[フラグ](../administration/feature_flags/_index.md)`ci_inputs_for_pipelines`で有効化されました。デフォルトでは有効になっています。
 - `inputs`属性は、GitLab 18.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/536548)になりました。機能フラグ`ci_inputs_for_pipelines`は削除されました。
 
 {{< /history >}}
@@ -193,15 +216,15 @@ POST /projects/:id/pipeline_schedules
 
 | 属性       | 型              | 必須 | 説明 |
 | --------------- | ----------------- | -------- | ----------- |
-| `cron`          | 文字列            | はい      | Cronスケジュール（例：`0 1 * * *`）。 |
+| `cron`          | 文字列            | はい      | Cronスケジュール。例: `0 1 * * *`。 |
 | `description`   | 文字列            | はい      | パイプラインスケジュールの説明。 |
 | `id`            | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `ref`           | 文字列            | はい      | パイプラインをトリガーするブランチまたはタグ名。短いrefs（例：`main`）と完全なrefs（例：`refs/heads/main`または`refs/tags/main`）の両方を受け入れます。短いrefsは自動的に完全なrefsに展開されますが、refがあいまいな場合、リクエストは拒否されます。 |
-| `active`        | ブール値           | いいえ       | パイプラインスケジュールをアクティブにします。falseが設定されている場合、パイプラインスケジュールは最初に非アクティブ化されます（デフォルト：`true`）。 |
-| `cron_timezone` | 文字列            | いいえ       | `ActiveSupport::TimeZone`でサポートされているタイムゾーン（例：`Pacific Time (US & Canada)`）（デフォルト：`UTC`）。 |
-| `inputs`        | ハッシュ              | いいえ       | パイプラインスケジュールに渡す[inputs](../ci/inputs/_index.md#for-a-pipeline)の配列。各入力には、`name`と`value`が含まれています。値には、文字列、配列、数値、またはブール値を指定できます。 |
+| `ref`           | 文字列            | はい      | パイプラインをトリガーするブランチまたはタグ名。短いrefs (`main`) または完全なrefs (`refs/heads/main`または`refs/tags/main`) のいずれかを受け入れます。値がブランチまたはタグのいずれかに一致しない限り、短いrefsは自動的に完全なrefsに展開されます。 |
+| `active`        | ブール値           | いいえ       | パイプラインスケジュールを有効にします。falseが設定されている場合、パイプラインスケジュールは初期状態では非アクティブになります (デフォルト: `true`)。 |
+| `cron_timezone` | 文字列            | いいえ       | `ActiveSupport::TimeZone`がサポートするタイムゾーン。例: `Pacific Time (US & Canada)` (デフォルト: `UTC`)。 |
+| `inputs`        | ハッシュ              | いいえ       | パイプラインスケジュールに渡す[入力](../ci/inputs/_index.md#for-a-pipeline)の配列。各入力には`name`と`value`が含まれます。値には文字列、配列、数値、ブール値を使用できます。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -214,7 +237,7 @@ curl --request POST \
   --form "active=true"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -239,7 +262,7 @@ curl --request POST \
 }
 ```
 
-`inputs`を使用したリクエストの例:
+`inputs`を含むリクエストの例:
 
 ```shell
 curl --request POST \
@@ -254,9 +277,9 @@ curl --request POST \
   --form "inputs[][value]=blue-green"
 ```
 
-## パイプラインスケジュールを編集する {#edit-a-pipeline-schedule}
+## パイプラインスケジュールを更新する {#update-a-pipeline-schedule}
 
-プロジェクトのパイプラインスケジュールを更新します。更新が完了すると、自動的にスケジュールが再設定されます。
+プロジェクトのパイプラインスケジュールを更新します。更新が完了すると、自動的に再スケジュールされます。
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -266,14 +289,14 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | ---------------------- | ----------------- | -------- | ----------- |
 | `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
-| `active`               | ブール値           | いいえ       | パイプラインスケジュールをアクティブにします。falseが設定されている場合、パイプラインスケジュールは最初に非アクティブ化されます。 |
-| `cron_timezone`        | 文字列            | いいえ       | `ActiveSupport::TimeZone`（例：`Pacific Time (US & Canada)`）または`TZInfo::Timezone`（例：`America/Los_Angeles`）でサポートされているタイムゾーン。 |
-| `cron`                 | 文字列            | いいえ       | Cronスケジュール（例：`0 1 * * *`）。 |
+| `active`               | ブール値           | いいえ       | パイプラインスケジュールを有効にします。falseが設定されている場合、パイプラインスケジュールは初期状態では非アクティブになります。 |
+| `cron_timezone`        | 文字列            | いいえ       | `ActiveSupport::TimeZone` (例: `Pacific Time (US & Canada)`) または`TZInfo::Timezone` (例: `America/Los_Angeles`) でサポートされているタイムゾーン。 |
+| `cron`                 | 文字列            | いいえ       | Cronスケジュール。例: `0 1 * * *`。 |
 | `description`          | 文字列            | いいえ       | パイプラインスケジュールの説明。 |
-| `ref`                  | 文字列            | いいえ       | パイプラインをトリガーするブランチまたはタグ名。短いrefs（例：`main`）と完全なrefs（例：`refs/heads/main`または`refs/tags/main`）の両方を受け入れます。短いrefsは自動的に完全なrefsに展開されますが、refがあいまいな場合、リクエストは拒否されます。 |
-| `inputs`               | ハッシュ              | いいえ       | パイプラインスケジュールに渡す[inputs](../ci/inputs/_index.md)の配列。各入力には、`name`と`value`が含まれています。既存の入力を削除するには、`name`フィールドを含め、`destroy`を`true`に設定します。値には、文字列、配列、数値、またはブール値を指定できます。 |
+| `ref`                  | 文字列            | いいえ       | パイプラインをトリガーするブランチまたはタグ名。短いrefs (`main`) または完全なrefs (`refs/heads/main`または`refs/tags/main`) のいずれかを受け入れます。値がブランチまたはタグのいずれかに一致しない限り、短いrefsは自動的に完全なrefsに展開されます。 |
+| `inputs`               | ハッシュ              | いいえ       | パイプラインスケジュールに渡す[入力](../ci/inputs/_index.md)の配列。各入力には`name`と`value`が含まれます。既存の入力を削除するには、`name`フィールドを含め、`destroy`を`true`に設定します。値には文字列、配列、数値、ブール値を使用できます。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -282,7 +305,7 @@ curl --request PUT \
   --form "cron=0 2 * * *"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -312,7 +335,7 @@ curl --request PUT \
 }
 ```
 
-`inputs`を使用したリクエスト例:
+`inputs`を含むリクエストの例:
 
 ```shell
 curl --request PUT \
@@ -322,10 +345,10 @@ curl --request PUT \
   --form "inputs[][name]=deploy_strategy" \
   --form "inputs[][value]=rolling" \
   --form "inputs[][name]=existing_input" \
-  --form "inputs[][_destroy]=true"
+  --form "inputs[][destroy]=true"
 ```
 
-## パイプラインスケジュールの所有権を取得 {#take-ownership-of-a-pipeline-schedule}
+## パイプラインスケジュールの所有権を更新する {#update-ownership-of-a-pipeline-schedule}
 
 プロジェクトのパイプラインスケジュールのオーナーを更新します。
 
@@ -419,9 +442,9 @@ curl --request DELETE \
 }
 ```
 
-## スケジュールされたパイプラインをすぐに実行 {#run-a-scheduled-pipeline-immediately}
+## パイプラインスケジュールをすぐに実行する {#run-a-pipeline-schedule-immediately}
 
-新しいスケジュールされたパイプラインをトリガーします。これはすぐに実行されます。このパイプラインの次回のスケジュールされた実行には影響しません。
+パイプラインスケジュールをすぐに実行します。このパイプラインの次回のスケジュール実行には影響しません。
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
@@ -432,7 +455,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 | `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -440,7 +463,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/pipeline_schedules/1/play"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -448,9 +471,7 @@ curl --request POST \
 }
 ```
 
-## パイプラインスケジュールの変数 {#pipeline-schedule-variables}
-
-### 新しいパイプラインスケジュール変数の作成 {#create-a-new-pipeline-schedule-variable}
+## パイプラインスケジュールの変数を作成する {#create-a-variable-for-a-pipeline-schedule}
 
 パイプラインスケジュールの新しい変数を作成します。
 
@@ -461,10 +482,10 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | 属性              | 型              | 必須 | 説明 |
 | ---------------------- | ----------------- | -------- | ----------- |
 | `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `key`                  | 文字列            | はい      | 変数のキー。255文字以下である必要があります。`A-Z`、`a-z`、`0-9`、および`_`のみが許可されています。 |
+| `key`                  | 文字列            | はい      | 変数のキー。255文字以下である必要があり、`A-Z`、`a-z`、`0-9`、および`_`のみが許可されます。 |
 | `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
 | `value`                | 文字列            | はい      | 変数の値。 |
-| `variable_type`        | 文字列            | いいえ       | 変数の型。利用可能な型は、`env_var`（デフォルト）と`file`です。 |
+| `variable_type`        | 文字列            | いいえ       | 変数のタイプ。利用可能なタイプは: `env_var` (デフォルト) と`file`。 |
 
 ```shell
 curl --request POST \
@@ -482,7 +503,53 @@ curl --request POST \
 }
 ```
 
-### パイプラインスケジュール変数の編集 {#edit-a-pipeline-schedule-variable}
+## パイプラインスケジュールの変数を取得する {#retrieve-a-variable-for-a-pipeline-schedule}
+
+{{< history >}}
+
+- GitLab 18.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/386005)されました。
+
+{{< /history >}}
+
+パイプラインスケジュールの変数を取得します。
+
+```plaintext
+GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
+```
+
+| 属性              | 型              | 必須 | 説明 |
+| ---------------------- | ----------------- | -------- | ----------- |
+| `id`                   | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `key`                  | 文字列            | はい      | 変数のキー。 |
+| `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
+
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
+
+| 属性       | 型   | 説明 |
+| --------------- | ------ | ----------- |
+| `key`           | 文字列 | その変数のキー。 |
+| `value`         | 文字列 | 変数の値。 |
+| `variable_type` | 文字列 | 変数の型。`env_var`または`file`のいずれか。 |
+
+リクエスト例: 
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+```
+
+レスポンス例: 
+
+```json
+{
+    "key": "NEW_VARIABLE",
+    "variable_type": "env_var",
+    "value": "new value"
+}
+```
+
+## パイプラインスケジュールの変数を更新する {#update-a-variable-for-a-pipeline-schedule}
 
 パイプラインスケジュールの変数を更新します。
 
@@ -496,7 +563,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `key`                  | 文字列            | はい      | 変数のキー。 |
 | `pipeline_schedule_id` | 整数           | はい      | パイプラインスケジュールのID。 |
 | `value`                | 文字列            | はい      | 変数の値。 |
-| `variable_type`        | 文字列            | いいえ       | 変数の型。利用可能な型は、`env_var`（デフォルト）と`file`です。 |
+| `variable_type`        | 文字列            | いいえ       | 変数のタイプ。利用可能なタイプは: `env_var` (デフォルト) と`file`。 |
 
 ```shell
 curl --request PUT \
@@ -513,7 +580,7 @@ curl --request PUT \
 }
 ```
 
-### パイプラインスケジュール変数の削除 {#delete-a-pipeline-schedule-variable}
+## パイプラインスケジュールの変数を削除する {#delete-a-variable-for-a-pipeline-schedule}
 
 パイプラインスケジュールの変数を削除します。
 
@@ -540,21 +607,11 @@ curl --request DELETE \
 }
 ```
 
-## トラブルシューティング {#troubleshooting}
-
-パイプラインスケジュールAPIを使用する際に、以下の問題が発生する可能性があります。
-
-### 短いrefsが完全なrefsに展開される {#short-refs-are-expanded-to-full-refs}
-
-短い`ref`を指定すると、完全な`ref`に自動的に展開されます。この動作は意図されたものであり、明示的なリソース識別を保証します。
-
-APIは、短いrefs（`main`など）と完全なrefs（`refs/heads/main`または`refs/tags/main`など）の両方を受け入れます。
-
 ### あいまいなrefs {#ambiguous-refs}
 
-次の場合、APIは短い`ref`を完全な`ref`に自動的に展開できません:
+APIは、短い`ref`を完全な`ref`に自動的に展開できません。次の場合です:
 
-- ブランチとタグの両方が、短い`ref`refと同じ名前で存在します。
-- その名前のブランチまたはタグは存在しません。
+- 短い`ref`と同じ名前のブランチとタグの両方が存在する場合。
+- その名前のブランチまたはタグが存在しない場合。
 
 この問題を解決するには、完全な`ref`を指定して、正しいリソースが識別されるようにします。

@@ -24,7 +24,7 @@ module QA
       end
 
       def all
-        $stdout.puts 'Running...'
+        puts 'Running...'
         group_id = create_group
         create_project(group_id)
 
@@ -46,23 +46,23 @@ module QA
         end
 
         threads_arr.each(&:join)
-        $stdout.puts "\nURLs: #{@urls}"
+        puts "\nURLs: #{@urls}"
         File.open("urls.yml", "w") { |file| file.puts @urls.stringify_keys.to_yaml }
-        $stdout.puts "\nDone"
+        puts "\nDone"
       end
 
       def create_group
         group_search_response = create_a_group_api_req(@group_name, @visibility)
         group = JSON.parse(group_search_response.body)
         @urls[:group_page] = group["web_url"]
-        $stdout.puts "Created a group: #{@urls[:group_page]}"
+        puts "Created a group: #{@urls[:group_page]}"
         group["id"]
       end
 
       def create_project(group_id)
         create_project_response = create_a_project_api_req(@project_name, group_id, @visibility)
         @urls[:project_page] = JSON.parse(create_project_response.body)["web_url"]
-        $stdout.puts "Created a project: #{@urls[:project_page]}"
+        puts "Created a project: #{@urls[:project_page]}"
       end
 
       def create_many_issues
@@ -70,7 +70,7 @@ module QA
           create_an_issue_api_req("#{@group_name}%2F#{@project_name}", "issue#{i}", "desc#{i}")
         end
         @urls[:issues_list_page] = @urls[:project_page] + "/issues"
-        $stdout.puts "Created many issues: #{@urls[:issues_list_page]}"
+        puts "Created many issues: #{@urls[:issues_list_page]}"
       end
 
       def create_many_todos
@@ -78,7 +78,7 @@ module QA
           create_a_todo_api_req("#{@group_name}%2F#{@project_name}", (i + 1).to_s)
         end
         @urls[:todos_page] = ENV['GITLAB_ADDRESS'] + "/dashboard/todos"
-        $stdout.puts "Created many todos: #{@urls[:todos_page]}"
+        puts "Created many todos: #{@urls[:todos_page]}"
       end
 
       def create_many_labels
@@ -86,7 +86,7 @@ module QA
           create_a_label_api_req("#{@group_name}%2F#{@project_name}", "label#{i}", Faker::Color.hex_color.to_s)
         end
         @urls[:labels_page] = @urls[:project_page] + "/labels"
-        $stdout.puts "Created many labels: #{@urls[:labels_page]}"
+        puts "Created many labels: #{@urls[:labels_page]}"
       end
 
       def create_many_merge_requests
@@ -94,7 +94,7 @@ module QA
           create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "branch#{i}", Runtime::Env.default_branch, "MR#{i}")
         end
         @urls[:mr_list_page] = @urls[:project_page] + "/merge_requests"
-        $stdout.puts "Created many MRs: #{@urls[:mr_list_page]}"
+        puts "Created many MRs: #{@urls[:mr_list_page]}"
       end
 
       def create_many_new_files
@@ -105,7 +105,7 @@ module QA
         end
 
         @urls[:files_page] = @urls[:project_page] + "/tree/#{Runtime::Env.default_branch}"
-        $stdout.puts "Added many new files: #{@urls[:files_page]}"
+        puts "Added many new files: #{@urls[:files_page]}"
       end
 
       def create_many_branches
@@ -113,7 +113,7 @@ module QA
           create_a_branch_api_req("branch#{i}", "#{@group_name}%2F#{@project_name}")
         end
         @urls[:branches_page] = @urls[:project_page] + "/-/branches"
-        $stdout.puts "Created many branches: #{@urls[:branches_page]}"
+        puts "Created many branches: #{@urls[:branches_page]}"
       end
 
       def create_an_issue_with_many_discussions
@@ -126,7 +126,7 @@ module QA
         # Add description and labels
         update_an_issue_api_req("#{@group_name}%2F#{@project_name}", issue_id, Faker::Lorem.sentences(500).join(" ").to_s, labels_list)
         @urls[:large_issue] = @urls[:project_page] + "/issues/#{issue_id}"
-        $stdout.puts "Created an issue with many discussions: #{@urls[:large_issue]}"
+        puts "Created an issue with many discussions: #{@urls[:large_issue]}"
       end
 
       def create_an_mr_with_large_files_and_many_mr_discussions
@@ -174,7 +174,7 @@ module QA
           create_a_discussion_on_mr_api_req("#{@group_name}%2F#{@project_name}", iid, "Let us discuss")
         end
         @urls[:large_mr] = JSON.parse(create_mr_response.body)["web_url"]
-        $stdout.puts "Created an MR with many discussions and many very large Files: #{@urls[:large_mr]}"
+        puts "Created an MR with many discussions and many very large Files: #{@urls[:large_mr]}"
       end
 
       def create_diff_note(iid, file_count, line_count, head_sha, start_sha, base_sha, line_type)
@@ -204,7 +204,7 @@ module QA
         100.times do |i|
           update_file_api_req(file_name, branch_name, project_path, Faker::Lorem.sentences(5).join(" "), Faker::Lorem.sentences(500).join("\n"))
         end
-        $stdout.puts "Using branch: #{branch_name}, created an MR with many commits: #{@urls[:mr_with_many_commits]}"
+        puts "Using branch: #{branch_name}, created an MR with many commits: #{@urls[:mr_with_many_commits]}"
       end
 
       private

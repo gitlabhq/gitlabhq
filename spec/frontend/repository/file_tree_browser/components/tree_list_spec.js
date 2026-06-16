@@ -21,6 +21,7 @@ import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisse
 import { visitUrl } from '~/lib/utils/url_utility';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -38,6 +39,7 @@ jest.mock('~/lib/utils/dom_utils');
 jest.mock('~/lib/utils/scroll_utils');
 
 describe('Tree List', () => {
+  let store;
   let wrapper;
   let apolloProvider;
   let pinia;
@@ -95,6 +97,7 @@ describe('Tree List', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia();
+    store = useFileTreeBrowserVisibility();
     return createComponent();
   });
 
@@ -643,6 +646,57 @@ describe('Tree List', () => {
         '/-/blob/main/dir_1/file.txt?ref_type=heads',
       );
     });
+
+    it.each(['Enter', ' '])(
+      'does not call resetFileTreeBrowserAllStates with %s key when peek is on but item is a directory',
+      async (key) => {
+        store.fileTreeBrowserIsPeekOn = true;
+        await createComponent();
+        await nextTick();
+
+        // spy on toggleDirectory to prevent the actual GraphQL call
+        // this prevents maxiumum call stack exceeded error
+        jest.spyOn(wrapper.vm, 'toggleDirectory').mockImplementation(() => {});
+
+        findTree().trigger('keydown', { key });
+        await nextTick();
+
+        expect(store.resetFileTreeBrowserAllStates).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each(['Enter', ' '])(
+      'calls resetFileTreeBrowserAllStates with %s key when item is file and peek is on',
+      async (key) => {
+        store.fileTreeBrowserIsPeekOn = true;
+        await createComponent();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        findTree().trigger('keydown', { key });
+        await nextTick();
+
+        expect(store.resetFileTreeBrowserAllStates).toHaveBeenCalled();
+      },
+    );
+
+    it.each(['Enter', ' '])(
+      'does not call resetFileTreeBrowserAllStates with %s key when peek is off',
+      async (key) => {
+        await createComponent();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        findTree().trigger('keydown', { key });
+        await nextTick();
+
+        expect(store.resetFileTreeBrowserAllStates).not.toHaveBeenCalled();
+      },
+    );
 
     it('does not move focus beyond list boundaries', async () => {
       await createComponent();
@@ -1218,6 +1272,25 @@ describe('Tree List', () => {
     expect(wrapper.vm.$router.push).toHaveBeenCalledWith(
       '/-/blob/main/dir_1/file.txt?ref_type=heads',
     );
+  });
+
+  it('calls resetFileTreeBrowserAllStates when clicking on file when peek is on', () => {
+    store.fileTreeBrowserIsPeekOn = true;
+
+    findFileRows().at(1).vm.$emit('clickFile');
+    expect(store.resetFileTreeBrowserAllStates).toHaveBeenCalled();
+  });
+
+  it('does not call resetFileTreeBrowserAllStates when clicking on directory even when peek is on', () => {
+    store.fileTreeBrowserIsPeekOn = true;
+
+    findFileRows().at(0).vm.$emit('clickFile');
+    expect(store.resetFileTreeBrowserAllStates).not.toHaveBeenCalled();
+  });
+
+  it('does not call resetFileTreeBrowserAllStates when clicking on file when peek is off', () => {
+    findFileRows().at(1).vm.$emit('clickFile');
+    expect(store.resetFileTreeBrowserAllStates).not.toHaveBeenCalled();
   });
 
   it('calls scrollUp when file is clicked', () => {

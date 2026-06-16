@@ -24,6 +24,7 @@ import EmptyState from './empty_state.vue';
 import EnvironmentsAppSkeletonLoader from './environments_app_skeleton_loader.vue';
 
 export default {
+  name: 'EnvironmentsApp',
   components: {
     DeleteEnvironmentModal,
     CanaryUpdateModal,

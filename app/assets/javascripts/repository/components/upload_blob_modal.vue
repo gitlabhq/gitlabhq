@@ -13,6 +13,7 @@ import CommitChangesModal from '~/repository/components/commit_changes_modal.vue
 import { InternalEvents } from '~/tracking';
 
 export default {
+  name: 'UploadBlobModal',
   components: {
     GlButton,
     UploadDropzone,

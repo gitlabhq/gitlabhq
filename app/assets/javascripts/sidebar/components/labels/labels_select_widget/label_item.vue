@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'LabelItem',
   props: {
     label: {
       type: Object,

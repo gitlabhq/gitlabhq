@@ -2,6 +2,21 @@
 
 module BatchLoaders
   class AwardEmojiVotesBatchLoader
+    def self.load_award_emoji(object, awardable_class: nil)
+      return [] unless object
+
+      awardable_class ||= object.class.name
+
+      ::BatchLoader::GraphQL.for(object.id).batch(
+        default_value: [],
+        key: "#{awardable_class}-award-emoji",
+        cache: false
+      ) do |ids, loader|
+        emojis = AwardEmoji.by_awardable(awardable_class, ids).with_awardable_and_author.group_by(&:awardable_id)
+        ids.each { |id| loader.call(id, emojis[id] || []) }
+      end
+    end
+
     def self.load_upvotes(object, awardable_class: nil)
       load_votes_for(object, AwardEmoji::UPVOTE_NAME, awardable_class: awardable_class)
     end
@@ -24,5 +39,3 @@ module BatchLoaders
     end
   end
 end
-
-BatchLoaders::AwardEmojiVotesBatchLoader.prepend_mod

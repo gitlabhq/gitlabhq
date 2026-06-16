@@ -1,14 +1,20 @@
 import { shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
-import Vue from 'vue';
+import Vue, { defineComponent } from 'vue';
 import { GlBreadcrumb } from '@gitlab/ui';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
-import createRouter from '~/explore/analytics_dashboards/router';
+
+Vue.use(VueRouter);
 
 describe('AnalyticsDashboardsBreadcrumbs', () => {
-  const base = '/dashboard';
+  const MockComponent = defineComponent({
+    name: 'MockComponent',
+    template: '<div>Mock</div>',
+  });
+
   const breadcrumbState = {
     name: '',
+    slug: '',
   };
 
   const rootBreadcrumb = {
@@ -16,22 +22,52 @@ describe('AnalyticsDashboardsBreadcrumbs', () => {
     to: '/',
   };
 
+  const mockRouter = {
+    mode: 'history',
+    base: '/dashboard',
+    routes: [
+      {
+        name: 'root',
+        path: rootBreadcrumb.to,
+        component: MockComponent,
+        meta: {
+          getName: () => rootBreadcrumb.text,
+          root: true,
+        },
+      },
+      {
+        name: 'dashboard-detail',
+        path: '/:slug',
+        component: MockComponent,
+        meta: {
+          getName: () => breadcrumbState.name,
+        },
+      },
+      {
+        name: 'dashboard-edit',
+        path: '/:slug/edit',
+        component: MockComponent,
+        meta: {
+          getName: () => 'Edit',
+          getParents: () => [{ text: breadcrumbState.name, to: `/${breadcrumbState.slug}` }],
+        },
+      },
+    ],
+  };
+
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
   let router;
 
-  Vue.use(VueRouter);
-
-  const findBreadcrumbs = () => wrapper.findComponent(GlBreadcrumb);
-
   const mockRoute = {
     meta: {
       getName: jest.fn(),
+      getParents: jest.fn(() => []),
     },
   };
 
   const createWrapper = ({ props = {}, mocks = {} } = {}) => {
-    router = createRouter(base, breadcrumbState);
+    router = new VueRouter(mockRouter);
 
     wrapper = shallowMount(AnalyticsDashboardsBreadcrumbs, {
       router,
@@ -45,9 +81,12 @@ describe('AnalyticsDashboardsBreadcrumbs', () => {
     });
   };
 
+  const findBreadcrumbs = () => wrapper.findComponent(GlBreadcrumb);
+
   describe('when mounted', () => {
     afterEach(() => {
       breadcrumbState.name = '';
+      breadcrumbState.slug = '';
     });
 
     beforeEach(() => {
@@ -103,6 +142,35 @@ describe('AnalyticsDashboardsBreadcrumbs', () => {
         rootBreadcrumb,
         {
           text: 'Test dashboard 1',
+          to: undefined,
+        },
+      ]);
+    });
+
+    it('should render the current breadcrumb with any intermediary breadcrumbs', async () => {
+      const parents = [{ text: 'Test dashboard', to: '/123' }];
+
+      createWrapper({
+        mocks: {
+          $route: {
+            meta: {
+              getName: () => 'Edit',
+              getParents: () => parents,
+            },
+            name: 'dashboard-edit',
+          },
+        },
+      });
+      breadcrumbState.name = 'Test dashboard';
+      breadcrumbState.slug = '123';
+
+      await router.push('/test-dashboard-1/edit');
+
+      expect(findBreadcrumbs().props('items')).toStrictEqual([
+        rootBreadcrumb,
+        ...parents,
+        {
+          text: 'Edit',
           to: undefined,
         },
       ]);

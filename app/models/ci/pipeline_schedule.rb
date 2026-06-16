@@ -131,7 +131,7 @@ module Ci
     end
 
     def worker_cron_expression
-      Settings.cron_jobs['pipeline_schedule_worker']['cron']
+      Gitlab::SidekiqConfig.cron_jobs['pipeline_schedule_worker']['cron']
     end
 
     # Using destroy instead of before_destroy as we want nullify_dependent_associations_in_batches

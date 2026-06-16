@@ -4,6 +4,7 @@ import { RENDER_ERROR_MSG } from './constants';
 import { initLeafletMap } from './utils';
 
 export default {
+  name: 'GeoJsonViewer',
   props: {
     blob: {
       type: Object,

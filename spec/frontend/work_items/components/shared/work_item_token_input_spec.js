@@ -262,11 +262,6 @@ describe('WorkItemTokenInput', () => {
         [workItemsByReferencesQuery, workItemReferencesQueryResolver],
         [workItemAncestorsQuery, workItemAncestorsQueryHandler],
       ]),
-      provide: {
-        glFeatures: {
-          workItemConfigurableTypes: true,
-        },
-      },
       propsData: {
         value: workItemsToAdd,
         childrenType,

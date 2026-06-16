@@ -44,6 +44,12 @@ module AdminModeHelper
     end
   end
 
+  def enter_admin_mode_via(provider, user, uid, saml_response: nil, expect_fail: false, additional_info: {})
+    response_object = saml_xml(saml_response) if saml_response.present?
+    mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
+    click_oauth_provider(provider, sign_in_path: new_admin_session_path, expect_fail: expect_fail)
+  end
+
   # Requires Javascript driver.
   def leave_admin_mode
     find_by_testid('user-menu-toggle').click

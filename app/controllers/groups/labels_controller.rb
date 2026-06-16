@@ -18,7 +18,8 @@ class Groups::LabelsController < Groups::ApplicationController
       format.html do
         # at group level we do not want to list project labels,
         # we only want `only_group_labels = false` when pulling labels for label filter dropdowns, fetched through json
-        @labels = available_labels(params.merge(only_group_labels: true)).page(params[:page])
+        @labels = available_labels(labels_finder_params.merge(only_group_labels: true))
+          .page(labels_finder_params[:page])
         Preloaders::LabelsPreloader.new(@labels, current_user).preload_all
       end
       format.json do
@@ -91,7 +92,8 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def label
-    @label ||= available_labels(params.merge(only_group_labels: true, ignore_archived: true)).find(params[:id])
+    @label ||= available_labels(labels_finder_params.merge(only_group_labels: true, ignore_archived: true))
+      .find(labels_finder_params[:id])
   end
   alias_method :subscribable_resource, :label
 
@@ -122,7 +124,7 @@ class Groups::LabelsController < Groups::ApplicationController
     session[:previous_labels_path] = URI(request.referer || '').path
   end
 
-  def available_labels(options = params)
+  def available_labels(options = labels_finder_params)
     archived_param = options[:archived].nil? ? false : options[:archived] unless options[:ignore_archived]
 
     @available_labels ||=
@@ -140,6 +142,10 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def sort
-    @sort ||= params[:sort] || 'name_asc'
+    @sort ||= labels_finder_params[:sort] || 'name_asc'
+  end
+
+  def labels_finder_params
+    params.permit(:archived, :id, :include_descendant_groups, :only_group_labels, :page, :search, :sort, :subscribed)
   end
 end

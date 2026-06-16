@@ -1,7 +1,7 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: トピックAPI
 ---
 
@@ -9,36 +9,37 @@ title: トピックAPI
 
 - プラン: Free、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- ステータス: ベータ版
 
 {{< /details >}}
 
-このAPIを使用して、プロジェクトのトピックを操作します。詳細については、[プロジェクトトピック](../user/project/project_topics.md)を参照してください。
+プロジェクトトピックを操作するためにこのAPIを使用します。詳細については、[プロジェクトトピック](../user/project/project_topics.md)を参照してください。
 
-## トピック一覧 {#list-topics}
+## すべてのトピックを一覧表示 {#list-all-topics}
 
-関連付けられたプロジェクトの数で順序付けられた、GitLabインスタンス内のプロジェクトのトピックの一覧を返します。
+GitLabインスタンス内のプロジェクトトピックのリストを、関連するプロジェクトの数でソートして返します。
 
 ```plaintext
 GET /topics
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性          | 型    | 必須               | 説明 |
 | ------------------ | ------- | ---------------------- | ----------- |
 | `page`             | 整数 | いいえ | 取得するページ。`1`がデフォルトです。                      |
 | `per_page`         | 整数 | いいえ | ページごとに返すレコード数。`20`がデフォルトです。 |
 | `search`           | 文字列  | いいえ | `name`に対してトピックを検索します。                     |
-| `without_projects` | ブール値 | いいえ | 割り当てられたプロジェクトがないトピックに結果を制限します。      |
+| `without_projects` | ブール値 | いいえ | 結果を、割り当てられたプロジェクトがないトピックに制限します。      |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
   --url "https://gitlab.example.com/api/v4/topics?search=git"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -72,28 +73,28 @@ curl --request GET \
 ]
 ```
 
-## トピックの取得 {#get-a-topic}
+## トピックを取得する {#retrieve-a-topic}
 
-IDでプロジェクトのトピックを取得します。
+IDでプロジェクトトピックを取得します。
 
 ```plaintext
 GET /topics/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須               | 説明         |
 | --------- | ------- | ---------------------- | ------------------- |
-| `id`      | 整数 | はい | プロジェクトのトピックのID |
+| `id`      | 整数 | はい | プロジェクトトピックのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
   --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -107,33 +108,33 @@ curl --request GET \
 }
 ```
 
-## トピックに割り当てられたプロジェクトの一覧 {#list-projects-assigned-to-a-topic}
+## トピックに割り当てられたすべてのプロジェクトを一覧表示 {#list-all-projects-assigned-to-a-topic}
 
-トピックに割り当てられたすべてのプロジェクトを一覧表示するには、[Projects API](projects.md#list-all-projects)を使用します。
+[Projects API](projects.md#list-all-projects)を使用して、特定のトピックに割り当てられたすべてのプロジェクトを一覧表示します。
 
 ```plaintext
 GET /projects?topic=<topic_name>
 ```
 
-## トピックを作成する {#create-a-project-topic}
+## プロジェクトトピックを作成 {#create-a-project-topic}
 
-新しいプロジェクトのトピックを作成します。管理者のみが使用できます。
+新しいプロジェクトトピックを作成します。管理者のみが利用可能です。
 
 ```plaintext
 POST /topics
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型    | 必須 | 説明                                                                                                                                                                                    |
 |-------------------|---------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `name`            | 文字列  | はい      | Slug (名前)                                                                                                                                                                                    |
-| `title`           | 文字列  | はい      | タイトル                                                                                                                                                                                          |
+| `title`           | 文字列  | はい      | Title                                                                                                                                                                                          |
 | `avatar`          | ファイル    | いいえ       | アバター                                                                                                                                                                                         |
 | `description`     | 文字列  | いいえ       | 説明                                                                                                                                                                                    |
-| `organization_id` | 整数 | いいえ       | トピックの組織ID。警告：この引数は実験段階であり、将来変更される可能性があります。組織の詳細については、[Organizations API](organizations.md)を参照してください |
+| `organization_id` | 整数 | いいえ       | トピックの組織ID。警告: この属性は実験的なものであり、将来変更される可能性があります。組織に関する詳細については、[Organizations API](organizations.md)を参照してください。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -142,7 +143,7 @@ curl --request POST \
     --url "https://gitlab.example.com/api/v4/topics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -156,25 +157,25 @@ curl --request POST \
 }
 ```
 
-## プロジェクトのトピックの更新 {#update-a-project-topic}
+## プロジェクトトピックを更新 {#update-a-project-topic}
 
-プロジェクトのトピックを更新します。管理者のみが使用できます。
+プロジェクトトピックを更新します。管理者のみが利用可能です。
 
 ```plaintext
 PUT /topics/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性     | 型    | 必須 | 説明         |
 |---------------|---------|----------|---------------------|
-| `id`          | 整数 | はい      | プロジェクトのトピックのID |
+| `id`          | 整数 | はい      | プロジェクトトピックのID |
 | `avatar`      | ファイル    | いいえ       | アバター              |
 | `description` | 文字列  | いいえ       | 説明         |
 | `name`        | 文字列  | いいえ       | Slug (名前)         |
-| `title`       | 文字列  | いいえ       | タイトル               |
+| `title`       | 文字列  | いいえ       | Title               |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -183,7 +184,7 @@ curl --request PUT \
     --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -197,9 +198,9 @@ curl --request PUT \
 }
 ```
 
-### トピックアバターのアップロード {#upload-a-topic-avatar}
+### トピックのアバターをアップロード {#upload-a-topic-avatar}
 
-ファイルシステムからアバターファイルをアップロードするには、`--form`引数を使用します。この引数により、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`file=`パラメータは、ファイルシステムのファイルを指しており、先頭に`@`を付ける必要があります。例: 
+ファイルシステムからアバターファイルをアップロードするには、`--form`引数を使用します。この引数により、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを投稿します。`file=`パラメータは、ファイルシステムのファイルを指しており、先頭に`@`を付ける必要があります。例: 
 
 ```shell
 curl --request PUT \
@@ -208,11 +209,11 @@ curl --request PUT \
     --form "avatar=@/tmp/example.png"
 ```
 
-### トピックアバターの削除 {#remove-a-topic-avatar}
+### トピックのアバターを削除 {#remove-a-topic-avatar}
 
-トピックアバターを削除するには、`avatar`属性に空白値を指定します。
+トピックのアバターを削除するには、`avatar`属性に空白の値を指定します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -221,21 +222,21 @@ curl --request PUT \
     --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
-## トピックを削除 {#delete-a-project-topic}
+## プロジェクトトピックを削除 {#delete-a-project-topic}
 
-プロジェクトのトピックを削除するには、管理者である必要があります。プロジェクトのトピックを削除すると、プロジェクトのトピックの割り当ても削除されます。
+プロジェクトトピックを削除するには、管理者である必要があります。プロジェクトトピックを削除すると、プロジェクトのトピックの割り当ても削除されます。
 
 ```plaintext
 DELETE /topics/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
-| `id`      | 整数 | はい      | プロジェクトのトピックのID |
+| `id`      | 整数 | はい      | プロジェクトトピックのID |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -245,32 +246,23 @@ curl --request DELETE \
 
 ## トピックをマージする {#merge-topics}
 
-{{< history >}}
-
-- GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95501)されました。
-
-{{< /history >}}
-
-ソーストピックをターゲットトピックにマージするには、管理者である必要があります。トピックをマージすると、ソーストピックが削除され、割り当てられたすべてのプロジェクトがターゲットトピックに移動されます。
+ソーストピックをターゲットトピックにマージするには、管理者である必要があります。トピックをマージすると、ソーストピックは削除され、割り当てられているすべてのプロジェクトがターゲットトピックに移動します。
 
 ```plaintext
 POST /topics/merge
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型    | 必須 | 説明                |
 |-------------------|---------|----------|----------------------------|
-| `source_topic_id` | 整数 | はい      | ソースプロジェクトのトピックのID |
-| `target_topic_id` | 整数 | はい      | ターゲットプロジェクトのトピックのID |
+| `source_topic_id` | 整数 | はい      | ソースプロジェクトトピックのID |
+| `target_topic_id` | 整数 | はい      | ターゲットプロジェクトトピックのID |
 
-{{< alert type="note" >}}
+> [!note]
+> `source_topic_id`と`target_topic_id`は同じ組織に属している必要があります。
 
-`source_topic_id`と`target_topic_id`は同じ組織に属している必要があります。
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -279,7 +271,7 @@ curl --request POST \
     --url "https://gitlab.example.com/api/v4/topics/merge"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

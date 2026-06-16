@@ -7,6 +7,7 @@ const BUFFER = 1; // A "+1 more" link is not useful, start from 2.
 const TAG_LIST_MAX_LENGTH = 50; // Defined at app/models/ci/runner.rb
 
 export default {
+  name: 'RunnerTags',
   components: {
     RunnerTag,
   },

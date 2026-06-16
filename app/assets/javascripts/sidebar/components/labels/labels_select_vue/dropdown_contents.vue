@@ -9,6 +9,7 @@ import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue` instead.
 export default {
+  name: 'DropdownContents',
   components: {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,

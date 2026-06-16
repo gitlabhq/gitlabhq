@@ -4,7 +4,7 @@ RSpec.shared_examples 'mapping jira users' do
   let(:context_path) { '' }
   let(:client) { instance_double(JIRA::Client, options: { context_path: context_path }) }
 
-  let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
+  let_it_be(:jira_integration, freeze: false) { create(:jira_integration, project: project, active: true) }
 
   before do
     allow(subject).to receive(:client).and_return(client)

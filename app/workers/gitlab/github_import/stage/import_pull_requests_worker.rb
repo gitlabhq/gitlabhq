@@ -15,7 +15,12 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          info(project.id, message: "starting importer", importer: 'Importer::PullRequestsImporter')
+          info(
+            project.id,
+            message: "starting importer",
+            importer: 'Importer::PullRequestsImporter',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
 
           waiter = Importer::PullRequestsImporter
             .new(project, client)

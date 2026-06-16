@@ -2,12 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_access, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/595412' do
+RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_access do
   include Features::TwoFactorHelpers
   let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
 
+  # User#organization_id defaults to DEFAULT_ORGANIZATION_ID (1), and
+  # Gitlab::Current::Organization#fallback_organization also resolves to id=1.
+  # Without seeding that row Current.organization is nil for requests in these
+  # tests, and SearchController's logging instrumentation crashes on
+  # Current.organization.id, surfacing flakily via Capybara.raise_server_errors.
+  let_it_be(:default_organization) { Gitlab::DatabaseImporters::DefaultOrganizationImporter.create_default_organization }
+
   before do
-    allow(WebAuthn.configuration).to receive(:allowed_origins).and_return([app_id])
+    allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
   end
 
   it_behaves_like 'OTP devices work independently of WebAuthn authenticators', 'WebAuthn'
@@ -17,7 +24,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
       let(:user) { create(:user) }
 
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       describe 'with valid registrations' do
@@ -194,7 +201,6 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               passkey ||= FakeWebauthnDevice.new(page, 'Retried passkey')
               passkey.respond_to_webauthn_registration
               click_button _('Try again')
-              wait_for_requests
               passkey_fill_form_and_submit(name: 'Retried passkey', password: user.password)
               expect(page).to have_content(_('Passkey added successfully!'))
               expect(page).to have_current_path(profile_two_factor_auth_path)
@@ -214,7 +220,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
           it "allows a user to sign-in with an already registered WebAuthn authenticator" do
             webauthn_authenticator = add_webauthn_device(app_id, user)
 
-            gitlab_sign_in(user)
+            submit_sign_in_form_for(user)
             webauthn_authenticator.respond_to_webauthn_authentication
 
             expect(page).to have_current_path(root_path)
@@ -227,13 +233,13 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
 
               # Authenticate as both devices
               [first_device, second_device].each do |device|
-                gitlab_sign_in(user)
+                submit_sign_in_form_for(user)
 
                 device.respond_to_webauthn_authentication
 
                 expect(page).to have_current_path(root_path)
 
-                gitlab_sign_out
+                gitlab_sign_out(user)
               end
             end
           end
@@ -243,23 +249,23 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
           it 'allows a user to sign-in with passkey, second_factor & OTP authenticators' do
             # with passkey
             passkey = add_passkey(app_id, user)
-            gitlab_sign_in(user)
+            submit_sign_in_form_for(user)
             passkey.respond_to_webauthn_authentication
             expect(page).to have_current_path(root_path)
-            gitlab_sign_out
+            gitlab_sign_out(user)
 
             # with WebAuthn
             second_factor_authenticator = add_webauthn_device(app_id, user)
-            gitlab_sign_in(user)
+            submit_sign_in_form_for(user)
             second_factor_authenticator.respond_to_webauthn_authentication
             expect(page).to have_current_path(root_path)
-            gitlab_sign_out
+            gitlab_sign_out(user)
 
             # with OTP
-            gitlab_sign_in(user)
+            submit_sign_in_form_for(user)
             add_otp(user)
             expect(page).to have_current_path(root_path)
-            gitlab_sign_out
+            gitlab_sign_out(user)
           end
         end
       end
@@ -272,7 +278,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             webauthn_authenticator = add_webauthn_device(app_id, user)
 
             # Sign-in with a 2FA enabled user & perform the user verification
-            gitlab_sign_in(other_user)
+            submit_sign_in_form_for(other_user)
             webauthn_authenticator.respond_to_webauthn_authentication
 
             expect(page).to have_content('Authentication via WebAuthn device failed')
@@ -284,7 +290,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             webauthn_authenticator = add_webauthn_device(app_id, user)
 
             # Failed authentication
-            gitlab_sign_in(other_user)
+            submit_sign_in_form_for(other_user)
             webauthn_authenticator.respond_to_webauthn_authentication
 
             expect(page).to have_content('Authentication via WebAuthn device failed')
@@ -302,7 +308,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             it 'does not allow a user to sign-in in with that particular authenticator' do
               passkey = add_passkey(app_id, user)
 
-              gitlab_sign_in(other_user)
+              submit_sign_in_form_for(other_user)
               passkey.respond_to_webauthn_authentication
 
               expect(page).to have_content('Failed to connect to your device')
@@ -314,7 +320,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               passkey = add_passkey(app_id, user)
 
               # Failed authentication
-              gitlab_sign_in(other_user)
+              submit_sign_in_form_for(other_user)
               passkey.respond_to_webauthn_authentication
               expect(page).to have_content('Failed to connect to your device')
 

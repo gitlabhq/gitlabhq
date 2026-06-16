@@ -9,6 +9,7 @@ import { s__ } from '~/locale';
 import setEnvironmentToDelete from '../graphql/mutations/set_environment_to_delete.mutation.graphql';
 
 export default {
+  name: 'EnvironmentDelete',
   components: {
     GlDisclosureDropdownItem,
   },

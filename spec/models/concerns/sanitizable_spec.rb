@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sanitizable, feature_category: :dynamic_application_security_testing do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:klass) do
+  let_it_be(:klass, freeze: false) do
     Class.new do
       include ActiveModel::Model
       include ActiveModel::Attributes

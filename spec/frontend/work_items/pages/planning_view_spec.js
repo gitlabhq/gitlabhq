@@ -2,11 +2,12 @@ import Vue, { computed, nextTick, ref } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import MockAdapter from 'axios-mock-adapter';
-import { GlIntersectionObserver } from '@gitlab/ui';
+import { GlAlert, GlIntersectionObserver } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -16,7 +17,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   planningViewAllItemsFilters,
   planningViewSavedViewFilterTokens,
@@ -221,6 +222,8 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
 });
 
 const findListView = () => wrapper.findComponent(ListView);
+const findBoardView = () => wrapper.findComponent({ name: 'BoardView' });
+const findToggleViewModeButton = () => wrapper.findByTestId('toggle-view-mode-button');
 const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
 const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -239,7 +242,6 @@ const findDisplaySettingsButton = () => wrapper.findByTestId('display-settings-b
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
-const findAnalyzeItemsButton = () => wrapper.findByTestId('analyze-items-button');
 const findServiceDeskEmptyStateWithAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithAnyTickets);
 const findServiceDeskEmptyStateWithoutAnyIssues = () =>
@@ -255,7 +257,7 @@ const defaultFeatureFlags = {
   okrsMvc: true,
 };
 
-const mountComponent = ({
+const mountComponent = async ({
   hasWorkItemsHandler = defaultHasWorkItemsHandler,
   countsOnlyHandler = defaultCountsOnlyHandler,
   mockPreferencesHandler = mockPreferencesQueryHandler,
@@ -266,6 +268,9 @@ const mountComponent = ({
   provide = {},
   isLoggedInValue = true,
   props = {},
+  route = undefined,
+  skipLastWait = false,
+  stubs = {},
 } = {}) => {
   const { glFeatures: provideGlFeatures, ...restProvide } = provide;
 
@@ -328,6 +333,7 @@ const mountComponent = ({
       canBulkAdminEpic: true,
       canCreateProjects: true,
       hasGroupBulkEditFeature: true,
+      hasIterationsFeature: false,
       hasProjects: true,
       getWorkItemTypeConfiguration: jest
         .fn()
@@ -355,7 +361,21 @@ const mountComponent = ({
         show: showToast,
       },
     },
+    stubs: {
+      ListView: stubComponent(ListView, {
+        template: `<div><slot></slot><slot name="list-empty-state"></slot></div>`,
+      }),
+      ...stubs,
+    },
   });
+
+  await waitForPromises();
+  await nextTick();
+  if (route) {
+    await router.push(route);
+  }
+  if (skipLastWait) return;
+  await waitForPromises();
 };
 
 describe('planning-view', () => {
@@ -368,8 +388,7 @@ describe('planning-view', () => {
   });
 
   it('passes correct queryVariables to list-view', async () => {
-    mountComponent();
-    await waitForPromises();
+    await mountComponent();
 
     expect(findListView().props('queryVariables')).toMatchObject({
       fullPath: 'full/path',
@@ -381,8 +400,7 @@ describe('planning-view', () => {
   });
 
   it('renders the WorkItemUserPreferences component', async () => {
-    mountComponent();
-    await waitForPromises();
+    await mountComponent();
 
     expect(findWorkItemUserPreferences().props()).toMatchObject({
       fullPath: 'full/path',
@@ -401,7 +419,7 @@ describe('planning-view', () => {
       `(
         '$message when shouldOpenItemsInSidePanel is $shouldOpenItemsInSidePanel',
         async ({ shouldOpenItemsInSidePanel, drawerExists }) => {
-          mountComponent({
+          await mountComponent({
             mockPreferencesHandler: jest.fn().mockResolvedValue({
               data: {
                 currentUser: {
@@ -418,7 +436,6 @@ describe('planning-view', () => {
             }),
           });
 
-          await waitForPromises();
           await nextTick();
 
           expect(findDetailPanel().exists()).toBe(drawerExists);
@@ -434,8 +451,7 @@ describe('planning-view', () => {
         };
 
         beforeEach(async () => {
-          mountComponent();
-          await waitForPromises();
+          await mountComponent();
 
           findListView().vm.$emit('select-item', payload);
 
@@ -479,12 +495,11 @@ describe('planning-view', () => {
         it('refetches counts when the selected work item is closed', async () => {
           // Mount as service desk list so workItemStateCounts query is not skipped
           // TODO: Remove this spec when workItemCounts is removed.
-          mountComponent({
+          await mountComponent({
             provide: {
               workItemType: WORK_ITEM_TYPE_NAME_TICKET,
             },
           });
-          await waitForPromises();
 
           const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
 
@@ -502,12 +517,11 @@ describe('planning-view', () => {
 
     describe('when rendering epics list', () => {
       beforeEach(async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             workItemType: WORK_ITEM_TYPE_NAME_EPIC,
           },
         });
-        await waitForPromises();
       });
 
       it('uses work item drawer', () => {
@@ -517,8 +531,7 @@ describe('planning-view', () => {
 
     it('closes the drawer when set-active-item emits null', async () => {
       const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
       findListView().vm.$emit('set-active-item', issue);
       await nextTick();
       expect(findDetailPanel().props('open')).toBe(true);
@@ -531,8 +544,7 @@ describe('planning-view', () => {
     describe('When the `show` parameter matches an item in the list', () => {
       it('displays the item in the drawer', async () => {
         const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findListView().vm.$emit('set-active-item', issue);
         await nextTick();
 
@@ -545,8 +557,7 @@ describe('planning-view', () => {
       it('updates the drawer when set-active-item is emitted with a new item', async () => {
         const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
         const nextIssue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[1];
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         findListView().vm.$emit('set-active-item', issue);
         await nextTick();
@@ -561,8 +572,7 @@ describe('planning-view', () => {
 
   describe('tokens', () => {
     it('renders tokens', async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
       const tokens = findFilteredSearchBar()
         .props('tokens')
         .map((token) => token.type);
@@ -587,8 +597,7 @@ describe('planning-view', () => {
 
     describe('when workItemType is defined', () => {
       it('renders all tokens except "Type"', async () => {
-        mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-        await waitForPromises();
+        await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -599,8 +608,7 @@ describe('planning-view', () => {
 
     describe('when hasIssueDateFilterFeature is available', () => {
       it('renders date-related tokens too', async () => {
-        mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-        await waitForPromises();
+        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -630,8 +638,7 @@ describe('planning-view', () => {
 
     describe('when issue_date_filter is enabled', () => {
       it('includes created and closed date in tokens', async () => {
-        mountComponent({ provide: { hasIssueDateFilterFeature: true } });
-        await waitForPromises();
+        await mountComponent({ provide: { hasIssueDateFilterFeature: true } });
 
         const tokenTypes = findFilteredSearchBar()
           .props('tokens')
@@ -643,8 +650,7 @@ describe('planning-view', () => {
 
     describe('"State" token', () => {
       beforeEach(async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
       });
       it('includes "State", in tokens', () => {
         expect(
@@ -662,8 +668,7 @@ describe('planning-view', () => {
           title: 'Custom Field',
           token: () => {},
         };
-        mountComponent({ props: { eeSearchTokens: [customToken] } });
-        await waitForPromises();
+        await mountComponent({ props: { eeSearchTokens: [customToken] } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -691,8 +696,7 @@ describe('planning-view', () => {
     describe('Organization filter token', () => {
       describe('when canReadCrmOrganization is true', () => {
         beforeEach(async () => {
-          mountComponent({ provide: { isGroup: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false } });
         });
 
         it('configures organization token with correct properties', () => {
@@ -711,8 +715,7 @@ describe('planning-view', () => {
 
       describe('when canReadCrmOrganization is false', () => {
         beforeEach(async () => {
-          mountComponent({ provide: { isGroup: false, canReadCrmOrganization: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false, canReadCrmOrganization: false } });
         });
 
         it('does not include organization token in available tokens', () => {
@@ -734,8 +737,7 @@ describe('planning-view', () => {
     describe('Contact filter token', () => {
       describe('when canReadCrmOrganization is true', () => {
         beforeEach(async () => {
-          mountComponent({ provide: { isGroup: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false } });
         });
 
         it('configures contact token with correct properties', () => {
@@ -754,8 +756,7 @@ describe('planning-view', () => {
 
       describe('when canReadCrmContact is false', () => {
         beforeEach(async () => {
-          mountComponent({ provide: { isGroup: false, canReadCrmContact: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false, canReadCrmContact: false } });
         });
 
         it('does not include contact token in available tokens', () => {
@@ -776,8 +777,7 @@ describe('planning-view', () => {
 
     describe('Parent filter token', () => {
       beforeEach(async () => {
-        mountComponent({ provide: { isGroup: false } });
-        await waitForPromises();
+        await mountComponent({ provide: { isGroup: false } });
       });
 
       it('configures parent token with correct properties', () => {
@@ -798,8 +798,8 @@ describe('planning-view', () => {
     });
 
     describe('Type token', () => {
-      it('includes "is not or" operator', () => {
-        mountComponent();
+      it('includes "is not or" operator', async () => {
+        await mountComponent();
 
         const typeToken = findFilteredSearchBar()
           .props('tokens')
@@ -830,8 +830,7 @@ describe('planning-view', () => {
 
         it('fetches releases from API when cache is empty', async () => {
           mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
-          mountComponent({ provide: { isGroup: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false } });
 
           const releaseToken = getReleaseToken();
           const result = await releaseToken.fetchReleases();
@@ -841,8 +840,7 @@ describe('planning-view', () => {
 
         it('returns cached releases when cache is populated', async () => {
           mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
-          mountComponent({ provide: { isGroup: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false } });
 
           const releaseToken = getReleaseToken();
 
@@ -858,8 +856,7 @@ describe('planning-view', () => {
 
         it('filters cached releases when search is provided', async () => {
           mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
-          mountComponent({ provide: { isGroup: false } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false } });
 
           const releaseToken = getReleaseToken();
 
@@ -874,8 +871,7 @@ describe('planning-view', () => {
       });
 
       it('excludes release token when isGroup is true', async () => {
-        mountComponent({ provide: { isGroup: true } });
-        await waitForPromises();
+        await mountComponent({ provide: { isGroup: true } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -884,8 +880,7 @@ describe('planning-view', () => {
       });
 
       it('includes release token when isGroup is false (project context)', async () => {
-        mountComponent({ provide: { isGroup: false } });
-        await waitForPromises();
+        await mountComponent({ provide: { isGroup: false } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -896,8 +891,7 @@ describe('planning-view', () => {
 
     describe('my reaction token', () => {
       it('is not included when autocompleteAwardEmojisPath is not set', async () => {
-        mountComponent({ provide: { autocompleteAwardEmojisPath: undefined } });
-        await waitForPromises();
+        await mountComponent({ provide: { autocompleteAwardEmojisPath: undefined } });
 
         const tokens = findFilteredSearchBar()
           .props('tokens')
@@ -907,8 +901,7 @@ describe('planning-view', () => {
       });
 
       it('is included when autocompleteAwardEmojisPath is set', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         const tokens = findFilteredSearchBar()
           .props('tokens')
@@ -920,8 +913,7 @@ describe('planning-view', () => {
       it('updates when autocompleteAwardEmojisPath value changes', async () => {
         const mockPath = ref(undefined);
         const autocompleteAwardEmojisPath = computed(() => mockPath.value);
-        mountComponent({ provide: { autocompleteAwardEmojisPath } });
-        await waitForPromises();
+        await mountComponent({ provide: { autocompleteAwardEmojisPath } });
 
         let tokens = findFilteredSearchBar()
           .props('tokens')
@@ -943,8 +935,7 @@ describe('planning-view', () => {
 
     describe('multiSelect property', () => {
       beforeEach(async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
       });
 
       it('sets multiSelect to true for assignee token', () => {
@@ -972,10 +963,11 @@ describe('planning-view', () => {
       });
     });
   });
+
   describe('sort options', () => {
     describe('when all features are enabled', () => {
       it('renders all sort options', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             hasBlockedIssuesFeature: true,
             hasIssuableHealthStatusFeature: true,
@@ -983,7 +975,6 @@ describe('planning-view', () => {
             hasStatusFeature: true,
           },
         });
-        await waitForPromises();
 
         expect(findFilteredSearchBar().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Priority' }),
@@ -1007,7 +998,7 @@ describe('planning-view', () => {
 
     describe('when all features are not enabled', () => {
       it('renders base sort options', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             hasBlockedIssuesFeature: false,
             hasIssuableHealthStatusFeature: false,
@@ -1015,7 +1006,6 @@ describe('planning-view', () => {
             hasStatusFeature: false,
           },
         });
-        await waitForPromises();
 
         expect(findFilteredSearchBar().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Priority' }),
@@ -1035,7 +1025,7 @@ describe('planning-view', () => {
 
     describe('when epics list', () => {
       it('does not render "Priority", "Label priority", "Manual", "Status", and "Weight" sort options', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             hasBlockedIssuesFeature: true,
             hasIssuableHealthStatusFeature: true,
@@ -1044,7 +1034,6 @@ describe('planning-view', () => {
             workItemType: WORK_ITEM_TYPE_NAME_EPIC,
           },
         });
-        await waitForPromises();
 
         expect(findFilteredSearchBar().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Created date' }),
@@ -1063,7 +1052,7 @@ describe('planning-view', () => {
 
     describe('when service desk list', () => {
       it('does not render "Status" sort options', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             hasBlockedIssuesFeature: true,
             hasIssuableHealthStatusFeature: true,
@@ -1072,7 +1061,6 @@ describe('planning-view', () => {
             workItemType: WORK_ITEM_TYPE_NAME_TICKET,
           },
         });
-        await waitForPromises();
         const sortOptions = findFilteredSearchBar()
           .props('sortOptions')
           .map((sort) => sort.title);
@@ -1083,14 +1071,18 @@ describe('planning-view', () => {
 
     describe('when sort is manual and issue repositioning is disabled', () => {
       beforeEach(async () => {
-        mountComponent({
+        await mountComponent({
           mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
           provide: { isIssueRepositioningDisabled: true },
         });
+        // mountComponent results in a default sort key being added to search params
+        // so this hack removes them to allow display settings to take priority
+        setWindowLocation('?unsetting=sort');
         wrapper.vm.$options.apollo.displaySettings.result.call(wrapper.vm, {
           data: userPreferenceQueryResponse.data,
         });
         await waitForPromises();
+        await nextTick();
       });
 
       it('changes the sort to the default of created descending', () => {
@@ -1105,10 +1097,9 @@ describe('planning-view', () => {
       });
 
       it('shows alert when user tries to select manual sort after component mount', async () => {
-        mountComponent({
+        await mountComponent({
           provide: { isIssueRepositioningDisabled: true },
         });
-        await waitForPromises();
 
         findFilteredSearchBar().vm.$emit('onSort', RELATIVE_POSITION_ASC);
         await nextTick();
@@ -1123,9 +1114,7 @@ describe('planning-view', () => {
 
   describe('when isGroupIssuesList is true', () => {
     it('passes excludeGroupWorkItems: true to list-view queryVariables', async () => {
-      mountComponent({ provide: { isGroupIssuesList: true } });
-
-      await waitForPromises();
+      await mountComponent({ provide: { isGroupIssuesList: true } });
 
       expect(findListView().props('queryVariables')).toMatchObject({
         excludeGroupWorkItems: true,
@@ -1134,22 +1123,20 @@ describe('planning-view', () => {
   });
 
   describe('when workItemType is provided', () => {
-    it('passes "types" property to list-view queryVariables', async () => {
+    it('passes "workItemTypeIds" property to list-view queryVariables', async () => {
       mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
 
       await waitForPromises();
 
       expect(findListView().props('queryVariables')).toMatchObject({
-        types: 'EPIC',
+        workItemTypeIds: 'gid://gitlab/WorkItems::Type/1',
       });
     });
   });
 
   describe('when workItemType Epic is provided', () => {
     it('passes "excludeProjects" property to list-view queryVariables', async () => {
-      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-
-      await waitForPromises();
+      await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
 
       expect(findListView().props('queryVariables')).toMatchObject({
         excludeProjects: true,
@@ -1158,8 +1145,8 @@ describe('planning-view', () => {
   });
 
   describe('sticky filter header', () => {
-    beforeEach(() => {
-      mountComponent();
+    beforeEach(async () => {
+      await mountComponent();
     });
 
     it('shows sticky search container when intersection observer disappears', async () => {
@@ -1182,8 +1169,7 @@ describe('planning-view', () => {
 
   describe('when "filter" event is emitted by FilteredSearchBar', () => {
     it('updates queryVariables on list-view with filter params', async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
@@ -1202,8 +1188,7 @@ describe('planning-view', () => {
 
   describe('iid filter search', () => {
     it('sets iid in queryVariables when user enters a number with #', async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '#23', operator: 'undefined' } },
@@ -1216,8 +1201,7 @@ describe('planning-view', () => {
     });
 
     it('sets search in queryVariables when user enters a number without #', async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
 
       findFilteredSearchBar().vm.$emit('onFilter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '23', operator: 'undefined' } },
@@ -1233,15 +1217,13 @@ describe('planning-view', () => {
   describe('work item features field feature flag', () => {
     describe('when the feature flag is off', () => {
       it('passes useWorkItemFeatures: false to list-view queryVariables', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             isServiceDeskSupported: true,
             workItemType: WORK_ITEM_TYPE_NAME_TICKET,
             glFeatures: { workItemFeaturesField: false },
           },
         });
-
-        await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({
           useWorkItemFeatures: false,
@@ -1251,15 +1233,13 @@ describe('planning-view', () => {
 
     describe('when the feature flag is on', () => {
       it('passes useWorkItemFeatures: true to list-view queryVariables', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             isServiceDeskSupported: true,
             workItemType: WORK_ITEM_TYPE_NAME_TICKET,
             glFeatures: { workItemFeaturesField: true },
           },
         });
-
-        await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({
           useWorkItemFeatures: true,
@@ -1271,8 +1251,7 @@ describe('planning-view', () => {
   describe('group filter', () => {
     describe('filtering by group', () => {
       it('passes excludeProjects: true and includeDescendants: false to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         findFilteredSearchBar().vm.$emit('onFilter', [
           {
@@ -1291,8 +1270,7 @@ describe('planning-view', () => {
 
     describe('not filtering by group', () => {
       it('passes excludeProjects: false and includeDescendants: true to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         findFilteredSearchBar().vm.$emit('onFilter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -1326,10 +1304,9 @@ describe('planning-view', () => {
               },
             },
           });
-          mountComponent({
+          await mountComponent({
             countsOnlyHandler,
           });
-          await waitForPromises();
         });
 
         it(`displays "${expectedText}"`, () => {
@@ -1346,8 +1323,7 @@ describe('planning-view', () => {
         (param) => ({ state: 'closed', assignee_username: 'john' })[param] ?? null,
       );
 
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
 
       setWindowLocation('/work_items');
       getParameterByName.mockReturnValue(null);
@@ -1372,13 +1348,12 @@ describe('planning-view', () => {
       async (sortKey) => {
         // Ensure initial sort key is different so we trigger an update when emitting a sort key
         if (sortKey === CREATED_DESC) {
-          mountComponent({
+          await mountComponent({
             mockPreferencesHandler: jest.fn().mockResolvedValue(userPreferenceQueryResponse),
           });
         } else {
-          mountComponent();
+          await mountComponent();
         }
-        await waitForPromises();
 
         findFilteredSearchBar().vm.$emit('onSort', sortKey);
         await waitForPromises();
@@ -1392,8 +1367,7 @@ describe('planning-view', () => {
 
     describe('when user is signed in', () => {
       it('calls mutation to save sort preference', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
 
@@ -1408,8 +1382,7 @@ describe('planning-view', () => {
         const mutationMock = jest
           .fn()
           .mockResolvedValue(workItemUserPreferenceUpdateMutationResponseWithErrors);
-        mountComponent({ userPreferenceMutationResponse: mutationMock });
-        await waitForPromises();
+        await mountComponent({ userPreferenceMutationResponse: mutationMock });
 
         findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
         await waitForPromises();
@@ -1420,8 +1393,7 @@ describe('planning-view', () => {
 
     describe('when user is signed out', () => {
       it('does not call mutation to save sort preference', async () => {
-        mountComponent({ isLoggedInValue: false });
-        await waitForPromises();
+        await mountComponent({ isLoggedInValue: false });
 
         findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
 
@@ -1434,8 +1406,7 @@ describe('planning-view', () => {
     const message = 'Something went wrong when fetching work items. Please try again.';
 
     beforeEach(async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
       findListView().vm.$emit('set-error', message);
       await nextTick();
     });
@@ -1453,13 +1424,12 @@ describe('planning-view', () => {
 
   describe('document title', () => {
     it('renders "Service Desk"', async () => {
-      mountComponent({
+      await mountComponent({
         provide: {
           isServiceDeskSupported: true,
           workItemType: WORK_ITEM_TYPE_NAME_TICKET,
         },
       });
-      await waitForPromises();
 
       findListView().vm.$emit('namespace-data-loaded', {
         namespaceName: 'Test',
@@ -1472,25 +1442,24 @@ describe('planning-view', () => {
   });
 
   it('sets skipQuery to true when metadata is loading', async () => {
-    mountComponent({ provide: { metadataLoading: true } });
-    await waitForPromises();
+    await mountComponent({ provide: { metadataLoading: true } });
 
     expect(findListView().props('skipQuery')).toBe(true);
   });
+
   describe('Saved Views', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     const mountDefault = async (options = {}) => {
       const { provide: mountProvide, ...restOptions } = options;
       const { glFeatures: mountGlFeatures, ...restProvideOptions } = mountProvide || {};
-      mountComponent({
+      await mountComponent({
         provide: {
           glFeatures: { ...mountGlFeatures },
           ...restProvideOptions,
         },
         ...restOptions,
       });
-      await waitForPromises();
     };
 
     describe('when not on a saved view', () => {
@@ -1526,7 +1495,6 @@ describe('planning-view', () => {
           await mountComponent({
             provide: { canCreateSavedView: false },
           });
-          await waitForPromises();
 
           findFilteredSearchBar().vm.$emit('onFilter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -1541,7 +1509,6 @@ describe('planning-view', () => {
           beforeEach(async () => {
             await mountDefault();
             await router.push({ name: 'planningView', params: { type: 'issues' } });
-            await waitForPromises();
           });
 
           it('restores All Items filters when navigating All Items → Saved View → All Items', async () => {
@@ -1581,8 +1548,7 @@ describe('planning-view', () => {
 
       describe('when user is logged out', () => {
         beforeEach(async () => {
-          mountComponent({ isLoggedInValue: false });
-          await waitForPromises();
+          await mountComponent({ isLoggedInValue: false });
         });
 
         it('does not render the "Save view" button when filters change', async () => {
@@ -1622,59 +1588,153 @@ describe('planning-view', () => {
     });
 
     describe('when on a saved view', () => {
-      beforeEach(async () => {
-        await mountDefault();
-        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
-        await waitForPromises();
-      });
-
-      it('displays error alert when saved views selector component emits error', async () => {
-        const testError = new Error('Test error');
-        const errorMessage = 'An error occurred while removing the view. Please try again.';
-
-        findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
-        await nextTick();
-
-        expect(Sentry.captureException).toHaveBeenCalledWith(testError);
-        expect(findListView().props('error')).toBe(errorMessage);
-      });
-
-      it('fetches the saved view based on route parameter', () => {
-        expect(namespaceSavedViewHandler).toHaveBeenCalledWith({
-          fullPath: 'full/path',
-          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+      describe('base functionality', () => {
+        beforeEach(async () => {
+          await mountDefault({
+            route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+          });
+          await waitForPromises();
         });
-      });
 
-      it('tracks saved_view_view event when a subscribed saved view is loaded', () => {
-        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        it('displays error alert when saved views selector component emits error', async () => {
+          const testError = new Error('Test error');
+          const errorMessage = 'An error occurred while removing the view. Please try again.';
 
-        expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy).toHaveBeenCalledWith('saved_view_view', {}, undefined);
+          findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
+          await nextTick();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(testError);
+          expect(findListView().props('error')).toBe(errorMessage);
+        });
+
+        it('fetches the saved view based on route parameter', () => {
+          expect(namespaceSavedViewHandler).toHaveBeenCalledWith({
+            fullPath: 'full/path',
+            id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+          });
+        });
+
+        it('tracks saved_view_view event when a subscribed saved view is loaded', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          expect(trackEventSpy).toHaveBeenCalledTimes(1);
+          expect(trackEventSpy).toHaveBeenCalledWith('saved_view_view', {}, undefined);
+        });
+
+        it('captures error alert when saved view cannot be fetched', async () => {
+          const error = new Error('Network error');
+          await mountComponent({
+            savedViewHandler: jest.fn().mockRejectedValue(error),
+          });
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(error);
+        });
+
+        it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
+          findFilteredSearchBar().vm.$emit('onFilter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+            { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+          ]);
+          await nextTick();
+
+          expect(findResetViewButton().exists()).toBe(true);
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
+          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          await nextTick();
+
+          expect(findResetViewButton().exists()).toBe(true);
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('renders "Save changes" and "Reset to defaults" buttons when display preferences change', async () => {
+          findWorkItemUserPreferences().vm.$emit('local-update', {
+            hiddenMetadataKeys: ['labels'],
+          });
+
+          await nextTick();
+
+          expect(findResetViewButton().exists()).toBe(true);
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('persists unsaved data when navigating back to the saved view', async () => {
+          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          await nextTick();
+
+          await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+          await nextTick();
+          await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+          await nextTick();
+
+          expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
+        });
+
+        it('restores filters in-session when switching between saved views', async () => {
+          findFilteredSearchBar().vm.$emit('onFilter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          ]);
+          await nextTick();
+
+          expect(planningViewSavedViewFilterTokens.value['3']).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_AUTHOR,
+                value: expect.objectContaining({ data: 'homer' }),
+              }),
+            ]),
+          );
+
+          await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+          await waitForPromises();
+
+          await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+          await waitForPromises();
+
+          expect(findFilteredSearchBar().props('initialFilterValue')).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_AUTHOR,
+                value: expect.objectContaining({ data: 'homer' }),
+              }),
+            ]),
+          );
+        });
+
+        it('resets filters, hides action buttons and resets local storage draft', async () => {
+          findFilteredSearchBar().vm.$emit('onFilter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          ]);
+          await waitForPromises();
+
+          findResetViewButton().vm.$emit('click');
+          await nextTick();
+
+          expect(findResetViewButton().exists()).toBe(false);
+          expect(findUpdateViewButton().exists()).toBe(false);
+          expect(localStorage.removeItem).toHaveBeenCalledWith('full/path-saved-view-3');
+        });
       });
 
       it('navigates to /work_items with sv_not_found query parameter when saved view cannot be found', async () => {
-        mountComponent({
+        await mountComponent({
           savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
         });
-
-        expect(window.location.pathname).toBe('/work_items/views/3');
-
-        await waitForPromises();
-        await nextTick();
 
         expect(window.location.pathname).toBe('/work_items');
         expect(window.location.search).toContain('sv_not_found');
       });
 
       it('does not track saved_view_view event when saved view is not found', async () => {
-        mountComponent({
+        await mountComponent({
           savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
         });
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
         trackEventSpy.mockClear();
-
-        await waitForPromises();
 
         expect(trackEventSpy).not.toHaveBeenCalledWith('saved_view_view', {}, undefined);
       });
@@ -1682,16 +1742,12 @@ describe('planning-view', () => {
       describe('when visiting an unsubscribed view', () => {
         describe('when at subscription limit', () => {
           it('navigates to /work_items with sv_limit_id query parameter', async () => {
-            mountComponent({
+            await mountComponent({
+              route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
               savedViewHandler: jest
                 .fn()
                 .mockResolvedValue(savedViewResponseFactory({ subscribed: false, limit: 1 })),
             });
-
-            expect(window.location.pathname).toBe('/work_items/views/3');
-
-            await waitForPromises();
-            await nextTick();
 
             expect(window.location.pathname).toBe('/work_items');
             expect(window.location.search).toContain('sv_limit_id');
@@ -1703,8 +1759,10 @@ describe('planning-view', () => {
             const savedViewHandler = jest
               .fn()
               .mockResolvedValue(savedViewResponseFactory({ subscribed: false }));
-            mountComponent({
+            await mountComponent({
               savedViewHandler,
+              route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+              skipLastWait: true, // skipped to prevent infinite redirects
             });
 
             savedViewHandler.mockResolvedValue(savedViewResponseFactory({ subscribed: true }));
@@ -1725,7 +1783,12 @@ describe('planning-view', () => {
               .fn()
               .mockResolvedValue(savedViewResponseFactory({ subscribed: false }));
 
-            mountComponent({ savedViewHandler });
+            await mountComponent({
+              savedViewHandler,
+              route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+              skipLastWait: true,
+            });
+
             const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
             savedViewHandler.mockResolvedValue(savedViewResponseFactory({ subscribed: true }));
@@ -1735,46 +1798,6 @@ describe('planning-view', () => {
             expect(trackEventSpy).toHaveBeenCalledWith('saved_view_view', {}, undefined);
           });
         });
-      });
-
-      it('captures error alert when saved view cannot be fetched', async () => {
-        const error = new Error('Network error');
-        mountComponent({
-          savedViewHandler: jest.fn().mockRejectedValue(error),
-        });
-        await waitForPromises();
-
-        expect(Sentry.captureException).toHaveBeenCalledWith(error);
-      });
-
-      it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', [
-          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-          { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
-        ]);
-        await nextTick();
-
-        expect(findResetViewButton().exists()).toBe(true);
-        expect(findUpdateViewButton().exists()).toBe(true);
-      });
-
-      it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
-        await nextTick();
-
-        expect(findResetViewButton().exists()).toBe(true);
-        expect(findUpdateViewButton().exists()).toBe(true);
-      });
-
-      it('renders "Save changes" and "Reset to defaults" buttons when display preferences change', async () => {
-        findWorkItemUserPreferences().vm.$emit('local-update', {
-          hiddenMetadataKeys: ['labels'],
-        });
-
-        await nextTick();
-
-        expect(findResetViewButton().exists()).toBe(true);
-        expect(findUpdateViewButton().exists()).toBe(true);
       });
 
       it('does not render "Save changes" and its separator but "Reset to defaults" when there is no permission', async () => {
@@ -1791,10 +1814,10 @@ describe('planning-view', () => {
             ],
           }),
         );
-        mountComponent({
+        await mountComponent({
           savedViewHandler,
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
         });
-        await waitForPromises();
 
         findWorkItemUserPreferences().vm.$emit('local-update', {
           hiddenMetadataKeys: ['labels'],
@@ -1807,30 +1830,16 @@ describe('planning-view', () => {
         expect(findSaveChangesSeparator().exists()).toBe(false);
       });
 
-      it('resets filters, hides action buttons and resets local storage draft', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', [
-          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-        ]);
-        await waitForPromises();
-
-        findResetViewButton().vm.$emit('click');
-        await nextTick();
-
-        expect(findResetViewButton().exists()).toBe(false);
-        expect(findUpdateViewButton().exists()).toBe(false);
-        expect(localStorage.removeItem).toHaveBeenCalledWith('full/path-saved-view-3');
-      });
-
       describe('when "Save changes" is clicked', () => {
         describe('for a private view', () => {
           it('saves without prompting for confirmation', async () => {
-            mountComponent({
+            await mountComponent({
               workItemsSavedViewsEnabled: true,
               savedViewHandler: jest
                 .fn()
                 .mockResolvedValue(savedViewResponseFactory({ savedViews: singleSavedView })),
+              route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
-            await waitForPromises();
 
             findFilteredSearchBar().vm.$emit('onFilter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -1858,13 +1867,13 @@ describe('planning-view', () => {
 
         describe('for a shared view', () => {
           beforeEach(async () => {
-            mountComponent({
+            await mountComponent({
               workItemsSavedViewsEnabled: true,
               savedViewHandler: jest
                 .fn()
                 .mockResolvedValue(savedViewResponseFactory({ savedViews: sharedSavedView })),
+              route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
-            await waitForPromises();
 
             findFilteredSearchBar().vm.$emit('onFilter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -1949,59 +1958,15 @@ describe('planning-view', () => {
           });
         });
       });
-
-      it('persists unsaved data when navigating back to the saved view', async () => {
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
-        await nextTick();
-
-        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
-        await nextTick();
-        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
-        await nextTick();
-
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
-      });
-
-      it('restores filters in-session when switching between saved views', async () => {
-        findFilteredSearchBar().vm.$emit('onFilter', [
-          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-        ]);
-        await nextTick();
-
-        expect(planningViewSavedViewFilterTokens.value['3']).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              type: TOKEN_TYPE_AUTHOR,
-              value: expect.objectContaining({ data: 'homer' }),
-            }),
-          ]),
-        );
-
-        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
-        await waitForPromises();
-
-        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
-        await waitForPromises();
-
-        expect(findFilteredSearchBar().props('initialFilterValue')).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              type: TOKEN_TYPE_AUTHOR,
-              value: expect.objectContaining({ data: 'homer' }),
-            }),
-          ]),
-        );
-      });
     });
 
     describe('subscription limit warning', () => {
       it('passes showSubscriptionLimitWarning as false to modal when not at limit', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             subscribedSavedViewLimit: 10,
           },
         });
-        await waitForPromises();
 
         findFilteredSearchBar().vm.$emit('onFilter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -2015,12 +1980,11 @@ describe('planning-view', () => {
       });
 
       it('passes showSubscriptionLimitWarning as true to modal when at limit', async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             subscribedSavedViewLimit: 1,
           },
         });
-        await waitForPromises();
 
         findFilteredSearchBar().vm.$emit('onFilter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -2047,10 +2011,9 @@ describe('planning-view', () => {
       `(
         'only renders InfoBanner when service desk is supported and it is the service desk list',
         async ({ workItemType, isServiceDeskSupported, isInfoBannerVisible }) => {
-          mountComponent({
+          await mountComponent({
             provide: { isServiceDeskSupported, workItemType },
           });
-          await waitForPromises();
 
           expect(findServiceDeskInfoBanner().exists()).toBe(isInfoBannerVisible);
         },
@@ -2065,11 +2028,10 @@ describe('planning-view', () => {
         ${undefined}                  | ${true}
         ${undefined}                  | ${false}
       `('never renders InfoBanner', async ({ workItemType, isServiceDeskSupported }) => {
-        mountComponent({
+        await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: { isServiceDeskSupported, workItemType },
         });
-        await waitForPromises();
 
         expect(findServiceDeskInfoBanner().exists()).toBe(false);
       });
@@ -2077,16 +2039,13 @@ describe('planning-view', () => {
   });
 
   it('passes workItemsCount as workItemCount prop to work-item-list-actions', async () => {
-    mountComponent();
-
-    await waitForPromises();
+    await mountComponent();
 
     expect(findWorkItemListActions().props('workItemCount')).toBe(3);
   });
 
   it('renders total items count when work items exist', async () => {
-    mountComponent();
-    await waitForPromises();
+    await mountComponent();
 
     expect(wrapper.text()).toContain('3 items');
   });
@@ -2106,14 +2065,13 @@ describe('planning-view', () => {
       'when canCreateWorkItem=$canCreateWorkItem, isGroup=$isGroup, newWorkItemEmailAddress=$newWorkItemEmailAddress',
       ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, expected }) => {
         it(`${expected ? 'returns true' : 'returns false'}`, async () => {
-          mountComponent({
+          await mountComponent({
             provide: {
               canCreateWorkItem,
               isGroup,
               newWorkItemEmailAddress,
             },
           });
-          await waitForPromises();
 
           expect(findWorkItemListActions().props('showWorkItemByEmailButton')).toBe(expected);
         });
@@ -2124,11 +2082,9 @@ describe('planning-view', () => {
   describe('when there are no work items in group context', () => {
     describe('when group has no projects', () => {
       it('disables the bulk edit button', async () => {
-        mountComponent({
+        await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
         });
-
-        await waitForPromises();
 
         expect(findBulkEditStartButton().props('disabled')).toBe(true);
       });
@@ -2139,8 +2095,9 @@ describe('planning-view', () => {
     describe('user permissions', () => {
       describe('when workItemType=Epic', () => {
         it.each([true, false])('renders=$s when canBulkAdminEpic=%s', async (canBulkAdminEpic) => {
-          mountComponent({ provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-          await waitForPromises();
+          await mountComponent({
+            provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC },
+          });
 
           expect(findBulkEditStartButton().exists()).toBe(canBulkAdminEpic);
         });
@@ -2156,7 +2113,7 @@ describe('planning-view', () => {
         `(
           'renders=$renders when canAdminIssue=$canAdminIssue and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
           async ({ canAdminIssue, hasGroupBulkEditFeature, renders }) => {
-            mountComponent({
+            await mountComponent({
               provide: {
                 isGroup: true,
                 canAdminIssue,
@@ -2164,7 +2121,6 @@ describe('planning-view', () => {
                 hasEpicsFeature: true,
               },
             });
-            await waitForPromises();
 
             expect(findBulkEditStartButton().exists()).toBe(renders);
           },
@@ -2173,7 +2129,7 @@ describe('planning-view', () => {
 
       describe('when CE group', () => {
         it('allows bulk editing when user can admin issues and group has projects', async () => {
-          mountComponent({
+          await mountComponent({
             provide: {
               isGroup: true,
               canAdminIssue: true,
@@ -2182,13 +2138,12 @@ describe('planning-view', () => {
               hasGroupBulkEditFeature: false,
             },
           });
-          await waitForPromises();
 
           expect(findBulkEditStartButton().exists()).toBe(true);
         });
 
         it('does not allow bulk editing when user cannot admin issues', async () => {
-          mountComponent({
+          await mountComponent({
             provide: {
               isGroup: true,
               canAdminIssue: false,
@@ -2197,7 +2152,6 @@ describe('planning-view', () => {
               hasGroupBulkEditFeature: false,
             },
           });
-          await waitForPromises();
 
           expect(findBulkEditStartButton().exists()).toBe(false);
         });
@@ -2205,8 +2159,7 @@ describe('planning-view', () => {
 
       describe('when project', () => {
         it.each([true, false])('renders depending on canAdminIssue=%s', async (canAdminIssue) => {
-          mountComponent({ provide: { isGroup: false, canAdminIssue } });
-          await waitForPromises();
+          await mountComponent({ provide: { isGroup: false, canAdminIssue } });
 
           expect(findBulkEditStartButton().exists()).toBe(canAdminIssue);
         });
@@ -2214,26 +2167,12 @@ describe('planning-view', () => {
     });
   });
 
-  describe('analyze items button', () => {
-    it.each([true, false])(
-      'renders=%s based on duoQuickActionWorkItemList feature flag',
-      (duoQuickActionWorkItemList) => {
-        mountComponent({
-          provide: { glFeatures: { duoQuickActionWorkItemList } },
-        });
-
-        expect(findAnalyzeItemsButton().exists()).toBe(duoQuickActionWorkItemList);
-      },
-    );
-  });
-
   describe('when service desk list', () => {
     describe('nav actions', () => {
       it('does not render the bulk edit button, create work item modal, or actions dropdown', async () => {
-        mountComponent({
+        await mountComponent({
           provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
         });
-        await waitForPromises();
 
         expect(findBulkEditStartButton().exists()).toBe(false);
         expect(findCreateWorkItemModal().exists()).toBe(false);
@@ -2242,24 +2181,22 @@ describe('planning-view', () => {
 
     describe('empty state', () => {
       it('renders EmptyStateWithAnyTickets when there are work items', async () => {
-        mountComponent({
+        await mountComponent({
           provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
           props: {
             hasWorkItems: true,
             workItems: [],
           },
         });
-        await waitForPromises();
 
         expect(findServiceDeskEmptyStateWithAnyIssues().exists()).toBe(true);
       });
 
       it('renders EmptyStateWithoutAnyTickets when there are no work items', async () => {
-        mountComponent({
+        await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
         });
-        await waitForPromises();
 
         expect(findServiceDeskEmptyStateWithoutAnyIssues().exists()).toBe(true);
       });
@@ -2267,8 +2204,7 @@ describe('planning-view', () => {
 
     describe('document title with saved views', () => {
       it('includes saved view name when on a saved view', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         findListView().vm.$emit('namespace-data-loaded', {
           namespaceName: 'Test',
@@ -2308,10 +2244,9 @@ describe('planning-view', () => {
           return Promise.resolve(savedViewResponseFactory({ savedViews: viewBSavedView }));
         });
 
-        mountComponent({
+        await mountComponent({
           savedViewHandler,
         });
-        await waitForPromises();
 
         findListView().vm.$emit('namespace-data-loaded', {
           namespaceName: 'Test',
@@ -2343,10 +2278,9 @@ describe('planning-view', () => {
           }),
         );
 
-        mountComponent({
+        await mountComponent({
           savedViewHandler,
         });
-        await waitForPromises();
 
         findListView().vm.$emit('namespace-data-loaded', {
           namespaceName: 'Test',
@@ -2364,15 +2298,13 @@ describe('planning-view', () => {
 
   describe('CreateWorkItem modal', () => {
     it.each([true, false])('renders depending on showNewWorkItem=%s', async (showNewWorkItem) => {
-      mountComponent({ provide: { showNewWorkItem, isGroup: false } });
-      await waitForPromises();
+      await mountComponent({ provide: { showNewWorkItem, isGroup: false } });
 
       expect(findCreateWorkItemModal().exists()).toBe(showNewWorkItem);
     });
 
     it('renders with "list route" creation context', async () => {
-      mountComponent();
-      await waitForPromises();
+      await mountComponent();
 
       expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
     });
@@ -2383,8 +2315,7 @@ describe('planning-view', () => {
         ${WORK_ITEM_TYPE_NAME_ISSUE} | ${true}
         ${WORK_ITEM_TYPE_NAME_EPIC}  | ${false}
       `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        mountComponent({ provide: { workItemType } });
-        await waitForPromises();
+        await mountComponent({ provide: { workItemType } });
 
         expect(findCreateWorkItemModal().props('alwaysShowWorkItemTypeSelect')).toBe(value);
       });
@@ -2396,8 +2327,7 @@ describe('planning-view', () => {
         ${WORK_ITEM_TYPE_NAME_ISSUE} | ${WORK_ITEM_TYPE_NAME_ISSUE}
         ${WORK_ITEM_TYPE_NAME_EPIC}  | ${WORK_ITEM_TYPE_NAME_EPIC}
       `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        mountComponent({ provide: { workItemType } });
-        await waitForPromises();
+        await mountComponent({ provide: { workItemType } });
 
         expect(findCreateWorkItemModal().props('preselectedWorkItemType')).toBe(value);
       });
@@ -2415,12 +2345,11 @@ describe('planning-view', () => {
     describe('when filters are applied and no work items match', () => {
       beforeEach(async () => {
         setWindowLocation('?label_name=bug');
-        mountComponent({
+        await mountComponent({
           props: {
             ...getEmptyPropValues({ hasWorkItems: true }),
           },
         });
-        await waitForPromises();
       });
 
       it('renders EmptyStateWithAnyIssues component with empty results', () => {
@@ -2430,7 +2359,7 @@ describe('planning-view', () => {
 
     describe('when there are no work items in group context', () => {
       beforeEach(async () => {
-        mountComponent({
+        await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: {
             isGroupIssuesList: true,
@@ -2439,7 +2368,6 @@ describe('planning-view', () => {
             showNewWorkItem: false,
           },
         });
-        await waitForPromises();
       });
 
       it('renders the list empty state', () => {
@@ -2459,7 +2387,7 @@ describe('planning-view', () => {
 
       describe('when group has no projects', () => {
         beforeEach(async () => {
-          mountComponent({
+          await mountComponent({
             props: {
               ...getEmptyPropValues(),
             },
@@ -2468,7 +2396,6 @@ describe('planning-view', () => {
               hasProjects: false,
             },
           });
-          await waitForPromises();
         });
 
         it('does not render the new resource dropdown when group has projects', () => {
@@ -2493,14 +2420,12 @@ describe('planning-view', () => {
       };
 
       it('passes correct props to empty state component for projects', async () => {
-        mountComponent({
+        await mountComponent({
           ...emptyStateConfig,
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: { ...emptyStateConfig.provide },
           stubs: {},
         });
-
-        await waitForPromises();
 
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
           showNewIssueDropdown: false,
@@ -2511,7 +2436,7 @@ describe('planning-view', () => {
     describe('when there are work items', () => {
       describe('in group context', () => {
         it('renders the with issues empty state and the new resource dropdown', async () => {
-          mountComponent({
+          await mountComponent({
             props: {
               ...getEmptyPropValues({
                 hasWorkItems: true,
@@ -2522,8 +2447,6 @@ describe('planning-view', () => {
             },
           });
 
-          await waitForPromises();
-
           expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
           expect(findNewResourceDropdown().exists()).toBe(true);
         });
@@ -2531,7 +2454,7 @@ describe('planning-view', () => {
 
       describe('in project context', () => {
         it('renders the with issues empty state and the CreateWorkItemModal', async () => {
-          mountComponent({
+          await mountComponent({
             props: {
               ...getEmptyPropValues({
                 hasWorkItems: true,
@@ -2542,8 +2465,6 @@ describe('planning-view', () => {
             },
           });
 
-          await waitForPromises();
-
           expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
           expect(findCreateWorkItemModal().exists()).toBe(true);
         });
@@ -2552,15 +2473,13 @@ describe('planning-view', () => {
 
     describe('sorting work items', () => {
       it('passes CREATED_DESC sort to list-view queryVariables by default', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: CREATED_DESC });
       });
 
       it('passes CREATED_ASC sort to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', CREATED_ASC);
         await waitForPromises();
 
@@ -2568,8 +2487,7 @@ describe('planning-view', () => {
       });
 
       it('passes TITLE_ASC sort to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', TITLE_ASC);
         await waitForPromises();
 
@@ -2577,8 +2495,7 @@ describe('planning-view', () => {
       });
 
       it('passes TITLE_DESC sort to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', TITLE_DESC);
         await waitForPromises();
 
@@ -2586,8 +2503,7 @@ describe('planning-view', () => {
       });
 
       it('passes UPDATED_DESC sort to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
         await waitForPromises();
 
@@ -2595,8 +2511,7 @@ describe('planning-view', () => {
       });
 
       it('passes UPDATED_ASC sort to list-view queryVariables', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
         await waitForPromises();
 
@@ -2604,8 +2519,7 @@ describe('planning-view', () => {
       });
 
       it('passes the correct sort key to queryVariables when sorting by updated date ascending', async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
         findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
         await waitForPromises();
 
@@ -2617,12 +2531,11 @@ describe('planning-view', () => {
   describe('display settings drawer', () => {
     describe('when work_item_list_display_settings_drawer is enabled', () => {
       beforeEach(async () => {
-        mountComponent({
+        await mountComponent({
           provide: {
             glFeatures: { workItemListDisplaySettingsDrawer: true },
           },
         });
-        await waitForPromises();
       });
 
       it('renders the Display button', () => {
@@ -2649,12 +2562,57 @@ describe('planning-view', () => {
 
         expect(findDisplaySettingsDrawer().props('open')).toBe(false);
       });
+
+      it('does not render the existing user preferences dropdown', () => {
+        expect(findWorkItemUserPreferences().exists()).toBe(false);
+      });
+
+      it('hides the sort dropdown by passing an empty sortOptions array to FilteredSearchBar', () => {
+        expect(findFilteredSearchBar().props('sortOptions')).toEqual([]);
+      });
+
+      it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
+
+        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        await waitForPromises();
+
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
+        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+      });
+
+      it('passes sortOptions and the current sortKey to the drawer', () => {
+        const drawerProps = findDisplaySettingsDrawer().props();
+
+        expect(drawerProps.sortKey).toBe(CREATED_DESC);
+        expect(Array.isArray(drawerProps.sortOptions)).toBe(true);
+        expect(drawerProps.sortOptions.length).toBeGreaterThan(0);
+      });
+
+      it('passes commonPreferences to the drawer', () => {
+        expect(findDisplaySettingsDrawer().props('commonPreferences')).toEqual({
+          shouldOpenItemsInSidePanel: true,
+        });
+      });
+
+      it('updates sort and saves the preference when the drawer emits sort', async () => {
+        findDisplaySettingsDrawer().vm.$emit('sort', UPDATED_DESC);
+        await waitForPromises();
+        await nextTick();
+
+        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+        expect(findDisplaySettingsDrawer().props('sortKey')).toBe(UPDATED_DESC);
+        expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
+          sort: UPDATED_DESC,
+          namespace: 'full/path',
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+        });
+      });
     });
 
     describe('when work_item_list_display_settings_drawer is disabled', () => {
       beforeEach(async () => {
-        mountComponent();
-        await waitForPromises();
+        await mountComponent();
       });
 
       it('does not render the Display button', () => {
@@ -2667,6 +2625,260 @@ describe('planning-view', () => {
 
       it('still renders the existing user preferences dropdown', () => {
         expect(findWorkItemUserPreferences().exists()).toBe(true);
+      });
+
+      it('passes the full sortOptions array to FilteredSearchBar', () => {
+        const sortOptions = findFilteredSearchBar().props('sortOptions');
+        expect(Array.isArray(sortOptions)).toBe(true);
+        expect(sortOptions.length).toBeGreaterThan(0);
+      });
+
+      it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
+
+        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        await waitForPromises();
+
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
+        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+      });
+    });
+  });
+
+  describe('view mode toggle', () => {
+    const savedViewsSelectorsStub = {
+      name: 'WorkItemsSavedViewsSelectors',
+      template: '<div><slot name="header-area"></slot></div>',
+    };
+    const boardViewStub = {
+      name: 'BoardView',
+      props: ['rootPageFullPath', 'queryVariables'],
+      template: '<div />',
+    };
+
+    describe('by default', () => {
+      beforeEach(async () => {
+        await mountComponent();
+      });
+
+      it('renders the list view', () => {
+        expect(findListView().exists()).toBe(true);
+      });
+
+      it('does not render the board view', () => {
+        expect(findBoardView().exists()).toBe(false);
+      });
+    });
+
+    describe('when planningViewBoards feature flag is disabled', () => {
+      beforeEach(async () => {
+        await mountComponent({ stubs: { WorkItemsSavedViewsSelectors: savedViewsSelectorsStub } });
+      });
+
+      it('does not render the toggle button', () => {
+        expect(findToggleViewModeButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when planningViewBoards feature flag is enabled', () => {
+      beforeEach(async () => {
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+        });
+      });
+
+      it('renders the toggle button labelled "Show Board" by default', () => {
+        expect(findToggleViewModeButton().exists()).toBe(true);
+        expect(findToggleViewModeButton().text()).toBe('Show Board');
+      });
+
+      it('switches to board view and updates the button label when clicked', async () => {
+        findToggleViewModeButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findListView().exists()).toBe(false);
+        expect(findBoardView().exists()).toBe(true);
+        expect(findToggleViewModeButton().text()).toBe('Show List');
+      });
+
+      it('passes rootPageFullPath and queryVariables to the board view', async () => {
+        findToggleViewModeButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findBoardView().props('rootPageFullPath')).toBe('full/path');
+        expect(findBoardView().props('queryVariables')).toMatchObject({
+          fullPath: 'full/path',
+          sort: CREATED_DESC,
+          state: STATUS_OPEN,
+        });
+      });
+
+      it('switches back to list view on a second click', async () => {
+        findToggleViewModeButton().vm.$emit('click');
+        await waitForPromises();
+        findToggleViewModeButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findListView().exists()).toBe(true);
+        expect(findBoardView().exists()).toBe(false);
+        expect(findToggleViewModeButton().text()).toBe('Show Board');
+      });
+
+      describe('when board-view emits set-error', () => {
+        const message = 'Something went wrong when fetching the board columns.';
+
+        beforeEach(async () => {
+          findToggleViewModeButton().vm.$emit('click');
+          await waitForPromises();
+          findBoardView().vm.$emit('set-error', message);
+          await nextTick();
+        });
+
+        it('renders the error in a GlAlert', () => {
+          expect(wrapper.findComponent(GlAlert).text()).toBe(message);
+        });
+      });
+    });
+  });
+
+  describe('cursor compatibility between GraphQL and REST API modes', () => {
+    const graphqlCursor = btoa(
+      JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000', id: '203' }),
+    );
+    const restCursor = btoa(
+      JSON.stringify({
+        created_at: '2025-12-14 17:09:52.000000000 +0000',
+        id: '203',
+        _kd: 'n',
+      }),
+    );
+
+    beforeEach(() => {
+      updateHistory.mockClear();
+      removeParams.mockClear();
+      removeParams.mockReturnValue('/work_items');
+    });
+
+    describe.each([
+      {
+        workItemRestApiFrontendUsers: true,
+        workItemRestApiIndex: true,
+        workItemRestApi: false,
+      },
+      {
+        workItemRestApiFrontendUsers: true,
+        workItemRestApiIndex: false,
+        workItemRestApi: true,
+      },
+    ])('when REST API feature flags are enabled (%o)', (glFeatures) => {
+      const restProvide = { glFeatures };
+
+      it('passes the cursor through unchanged when it is a REST-style cursor', async () => {
+        setWindowLocation(`?page_after=${encodeURIComponent(restCursor)}`);
+        await mountComponent({ provide: restProvide });
+
+        expect(findListView().props('queryVariables')).toMatchObject({
+          afterCursor: restCursor,
+        });
+        expect(updateHistory).not.toHaveBeenCalled();
+      });
+
+      it('resets pagination to page 1 when the cursor is a GraphQL-style cursor', async () => {
+        setWindowLocation(`?page_after=${graphqlCursor}`);
+        await mountComponent({ provide: restProvide });
+
+        const queryVariables = findListView().props('queryVariables');
+        expect(queryVariables.afterCursor).toBeUndefined();
+        expect(queryVariables.beforeCursor).toBeUndefined();
+      });
+
+      it('resets pagination to page 1 when page_before cursor is a GraphQL-style cursor', async () => {
+        setWindowLocation(`?page_before=${graphqlCursor}&last_page_size=20`);
+        await mountComponent({ provide: restProvide });
+
+        const queryVariables = findListView().props('queryVariables');
+        expect(queryVariables.afterCursor).toBeUndefined();
+        expect(queryVariables.beforeCursor).toBeUndefined();
+      });
+
+      it('removes page_after and page_before params from URL when cursor is incompatible', async () => {
+        setWindowLocation(`?page_after=${graphqlCursor}`);
+        await mountComponent({ provide: restProvide });
+
+        expect(removeParams).toHaveBeenCalledWith(['page_after', 'page_before']);
+        expect(updateHistory).toHaveBeenCalledWith({
+          url: '/work_items',
+          replace: true,
+        });
+      });
+    });
+
+    describe.each([
+      {
+        workItemRestApiFrontendUsers: true,
+        workItemRestApiIndex: false,
+        workItemRestApi: false,
+      },
+      {
+        workItemRestApiFrontendUsers: false,
+        workItemRestApiIndex: true,
+        workItemRestApi: true,
+      },
+      {
+        workItemRestApiFrontendUsers: false,
+        workItemRestApiIndex: true,
+        workItemRestApi: false,
+      },
+      {
+        workItemRestApiFrontendUsers: false,
+        workItemRestApiIndex: false,
+        workItemRestApi: true,
+      },
+    ])('when the REST API flag combination is not satisfied (%o)', (glFeatures) => {
+      it('treats the cursor as a GraphQL-style cursor', async () => {
+        setWindowLocation(`?page_after=${graphqlCursor}`);
+        await mountComponent({ provide: { glFeatures } });
+
+        expect(findListView().props('queryVariables')).toMatchObject({
+          afterCursor: graphqlCursor,
+        });
+        expect(updateHistory).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when REST API feature flags are disabled (GraphQL mode)', () => {
+      it('passes the cursor through unchanged when it is a GraphQL-style cursor', async () => {
+        setWindowLocation(`?page_after=${graphqlCursor}`);
+        await mountComponent();
+
+        expect(findListView().props('queryVariables')).toMatchObject({
+          afterCursor: graphqlCursor,
+        });
+        expect(updateHistory).not.toHaveBeenCalled();
+      });
+
+      it('resets pagination to page 1 when the cursor is a REST-style cursor', async () => {
+        setWindowLocation(`?page_after=${encodeURIComponent(restCursor)}`);
+        await mountComponent();
+
+        const queryVariables = findListView().props('queryVariables');
+        expect(queryVariables.afterCursor).toBeUndefined();
+        expect(queryVariables.beforeCursor).toBeUndefined();
+      });
+
+      it('removes page_after and page_before params from URL when cursor is incompatible', async () => {
+        setWindowLocation(`?page_after=${encodeURIComponent(restCursor)}`);
+        await mountComponent();
+
+        expect(removeParams).toHaveBeenCalledWith(['page_after', 'page_before']);
+        expect(updateHistory).toHaveBeenCalledWith({
+          url: '/work_items',
+          replace: true,
+        });
       });
     });
   });

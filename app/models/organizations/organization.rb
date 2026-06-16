@@ -26,9 +26,11 @@ module Organizations
                                 .order(:id)
     }
     scope :by_path, ->(path) { where(path: path) }
-    scope :with_isolation, -> { eager_load(:isolated_record) }
+    scope :with_isolation_record, -> { eager_load(:isolated_record) }
+    scope :with_states, ->(states) { where(state: states) }
 
     before_destroy :check_if_default_organization
+    before_destroy :check_if_last_organization
 
     has_many :namespaces
     has_many :groups
@@ -63,20 +65,23 @@ module Organizations
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
-    validate :check_visibility_level, if: -> { new_record? || visibility_level_changed? }
+    validate :check_visibility_level_broader_than_groups,
+      :check_visibility_level_allowed,
+      if: -> { new_record? || visibility_level_changed? }
     validate :check_organization_reserved_name, if: -> { new_record? }
+    validate :validate_single_organization_on_self_managed, on: :create
 
     delegate :description,
       :description_html,
       :avatar,
       :avatar_url,
       :remove_avatar!,
-      :deletion_error,
-      :deletion_error=,
+      :hard_deletion_error,
+      :hard_deletion_error=,
       :state_metadata,
       :state_metadata=,
-      :deletion_scheduled_at,
-      :deletion_scheduled_at=,
+      :soft_deleted_at,
+      :soft_deleted_at=,
       to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
@@ -90,18 +95,18 @@ module Organizations
       find_by(id: DEFAULT_ORGANIZATION_ID)
     end
 
-    def self.find_by_id_with_isolation(id)
-      with_isolation.find_by(id: id)
+    def self.find_by_id_with_isolation_record(id)
+      with_isolation_record.find_by(id: id)
     end
 
-    def self.find_by_path_with_isolation(path)
+    def self.find_by_path_with_isolation_record(path)
       return unless path
 
-      with_isolation.where("LOWER(path) = ?", path.downcase).first
+      with_isolation_record.where("LOWER(path) = ?", path.downcase).first
     end
 
-    def self.find_by_namespace_path_with_isolation(path)
-      with_isolation.where(id: with_namespace_path(path).select(:id)).first
+    def self.find_by_namespace_path_with_isolation_record(path)
+      with_isolation_record.where(id: with_namespace_path(path).select(:id)).first
     end
 
     def self.default?(id)
@@ -181,13 +186,19 @@ module Organizations
     private
 
     # The visibility must be broader than the visibility of any contained root groups.
-    def check_visibility_level
+    def check_visibility_level_broader_than_groups
       max_group_level = root_groups.maximum(:visibility_level)
       return unless max_group_level
 
       return if visibility_level >= max_group_level
 
       errors.add(:visibility_level, _("can not be more restrictive than group visibility levels"))
+    end
+
+    def check_visibility_level_allowed
+      return true if visibility_level.in? [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE]
+
+      errors.add(:visibility_level, _("must be private or public"))
     end
 
     # The 'o' path is reserved as it's used for routing organization resources
@@ -206,7 +217,27 @@ module Organizations
     def check_if_default_organization
       return unless default?
 
-      raise ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization')
+      raise ActiveRecord::RecordNotDestroyed, s_('Organization|Cannot delete the default organization')
+    end
+
+    def check_if_last_organization
+      return if self.class.where.not(id: id).exists?
+
+      raise ActiveRecord::RecordNotDestroyed, s_('Organization|Cannot delete the last organization')
+    end
+
+    # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/decisions/007_self_managed_dedicated_single_organization/
+    # This is a bridge solution until key features like billing are moved to Organization level for self-managed
+    def validate_single_organization_on_self_managed
+      return if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- FOSS has no Saas module
+
+      # Multi-organization support is not available on self-managed for now.
+      # dev and test should follow SaaS and allow multiple organizations
+      return if Gitlab.dev_or_test_env?
+
+      return unless self.class.exists?
+
+      errors.add(:base, s_('Organization|Only one organization is allowed on this instance.'))
     end
 
     def unique_attributes

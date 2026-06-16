@@ -21,6 +21,7 @@ import { useMergeConflicts } from './store';
  *
  */
 export default {
+  name: 'MergeConflictResolverApp',
   components: {
     GlButton,
     GlButtonGroup,

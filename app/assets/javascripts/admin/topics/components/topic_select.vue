@@ -6,6 +6,7 @@ import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
 
 export default {
+  name: 'TopicSelect',
   components: {
     GlAvatarLabeled,
     GlCollapsibleListbox,

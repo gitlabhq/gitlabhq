@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Repositories::ContainingCommitFinder, feature_category: :source_code_management do
   subject(:finder) { described_class.new(repository, sha, params) }
 
-  let_it_be(:project) { create(:project, :small_repo) }
-  let_it_be(:repository) { project.repository }
-  let_it_be(:sha) { repository.commit.sha }
+  let_it_be(:project, freeze: false) { create(:project, :small_repo) }
+  let_it_be(:repository, freeze: false) { project.repository }
+  let_it_be(:sha, freeze: false) { repository.commit.sha }
   let(:params) { {} }
 
   before_all do

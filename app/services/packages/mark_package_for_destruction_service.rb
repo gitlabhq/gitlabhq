@@ -18,6 +18,7 @@ module Packages
       package.mark_package_files_for_destruction
       package.sync_maven_metadata(current_user) if package.maven?
       package.sync_npm_metadata_cache if package.npm?
+      package.sync_rubygems_spec_files if package.rubygems?
       sync_helm_metadata_caches(current_user) if package.helm?
 
       ::Packages::CreateEventService

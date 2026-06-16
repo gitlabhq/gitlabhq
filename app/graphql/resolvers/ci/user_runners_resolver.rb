@@ -23,6 +23,12 @@ module Resolvers
 
         { user: parent }
       end
+
+      def unconditional_includes
+        # Preload owner_runner_project so that RunnerWebUrlEdge#web_url can generate
+        # project-scoped URLs without N+1 queries when the parent is a User.
+        super + [{ owner_runner_project: [project: :route] }]
+      end
     end
   end
 end

@@ -70,6 +70,28 @@ namespace = Namespace.find_by_full_path("<new_namespace>")
 Projects::TransferService.new(p, current_user).execute(namespace)
 ```
 
+## Project transfer stuck in `transfer_in_progress` or `transfer_scheduled` state
+
+A project transfer can stall when the asynchronous transfer job fails, for example due to
+lock contention or statement timeouts. Retrying the transfer returns:
+
+`Unable to initiate transfer. The project may already have a transfer in progress.`
+
+In GitLab 19.1 and later, retry the transfer. GitLab reschedules the transfer even when the
+project namespace is still in the `transfer_in_progress` or `transfer_scheduled` state.
+
+In GitLab versions earlier than 19.1, cancel the stale transfer state in a
+[Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
+before you retry the transfer:
+
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+Project.find_by_full_path('<group>/<project_name>').project_namespace.cancel_transfer!
+```
+
 ## Delete a project using console
 
 If a project cannot be deleted, you can attempt to delete it through [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Repositories::CommitCollectionWithNextCursor, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:commit) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:commit, freeze: false) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
 
   describe '#next_cursor' do
     subject(:next_cursor) { described_class.new(project, [commit], next_cursor: cursor).next_cursor }

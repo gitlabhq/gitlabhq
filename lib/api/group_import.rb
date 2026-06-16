@@ -51,8 +51,9 @@ module API
         )
       end
 
-      desc 'Create a new group import' do
-        detail 'This feature was introduced in GitLab 12.8'
+      desc 'Create a group import' do
+        detail 'Creates a group import. The maximum import file size can be set by the Administrator on GitLab ' \
+          'Self-Managed (defaults to `0` (unlimited)).'
         success code: 202
         failure [
           { code: 401, message: 'Unauthorized' },

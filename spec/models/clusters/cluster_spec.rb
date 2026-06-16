@@ -47,7 +47,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.enabled' do
     subject { described_class.enabled }
 
-    let!(:cluster) { create(:cluster, enabled: true) }
+    let_it_be(:cluster) { create(:cluster, enabled: true) }
 
     before do
       create(:cluster, :disabled)
@@ -59,7 +59,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.disabled' do
     subject { described_class.disabled }
 
-    let!(:cluster) { create(:cluster, :disabled) }
+    let_it_be(:cluster) { create(:cluster, :disabled) }
 
     before do
       create(:cluster, enabled: true)
@@ -71,7 +71,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.user_provided' do
     subject { described_class.user_provided }
 
-    let!(:cluster) { create(:cluster_platform_kubernetes).cluster }
+    let_it_be(:cluster) { create(:cluster_platform_kubernetes).cluster }
 
     before do
       create(:cluster_provider_gcp, :created)
@@ -83,7 +83,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.gcp_provided' do
     subject { described_class.gcp_provided }
 
-    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
+    let_it_be(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -95,7 +95,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.gcp_installed' do
     subject { described_class.gcp_installed }
 
-    let!(:cluster) { create(:cluster_provider_gcp, :created).cluster }
+    let_it_be(:cluster) { create(:cluster_provider_gcp, :created).cluster }
 
     before do
       create(:cluster, :providing_by_gcp)
@@ -107,7 +107,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.aws_provided' do
     subject { described_class.aws_provided }
 
-    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
+    let_it_be(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
       create(:cluster, :provided_by_user)
@@ -119,7 +119,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.aws_installed' do
     subject { described_class.aws_installed }
 
-    let!(:cluster) { create(:cluster_provider_aws, :created).cluster }
+    let_it_be(:cluster) { create(:cluster_provider_aws, :created).cluster }
 
     before do
       errored_provider = create(:cluster_provider_aws)
@@ -135,13 +135,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'cluster is not managed' do
-      let!(:cluster) { create(:cluster, :not_managed) }
+      let_it_be(:cluster) { create(:cluster, :not_managed) }
 
       it { is_expected.not_to include(cluster) }
     end
 
     context 'cluster is managed' do
-      let!(:cluster) { create(:cluster) }
+      let_it_be(:cluster) { create(:cluster) }
 
       it { is_expected.to include(cluster) }
     end
@@ -151,13 +151,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     subject { described_class.with_management_project }
 
     context 'cluster has a management project' do
-      let!(:cluster) { create(:cluster, :management_project) }
+      let_it_be(:cluster) { create(:cluster, :management_project) }
 
       it { is_expected.to include(cluster) }
     end
 
     context 'cluster does not have a management project' do
-      let!(:cluster) { create(:cluster) }
+      let_it_be(:cluster) { create(:cluster) }
 
       it { is_expected.not_to include(cluster) }
     end
@@ -202,8 +202,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.with_project_http_integrations' do
     subject { described_class.with_project_http_integrations(project_id) }
 
-    let!(:cluster) { create(:cluster, :project) }
-    let!(:project_id) { cluster.first_project.id }
+    let_it_be(:cluster) { create(:cluster, :project) }
+    let_it_be(:project_id) { cluster.first_project.id }
 
     context 'project has alert service data' do
       let!(:integration) { create(:alert_management_http_integration, project: cluster.clusterable) }
@@ -219,8 +219,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   describe '.for_project_namespace' do
     subject { described_class.for_project_namespace(namespace_id) }
 
-    let!(:cluster) { create(:cluster, :project) }
-    let!(:another_cluster) { create(:cluster, :project) }
+    let_it_be(:cluster) { create(:cluster, :project) }
+    let_it_be(:another_cluster) { create(:cluster, :project) }
     let(:namespace_id) { cluster.first_project.namespace_id }
 
     it { is_expected.to contain_exactly(cluster) }
@@ -231,7 +231,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     let(:name) { 'this-cluster' }
     let!(:cluster) { create(:cluster, :project, name: name) }
-    let!(:another_cluster) { create(:cluster, :project) }
+    let_it_be(:another_cluster) { create(:cluster, :project) }
 
     it { is_expected.to contain_exactly(cluster) }
   end
@@ -241,9 +241,9 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'when validates unique_environment_scope' do
       context 'for a project cluster' do
-        let(:project) { create(:project) }
+        let_it_be(:project) { create(:project) }
 
-        before do
+        before_all do
           create(:cluster, projects: [project], environment_scope: 'product/*')
         end
 
@@ -268,9 +268,9 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       end
 
       context 'for a group cluster' do
-        let(:group) { create(:group) }
+        let_it_be(:group) { create(:group) }
 
-        before do
+        before_all do
           create(:cluster, :group, groups: [group], environment_scope: 'product/*')
         end
 
@@ -294,7 +294,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       end
 
       context 'for an instance cluster' do
-        before do
+        before_all do
           create(:cluster, :instance, environment_scope: 'product/*')
         end
 
@@ -540,7 +540,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'when group and instance have configured kubernetes clusters' do
       let(:project) { create(:project, group: group) }
-      let!(:instance_cluster) { create(:cluster, :instance) }
+      let_it_be(:instance_cluster) { create(:cluster, :instance) }
 
       it 'returns clusters in order, descending the hierachy' do
         is_expected.to eq([group_cluster, instance_cluster])
@@ -796,7 +796,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 
       it 'returns the cached namespace if present, ignoring CI config' do
-        cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment, namespace: 'the name', service_account_token: 'some token')
+        cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment,
+          namespace: 'the name', service_account_token: 'some token')
         expect(subject).to eq cached_namespace.namespace
       end
 
@@ -810,7 +811,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 
       it 'returns the cached namespace if present, regardless of CI config' do
-        cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment, namespace: 'the name', service_account_token: 'some token')
+        cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment,
+          namespace: 'the name', service_account_token: 'some token')
         expect(subject).to eq cached_namespace.namespace
       end
 
@@ -1000,7 +1002,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#connection_status' do
-    let(:cluster) { create(:cluster) }
+    let_it_be(:cluster) { create(:cluster) }
     let(:status) { :connected }
 
     subject { cluster.connection_status }
@@ -1017,7 +1019,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#connection_error' do
-    let(:cluster) { create(:cluster) }
+    let_it_be(:cluster) { create(:cluster) }
     let(:error) { :unknown_error }
 
     subject { cluster.connection_error }
@@ -1034,7 +1036,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#node_connection_error' do
-    let(:cluster) { create(:cluster) }
+    let_it_be(:cluster) { create(:cluster) }
     let(:error) { :unknown_error }
 
     subject { cluster.node_connection_error }
@@ -1051,7 +1053,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#metrics_connection_error' do
-    let(:cluster) { create(:cluster) }
+    let_it_be(:cluster) { create(:cluster) }
     let(:error) { :unknown_error }
 
     subject { cluster.metrics_connection_error }
@@ -1068,7 +1070,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#nodes' do
-    let(:cluster) { create(:cluster) }
+    let_it_be(:cluster) { create(:cluster) }
 
     subject { cluster.nodes }
 
@@ -1131,7 +1133,9 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       end
 
       context 'cluster cannot be authenticated to' do
-        let(:connection_status) { { connection_status: :authentication_failure, connection_error: :authentication_error } }
+        let(:connection_status) do
+          { connection_status: :authentication_failure, connection_error: :authentication_error }
+        end
 
         before do
           allow(cluster.kubeclient.core_client).to receive(:discover)
@@ -1190,7 +1194,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#delete_cached_resources!' do
-    let!(:cluster) { create(:cluster, :project) }
+    let_it_be(:cluster) { create(:cluster, :project) }
     let!(:staging_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'staging') }
     let!(:production_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'production') }
 

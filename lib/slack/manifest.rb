@@ -2,19 +2,24 @@
 
 module Slack
   module Manifest
-    class << self
-      delegate :to_json, to: :to_h
+    BASE_BOT_EVENTS = %w[app_home_opened].freeze
+    DUO_BOT_EVENTS = %w[app_mention].freeze
 
-      def share_url
-        "https://api.slack.com/apps?new_app=1&manifest_json=#{ERB::Util.url_encode(to_json)}"
+    class << self
+      def share_url(duo_enabled: false)
+        "https://api.slack.com/apps?new_app=1&manifest_json=#{ERB::Util.url_encode(to_json(duo_enabled: duo_enabled))}"
       end
 
-      def to_h
+      def to_json(duo_enabled: false)
+        to_h(duo_enabled: duo_enabled).to_json
+      end
+
+      def to_h(duo_enabled: false)
         {
           display_information: display_information,
           features: features,
-          oauth_config: oauth_config,
-          settings: settings
+          oauth_config: oauth_config(duo_enabled: duo_enabled),
+          settings: settings(duo_enabled: duo_enabled)
         }
       end
 
@@ -72,28 +77,25 @@ module Slack
         }
       end
 
-      def oauth_config
+      def oauth_config(duo_enabled:)
         {
           redirect_urls: [
             Gitlab.config.gitlab.url
           ],
           scopes: {
-            bot: %w[
-              commands
-              chat:write
-              chat:write.public
-            ]
+            bot: SlackIntegration.scopes_for(duo_enabled: duo_enabled)
           }
         }
       end
 
-      def settings
+      def settings(duo_enabled:)
+        bot_events = BASE_BOT_EVENTS.dup
+        bot_events += DUO_BOT_EVENTS if duo_enabled
+
         {
           event_subscriptions: {
             request_url: api_v4('integrations/slack/events'),
-            bot_events: %w[
-              app_home_opened
-            ]
+            bot_events: bot_events
           },
           interactivity: {
             is_enabled: true,

@@ -14,6 +14,7 @@ import CanaryUpdateModal from '../components/canary_update_modal.vue';
 import { ENVIRONMENTS_SCOPE } from '../constants';
 
 export default {
+  name: 'EnvironmentsFolderApp',
   components: {
     GlPagination,
     GlBadge,

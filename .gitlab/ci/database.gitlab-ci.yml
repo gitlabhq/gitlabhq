@@ -17,6 +17,7 @@ include:
   artifacts:
     paths:
       - pg_dumpall.sql
+      - db/*schema_cache.yml
 
 clickhouse:check-schema:
   variables:
@@ -155,7 +156,7 @@ db:check-schema:
 db:check-migrations:
   extends:
     - .db-job-base
-    - .use-pg16  # Should match the db same version used by GDK
+    - .use-pg17  # Should match the db same version used by GDK
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
@@ -210,7 +211,7 @@ db:backup_and_restore:
     - |
       . scripts/prepare_build.sh
       bundle exec rake db:drop db:create db:schema:load db:seed_fu
-      mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files,external-diffs}
+      mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files,external-diffs,agent_plan_content}
       bundle exec rake gitlab:backup:create
       date
       bundle exec rake gitlab:backup:restore

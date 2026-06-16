@@ -28,7 +28,7 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
-  inject: ['userNamespaceId', 'userNamespaceFullPath', 'canCreateProject'],
+  inject: ['userNamespaceId', 'canCreateProject'],
   props: {
     namespaceFullPath: {
       type: String,
@@ -61,6 +61,7 @@ export default {
       default: false,
     },
   },
+  emits: ['on-select-namespace'],
   data() {
     return {
       currentUser: {},
@@ -160,11 +161,10 @@ export default {
     },
     handleDropdownItemClick(namespaceId) {
       const namespace = this.allItems.find((item) => item.id === namespaceId);
-      this.$emit('onSelectNamespace', {
+      this.$emit('on-select-namespace', {
         id: namespace.id,
         visibility: namespace.visibility,
         fullPath: namespace.fullPath,
-        isPersonal: namespace.fullPath === this.userNamespaceFullPath,
       });
       this.setNamespace(namespace);
     },

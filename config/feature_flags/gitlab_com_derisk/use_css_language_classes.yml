@@ -1,0 +1,10 @@
+---
+name: use_css_language_classes
+description: Controls whether the GLFM markdown engine outputs language information for code blocks using CSS classes (language-*) instead of the lang attribute, preparing for the transition to valid HTML.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/518886
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224129
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601195
+milestone: '19.1'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

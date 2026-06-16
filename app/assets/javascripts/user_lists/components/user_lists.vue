@@ -1,12 +1,12 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import EmptyState from '~/feature_flags/components/empty_state.vue';
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
 import { objectToQuery, getParameterByName } from '~/lib/utils/url_utility';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import { useUserLists } from '../store/index';
 import UserListsTable from './user_lists_table.vue';
 
 export default {
@@ -26,7 +26,14 @@ export default {
     };
   },
   computed: {
-    ...mapState(['userLists', 'alerts', 'count', 'pageInfo', 'isLoading', 'hasError']),
+    ...mapState(useUserLists, [
+      'userLists',
+      'alerts',
+      'count',
+      'pageInfo',
+      'isLoading',
+      'hasError',
+    ]),
     shouldRenderPagination() {
       return (
         !this.isLoading &&
@@ -50,7 +57,12 @@ export default {
     this.fetchUserLists();
   },
   methods: {
-    ...mapActions(['setUserListsOptions', 'fetchUserLists', 'clearAlert', 'deleteUserList']),
+    ...mapActions(useUserLists, [
+      'setUserListsOptions',
+      'fetchUserLists',
+      'clearAlert',
+      'deleteUserList',
+    ]),
     onChangePage(page) {
       this.updateUserListsOptions({
         /* URLS parameters are strings, we need to parse to match types */

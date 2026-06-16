@@ -60,6 +60,7 @@ import { GlModal, GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ConfirmActionModal',
   components: { GlModal, GlAlert },
   props: {
     modalId: {

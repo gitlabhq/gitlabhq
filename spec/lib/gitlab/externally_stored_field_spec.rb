@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ExternallyStoredField, feature_category: :team_planning d
   let(:uploader_class) do
     Class.new(GitlabUploader) do
       include ObjectStorage::Concern
-      storage_location :agent_plan_content
+      storage_location :uploads
 
       def store_dir
         '_test_externally_stored_fields'
@@ -372,6 +372,67 @@ RSpec.describe Gitlab::ExternallyStoredField, feature_category: :team_planning d
 
       expect(reloaded.externally_stored_field?(:description)).to be false
       expect(reloaded.externally_stored_field?(:content)).to be true
+    end
+  end
+
+  describe 'with object storage enabled and direct upload' do
+    before do
+      stub_object_storage_uploader(
+        config: Gitlab.config.uploads.object_store,
+        uploader: uploader_class,
+        enabled: true,
+        direct_upload: true
+      )
+    end
+
+    it 'persists file_store as REMOTE when saving with object storage configured' do
+      instance = model_class.create!
+      instance.content = 'goes remote'
+      instance.save!
+
+      expect(instance.reload[:file_store]).to eq(ObjectStorage::Store::REMOTE)
+    end
+
+    it 'reads content from remote storage when file_store is REMOTE' do
+      instance = model_class.create!
+      payload = { 'content' => 'lives remote' }
+
+      uploader = uploader_class.new(instance, :file)
+      uploader.store!(CarrierWaveStringFile.new(Gitlab::Json.dump(payload)))
+      instance.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+      reloaded = model_class.find(instance.id)
+      expect(reloaded.content).to eq('lives remote')
+    end
+
+    it 'returns nil for missing remote blob without raising' do
+      instance = model_class.create!
+      instance.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+      reloaded = model_class.find(instance.id)
+
+      expect { reloaded.content }.not_to raise_error
+      expect(reloaded.content).to be_nil
+    end
+
+    it 'does not overwrite file_store on an unrelated save' do
+      instance = model_class.create!
+      instance.content = 'stored remotely'
+      instance.save!
+
+      expect(instance.reload[:file_store]).to eq(ObjectStorage::Store::REMOTE)
+
+      # Simulate config change: object storage disabled between saves
+      stub_object_storage_uploader(
+        config: Gitlab.config.uploads.object_store,
+        uploader: uploader_class,
+        enabled: false
+      )
+
+      # Save an unrelated attribute; file_store must not change.
+      instance.update!(description: 'unrelated change')
+
+      expect(instance.reload[:file_store]).to eq(ObjectStorage::Store::REMOTE)
     end
   end
 end

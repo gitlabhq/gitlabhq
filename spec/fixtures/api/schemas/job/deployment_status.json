@@ -13,13 +13,28 @@
             "last",
             "creating",
             "failed",
-            "out_of_date"
+            "out_of_date",
+            "canceled"
           ]
         },
-        { "type": "null" }
+        {
+          "type": "null"
+        }
       ]
     },
-    "environment": { "$ref": "../environment.json" }
+    "environment": {
+      "$ref": "../environment.json"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "start",
+        "stop",
+        "prepare",
+        "verify",
+        "access"
+      ]
+    }
   },
   "additionalProperties": false
 }

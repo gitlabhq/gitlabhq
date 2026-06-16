@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 絵文字リアクションAPI
 ---
 
@@ -14,33 +14,33 @@ title: 絵文字リアクションAPI
 
 {{< history >}}
 
-- GitLab 16.0では、[名前が](https://gitlab.com/gitlab-org/gitlab/-/issues/409884)「award emoji」から「emoji reactions」に変更されました。
+- GitLab 16.0で「award emoji」から「絵文字リアクション」に[名称変更](https://gitlab.com/gitlab-org/gitlab/-/issues/409884)。
 
 {{< /history >}}
 
-絵文字[リアクション](../user/emoji_reactions.md)は千の言葉を語ります。
+このAPIを使用して[絵文字リアクション](../user/emoji_reactions.md)を管理します。
 
-GitLabでは、絵文字リアクションを受け入れるオブジェクトをawardableと呼びます。以下のものに絵文字でリアクションできます:
+GitLabの絵文字リアクションを受け入れるオブジェクトはアワード可能オブジェクトと呼ばれます。以下のリソースに対して絵文字でリアクションできます:
 
-- [エピック](../user/group/epics/_index.md) （[API](epics.md)）。
+- [エピック](../user/group/epics/_index.md) ([API](epics.md))。
 - [イシュー](../user/project/issues/_index.md) ([API](issues.md))。
 - [マージリクエスト](../user/project/merge_requests/_index.md) ([API](merge_requests.md))。
-- [スニペット](../user/snippets.md) （[API](snippets.md)）。
-- [コメント](../user/emoji_reactions.md#emoji-reactions-for-comments) （[API](notes.md)）。
+- [スニペット](../user/snippets.md) ([API](snippets.md))。
+- [コメント](../user/emoji_reactions.md#emoji-reactions-for-comments) ([API](notes.md))。
 
-## イシュー、マージリクエスト、スニペット {#issues-merge-requests-and-snippets}
+## イシュー、マージリクエスト、およびスニペット {#issues-merge-requests-and-snippets}
 
-コメントでこれらのエンドポイントを使用する方法については、[コメントへのリアクションの追加](#add-reactions-to-comments)を参照してください。
+コメントでこれらのエンドポイントを使用する方法については、[Add reactions to comments](#add-reactions-to-comments)を参照してください。
 
-### awardableの絵文字リアクションを一覧表示する {#list-an-awardables-emoji-reactions}
+### リソースのすべての絵文字リアクションをリスト表示する {#list-all-emoji-reactions-for-a-resource}
 
 {{< history >}}
 
-- GitLab 15.1 [で変更](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)され、パブリックawardableへの認証なしでのアクセスが許可されました。
+- GitLab 15.1で、パブリックアワード可能オブジェクトへの認証されていないアクセスを許可するように[変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)。
 
 {{< /history >}}
 
-指定されたawardableのすべての絵文字リアクションのリストを取得します。指定されたマージリクエストが公開されている場合、このエンドポイントへのアクセスは認証なしで可能です。
+指定されたイシュー、スニペット、またはマージリクエストのすべての絵文字リアクションをリスト表示します。アワード可能オブジェクトが一般公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji
@@ -53,9 +53,9 @@ GET /projects/:id/snippets/:snippet_id/award_emoji
 | 属性      | 型           | 必須 | 説明                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `issue_iid``merge_request_iid``snippet_id` | 整数        | はい      | awardableのID（マージリクエスト/イシューの場合は`iid`、スニペットの場合は`id`）。     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | 整数        | はい      | アワード可能オブジェクトのID (`iid`マージリクエスト/イシュー用、`id`スニペット用)。     |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -63,7 +63,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -102,15 +102,15 @@ curl --request GET \
 ]
 ```
 
-### 単一の絵文字リアクションを取得する {#get-single-emoji-reaction}
+### リソースから絵文字リアクションを取得する {#retrieve-an-emoji-reaction-from-a-resource}
 
 {{< history >}}
 
-- GitLab 15.1 [で変更](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)され、パブリックawardableへの認証なしでのアクセスが許可されました。
+- GitLab 15.1で、パブリックアワード可能オブジェクトへの認証されていないアクセスを許可するように[変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)。
 
 {{< /history >}}
 
-イシュー、スニペット、またはマージリクエストから単一の絵文字リアクションを取得します。指定されたマージリクエストが公開されている場合、このエンドポイントへのアクセスは認証なしで可能です。
+指定されたイシュー、スニペット、またはマージリクエストから絵文字リアクションを取得します。アワード可能オブジェクトが一般公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
@@ -123,10 +123,10 @@ GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 | 属性      | 型           | 必須 | 説明                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `issue_iid``merge_request_iid``snippet_id` | 整数        | はい      | awardableのID（マージリクエスト/イシューの場合は`iid`、スニペットの場合は`id`）。     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | 整数        | はい      | アワード可能オブジェクトのID (`iid`マージリクエスト/イシュー用、`id`スニペット用)。     |
 | `award_id`     | 整数        | はい      | 絵文字リアクションのID。                                                       |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -134,7 +134,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -155,9 +155,9 @@ curl --request GET \
 }
 ```
 
-### 新しい絵文字リアクションを追加する {#add-a-new-emoji-reaction}
+### リソースに絵文字リアクションを追加する {#add-an-emoji-reaction-to-a-resource}
 
-指定されたawardableに絵文字リアクションを追加します。
+イシュー、スニペット、またはマージリクエストに絵文字リアクションを追加します。
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/award_emoji
@@ -170,8 +170,8 @@ POST /projects/:id/snippets/:snippet_id/award_emoji
 | 属性      | 型           | 必須 | 説明                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `issue_iid``merge_request_iid``snippet_id` | 整数        | はい      | awardableのID（マージリクエスト/イシューの場合は`iid`、スニペットの場合は`id`）。     |
-| `name`         | 文字列         | はい      | コロンなしの絵文字の名前。                                            |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | 整数        | はい      | アワード可能オブジェクトのID (`iid`マージリクエスト/イシュー用、`id`スニペット用)。     |
+| `name`         | 文字列         | はい      | コロンなしの絵文字名。                                            |
 
 ```shell
 curl --request POST \
@@ -200,9 +200,9 @@ curl --request POST \
 }
 ```
 
-### 絵文字リアクションを削除します {#delete-an-emoji-reaction}
+### リソースから絵文字リアクションを削除する {#delete-an-emoji-reaction-from-a-resource}
 
-時にはうまくいかないことがあり、リアクションを削除する必要があります。
+指定されたイシュー、スニペット、またはマージリクエストから絵文字リアクションを削除します。
 
 管理者またはリアクションの作成者のみが絵文字リアクションを削除できます。
 
@@ -217,7 +217,7 @@ DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 | 属性      | 型           | 必須 | 説明                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `issue_iid``merge_request_iid``snippet_id` | 整数        | はい      | awardableのID（マージリクエスト/イシューの場合は`iid`、スニペットの場合は`id`）。     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | 整数        | はい      | アワード可能オブジェクトのID (`iid`マージリクエスト/イシュー用、`id`スニペット用)。     |
 | `award_id`     | 整数        | はい      | 絵文字リアクションのID。                                                        |
 
 ```shell
@@ -228,23 +228,20 @@ curl --request DELETE \
 
 ## コメントにリアクションを追加する {#add-reactions-to-comments}
 
-コメント（注釈とも呼ばれます）は、イシュー、マージリクエスト、およびスニペットのサブリソースです。
+コメント (メモとも呼ばれます) は、イシュー、マージリクエスト、およびスニペットのサブリソースです。
 
-{{< alert type="note" >}}
+> [!note]
+> 以下の例は、イシューのコメントで絵文字リアクションを操作する方法について説明していますが、マージリクエストとスニペットのコメントにも適用できます。したがって、`issue_iid`を`merge_request_iid`または`snippet_id`に置き換える必要があります。
 
-以下の例では、イシューのコメントに対する絵文字リアクションの操作について説明していますが、マージリクエストとスニペットのコメントにも適用できます。したがって、`issue_iid`を`merge_request_iid`または`snippet_id`に置き換える必要があります。
-
-{{< /alert >}}
-
-### コメントの絵文字リアクションをリストする {#list-a-comments-emoji-reactions}
+### コメントのすべての絵文字リアクションをリスト表示する {#list-all-emoji-reactions-for-a-comment}
 
 {{< history >}}
 
-- GitLab 15.1 [で変更](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)され、パブリックコメントへの認証なしでのアクセスが許可されました。
+- GitLab 15.1で、パブリックコメントへの認証されていないアクセスを許可するように[変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)。
 
 {{< /history >}}
 
-コメント（注釈）のすべての絵文字リアクションを取得します。コメントが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+指定されたコメントのすべての絵文字リアクションをリスト表示します。コメントが一般公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -256,9 +253,9 @@ GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 |:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid` | 整数        | はい      | イシューの内部ID。                                                     |
-| `note_id`   | 整数        | はい      | コメント（注釈）のID。                                                      |
+| `note_id`   | 整数        | はい      | コメント (メモ) のID。                                                      |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -266,7 +263,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -289,15 +286,15 @@ curl --request GET \
 ]
 ```
 
-### コメントの絵文字リアクションを取得する {#get-an-emoji-reaction-for-a-comment}
+### コメントから絵文字リアクションを取得する {#retrieve-an-emoji-reaction-from-a-comment}
 
 {{< history >}}
 
-- GitLab 15.1 [で変更](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)され、パブリックコメントへの認証なしでのアクセスが許可されました。
+- GitLab 15.1で、パブリックコメントへの認証されていないアクセスを許可するように[変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/335068)。
 
 {{< /history >}}
 
-コメント（注釈）の単一の絵文字リアクションを取得します。コメントが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+指定されたコメントから絵文字リアクションを取得します。コメントが一般公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
@@ -309,10 +306,10 @@ GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 |:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid` | 整数        | はい      | イシューの内部ID。                                                     |
-| `note_id`   | 整数        | はい      | コメント（注釈）のID。                                                      |
+| `note_id`   | 整数        | はい      | コメント (メモ) のID。                                                      |
 | `award_id`  | 整数        | はい      | 絵文字リアクションのID。                                                       |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -320,7 +317,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -341,9 +338,9 @@ curl --request GET \
 }
 ```
 
-### コメントに新しい絵文字リアクションを追加する {#add-a-new-emoji-reaction-to-a-comment}
+### コメントにリアクションを追加する {#add-an-emoji-reaction-to-a-comment}
 
-指定されたコメント（注釈）に絵文字リアクションを作成します。
+指定されたコメントに絵文字リアクションを追加します。
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -355,10 +352,10 @@ POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 |:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid` | 整数        | はい      | イシューの内部ID。                                                     |
-| `note_id`   | 整数        | はい      | コメント（注釈）のID。                                                      |
-| `name`      | 文字列         | はい      | コロンなしの絵文字の名前。                                            |
+| `note_id`   | 整数        | はい      | コメント (メモ) のID。                                                      |
+| `name`      | 文字列         | はい      | コロンなしの絵文字名。                                            |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -366,7 +363,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -389,7 +386,7 @@ curl --request POST \
 
 ### コメントから絵文字リアクションを削除する {#delete-an-emoji-reaction-from-a-comment}
 
-時にはうまくいかないことがあり、リアクションを削除する必要があります。
+指定されたコメントから絵文字リアクションを削除します。
 
 管理者またはリアクションの作成者のみが絵文字リアクションを削除できます。
 
@@ -403,10 +400,10 @@ DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 |:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `issue_iid` | 整数        | はい      | イシューの内部ID。                                                     |
-| `note_id`   | 整数        | はい      | コメント（注釈）のID。                                                      |
+| `note_id`   | 整数        | はい      | コメント (メモ) のID。                                                      |
 | `award_id`  | 整数        | はい      | 絵文字リアクションのID。                                                        |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

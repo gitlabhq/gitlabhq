@@ -27,6 +27,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'ValidationSegment',
   i18n,
   components: {
     GlIcon,

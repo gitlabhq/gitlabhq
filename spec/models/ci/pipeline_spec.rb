@@ -211,7 +211,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe '#downloadable_artifacts' do
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }
-      let_it_be(:expired_artifact) { create(:ci_job_artifact, :junit, :expired, job: build) }
+      let_it_be_with_refind(:expired_artifact) { create(:ci_job_artifact, :junit, :expired, job: build) }
       let_it_be(:undownloadable_artifact) { create(:ci_job_artifact, :trace, job: build) }
 
       context 'when artifacts are locked' do
@@ -307,7 +307,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe 'state machine transitions' do
     context 'from failed to success' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, :failed) }
+      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :failed) }
 
       it 'schedules CoverageReportWorker' do
         expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
@@ -317,7 +317,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'from running to manual' do
-      let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running) }
 
       it 'schedules CoverageReportWorker' do
         expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
@@ -357,6 +357,98 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
               additional_properties: { label: 'failed', failure_reason: 'config_error' }
             )
         end
+      end
+
+      context 'when the project has an AI-generated CI config' do
+        let!(:metric) { create(:ci_project_metric, :ai_generated, project: project) }
+
+        it 'includes the ci_config_generated_by value as author_source' do
+          expect { pipeline.succeed! }.to trigger_internal_events('completed_pipeline_execution')
+            .with(
+              project: project,
+              user: user,
+              additional_properties: { label: 'success', author_source: 'ci_expert_agent/v1' }
+            )
+        end
+      end
+    end
+  end
+
+  describe '#triggered_pipelines_with_preloads' do
+    let_it_be(:parent) { create(:ci_pipeline, project: project) }
+    let_it_be(:latest_child) { create(:ci_pipeline, project: project) }
+    let_it_be(:retried_child) { create(:ci_pipeline, project: project) }
+    let_it_be(:nil_retried_child) { create(:ci_pipeline, project: project) }
+    let_it_be(:build_triggered_child) { create(:ci_pipeline, project: project) }
+
+    before_all do
+      latest_bridge = create(:ci_bridge, pipeline: parent)
+      retried_bridge = create(:ci_bridge, :retried, pipeline: parent)
+      nil_bridge = create(:ci_bridge, pipeline: parent)
+      nil_bridge.update_column(:retried, nil)
+      build_source_job = create(:ci_build, pipeline: parent)
+
+      create(:ci_sources_pipeline, source_job: latest_bridge, pipeline: latest_child)
+      create(:ci_sources_pipeline, source_job: retried_bridge, pipeline: retried_child)
+      create(:ci_sources_pipeline, source_job: nil_bridge, pipeline: nil_retried_child)
+      create(:ci_sources_pipeline, source_job: build_source_job, pipeline: build_triggered_child)
+    end
+
+    subject(:triggered) { parent.triggered_pipelines_with_preloads }
+
+    it 'returns only downstreams whose source job is not retried' do
+      expect(triggered).to match_array([latest_child, nil_retried_child, build_triggered_child])
+    end
+
+    it 'orders the downstreams by id descending (latest first)' do
+      expect(triggered).to eq([build_triggered_child, nil_retried_child, latest_child])
+    end
+
+    it 'prunes partitions by filtering partition_id on both partitioned tables' do
+      recorder = ActiveRecord::QueryRecorder.new { triggered.to_a }
+
+      expect(recorder.log).to include(
+        a_string_matching(/"p_ci_builds"\."partition_id" =/),
+        a_string_matching(/"p_ci_pipelines"\."partition_id" =/)
+      )
+    end
+
+    context 'when the trigger job lives in a different partition than the downstream pipeline' do
+      let_it_be(:source_partition) { Ci::Partition::INITIAL_PARTITION_VALUE }
+      let_it_be(:downstream_partition) { Ci::Partition::INITIAL_PARTITION_VALUE + 1 }
+
+      let_it_be(:cross_parent) { create(:ci_pipeline, project: project, partition_id: source_partition) }
+      let_it_be(:cross_child) { create(:ci_pipeline, project: project, partition_id: downstream_partition) }
+      let_it_be(:cross_superseded_child) do
+        create(:ci_pipeline, project: project, partition_id: downstream_partition)
+      end
+
+      before_all do
+        latest = create(:ci_bridge, pipeline: cross_parent, partition_id: source_partition)
+        retried = create(:ci_bridge, :retried, pipeline: cross_parent, partition_id: source_partition)
+
+        create(:ci_sources_pipeline, source_job: latest, pipeline: cross_child)
+        create(:ci_sources_pipeline, source_job: retried, pipeline: cross_superseded_child)
+      end
+
+      subject(:cross_triggered) { cross_parent.triggered_pipelines_with_preloads }
+
+      it 'returns only the cross-partition downstream whose source job is not retried' do
+        expect(cross_triggered).to match_array([cross_child])
+      end
+    end
+
+    context 'when a legacy row has a null source_job_id' do
+      let_it_be(:null_source_child) { create(:ci_pipeline, project: project) }
+
+      before_all do
+        source = create(:ci_sources_pipeline, source_job: create(:ci_bridge, pipeline: parent),
+          pipeline: null_source_child)
+        source.update_column(:source_job_id, nil)
+      end
+
+      it 'includes the downstream pipeline' do
+        expect(triggered).to include(null_source_child)
       end
     end
   end
@@ -683,6 +775,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       pipeline.save!
 
       expect(pipeline.processables.reload.count).to eq 3
+    end
+  end
+
+  describe '.find_by_id' do
+    it 'delegates to ByIdLookup with self as scope' do
+      lookup = instance_double(Gitlab::Ci::Pipeline::ByIdLookup, execute: :result)
+
+      expect(Gitlab::Ci::Pipeline::ByIdLookup).to receive(:new).with(described_class, 42).and_return(lookup)
+
+      expect(described_class.find_by_id(42)).to eq(:result)
+    end
+
+    it 'preserves chained relation conditions in the executed query' do
+      recorder = ActiveRecord::QueryRecorder.new do
+        described_class.where(id: 42).order(id: :desc).find_by_id(42)
+      end
+
+      expect(recorder.log).to include(a_string_matching(/ORDER BY.*p_ci_pipelines.*id.*DESC/i))
     end
   end
 
@@ -1933,7 +2043,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when user is found' do
-      let_it_be(:author) { create(:user, :public_email) }
+      let_it_be_with_reload(:author) { create(:user, :public_email) }
 
       before do
         allow(pipeline).to receive(:commit).and_return(double(author_email: author.public_email))
@@ -1965,7 +2075,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       context 'when user has no public_email set' do
-        let_it_be(:author_no_public) { create(:user) }
+        let_it_be_with_reload(:author_no_public) { create(:user) }
 
         before do
           author_no_public.update_column(:public_email, nil)
@@ -2440,9 +2550,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     let(:current) { Time.current.change(usec: 0) }
-    let(:build) { create_build('build1', queued_at: 0) }
-    let(:build_b) { create_build('build2', queued_at: 0) }
-    let(:build_c) { create_build('build3', queued_at: 0) }
+    let(:build) { create_build('build1', queued_at: Time.zone.at(0)) }
+    let(:build_b) { create_build('build2', queued_at: Time.zone.at(0)) }
+    let(:build_c) { create_build('build3', queued_at: Time.zone.at(0)) }
 
     describe '#start_cancel' do
       it 'transitions to canceling' do
@@ -3290,7 +3400,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when repository exists' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be(:pipeline, refind: true) { create(:ci_empty_pipeline) }
+      let_it_be_with_refind(:pipeline) { create(:ci_empty_pipeline) }
 
       where(:tag, :ref, :result) do
         false | 'master'              | true
@@ -5024,7 +5134,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     shared_examples_for 'fetches environments in self and project descendant pipelines' do |factory_type|
       context 'when pipeline is not child nor parent' do
         let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-        let_it_be(:job, refind: true) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+        let_it_be_with_refind(:job) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
 
         it 'returns just the pipeline environment' do
           expect(subject).to contain_exactly(job.deployment.environment)
@@ -5810,7 +5920,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let_it_be(:parent_build_not_downloadable) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
     let_it_be(:child_build) { create(:ci_build, :coverage_reports, pipeline: child_pipeline) }
     let_it_be(:child_build_not_downloadable) { create(:ci_build, :trace_artifact, pipeline: child_pipeline) }
-    let_it_be(:grandchild_build) { create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline) }
+    let_it_be_with_refind(:grandchild_build) { create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline) }
 
     let_it_be(:unrelated_pipeline) { create(:ci_pipeline, project: create(:project)) }
     let_it_be(:unrelated_build) { create(:ci_build, :test_reports, pipeline: unrelated_pipeline) }
@@ -7602,7 +7712,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#build_matchers' do
     let_it_be(:user) { create(:user) }
     let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
-    let_it_be(:builds) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project, user: user) }
+    let_it_be(:builds, freeze: false) { create_list(:ci_build, 2, pipeline: pipeline, project: pipeline.project, user: user) }
 
     let(:project) { pipeline.project }
 
@@ -8182,6 +8292,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when logging is requested' do
         it 'calls access logger' do
+          expect(::Gitlab::Ci::Pipeline::AccessLogger)
+            .to receive(:new)
+            .with(pipeline: pipeline, archived: false)
+            .and_call_original
+
+          expect(pipeline.archived?(log: true)).to be_falsey
+        end
+      end
+    end
+
+    context 'when ci_pipeline_archival_setting feature flag is disabled for the project' do
+      before do
+        stub_feature_flags(ci_pipeline_archival_setting: false)
+        stub_application_setting(archive_builds_in_seconds: 3600)
+      end
+
+      it { is_expected.not_to be_archived }
+
+      context 'when logging is requested' do
+        it 'still calls access logger with archived: false' do
           expect(::Gitlab::Ci::Pipeline::AccessLogger)
             .to receive(:new)
             .with(pipeline: pipeline, archived: false)

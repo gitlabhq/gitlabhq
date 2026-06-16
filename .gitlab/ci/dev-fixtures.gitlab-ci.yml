@@ -21,7 +21,6 @@
     # SEED_NESTED_GROUPS: "false"  # requires network connection
 
 .run-dev-fixtures-script: &run-dev-fixtures-script
-  - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
   - section_start "setup-clickhouse" "Setup ClickHouse"
   - !reference [.clickhouse-setup, script]
   - bundle exec rake gitlab:clickhouse:schema:load

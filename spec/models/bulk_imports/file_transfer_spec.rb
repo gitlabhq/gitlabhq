@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileTransfer do
+RSpec.describe BulkImports::FileTransfer, feature_category: :importers do
   describe '.config_for' do
     context 'when portable is group' do
       it 'returns group config' do

@@ -7,6 +7,7 @@ import updateEnvironment from '../graphql/mutations/update_environment.mutation.
 import EnvironmentForm from './environment_form.vue';
 
 export default {
+  name: 'EditEnvironment',
   components: {
     GlLoadingIcon,
     EnvironmentForm,

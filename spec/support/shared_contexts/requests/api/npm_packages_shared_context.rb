@@ -4,15 +4,15 @@ RSpec.shared_context 'npm api setup' do
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
 
-  let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group, name: 'test-group') }
-  let_it_be(:namespace) { group }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: namespace) }
-  let_it_be(:package, reload: true) { create(:npm_package, project: project, name: "@#{group.path}/scoped_package", version: '1.2.3') }
-  let_it_be(:token) { create(:oauth_access_token, scopes: 'api', resource_owner: user) }
-  let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group, name: 'test-group') }
+  let_it_be(:namespace, freeze: false) { group }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: namespace) }
+  let_it_be_with_reload(:package) { create(:npm_package, project: project, name: "@#{group.path}/scoped_package", version: '1.2.3') }
+  let_it_be(:token, freeze: false) { create(:oauth_access_token, scopes: 'api', resource_owner: user) }
+  let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token, user: user) }
+  let_it_be_with_reload(:job) { create(:ci_build, user: user, status: :running, project: project) }
+  let_it_be(:deploy_token, freeze: false) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
 
   let(:package_name) { package.name }
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_npm_user' } }

@@ -79,6 +79,7 @@ Generated `CREATE TABLE` statement:
         lock_on_merge Bool DEFAULT false,
         archived Bool DEFAULT false,
         organization_id Nullable(Int64),
+        _siphon_watermark DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_deleted Bool DEFAULT FALSE
       )
@@ -86,7 +87,11 @@ Generated `CREATE TABLE` statement:
       PRIMARY KEY id
 ```
 
-The generator includes all columns from the PostgreSQL table and adds two extra fields to track record updates (`_siphon_replicated_at` and `_siphon_deleted`). In case you want to skip some columns from the ClickHouse schema, you can do that by modifying the generated `CREATE TABLE` statement. Siphon will only insert data for columns which are available in ClickHouse.
+The generator includes all columns from the PostgreSQL table and adds three extra fields to track record updates (`_siphon_watermark`, `_siphon_replicated_at` and `_siphon_deleted`). In case you want to skip some columns from the ClickHouse schema, you can do that by modifying the generated `CREATE TABLE` statement. Siphon will only insert data for columns which are available in ClickHouse.
+
+- `_siphon_watermark`: row change timestamp which can be used for incremental pulling of changed rows (`WHERE _siphon_watermark > 'LAST_WATERMARK_TIMESTAMP'`).
+- `_siphon_replicated_at`: replication timestamp set by Siphon, the column value mostly correlates with `_siphon_watermark`. Used for row versioning by the `ReplacingMergeTree` table engine.
+- `_siphon_deleted`: row deletion marker used by the `ReplacingMergeTree` table engine.
 
 By default, the generator uses the same primary key as PostgreSQL. You may modify this to suit your querying needs, provided the following two rules are met:
 
@@ -284,6 +289,7 @@ Generated `CREATE TABLE` statement:
           coalesce(organization_id, 0) != 0, dictGetOrDefault('organization_traversal_paths_dict', 'traversal_path', organization_id, '0/'),
           '0/'
         ),
+        _siphon_watermark DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_deleted Bool DEFAULT FALSE
       )
@@ -485,6 +491,7 @@ CREATE TABLE IF NOT EXISTS siphon_merge_requests
   iid Nullable(Int64),
   description Nullable(String),
   traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
+  _siphon_watermark DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
   _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )
@@ -516,6 +523,7 @@ CREATE TABLE IF NOT EXISTS siphon_merge_request_reviewers
   state Int8 DEFAULT 0,
   project_id Int64,
   traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+  _siphon_watermark DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
   _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )
@@ -549,6 +557,7 @@ CREATE TABLE IF NOT EXISTS merge_requests
   description Nullable(String),
   traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
   reviewers Array(Tuple(UInt64, Int8)),
+  _siphon_watermark DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
   _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )

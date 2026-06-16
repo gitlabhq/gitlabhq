@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 export default {
+  name: 'MetadataPypi',
   i18n: {
     requiredPython: s__('PackageRegistry|Required Python: %{pythonVersion}'),
     summary: s__('PackageRegistry|Summary: %{summary}'),

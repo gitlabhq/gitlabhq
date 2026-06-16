@@ -1,0 +1,90 @@
+# @feature_category: code_review_workflow
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getThroughputTableData(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $labels: [String!]
+  $authorUsername: String
+  $assigneeUsername: String
+  $milestoneTitle: String
+  $sourceBranches: [String!]
+  $targetBranches: [String!]
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+  $notLabels: [String!]
+  $notMilestoneTitle: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+      mergedAfter: $startDate
+      mergedBefore: $endDate
+      sort: MERGED_AT_DESC
+      labels: $labels
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
+      milestoneTitle: $milestoneTitle
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      not: { labels: $notLabels, milestoneTitle: $notMilestoneTitle }
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        iid
+        title
+        createdAt
+        mergedAt
+        webUrl
+        milestone {
+          id
+          title
+          webPath
+        }
+        assignees {
+          nodes {
+            id
+            avatarUrl
+            name
+            webUrl
+          }
+        }
+        diffStatsSummary {
+          additions
+          deletions
+        }
+        labels(first: 0) {
+          count
+        }
+        pipelines {
+          nodes {
+            id
+            detailedStatus {
+              id
+              icon
+              name
+              label
+            }
+          }
+        }
+        commitCount
+        userNotesCount
+        approvedBy {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}

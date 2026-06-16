@@ -7,4 +7,3 @@ Gitlab/Authz/RoleCheckInRule:
     - 'ee/app/policies/ai/conversation/thread_policy.rb'
     - 'ee/app/policies/ee/group_policy.rb'
     - 'ee/app/policies/ee/namespaces/user_namespace_policy.rb'
-    - 'ee/app/policies/ee/project_policy.rb'

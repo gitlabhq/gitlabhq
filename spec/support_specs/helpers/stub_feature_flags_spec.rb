@@ -188,7 +188,7 @@ RSpec.describe StubFeatureFlags do
   def actor(actor)
     case actor
     when Array
-      actor.map(&method(:actor))
+      actor.map { |item| actor(item) }
     when Symbol # convert to flipper compatible object
       stub_feature_flag_gate(actor)
     else

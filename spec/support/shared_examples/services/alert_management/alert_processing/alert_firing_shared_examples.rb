@@ -148,10 +148,10 @@ RSpec.shared_examples 'processes new firing alert' do
   include_examples 'processes never-before-seen alert'
 
   context 'for an existing alert with the same fingerprint' do
-    let_it_be(:gitlab_fingerprint) { Digest::SHA1.hexdigest(fingerprint) }
+    let_it_be(:gitlab_fingerprint, freeze: false) { Digest::SHA1.hexdigest(fingerprint) }
 
     context 'which is triggered' do
-      let_it_be(:alert) { create(:alert_management_alert, :triggered, fingerprint: gitlab_fingerprint, project: project) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :triggered, fingerprint: gitlab_fingerprint, project: project) }
 
       it_behaves_like 'adds an alert management alert event'
       it_behaves_like 'sends alert notification emails if enabled'
@@ -161,7 +161,7 @@ RSpec.shared_examples 'processes new firing alert' do
       it_behaves_like 'does not create a system note for alert'
 
       context 'with an existing resolved alert as well' do
-        let_it_be(:resolved_alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: gitlab_fingerprint) }
+        let_it_be(:resolved_alert, freeze: false) { create(:alert_management_alert, :resolved, project: project, fingerprint: gitlab_fingerprint) }
 
         it_behaves_like 'adds an alert management alert event'
         it_behaves_like 'sends alert notification emails if enabled'
@@ -173,7 +173,7 @@ RSpec.shared_examples 'processes new firing alert' do
     end
 
     context 'which is acknowledged' do
-      let_it_be(:alert) { create(:alert_management_alert, :acknowledged, fingerprint: gitlab_fingerprint, project: project) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :acknowledged, fingerprint: gitlab_fingerprint, project: project) }
 
       it_behaves_like 'adds an alert management alert event'
       it_behaves_like 'processes incident issues if enabled', with_issue: true
@@ -184,7 +184,7 @@ RSpec.shared_examples 'processes new firing alert' do
     end
 
     context 'which is ignored' do
-      let_it_be(:alert) { create(:alert_management_alert, :ignored, fingerprint: gitlab_fingerprint, project: project) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :ignored, fingerprint: gitlab_fingerprint, project: project) }
 
       it_behaves_like 'adds an alert management alert event'
       it_behaves_like 'processes incident issues if enabled', with_issue: true
@@ -195,7 +195,7 @@ RSpec.shared_examples 'processes new firing alert' do
     end
 
     context 'which is resolved' do
-      let_it_be(:alert) { create(:alert_management_alert, :resolved, fingerprint: gitlab_fingerprint, project: project) }
+      let_it_be(:alert, freeze: false) { create(:alert_management_alert, :resolved, fingerprint: gitlab_fingerprint, project: project) }
 
       include_examples 'processes never-before-seen alert'
     end

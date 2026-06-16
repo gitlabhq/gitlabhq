@@ -10,12 +10,15 @@ module Gitlab
       SELF_HOSTED_RUNNER = 'self-hosted'
       ADDITIONAL_SUBJECT_CLAIMS = [
         :project_path,
+        :project_id,
         :ref_type,
         :ref,
         :ref_protected,
         :environment_protected,
         :deployment_tier
       ].freeze
+
+      PATH_BASED_SUBJECT_CLAIMS = [:project_path].freeze
 
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,
@@ -28,8 +31,12 @@ module Gitlab
         super(build, ttl: ttl)
 
         @aud = aud
-        @sub = subject_value(sub_components)
+        @sub_components = sub_components
         @target_audience = target_audience
+
+        verify_path_not_burned! if path_based_sub?
+
+        @sub = subject_value(sub_components)
       end
 
       private
@@ -60,9 +67,26 @@ module Gitlab
       end
 
       def sub_claims
-        ci_claims.merge(project_path: source_project.full_path).slice(*ADDITIONAL_SUBJECT_CLAIMS)
+        ci_claims.merge(
+          project_path: source_project.full_path,
+          project_id: source_project.id.to_s
+        ).slice(*ADDITIONAL_SUBJECT_CLAIMS)
       end
       strong_memoize_attr :sub_claims
+
+      def verify_path_not_burned!
+        return unless ::Authn::BurnedProjectRoute.blocked_for?(
+          organization_id: source_project.organization_id,
+          path: source_project.full_path,
+          except_project_id: source_project.id
+        )
+
+        raise ::Gitlab::Ci::OidcBurnedPathError
+      end
+
+      def path_based_sub?
+        (@sub_components.map(&:to_sym) & PATH_BASED_SUBJECT_CLAIMS).any?
+      end
 
       def predefined_claims
         additional_custom_claims = {

@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:member_user1) { create(:user) }
-  let_it_be(:member_user2) { create(:user) }
-  let_it_be(:member_users) { [member_user1, member_user2] }
-  let_it_be(:permission) { :update }
-  let_it_be(:access_level) { Gitlab::Access::MAINTAINER }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:member_user1, freeze: false) { create(:user) }
+  let_it_be(:member_user2, freeze: false) { create(:user) }
+  let_it_be(:member_users, freeze: false) { [member_user1, member_user2] }
+  let_it_be(:permission, freeze: false) { :update }
+  let_it_be(:access_level, freeze: false) { Gitlab::Access::MAINTAINER }
   let(:members) { source.members_and_requesters.where(user_id: member_users).to_a }
   let(:update_service) { described_class.new(current_user, params) }
   let(:params) { { access_level: access_level, source: source } }
@@ -38,16 +38,16 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
   shared_examples 'current user cannot update the given members' do
     it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-      let_it_be(:source) { project }
+      let_it_be(:source, freeze: false) { project }
     end
 
     it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-      let_it_be(:source) { group }
+      let_it_be(:source, freeze: false) { group }
     end
   end
 
   shared_examples 'returns error status when params are invalid' do
-    let_it_be(:params) { { expires_at: 2.days.ago, source: source } }
+    let_it_be(:params, freeze: false) { { expires_at: 2.days.ago, source: source } }
 
     specify do
       expect(subject[:status]).to eq(:error)
@@ -113,20 +113,20 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
 
       context 'with Gitlab::Access::GUEST level as a string' do
-        let_it_be(:params) { { access_level: Gitlab::Access::GUEST.to_s, source: source } }
+        let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::GUEST.to_s, source: source } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
 
       context 'with Gitlab::Access::GUEST level as an integer' do
-        let_it_be(:params) { { access_level: Gitlab::Access::GUEST, source: source } }
+        let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::GUEST, source: source } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
     end
 
     context 'when access_level is invalid' do
-      let_it_be(:params) { { access_level: 'invalid', source: source } }
+      let_it_be(:params, freeze: false) { { access_level: 'invalid', source: source } }
 
       it 'raises an error' do
         expect { described_class.new(current_user, params) }
@@ -153,8 +153,8 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   shared_examples 'updating a project' do
-    let_it_be(:group_project) { create(:project, group: create(:group)) }
-    let_it_be(:source) { group_project }
+    let_it_be(:group_project, freeze: false) { create(:project, group: create(:group)) }
+    let_it_be(:source, freeze: false) { group_project }
 
     before do
       member_users.each { |member_user| group_project.add_developer(member_user) }
@@ -173,13 +173,13 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
       context 'and updating members to OWNER' do
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-          let_it_be(:access_level) { Gitlab::Access::OWNER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::OWNER }
         end
       end
 
       context 'and updating members to PLANNER' do
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-          let_it_be(:access_level) { Gitlab::Access::PLANNER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::PLANNER }
         end
       end
 
@@ -187,7 +187,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         let(:members) { source.members_and_requesters.find_by!(user_id: current_user.id) }
 
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-          let_it_be(:access_level) { Gitlab::Access::OWNER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::OWNER }
         end
       end
 
@@ -197,7 +197,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
 
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-          let_it_be(:access_level) { Gitlab::Access::MAINTAINER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::MAINTAINER }
         end
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
 
         it_behaves_like 'a service updating members' do
-          let_it_be(:access_level) { Gitlab::Access::OWNER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::OWNER }
         end
       end
 
@@ -223,13 +223,13 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
 
         it_behaves_like 'a service updating members' do
-          let_it_be(:access_level) { Gitlab::Access::MAINTAINER }
+          let_it_be(:access_level, freeze: false) { Gitlab::Access::MAINTAINER }
         end
       end
     end
 
     context 'when project members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
 
       before do
         group_project.group.add_owner(current_user)
@@ -249,7 +249,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   shared_examples 'updating a group' do
-    let_it_be(:source) { group }
+    let_it_be(:source, freeze: false) { group }
 
     before do
       group.add_owner(current_user)
@@ -262,7 +262,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
 
       it 'emails the users that their group membership expiry has changed' do
         expect do
@@ -272,7 +272,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
 
       before do
         members.each do |member|
@@ -323,7 +323,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   context 'when passing an invalid source' do
-    let_it_be(:source) { Object.new }
+    let_it_be(:source, freeze: false) { Object.new }
 
     it 'raises a RuntimeError' do
       expect { update_service.execute([]) }.to raise_error(RuntimeError, 'Unknown source type: Object!')
@@ -335,7 +335,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   it_behaves_like 'updating a group'
 
   context 'with a single member' do
-    let_it_be(:source) { group }
+    let_it_be(:source, freeze: false) { group }
     let(:members) { create(:group_member, group: group) }
 
     before do
@@ -348,8 +348,8 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   context 'when current user is an admin', :enable_admin_mode do
-    let_it_be(:current_user) { create(:admin) }
-    let_it_be(:source) { group }
+    let_it_be(:current_user, freeze: false) { create(:admin) }
+    let_it_be(:source, freeze: false) { group }
 
     context 'when all owners are being downgraded' do
       before do
@@ -372,7 +372,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   describe 'event publishing' do
-    let_it_be(:source) { group }
+    let_it_be(:source, freeze: false) { group }
 
     before do
       group.add_owner(current_user)

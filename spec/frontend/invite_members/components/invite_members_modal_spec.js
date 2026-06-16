@@ -1,4 +1,4 @@
-import { GlModal, GlSprintf, GlFormGroup, GlFormRadioGroup, GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlFormRadioGroup, GlCollapse, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -13,11 +13,8 @@ import MembersTokenSelect from '~/invite_members/components/members_token_select
 import UserLimitNotification from '~/invite_members/components/user_limit_notification.vue';
 import {
   MEMBERS_MODAL_ROLE_SELECT_LABEL,
-  MEMBERS_PLACEHOLDER,
   EXPANDED_ERRORS,
-  EMPTY_INVITES_ALERT_TEXT,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
-  INVALID_FEEDBACK_MESSAGE_DEFAULT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/invite_members/components/content_transition.vue';
@@ -127,7 +124,6 @@ describe('InviteMembersModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
   const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
@@ -153,8 +149,8 @@ describe('InviteMembersModal', () => {
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
-  const membersFormGroupDescription = () => findMembersFormGroup().attributes('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
+  const findInviteCapReached = () => wrapper.findByTestId('invite-cap-reached');
   const triggerOpenModal = async ({ mode = 'default', source } = {}) => {
     eventHub.$emit('open-modal', { mode, source });
     await nextTick();
@@ -228,13 +224,6 @@ describe('InviteMembersModal', () => {
         it('includes the correct invitee', () => {
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
         });
-
-        describe('members form group description', () => {
-          it('renders correct description', () => {
-            createInviteMembersToProjectWrapper({ GlFormGroup });
-            expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
-          });
-        });
       });
     });
 
@@ -243,13 +232,6 @@ describe('InviteMembersModal', () => {
         createInviteMembersToGroupWrapper();
 
         expect(findIntroText()).toBe("You're inviting members to the test name group.");
-      });
-
-      describe('members form group description', () => {
-        it('renders correct description', () => {
-          createInviteMembersToGroupWrapper({ GlFormGroup });
-          expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
-        });
       });
     });
 
@@ -317,7 +299,7 @@ describe('InviteMembersModal', () => {
       mock.onPost(GROUPS_INVITATIONS_PATH).reply(code, data);
     };
 
-    const expectedSyntaxError = 'email contains an invalid email address';
+    const expectedSyntaxError = 'One or more email addresses or usernames are invalid.';
 
     describe('when no invites have been entered in the form and then some are entered', () => {
       beforeEach(() => {
@@ -329,13 +311,25 @@ describe('InviteMembersModal', () => {
 
         await waitForPromises();
 
-        expect(findEmptyInvitesAlert().text()).toBe(EMPTY_INVITES_ALERT_TEXT);
-        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
+        expect(membersFormGroupInvalidFeedback()).toBe(
+          'Enter an email address or GitLab username.',
+        );
         expect(findMembersSelect().props('exceptionState')).toBe(false);
 
         await triggerMembersTokenSelect([user1]);
 
         expect(membersFormGroupInvalidFeedback()).toBe('');
+      });
+
+      it('focuses alerts ref when validation error is surfaced', async () => {
+        const alertsEl = wrapper.vm.$refs.alerts;
+        const focusSpy = jest.spyOn(alertsEl, 'focus');
+
+        clickInviteButton();
+        await waitForPromises();
+        await nextTick();
+
+        expect(focusSpy).toHaveBeenCalled();
       });
     });
 
@@ -351,8 +345,9 @@ describe('InviteMembersModal', () => {
         clickInviteButton();
         await waitForPromises();
 
-        expect(findEmptyInvitesAlert().exists()).toBe(true);
-        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
+        expect(membersFormGroupInvalidFeedback()).toBe(
+          'One or more email addresses or usernames are invalid.',
+        );
         expect(findMembersSelect().props('exceptionState')).toBe(false);
 
         findMembersSelect().vm.$emit('tokenization-state-change', false);
@@ -371,8 +366,9 @@ describe('InviteMembersModal', () => {
         clickInviteButton();
         await waitForPromises();
 
-        expect(findEmptyInvitesAlert().exists()).toBe(true);
-        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
+        expect(membersFormGroupInvalidFeedback()).toBe(
+          'One or more email addresses or usernames are invalid.',
+        );
         expect(findMembersSelect().props('exceptionState')).toBe(false);
 
         findMembersSelect().vm.$emit('tokenization-state-change', false);
@@ -382,7 +378,29 @@ describe('InviteMembersModal', () => {
         await nextTick();
 
         expect(membersFormGroupInvalidFeedback()).toBe('');
-        expect(findEmptyInvitesAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when invite cap is reached', () => {
+      beforeEach(() => {
+        createInviteMembersToGroupWrapper();
+      });
+
+      it('shows cap reached message when invite-cap-reached is emitted', async () => {
+        findMembersSelect().vm.$emit('invite-cap-reached', true);
+        await nextTick();
+
+        expect(findInviteCapReached().exists()).toBe(true);
+      });
+
+      it('hides cap reached message when invite-cap-reached is resolved', async () => {
+        findMembersSelect().vm.$emit('invite-cap-reached', true);
+        await nextTick();
+
+        findMembersSelect().vm.$emit('invite-cap-reached', false);
+        await nextTick();
+
+        expect(findInviteCapReached().exists()).toBe(false);
       });
     });
 
@@ -501,7 +519,7 @@ describe('InviteMembersModal', () => {
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
+          expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('exceptionState')).toBe(false);
           expect(captureException).toHaveBeenCalledWith(new Error(SERVER_ERROR_MESSAGE));
         });
@@ -553,9 +571,7 @@ describe('InviteMembersModal', () => {
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toBe(
-            invitationsApiResponse.INVITE_LIMIT.message,
-          );
+          expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
         });
       });
     });
@@ -607,7 +623,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the default error message', () => {
-            expect(membersFormGroupInvalidFeedback()).toBe(INVALID_FEEDBACK_MESSAGE_DEFAULT);
+            expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
             expect(findMembersSelect().props('exceptionState')).toBe(false);
             expect(findActionButton().props('loading')).toBe(false);
           });

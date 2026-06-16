@@ -15,6 +15,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import eventHub from '../../event_hub';
 
 export default {
+  name: 'IssuableLockForm',
   locked: {
     icon: 'lock',
     class: 'value',

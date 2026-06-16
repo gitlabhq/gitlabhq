@@ -1,6 +1,7 @@
 ---
 table_name: snippet_uploads
 classes:
+- Geo::PersonalSnippetUpload
 - PersonalSnippet
 - Upload
 feature_categories:

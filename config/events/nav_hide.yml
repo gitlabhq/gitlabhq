@@ -2,6 +2,8 @@
 description: tracks when a user collapses the sidebar navigation.
 action: nav_hide
 product_group: engagement
+product_categories:
+- navigation
 milestone: '16.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124194
 tiers:

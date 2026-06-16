@@ -5,7 +5,7 @@ module API
     include PaginationParams
 
     before do
-      authorize_packages_access!(user_group)
+      authorize_packages_access!(user_group, :read_group)
     end
 
     feature_category :package_registry

@@ -52,6 +52,7 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
     context 'when cherry-picking a commit that was previously cherry-picked' do
       specify do
         cherry_pick_commit
+        expect(page).to have_content('The commit has been successfully cherry-picked into master.')
 
         visit project_commit_path(project, master_pickable_commit.id)
 

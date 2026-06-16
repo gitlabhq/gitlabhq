@@ -1,0 +1,9 @@
+---
+name: delete_broadcast_message
+description: Grants the ability to delete broadcast messages
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_broadcast_message

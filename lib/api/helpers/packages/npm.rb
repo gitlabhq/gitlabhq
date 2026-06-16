@@ -9,7 +9,7 @@ module API
         extend ::Gitlab::Utils::Override
 
         NPM_ENDPOINT_REQUIREMENTS = {
-          package_name: API::NO_SLASH_URL_PART_REGEX
+          package_name: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
         }.freeze
 
         def project_or_nil

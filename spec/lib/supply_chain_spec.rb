@@ -174,7 +174,7 @@ RSpec.describe SupplyChain, feature_category: :artifact_security do
   describe '.publish_container_provenance?' do
     subject(:query) { described_class.publish_container_provenance?(build) }
 
-    let_it_be(:project, reload: true) { create_default(:project, :public, :repository) }
+    let_it_be_with_reload(:project) { create_default(:project, :public, :repository) }
 
     context "with a valid build that requires an attestation" do
       let(:yaml_variables) do

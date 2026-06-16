@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   include Ci::PipelineVariableHelpers
 
-  let_it_be(:project, refind: true) { create(:project, :repository, :in_group) }
+  let_it_be_with_refind(:project) { create(:project, :repository, :in_group) }
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -57,7 +57,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#retryable?' do
-    let_it_be(:bridge) { create(:ci_bridge, :success) }
+    let_it_be(:bridge, freeze: false) { create(:ci_bridge, :success) }
 
     it 'returns true' do
       expect(bridge.retryable?).to eq(true)
@@ -65,7 +65,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when there is a pipeline loop detected' do
-    let_it_be(:bridge) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
+    let_it_be(:bridge, freeze: false) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('pipeline_loop_detected')
@@ -74,7 +74,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when the pipeline depth has reached the max descendents' do
-    let_it_be(:bridge) { create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth) }
+    let_it_be(:bridge, freeze: false) do
+      create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth)
+    end
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('reached_max_descendant_pipelines_depth')
@@ -218,7 +220,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when bridge has dependency which has dotenv variable in the same project' do
       let_it_be(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge) do
+      let_it_be(:bridge, freeze: false) do
         create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
       end
 
@@ -239,7 +241,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when bridge has dependency which has dotenv variable in a different project' do
       let_it_be(:test) { create(:ci_build, pipeline: pipeline, project: public_project, stage_idx: 0) }
-      let_it_be(:bridge) do
+      let_it_be(:bridge, freeze: false) do
         create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
       end
 
@@ -1236,7 +1238,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '#play' do
     let_it_be(:downstream_project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:bridge) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+    let_it_be(:bridge, freeze: false) do
+      create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project)
+    end
 
     subject { bridge.play(user) }
 
@@ -1291,7 +1295,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when downloading from previous stages from the same project' do
       let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+      let_it_be(:bridge, freeze: false) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
 
       let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
@@ -1314,7 +1318,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0)
       end
 
-      let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+      let_it_be(:bridge, freeze: false) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
 
       let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
@@ -1336,7 +1340,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge) do
+      let_it_be(:bridge, freeze: false) do
         create(
           :ci_bridge,
           pipeline: pipeline,
@@ -1370,7 +1374,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge) do
+      let_it_be(:bridge, freeze: false) do
         create(
           :ci_bridge,
           pipeline: pipeline,

@@ -135,7 +135,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
 
       context 'when the user has a direct membership in a subgroup' do
         let_it_be(:subgroup) { create(:group, parent: expired_group_member.group) }
-        let_it_be(:non_expired_group_membership) { create(:group_member, user: expired_group_member.user, access_level: GroupMember::MAINTAINER, group: subgroup) }
+        let_it_be(:non_expired_group_membership, freeze: false) { create(:group_member, user: expired_group_member.user, access_level: GroupMember::MAINTAINER, group: subgroup) }
 
         it 'does not expire the membership in the subgroup' do
           worker.perform

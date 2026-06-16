@@ -7,6 +7,7 @@ import { noOrphanedFeatureFlagReferences } from './no_orphaned_feature_flag_refe
 import { noWebUrl } from './no_web_url.mjs';
 import { vueNoWebUrl } from './vue_no_web_url.mjs';
 import { noMixedJestAliases } from './no_mixed_jest_aliases.mjs';
+import { pageEntrypointMustExecute } from './page_entrypoint_must_execute.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -19,5 +20,6 @@ export const eslintLocalRules = {
     'no-web-url': noWebUrl,
     'vue-no-web-url': vueNoWebUrl,
     'no-mixed-jest-aliases': noMixedJestAliases,
+    'page-entrypoint-must-execute': pageEntrypointMustExecute,
   },
 };

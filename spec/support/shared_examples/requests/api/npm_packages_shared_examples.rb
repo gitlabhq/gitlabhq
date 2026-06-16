@@ -5,12 +5,12 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:package_dependency_link1) { create(:packages_dependency_link, package: package, dependency_type: :dependencies) }
-  let_it_be(:package_dependency_link2) { create(:packages_dependency_link, package: package, dependency_type: :devDependencies) }
-  let_it_be(:package_dependency_link3) { create(:packages_dependency_link, package: package, dependency_type: :bundleDependencies) }
-  let_it_be(:package_dependency_link4) { create(:packages_dependency_link, package: package, dependency_type: :peerDependencies) }
+  let_it_be(:package_dependency_link1, freeze: false) { create(:packages_dependency_link, package: package, dependency_type: :dependencies) }
+  let_it_be(:package_dependency_link2, freeze: false) { create(:packages_dependency_link, package: package, dependency_type: :devDependencies) }
+  let_it_be(:package_dependency_link3, freeze: false) { create(:packages_dependency_link, package: package, dependency_type: :bundleDependencies) }
+  let_it_be(:package_dependency_link4, freeze: false) { create(:packages_dependency_link, package: package, dependency_type: :peerDependencies) }
 
-  let_it_be(:package_metadatum) { create(:npm_metadatum, package: package) }
+  let_it_be(:package_metadatum, freeze: false) { create(:npm_metadatum, package: package) }
 
   let(:headers) { {} }
 
@@ -146,7 +146,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
   end
 
   context 'with a user namespace', if: scope != :project do
-    let_it_be(:namespace) { user.namespace }
+    let_it_be(:namespace, freeze: false) { user.namespace }
 
     it_behaves_like 'handles authentication'
   end
@@ -413,8 +413,8 @@ end
 RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:package_tag1) { create(:packages_tag, package: package) }
-  let_it_be(:package_tag2) { create(:packages_tag, package: package) }
+  let_it_be(:package_tag1, freeze: false) { create(:packages_tag, package: package) }
+  let_it_be(:package_tag2, freeze: false) { create(:packages_tag, package: package) }
 
   let(:headers) { {} }
 
@@ -508,7 +508,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
   end
 
   context 'with a user namespace', if: scope != :project do
-    let_it_be(:namespace) { user.namespace }
+    let_it_be(:namespace, freeze: false) { user.namespace }
 
     it_behaves_like 'handles authentication'
   end
@@ -586,7 +586,7 @@ end
 RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
   include_context 'set package name from package name type'
 
-  let_it_be(:tag_name) { 'test' }
+  let_it_be(:tag_name, freeze: false) { 'test' }
 
   let(:params) { {} }
   let(:version) { package.version }
@@ -622,7 +622,7 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
 
   if scope != :project
     context 'with a user namespace' do
-      let_it_be(:namespace) { user.namespace }
+      let_it_be(:namespace, freeze: false) { user.namespace }
 
       it_behaves_like 'handling all conditions'
     end
@@ -632,7 +632,7 @@ end
 RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
   include_context 'set package name from package name type'
 
-  let_it_be(:package_tag) { create(:packages_tag, package: package) }
+  let_it_be(:package_tag, freeze: false) { create(:packages_tag, package: package) }
 
   let(:tag_name) { package_tag.name }
   let(:headers) { {} }
@@ -664,7 +664,7 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
 
   if scope != :project
     context 'with a user namespace' do
-      let_it_be(:namespace) { user.namespace }
+      let_it_be(:namespace, freeze: false) { user.namespace }
 
       it_behaves_like 'handling all conditions'
     end
@@ -770,8 +770,8 @@ RSpec.shared_examples 'rejects invalid package names' do
 end
 
 RSpec.shared_examples 'handling get metadata requests for packages in multiple projects' do
-  let_it_be(:project2) { create(:project, :private, namespace: namespace) }
-  let_it_be(:package2) do
+  let_it_be(:project2, freeze: false) { create(:project, :private, namespace: namespace) }
+  let_it_be(:package2, freeze: false) do
     create(:npm_package,
       project: project2,
       name: "@#{group.path}/scoped_package",

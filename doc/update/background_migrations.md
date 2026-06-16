@@ -555,7 +555,7 @@ use the information in the failure error logs or the database:
 #### Mark a failed migration finished
 
 > [!warning]
-> [Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
+> [Contact GitLab Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support) before using
 > these instructions. This action can cause data loss, and make your instance fail
 > in ways that are difficult to recover from.
 

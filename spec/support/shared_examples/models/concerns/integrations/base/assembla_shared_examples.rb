@@ -22,8 +22,8 @@ RSpec.shared_examples Integrations::Base::Assembla do
   end
 
   describe "#execute" do
-    let_it_be(:user)    { build(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user, freeze: false)    { build(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     let(:assembla_integration) { described_class.new }
     let(:sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }

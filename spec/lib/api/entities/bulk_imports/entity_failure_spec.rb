@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::BulkImports::EntityFailure, feature_category: :importers do
-  let_it_be(:failure) { create(:bulk_import_failure) }
+  let_it_be(:failure, freeze: false) { create(:bulk_import_failure) }
 
   subject { described_class.new(failure).as_json }
 

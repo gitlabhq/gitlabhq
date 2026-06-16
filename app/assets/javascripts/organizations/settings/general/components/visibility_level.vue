@@ -3,7 +3,11 @@ import { GlForm, GlFormFields } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
-import { ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS } from '~/visibility_level/constants';
+import {
+  ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
+} from '~/visibility_level/constants';
 import { FORM_FIELD_VISIBILITY_LEVEL } from '~/organizations/shared/constants';
 
 export default {
@@ -47,7 +51,7 @@ export default {
   },
   computed: {
     availableVisibilityLevels() {
-      return [this.organization.visibilityLevel];
+      return [VISIBILITY_LEVEL_PRIVATE_INTEGER, VISIBILITY_LEVEL_PUBLIC_INTEGER];
     },
   },
 };

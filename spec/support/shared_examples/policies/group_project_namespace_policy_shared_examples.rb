@@ -2,19 +2,19 @@
 
 RSpec.shared_examples 'checks timelog categories permissions' do
   context 'with no user' do
-    let_it_be(:current_user) { nil }
+    let_it_be(:current_user, freeze: false) { nil }
 
     it { is_expected.to be_disallowed(:read_timelog_category) }
   end
 
   context 'with a regular user' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user, freeze: false) { create(:user) }
 
     it { is_expected.to be_disallowed(:read_timelog_category) }
   end
 
   context 'with a reporter user' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user, freeze: false) { create(:user) }
 
     before do
       users_container.add_reporter(current_user)

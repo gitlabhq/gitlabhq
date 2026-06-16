@@ -3,11 +3,11 @@
 RSpec.shared_context 'with work items list request' do
   include GraphqlHelpers
 
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :repository, :public, group: group) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:reporter) { create(:user, reporter_of: [group, project]) }
-  let_it_be(:current_user) { user }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, :public, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: [group, project]) }
+  let_it_be(:current_user, freeze: false) { user }
 
   let(:item_filter_params) { {} }
 
@@ -25,13 +25,16 @@ RSpec.shared_context 'with work item request context' do
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
-  let_it_be(:guest) { create(:user, guest_of: group) }
-  let_it_be(:start_date) { 5.days.ago }
-  let_it_be(:due_date) { 5.days.from_now }
-  let_it_be(:milestone) { create(:milestone, project: project, start_date: start_date, due_date: due_date) }
-  let_it_be(:labels) { create_list(:group_label, 2, group: group) }
-  let_it_be(:work_item) do
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: group) }
+  let_it_be(:start_date, freeze: false) { 5.days.ago }
+  let_it_be(:due_date, freeze: false) { 5.days.from_now }
+  let_it_be(:milestone, freeze: false) do
+    create(:milestone, project: project, start_date: start_date, due_date: due_date)
+  end
+
+  let_it_be(:labels, freeze: false) { create_list(:group_label, 2, group: group) }
+  let_it_be(:work_item, freeze: false) do
     create(
       :work_item,
       project: project,

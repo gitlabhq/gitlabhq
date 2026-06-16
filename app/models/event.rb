@@ -24,12 +24,13 @@ class Event < ApplicationRecord
     left: 9, # User left project
     destroyed: 10,
     expired: 11, # User left project due to expiry
-    approved: 12
+    approved: 12,
+    transferred: 13
   ).freeze
 
   private_constant :ACTIONS
 
-  PROJECT_ACTIONS = [:created, :pushed, :joined, :left, :expired].freeze
+  PROJECT_ACTIONS = [:created, :pushed, :joined, :left, :expired, :transferred].freeze
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
   TEAM_ACTIONS = [:joined, :left, :expired].freeze
@@ -71,8 +72,9 @@ class Event < ApplicationRecord
     # If the association for "target" defines an "author" association we want to
     # eager-load this so Banzai & friends don't end up performing N+1 queries to
     # get the authors of notes, issues, etc. (likewise for "noteable").
+    target_class = reflections['events']&.active_record
     incs = %i[author noteable work_item_type].select do |a|
-      reflections['events'].active_record.reflect_on_association(a)
+      target_class&.reflect_on_association(a)
     end
 
     incs.reduce(self) { |obj, a| obj.includes(a) }
@@ -107,6 +109,7 @@ class Event < ApplicationRecord
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end
   scope :for_action, ->(action) { where(action: action) }
+  scope :excluding_transferred, -> { where.not(action: actions[:transferred]) }
   scope :created_between, ->(start_time, end_time) { where(created_at: start_time..end_time) }
   scope :count_by_dates_in_timezone, ->(timezone) {
     group(Arel.sql("DATE(created_at AT TIME ZONE #{connection.quote(timezone)})")).count
@@ -129,13 +132,31 @@ class Event < ApplicationRecord
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
     includes(:project, project: [:project_feature, :import_data, :namespace])
-      .preload(:author, :target, :push_event_payload)
+      .preload(:author, :target, :push_event_payload, :group)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
   scope :for_wiki_meta, ->(meta) { where(target_type: 'WikiPage::Meta', target_id: meta.id) }
   scope :created_at, ->(time) { where(created_at: time) }
   scope :with_target, -> { preload(:target) }
+
+  scope :in_organization, ->(organization) do
+    return none if organization.nil?
+
+    project_events = where.not(project_id: nil)
+      .joins(:project)
+      .where(projects: { organization: organization })
+
+    group_events = where.not(group_id: nil)
+      .joins(:group)
+      .where(namespaces: { organization: organization })
+
+    personal_namespace_events = where.not(personal_namespace_id: nil)
+      .joins(:personal_namespace)
+      .where(namespaces: { organization: organization })
+
+    from_union([project_events, group_events, personal_namespace_events], remove_duplicates: false)
+  end
 
   # Authors are required as they're used to display who pushed data.
   #
@@ -206,16 +227,22 @@ class Event < ApplicationRecord
     project? && created_action?
   end
 
+  def transferred_project_action?
+    project? && transferred_action?
+  end
+
+  def transferred_group_action?
+    return false unless transferred_action?
+
+    target_type == Group.name
+  end
+
   def created_wiki_page?
     wiki_page? && created_action?
   end
 
   def updated_wiki_page?
     wiki_page? && updated_action?
-  end
-
-  def created_target?
-    created_action? && target
   end
 
   def milestone?
@@ -325,6 +352,8 @@ class Event < ApplicationRecord
       created_project_action_name
     elsif approved_action?
       'approved'
+    elsif transferred_action?
+      'transferred'
     else
       "opened"
     end
@@ -371,14 +400,6 @@ class Event < ApplicationRecord
 
   def note_target
     target.noteable
-  end
-
-  def note_target_id
-    if commit_note?
-      target.commit_id
-    else
-      target.noteable_id.to_s
-    end
   end
 
   def note_target_reference
@@ -466,7 +487,8 @@ class Event < ApplicationRecord
   def capabilities
     {
       download_code: %i[push_action? commit_note?],
-      read_project: %i[membership_changed? created_project_action?],
+      read_project: %i[membership_changed? created_project_action? transferred_project_action?],
+      read_group: %i[transferred_group_action?],
       read_issue: %i[issue? issue_note?],
       read_merge_request: %i[merge_request? merge_request_note?],
       read_snippet: %i[personal_snippet_note? project_snippet_note?],
@@ -481,7 +503,9 @@ class Event < ApplicationRecord
   private
 
   def permission_object
-    if self[:target_id].present?
+    if transferred_group_action?
+      group
+    elsif self[:target_id].present?
       target
     else
       project

@@ -1,0 +1,17 @@
+---
+table_name: namespace_state_propagations
+classes:
+- Namespaces::StatePropagation
+feature_categories:
+- groups_and_projects
+description: Transactional outbox for namespace state propagation requests. Each
+  row tracks a pending or in-progress propagation of a propagated state (active,
+  archived, deletion_scheduled) from a namespace to its descendants. Rows are
+  inserted in the same transaction as the state transition and deleted after the
+  Sidekiq worker finishes propagating.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237681
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

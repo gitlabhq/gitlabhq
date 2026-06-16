@@ -5,51 +5,46 @@ require 'webrick'
 require 'webrick/https'
 
 RSpec.describe 'Net::HTTP#connect DNS rebinding tests', feature_category: :shared do
-  let(:host) { 'localhost' }
-  let(:host_ip) { '127.0.0.1' }
-  let(:rack_app) do
-    proc do |_env|
-      ['200', { 'Content-Type' => 'text/plain' }, ['Hello, world!']]
-    end
-  end
+  describe '#connect' do
+    let(:host) { 'localhost' }
+    let(:host_ip) { '127.0.0.1' }
 
-  let!(:http_server) do
-    Class.new do
-      attr_accessor :sni_hostname
+    let!(:http_server) do
+      Class.new do
+        attr_accessor :sni_hostname
 
-      def initialize
-        @server = WEBrick::HTTPServer.new(
-          Port: 0,
-          SSLEnable: true,
-          SSLCertName: [%w[CN localhost]],
-          SSLServerNameCallback: proc { |args| sni_callback(*args) },
-          Logger: WEBrick::Log.new('/dev/null'),
-          AccessLog: []
-        )
+        def initialize
+          @server = WEBrick::HTTPServer.new(
+            Port: 0,
+            SSLEnable: true,
+            SSLCertName: [%w[CN localhost]],
+            SSLServerNameCallback: proc { |args| sni_callback(*args) },
+            Logger: WEBrick::Log.new('/dev/null'),
+            AccessLog: []
+          )
 
-        @server.mount_proc '/' do |_req, res|
-          res.body = 'Hello, world!'
+          @server.mount_proc '/' do |_req, res|
+            res.body = 'Hello, world!'
+          end
+
+          Thread.new { @server.start }
         end
 
-        Thread.new { @server.start }
-      end
+        def port
+          @server.config[:Port]
+        end
 
-      def port
-        @server.config[:Port]
-      end
+        def shutdown
+          @server.shutdown
+        end
 
-      def shutdown
-        @server.shutdown
-      end
+        def sni_callback(sslsocket, hostname = nil)
+          @sni_hostname = hostname
+          @server.ssl_servername_callback(sslsocket, hostname)
+        end
+      end.new
+    end
 
-      def sni_callback(sslsocket, hostname = nil)
-        @sni_hostname = hostname
-        @server.ssl_servername_callback(sslsocket, hostname)
-      end
-    end.new
-  end
-
-  describe '#connect' do
     before do
       WebMock.allow_net_connect!
     end
@@ -165,5 +160,78 @@ RSpec.describe 'Net::HTTP#connect DNS rebinding tests', feature_category: :share
     it_behaves_like 'proxy CONNECT request', 'fe80::1', '[fe80::1]'
     it_behaves_like 'proxy CONNECT request', '127.0.0.1', '127.0.0.1'
     it_behaves_like 'proxy CONNECT request', 'example.com', 'example.com'
+  end
+
+  describe '#proxy_uri' do
+    context 'when http_proxy and https_proxy have different ports' do
+      before do
+        stub_env('http_proxy', 'http://proxy.example.com:80')
+        stub_env('https_proxy', 'http://proxy.example.com:443')
+      end
+
+      it 'uses https_proxy port for SSL connections' do
+        http = Net::HTTP.new('example.com', 443)
+        http.use_ssl = true
+
+        expect(http.proxy?).to be true
+        expect(http.proxy_address).to eq('proxy.example.com')
+        expect(http.proxy_port).to eq(443)
+      end
+
+      it 'uses http_proxy port for non-SSL connections' do
+        http = Net::HTTP.new('example.com', 80)
+
+        expect(http.proxy?).to be true
+        expect(http.proxy_address).to eq('proxy.example.com')
+        expect(http.proxy_port).to eq(80)
+      end
+    end
+
+    context 'when only https_proxy is set' do
+      before do
+        stub_env('https_proxy', 'http://proxy.example.com:8080')
+      end
+
+      it 'uses https_proxy for SSL connections' do
+        http = Net::HTTP.new('example.com', 443)
+        http.use_ssl = true
+
+        expect(http.proxy?).to be true
+        expect(http.proxy_port).to eq(8080)
+      end
+
+      it 'does not use a proxy for non-SSL connections' do
+        http = Net::HTTP.new('example.com', 80)
+
+        expect(http.proxy?).to be false
+      end
+    end
+
+    context 'when only http_proxy is set' do
+      before do
+        stub_env('http_proxy', 'http://proxy.example.com:80')
+      end
+
+      it 'does not use http_proxy for SSL connections' do
+        http = Net::HTTP.new('example.com', 443)
+        http.use_ssl = true
+
+        expect(http.proxy?).to be false
+      end
+    end
+
+    context 'when no_proxy matches the target host' do
+      before do
+        stub_env('https_proxy', 'http://proxy.example.com:443')
+        stub_env('no_proxy', 'example.com')
+      end
+
+      it 'does not use a proxy for the excluded host' do
+        http = Net::HTTP.new('example.com', 443)
+        http.use_ssl = true
+
+        expect(http.proxy?).to be false
+      end
+    end
   end
 end

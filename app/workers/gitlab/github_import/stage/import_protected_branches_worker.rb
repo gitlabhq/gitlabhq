@@ -13,7 +13,12 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          info(project.id, message: "starting importer", importer: 'Importer::ProtectedBranchesImporter')
+          info(
+            project.id,
+            message: "starting importer",
+            importer: 'Importer::ProtectedBranchesImporter',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
           waiter = Importer::ProtectedBranchesImporter
             .new(project, client)
             .execute

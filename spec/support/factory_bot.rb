@@ -16,8 +16,8 @@ FactoryBot.define do
 end
 
 FactoryBot::SyntaxRunner.class_eval do
-  include RSpec::Mocks::ExampleMethods
-  include StubMethodCalls
+  include RSpec::Mocks::ExampleMethods if defined?(RSpec::Mocks::ExampleMethods)
+  include StubMethodCalls if defined?(StubMethodCalls)
 
   # FactoryBot doesn't allow yet to add a helper that can be used in factories
   # While the fixture_file_upload helper is reasonable to be used there:

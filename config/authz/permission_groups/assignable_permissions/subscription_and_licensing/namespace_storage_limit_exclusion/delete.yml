@@ -1,0 +1,9 @@
+---
+name: delete_namespace_storage_limit_exclusion
+description: Grants the ability to delete namespace storage limit exclusions
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_namespace_storage_limit_exclusion

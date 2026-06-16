@@ -35,14 +35,14 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
       allow(Feature).to receive(:enabled?).with('namespaced_stub', any_args).and_return(true)
     end
 
-    it "uses the default value as specified in the yaml" do
+    it "returns :control when the feature flag is disabled" do
       expect(Feature).to receive(:enabled?).with(
         'namespaced_stub',
         experiment_instance,
         type: :experiment
       ).and_return(false)
 
-      expect(experiment_instance.execute_assignment).to be_nil
+      expect(experiment_instance.execute_assignment).to eq(:control)
     end
 
     it "returns an assigned name" do

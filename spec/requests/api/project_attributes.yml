@@ -217,6 +217,7 @@ project_setting:
     - pipeline_execution_policy_bot_access_enabled
     - pipeline_execution_policy_bot_access_file_patterns
     - pipeline_execution_policy_bot_access_group_id
+    - dap_session_tracking_enabled
     - tool_approval_for_session_enabled
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

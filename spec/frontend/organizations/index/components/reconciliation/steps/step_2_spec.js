@@ -9,6 +9,9 @@ import OrganizationCard from '~/organizations/index/components/reconciliation/or
 import OrganizationGroupCard from '~/organizations/index/components/reconciliation/organization_group_card.vue';
 import {
   mockOrganizations,
+  mockGroup,
+  defaultOrgWithGroups,
+  defaultOrgWithoutGroups,
   organizationWithGroupsIndex,
   organizationWithGroups,
   organizationWithoutGroupsIndex,
@@ -22,10 +25,11 @@ describe('ReconciliationStep2', () => {
     wrapper = mountExtended(Step2, {
       propsData: {
         organizations: mockOrganizations,
+        initialDefaultOrgGroupIds: [],
         ...props,
       },
       stubs: {
-        Draggable: stubComponent(Draggable),
+        Draggable: stubComponent(Draggable, { props: ['group', 'fallbackClass'] }),
       },
     });
   };
@@ -36,6 +40,7 @@ describe('ReconciliationStep2', () => {
   const findAllOrganizationCards = () => wrapper.findAllComponents(OrganizationCard);
   const findAllGroupCards = (organizationCard) =>
     organizationCard.findAllComponents(OrganizationGroupCard);
+  const findDropZone = (cardIndex) => findCardAt(cardIndex).findByTestId('organization-dropzone');
 
   it('renders step title', () => {
     createComponent();
@@ -85,28 +90,85 @@ describe('ReconciliationStep2', () => {
 
   describe('drag and drop', () => {
     const findAllDraggableComponents = () => wrapper.findAllComponents(Draggable);
+    const findDraggableWithGroups = () =>
+      findAllDraggableComponents().at(organizationWithGroupsIndex);
+    const findDraggableWithoutGroups = () =>
+      findAllDraggableComponents().at(organizationWithoutGroupsIndex);
 
-    it('renders drag and drop group for each organization', () => {
+    it('renders a draggable for each organization', () => {
       createComponent();
 
-      const draggableComponents = findAllDraggableComponents();
+      expect(findAllDraggableComponents()).toHaveLength(mockOrganizations.length);
+    });
 
-      expect(draggableComponents).toHaveLength(mockOrganizations.length);
-      expect(
-        draggableComponents.wrappers.every(
-          (draggable) => draggable.attributes('group') === 'organizationGroups',
-        ),
-      ).toBe(true);
+    it('passes fallbackClass prop to each draggable', () => {
+      createComponent();
+
+      findAllDraggableComponents().wrappers.forEach((draggable) => {
+        expect(draggable.props('fallbackClass')).toBe(
+          'organizations-reconciliation-draggable-fallback',
+        );
+      });
+    });
+
+    describe('when component is destroyed', () => {
+      const FALLBACK_CSS_CLASS = 'organizations-reconciliation-draggable-fallback';
+
+      it('removes lingering fallback element from the DOM', () => {
+        createComponent();
+
+        const fallbackEl = document.createElement('div');
+        fallbackEl.classList.add(FALLBACK_CSS_CLASS);
+        document.body.appendChild(fallbackEl);
+
+        wrapper.destroy();
+
+        expect(document.querySelector(`.${FALLBACK_CSS_CLASS}`)).toBe(null);
+      });
+
+      it('does not throw when no fallback element is present', () => {
+        createComponent();
+
+        expect(() => wrapper.destroy()).not.toThrow();
+      });
+    });
+
+    describe('when item is chosen', () => {
+      const DRAGGING_CSS_CLASS = 'organizations-reconciliation-draggable-dragging';
+
+      beforeEach(() => {
+        createComponent();
+
+        findDraggableWithGroups().vm.$emit('choose');
+      });
+
+      it('adds organizations-reconciliation-draggable-dragging CSS class to body', () => {
+        expect(document.body.classList.contains(DRAGGING_CSS_CLASS)).toBe(true);
+      });
+
+      describe('when item is unchosen', () => {
+        it('removes organizations-reconciliation-draggable-dragging CSS class from body', () => {
+          findDraggableWithGroups().vm.$emit('unchoose');
+
+          expect(document.body.classList.contains(DRAGGING_CSS_CLASS)).toBe(false);
+        });
+      });
+
+      describe('when component is destroyed', () => {
+        it('removes organizations-reconciliation-draggable-dragging CSS class from body', () => {
+          wrapper.destroy();
+
+          expect(document.body.classList.contains(DRAGGING_CSS_CLASS)).toBe(false);
+        });
+      });
     });
 
     describe('when group is moved between organizations', () => {
       it('emits update event once with updated organization structure', async () => {
         createComponent();
 
-        const draggableComponents = findAllDraggableComponents();
-
-        const draggableWithGroups = draggableComponents.at(organizationWithGroupsIndex);
-        const draggableWithoutGroups = draggableComponents.at(organizationWithoutGroupsIndex);
+        const draggableWithGroups = findDraggableWithGroups();
+        const draggableWithoutGroups = findDraggableWithoutGroups();
         const groupToMoveIndex = 0;
         const groupToMove = organizationWithGroups.groups.nodes[groupToMoveIndex];
 
@@ -136,6 +198,96 @@ describe('ReconciliationStep2', () => {
           });
 
         expect(wrapper.emitted('update')).toEqual([[expectedOrganizations]]);
+      });
+    });
+
+    describe('default organization drop zone', () => {
+      const DEFAULT_ORG_INDEX = 0;
+      const OTHER_ORG_INDEX = 1;
+
+      const startDragFromOrg = async (orgIndex) => {
+        findAllDraggableComponents().at(orgIndex).vm.$emit('start', { oldIndex: 0 });
+        await nextTick();
+      };
+
+      describe('when all initial groups are still in the default organization', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              organizations: [defaultOrgWithGroups, organizationWithoutGroups],
+              initialDefaultOrgGroupIds: [mockGroup.id],
+            },
+          });
+        });
+
+        it('hides the default organization drop zone', () => {
+          expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(false);
+        });
+
+        it('always shows the non default organization drop zone', () => {
+          expect(findDropZone(OTHER_ORG_INDEX).exists()).toBe(true);
+        });
+      });
+
+      describe('when a group has been removed from the default organization', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
+              initialDefaultOrgGroupIds: [mockGroup.id],
+            },
+          });
+        });
+
+        it('shows the drop zone', () => {
+          expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(true);
+        });
+      });
+
+      describe('when dragging a group that was originally in the default organization', () => {
+        beforeEach(async () => {
+          createComponent({
+            props: {
+              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
+              initialDefaultOrgGroupIds: [mockGroup.id],
+            },
+          });
+          await startDragFromOrg(OTHER_ORG_INDEX);
+        });
+
+        it('shows the drop zone', () => {
+          expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(true);
+        });
+
+        it('sets the default organization group `put` to true', () => {
+          const defaultOrgDraggable = findAllDraggableComponents().at(DEFAULT_ORG_INDEX);
+          const group = defaultOrgDraggable.props('group');
+
+          expect(group.put()).toBe(true);
+        });
+      });
+
+      describe('when dragging a group that was not originally in the default organization', () => {
+        beforeEach(async () => {
+          createComponent({
+            props: {
+              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
+              initialDefaultOrgGroupIds: [],
+            },
+          });
+          await startDragFromOrg(OTHER_ORG_INDEX);
+        });
+
+        it('hides the drop zone', () => {
+          expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(false);
+        });
+
+        it('sets the default organization group `put` to false', () => {
+          const defaultOrgDraggable = findAllDraggableComponents().at(DEFAULT_ORG_INDEX);
+          const group = defaultOrgDraggable.props('group');
+
+          expect(group.put()).toBe(false);
+        });
       });
     });
   });

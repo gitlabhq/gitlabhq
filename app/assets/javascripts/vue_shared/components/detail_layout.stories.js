@@ -38,6 +38,16 @@ export const WithSlots = (args, { argTypes }) => ({
           Detail layout sidebar slot.
         </div>
       </template>
+       <template #widgets>
+        <div class="gl-w-full gl-bg-strong gl-p-5" style="height: 512px;">
+          Detail layout widgets slot.
+        </div>
+      </template>
+      <template #activity>
+        <div class="gl-w-full gl-bg-strong gl-p-5" style="height: 512px;">
+          Detail layout activity slot.
+        </div>
+      </template>
       <div class="gl-w-full gl-bg-strong gl-p-5" style="height: 1024px;">
         Detail layout default slot.
       </div>

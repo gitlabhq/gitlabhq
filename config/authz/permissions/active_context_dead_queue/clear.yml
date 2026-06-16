@@ -1,0 +1,3 @@
+---
+name: clear_active_context_dead_queue
+description: Grants the ability to clear the ActiveContext dead queue

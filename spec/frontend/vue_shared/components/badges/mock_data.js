@@ -29,7 +29,7 @@ const mockMergeRequests = [
     title: 'MR 1',
     createdAt: '2020-07-07T00:00:00Z',
     author: { name: 'root' },
-    webUrl: 'https://gitlab.com/root/project/-/merge_requests/123',
+    webPath: '/root/project/-/merge_requests/123',
     assignees: { nodes: [{ name: 'root' }] },
     project: {
       id: '1',
@@ -43,7 +43,7 @@ const mockMergeRequests = [
     title: 'MR 2',
     createdAt: '2020-07-09T00:00:00Z',
     author: { name: 'homer' },
-    webUrl: 'https://gitlab.com/homer/project/-/merge_requests/456',
+    webPath: '/homer/project/-/merge_requests/456',
     assignees: { nodes: [{ name: 'homer' }] },
     project: {
       id: '1',

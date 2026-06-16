@@ -141,7 +141,7 @@ To harden your system, make the following network configurations:
 The AI Gateway requires outbound access to the following. Ensure that you include these as exceptions to your network restrictions:
 
 - Your GitLab instance (`AIGW_GITLAB_URL`).
-- Your configured AI model provider endpoints (for example, Anthropic, Google Vertex AI,
+- Your configured AI model provider endpoints (for example, Anthropic, Gemini Enterprise Agent Platform,
   or Azure OpenAI).
 - `customers.gitlab.com` for license validation, unless you use an offline license.
 

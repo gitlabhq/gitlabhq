@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { todoLabel, updateGlobalTodoCount } from '../../utils';
 
 export default {
+  name: 'TodoButton',
   components: {
     GlButton,
   },
@@ -23,6 +24,7 @@ export default {
       default: 1,
     },
   },
+  emits: ['click'],
   computed: {
     buttonLabel() {
       return todoLabel(this.isTodo);

@@ -3,7 +3,9 @@ category: default
 action: click_button
 extra_properties:
 identifiers:
-product_group: compliance
+product_group: authentication
+product_categories:
+- authentication
 milestone: "13.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49510
 tiers:

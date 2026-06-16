@@ -127,7 +127,7 @@ To resolve this issue, sign in to your Jira instance and complete the CAPTCHA.
 
 ## Integration does not work for an imported project
 
-The Jira issues integration might not work for a project that has been imported.
+In GitLab 19.0 and earlier, the Jira issues integration might not work for an imported project.
 For more information, see [issue 341571](https://gitlab.com/gitlab-org/gitlab/-/issues/341571).
 
 To resolve this issue, disable and then re-enable the integration.

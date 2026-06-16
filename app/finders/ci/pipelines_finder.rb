@@ -209,8 +209,28 @@ module Ci
                :desc
              end
 
-      items.order(order_by => sort)
+      if Gitlab::Utils.to_boolean(params[:merge_request_event_first])
+        sort_with_merge_request_event_first(items, order_by, sort)
+      else
+        items.order(order_by => sort)
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Prioritize pipelines whose `source` is `merge_request_event` ahead of all
+    # other sources, then apply the regular `order_by`/`sort` for ties.
+    # Mirrors the sort in `Ci::PipelinesForMergeRequestFinder` so callers that
+    # use this finder (e.g., the MR pipelines GraphQL resolver) return the
+    # same order as the REST-based controller.
+    def sort_with_merge_request_event_first(items, order_by, sort)
+      pipelines_table = ::Ci::Pipeline.quoted_table_name
+      mr_event_source = ::Ci::Pipeline.sources[:merge_request_event]
+
+      sql = "CASE #{pipelines_table}.source WHEN (?) THEN 0 ELSE 1 END, " \
+        "#{pipelines_table}.#{order_by} #{sort}"
+      query = ::ApplicationRecord.send(:sanitize_sql_array, [sql, mr_event_source]) # rubocop:disable GitlabSecurity/PublicSend -- `sanitize_sql_array` is a private API, mirroring `Ci::PipelinesForMergeRequestFinder`.
+
+      items.reorder(::Arel.sql(query)) # rubocop:disable CodeReuse/ActiveRecord -- finder is responsible for ordering
+    end
   end
 end

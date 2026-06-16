@@ -16,6 +16,7 @@ import SettingsSection from '~/vue_shared/components/settings/settings_section.v
 import ContainerExpirationPolicyForm from './container_expiration_policy_form.vue';
 
 export default {
+  name: 'CleanupImageTags',
   components: {
     GlAlert,
     GlSprintf,

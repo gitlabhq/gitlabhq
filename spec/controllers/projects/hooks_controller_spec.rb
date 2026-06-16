@@ -29,15 +29,6 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       { namespace_id: project.namespace, project_id: project, id: hook.id }
     end
 
-    it 'pushes the webhook_signing_token feature flag when re-rendering edit on failure' do
-      allow(controller).to receive(:push_frontend_feature_flag)
-
-      post :update, params: params.merge(hook: { url: '' })
-
-      expect(controller).to have_received(:push_frontend_feature_flag)
-        .with(:webhook_signing_token, project).at_least(:once)
-    end
-
     context 'with an existing token' do
       hook_params = {
         token: WebHook::SECRET_MASK,
@@ -170,15 +161,6 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
   end
 
   describe '#create' do
-    it 'pushes the webhook_signing_token feature flag' do
-      allow(controller).to receive(:push_frontend_feature_flag)
-
-      post :create, params: { namespace_id: project.namespace, project_id: project, hook: { url: 'http://example.com' } }
-
-      expect(controller).to have_received(:push_frontend_feature_flag)
-        .with(:webhook_signing_token, project).at_least(:once)
-    end
-
     it 'sets all parameters' do
       hook_params = {
         enable_ssl_verification: true,
@@ -224,21 +206,6 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
         post :create, params: base_params.merge(hook: { url: 'http://example.com', signing_token: valid_signing_token })
 
         expect(ProjectHook.order_id_desc.first.signing_token).to eq(valid_signing_token)
-      end
-
-      context 'when webhook_signing_token flag is disabled' do
-        before do
-          stub_feature_flags(webhook_signing_token: false)
-        end
-
-        it 'ignores signing_token' do
-          params = base_params.merge(hook: { url: 'http://example.com', signing_token: valid_signing_token })
-
-          expect { post :create, params: params }.to change { ProjectHook.count }.by(1)
-          expect(ProjectHook.order_id_desc.first.signing_token).to be_nil
-          expect(response).to have_gitlab_http_status(:found)
-          expect(flash[:alert]).to be_blank
-        end
       end
     end
 

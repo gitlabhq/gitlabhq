@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapMutations } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 
 import { reloadPage, persistBaseUrl, retrieveBaseUrl } from '~/jira_connect/subscriptions/utils';
@@ -55,12 +56,14 @@ export default {
           persistBaseUrl(gitlabBasePath);
           reloadPage();
         })
-        .catch(() => {
+        .catch((error) => {
+          const serverMessage = error?.response?.data?.errors || error?.response?.data?.message;
           this.setAlert({
-            message: I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+            message: serverMessage || I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
             linkUrl: FAILED_TO_UPDATE_DOC_LINK,
             variant: 'danger',
           });
+          Sentry.captureException(error);
           this.loadingVersionSelect = false;
         });
     },

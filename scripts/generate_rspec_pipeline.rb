@@ -15,38 +15,47 @@ class GenerateRspecPipeline
   # 44 matches the highest parallelization used in the full (non-predictive) pipeline (unit tests).
   # Predictive pipelines run a subset of files, so they will never need more than this.
   MAX_NODES_COUNT = 44
-  # GitLab limits `needs:` to 50 entries total. The artifact-collector needs one entry per
-  # parallel instance across all active test-level jobs, so the sum must not exceed this.
+  # GitLab limits in-pipeline `needs:` to 50 entries total. A collector job whose `needs:`
+  # references parallel:N test-level jobs is expanded by the normalizer into N entries
+  # per referenced job, so the sum across active test-level jobs must not exceed this.
+  # Callers that pass a `max_nodes` greater than MAX_NODES_COUNT signal that they don't
+  # ship an in-pipeline collector, and the trim is skipped (see @skip_needs_limit).
   GITLAB_MAX_NEEDS_COUNT = 50
 
   OPTIMAL_TEST_JOB_DURATION_IN_SECONDS = 600 # 10 MINUTES
+  # System tests have much heavier per-file durations than other levels, so the default 10-minute
+  # target produces one-or-two-files-per-shard on the predictive path. A larger target amortises
+  # the fixed per-shard setup cost (gem install, DB setup, autoload) over more useful test time.
+  OPTIMAL_TEST_JOB_DURATION_OVERRIDES_PER_TEST_LEVEL = {
+    system: 900 # 15 MINUTES
+  }.freeze
   SETUP_DURATION_IN_SECONDS = 180.0 # 3 MINUTES
   OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS = OPTIMAL_TEST_JOB_DURATION_IN_SECONDS - SETUP_DURATION_IN_SECONDS
 
-  # As of 2024-07-16:
+  # As of 2026-05-19:
   # $ find spec -type f | wc -l
-  #  16007 (`SPEC_FILES_COUNT`)
+  #  18849 (`SPEC_FILES_COUNT`)
   # and
   # $ find ee/spec -type f | wc -l
-  #  8548 (`EE_SPEC_FILES_COUNT`)
-  # which gives a total of 24555 test files (`ALL_SPEC_FILES_COUNT`).
+  #  13761 (`EE_SPEC_FILES_COUNT`)
+  # which gives a total of 32610 test files (`ALL_SPEC_FILES_COUNT`).
   #
-  # Total time to run all tests (based on https://gitlab-org.gitlab.io/rspec_profiling_stats/)
-  # is 251509 seconds (`TEST_SUITE_DURATION_IN_SECONDS`).
+  # Total time to run all tests (sum of durations in `knapsack/report-master.json`)
+  # is 378332 seconds (`TEST_SUITE_DURATION_IN_SECONDS`).
   #
-  # This gives an approximate 251509 / 24555 = 10.2 seconds per test file
+  # This gives an approximate 378332 / 32610 = 11.6 seconds per test file
   # (`DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS`).
   #
   # If we want each test job to finish in 10 minutes, given we have 3 minutes of setup (`SETUP_DURATION_IN_SECONDS`),
   # then we need to give 7 minutes of testing to each test node (`OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS`).
-  # (7 * 60) / 10.2 = 41.17
+  # (7 * 60) / 11.6 = 36.21
   #
   # So if we'd want to run the full test suites in 10 minutes (`OPTIMAL_TEST_JOB_DURATION_IN_SECONDS`),
-  # we'd need to run at max 41 test file per nodes (`#optimal_test_file_count_per_node_per_test_level`).
-  SPEC_FILES_COUNT = 16007
-  EE_SPEC_FILES_COUNT = 8548
+  # we'd need to run at max 36 test files per node (`#optimal_test_file_count_per_node_per_test_level`).
+  SPEC_FILES_COUNT = 18849
+  EE_SPEC_FILES_COUNT = 13761
   ALL_SPEC_FILES_COUNT = SPEC_FILES_COUNT + EE_SPEC_FILES_COUNT
-  TEST_SUITE_DURATION_IN_SECONDS = 251509
+  TEST_SUITE_DURATION_IN_SECONDS = 378332
   DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS = TEST_SUITE_DURATION_IN_SECONDS / ALL_SPEC_FILES_COUNT
 
   # pipeline_template_path: A YAML pipeline configuration template to generate the final pipeline config from
@@ -57,13 +66,23 @@ class GenerateRspecPipeline
   #                          `"#{pipeline_template_path}.yml"`)
   def initialize(
     pipeline_template_path:, rspec_files_path: nil, knapsack_report_path: nil, test_suite_prefix: nil,
-    job_tags: [], generated_pipeline_path: nil)
+    job_tags: [], generated_pipeline_path: nil, max_nodes: nil)
     @pipeline_template_path = pipeline_template_path.to_s
     @rspec_files_path = rspec_files_path.to_s
     @knapsack_report_path = knapsack_report_path.to_s
     @test_suite_prefix = test_suite_prefix
     @job_tags = job_tags
     @generated_pipeline_path = generated_pipeline_path || "#{pipeline_template_path}.yml"
+    # Treat zero or negative as unset and fall back to the default; rendering parallel: 0
+    # would produce an invalid child pipeline.
+    @max_nodes = max_nodes&.positive? ? max_nodes : MAX_NODES_COUNT
+    # When a caller explicitly raises max_nodes above MAX_NODES_COUNT, bypass enforce_needs_limit!.
+    # That trim exists for collector-style jobs whose `needs:` references parallel:N test jobs in
+    # the same pipeline: GitLab CI's normalizer expands one such entry into N entries against
+    # ci_needs_size_limit (default 50). Callers that don't ship an in-pipeline collector and
+    # instead gather shard artifacts via cross-pipeline `needs:` are not subject to that
+    # expansion, so trimming would just cap parallelism for no gain.
+    @skip_needs_limit = !max_nodes.nil? && max_nodes > MAX_NODES_COUNT
 
     raise ArgumentError unless File.exist?(@pipeline_template_path)
   end
@@ -126,7 +145,7 @@ class GenerateRspecPipeline
         memo[test_level][:parallelization] = optimal_nodes_count(test_level, memo[test_level][:files])
       end
 
-      enforce_needs_limit!(result)
+      @skip_needs_limit ? result : enforce_needs_limit!(result)
     end
   end
 
@@ -169,21 +188,29 @@ class GenerateRspecPipeline
     nodes_count = (rspec_files.size / optimal_test_file_count_per_node_per_test_level(test_level, rspec_files)).ceil
     info "Optimal node count for #{rspec_files.size} #{test_level} RSpec files is #{nodes_count}."
 
-    if nodes_count > MAX_NODES_COUNT
-      info "We don't want to parallelize to more than #{MAX_NODES_COUNT} jobs for now! " \
-           "Decreasing the parallelization to #{MAX_NODES_COUNT}."
+    if nodes_count > @max_nodes
+      info "We don't want to parallelize to more than #{@max_nodes} jobs for now! " \
+           "Decreasing the parallelization to #{@max_nodes}."
 
-      MAX_NODES_COUNT
+      @max_nodes
     else
       nodes_count
     end
   end
 
   def optimal_test_file_count_per_node_per_test_level(test_level, rspec_files)
+    runtime_budget = optimal_test_runtime_duration_for(test_level)
     [
-      (OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS / average_test_file_duration(test_level, rspec_files)),
+      (runtime_budget / average_test_file_duration(test_level, rspec_files)),
       1
     ].max
+  end
+
+  def optimal_test_runtime_duration_for(test_level)
+    target_job_duration = OPTIMAL_TEST_JOB_DURATION_OVERRIDES_PER_TEST_LEVEL.fetch(
+      test_level, OPTIMAL_TEST_JOB_DURATION_IN_SECONDS
+    )
+    target_job_duration - SETUP_DURATION_IN_SECONDS
   end
 
   def average_test_file_duration(test_level, rspec_files)
@@ -283,6 +310,11 @@ if $PROGRAM_NAME == __FILE__
     opts.on("-o", "--generated-pipeline-path generated_pipeline_path", String, "Path where to write the pipeline " \
                                                                                "config") do |value|
       options[:generated_pipeline_path] = value
+    end
+
+    opts.on("-n", "--max-nodes COUNT", Integer, "Maximum parallel nodes per job " \
+                                                "(default: #{GenerateRspecPipeline::MAX_NODES_COUNT})") do |value|
+      options[:max_nodes] = value
     end
 
     opts.on("-h", "--help", "Prints this help") do

@@ -83,6 +83,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['submit'],
   data() {
     const { preset, custom_values: initialCustomValues } = this.initialSettings;
 

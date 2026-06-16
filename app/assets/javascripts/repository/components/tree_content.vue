@@ -17,6 +17,7 @@ import FilePreview from './preview/index.vue';
 import FileTable from './table/index.vue';
 
 export default {
+  name: 'TreeContent',
   i18n,
   components: {
     FileTable,

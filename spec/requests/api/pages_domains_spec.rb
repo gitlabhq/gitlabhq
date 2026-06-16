@@ -672,7 +672,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
     shared_examples_for 'delete pages domain' do
       it 'deletes a pages domain' do
         expect { delete api(route_domain, user) }
-          .to change(PagesDomain, :count).by(-1)
+          .to change { PagesDomain.count }.by(-1)
           .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
           .with(
             project_id: project.id,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Integrations::Base::EmailsOnPush do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let(:recipients) { 'foo@bar.com duplicate@example.com Duplicate@example.com invalid-email' }
 
   subject(:integration) { described_class.create!(project: project, recipients: recipients, active: true) }

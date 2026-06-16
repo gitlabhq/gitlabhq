@@ -23,8 +23,8 @@ module API
         end
         resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
           resource :assets do
-            desc 'List links of a release' do
-              detail 'Get assets as links from a release. This feature was introduced in GitLab 11.7.'
+            desc 'List all release links' do
+              detail 'Lists all assets as links from a release.'
               success Entities::Releases::Link
               failure [
                 { code: 401, message: 'Unauthorized' },
@@ -47,7 +47,7 @@ module API
             end
 
             desc 'Create a release link' do
-              detail 'Create an asset as a link from a release. This feature was introduced in GitLab 11.7.'
+              detail 'Creates an asset link for a specified release.'
               success Entities::Releases::Link
               failure [
                 { code: 400, message: 'Bad request' },
@@ -87,8 +87,8 @@ module API
               requires :link_id, type: Integer, desc: 'The ID of the link'
             end
             resource 'links/:link_id' do
-              desc 'Get a release link' do
-                detail 'Get an asset as a link from a release. This feature was introduced in GitLab 11.7.'
+              desc 'Retrieve a release link' do
+                detail 'Retrieves a specified asset as a link from a release.'
                 success Entities::Releases::Link
                 failure [
                   { code: 401, message: 'Unauthorized' },
@@ -107,7 +107,7 @@ module API
               end
 
               desc 'Update a release link' do
-                detail 'Update an asset as a link from a release. This feature was introduced in GitLab 11.7.'
+                detail 'Updates a specified asset link for a release.'
                 success Entities::Releases::Link
                 failure [
                   { code: 400, message: 'Bad request' },
@@ -146,7 +146,7 @@ module API
               end
 
               desc 'Delete a release link' do
-                detail 'Deletes an asset as a link from a release. This feature was introduced in GitLab 11.7.'
+                detail 'Deletes a specified asset link from a release.'
                 success Entities::Releases::Link
                 failure [
                   { code: 400, message: 'Bad request' },

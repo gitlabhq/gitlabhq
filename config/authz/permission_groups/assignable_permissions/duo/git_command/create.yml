@@ -1,0 +1,9 @@
+---
+name: create_git_command
+description: Grants the ability to generate Git commands from natural language
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_git_command

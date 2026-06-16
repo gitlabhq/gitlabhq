@@ -1,8 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: イベント
+stage: Facilitated functionality
+group: Facilitated functionality
+info: For more information, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
+title: イベントAPI
 ---
 
 {{< details >}}
@@ -12,20 +12,32 @@ title: イベント
 
 {{< /details >}}
 
-このAPIを使用して、イベントのアクティビティーをレビューします。イベントには、プロジェクトへの参加、イシューへのコメント、MRへの変更のプッシュ、エピックのクローズなど、幅広いアクションが含まれる場合があります。
+{{< history >}}
 
-アクティビティーの保持制限については、以下を参照してください:
+- GitLab 17.3で`epics`ターゲットタイプが[導入](https://gitlab.com/groups/gitlab-org/-/epics/13056)されました。
 
-- [ユーザーアクティビティーの期間制限](../user/profile/contributions_calendar.md#event-time-period-limit)
-- [プロジェクトアクティビティーの期間制限](../user/project/working_with_projects.md#view-project-activity)
+{{< /history >}}
 
-## すべてのイベントをリスト表示 {#list-all-events}
+このAPIを使用してイベントアクティビティをレビューします。イベントには、プロジェクトへの参加、イシューへのコメント、MRへの変更のプッシュ、エピックのクローズなど、幅広いアクションが含まれます。
 
-現在認証済みユーザーのすべてのイベントをリスト表示します。エピックに関連付けられたイベントは返しません。
+アクティビティ保持制限の詳細については、以下を参照してください:
 
-前提要件: 
+- [ユーザーアクティビティ期間制限](../user/profile/contributions_calendar.md#event-time-period-limit)
+- [プロジェクトアクティビティ期間制限](../user/project/working_with_projects.md#view-project-activity)
 
-- お使いのアクセストークンには、`read_user`または`api`スコープが必要です。
+このAPIには、エピック、マージリクエスト、およびバルクプッシュイベントに関する制限があります:
+
+- 子項目、リンクされた項目、開始日、期日、ヘルスステータスなどの一部のエピック機能は、APIによって返されません。
+- 一部のマージリクエストノートは、代わりに`DiscussionNote`タイプを使用する場合があります。このターゲットタイプはAPIでは[サポートされていません](discussions.md#understand-note-types-in-the-api)。
+- プッシュが[プッシュイベントアクティビティ制限](../administration/settings/push_event_activities_limit.md)を超過したときに作成されたバルクプッシュイベントは、限られた詳細で返されます: `commit_count: 0`、refsのプッシュ数を示す`ref_count`、および個々のコミット属性（`commit_from`、`commit_to`、`ref`、`commit_title`）に対する`null`値。
+
+## すべてのイベントを一覧表示 {#list-all-events}
+
+認証済みユーザーのすべてのイベントを一覧表示します。エピックまたはマージリクエストに関連付けられたイベントは返されません。限られたコミット詳細のバルクプッシュイベントを返します。
+
+前提条件: 
+
+- あなたのアクセストークンには、`read_user`または`api`スコープのいずれかが必要です。
 
 ```plaintext
 GET /events
@@ -36,13 +48,13 @@ GET /events
 | パラメータ     | 型            | 必須 | 説明 |
 | ------------- | --------------- | -------- | ----------- |
 | `action`      | 文字列          | いいえ       | 定義されている場合、指定された[アクションタイプ](../user/profile/contributions_calendar.md#user-contribution-events)のイベントを返します。 |
-| `target_type` | 文字列          | いいえ       | 定義されている場合、指定された[対象タイプ](#target-type)のイベントを返します。 |
-| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたトークンを返します。 |
-| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたトークンを返します。 |
-| `scope`       | 文字列          | いいえ       | ユーザーのプロジェクト全体のすべてのイベントを含めます。 |
-| `sort`        | 文字列          | いいえ       | 作成日順に結果をソートする方向。使用可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
+| `target_type` | 文字列          | いいえ       | 定義されている場合、指定されたイベントを返します。可能な値: `epic`、`issue`、`merge_request`、`milestone`、`note`、`project`、`snippet`、および`user`。 |
+| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたイベントを返します。 |
+| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたイベントを返します。 |
+| `scope`       | 文字列          | いいえ       | ユーザーのすべてのプロジェクトのイベントを含めます。 |
+| `sort`        | 文字列          | いいえ       | 作成日によって結果を並べ替える方向。可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -50,7 +62,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01&scope=all"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -103,13 +115,13 @@ curl --request GET \
 ]
 ```
 
-## ユーザーのコントリビュートイベントを取得 {#get-contribution-events-for-a-user}
+## ユーザーのコントリビュートイベントを取得する {#retrieve-contribution-events-for-a-user}
 
-指定されたユーザーのコントリビュートイベントを取得します。エピックに関連付けられたイベントは返しません。
+指定されたユーザーのコントリビュートイベントを取得します。エピックまたはマージリクエストに関連付けられたイベントは返されません。限られたコミット詳細のバルクプッシュイベントを返します。
 
-前提要件: 
+前提条件: 
 
-- お使いのアクセストークンには、`read_user`または`api`スコープが必要です。
+- あなたのアクセストークンには、`read_user`または`api`スコープのいずれかが必要です。
 
 ```plaintext
 GET /users/:id/events
@@ -121,10 +133,10 @@ GET /users/:id/events
 | ------------- | --------------- | -------- | ----------- |
 | `id`          | 整数         | はい      | ユーザーのIDまたはユーザー名。 |
 | `action`      | 文字列          | いいえ       | 定義されている場合、指定された[アクションタイプ](../user/profile/contributions_calendar.md#user-contribution-events)のイベントを返します。 |
-| `target_type` | 文字列          | いいえ       | 定義されている場合、指定された[対象タイプ](#target-type)のイベントを返します。 |
-| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたトークンを返します。 |
-| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたトークンを返します。 |
-| `sort`        | 文字列          | いいえ       | 作成日順に結果をソートする方向。使用可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
+| `target_type` | 文字列          | いいえ       | 定義されている場合、指定されたイベントを返します。可能な値: `epic`、`issue`、`merge_request`、`milestone`、`note`、`project`、`snippet`、および`user`。 |
+| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたイベントを返します。 |
+| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたイベントを返します。 |
+| `sort`        | 文字列          | いいえ       | 作成日によって結果を並べ替える方向。可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
 | `page`        | 整数         | いいえ       | 指定された結果ページを返します。デフォルトは`1`です。 |
 | `per_page`    | 整数         | いいえ       | ページあたりの結果数。デフォルトは`20`です。 |
 
@@ -134,7 +146,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/users/:id/events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -256,9 +268,9 @@ curl --request GET \
 ]
 ```
 
-## プロジェクトの可視イベントをすべてリスト表示 {#list-all-visible-events-for-a-project}
+## プロジェクトの表示可能なすべてのイベントを一覧表示 {#list-all-visible-events-for-a-project}
 
-指定されたプロジェクトの可視イベントをすべてリスト表示します。
+指定されたプロジェクトの表示可能なすべてのイベントを一覧表示します。プッシュが[プッシュイベントアクティビティ制限](../administration/settings/push_event_activities_limit.md)を超過したときに作成されたバルクプッシュイベントは、限られたコミット詳細で返されます: `commit_count: 0`、refsのプッシュ数を示す`ref_count`、および個々のコミット属性の`null`値。
 
 ```plaintext
 GET /projects/:project_id/events
@@ -270,12 +282,12 @@ GET /projects/:project_id/events
 | ------------- | --------------- | -------- | ----------- |
 | `project_id`  | 整数または文字列  | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `action`      | 文字列          | いいえ       | 定義されている場合、指定された[アクションタイプ](../user/profile/contributions_calendar.md#user-contribution-events)のイベントを返します。 |
-| `target_type` | 文字列          | いいえ       | 定義されている場合、指定された[対象タイプ](#target-type)のイベントを返します。 |
-| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたトークンを返します。 |
-| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたトークンを返します。 |
-| `sort`        | 文字列          | いいえ       | 作成日順に結果をソートする方向。使用可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
+| `target_type` | 文字列          | いいえ       | 定義されている場合、指定されたイベントを返します。可能な値: `epic`、`issue`、`merge_request`、`milestone`、`note`、`project`、`snippet`、および`user`。 |
+| `before`      | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より前に作成されたイベントを返します。 |
+| `after`       | 日付（ISO 8601） | いいえ       | 定義されている場合、指定された日付より後に作成されたイベントを返します。 |
+| `sort`        | 文字列          | いいえ       | 作成日によって結果を並べ替える方向。可能な値: `asc`、`desc`。デフォルトは`desc`です。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -283,7 +295,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/:project_id/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -377,27 +389,3 @@ curl --request GET \
   }
 ]
 ```
-
-## ターゲットのタイプ {#target-type}
-
-{{< history >}}
-
-- [追加](https://gitlab.com/groups/gitlab-org/-/epics/13056) GitLab 17.3の`epics`。
-
-{{< /history >}}
-
-結果をフィルタリングして、特定の対象タイプからのイベントを返すことができます。使用できる値は次のとおりです:
-
-- `epic`<sup>1</sup>
-- `issue`
-- `merge_request`
-- `milestone`
-- `note`<sup>2</sup>
-- `project`
-- `snippet`
-- `user`
-
-補足説明:
-
-1. エピックの子アイテム、リンクされたアイテム、開始日、期日、ヘルスステータスなどの一部の機能は、APIによって返されません。
-1. 一部のマージリクエストノートでは、代わりに`DiscussionNote`タイプが使用される場合があります。この対象タイプは[APIでサポートされていません](discussions.md#understand-note-types-in-the-api)。

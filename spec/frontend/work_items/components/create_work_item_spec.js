@@ -839,6 +839,15 @@ describe('Create work item component', () => {
       expect(findAlert().text()).toBe('an error');
     });
 
+    it('re-enables the create button after mutation rejection', async () => {
+      createComponent({ mutationHandler: () => Promise.reject(new Error('boom')) });
+      await resolveAll();
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(findCreateButton().props('loading')).toBe(false);
+    });
+
     it('includes createSource when prop is provided', async () => {
       createComponent({
         props: {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['TimeTrackingTimelogCategory'] do
+RSpec.describe GitlabSchema.types['TimeTrackingTimelogCategory'], feature_category: :team_planning do
   let(:fields) do
     %w[
       id

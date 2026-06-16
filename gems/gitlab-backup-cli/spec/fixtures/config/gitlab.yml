@@ -89,6 +89,17 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
 
+  agent_plan_content:
+    storage_path: /tmp/gitlab/full/agent_plan_content
+    object_store:
+      enabled: false
+      remote_directory: agent-plan-content
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
   registry:
     enabled: true
     path: /tmp/gitlab/full/registry

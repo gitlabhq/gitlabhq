@@ -21,7 +21,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
     let(:user) { create(:user) }
 
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
       user.update_attribute(:otp_required_for_login, true)
     end
 
@@ -52,8 +52,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
         expect(page).to have_content(device.name)
       end
 
-      it 'allows deleting a device',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
+      it 'allows deleting a device' do
         visit profile_two_factor_auth_path
         expect(page).to have_content(_("You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."))
 
@@ -91,7 +90,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
     describe 'when no device is registered' do
       before do
         gitlab_sign_out
-        gitlab_sign_in(user)
+        submit_sign_in_form_for(user)
       end
 
       it 'shows the fallback otp code UI' do
@@ -104,7 +103,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
         visit profile_two_factor_auth_path
         register_device(device_type, password: user.password)
         gitlab_sign_out
-        gitlab_sign_in(user)
+        submit_sign_in_form_for(user)
       end
 
       it 'provides a button that shows the fallback otp code UI' do
@@ -126,7 +125,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
       let(:otp_required_for_login) { false }
 
       it 'allows logging in with the WebAuthn device' do
-        gitlab_sign_in(user)
+        submit_sign_in_form_for(user)
 
         webauthn_device.respond_to_webauthn_authentication
 
@@ -136,7 +135,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
 
     describe 'when 2FA via OTP is enabled' do
       it 'allows logging in with the WebAuthn device' do
-        gitlab_sign_in(user)
+        submit_sign_in_form_for(user)
 
         webauthn_device.respond_to_webauthn_authentication
 

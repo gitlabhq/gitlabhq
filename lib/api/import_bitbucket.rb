@@ -10,8 +10,9 @@ module API
     feature_category :importers
     urgency :low
 
-    desc 'Import a BitBucket Cloud repository' do
-      detail 'This feature was introduced in GitLab 17.0.'
+    desc 'Import repository from Bitbucket Cloud' do
+      detail 'Imports a repository from Bitbucket Cloud to GitLab. Prerequisites: - The prerequisites for ' \
+        'Bitbucket Cloud importer. This feature was introduced in GitLab 17.0.'
       success ::ProjectImportEntity
       failure [
         { code: 400, message: 'Bad request' },

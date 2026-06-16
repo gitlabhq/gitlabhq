@@ -1,0 +1,9 @@
+---
+name: update_sast_vr_setting_permission
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21725
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237031
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600680
+milestone: '19.1'
+type: wip
+group: group::security insights
+default_enabled: false

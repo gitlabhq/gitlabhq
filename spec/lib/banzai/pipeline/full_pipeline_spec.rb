@@ -307,7 +307,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     let_it_be(:ref)            { 'markdown' }
     let_it_be(:requested_path) { '/' }
     let_it_be(:commit)         { project.commit(ref) }
-    let_it_be(:context) do
+    let_it_be(:context, freeze: false) do
       {
         commit: commit,
         project: project,

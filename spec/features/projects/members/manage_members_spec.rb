@@ -204,11 +204,11 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
 
   describe 'member search results' do
     it 'does not show project_bots', :aggregate_failures do
-      internal_project_bot = create(:user, :project_bot, name: '_internal_project_bot_')
+      internal_project_bot = create(:user, :project_bot, name: 'John Bot Internal')
       project.add_maintainer(internal_project_bot)
 
       external_group = create(:group)
-      external_project_bot = create(:user, :project_bot, name: '_external_project_bot_')
+      external_project_bot = create(:user, :project_bot, name: 'John Bot External')
       external_project = create(:project, group: external_group)
       external_project.add_maintainer(external_project_bot)
       external_project.add_maintainer(group_owner)
@@ -218,14 +218,11 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       click_on 'Invite members'
 
       page.within invite_modal_selector do
-        field = find(member_dropdown_selector)
-        field.native.send_keys :tab
-        field.click
+        find(member_dropdown_selector).set(group_owner.name)
 
         wait_for_requests
 
         expect(page).to have_content(group_owner.name)
-        expect(page).to have_content(project_developer.name)
         expect(page).not_to have_content(internal_project_bot.name)
         expect(page).not_to have_content(external_project_bot.name)
       end

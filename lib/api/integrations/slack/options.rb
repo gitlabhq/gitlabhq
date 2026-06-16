@@ -15,6 +15,7 @@ module API
             detail 'Retrieves options for Slack interactive components'
             tags %w[integrations internal_operations]
           end
+          route_setting :authorization, skip_granular_token_authorization: :slack_signature_auth
           post :options, urgency: :low do
             service_params = Gitlab::Json.safe_parse(params[:payload]).deep_symbolize_keys!
             response = ::Integrations::SlackOptionService.new(service_params).execute

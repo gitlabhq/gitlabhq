@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules > Branch rules l
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
 
   before_all do
     project.add_maintainer(user)

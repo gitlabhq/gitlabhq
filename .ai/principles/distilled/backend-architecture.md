@@ -1,6 +1,6 @@
 ---
-source_checksum: 3781faa9a252febf
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: ea3e1208f5193137
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -75,6 +75,8 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Follow the multi-rollout process when renaming events, adding required properties, or removing properties (expand → migrate → contract across separate milestones)
 - Use `publish_event` RSpec matcher to test publishers; use `it_behaves_like 'subscribes to event'` shared example to test subscribers
 - Define CE events and publish them in CE code; define EE events and publish them in EE code; subscribers may cross CE/EE boundaries
+- DO NOT use EventStore when logic must run synchronously as part of the main business transaction rather than as a side-effect
+- Use `Gitlab::EventStore.publish_group` when publishing multiple events of the same type in a single transaction to reduce Sidekiq load; configure `group_size` on the subscription as needed
 
 ### Modules and Instance Variables
 
@@ -127,7 +129,7 @@ For the full picture, see:
 
 - doc/development/reusing_abstractions.md
 - doc/development/software_design.md
-- doc/development/event_store.md
+- doc/development/eventstore/_index.md
 - doc/development/module_with_instance_variables.md
 - doc/development/application_limits.md
 - doc/development/multi_version_compatibility.md

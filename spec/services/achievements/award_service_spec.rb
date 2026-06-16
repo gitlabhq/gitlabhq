@@ -12,8 +12,11 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
 
     let(:achievement_id) { achievement.id }
     let(:recipient_id) { recipient.id }
+    let(:award_message) { nil }
 
-    subject(:response) { described_class.new(current_user, achievement_id, recipient_id).execute }
+    subject(:response) do
+      described_class.new(current_user, achievement_id, recipient_id, award_message: award_message).execute
+    end
 
     before_all do
       group.add_developer(developer)
@@ -47,6 +50,19 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
 
       it 'awards the achievement with show_on_profile set to false' do
         expect(response.payload.show_on_profile).to be(false)
+      end
+
+      context 'with an award_message' do
+        let(:award_message) { 'Awarded for outstanding contribution' }
+
+        it 'persists the award_message' do
+          allow(NotificationService).to receive(:new).and_return(notification_service)
+          allow(notification_service).to receive(:new_achievement_email).and_return(mail_message)
+          allow(mail_message).to receive(:deliver_later)
+
+          expect(response).to be_success
+          expect(response.payload.award_message).to eq(award_message)
+        end
       end
 
       context 'when the achievement is not persisted' do

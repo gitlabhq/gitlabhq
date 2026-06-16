@@ -437,12 +437,6 @@ this issue.
 
 ## Use `rules` with `include`
 
-{{< history >}}
-
-- Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
-
-{{< /history >}}
-
 You can use [`rules`](_index.md#rules) with `include` to conditionally include other configuration files.
 
 You can only use `rules` with [certain variables](#use-variables-with-include), and
@@ -453,13 +447,6 @@ these keywords:
 - [`rules:changes`](_index.md#ruleschanges).
 
 ### `include` with `rules:if`
-
-{{< history >}}
-
-- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_include_rules_when_never`. Disabled by default.
-- Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
-
-{{< /history >}}
 
 Use [`rules:if`](_index.md#rulesif) to conditionally include other configuration files
 based on the status of CI/CD variables. For example:
@@ -487,13 +474,6 @@ test:
 ```
 
 ### `include` with `rules:exists`
-
-{{< history >}}
-
-- Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_include_rules_when_never`. Disabled by default.
-- Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
-
-{{< /history >}}
 
 Use [`rules:exists`](_index.md#rulesexists) to conditionally include other configuration files
 based on the existence of files. For example:
@@ -567,12 +547,6 @@ include:
 ```
 
 ### `include` with `rules:changes`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
-
-{{< /history >}}
 
 Use [`rules:changes`](_index.md#ruleschanges) to conditionally include other configuration files
 based on changed files. For example:
@@ -649,8 +623,7 @@ with the [pipeline editor](../pipeline_editor/_index.md), which validates if the
 limit is reached. You can remove one included file at a time to try to narrow down
 which configuration file is the source of the loop or excessive included files.
 
-In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) users on GitLab Self-Managed can
-change the [maximum includes](../../administration/settings/continuous_integration.md#set-maximum-includes) value.
+Users on GitLab Self-Managed can change the [maximum includes](../../administration/cicd/limits.md#maximum-number-of-includes) value.
 
 ### Error: `Local file <file> does not exist!` with `include:local`
 

@@ -8,7 +8,7 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
 
     let_it_be(:auto_stop_at) { Time.now.utc }
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, reload: true) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
     let_it_be(:environment) do
       create(:environment, project: project, auto_stop_at: auto_stop_at, description: '_description_')
     end

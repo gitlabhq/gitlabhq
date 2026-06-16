@@ -10,6 +10,7 @@ const defaultTabs = [k8sResourceType.k8sPods, k8sResourceType.k8sServices];
 const tabsWithSummary = ['summary', ...defaultTabs];
 
 export default {
+  name: 'KubernetesTabs',
   components: {
     GlTabs,
     KubernetesPods,

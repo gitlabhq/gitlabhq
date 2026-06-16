@@ -104,17 +104,17 @@ RSpec.shared_examples 'StageEventModel' do
       end
     end
 
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:user) }
-    let_it_be(:milestone) { create(:milestone) }
-    let_it_be(:issuable_with_assignee) { create(issuable_factory, assignees: [user]) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:user) }
+    let_it_be(:milestone, freeze: false) { create(:milestone) }
+    let_it_be(:issuable_with_assignee, freeze: false) { create(issuable_factory, assignees: [user]) }
 
-    let_it_be(:record) { create(stage_event_factory, start_event_timestamp: 3.years.ago.to_date, end_event_timestamp: 2.years.ago.to_date) }
-    let_it_be(:record_with_author) { create(stage_event_factory, author_id: user.id) }
-    let_it_be(:record_with_project) { create(stage_event_factory, project_id: project.id) }
-    let_it_be(:record_with_group) { create(stage_event_factory, group_id: project.namespace_id) }
-    let_it_be(:record_with_assigned_issuable) { create(stage_event_factory, described_class.issuable_id_column => issuable_with_assignee.id) }
-    let_it_be(:record_with_milestone) { create(stage_event_factory, milestone_id: milestone.id) }
+    let_it_be(:record, freeze: false) { create(stage_event_factory, start_event_timestamp: 3.years.ago.to_date, end_event_timestamp: 2.years.ago.to_date) }
+    let_it_be(:record_with_author, freeze: false) { create(stage_event_factory, author_id: user.id) }
+    let_it_be(:record_with_project, freeze: false) { create(stage_event_factory, project_id: project.id) }
+    let_it_be(:record_with_group, freeze: false) { create(stage_event_factory, group_id: project.namespace_id) }
+    let_it_be(:record_with_assigned_issuable, freeze: false) { create(stage_event_factory, described_class.issuable_id_column => issuable_with_assignee.id) }
+    let_it_be(:record_with_milestone, freeze: false) { create(stage_event_factory, milestone_id: milestone.id) }
 
     it 'filters by stage_event_hash_id' do
       records = described_class.by_stage_event_hash_id(record.stage_event_hash_id)

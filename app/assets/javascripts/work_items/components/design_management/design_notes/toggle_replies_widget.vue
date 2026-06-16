@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['toggle'],
   computed: {
     iconName() {
       return this.collapsed ? 'chevron-right' : 'chevron-down';

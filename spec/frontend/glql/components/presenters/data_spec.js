@@ -1,5 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ColumnChartPresenter from '~/glql/components/presenters/column_chart.vue';
+import LineChartPresenter from '~/glql/components/presenters/line_chart.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
 import DataPresenter from '~/glql/components/presenters/data.vue';
@@ -17,6 +18,7 @@ describe('DataPresenter', () => {
     ${'orderedList'} | ${MOCK_FIELDS}                               | ${{ fields: MOCK_FIELDS, listType: 'ol' }}               | ${ListPresenter}
     ${'table'}       | ${MOCK_FIELDS}                               | ${{ fields: MOCK_FIELDS }}                               | ${TablePresenter}
     ${'columnChart'} | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${ColumnChartPresenter}
+    ${'lineChart'}   | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC} | ${{ fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC }} | ${LineChartPresenter}
   `(
     'inits appropriate presenter for displayType: $displayType',
     ({ displayType, fields, presenterProps, PresenterComponent }) => {
@@ -66,6 +68,23 @@ describe('DataPresenter', () => {
 
       const error = new Error('boom');
       wrapper.findComponent(ColumnChartPresenter).vm.$emit('error', error);
+
+      expect(wrapper.emitted('error')).toEqual([[error]]);
+    });
+  });
+
+  describe('lineChart', () => {
+    it('re-emits errors from the line chart presenter', () => {
+      const wrapper = shallowMountExtended(DataPresenter, {
+        propsData: {
+          data: MOCK_AGGREGATED_DATA_ONE_DIM,
+          displayType: 'lineChart',
+          fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+        },
+      });
+
+      const error = new Error('boom');
+      wrapper.findComponent(LineChartPresenter).vm.$emit('error', error);
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
     });

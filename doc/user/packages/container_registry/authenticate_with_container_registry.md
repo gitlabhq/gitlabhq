@@ -71,10 +71,10 @@ Tokens remain valid:
 
 To use CI/CD to authenticate with the container registry, you can use:
 
-- The `CI_REGISTRY_USER` CI/CD variable.
+- The `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` CI/CD variables.
 
-  This variable holds a per-job user with read-write access to the container registry.
-  Its password is also automatically created and available in `CI_REGISTRY_PASSWORD`.
+  `CI_REGISTRY_USER` holds a per-job user with read-write access to the container registry,
+  and `CI_REGISTRY_PASSWORD` holds its automatically created password.
 
   ```shell
   echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
@@ -82,7 +82,8 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 - A [CI job token](../../../ci/jobs/ci_job_token.md).
 
-  This token can only be used for read (pull) access. It has the `read_registry` scope but not the `write_registry` scope needed for push operations.
+  This token has read (pull) and write (push) access to the container registry of the project that runs the job.
+  The [CI/CD job token allowlist](../../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project) controls access to other projects' registries.
 
   ```shell
   echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin

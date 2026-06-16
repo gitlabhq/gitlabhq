@@ -45,6 +45,20 @@ describe('GroupPathField', () => {
     expect(wrapper.findComponent(GlInputGroupText).text()).toBe(defaultPropsData.basePath);
   });
 
+  describe('when `inputClass` prop is passed', () => {
+    it('applies the class to the input', () => {
+      createComponent({ propsData: { inputClass: '!gl-bg-feedback-info' } });
+
+      expect(wrapper.find('input').classes()).toContain('!gl-bg-feedback-info');
+    });
+
+    it('does not apply the class when it is empty', () => {
+      createComponent({ propsData: { inputClass: '' } });
+
+      expect(wrapper.find('input').classes()).not.toContain('!gl-bg-feedback-info');
+    });
+  });
+
   describe('when `value` prop is updated', () => {
     describe('when value is the suggested path', () => {
       beforeEach(async () => {

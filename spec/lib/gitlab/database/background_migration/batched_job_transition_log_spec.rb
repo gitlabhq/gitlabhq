@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog, type: :model do
+RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog, type: :model, feature_category: :database do
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
   describe 'associations' do

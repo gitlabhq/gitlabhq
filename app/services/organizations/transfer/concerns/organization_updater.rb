@@ -10,6 +10,7 @@ module Organizations
 
         # Update organization_id for records matching the scope specified in the block
         # @param model_class [Class] The ActiveRecord model class
+        # @param organization_key [Symbol] The column name for organization_id (default: :organization_id)
         # @param block Scope to filter records
         #
         # @example Update with hash where clause
@@ -21,14 +22,17 @@ module Organizations
         # @example Update without a block
         #   update_organization_id_for(PersonalAccessToken)
         #
+        # @example Update with a custom organization key
+        #   update_organization_id_for(SnippetRepository, organization_key: :snippet_organization_id)
+        #
         # rubocop:disable CodeReuse/ActiveRecord -- Not every model supports `in_organization` scope yet.
-        def update_organization_id_for(model_class, &block)
-          relation = model_class.where(organization_id: old_organization.id)
+        def update_organization_id_for(model_class, organization_key: :organization_id, &block)
+          relation = model_class.where(organization_key => old_organization.id)
           relation = yield(relation) if block
 
           # Process in batches
           relation.each_batch(of: ORGANIZATION_ID_UPDATE_BATCH_SIZE) do |batch|
-            batch.update_all(organization_id: new_organization.id)
+            batch.update_all(organization_key => new_organization.id)
           end
         end
         # rubocop:enable CodeReuse/ActiveRecord

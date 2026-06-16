@@ -359,4 +359,31 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :observabi
       it_behaves_like 'returns 401'
     end
   end
+
+  describe 'granular token authorization' do
+    let(:boundary_object) { project }
+    let(:user) { maintainer }
+
+    before do
+      stub_feature_flags(integrated_error_tracking: true)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_error_tracking_setting do
+      let(:request) { get api("/projects/#{project.id}/error_tracking/settings", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_error_tracking_setting do
+      let(:request) do
+        patch api("/projects/#{project.id}/error_tracking/settings", personal_access_token: pat),
+          params: { active: true }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_error_tracking_setting do
+      let(:request) do
+        put api("/projects/#{project.id}/error_tracking/settings", personal_access_token: pat),
+          params: { active: true, integrated: true }
+      end
+    end
+  end
 end

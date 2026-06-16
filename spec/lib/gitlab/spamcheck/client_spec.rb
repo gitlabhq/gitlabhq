@@ -6,13 +6,13 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   include_context 'includes Spam constants'
 
   let(:endpoint) { 'grpc://grpc.test.url' }
-  let_it_be(:user) { create(:user, company: 'GitLab') }
+  let_it_be(:user, freeze: false) { create(:user, company: 'GitLab') }
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
   let(:verdict_score) { 0.01 }
   let(:verdict_evaluated) { true }
 
-  let_it_be(:issue) { create(:issue, description: 'Test issue description') }
-  let_it_be(:snippet) { create(:personal_snippet, :public, description: 'Test issue description') }
+  let_it_be(:issue, freeze: false) { create(:issue, description: 'Test issue description') }
+  let_it_be(:snippet, freeze: false) { create(:personal_snippet, :public, description: 'Test issue description') }
 
   let(:response) do
     verdict = ::Spamcheck::SpamVerdict.new
@@ -101,9 +101,9 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   end
 
   describe "#build_protobuf", :aggregate_failures do
-    let_it_be(:generic_spammable) { Object }
-    let_it_be(:generic_created_at) { issue.created_at }
-    let_it_be(:generic_updated_at) { issue.updated_at }
+    let_it_be(:generic_spammable, freeze: false) { Object }
+    let_it_be(:generic_created_at, freeze: false) { issue.created_at }
+    let_it_be(:generic_updated_at, freeze: false) { issue.updated_at }
 
     before do
       allow(generic_spammable).to receive_messages(

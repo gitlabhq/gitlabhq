@@ -4,6 +4,8 @@ action: click_copy_build
 extra_properties:
 identifiers:
 product_group: container_registry
+product_categories:
+- container_registry
 milestone: "12.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27990
 tiers:

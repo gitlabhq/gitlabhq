@@ -162,12 +162,12 @@ module Cells
 
         was, is = saved_change_to_attribute(attribute)
 
-        if was && was != is
+        if was.present? && was != is
           transaction_record.destroy_record(
             cells_claims_metadata_for(config[:type], was))
         end
 
-        if is && cells_claims_attribute_claimable?(config)
+        if is.present? && cells_claims_attribute_claimable?(config)
           transaction_record.create_record(
             cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
         end
@@ -182,8 +182,11 @@ module Cells
         next unless self.class.cells_claims_enabled_for_attribute?(attribute)
         next unless cells_claims_attribute_claimable?(config)
 
+        value = public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
+        next if value.blank?
+
         transaction_record.destroy_record(
-          cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
+          cells_claims_metadata_for(config[:type], value))
       end
     end
 

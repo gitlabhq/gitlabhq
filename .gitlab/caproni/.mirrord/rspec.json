@@ -5,7 +5,23 @@
         "ignore_localhost": true
       }
     },
-    "fs": "local",
+    "fs": {
+      "mode": "localwithoverrides",
+      "read_only": [
+        "^/etc/gitlab/.*",
+        "^/srv/gitlab/config.ru",
+        "^/srv/gitlab/config/.*"
+      ],
+      "mapping": {
+        "^/srv/gitlab/config.ru": "./config.ru",
+        "^/srv/gitlab/log/(?<file>.+)": "./log/$file",
+        "^/srv/gitlab/log": "./log",
+        "^/srv/gitlab/(?<file>lib/gitlab/cluster/lifecycle_events)": "./$file",
+        "^/srv/gitlab/(?<file>lib/gitlab/puma_logging/json_formatter)": "./$file",
+        "^/srv/gitlab/(?<file>lib/gitlab/puma/error_handler)": "./$file",
+        "^/srv/gitlab/(?<file>config/environment)": "./$file"
+      }
+    },
     "env": false
   }
 }

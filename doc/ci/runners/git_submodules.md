@@ -24,12 +24,6 @@ You have multiple options to configure it to work in a GitLab CI/CD job.
 
 ### Using absolute URLs
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
-
-{{< /history >}}
-
 For example, your generated `.gitmodules` configuration might look like the following if:
 
 - Your project is located at `https://gitlab.com/secret-group/my-project`.

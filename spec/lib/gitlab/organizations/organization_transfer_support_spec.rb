@@ -18,14 +18,23 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       admin_roles
       agent_organization_authorizations
       ai_catalog_item_version_dependencies
-      ai_catalog_items
       ai_code_suggestion_events
       ai_conversation_messages
       ai_duo_chat_events
       analytics_cycle_analytics_stage_event_hashes
       background_operation_jobs
       background_operation_workers
-      bulk_import_configurations
+      burned_project_routes
+      cd_application_flow_definitions
+      cd_applications
+      cd_artifact_sources
+      cd_deployments
+      cd_environments
+      cd_rollouts
+      cd_services
+      cd_version_set_entries
+      cd_version_sets
+      cd_versions
       cluster_platforms_kubernetes
       cluster_providers_gcp
       clusters
@@ -35,9 +44,8 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       custom_dashboards
       dependency_list_export_part_uploads
       dependency_list_export_parts
+      dependency_list_export_upload_states
       dependency_list_export_uploads
-      import_failures
-      import_offline_configurations
       issue_tracker_data
       jira_connect_installations
       jira_tracker_data
@@ -48,12 +56,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       oauth_applications
       oauth_device_grants
       oauth_openid_requests
-      organization_detail_uploads
-      organization_details
-      organization_foundational_agent_statuses
-      organization_isolations
-      organization_push_rules
-      organization_settings
       organization_user_details
       organization_users
       personal_access_token_last_used_ips
@@ -70,18 +72,14 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       slack_api_scopes
       slack_integrations
       slack_integrations_scopes
-      snippet_repositories
-      snippet_repository_storage_moves
-      snippet_statistics
       snippet_uploads
-      snippet_user_mentions
-      subscription_user_add_on_assignment_versions
-      todos
+      personal_snippet_upload_states
       topics
       upcoming_reconciliations
       user_agent_details
       user_uploads
       user_upload_states
+      vulnerability_export_part_upload_states
       vulnerability_export_part_uploads
       vulnerability_export_parts
       vulnerability_export_upload_states
@@ -96,12 +94,22 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
   let(:allowed_no_work_needed_tables) do
     %w[
       bulk_import_batch_trackers
+      bulk_import_configurations
       bulk_import_entities
       bulk_import_failures
       bulk_import_trackers
+      dependency_list_exports
       enabled_foundational_flow_check_results
+      import_offline_configurations
       integrations
       labels
+      organization_detail_uploads
+      organization_details
+      organization_foundational_agent_statuses
+      organization_isolations
+      organization_push_rules
+      organization_settings
+      loose_foreign_keys_organization_deleted_records
       web_hooks
       web_hook_logs_daily
     ]
@@ -286,6 +294,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
 
     def transfer_spec_files
       Dir.glob(Rails.root.join("{,ee/}spec/services/**/#{transfer_path_pattern}**/*_spec.rb"))
+        .reject { |f| f.include?('/concerns/') }
     end
 
     # Called after specs are required so that they're visible in Rspec.world

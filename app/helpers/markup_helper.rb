@@ -63,7 +63,7 @@ module MarkupHelper
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
-    tags = %w[a gl-emoji b strong i em pre code p span]
+    tags = %w[a gl-emoji b strong i em pre code p span blockquote]
 
     context = markdown_field_render_context(object, attribute, options)
     context.reverse_merge!(truncate_visible_max_chars: max_chars || md.length)

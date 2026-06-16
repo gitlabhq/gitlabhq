@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/migration_record'
 
-RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
+RSpec.describe RuboCop::Cop::Migration::MigrationRecord, feature_category: :database do
   shared_examples 'a disabled cop' do |klass|
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

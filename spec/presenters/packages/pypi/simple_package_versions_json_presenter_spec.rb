@@ -10,8 +10,8 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsJsonPresenter, :aggregate_
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:package_name) { 'sample-project' }
-  let_it_be(:package1) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
-  let_it_be(:package2) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
+  let_it_be(:package1, freeze: false) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
+  let_it_be(:package2, freeze: false) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
 
   # Ensure we have at least one file to assert on (do not rely on factory side effects).
   let_it_be(:package_file1) { create(:package_file, package: package1) }

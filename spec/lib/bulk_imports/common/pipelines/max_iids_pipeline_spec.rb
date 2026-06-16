@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let(:tmpdir) { Dir.mktmpdir }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
 
   before_all do
     group.add_owner(user)
@@ -28,7 +28,7 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
   end
 
   describe '#transform' do
-    let_it_be(:entity) do
+    let_it_be(:entity, freeze: false) do
       create(
         :bulk_import_entity,
         :project_entity,
@@ -40,11 +40,11 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
       )
     end
 
-    let_it_be(:tracker) do
+    let_it_be(:tracker, freeze: false) do
       create(:bulk_import_tracker, entity: entity, pipeline_name: described_class.to_s)
     end
 
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
     subject(:pipeline) { described_class.new(context) }
 
@@ -102,7 +102,7 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
   end
 
   context 'with a project entity' do
-    let_it_be(:entity) do
+    let_it_be(:entity, freeze: false) do
       create(
         :bulk_import_entity,
         :project_entity,
@@ -114,11 +114,11 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
       )
     end
 
-    let_it_be(:tracker) do
+    let_it_be(:tracker, freeze: false) do
       create(:bulk_import_tracker, entity: entity, pipeline_name: described_class.to_s)
     end
 
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
     subject(:pipeline) { described_class.new(context) }
 
@@ -163,7 +163,7 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
   end
 
   context 'with a group entity' do
-    let_it_be(:entity) do
+    let_it_be(:entity, freeze: false) do
       create(
         :bulk_import_entity,
         group: group,
@@ -174,11 +174,11 @@ RSpec.describe BulkImports::Common::Pipelines::MaxIidsPipeline, feature_category
       )
     end
 
-    let_it_be(:tracker) do
+    let_it_be(:tracker, freeze: false) do
       create(:bulk_import_tracker, entity: entity, pipeline_name: described_class.to_s)
     end
 
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
     subject(:pipeline) { described_class.new(context) }
 

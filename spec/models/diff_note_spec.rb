@@ -64,6 +64,14 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
       expect(note.line_code).to eq('test_line_code')
     end
 
+    it 'does not trace the line code when position is nil', :aggregate_failures do
+      note = build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request)
+      allow(note).to receive(:position).and_return(nil)
+
+      expect { note.send(:set_line_code) }.not_to raise_error
+      expect(note.line_code).to be_nil
+    end
+
     it "is not valid when noteable is empty" do
       note = build(:diff_note_on_merge_request, project: project, noteable: nil)
 
@@ -250,7 +258,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
 
                 it 'syncs namespace_id sharding key for `note_diff_file`' do
                   subject.save!
-                  subject.update_column(:project_id, nil)
+                  subject.update_columns(namespace_id: project.project_namespace_id, project_id: nil)
 
                   expect(subject.note_diff_file.reload.namespace_id).to eq(subject.namespace_id)
                 end
@@ -414,6 +422,17 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
         expect(diff_note.diff_file).to be_nil
       end
     end
+
+    context 'when original_position is nil and there is no persisted note_diff_file' do
+      before do
+        allow(subject).to receive_messages(original_position: nil, note_diff_file: nil)
+      end
+
+      it 'returns nil without raising', :aggregate_failures do
+        expect { subject.diff_file(create_missing_diff_file: false) }.not_to raise_error
+        expect(subject.diff_file(create_missing_diff_file: false)).to be_nil
+      end
+    end
   end
 
   describe '#latest_diff_file' do
@@ -422,6 +441,17 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
         diff_note = create(:diff_note_on_design)
 
         expect(diff_note.latest_diff_file).to be_nil
+      end
+    end
+
+    context 'when position is nil' do
+      before do
+        allow(subject).to receive(:position).and_return(nil)
+      end
+
+      it 'returns nil without raising', :aggregate_failures do
+        expect { subject.latest_diff_file }.not_to raise_error
+        expect(subject.latest_diff_file).to be_nil
       end
     end
   end
@@ -562,6 +592,41 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
         it "returns false" do
           expect(subject.created_at_diff?(merge_request.diff_refs)).to be false
         end
+      end
+
+      context "when original_position is nil (corrupt YAML in the column)" do
+        before do
+          allow(subject).to receive(:original_position).and_return(nil)
+        end
+
+        it "returns false without raising", :aggregate_failures do
+          expect { subject.created_at_diff?(diff_refs) }.not_to raise_error
+          expect(subject.created_at_diff?(diff_refs)).to be false
+        end
+      end
+    end
+  end
+
+  describe '#positions_complete' do
+    context 'when original_position is nil (corrupt YAML in the column)' do
+      before do
+        allow(subject).to receive(:original_position).and_return(nil)
+      end
+
+      it 'adds the incomplete error rather than raising', :aggregate_failures do
+        expect { subject.valid? }.not_to raise_error
+        expect(subject.errors[:position]).to include('is incomplete')
+      end
+    end
+
+    context 'when position is nil (corrupt YAML in the column)' do
+      before do
+        allow(subject).to receive(:position).and_return(nil)
+      end
+
+      it 'adds the incomplete error rather than raising', :aggregate_failures do
+        expect { subject.valid? }.not_to raise_error
+        expect(subject.errors[:position]).to include('is incomplete')
       end
     end
   end
@@ -752,6 +817,16 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
           "new_line: #{invalid_line_position.new_line}"
         )
 
+        expect(diff_note.errors.details[:base]).to contain_exactly(error: :missing_diff_line)
+      end
+
+      it 'adds an error when original_position is nil', :aggregate_failures do
+        allow(diff_note).to receive(:original_position).and_return(nil)
+
+        expect { diff_note.validate_diff_file_and_line }.not_to raise_error
+        expect(diff_note.errors[:base]).to include(
+          "Failed to find diff line for: #{modified_file_path}, old_line: , new_line: "
+        )
         expect(diff_note.errors.details[:base]).to contain_exactly(error: :missing_diff_line)
       end
     end

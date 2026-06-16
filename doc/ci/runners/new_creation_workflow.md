@@ -12,18 +12,8 @@ title: Migrating to the new runner registration workflow
 
 {{< /details >}}
 
-> [!disclaimer]
-
-GitLab 16.0 introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is not recommended.
+The runner creation workflow uses runner authentication tokens to register runners. The legacy workflow that uses registration tokens is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token) instead.
-
-For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
-
-For information about the technical design and reasons for the new architecture, see [next GitLab Runner Token architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/runner_tokens/).
-
-If you experience problems or have concerns about the new runner registration workflow,
-or need more information, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
 
 ## The new runner registration workflow
 
@@ -39,17 +29,12 @@ The new runner registration workflow has the following benefits:
 
 - Preserved ownership records for runners, and minimized impact on users.
 - The addition of a unique system ID ensures that you can reuse the same authentication token across
-  multiple runners. For more information, see [Reusing a GitLab Runner configuration](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration).
-
-## Estimated time frame for planned changes
-
-- In GitLab 15.10 and later, you can use the new runner registration workflow.
+  multiple runners. For more information, see [reusing a GitLab Runner configuration](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration).
 
 ## Prevent your runner registration workflow from breaking
 
-In GitLab 16.11 and earlier, you can use the legacy runner registration workflow.
-
-In GitLab 17.0 and later, the legacy runner registration workflow can be disabled by instance administrators or group owners. For more information, see [Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
+In GitLab 17.0 and later, the legacy runner registration workflow can be disabled by instance administrators or group owners.
+For more information, see [using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
 
 If you register a runner without migrating to the new workflow, the runner registration breaks and the `gitlab-runner register` command returns a `410 Gone - runner registration disallowed` error.
 
@@ -100,7 +85,7 @@ To ensure minimal disruption to your automation workflow,
 [legacy-compatible registration processing](https://docs.gitlab.com/runner/register/#legacy-compatible-registration-process)
 triggers if a runner authentication token is specified in the legacy parameter `--registration-token`.
 
-Example command for GitLab 15.9:
+Previously, the registration command required additional configuration arguments:
 
 ```shell
 gitlab-runner register \
@@ -114,11 +99,8 @@ gitlab-runner register \
     --registration-token "REDACTED"
 ```
 
-In GitLab 15.10 and later, you can create the runner and set attributes in the UI, like
-tag list, locked status, and access level.
-In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register` when a runner authentication token with the `glrt-` prefix is specified.
-
-The following example shows the new command:
+With a runner authentication token, you set these attributes when you create the runner in the UI,
+and the registration command requires only the token:
 
 ```shell
 gitlab-runner register \
@@ -139,13 +121,13 @@ process is started.
 
 ## Creating runners programmatically
 
-In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner-linked-to-a-user)
+You can use the [POST /user/runners REST API](../../api/users.md#create-a-runner-linked-to-a-user)
 to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic
 or not reusable. If the runner configuration is static, you should reuse the runner authentication token of
 an existing runner.
 
 For instructions about how to automate runner creation and registration, see the tutorial,
-[Automate runner creation and registration](../../tutorials/automate_runner_creation/_index.md).
+[automate runner creation and registration](../../tutorials/automate_runner_creation/_index.md).
 
 ## Installing GitLab Runner with Helm chart
 
@@ -230,6 +212,6 @@ This occurs when:
   [referenced by a Custom Resource Definition](https://docs.gitlab.com/runner/install/operator/#install-gitlab-runner).
 - The runner authentication token is due to expire.
   For more information about runner authentication token expiration,
-  see [Authentication token security](configure_runners.md#authentication-token-security).
+  see [authentication token security](configure_runners.md#authentication-token-security).
 
 For more information, see [issue 186](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/186).

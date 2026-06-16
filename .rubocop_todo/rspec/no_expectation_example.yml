@@ -1,13 +1,11 @@
 ---
 RSpec/NoExpectationExample:
   Exclude:
-    - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'
     - 'ee/spec/features/groups/settings/protected_environments_spec.rb'
     - 'ee/spec/features/merge_request/user_merges_immediately_spec.rb'
-    - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
     - 'ee/spec/lib/geo/console/multiple_choice_menu_spec.rb'
     - 'ee/spec/lib/gitlab/bullet/exclusions_spec.rb'
@@ -63,7 +61,6 @@ RSpec/NoExpectationExample:
     - 'spec/features/projects/files/template_selector_menu_spec.rb'
     - 'spec/features/projects/files/undo_template_spec.rb'
     - 'spec/features/user_settings/ssh_keys_spec.rb'
-    - 'spec/features/users/login_spec.rb'
     - 'spec/frontend/fixtures/listbox.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/frontend/fixtures/merge_requests_diffs.rb'
@@ -136,7 +133,6 @@ RSpec/NoExpectationExample:
     - 'spec/support/shared_examples/namespaces/hierarchy_examples.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
     - 'spec/support/shared_examples/services/check_ingress_ip_address_service_shared_examples.rb'
-    - 'spec/support/shared_examples/services/notification_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/updating_mentions_shared_examples.rb'
     - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
     - 'spec/tasks/gitlab/ldap_rake_spec.rb'

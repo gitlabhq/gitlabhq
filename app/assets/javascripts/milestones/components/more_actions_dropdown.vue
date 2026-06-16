@@ -12,6 +12,7 @@ import PromoteMilestoneModal from '~/milestones/components/promote_milestone_mod
 import DeleteMilestoneModal from '~/milestones/components/delete_milestone_modal.vue';
 
 export default {
+  name: 'MoreActionsDropdown',
   components: {
     GlButton,
     GlIcon,

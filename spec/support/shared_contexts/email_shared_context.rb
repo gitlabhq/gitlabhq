@@ -52,6 +52,26 @@ RSpec.shared_examples 'reply processing shared examples' do
   end
 end
 
+RSpec.shared_examples 'an incoming email handler that logs its execution' do
+  it 'logs the email handler execution' do
+    logger = instance_double(Gitlab::AppJsonLogger, info: nil)
+    allow(Gitlab::AppJsonLogger).to receive(:build).and_return(logger)
+
+    receiver.execute
+
+    expect(logger).to have_received(:info).with(
+      a_hash_including(
+        {
+          Labkit::Fields::CLASS_NAME => described_class.name,
+          Labkit::Fields::LOG_MESSAGE => 'Incoming email handler execution',
+          Labkit::Fields::GL_NAMESPACE_ID => expected_log_namespace.id,
+          Labkit::Fields::GL_ROOT_NAMESPACE_ID => expected_log_namespace.root_ancestor.id
+        }.merge(expected_additional_log_data.stringify_keys)
+      )
+    )
+  end
+end
+
 RSpec.shared_examples 'checks permissions on noteable examples' do
   context 'when user has access' do
     before do

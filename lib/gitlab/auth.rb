@@ -169,17 +169,12 @@ module Gitlab
 
           break if user && !user.can_log_in_with_non_expired_password?
 
-          authenticated_user =
-            if Feature.enabled?(:cache_find_with_user_password, Feature.current_request)
-              # Avoid redundant bcrypt when Rack::Attack and the controller both
-              # authenticate the same request (e.g. throttle_authenticated_git_http).
-              cache_key = "find_with_user_password:#{login}:#{Digest::SHA256.hexdigest(password)}"
-              Gitlab::SafeRequestStore.fetch(cache_key) do
-                find_user_from_authenticators(user, login, password)
-              end
-            else
-              find_user_from_authenticators(user, login, password)
-            end
+          # Avoid redundant bcrypt when Rack::Attack and the controller both
+          # authenticate the same request (e.g. throttle_authenticated_git_http).
+          cache_key = "find_with_user_password:#{login}:#{Digest::SHA256.hexdigest(password)}"
+          authenticated_user = Gitlab::SafeRequestStore.fetch(cache_key) do
+            find_user_from_authenticators(user, login, password)
+          end
 
           # Side effects must run on every call, not just cache misses
           user_auth_attempt!(user, success: !!authenticated_user) if increment_failed_attempts

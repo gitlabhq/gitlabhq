@@ -11,6 +11,11 @@ module Mutations
       include Mutations::WorkItems::Widgetable
 
       authorize :read_work_item
+      authorize_granular_token permissions: :update_work_item,
+        boundaries: [
+          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary_type: :group }
+        ]
 
       def self.authorization_scopes
         super + [:ai_workflows]

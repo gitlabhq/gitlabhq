@@ -17,7 +17,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:deploy_token) { create(:deploy_token).token }
   let_it_be(:feed_token) { user.feed_token }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user).token }
@@ -100,43 +100,6 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       it_behaves_like 'supported token type' do
         let(:token?) { true }
       end
-    end
-  end
-
-  describe '.name' do
-    let_it_be(:project_bot) { create(:user, :project_bot) }
-    let_it_be(:project) { create(:project, developers: project_bot) }
-    let_it_be(:project_access_token) { create(:personal_access_token, user: project_bot).token }
-    let_it_be(:group_bot) { create(:user, :project_bot) }
-    let_it_be(:group) { create(:group, developers: group_bot) }
-    let_it_be(:group_access_token) { create(:personal_access_token, user: group_bot).token }
-    let_it_be(:nil_resource_access_token) { create(:personal_access_token, user: create(:user, :project_bot)).token }
-    let_it_be(:ci_job_token) { create(:ci_build).token }
-
-    subject { described_class.name(plaintext) }
-
-    where(:plaintext, :name) do
-      ref(:personal_access_token)       | 'personal_access_token'
-      ref(:project_access_token)        | 'project_access_token'
-      ref(:group_access_token)          | 'group_access_token'
-      ref(:nil_resource_access_token)   | nil
-      ref(:impersonation_token)         | 'personal_access_token'
-      ref(:feed_token)                  | 'feed_token'
-      ref(:deploy_token)                | 'deploy_token'
-      ref(:oauth_application_secret)    | 'oauth_application_secret'
-      ref(:cluster_agent_token)         | 'cluster_agent_token'
-      ref(:runner_authentication_token) | 'runner_authentication_token'
-      ref(:runner_registration_token)   | 'runner_registration_token'
-      ref(:ci_trigger_token)            | 'ci_trigger_token'
-      ref(:feature_flags_client_token)  | 'feature_flags_client_token'
-      ref(:gitlab_session)              | 'gitlab_session'
-      ref(:incoming_email_token)        | 'incoming_email_token'
-      ref(:ci_job_token)                | 'ci_job_token'
-      'unsupported'                     | nil
-    end
-
-    with_them do
-      it { is_expected.to eq name }
     end
   end
 end

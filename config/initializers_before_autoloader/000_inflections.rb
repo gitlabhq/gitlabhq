@@ -48,9 +48,16 @@ ActiveSupport::Inflector.inflections do |inflect|
     WikiPage::Meta
     packages_nuget_symbol_registry
     packages_helm_metadata_cache_registry
+    personal_snippet_upload_registry
+    dependency_list_export_upload_registry
     vulnerability_export_upload_registry
+    issuable_metric_image_upload_registry
+    vulnerability_export_part_upload_registry
+    alert_management_metric_image_upload_registry
     vulnerability_archive_export_upload_registry
+    user_permission_export_upload_upload_registry
     bulk_import_export_upload_upload_registry
+    packages_debian_project_component_file_registry
     import_export_upload_upload_registry
     ai_vectorizable_file_upload_registry
     project_import_export_relation_export_upload_upload_registry

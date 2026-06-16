@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::Instrumentation do
+RSpec.describe Gitlab::Database::Migrations::Instrumentation, feature_category: :database do
   subject(:instrumentation) { described_class.new(result_dir: result_dir) }
 
   let(:result_dir) { Dir.mktmpdir }

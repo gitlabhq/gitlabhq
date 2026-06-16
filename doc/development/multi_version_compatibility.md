@@ -79,7 +79,7 @@ This example is not exhaustive. GitLab can be deployed in many different ways. E
 GitLab.com runs a [canary stage](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/environments/canary-stage) that runs the next version that is going to be deployed to production. This means that we
 run multiple versions of GitLab for an extended period of time.
 
-We route a small percentage of traffic to canary to test out the next version. Users can also opt-in to GitLab next by [setting a cookie](https://next.gitlab.com/). We also route paths starting with `gitlab-org` or `gitlab-com` to canary and this often exposes a lot of multi-version compatibility issues that last until the version in canary is deployed to production which can take several hours.
+We route a small percentage of traffic to canary to test out the next version. Users can also opt in to GitLab Next, which routes them to canary by setting the `gitlab_canary` cookie to `true`. The user menu toggle (top-right avatar) and the <kbd>g</kbd> <kbd>x</kbd> keyboard shortcut both set this cookie on the `.gitlab.com` domain so it is shared across subdomains. Visiting [`next.gitlab.com`](https://next.gitlab.com/) also opts in, but is managed by that site separately. We also route paths starting with `gitlab-org` or `gitlab-com` to canary and this often exposes a lot of multi-version compatibility issues that last until the version in canary is deployed to production which can take several hours.
 
 The problem occurs because API requests do not start with the same path prefix, so these API requests made from newer canary frontend code end up on the older main nodes.
 

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'getting a repository in a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:repository) { project.repository }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:repository, freeze: false) { project.repository }
 
   let(:current_user) { project.first_owner }
   let(:fields) { all_graphql_fields_for('Repository') }
@@ -25,7 +25,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
   end
 
   context 'when authorizing granular token permissions' do
-    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_code] do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_code do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -39,8 +39,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL',
-      [:read_project, :read_code, :read_repository_tree] do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_repository_tree do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -49,7 +48,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           { fullPath: project.full_path },
           query_graphql_field('repository', {}, <<~QUERY)
             tree(path:"", ref:"#{project.default_branch}") {
-              __typename
+              permalinkPath
             }
           QUERY
         )
@@ -58,8 +57,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL',
-      [:read_project, :read_code, :read_repository_tree, :read_repository_blob] do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_repository_blob do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -96,7 +94,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
     let(:current_user) { create(:user) }
 
     before do
-      project.add_role(current_user, :developer) # rubocop:disable RSpec/BeforeAllRoleAssignment -- This incorrectly flags because the let_it_be(:current_user) has been overridden by let(:current_user)
+      project.add_role(current_user, :developer)
     end
 
     it 'does not return diskPath' do

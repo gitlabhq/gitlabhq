@@ -1,0 +1,11 @@
+---
+name: ci_pipeline_archival_setting
+description: Gates the pipeline archival behavior (archive_builds_in_seconds) so it
+  can be gradually enabled on GitLab.com per project.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/600846
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237463
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/600946
+milestone: '19.1'
+group: group::ci platform
+type: ops
+default_enabled: true

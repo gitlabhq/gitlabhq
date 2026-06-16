@@ -6,18 +6,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
   let_it_be(:extern_uid) { 'my-uid' }
   let_it_be(:provider_oidc) { 'openid_connect' }
 
-  let(:provider_oidc_config_with_step_up_auth) do
-    GitlabSettings::Options.new(
-      name: provider_oidc,
-      step_up_auth: {
-        admin_mode: {
-          id_token: {
-            required: { acr: 'gold' }
-          }
-        }
-      }
-    )
-  end
+  let(:provider_oidc_config_with_step_up_auth) { build(:omniauth_provider_config, provider_name: provider_oidc) }
 
   let(:additional_info_rejected_step_up_auth) { { extra: { raw_info: { acr: 'bronze' } } } }
   let(:additional_info_success_step_up_auth) { { extra: { raw_info: { acr: 'gold' } } } }
@@ -50,14 +39,14 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
       end
 
       it 'user enters admin mode successfully' do
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+        enter_admin_mode_via(provider_oidc, admin, extern_uid,
           additional_info: additional_info_success_step_up_auth)
 
         expect_admin_sign_in_success
       end
 
       it 'user enters admin mode, leaves admin mode and cannot re-enter admin mode without re-authentication' do
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+        enter_admin_mode_via(provider_oidc, admin, extern_uid,
           additional_info: additional_info_success_step_up_auth)
 
         expect_admin_sign_in_success
@@ -74,7 +63,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
       end
 
       it 'user enters admin mode and navigates successfully between non-admin and admin areas' do
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+        enter_admin_mode_via(provider_oidc, admin, extern_uid,
           additional_info: additional_info_success_step_up_auth)
 
         expect_admin_sign_in_success
@@ -95,7 +84,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
         end
 
         it 'user enters admin mode' do
-          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+          enter_admin_mode_via(provider_oidc, admin, extern_uid,
             additional_info: additional_info_success_step_up_auth)
 
           expect_admin_sign_in_success
@@ -109,7 +98,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
       end
 
       it 'user cannot enter admin mode and shows correct info message' do
-        gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+        enter_admin_mode_via(provider_oidc, admin, extern_uid,
           additional_info: additional_info_rejected_step_up_auth, expect_fail: true)
 
         expect_admin_sign_in_fail
@@ -121,7 +110,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
         end
 
         it 'user enters admin mode successfully' do
-          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+          enter_admin_mode_via(provider_oidc, admin, extern_uid,
             additional_info: additional_info_rejected_step_up_auth)
 
           expect_admin_sign_in_success
@@ -134,12 +123,12 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
         it 'user enters admin mode with successful step-up auth process' do
           expect(page).to have_current_path root_path, ignore_query: true
 
-          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+          enter_admin_mode_via(provider_oidc, admin, extern_uid,
             additional_info: additional_info_rejected_step_up_auth, expect_fail: true)
 
           expect_admin_sign_in_fail
 
-          gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
+          enter_admin_mode_via(provider_oidc, admin, extern_uid,
             additional_info: additional_info_success_step_up_auth)
 
           expect_admin_sign_in_success

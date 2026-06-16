@@ -95,6 +95,7 @@ export function mountMarkdownEditor(options = {}) {
   };
 
   const setFacade = (props) => Object.assign(facade, props);
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- autosave key identifier that contains the current path, not a navigable URL
   const autosaveKey = `autosave/${document.location.pathname}/${searchTerm}/description`;
 
   componentConfiguration.apolloProvider =

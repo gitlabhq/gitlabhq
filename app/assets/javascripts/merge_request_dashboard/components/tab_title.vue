@@ -4,6 +4,7 @@ import { camelCase } from 'lodash-es';
 import { QUERIES } from '../constants';
 
 export default {
+  name: 'TabTitle',
   components: { GlBadge },
   props: {
     title: {

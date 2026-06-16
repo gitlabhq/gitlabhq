@@ -177,12 +177,31 @@ Rather than attempting to push all changes at once, this workaround:
    git push -u origin --tags
    ```
 
+## Error: `HTTP 524 A timeout occurred` when importing a project
+
+On GitLab.com, importing a project can fail with an `HTTP 524 A timeout occurred` error.
+This error can occur with archives that are several gigabytes in size.
+
+Each upload must finish within a time limit. Large archives can exceed that limit, which closes
+the connection before the upload finishes.
+
+To avoid the error, host the archive at an HTTPS location (for example, an AWS S3 bucket) and
+have GitLab download it during the import. Use one of these endpoints:
+
+- [`POST /api/v4/projects/remote-import`](../../../api/project_import_export.md#import-a-project-from-a-remote-archive)
+  works with any HTTPS URL, including S3 presigned URLs.
+- [`POST /api/v4/projects/remote-import-s3`](../../../api/project_import_export.md#import-a-project-from-an-aws-s3-bucket)
+  works with AWS S3 by using credentials.
+
+Because GitLab downloads the archive in the background, the size of the archive does not cause
+a timeout.
+
 ## Sidekiq process fails to export a project
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.
 
-GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
+GitLab.com users should [contact Support](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#contact-support) to resolve this issue.
 
 GitLab Self-Managed administrators can use the Rails console to bypass the Sidekiq process and
 manually trigger the project export:

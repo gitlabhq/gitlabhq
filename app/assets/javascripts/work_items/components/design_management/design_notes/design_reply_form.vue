@@ -74,6 +74,7 @@ export default {
       default: '',
     },
   },
+  emits: ['cancel-form', 'note-submit-complete'],
   data() {
     return {
       noteText: this.value,

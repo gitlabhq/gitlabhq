@@ -17,8 +17,8 @@ RSpec.shared_examples Integrations::Base::Asana do
 
   # rubocop:disable RSpec/VerifiedDoubles -- legacy use
   describe '#execute' do
-    let_it_be(:user) { build(:user) }
-    let_it_be(:project) { build(:project) }
+    let_it_be(:user, freeze: false) { build(:user) }
+    let_it_be(:project, freeze: false) { build(:project) }
 
     let(:gid) { "123456789ABCD" }
     let(:asana_task) { double(data: { gid: gid }) }

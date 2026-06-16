@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_category: :mcp_server do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
 
   let(:params) { { group_id: group.id.to_s, filters: {}, sort: nil } }
   let(:tool) { described_class.new(current_user: user, params: params) }
@@ -212,7 +212,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
     end
 
     context 'with fullPath filter' do
-      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
 
       let(:params) do
         {
@@ -415,7 +415,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
   end
 
   describe 'integration', :aggregate_failures do
-    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+    let_it_be(:work_item, freeze: false) { create(:work_item, :issue, project: project) }
 
     context 'when GraphQL returns errors' do
       before do
@@ -499,8 +499,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
     end
 
     context 'with filters applied' do
-      let_it_be(:label) { create(:group_label, group: group, title: 'bug') }
-      let_it_be(:labeled_item) do
+      let_it_be(:label, freeze: false) { create(:group_label, group: group, title: 'bug') }
+      let_it_be(:labeled_item, freeze: false) do
         create(:work_item, :issue, project: project).tap do |wi|
           create(:label_link, label: label, target: wi)
         end

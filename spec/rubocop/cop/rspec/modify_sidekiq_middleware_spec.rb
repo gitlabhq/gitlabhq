@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
-RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware do
+RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware, feature_category: :scalability do
   it 'registers an offense and corrects', :aggregate_failures do
     expect_offense(<<~RUBY)
       Sidekiq::Testing.server_middleware do |chain|

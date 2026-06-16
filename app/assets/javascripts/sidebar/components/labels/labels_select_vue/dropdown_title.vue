@@ -7,6 +7,7 @@ import { mapState, mapActions } from 'vuex';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_header.vue` instead.
 export default {
+  name: 'DropdownTitle',
   components: {
     GlButton,
     GlLoadingIcon,

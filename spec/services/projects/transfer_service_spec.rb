@@ -217,6 +217,12 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       execute_transfer
     end
 
+    it 'creates a transferred activity event' do
+      expect { execute_transfer }.to change {
+        Event.transferred_action.where(target: project, target_type: 'Project').count
+      }.by(1)
+    end
+
     it 'invalidates the user\'s personal_project_count cache' do
       expect(user).to receive(:invalidate_personal_projects_count)
 
@@ -501,6 +507,23 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end
 
       it_behaves_like 'project transfer failed with a message', 'Project cannot be transferred, because image tags are present in its container registry'
+    end
+
+    context 'when the container registry is unreachable' do
+      before do
+        allow(project).to receive(:has_container_registry_tags?).and_raise(Faraday::ConnectionFailed.new('end of file reached'))
+      end
+
+      it_behaves_like 'project transfer failed with a message', 'Cannot transfer project: failed to connect to the container registry. Please try again later.'
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(Faraday::ConnectionFailed),
+          project_id: project.id
+        )
+
+        execute_transfer
+      end
     end
   end
 
@@ -923,6 +946,29 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     end
   end
 
+  describe 'lock retries in proceed_to_transfer' do
+    before do
+      group.add_owner(user)
+    end
+
+    it 'uses WithLockRetries for the transaction' do
+      expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|
+        expect(retries).to receive(:run).with(raise_on_exhaustion: true).and_call_original
+      end
+
+      execute_transfer
+    end
+
+    it 'raises AttemptsExhaustedError when lock retries are exhausted' do
+      lock_retries = instance_double(Gitlab::Database::WithLockRetries)
+      allow(Gitlab::Database::WithLockRetries).to receive(:new).and_return(lock_retries)
+      allow(lock_retries).to receive(:run)
+        .and_raise(Gitlab::Database::WithLockRetries::AttemptsExhaustedError)
+
+      expect { execute_transfer }.to raise_error(Gitlab::Database::WithLockRetries::AttemptsExhaustedError)
+    end
+  end
+
   describe '#schedule_async_transfer' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project) }
@@ -958,6 +1004,68 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end
 
       it 'returns error response and does not enqueue the worker' do
+        expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+        result = service.schedule_async_transfer(new_namespace)
+
+        expect(result).to be_error
+        expect(result.message).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
+      end
+    end
+
+    context 'when project namespace has stale transfer state with no active worker' do
+      before do
+        project.project_namespace.schedule_transfer!(transition_user: user)
+        project.project_namespace.start_transfer!(transition_user: user)
+      end
+
+      it 'cancels the stale state and proceeds with the transfer', :aggregate_failures do
+        allow(Projects::TransferWorker).to receive(:perform_async)
+
+        result = service.schedule_async_transfer(new_namespace)
+
+        expect(result).to be_success
+        expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
+      end
+
+      it 'logs a warning about the stale state' do
+        allow(Projects::TransferWorker).to receive(:perform_async)
+        allow(Gitlab::AppLogger).to receive(:warn)
+
+        service.schedule_async_transfer(new_namespace)
+
+        expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
+          message: 'Cancelling stale transfer state - no active worker lease found',
+          project_id: project.id
+        ))
+      end
+    end
+
+    context 'when project namespace has stale transfer_scheduled state with no active worker' do
+      before do
+        project.project_namespace.schedule_transfer!(transition_user: user)
+      end
+
+      it 'cancels the stale state and proceeds with the transfer', :aggregate_failures do
+        allow(Projects::TransferWorker).to receive(:perform_async)
+
+        result = service.schedule_async_transfer(new_namespace)
+
+        expect(result).to be_success
+        expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
+      end
+    end
+
+    context 'when project namespace has transfer state with active worker lease' do
+      before do
+        project.project_namespace.schedule_transfer!(transition_user: user)
+        project.project_namespace.start_transfer!(transition_user: user)
+        Gitlab::ExclusiveLease.new(
+          Projects::TransferWorker.lease_key(project.id), timeout: 30.minutes
+        ).try_obtain
+      end
+
+      it 'does not cancel the state and returns error', :aggregate_failures do
         expect(Projects::TransferWorker).not_to receive(:perform_async)
 
         result = service.schedule_async_transfer(new_namespace)

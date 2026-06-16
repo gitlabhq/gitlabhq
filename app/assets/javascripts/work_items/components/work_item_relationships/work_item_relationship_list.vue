@@ -61,6 +61,11 @@ export default {
       required: false,
       default: null,
     },
+    activePanel: {
+      type: String,
+      required: false,
+      default: null,
+    },
     contextualViewEnabled: {
       type: Boolean,
       required: false,
@@ -99,6 +104,10 @@ export default {
   watch: {
     activeChildItemId(newVal) {
       if (!newVal && this.lastActiveElement) {
+        if (this.activePanel) {
+          this.lastActiveElement = null;
+          return;
+        }
         scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
         this.lastActiveElement = null;
       }

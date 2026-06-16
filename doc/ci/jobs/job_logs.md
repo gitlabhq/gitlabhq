@@ -27,12 +27,6 @@ To view detailed information about the job and its log output, scroll through th
 
 ## View job logs in full screen mode
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
-
-{{< /history >}}
-
 You can view the contents of a job log in full screen mode by clicking **Show full screen**.
 
 To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.

@@ -23,7 +23,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         end
 
         it 'returns the local value' do
-          expect(group_settings.send(settings_attribute_name)).to eq(true)
+          expect(group_settings.send(settings_attribute_name)).to be(true)
         end
       end
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         end
 
         it 'returns the application settings value' do
-          expect(group_settings.send(settings_attribute_name)).to eq(false)
+          expect(group_settings.send(settings_attribute_name)).to be(false)
         end
       end
     end
@@ -47,25 +47,25 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         it 'returns local setting when present' do
           subgroup_settings.update!(settings_attribute_name => true)
 
-          expect(cascading_attribute).to eq(true)
+          expect(cascading_attribute).to be(true)
         end
 
         it 'returns the parent value when local value is nil' do
           subgroup_settings.update!(settings_attribute_name => nil)
 
-          expect(cascading_attribute).to eq(false)
+          expect(cascading_attribute).to be(false)
         end
 
         it 'returns the correct dirty value' do
           subgroup_settings.send("#{settings_attribute_name}=", true)
 
-          expect(cascading_attribute).to eq(true)
+          expect(cascading_attribute).to be(true)
         end
 
         it 'does not return the application setting value when parent value is false' do
           stub_application_setting(settings_attribute_name => true)
 
-          expect(cascading_attribute).to eq(false)
+          expect(cascading_attribute).to be(false)
         end
       end
 
@@ -78,7 +78,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         end
 
         it 'cascades to the application settings value' do
-          expect(cascading_attribute).to eq(false)
+          expect(cascading_attribute).to be(false)
         end
       end
 
@@ -91,7 +91,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         end
 
         it 'returns the closest ancestor value' do
-          expect(third_level_subgroup.send(settings_association).send(settings_attribute_name)).to eq(false)
+          expect(third_level_subgroup.send(settings_association).send(settings_attribute_name)).to be(false)
         end
       end
     end
@@ -106,7 +106,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'returns the parent value' do
-        expect(cascading_attribute).to eq(false)
+        expect(cascading_attribute).to be(false)
       end
 
       it 'does not allow the local value to be saved' do
@@ -126,7 +126,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'returns the application setting value' do
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
 
       it 'does not allow the local value to be saved' do
@@ -151,7 +151,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'returns the application setting value' do
-        expect(cascading_attribute).to eq(true)
+        expect(cascading_attribute).to be(true)
       end
     end
   end
@@ -231,11 +231,11 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
   describe "##{settings_attribute_name}_locked?" do
     shared_examples 'not locked' do
       it 'is not locked by an ancestor' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(false)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(false)
       end
 
       it 'is not locked by application setting' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(false)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(false)
       end
 
       it 'does not return a locked namespace' do
@@ -249,11 +249,11 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'is not locked by default' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked?")).to eq(false)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked?")).to be(false)
       end
 
       it 'is locked when including self' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked?", include_self: true)).to eq(true)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked?", include_self: true)).to be(true)
       end
     end
 
@@ -270,11 +270,11 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'is locked by an ancestor' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(true)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(true)
       end
 
       it 'is not locked by application setting' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(false)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(false)
       end
 
       it 'returns a locked namespace settings object' do
@@ -297,11 +297,11 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       end
 
       it 'is not locked by an ancestor' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to eq(false)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_ancestor?")).to be(false)
       end
 
       it 'is locked by application setting' do
-        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to eq(true)
+        expect(subgroup_settings.send("#{settings_attribute_name}_locked_by_application_setting?")).to be(true)
       end
 
       it 'does not return a locked namespace' do
@@ -339,7 +339,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
       it 'allows the lock to be set when the attribute is not nil' do
         subgroup_settings.send("#{settings_attribute_name}=", true)
 
-        expect(subgroup_settings.save).to eq(true)
+        expect(subgroup_settings.save).to be(true)
       end
 
       it 'does not allow the lock to be saved when the attribute is nil' do
@@ -355,7 +355,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         subgroup_settings.send("#{settings_attribute_name}=", nil)
         subgroup_settings.send("lock_#{settings_attribute_name}=", true)
 
-        expect(subgroup_settings.read_attribute(settings_attribute_name)).to eq(false)
+        expect(subgroup_settings.read_attribute(settings_attribute_name)).to be(false)
       end
     end
 
@@ -383,7 +383,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
         subgroup_settings.send("#{settings_attribute_name}=", true)
         subgroup_settings.send("lock_#{settings_attribute_name}=", true)
 
-        expect(subgroup_settings.save).to eq(true)
+        expect(subgroup_settings.save).to be(true)
       end
     end
   end
@@ -397,7 +397,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
     it 'clears descendant locks' do
       group_settings.update!("lock_#{settings_attribute_name}" => true, settings_attribute_name => true)
 
-      expect(subgroup_settings.reload.send("lock_#{settings_attribute_name}")).to eq(false)
+      expect(subgroup_settings.reload.send("lock_#{settings_attribute_name}")).to be(false)
     end
   end
 end

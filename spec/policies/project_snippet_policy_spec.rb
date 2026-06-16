@@ -20,6 +20,41 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
 
   subject { described_class.new(current_user, snippet) }
 
+  shared_examples 'allows reading and commenting but not author permissions' do
+    it 'matches the expected permissions' do
+      expect_allowed(:read_snippet, :create_note)
+      expect_disallowed(*author_permissions)
+    end
+  end
+
+  shared_examples 'disallows reading, commenting and author permissions' do
+    it 'matches the expected permissions' do
+      expect_disallowed(:read_snippet, :create_note)
+      expect_disallowed(*author_permissions)
+    end
+  end
+
+  shared_examples 'disallows all snippet and note permissions' do
+    it 'matches the expected permissions' do
+      expect_disallowed(:read_snippet)
+      expect_disallowed(:read_note)
+      expect_disallowed(:create_note)
+      expect_disallowed(*author_permissions)
+    end
+  end
+
+  shared_examples 'external user with member access allows reading and commenting' do
+    it_behaves_like 'allows reading and commenting but not author permissions'
+
+    context 'when user is a member' do
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'allows reading and commenting but not author permissions'
+    end
+  end
+
   shared_examples 'regular user member permissions' do
     context 'not snippet author' do
       context 'member (guest)' do
@@ -27,10 +62,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_guest(current_user)
         end
 
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
+        it_behaves_like 'allows reading and commenting but not author permissions'
       end
 
       context 'member (reporter)' do
@@ -38,10 +70,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_reporter(current_user)
         end
 
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
+        it_behaves_like 'allows reading and commenting but not author permissions'
       end
 
       context 'member (developer)' do
@@ -49,10 +78,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_developer(current_user)
         end
 
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
+        it_behaves_like 'allows reading and commenting but not author permissions'
       end
 
       context 'member (maintainer)' do
@@ -60,7 +86,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_maintainer(current_user)
         end
 
-        it do
+        it 'allows reading, commenting and all author permissions' do
           expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
@@ -74,7 +100,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_guest(current_user)
         end
 
-        it do
+        it 'allows reading, commenting and updating but not admin' do
           expect_allowed(:read_snippet, :create_note, :update_snippet)
           expect_disallowed(:admin_snippet)
         end
@@ -85,7 +111,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_reporter(current_user)
         end
 
-        it do
+        it 'allows reading, commenting and all author permissions' do
           expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
@@ -95,7 +121,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_developer(current_user)
         end
 
-        it do
+        it 'allows reading, commenting and all author permissions' do
           expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
@@ -105,7 +131,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
           membership_target.add_maintainer(current_user)
         end
 
-        it do
+        it 'allows reading, commenting and all author permissions' do
           expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
@@ -115,7 +141,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
   shared_examples 'regular user non-member author permissions' do
     let(:author) { current_user }
 
-    it do
+    it 'allows reading, commenting and updating but not admin' do
       expect_allowed(:read_snippet, :create_note, :update_snippet)
       expect_disallowed(:admin_snippet)
     end
@@ -130,7 +156,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'no user' do
         let(:current_user) { nil }
 
-        it do
+        it 'allows reading and caching but not author permissions' do
           expect_allowed(:read_snippet)
           expect_disallowed(*author_permissions)
           expect_allowed(:cache_blob)
@@ -143,10 +169,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
 
         context 'when user is not a member' do
           context 'and is not the snippet author' do
-            it do
-              expect_allowed(:read_snippet, :create_note)
-              expect_disallowed(*author_permissions)
-            end
+            it_behaves_like 'allows reading and commenting but not author permissions'
           end
 
           context 'and is the snippet author' do
@@ -162,21 +185,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'external user' do
         let(:current_user) { external_user }
 
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
-
-        context 'when user is a member' do
-          before do
-            project.add_developer(external_user)
-          end
-
-          it do
-            expect_allowed(:read_snippet, :create_note)
-            expect_disallowed(*author_permissions)
-          end
-        end
+        it_behaves_like 'external user with member access allows reading and commenting'
       end
     end
 
@@ -186,7 +195,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'no user' do
         let(:current_user) { nil }
 
-        it do
+        it 'disallows reading and author permissions' do
           expect_disallowed(:read_snippet)
           expect_disallowed(*author_permissions)
         end
@@ -198,10 +207,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
 
         context 'when user is not a member' do
           context 'and is not the snippet author' do
-            it do
-              expect_allowed(:read_snippet, :create_note)
-              expect_disallowed(*author_permissions)
-            end
+            it_behaves_like 'allows reading and commenting but not author permissions'
           end
 
           context 'and is the snippet author' do
@@ -217,20 +223,14 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'external user' do
         let(:current_user) { external_user }
 
-        it do
-          expect_disallowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
+        it_behaves_like 'disallows reading, commenting and author permissions'
 
         context 'when user is a member' do
           before do
             project.add_developer(external_user)
           end
 
-          it do
-            expect_allowed(:read_snippet, :create_note)
-            expect_disallowed(*author_permissions)
-          end
+          it_behaves_like 'allows reading and commenting but not author permissions'
         end
       end
     end
@@ -241,7 +241,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'no user' do
         let(:current_user) { nil }
 
-        it do
+        it 'disallows reading, author permissions and caching' do
           expect_disallowed(:read_snippet)
           expect_disallowed(*author_permissions)
           expect_disallowed(:cache_blob)
@@ -254,10 +254,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
 
         context 'when user is not a member' do
           context 'and is not the snippet author' do
-            it do
-              expect_disallowed(:read_snippet, :create_note)
-              expect_disallowed(*author_permissions)
-            end
+            it_behaves_like 'disallows reading, commenting and author permissions'
           end
 
           context 'and is the snippet author' do
@@ -280,20 +277,14 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'external user' do
         let(:current_user) { external_user }
 
-        it do
-          expect_disallowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
+        it_behaves_like 'disallows reading, commenting and author permissions'
 
         context 'when user is a member' do
           before do
             project.add_developer(current_user)
           end
 
-          it do
-            expect_allowed(:read_snippet, :create_note)
-            expect_disallowed(*author_permissions)
-          end
+          it_behaves_like 'allows reading and commenting but not author permissions'
         end
       end
 
@@ -302,17 +293,14 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
         let(:current_user) { admin_user }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it do
+          it 'allows reading, commenting and all author permissions' do
             expect_allowed(:read_snippet, :create_note)
             expect_allowed(*author_permissions)
           end
         end
 
         context 'when admin mode is disabled' do
-          it do
-            expect_disallowed(:read_snippet, :create_note)
-            expect_disallowed(*author_permissions)
-          end
+          it_behaves_like 'disallows reading, commenting and author permissions'
         end
       end
     end
@@ -336,7 +324,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'with public snippet' do
         let(:snippet_visibility) { :public }
 
-        it do
+        it 'disallows caching' do
           expect_disallowed(:cache_blob)
         end
       end
@@ -344,7 +332,7 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
       context 'with private snippet' do
         let(:snippet_visibility) { :private }
 
-        it do
+        it 'disallows caching' do
           expect_disallowed(:cache_blob)
         end
       end
@@ -359,43 +347,28 @@ RSpec.describe ProjectSnippetPolicy, feature_category: :source_code_management d
     context 'no user' do
       let(:current_user) { nil }
 
-      it do
-        expect_disallowed(:read_snippet)
-        expect_disallowed(:read_note)
-        expect_disallowed(:create_note)
-        expect_disallowed(*author_permissions)
-      end
+      it_behaves_like 'disallows all snippet and note permissions'
     end
 
     context 'regular user' do
       let(:current_user) { regular_user }
       let(:membership_target) { project }
 
-      it do
-        expect_disallowed(:read_snippet)
-        expect_disallowed(:read_note)
-        expect_disallowed(:create_note)
-        expect_disallowed(*author_permissions)
-      end
+      it_behaves_like 'disallows all snippet and note permissions'
     end
 
     context 'external user' do
       let(:current_user) { external_user }
       let(:membership_target) { project }
 
-      it do
-        expect_disallowed(:read_snippet)
-        expect_disallowed(:read_note)
-        expect_disallowed(:create_note)
-        expect_disallowed(*author_permissions)
-      end
+      it_behaves_like 'disallows all snippet and note permissions'
     end
 
     context 'admin user', :enable_admin_mode do
       let(:current_user) { admin_user }
       let(:membership_target) { project }
 
-      it do
+      it 'allows all snippet and note permissions' do
         expect_allowed(:read_snippet)
         expect_allowed(:read_note)
         expect_allowed(:create_note)

@@ -1,0 +1,6 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: 'gitlab-ai-principles-distiller'
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/599747
+      skip_gem_validation: true

@@ -45,6 +45,9 @@ These templates are sourced from the [`project-templates`](https://gitlab.com/gi
 and [`pages`](https://gitlab.com/pages) groups.
 Anyone can contribute to built-in project templates.
 
+Administrators and group Owners can [control built-in template availability](../group/manage.md#control-built-in-project-templates)
+when creating projects.
+
 To create a project from a built-in template:
 
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
@@ -102,7 +105,7 @@ To create a project from the HIPAA Audit Protocol template:
 
 {{< /history >}}
 
-Custom project templates are available for your [instance](../../administration/custom_project_templates.md)
+Custom project templates are available for your [instance](../../administration/project_templates.md)
 and [group](../group/custom_project_templates.md).
 
 To create a project from a custom template:

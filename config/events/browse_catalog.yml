@@ -2,6 +2,9 @@
 description: Tracks when a user click to browse the CI/CD catalog.
 action: browse_catalog
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+- component_catalog
 milestone: '16.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136731
 tiers:

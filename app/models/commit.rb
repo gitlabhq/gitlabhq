@@ -612,6 +612,10 @@ class Commit
     diffs(diff_options.merge(max_files: limit))
   end
 
+  def has_agent_session?
+    false
+  end
+
   private
 
   def tipping_refs(ref_prefix, limit: 0)

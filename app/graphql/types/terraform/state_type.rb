@@ -8,6 +8,7 @@ module Types
       PROTECTION_RULE_EXISTS_BATCH_SIZE = 20
 
       authorize :read_terraform_state
+      authorize_granular_token permissions: :read_terraform_state, boundary: :project, boundary_type: :project
 
       connection_type_class Types::CountableConnectionType
 

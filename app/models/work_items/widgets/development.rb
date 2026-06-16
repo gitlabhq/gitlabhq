@@ -12,13 +12,13 @@ module WorkItems
       end
 
       def closing_merge_requests
-        work_item.merge_requests_closing_issues
+        work_item.merge_request_closing_issues
       end
 
       def will_auto_close_by_merge_request
         return false unless work_item.opened? && work_item.autoclose_by_merged_closing_merge_request?
 
-        work_item.merge_requests_closing_issues.with_opened_merge_request.exists?
+        work_item.merge_request_closing_issues.with_opened_merge_request.exists?
       end
     end
   end

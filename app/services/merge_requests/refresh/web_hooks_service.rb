@@ -18,6 +18,12 @@ module MergeRequests
           execute_hooks(mr, 'update', old_rev: @push.oldrev)
         end
       end
+
+      def merge_requests_for(source_branch, mr_states: [:opened])
+        super.tap do |mrs|
+          ActiveRecord::Associations::Preloader.new(records: mrs, associations: [:metrics]).call
+        end
+      end
     end
   end
 end

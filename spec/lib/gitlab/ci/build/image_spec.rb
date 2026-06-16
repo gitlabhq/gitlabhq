@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Image do
-  let(:job) { create(:ci_build, options: job_options) }
+RSpec.describe Gitlab::Ci::Build::Image, feature_category: :pipeline_composition do
+  let(:job) { build_stubbed(:ci_build, options: job_options) }
 
   describe '#from_image' do
     subject(:from_image) { described_class.from_image(job) }

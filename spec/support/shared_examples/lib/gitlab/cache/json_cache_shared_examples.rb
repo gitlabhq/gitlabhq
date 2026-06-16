@@ -5,7 +5,7 @@ RSpec.shared_examples 'Json Cache class' do
     it 'returns the cached value when there is data in the cache with the given key' do
       allow(backend).to receive(:read).with(expanded_key).and_return(json_value(true))
 
-      expect(cache.read(key)).to eq(true)
+      expect(cache.read(key)).to be(true)
     end
 
     it 'returns nil when there is no data in the cache with the given key' do
@@ -37,7 +37,7 @@ RSpec.shared_examples 'Json Cache class' do
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value(true))
 
-        expect(cache.read(key, System::BroadcastMessage)).to eq(true)
+        expect(cache.read(key, System::BroadcastMessage)).to be(true)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.shared_examples 'Json Cache class' do
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value(false))
 
-        expect(cache.read(key, System::BroadcastMessage)).to eq(false)
+        expect(cache.read(key, System::BroadcastMessage)).to be(false)
       end
     end
 
@@ -160,7 +160,7 @@ RSpec.shared_examples 'Json Cache class' do
         it 'returns the result of the block' do
           result = cache.fetch(key) { true }
 
-          expect(result).to eq(true)
+          expect(result).to be(true)
         end
 
         it 'caches the value' do
@@ -174,7 +174,7 @@ RSpec.shared_examples 'Json Cache class' do
         it 'returns the result of the block' do
           result = cache.fetch(key) { false }
 
-          expect(result).to eq(false)
+          expect(result).to be(false)
         end
 
         it 'caches the value' do
@@ -188,7 +188,7 @@ RSpec.shared_examples 'Json Cache class' do
         it 'returns the result of the block' do
           result = cache.fetch(key) { nil }
 
-          expect(result).to eq(nil)
+          expect(result).to be_nil
         end
 
         it 'caches the value' do
@@ -320,7 +320,7 @@ RSpec.shared_examples 'Json Cache class' do
         it 'returns the cached value' do
           result = cache.fetch(key) { 'block result' }
 
-          expect(result).to eq(true)
+          expect(result).to be(true)
         end
 
         it 'does not execute the block' do
@@ -342,7 +342,7 @@ RSpec.shared_examples 'Json Cache class' do
         it 'returns the cached value' do
           result = cache.fetch(key) { 'block result' }
 
-          expect(result).to eq(false)
+          expect(result).to be(false)
         end
 
         it 'does not execute the block' do

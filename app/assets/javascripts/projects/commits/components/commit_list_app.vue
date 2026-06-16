@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
+import { GlKeysetPagination, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import { isValidDate, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { createAlert } from '~/alert';
@@ -77,35 +77,12 @@ export default {
     },
   },
   watch: {
-    '$route.path': function watchRoutePathForRef(newPath) {
-      const refSegment = extractFirstPathSegment(newPath);
-      const newRef = refSegment
-        ? safeDecodeURIComponent(refSegment)
-        : decodeURIComponent(this.escapedRef);
-
-      if (this.currentRef !== newRef) {
-        this.currentRef = newRef;
-        this.resetPagination();
-      }
-    },
     $route(newRoute) {
-      const filters = urlQueryToFilter(newRoute.query, {
-        filterNamesAllowList: ['author', 'message', 'committed_after', 'committed_before'],
-      });
-      const author = filters.author?.value || null;
-      const message = filters.message?.value || null;
-      const committedAfter = filters.committed_after?.value || null;
-      const committedBefore = filters.committed_before?.value || null;
-      const pageSize = parseInt(newRoute.query.page_size, 10) || DEFAULT_PAGE_SIZE;
+      const refChanged = this.syncRefFromRoute(newRoute);
+      const pathChanged = this.syncPathFromRoute(newRoute);
+      const filtersChanged = this.syncFiltersFromRoute(newRoute);
 
-      if (
-        this.authorFilter !== author ||
-        this.messageFilter !== message ||
-        this.committedAfterFilter !== committedAfter ||
-        this.committedBeforeFilter !== committedBefore ||
-        this.pageSize !== pageSize
-      ) {
-        this.applyFiltersFromRoute(filters, newRoute.query);
+      if (refChanged || pathChanged || filtersChanged) {
         this.resetPagination();
       }
     },
@@ -177,17 +154,9 @@ export default {
     },
   },
   created() {
-    // Initialize currentRef from route path
-    const refSegment = extractFirstPathSegment(this.$route.path);
-    if (refSegment) {
-      this.currentRef = safeDecodeURIComponent(refSegment);
-    }
-
-    // Initialize filters from URL query
-    const filters = urlQueryToFilter(this.$route.query, {
-      filterNamesAllowList: ['author', 'message', 'committed_after', 'committed_before'],
-    });
-    this.applyFiltersFromRoute(filters, this.$route.query);
+    this.syncRefFromRoute(this.$route);
+    this.syncPathFromRoute(this.$route);
+    this.syncFiltersFromRoute(this.$route);
   },
   mounted() {
     performanceMarkAndMeasure({
@@ -203,6 +172,75 @@ export default {
     getFormattedDate(dateTime) {
       const date = newDate(dateTime);
       return isValidDate(date) ? localeDateFormat.asDate.format(date) : dateTime;
+    },
+    syncRefFromRoute(route) {
+      // The static routes ('commitsPath' / 'commitsPathDecoded') are
+      // hardcoded to the initial ref.  For refs containing '/' the route
+      // path has literal slashes, so extractFirstPathSegment would split
+      // incorrectly.  Use the injected escapedRef which is always the
+      // correct, complete ref for these routes.
+      if (
+        route.name === 'commitsPath' ||
+        route.name === 'commitsPathDecoded' ||
+        route.name === 'commitsPathEncoded'
+      ) {
+        const newRef = decodeURIComponent(this.escapedRef);
+        if (this.currentRef === newRef) return false;
+        this.currentRef = newRef;
+        return true;
+      }
+
+      // The wildcard fallback ('commitsAnyRef') fires after an in-app ref
+      // switch and during browser back/forward navigation.  The ref is
+      // encoded with encodeURIComponent (slashes become %2F), so
+      // route.params.ref is a single, unambiguous segment.  Vue Router
+      // auto-decodes params, so the value is already the full ref name.
+      if (route.name === 'commitsAnyRef') {
+        const newRef = route.params.ref || decodeURIComponent(this.escapedRef);
+        if (this.currentRef === newRef) return false;
+        this.currentRef = newRef;
+        return true;
+      }
+
+      // Unknown or unnamed route — best-effort extraction from the path.
+      const refSegment = extractFirstPathSegment(route.path);
+      const newRef = refSegment
+        ? safeDecodeURIComponent(refSegment)
+        : decodeURIComponent(this.escapedRef);
+
+      if (this.currentRef === newRef) return false;
+      this.currentRef = newRef;
+      return true;
+    },
+    syncPathFromRoute(route) {
+      const rawPath = route.params?.path;
+      const normalizedPath = Array.isArray(rawPath) ? rawPath.join('/') : rawPath || null;
+      if (this.currentPath === normalizedPath) return false;
+      this.currentPath = normalizedPath;
+      return true;
+    },
+    syncFiltersFromRoute(route) {
+      const filters = urlQueryToFilter(route.query, {
+        filterNamesAllowList: ['author', 'message', 'committed_after', 'committed_before'],
+      });
+      const author = filters.author?.value || null;
+      const message = filters.message?.value || null;
+      const committedAfter = filters.committed_after?.value || null;
+      const committedBefore = filters.committed_before?.value || null;
+      const pageSize = parseInt(route.query.page_size, 10) || DEFAULT_PAGE_SIZE;
+
+      if (
+        this.authorFilter === author &&
+        this.messageFilter === message &&
+        this.committedAfterFilter === committedAfter &&
+        this.committedBeforeFilter === committedBefore &&
+        this.pageSize === pageSize
+      ) {
+        return false;
+      }
+
+      this.applyFiltersFromRoute(filters, route.query);
+      return true;
     },
     handleRefChange(newRef) {
       this.currentRef = newRef;
@@ -288,6 +326,7 @@ export default {
   <div class="gl-mt-5 gl-@container/panel">
     <commit-list-header
       :file-path="currentPath"
+      :current-ref="currentRef"
       :initial-filter-tokens="initialFilterTokens"
       @filter="handleFilter"
       @ref-change="handleRefChange"
@@ -310,15 +349,22 @@ export default {
         </li>
       </ol>
 
-      <div v-if="showPagination" class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
-        <div></div>
+      <div
+        class="gl-relative gl-mt-4 gl-flex"
+        :class="showPagination ? 'gl-justify-center' : 'gl-justify-end'"
+      >
         <gl-keyset-pagination
+          v-if="showPagination"
           :has-previous-page="hasPreviousPage"
           :has-next-page="pageInfo.hasNextPage"
           @prev="prevPage"
           @next="nextPage"
         />
-        <page-size-selector :value="pageSize" @input="handlePageSizeChange" />
+        <page-size-selector
+          :value="pageSize"
+          :class="showPagination ? 'gl-absolute gl-right-0' : ''"
+          @input="handlePageSizeChange"
+        />
       </div>
     </template>
 

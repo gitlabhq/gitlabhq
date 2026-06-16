@@ -60,7 +60,7 @@ import {
   BUILDING_YOUR_MR,
   SOMETHING_WENT_WRONG,
   ERROR_LOADING_FULL_DIFF,
-  ERROR_DISMISSING_SUGESTION_POPOVER,
+  ERROR_DISMISSING_SUGGESTION_POPOVER,
   ENCODED_FILE_PATHS_TITLE,
   ENCODED_FILE_PATHS_MESSAGE,
 } from '../i18n';
@@ -78,6 +78,7 @@ import {
   parseUrlHashAsFileHash,
   isUrlHashNoteLink,
   findDiffFile,
+  extractGitalyErrorMessage,
 } from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -181,6 +182,7 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
     // Overloading "batch" loading indicators so the UI stays mostly the same
     commit(types.SET_BATCH_LOADING_STATE, 'loading');
     commit(types.SET_RETRIEVING_BATCHES, true);
+    commit(types.SET_GITALY_ERROR_MESSAGE, null);
 
     const urlParams = {
       old_path: treeEntry.filePaths.old,
@@ -212,7 +214,11 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
 
         eventHub.$emit('diffFilesModified');
       })
-      .catch(() => {
+      .catch((error) => {
+        const gitalyErrorMessage = extractGitalyErrorMessage(error);
+        if (gitalyErrorMessage) {
+          commit(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+        }
         commit(types.SET_BATCH_LOADING_STATE, 'error');
       })
       .finally(() => {
@@ -238,6 +244,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }, linkedFileLoadi
   if (!linkedFileLoading) {
     commit(types.SET_BATCH_LOADING_STATE, 'loading');
     commit(types.SET_RETRIEVING_BATCHES, true);
+    commit(types.SET_GITALY_ERROR_MESSAGE, null);
   }
   eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
@@ -315,6 +322,10 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }, linkedFileLoadi
         return null;
       })
       .catch((error) => {
+        const gitalyErrorMessage = extractGitalyErrorMessage(error);
+        if (gitalyErrorMessage) {
+          commit(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+        }
         commit(types.SET_RETRIEVING_BATCHES, false);
         commit(types.SET_BATCH_LOADING_STATE, 'error');
         throw error;
@@ -919,7 +930,7 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     })
     .catch(() => {
       createAlert({
-        message: ERROR_DISMISSING_SUGESTION_POPOVER,
+        message: ERROR_DISMISSING_SUGGESTION_POPOVER,
       });
     });
 
@@ -1066,6 +1077,7 @@ export const fetchLinkedFile = ({ state, commit, dispatch }, linkedFileUrl) => {
 
   commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
+  commit(types.SET_GITALY_ERROR_MESSAGE, null);
 
   return axios
     .get(linkedFileUrl)
@@ -1099,6 +1111,10 @@ export const fetchLinkedFile = ({ state, commit, dispatch }, linkedFileUrl) => {
       eventHub.$emit('diffFilesModified');
     })
     .catch((error) => {
+      const gitalyErrorMessage = extractGitalyErrorMessage(error);
+      if (gitalyErrorMessage) {
+        commit(types.SET_GITALY_ERROR_MESSAGE, gitalyErrorMessage);
+      }
       commit(types.SET_BATCH_LOADING_STATE, 'error');
       throw error;
     })

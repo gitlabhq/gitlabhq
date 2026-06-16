@@ -2,6 +2,7 @@
 import { GlFormRadioGroup } from '@gitlab/ui';
 
 export default {
+  name: 'SingleChoiceSelector',
   components: { GlFormRadioGroup },
   props: {
     checked: {

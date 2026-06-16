@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::TlsSecret do
+RSpec.describe Gitlab::Kubernetes::TlsSecret, feature_category: :deployment_management do
   let(:secret) { described_class.new(name, cert, key, namespace) }
   let(:name) { 'example-name' }
   let(:cert) { 'example-cert' }

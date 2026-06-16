@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import List from '~/custom_emoji/components/list.vue';
+import routes from '~/custom_emoji/routes';
 import DeleteItem from '~/custom_emoji/components/delete_item.vue';
 import { CUSTOM_EMOJI } from '../mock_data';
 
@@ -13,6 +15,13 @@ jest.mock('~/lib/utils/datetime/locale_dateformat', () => ({
 }));
 
 Vue.config.ignoredElements = ['gl-emoji'];
+
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+  mode: 'history',
+  routes,
+});
 
 let wrapper;
 
@@ -28,6 +37,7 @@ function createComponent(propsData = {}) {
     stubs: {
       GlEmoji: { template: '<div/>' },
     },
+    router,
   });
 }
 

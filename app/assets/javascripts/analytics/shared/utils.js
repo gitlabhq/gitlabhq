@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash-es';
 import dateFormat from '~/lib/dateformat';
 import { SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -287,3 +288,12 @@ export const formatBigInt = (value) => {
 };
 
 export const mapItemToListboxFormat = (item) => ({ ...item, value: item.id, text: item.name });
+
+export const isEmptyPanelData = (visualizationType, data) => {
+  if (visualizationType === 'SingleStat') {
+    // SingleStat visualizations currently do not show an empty state, and instead show a default "0" value
+    // This will be revisited: https://gitlab.com/gitlab-org/gitlab/-/issues/398792
+    return false;
+  }
+  return isEmpty(data);
+};

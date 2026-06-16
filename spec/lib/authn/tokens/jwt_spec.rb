@@ -5,7 +5,7 @@
 require 'spec_helper'
 
 RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
-  let_it_be(:job) { create(:ci_build) }
+  let_it_be(:job, freeze: false) { create(:ci_build) }
   let_it_be(:signing_key) { OpenSSL::PKey::RSA.new(2048) }
   let_it_be(:expire_time) { 1.hour.from_now }
   let_it_be(:token_prefix) { 'prefix-' }

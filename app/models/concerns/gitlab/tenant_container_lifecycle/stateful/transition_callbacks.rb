@@ -3,11 +3,14 @@
 module Gitlab
   module TenantContainerLifecycle
     module Stateful
-      # Shared deletion-related state machine callbacks.
-      # Shared between Namespaces::Stateful and Organizations::Stateful.
+      # Shared state machine callbacks.
+      # Used by Namespaces::Stateful and Organizations::Stateful.
       #
       # Including classes must implement `stateful_detail` (private) to return
       # the associated detail model (e.g. namespace_details or organization_detail).
+      # Note: Organizations::Stateful defines its own soft-deletion callbacks
+      # (set_soft_deletion_data, clear_soft_deletion_data) instead of using
+      # set_deletion_schedule_data and clear_deletion_schedule_data from this module.
       module TransitionCallbacks
         private
 

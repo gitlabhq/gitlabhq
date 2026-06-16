@@ -184,6 +184,51 @@ sudo gitlab-rake "gitlab:semantic_search:code:info[5]"
 This task refreshes the output at the specified interval.
 To stop the task, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
+## Manage the dead queue
+
+When embedding generation fails repeatedly, items are moved to the dead queue for manual intervention.
+You can check the dead queue size in the `Embedding Queues` section of the
+[status Rake task](#check-semantic-code-search-status) output.
+
+Prerequisites:
+
+- Administrator access.
+- A personal access token with the `api` scope.
+
+### Clear the dead queue
+
+To discard all items from the dead queue:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_token>" \
+  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue"
+```
+
+### Replay the dead queue
+
+To move dead queue items back into a processing queue for another attempt,
+use the `queue` parameter to specify the target.
+Valid values are `retry_queue`, `code`, and `code_backfill`.
+
+Use `retry_queue` to attempt processing once more before potentially failing back to the dead queue:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_token>" \
+  --data "queue=retry_queue" \
+  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue/replay"
+```
+
+Use `code` to add items to the main code queue:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_token>" \
+  --data "queue=code" \
+  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue/replay"
+```
+
 ## Use semantic code search
 
 Semantic code search is available as a GitLab MCP server tool.

@@ -101,6 +101,12 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
             "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
             :select_seq_start, [sequence_name]
           ).and_return(100)
+
+        allow(connection).to receive(:select_value)
+          .with(
+            "SELECT max_value FROM pg_sequences WHERE sequencename = $1",
+            :select_seq_start, [sequence_name]
+          ).and_return(nil)
       end
 
       it 'returns missing partitions starting from the min_id' do
@@ -147,6 +153,12 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
             "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
             :select_seq_start, ['custom_seq']
           ).and_return(1000000000000)
+
+        allow(connection).to receive(:select_value)
+          .with(
+            "SELECT max_value FROM pg_sequences WHERE sequencename = $1",
+            :select_seq_start, ['custom_seq']
+          ).and_return(nil)
       end
 
       it 'returns missing partitions starting from the explicit sequence min_value' do
@@ -280,6 +292,117 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
           expect(missing_partitions).not_to include(
             Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1, 11),
             Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 11, 21)
+          )
+        end
+      end
+    end
+
+    context 'when imported partitions exist outside the local sequence range' do
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partitioned_test_1
+          PARTITION OF #{model.table_name}
+          FOR VALUES FROM ('1') TO ('11');
+
+          CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partitioned_test_11
+          PARTITION OF #{model.table_name}
+          FOR VALUES FROM ('11') TO ('21');
+
+          CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partitioned_test_1000000001
+          PARTITION OF #{model.table_name}
+          FOR VALUES FROM ('1000000001') TO ('1000000011');
+        SQL
+      end
+
+      let(:sequence_name) { model.sequence_name.split('.').last }
+
+      context 'when the local range is fully covered and an imported partition is beyond max_value' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(1)
+
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT max_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(21)
+        end
+
+        it 'does not generate partitions past the sequence max_value' do
+          expect(missing_partitions).to be_empty
+        end
+      end
+
+      context 'when the local range starts above imported partitions' do
+        before do
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(1_000_000_001)
+
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT max_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(2_000_000_000)
+        end
+
+        it 'generates partitions starting from the local min_id' do
+          expect(missing_partitions.size).to eq(6)
+
+          expect(missing_partitions).to include(
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_011, 1_000_000_021),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_021, 1_000_000_031),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_031, 1_000_000_041),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_041, 1_000_000_051),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_051, 1_000_000_061),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1_000_000_061, 1_000_000_071)
+          )
+        end
+      end
+
+      context 'when imported partitions exist above and below local partitions' do
+        before do
+          connection.execute(<<~SQL)
+            CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partitioned_test_100
+            PARTITION OF #{model.table_name}
+            FOR VALUES FROM ('100') TO ('110');
+
+            CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_partitioned_test_110
+            PARTITION OF #{model.table_name}
+            FOR VALUES FROM ('110') TO ('120');
+          SQL
+
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(100)
+
+          allow(connection).to receive(:select_value)
+            .with(
+              "SELECT max_value FROM pg_sequences WHERE sequencename = $1",
+              :select_seq_start, [sequence_name]
+            ).and_return(200)
+        end
+
+        it 'generates partitions within the local range only' do
+          expect(missing_partitions).to include(
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 120, 130),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 130, 140),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 140, 150),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 150, 160),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 160, 170),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 170, 180)
+          )
+
+          expect(missing_partitions).not_to include(
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1, 11),
+            Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000001, 1000000011)
           )
         end
       end

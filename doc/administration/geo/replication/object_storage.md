@@ -21,19 +21,19 @@ title: Geo with Object storage
 
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
-**Secondary** sites can use one of the following:
+Secondary sites can use one of the following:
 
-- The same storage bucket as the **primary** site.
+- The same storage bucket as the primary site.
 - A replicated storage bucket.
 - Local storage, if the primary uses local storage.
 
 The storage method (local or object storage) for files is recorded in the database, and the database
-is replicated from the **primary** Geo site to the **secondary** Geo site.
+is replicated from the primary Geo site to the secondary Geo site.
 
 When accessing an uploaded object, we get its storage method (local or object storage) from the
-database, so the **secondary** Geo site must match the storage method of the **primary** Geo site.
+database, so the secondary Geo site must match the storage method of the primary Geo site.
 
-Therefore, if the **primary** Geo site uses object storage, the **secondary** Geo site must use it too.
+Therefore, if the primary Geo site uses object storage, the secondary Geo site must use it too.
 
 To have:
 
@@ -66,14 +66,14 @@ When the `geo_object_storage_verification` feature flag is disabled:
 > [!warning]
 > In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
 
-**Secondary** sites can replicate files stored by the **primary** site regardless of
+Secondary sites can replicate files stored by the primary site regardless of
 whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
-1. Select **Edit** on the **secondary** site.
+1. Select **Edit** on the secondary site.
 1. In the **Synchronization Settings** section, find the **Allow this secondary site to replicate content on Object Storage**
    checkbox to enable it.
 
@@ -85,8 +85,8 @@ For CI job artifacts, there is similar documentation to configure
 
 For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage).
 
-If you want to migrate the **primary** site's files to object storage, you can
-configure the **secondary** in a few ways:
+If you want to migrate the primary site's files to object storage, you can
+configure the secondary in a few ways:
 
 - Use the exact same object storage.
 - Use a separate object store but leverage your object storage solution's built-in
@@ -105,8 +105,8 @@ then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to syn
 
 GitLab does not support the case where both:
 
-- The **primary** site uses local storage.
-- A **secondary** site uses object storage.
+- The primary site uses local storage.
+- A secondary site uses object storage.
 
 ### Inconsistencies after the migration
 
@@ -117,8 +117,8 @@ which is further described in the [object storage troubleshooting section](../..
 
 When using Amazon S3, you can use
 [Cross-Region Replication (CRR)](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html) to
-have automatic replication between the bucket used by the **primary** site and
-the bucket used by **secondary** sites.
+have automatic replication between the bucket used by the primary site and
+the bucket used by secondary sites.
 
 If you are using Google Cloud Storage, consider using
 [Multi-Regional Storage](https://cloud.google.com/storage/docs/storage-classes#multi-regional).

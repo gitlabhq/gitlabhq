@@ -83,6 +83,8 @@ module NotesHelper
   end
 
   def discussion_path(discussion)
+    return unless discussion.noteable
+
     if discussion.for_merge_request?
       return unless discussion.diff_discussion?
 

@@ -11,7 +11,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
+  let_it_be(:group1, freeze: false) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
   let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
@@ -1062,8 +1062,15 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when using the marked_for_deletion_on filter' do
-      let_it_be(:group_with_deletion_on) { create(:group_with_deletion_schedule, name: "group_with_deletion_on", marked_for_deletion_on: Date.parse('2024-01-01'), owners: user1) }
+    context 'when using the marked_for_deletion_on filter', :freeze_time do
+      let_it_be(:group_with_deletion_on) do
+        create(:group_with_deletion_schedule, :deletion_scheduled,
+          name: "group_with_deletion_on",
+          deletion_scheduled_at: Date.parse('2024-01-01'),
+          marked_for_deletion_on: Date.parse('2024-01-01'),
+          owners: user1)
+      end
+
       let_it_be(:group_without_deletion) { create(:group, name: "group_without_deletion", owners: user1) }
       let(:response_groups) { json_response.map { |group| group['id'] } }
 
@@ -1255,18 +1262,18 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['name']).to eq(new_group_name)
         expect(json_response['description']).to be_nil
         expect(json_response['visibility']).to eq('public')
-        expect(json_response['share_with_group_lock']).to eq(false)
-        expect(json_response['require_two_factor_authentication']).to eq(false)
+        expect(json_response['share_with_group_lock']).to be(false)
+        expect(json_response['require_two_factor_authentication']).to be(false)
         expect(json_response['two_factor_grace_period']).to eq(48)
-        expect(json_response['auto_devops_enabled']).to eq(nil)
-        expect(json_response['emails_disabled']).to eq(false)
-        expect(json_response['emails_enabled']).to eq(true)
-        expect(json_response['show_diff_preview_in_email']).to eq(true)
-        expect(json_response['mentions_disabled']).to eq(nil)
+        expect(json_response['auto_devops_enabled']).to be_nil
+        expect(json_response['emails_disabled']).to be(false)
+        expect(json_response['emails_enabled']).to be(true)
+        expect(json_response['show_diff_preview_in_email']).to be(true)
+        expect(json_response['mentions_disabled']).to be_nil
         expect(json_response['project_creation_level']).to eq("noone")
         expect(json_response['subgroup_creation_level']).to eq("maintainer")
-        expect(json_response['request_access_enabled']).to eq(true)
-        expect(json_response['parent_id']).to eq(nil)
+        expect(json_response['request_access_enabled']).to be(true)
+        expect(json_response['parent_id']).to be_nil
         expect(json_response['created_at']).to be_present
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(4)
@@ -1275,8 +1282,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['avatar_url']).to end_with('dk.png')
-        expect(json_response['math_rendering_limits_enabled']).to eq(false)
-        expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
+        expect(json_response['math_rendering_limits_enabled']).to be(false)
+        expect(json_response['lock_math_rendering_limits_enabled']).to be(true)
         expect(json_response['step_up_auth_required_oauth_provider']).to be_nil
       end
 
@@ -1286,7 +1293,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
             put api("/groups/#{group1.id}", user1), params: { emails_disabled: true }
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['emails_enabled']).to eq(false)
+            expect(json_response['emails_enabled']).to be(false)
           end
         end
 
@@ -1295,7 +1302,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
             put api("/groups/#{group1.id}", user1), params: { emails_disabled: nil }
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['emails_enabled']).to eq(true)
+            expect(json_response['emails_enabled']).to be(true)
           end
         end
 
@@ -1304,7 +1311,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
             put api("/groups/#{group1.id}", user1), params: { emails_disabled: "true" }
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['emails_enabled']).to eq(false)
+            expect(json_response['emails_enabled']).to be(false)
           end
         end
       end
@@ -1313,8 +1320,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         put api("/groups/#{group1.id}", user1), params: { show_diff_preview_in_email: false }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['show_diff_preview_in_email']).to eq(false)
-        expect(group1.reload.show_diff_preview_in_email).to eq(false)
+        expect(json_response['show_diff_preview_in_email']).to be(false)
+        expect(group1.reload.show_diff_preview_in_email).to be(false)
       end
 
       context 'when default_branch_protection_defaults set to No one' do
@@ -1551,7 +1558,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.keys).not_to include('prevent_sharing_groups_outside_hierarchy')
-          expect(subgroup.reload.prevent_sharing_groups_outside_hierarchy).to eq(false)
+          expect(subgroup.reload.prevent_sharing_groups_outside_hierarchy).to be(false)
           expect(json_response['description']).to eq('it works')
         end
       end
@@ -2285,7 +2292,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups/:id/groups/shared" do
-    let_it_be(:main_group) do
+    let_it_be(:main_group, freeze: false) do
       create(:group, :private, name: "b-group", path: "w#{group1.path}", owners: user1)
     end
 
@@ -2584,7 +2591,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups/:id/invited_groups" do
-    let_it_be(:main_group) do
+    let_it_be(:main_group, freeze: false) do
       create(:group, :private, name: "b-group", path: "w#{group1.path}", owners: user1)
     end
 
@@ -2756,7 +2763,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be_with_refind(:group) { create(:group, owners: user1) }
+    let_it_be_with_refind(:group, freeze: false) { create(:group, owners: user1) }
     let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
 
     context 'when unauthenticated' do
@@ -2787,7 +2794,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:success)
         expect(json_response['id']).to eq(group.id)
         expect(json_response['archived']).to be true
-        expect(group.namespace_settings.reload.archived).to eq(true)
+        expect(group.namespace_settings.reload.archived).to be(true)
       end
     end
 
@@ -2816,7 +2823,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be_with_reload(:group) { create(:group, :archived, owners: user1) }
+    let_it_be_with_reload(:group, freeze: false) { create(:group, :archived, owners: user1) }
     let_it_be_with_reload(:group_2) { create(:group, :archived, owners: user1) }
 
     context 'when unauthenticated' do
@@ -2847,7 +2854,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:success)
         expect(json_response['id']).to eq(group.id)
         expect(json_response['archived']).to be false
-        expect(group.namespace_settings.reload.archived).to eq(false)
+        expect(group.namespace_settings.reload.archived).to be(false)
       end
     end
 
@@ -3462,7 +3469,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           subject
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['enabled_git_access_protocol']).to eq(nil)
+          expect(json_response['enabled_git_access_protocol']).to be_nil
         end
       end
 
@@ -3534,7 +3541,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     shared_examples_for 'immediately enqueues the job to delete the group' do
       it 'immediately enqueues the job to delete the group', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { api_request }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          expect { api_request }.to change { GroupDestroyWorker.jobs.size }.by(1)
         end
 
         expect(response).to have_gitlab_http_status(:accepted)
@@ -3546,7 +3553,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it 'does not immediately enqueues the job to delete the group', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { api_request }.not_to change(GroupDestroyWorker.jobs, :size)
+          expect { api_request }.not_to change { GroupDestroyWorker.jobs.size }
         end
 
         expect(response).to have_gitlab_http_status(expected_http_status)
@@ -3555,15 +3562,15 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     shared_examples_for 'marks group for delayed deletion' do
-      it 'marks group for delayed deletion', :clean_gitlab_redis_queues do
+      it 'marks group for delayed deletion', :clean_gitlab_redis_queues, :freeze_time do
         Sidekiq::Testing.fake! do
-          expect { api_request }.not_to change(GroupDestroyWorker.jobs, :size)
+          expect { api_request }.not_to change { GroupDestroyWorker.jobs.size }
         end
 
         group.reload
 
         expect(response).to have_gitlab_http_status(:accepted)
-        expect(group.marked_for_deletion_on).to eq(Date.current)
+        expect(group.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
         expect(group.deleting_user).to eq(user)
       end
     end
@@ -3588,13 +3595,13 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it 'do not mark group for delayed deletion but return success', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { subject }.not_to change(GroupDestroyWorker.jobs, :size)
+          expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
         end
 
         group.reload
 
         expect(response).to have_gitlab_http_status(:accepted)
-        expect(group.marked_for_deletion_on).to be_nil
+        expect(group.self_deletion_scheduled_deletion_created_on).to be_nil
         expect(group.deleting_user).to be_nil
       end
     end
@@ -3617,7 +3624,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         context 'when group is already marked for deletion' do
           before do
-            create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+            group.reload
+            group.schedule_deletion!(transition_user: user1)
           end
 
           context 'when full_path param is not passed' do
@@ -3667,7 +3675,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   describe "POST /groups/:id/restore" do
     let_it_be(:user) { user1 }
     let_it_be(:unauthorized_user) { user2 }
-    let_it_be(:group) do
+    let_it_be(:group, freeze: false) do
       create(:group_with_deletion_schedule, :deletion_scheduled, marked_for_deletion_on: 1.day.ago,
         deleting_user: user, owners: user)
     end
@@ -3790,7 +3798,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
   describe 'GET /groups/:id/transfer_locations' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:source_group) { create(:group, :private) }
+    let_it_be(:source_group, freeze: false) { create(:group, :private) }
 
     let(:params) { {} }
 
@@ -3888,7 +3896,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   describe 'POST /groups/:id/transfer' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:new_parent_group) { create(:group, :private) }
-    let_it_be_with_reload(:group) { create(:group, :nested, :private) }
+    let_it_be_with_reload(:group, freeze: false) { create(:group, :nested, :private) }
 
     before do
       new_parent_group.add_owner(user)
@@ -3987,6 +3995,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       context 'when transfer cannot be scheduled' do
         before do
           group.schedule_transfer!(transition_user: user)
+          Gitlab::ExclusiveLease.new(
+            Namespaces::Groups::TransferWorker.lease_key(group.id), timeout: 30.minutes
+          ).try_obtain
         end
 
         it 'returns error when already scheduled', :aggregate_failures do
@@ -4086,7 +4097,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
   describe 'POST /groups/:id/transfer_to_organization' do
     let_it_be(:organization) { create(:organization) }
-    let_it_be(:group_to_transfer) { create(:group, :private) }
+    let_it_be(:group_to_transfer, freeze: false) { create(:group, :private) }
     let_it_be(:subgroup) { create(:group, :private, parent: group_to_transfer) }
 
     before do

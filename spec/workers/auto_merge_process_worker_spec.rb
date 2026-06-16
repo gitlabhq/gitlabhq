@@ -71,6 +71,43 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
       end
     end
 
+    describe 'diagnostic logging' do
+      let(:worker) { described_class.new }
+
+      before do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+      end
+
+      context 'when auto_merge_diagnostic_logging is enabled for the project' do
+        it 'logs the worker invocation and its trigger' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(
+              message: 'auto_merge_worker_invoked',
+              trigger_source: 'merge_request_id',
+              triggering_pipeline_ids: [],
+              merge_request_ids: [merge_request.id]
+            )
+          )
+
+          worker.perform(args)
+        end
+      end
+
+      context 'when auto_merge_diagnostic_logging is disabled' do
+        before do
+          stub_feature_flags(auto_merge_diagnostic_logging: false)
+        end
+
+        it 'does not log the worker invocation' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info).with(
+            hash_including(message: 'auto_merge_worker_invoked')
+          )
+
+          worker.perform(args)
+        end
+      end
+    end
+
     # Integer args are deprecated as of 17.5. IDs should be passed
     # as a hash with  merge_request_id and pipeline_id keys.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/497247

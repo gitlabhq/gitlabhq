@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectPathValidator do
+RSpec.describe ProjectPathValidator, feature_category: :source_code_management do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   describe '.valid_path?' do
@@ -29,7 +29,7 @@ RSpec.describe ProjectPathValidator do
     end
 
     it 'adds a message when the path is reserved when updating' do
-      project = create(:project)
+      project = build_stubbed(:project)
       project.path = 'blob'
 
       validator.validate_each(project, :path, 'blob')

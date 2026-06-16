@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   let_it_be(:user) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository, maintainers: [maintainer]) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository, maintainers: [maintainer]) }
 
   let(:owner) { project.first_owner }
   let(:more_actions_dropdown) do

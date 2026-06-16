@@ -427,6 +427,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
 
     context 'when group is marked for deletion' do
       before do
+        group.schedule_deletion!(transition_user: user)
         create(:group_deletion_schedule, group: group)
       end
 
@@ -437,9 +438,12 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         end
 
         it 'allows permanent deletion', :sidekiq_inline do
-          expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
+          remove_with_confirm('Delete permanently', group.path)
 
+          # Wait for the redirect/toast before asserting on the database. Checking `Group.count`
+          # immediately after the Capybara action races the async deletion request and is flaky.
           expect(page).to have_content "#{group.name} is being deleted."
+          expect(Group.exists?(group.id)).to be(false)
         end
       end
 
@@ -613,7 +617,11 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
       click_button 'Change group URL'
     end
 
-    wait_for_requests
+    # 'Change group URL' submits a form that triggers a full-page redirect to the new edit page.
+    # wait_for_requests does not wait for full-page redirects, so wait on the success flash to
+    # ensure the redirect has completed before the caller issues its next visit (the in-flight
+    # redirect would otherwise clobber it).
+    expect(page).to have_content("Group '#{group.name}' was successfully updated.")
   end
 
   def save_general_group

@@ -47,6 +47,31 @@ and the manifest and configuration digests.
 You can search, sort (by tag name), and delete tags on this page.
 You can share a filtered view by copying the URL from your browser.
 
+### View supported platforms for multi-architecture images
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228384) in GitLab 19.1 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_display_supported_platforms`. Disabled by default.
+
+{{< /history >}}
+
+View tags that point to a Docker manifest list or OCI image index (multi-architecture images) to see which platforms it supports.
+
+Prerequisites:
+
+- For GitLab Self-Managed, a container registry configured with a metadata database.
+  For more information, see [container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
+
+To view supported platforms:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Deploy** > **Container Registry**.
+1. Select a container image.
+1. Expand the details of a multi-architecture tag.
+
+A **Supported platforms** row displays a badge for each platform, for example `linux/amd64` or `linux/arm64/v8`.
+For Windows images, known build numbers are mapped to friendly labels, for example `windows/amd64 (ltsc2022)`.
+
 ### Storage usage
 
 View container registry storage usage to track and manage the size of your container repositories across projects and groups.

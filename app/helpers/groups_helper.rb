@@ -240,16 +240,6 @@ module GroupsHelper
     can?(user, :withdraw_member_access_request, request)
   end
 
-  def group_title_link(group, hidable: false, show_avatar: false)
-    link_to(group_path(group), class: "group-path js-breadcrumb-item-text #{'hidable' if hidable}") do
-      if group.try(:avatar_url) || show_avatar
-        icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16)
-      end
-
-      [icon, simple_sanitize(group.name)].join.html_safe
-    end
-  end
-
   def ancestor_group(group)
     ancestor = oldest_consecutively_locked_ancestor(group)
     if can?(current_user, :read_group, ancestor)

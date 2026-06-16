@@ -50,7 +50,8 @@ module API
         FileUploader.workhorse_authorize(has_length: false, maximum_size: user_project.max_attachment_size)
       end
 
-      desc 'Upload a file' do
+      desc 'Create an upload' do
+        detail 'Creates an upload.'
         success code: 201, model: Entities::ProjectUpload
         failure [
           { code: 404, message: 'Not found' }
@@ -68,7 +69,9 @@ module API
         present upload, with: Entities::ProjectUpload
       end
 
-      desc 'Get the list of uploads of a project' do
+      desc 'List all uploads' do
+        detail 'Lists all uploads of a project sorted by `created_at` in descending order. You must have the ' \
+          'Maintainer or Owner role for the project.'
         success code: 200, model: Entities::MarkdownUploadAdmin
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -89,7 +92,8 @@ module API
         present paginate(uploads), with: Entities::MarkdownUploadAdmin
       end
 
-      desc 'Download a single project upload by ID' do
+      desc 'Download an uploaded file by ID' do
+        detail 'Downloads an uploaded file by ID. You must have the Maintainer or Owner role for the project.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -111,7 +115,8 @@ module API
         present_carrierwave_file!(upload.retrieve_uploader)
       end
 
-      desc 'Download a single project upload by secret and filename' do
+      desc 'Download an uploaded file by secret and filename' do
+        detail 'Downloads an uploaded file by secret and filename.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -132,7 +137,8 @@ module API
         present_carrierwave_file!(upload&.retrieve_uploader)
       end
 
-      desc 'Delete a single project upload by ID' do
+      desc 'Delete an uploaded file by ID' do
+        detail 'Deletes an uploaded file by ID. You must have the Maintainer or Owner role for the project.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -158,7 +164,9 @@ module API
         end
       end
 
-      desc 'Delete a single project upload by secret and filename' do
+      desc 'Delete an uploaded file by secret and filename' do
+        detail 'Deletes an uploaded file by secret and filename. You must have the Maintainer or Owner role for the ' \
+          'project.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -234,7 +242,9 @@ module API
         present upload, with: Entities::GroupUpload
       end
 
-      desc 'Get the list of uploads of a group' do
+      desc 'List all uploads for a group' do
+        detail 'Lists all uploads for a specified group sorted by `created_at` in descending order. You must have ' \
+          'the Maintainer or Owner role for the group.'
         success code: 200, model: Entities::MarkdownUploadAdmin
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -255,7 +265,9 @@ module API
         present paginate(uploads), with: Entities::MarkdownUploadAdmin
       end
 
-      desc 'Download a single group upload by ID' do
+      desc 'Download an uploaded file by ID' do
+        detail 'Downloads an uploaded file with a specified ID. You must have the Maintainer or Owner role for the ' \
+          'group.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -277,7 +289,9 @@ module API
         present_carrierwave_file!(upload.retrieve_uploader)
       end
 
-      desc 'Download a single group upload by secret and filename' do
+      desc 'Download an uploaded file by secret and filename' do
+        detail 'Downloads an uploaded file with a specified secret and filename. You must have the Guest, Planner, ' \
+          'Reporter, Developer, Maintainer, or Owner role for the group.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -298,7 +312,9 @@ module API
         present_carrierwave_file!(upload&.retrieve_uploader)
       end
 
-      desc 'Delete a single group upload' do
+      desc 'Delete an uploaded file by ID' do
+        detail 'Deletes an uploaded file with a specified ID. You must have the Maintainer or Owner role for the ' \
+          'group.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -324,7 +340,9 @@ module API
         end
       end
 
-      desc 'Delete a single group upload by secret and filename' do
+      desc 'Delete an uploaded file by secret and filename' do
+        detail 'Deletes an uploaded file with a specified secret and filename. You must have the Maintainer or Owner ' \
+          'role for the group.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },

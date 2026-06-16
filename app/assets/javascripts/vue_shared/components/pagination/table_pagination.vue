@@ -2,6 +2,7 @@
 import { GlPagination } from '@gitlab/ui';
 
 export default {
+  name: 'TablePagination',
   components: {
     GlPagination,
   },

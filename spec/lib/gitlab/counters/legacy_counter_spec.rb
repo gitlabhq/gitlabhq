@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Counters::LegacyCounter do
   subject(:counter) { described_class.new(counter_record, attribute) }
 
-  let_it_be(:counter_record, reload: true) { create(:project_statistics) }
+  let_it_be_with_reload(:counter_record) { create(:project_statistics) }
 
   let(:attribute) { :snippets_size }
 

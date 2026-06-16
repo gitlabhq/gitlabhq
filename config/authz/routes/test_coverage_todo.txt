@@ -16,6 +16,7 @@ read_milestone
 read_pages_access
 read_repository_file_blame
 read_vulnerability_note
+update_integration
 update_invitation
 update_vulnerability_note
 upload_conan_package

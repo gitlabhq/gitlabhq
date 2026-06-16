@@ -1,0 +1,22 @@
+- title: "Dependency Proxy for packages is deprecated"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.1"
+  breaking_change: false
+  window:
+  reporter: trizzi
+  stage: package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601255
+  check_impact:
+  impact: medium
+  impact_details:
+  impact_offering: [GitLab.com, Dedicated, self-managed]
+  scope: [group, project]
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The Dependency Proxy for packages is deprecated and will be removed in a future release. This feature has been replaced by the **Maven virtual registry**, which provides improved performance, better upstream proxying and caching capabilities, and deeper integration with GitLab's package management workflows.
+
+    **Action required:** Migrate your package manager configuration from the Dependency Proxy for packages endpoints to the Maven virtual registry. See the [Maven virtual registry documentation](https://docs.gitlab.com/user/packages/virtual_registry/maven/) for setup instructions.
+
+  tiers: [Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/packages/dependency_proxy/

@@ -16,10 +16,16 @@ module MergeRequestDiffHelpers
   end
 
   def click_diff_line(line_holder, diff_side = nil)
-    line = get_line_components(line_holder, diff_side)
-    scroll_to_elements_bottom(line_holder)
-    line_holder.hover
-    line[:num].find('.js-add-diff-note-button').click
+    wait_for('new note form to appear on the row') do
+      line = get_line_components(line_holder, diff_side)
+      scroll_to_panel_elements_bottom(line_holder)
+      line_holder.hover
+
+      line[:num].find('.js-add-diff-note-button', wait: 0.2).click
+
+      page.has_field?('note_note', focused: true, wait: 0.2)
+    rescue Capybara::ElementNotFound
+    end
   end
 
   def get_line_components(line_holder, diff_side = nil)
@@ -52,12 +58,6 @@ module MergeRequestDiffHelpers
       const panel = document.querySelector('.js-static-panel-inner');
       return (panel.scrollTop + panel.clientHeight) >= panel.scrollHeight;
     })()")
-  end
-
-  def scroll_to_elements_bottom(element)
-    evaluate_script("(function(el) {
-      window.scrollBy(0, el.getBoundingClientRect().bottom - window.innerHeight);
-    })(arguments[0]);", element.native)
   end
 
   def scroll_to_panel_elements_bottom(element)

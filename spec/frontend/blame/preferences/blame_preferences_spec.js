@@ -31,7 +31,6 @@ describe('BlamePreferences', () => {
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findAgeIndicatorToggle = () => wrapper.findComponent(GlToggle);
-  const findAgeIndicatorItem = () => wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
   const findIgnoreRevsCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findLearnToIgnoreItem = () => {
     const items = wrapper.findAllComponents(GlDisclosureDropdownItem);
@@ -74,14 +73,14 @@ describe('BlamePreferences', () => {
 
     it('persists to localStorage on toggle', async () => {
       createComponent();
-      await findAgeIndicatorItem().vm.$emit('action');
+      await findAgeIndicatorToggle().vm.$emit('change');
 
       expect(localStorage.getItem('blame_show_age_indicator')).toBe('true');
     });
 
     it('emits toggle-age-indicator event', async () => {
       createComponent();
-      await findAgeIndicatorItem().vm.$emit('action');
+      await findAgeIndicatorToggle().vm.$emit('change');
 
       expect(wrapper.emitted('toggle-age-indicator')).toEqual([[false], [true]]);
     });
@@ -90,7 +89,7 @@ describe('BlamePreferences', () => {
       createComponent();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      await findAgeIndicatorItem().vm.$emit('action');
+      await findAgeIndicatorToggle().vm.$emit('change');
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'toggle_inline_blame_age_indicator_on_blob_page',
@@ -104,7 +103,7 @@ describe('BlamePreferences', () => {
       createComponent();
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      await findAgeIndicatorItem().vm.$emit('action');
+      await findAgeIndicatorToggle().vm.$emit('change');
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'toggle_inline_blame_age_indicator_on_blob_page',

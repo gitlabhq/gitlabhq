@@ -11,6 +11,7 @@ import PipelineConfigReferenceSection from './sections/pipeline_config_reference
 import VisualizeAndLintSection from './sections/visualize_and_lint_section.vue';
 
 export default {
+  name: 'PipelineEditorDrawer',
   i18n: {
     title: __('Help'),
   },

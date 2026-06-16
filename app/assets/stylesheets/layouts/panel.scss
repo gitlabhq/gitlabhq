@@ -1,22 +1,42 @@
-// All panels
-.paneled-view.static-panel,
-.paneled-view.contextual-panel,
-.paneled-view.ai-panels .ai-panel {
+// Panel header offset
+.panel-top-offset-panel-header-height {
+  top: $panel-header-inner-height;
+}
+
+// Panels
+// Static, dynamic and AI panel wrapper
+.paneled-view {
+  @apply gl-relative;
+  @apply gl-overflow-clip;
+  @apply gl-bg-default;
+  @apply gl-p-0;
+
   @media (forced-colors: active) {
     border: 1px solid;
   }
 }
 
-// Static and Contextual panels
-.paneled-view.static-panel,
-.paneled-view.contextual-panel {
-  @apply gl-relative;
+.paneled-view,
+.paneled-view-portal {
+  @apply gl-flex;
   @apply gl-flex-1;
+  @apply gl-flex-col;
+  @apply gl-h-full;
+  @apply gl-rounded-xl;
+}
+
+// Dynamic panel portal
+.paneled-view-portal {
+  @apply empty:gl-hidden;
+  @apply gl-z-[252];
+  @apply gl-w-full;
+  @apply sm:gl-w-8/10;
   @apply gl-overflow-y-auto;
-  @apply gl-bg-default;
-  @apply gl-overflow-clip;
-  @apply gl-p-0;
-  @apply gl-rounded-[1rem];
+
+  > .vue-portal-target {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
 // Panel header
@@ -40,6 +60,9 @@
 }
 
 .panel-header-inner-text {
+  @apply gl-inline-flex;
+  @apply gl-min-w-0;
+  @apply gl-gap-3;
   @apply gl-text-sm;
   @apply gl-font-bold;
 }
@@ -51,16 +74,19 @@
   @apply gl-items-center;
 }
 
-.panel-header-panel-actions {
+.panel-header-controls {
+  @apply gl-flex;
   @apply gl-border;
   @apply gl-leading-0;
   @apply gl-ml-2;
+  @apply -gl-mr-[1px];
   border-radius: calc(var(--gl-border-radius-lg) + 1px);
 }
 
 .panel-header-inner-actions-portal-target {
   display: none;
 
+  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific portal target container
   &:has(> .vue-portal-target) {
     display: block;
   }
@@ -72,8 +98,39 @@
   }
 }
 
+.panel-content {
+  @apply gl-flex;
+  @apply gl-flex-col;
+  @apply gl-flex-1;
+  @apply gl-min-h-0;
+  contain: layout;
+  // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
+  // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+  @apply gl-pb-3;
+}
+
+.panel-content-inner {
+  @apply gl-flex-1;
+  @apply gl-overflow-x-hidden;
+  @apply gl-overflow-y-auto;
+  scrollbar-gutter: stable;
+}
+
 .panel-content-inner > .container-fluid {
   @apply gl-px-[--container-padding-x];
+}
+
+// Panel footer
+.panel-footer {
+  @apply gl-bg-default;
+  @apply gl-pl-[--container-padding-x];
+  @apply gl-pr-3;
+  @apply gl-pt-3;
+  @apply gl-border-t;
+
+  @media (forced-colors: active) {
+    border-top: 1px solid;
+  }
 }
 
 // Only display breadcrumb-free panel-header when it has action buttons or feedback badges
@@ -81,9 +138,43 @@
 .panel-header .panel-header-inner.without-breadcrumbs {
   display: none;
 
-  /* stylelint-disable-next-line gitlab/no-gl-class */
+  /* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to a specific panel-header-inner element */
   &:has(> :is(.gl-badge, .gl-button)) {
     display: flex;
     justify-content: end;
   }
+}
+
+// AI panel
+.paneled-view.ai-panel {
+  @apply gl-grow;
+  @apply max-lg:gl-fixed;
+  @apply max-lg:gl-shadow-lg;
+  @apply gl-left-3;
+  @apply -gl-mt-2;
+  top: $calc-application-bars-height;
+  width: calc(100% - (var(--gl-spacing-scale-3) * 2));
+  // Since the element is fixed-positioned, subtract the header heights and navigation rail from the
+  // viewport height. The trailing spacing scale offsets the negative top margin set above.
+  height: calc(100% - #{$calc-application-bars-height} - var(--ai-navigation-rail-size) - #{$gl-spacing-scale-2});
+  z-index: 999;
+
+  @include media-breakpoint-up(sm) {
+    @apply gl-left-5;
+    width: calc(100% - (var(--gl-spacing-scale-5) * 2));
+  }
+
+  @include media-breakpoint-up(lg) {
+    @apply gl-top-0;
+    @apply gl-left-0;
+    @apply gl-mt-0;
+    width: var(--ai-panel-width);
+    height: auto;
+    z-index: auto;
+  }
+}
+
+/* stylelint-disable-next-line gitlab/no-gl-class -- scoped to a specific panel-content use */
+.page-with-panels .gl-drawer {
+  width: min(calc(100% - var(--gl-spacing-scale-6)), 400px);
 }

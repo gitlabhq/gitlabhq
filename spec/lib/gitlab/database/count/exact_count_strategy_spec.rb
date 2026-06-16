@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Count::ExactCountStrategy do
+RSpec.describe Gitlab::Database::Count::ExactCountStrategy, feature_category: :database do
   before do
     create_list(:project, 3)
     create(:identity)

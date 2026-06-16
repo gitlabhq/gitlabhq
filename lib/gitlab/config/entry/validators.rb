@@ -121,7 +121,7 @@ module Gitlab
           def validate_each(record, attribute, value)
             max_level = options.fetch(:max_level, 1)
 
-            unless validate_nested_array(value, max_level, &method(:validate_hash))
+            unless validate_nested_array(value, max_level) { |item| validate_hash(item) }
               record.errors.add(attribute, 'should be an array containing hashes and arrays of hashes')
             end
           end
@@ -274,7 +274,7 @@ module Gitlab
           end
 
           def validate_array_of_strings_or_regexps(values)
-            values.is_a?(Array) && values.all?(&method(:validate_string_or_regexp))
+            values.is_a?(Array) && values.all? { |value| validate_string_or_regexp(value) }
           end
 
           def validate_string_or_regexp(value)
@@ -306,7 +306,7 @@ module Gitlab
           def validate_each(record, attribute, value)
             max_level = options.fetch(:max_level, 1)
 
-            unless validate_string(value) || validate_nested_array(value, max_level, &method(:validate_string))
+            unless validate_string(value) || validate_nested_array(value, max_level) { |item| validate_string(item) }
               record.errors.add(attribute, "should be a string or a nested array of strings up to #{max_level} levels deep")
             end
           end
@@ -319,7 +319,7 @@ module Gitlab
           def validate_each(record, attribute, value)
             max_level = options.fetch(:max_level, 1)
 
-            unless validate_nested_array(value, max_level, &method(:validate_string))
+            unless validate_nested_array(value, max_level) { |item| validate_string(item) }
               record.errors.add(attribute, "should be an array of strings or a nested array of strings up to #{max_level} levels deep")
             end
           end

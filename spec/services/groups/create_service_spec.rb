@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_projects do
-  let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:organization) { create(:organization, users: [user]) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be(:organization, freeze: false) { create(:organization, users: [user]) }
   let(:current_user) { user }
   let(:group_params) do
     { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC,
@@ -167,7 +167,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     let_it_be(:other_organization) { create(:organization, name: 'Other Organization') }
 
     context 'when organization is provided' do
-      let_it_be(:organization) { create(:organization) }
+      let_it_be(:organization, freeze: false) { create(:organization) }
       let(:extra_params) { { organization_id: organization.id } }
 
       context 'when user can create the group' do

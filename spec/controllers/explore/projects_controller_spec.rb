@@ -3,41 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projects do
-  shared_examples 'pushes feature flag' do |action|
-    render_views
-
-    it 'pushes expected feature flag to the frontend' do
-      stub_feature_flags(retire_trending_projects: false)
-
-      get action
-
-      expect(response.body).to have_pushed_frontend_feature_flags(
-        retireTrendingProjects: false
-      ), response.body
-    end
-  end
-
   shared_examples 'explore projects' do
-    describe 'GET #index' do
-      it_behaves_like 'pushes feature flag', :index
-    end
-
-    describe 'GET #trending' do
-      it 'redirects to active projects' do
-        get :trending
-
-        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
-      end
-
-      context 'when `retire_trending_projects` flag is disabled' do
-        before do
-          stub_feature_flags(retire_trending_projects: false)
-        end
-
-        it_behaves_like 'pushes feature flag', :trending
-      end
-    end
-
     describe 'GET #topic' do
       context 'when topic does not exist' do
         it 'renders a 404 error' do
@@ -132,35 +98,33 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   shared_examples 'avoids N+1 queries' do
-    [:index, :trending].each do |endpoint|
-      describe "GET #{endpoint}" do
-        render_views
+    describe 'GET #index' do
+      render_views
 
-        # some N+1 queries still exist
-        it 'avoids N+1 queries', :request_store do
-          # Because we enable the request store for this spec, Gitaly may report too many invocations.
-          # Allow N+1s here and when creating additional objects below because we're just creating test objects.
-          Gitlab::GitalyClient.allow_n_plus_1_calls do
-            projects = create_list(:project, 3, :repository, :public)
+      # some N+1 queries still exist
+      it 'avoids N+1 queries', :request_store do
+        # Because we enable the request store for this spec, Gitaly may report too many invocations.
+        # Allow N+1s here and when creating additional objects below because we're just creating test objects.
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          projects = create_list(:project, 3, :repository, :public)
 
-            projects.each do |project|
-              pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
-              create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
-            end
+          projects.each do |project|
+            pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
+            create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
           end
-
-          control = ActiveRecord::QueryRecorder.new { get endpoint }
-
-          Gitlab::GitalyClient.allow_n_plus_1_calls do
-            new_projects = create_list(:project, 2, :repository, :public)
-            new_projects.each do |project|
-              pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
-              create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
-            end
-          end
-
-          expect { get endpoint }.not_to exceed_query_limit(control).with_threshold(8)
         end
+
+        control = ActiveRecord::QueryRecorder.new { get :index }
+
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          new_projects = create_list(:project, 2, :repository, :public)
+          new_projects.each do |project|
+            pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
+            create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+          end
+        end
+
+        expect { get :index }.not_to exceed_query_limit(control).with_threshold(8)
       end
     end
   end

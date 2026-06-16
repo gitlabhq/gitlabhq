@@ -7,6 +7,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import readmeQuery from '../../queries/readme.query.graphql';
 
 export default {
+  name: 'PreviewIndex',
   apollo: {
     readme: {
       query: readmeQuery,

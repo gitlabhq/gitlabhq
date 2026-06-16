@@ -14,8 +14,9 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'List the agents for a project' do
-          detail 'This feature was introduced in GitLab 14.10. Returns the list of agents registered for the project.'
+        desc 'List all agents' do
+          detail 'Lists all agents registered for the project. You must have the Developer, Maintainer, or Owner ' \
+            'role to use this endpoint.'
           success Entities::Clusters::Agent
           tags %w[cluster_agents]
         end
@@ -31,8 +32,9 @@ module API
           present paginate(agents), with: Entities::Clusters::Agent
         end
 
-        desc 'Get details about an agent' do
-          detail 'This feature was introduced in GitLab 14.10. Gets a single agent details.'
+        desc 'Retrieve details on an agent' do
+          detail 'Retrieves details on a specified agent. You must have the Developer, Maintainer, or Owner role to ' \
+            'use this endpoint.'
           success Entities::Clusters::Agent
           tags %w[cluster_agents]
         end
@@ -46,8 +48,8 @@ module API
           present agent, with: Entities::Clusters::Agent
         end
 
-        desc 'Register an agent with a project' do
-          detail 'This feature was introduced in GitLab 14.10. Registers an agent to the project.'
+        desc 'Create an agent' do
+          detail 'Creates an agent for the project. You must have the Maintainer or Owner role to use this endpoint.'
           success Entities::Clusters::Agent
           tags %w[cluster_agents]
         end
@@ -67,8 +69,10 @@ module API
           present result[:cluster_agent], with: Entities::Clusters::Agent
         end
 
-        desc 'Delete a registered agent' do
-          detail 'This feature was introduced in GitLab 14.10. Deletes an existing agent registration.'
+        desc 'Delete an agent' do
+          detail 'Deletes an existing agent registration. You must have the Maintainer or Owner role to use this ' \
+            'endpoint.'
+          success code: 204, message: 'Resource deleted'
           tags %w[cluster_agents]
         end
         params do

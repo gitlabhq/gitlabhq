@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
   describe "#execute" do
-    let_it_be(:user, reload: true) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
     let!(:group_member) { group.add_owner(user) }

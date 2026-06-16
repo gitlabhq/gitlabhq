@@ -1,6 +1,7 @@
 ---
 table_name: user_permission_export_upload_uploads
 classes:
+- Geo::UserPermissionExportUploadUpload
 - Upload
 - UserPermissionExportUpload
 feature_categories:

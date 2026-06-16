@@ -1,92 +1,114 @@
 <script>
-import { GlDashboardLayout, GlSkeletonLoader } from '@gitlab/ui';
-import { createAlert } from '~/alert';
-import { s__ } from '~/locale';
-import {
-  GRID_HEIGHT_COMPACT,
-  GRID_HEIGHT_COMPACT_CELL_HEIGHT,
-  GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
-} from '../constants';
-import { getUniquePanelId, convertToDashboardGraphQLId } from '../utils';
-import getDashboardQuery from '../graphql/get_dashboard.query.graphql';
+import { computed } from 'vue';
+import { GlDashboardLayout } from '@gitlab/ui';
+import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import DashboardFilters from '../components/dashboard_filters.vue';
+import DashboardLoader from '../components/dashboard_loader.vue';
 
 export default {
-  name: 'ExploreAnalyticsDashboard',
-  components: { GlDashboardLayout, GlSkeletonLoader },
-  inject: ['breadcrumbState'],
-  data() {
-    return { dashboard: null, hasError: false };
+  name: 'ExploreAnalyticsDashboardDetails',
+  components: {
+    GlDashboardLayout,
+    AnalyticsDashboardPanel,
+    DashboardFilters,
+    DashboardLoader,
   },
-  computed: {
-    dashboardId() {
-      return convertToDashboardGraphQLId(this.$route?.params.slug);
+  // Provided as computed refs — options-API inject captures the value once
+  // at setup, so plain values/getters won't propagate filter changes to panels.
+  provide() {
+    return {
+      namespaceFullPath: computed(
+        () => this.selectedProject?.fullPath || this.selectedGroup?.fullPath || '',
+      ),
+      namespaceId: computed(() => this.selectedProject?.id ?? this.selectedGroup?.id ?? null),
+      namespaceName: computed(() => this.selectedProject?.name ?? this.selectedGroup?.name ?? ''),
+      isProject: computed(() => Boolean(this.selectedProject)),
+
+      // TODO: Investigate how to handle namespace specific checks
+      //  These checks were previously done in controller and passed as data attributes
+      //  but they are checks on a namespace level, we might need to move these
+      //  into the relevant data sources that require the checks
+      overviewCountsAggregationEnabled: null,
+      dataSourceClickhouse: null,
+    };
+  },
+  data() {
+    return {
+      filters: {},
+      selectedGroup: null,
+      selectedProject: null,
+    };
+  },
+  methods: {
+    panelTestId({ visualization: { slug = '' } }) {
+      return `panel-${slug.replaceAll('_', '-')}`;
     },
-    dashboardConfig() {
-      if (!this.dashboard?.config) return {};
-      // Each panel needs a uniqueId or the prop validator for GlDashboardLayout will fail
-      const { panels, ...rest } = this.dashboard.config;
-      return {
-        ...rest,
-        panels: panels.map(({ id, ...panel }) => ({
-          ...panel,
-          id: getUniquePanelId(),
-        })),
+    setDateRangeFilter({ dateRangeOption, startDate, endDate }) {
+      this.filters = {
+        ...this.filters,
+        dateRangeOption,
+        startDate,
+        endDate,
       };
     },
-    isLoading() {
-      return Boolean(this.$apollo.queries.dashboard?.loading);
+    setProjectsFilter(projects) {
+      const [project = null] = projects ?? [];
+      this.selectedProject = project;
+      this.filters = {
+        ...this.filters,
+        projects: project ? [project.fullPath] : [],
+      };
     },
-    cellHeight() {
-      return this.dashboardConfig?.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_CELL_HEIGHT
-        : undefined;
-    },
-    minCellHeight() {
-      return this.dashboardConfig?.gridHeight === GRID_HEIGHT_COMPACT
-        ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT
-        : undefined;
-    },
-  },
-  apollo: {
-    dashboard: {
-      query: getDashboardQuery,
-      variables() {
-        return { id: this.dashboardId };
-      },
-      update({ customDashboard = {} }) {
-        return customDashboard;
-      },
-      error(err) {
-        this.hasError = true;
-
-        createAlert({
-          message: s__('AnalyticsDashboards|Failed to load dashboard. Please try again.'),
-          captureError: true,
-          error: err,
-        });
-      },
-    },
-  },
-  watch: {
-    dashboard() {
-      this.breadcrumbState.updateName(this.dashboardConfig?.title);
+    setGroupsFilter(groups) {
+      const [group = null] = groups ?? [];
+      this.selectedGroup = group;
+      // Clearing a group also clears the project (which lives under it).
+      if (!group) {
+        this.selectedProject = null;
+      }
+      this.filters = {
+        ...this.filters,
+        groups: group ? [group.fullPath] : [],
+        projects: [],
+      };
     },
   },
 };
 </script>
 <template>
-  <gl-skeleton-loader v-if="isLoading" />
-  <div v-else>
-    <span v-if="hasError"></span>
-    <gl-dashboard-layout
-      v-else
-      :config="dashboardConfig"
-      :cell-height="cellHeight"
-      :min-cell-height="minCellHeight"
-    >
-      <template #title>
-        <h2>{{ dashboardConfig.title }}</h2>
-      </template>
-    </gl-dashboard-layout>
-  </div>
+  <dashboard-loader>
+    <template #dashboard="{ config, cellHeight, minCellHeight, isSystemDashboard }">
+      <gl-dashboard-layout
+        :config="config"
+        :cell-height="cellHeight"
+        :min-cell-height="minCellHeight"
+        :filters="filters"
+      >
+        <template #actions>
+          <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
+        </template>
+
+        <template #filters>
+          <dashboard-filters
+            :group-namespace="selectedGroup?.fullPath || ''"
+            :dashboard-filters="config.filters"
+            @set-date-range="setDateRangeFilter"
+            @set-projects="setProjectsFilter"
+            @set-groups="setGroupsFilter"
+          />
+        </template>
+
+        <template #panel="{ panel }">
+          <analytics-dashboard-panel
+            :title="panel.title"
+            :tooltip="panel.tooltip"
+            :visualization="panel.visualization"
+            :query-overrides="panel.queryOverrides"
+            :filters="filters"
+            :data-testid="panelTestId(panel)"
+          />
+        </template>
+      </gl-dashboard-layout>
+    </template>
+  </dashboard-loader>
 </template>

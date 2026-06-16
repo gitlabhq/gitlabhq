@@ -37,6 +37,7 @@ import DiffFileHeader from './diff_file_header.vue';
 import DiffFileDiscussionExpansion from './diff_file_discussion_expansion.vue';
 
 export default {
+  name: 'DiffFile',
   components: {
     DiffFileHeader,
     DiffContent,

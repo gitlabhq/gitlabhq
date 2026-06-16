@@ -39,6 +39,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update:isDefaultPermissionsSelected', 'update:jobTokenPolicies'],
   computed: {
     selected() {
       // Create an object where the key is the resource key and the value is the None option.

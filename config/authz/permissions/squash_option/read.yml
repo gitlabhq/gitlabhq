@@ -1,0 +1,3 @@
+---
+name: read_squash_option
+description: Grants the ability to read a squash option for a branch rule

@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   computed: {
     visibilityLevelsOptions() {
       return this.visibilityLevels.map((visibilityLevel) => {

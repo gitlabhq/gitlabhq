@@ -2,6 +2,7 @@ mutation awardAchievement($input: AchievementsAwardInput!) {
   achievementsAward(input: $input) {
     userAchievement {
       id
+      awardMessage @gl_introduced(version: "19.1.0")
     }
     errors
   }

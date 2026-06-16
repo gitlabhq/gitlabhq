@@ -12,7 +12,7 @@ describe('Alert Details Sidebar', () => {
   let wrapper;
   let mock;
 
-  function mountComponent({
+  function createComponent({
     mountMethod = shallowMount,
     stubs = {},
     alert = {},
@@ -43,34 +43,27 @@ describe('Alert Details Sidebar', () => {
     });
   }
 
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
   afterEach(() => {
     mock.restore();
   });
 
-  describe('the sidebar renders', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      mountComponent();
+  it('should render side bar assignee dropdown', () => {
+    createComponent({
+      mountMethod: mount,
+      alert: mockAlert,
     });
+    expect(wrapper.findComponent(SidebarAssignees).exists()).toBe(true);
+  });
 
-    it('open as default', () => {
-      expect(wrapper.classes('right-sidebar-expanded')).toBe(true);
+  it('should render side bar status dropdown', () => {
+    createComponent({
+      mountMethod: mount,
+      alert: mockAlert,
     });
-
-    it('should render side bar assignee dropdown', () => {
-      mountComponent({
-        mountMethod: mount,
-        alert: mockAlert,
-      });
-      expect(wrapper.findComponent(SidebarAssignees).exists()).toBe(true);
-    });
-
-    it('should render side bar status dropdown', () => {
-      mountComponent({
-        mountMethod: mount,
-        alert: mockAlert,
-      });
-      expect(wrapper.findComponent(SidebarStatus).exists()).toBe(true);
-    });
+    expect(wrapper.findComponent(SidebarStatus).exists()).toBe(true);
   });
 });

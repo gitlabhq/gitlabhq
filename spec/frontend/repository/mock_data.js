@@ -62,7 +62,9 @@ export const getProjectMockWithOverrides = ({ userPermissionsOverride = {} } = {
   id: 'gid://gitlab/Project/7',
   userPermissions: { ...userPermissionsMock, ...userPermissionsOverride },
   repository: {
+    __typename: 'Repository',
     empty: false,
+    rootRef: 'main',
   },
 });
 

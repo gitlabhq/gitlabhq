@@ -54,8 +54,6 @@ Rails/FilePath:
     - 'lib/tasks/tanuki_emoji.rake'
     - 'metrics_server/metrics_server.rb'
     - 'spec/config/object_store_settings_spec.rb'
-    - 'spec/db/development/add_security_training_providers_spec.rb'
-    - 'spec/db/production/add_security_training_providers_spec.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/design_management/versions.rb'
     - 'spec/factories/error_tracking/error_event.rb'

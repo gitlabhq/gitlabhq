@@ -26,6 +26,7 @@ export default {
       default: 1,
     },
   },
+  emits: ['resize'],
   data() {
     return {
       baseImageSize: null,

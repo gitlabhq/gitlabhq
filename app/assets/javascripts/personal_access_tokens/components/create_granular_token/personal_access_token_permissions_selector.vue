@@ -4,7 +4,7 @@ import { intersection, some } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
-import { ACCESS_USER_ENUM } from '~/personal_access_tokens/constants';
+import { ACCESS_USER_ENUM, ACCESS_INSTANCE_ENUM } from '~/personal_access_tokens/constants';
 import PersonalAccessTokenResourcesList from './personal_access_token_resources_list.vue';
 import PersonalAccessTokenGranularPermissionsList from './personal_access_token_granular_permissions_list.vue';
 
@@ -76,11 +76,16 @@ export default {
     isLoading() {
       return Boolean(this.$apollo.queries.permissions.loading);
     },
-    isUserScope() {
-      return this.targetBoundaries.includes(ACCESS_USER_ENUM);
-    },
     scope() {
-      return this.isUserScope ? 'user' : 'namespace';
+      if (this.targetBoundaries.includes(ACCESS_INSTANCE_ENUM)) {
+        return 'instance';
+      }
+
+      if (this.targetBoundaries.includes(ACCESS_USER_ENUM)) {
+        return 'user';
+      }
+
+      return 'namespace';
     },
     tabTitle() {
       return this.$options.i18n[this.scope].tabTitle;
@@ -189,6 +194,9 @@ export default {
     user: {
       tabTitle: s__('AccessTokens|User'),
     },
+    instance: {
+      tabTitle: s__('AccessTokens|Global'),
+    },
     searchPlaceholder: s__('AccessTokens|Search for resources to add'),
     noResourcesFound: __('No resources found'),
     fetchError: s__('AccessTokens|Error loading permissions. Please refresh page.'),
@@ -210,8 +218,9 @@ export default {
         <personal-access-token-resources-list
           v-else-if="permissionsFilteredBySearch.length"
           v-model="selectedResources"
-          :permissions-filtered-by-search="permissionsFilteredBySearch"
+          :permissions="permissionsFilteredBySearch"
           :scope="scope"
+          :is-filtering="Boolean(searchTerm)"
         />
         <div v-else class="gl-my-4 gl-text-center gl-text-subtle">
           {{ $options.i18n.noResourcesFound }}

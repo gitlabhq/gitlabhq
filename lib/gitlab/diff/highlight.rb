@@ -11,7 +11,7 @@ module Gitlab
 
       delegate :old_path, :new_path, :old_sha, :new_sha, to: :diff_file, prefix: :diff
 
-      def initialize(diff_lines, repository: nil, plain: false)
+      def initialize(diff_lines, repository: nil, plain: false, diff_file: nil)
         @repository = repository
         @project = repository&.project
         @plain = plain
@@ -21,6 +21,10 @@ module Gitlab
           @diff_lines = @diff_file.diff_lines
         else
           @diff_lines = diff_lines
+          @diff_file = diff_file
+          @repository ||= diff_file&.repository
+          @project ||= @repository&.project
+          @use_diff_line_highlighting = diff_file.present?
         end
 
         @raw_lines = @diff_lines.map(&:text)
@@ -84,7 +88,7 @@ module Gitlab
         return unless diff_file && diff_file.diff_refs
         return diff_line_highlighting(diff_line, plain: true) if blobs_too_large? || plain
 
-        if diff_line_syntax_highlighting?
+        if diff_line_syntax_highlighting? || @use_diff_line_highlighting
           diff_line_highlighting(diff_line)
         else
           blob_highlighting(diff_line)

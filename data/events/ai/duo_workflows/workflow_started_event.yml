@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowStartedEvent
+description: Published when a Duo workflow first transitions to :running (the agent
+  has begun executing). Only emitted for messaging-triggered workflows. Deferred via
+  run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

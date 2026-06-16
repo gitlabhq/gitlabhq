@@ -1,6 +1,6 @@
 ---
-source_checksum: ddd3c634219676db
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: c837d7aaddf99c90
+distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -20,6 +20,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `@apply` in SCSS only when utility classes cannot be applied directly in HTML; prefer it for design-system-dependent properties (e.g., `margin`, `padding`).
 - DO NOT combine utility classes and custom styles in a single component class unless absolutely necessary.
 - Update `tailwind.defaults.js` in GitLab UI when a needed utility is not available, rather than writing custom CSS.
+- DO NOT use Tailwind arbitrary values; use pre-defined classes from the [GitLab Tailwind CSS documentation](https://design.gitlab.com/tailwind-documentation) or add page-specific CSS via page bundles instead.
 
 ### Component Classes
 

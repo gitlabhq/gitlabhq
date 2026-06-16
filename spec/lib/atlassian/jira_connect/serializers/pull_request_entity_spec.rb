@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity, feature_category: :integrations do
   let_it_be(:project) { create_default(:project, :repository) }
-  let_it_be(:merge_requests) { create_list(:merge_request, 2, :unique_branches) }
+  let_it_be(:merge_requests, freeze: false) { create_list(:merge_request, 2, :unique_branches) }
   let_it_be(:notes) { create_list(:note, 2, system: false, noteable: merge_requests.first) }
   let_it_be(:merge_request_reviewers) { create_pair(:merge_request_reviewer, merge_request: merge_requests[0]) }
 

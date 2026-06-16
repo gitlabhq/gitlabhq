@@ -139,9 +139,20 @@ FactoryBot.define do
       association :root_storage_statistics, factory: :namespace_root_storage_statistics
     end
 
+    trait :with_mcp_server_enabled do
+      namespace_settings { association(:namespace_settings, mcp_server_enabled: true) }
+    end
+
+    trait :with_mcp_server_disabled do
+      namespace_settings { association(:namespace_settings, mcp_server_enabled: false) }
+    end
+
     trait :deletion_scheduled do
+      deletion_scheduled_at { Date.current }
+
       after(:create) do |group, evaluator|
         group.schedule_deletion!(transition_user: evaluator.owner || create(:user))
+        group.update!(deletion_scheduled_at: evaluator.deletion_scheduled_at)
       end
     end
   end

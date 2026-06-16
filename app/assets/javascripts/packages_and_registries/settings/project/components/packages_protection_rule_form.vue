@@ -26,6 +26,7 @@ const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export default {
+  name: 'PackagesProtectionRuleForm',
   components: {
     GlButton,
     GlFormInput,

@@ -34,15 +34,9 @@ module AuditEvents
 
     def self.fetch_from_json(audit_event_json)
       parsed_json = ::Gitlab::Json.parse(audit_event_json).with_indifferent_access
-      model_class, entity = determine_audit_model_entity(parsed_json)
+      model_class, _entity = determine_audit_model_entity(parsed_json)
 
-      if ::Gitlab::Audit::FeatureFlags.stream_from_new_tables?(entity)
-        create_scoped_audit_event(model_class, parsed_json)
-      else
-        # event_name only exists on scoped audit event tables, not on the base audit_events table
-        filtered_json = parsed_json.except(:group_id, :project_id, :user_id, :event_name)
-        ::AuditEvent.new(filtered_json)
-      end
+      create_scoped_audit_event(model_class, parsed_json)
     rescue JSON::ParserError, ActiveRecord::RecordNotFound => e
       ::Gitlab::ErrorTracking.track_exception(
         e,

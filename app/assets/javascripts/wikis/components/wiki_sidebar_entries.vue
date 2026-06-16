@@ -5,6 +5,7 @@ import { sidebarEntriesToTree } from '../utils';
 import WikiSidebarEntry from './wiki_sidebar_entry.vue';
 
 export default {
+  name: 'WikiSidebarEntries',
   components: {
     WikiSidebarEntry,
     GlButton,

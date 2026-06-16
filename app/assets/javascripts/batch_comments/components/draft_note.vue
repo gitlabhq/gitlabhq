@@ -11,6 +11,7 @@ import { useBatchComments } from '~/batch_comments/store';
 import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
+  name: 'DraftNote',
   components: {
     NoteableNote,
     GlBadge,
@@ -51,6 +52,7 @@ export default {
     },
     autosaveDraftKey() {
       if (!this.autosaveKey) return null;
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- autosave key identifier, not a URL
       return `${this.autosaveKey}/draft-note-${this.draft.id}`;
     },
   },

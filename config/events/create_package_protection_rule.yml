@@ -10,6 +10,8 @@ additional_properties:
   package_type:
     description: Type of package (npm, pypi, maven, conan, etc.)
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: '18.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213707
 tiers:

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Environments Deployments query', feature_category: :continuous_delivery do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }

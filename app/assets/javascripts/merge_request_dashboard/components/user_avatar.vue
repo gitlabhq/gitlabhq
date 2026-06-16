@@ -25,6 +25,7 @@ const REVIEW_STATE_ICONS = {
 };
 
 export default {
+  name: 'UserAvatar',
   components: {
     GlAvatar,
     GlIcon,

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples_for 'graphql mutations security ci configuration' do
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:current_user, freeze: false) { create(:user) }
 
   let(:branch) do
     "set-secret-config"

@@ -5,15 +5,23 @@ require 'spec_helper'
 RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   include RedisHelpers
 
-  let_it_be(:redis_store_class) { define_helper_redis_store_class }
-  let_it_be(:primary_db) { 1 }
-  let_it_be(:secondary_db) { 2 }
-  let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
-  let_it_be(:secondary_store) { create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil) }
-  let_it_be(:primary_pool) { ConnectionPool.new { primary_store } }
-  let_it_be(:secondary_pool) { ConnectionPool.new { secondary_store } }
-  let_it_be(:instance_name) { 'TestStore' }
-  let_it_be(:multi_store) { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
+  let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
+  let_it_be(:primary_db, freeze: false) { 1 }
+  let_it_be(:secondary_db, freeze: false) { 2 }
+  let_it_be(:primary_store, freeze: false) do
+    create_redis_store(redis_store_class.params, db: primary_db, serializer: nil)
+  end
+
+  let_it_be(:secondary_store, freeze: false) do
+    create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil)
+  end
+
+  let_it_be(:primary_pool, freeze: false) { ConnectionPool.new { primary_store } }
+  let_it_be(:secondary_pool, freeze: false) { ConnectionPool.new { secondary_store } }
+  let_it_be(:instance_name, freeze: false) { 'TestStore' }
+  let_it_be(:multi_store, freeze: false) do
+    described_class.create_using_pool(primary_pool, secondary_pool, instance_name)
+  end
 
   subject do
     multi_store.with_borrowed_connection do
@@ -482,12 +490,12 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   RSpec.shared_examples_for 'pipelined command' do |name|
-    let_it_be(:key1) { "redis:{1}:key_a" }
-    let_it_be(:value1) { "redis_value1" }
-    let_it_be(:value2) { "redis_value2" }
-    let_it_be(:expected_value) { value1 }
-    let_it_be(:verification_name) { :get }
-    let_it_be(:verification_args) { key1 }
+    let_it_be(:key1, freeze: false) { "redis:{1}:key_a" }
+    let_it_be(:value1, freeze: false) { "redis_value1" }
+    let_it_be(:value2, freeze: false) { "redis_value2" }
+    let_it_be(:expected_value, freeze: false) { value1 }
+    let_it_be(:verification_name, freeze: false) { :get }
+    let_it_be(:verification_args, freeze: false) { key1 }
 
     before do
       primary_store.flushdb
@@ -837,7 +845,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   describe '#blpop' do
-    let_it_be(:key) { "mylist" }
+    let_it_be(:key, freeze: false) { "mylist" }
 
     subject { multi_store.with_borrowed_connection { multi_store.blpop(key, timeout: 0.1) } }
 

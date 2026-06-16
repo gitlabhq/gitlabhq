@@ -262,7 +262,7 @@ class MergeRequestsFinder < IssuableFinder
 
     return items unless use_grouping_columns?
 
-    grouping_columns = klass.grouping_columns(params[:sort])
+    grouping_columns = klass.grouping_columns(params[:sort], use_cte: use_cte_for_search?)
     items.group(grouping_columns) # rubocop:disable CodeReuse/ActiveRecord
   end
 

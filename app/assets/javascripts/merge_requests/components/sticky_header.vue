@@ -31,6 +31,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import titleSubscription from '../queries/title.subscription.graphql';
 
 export default {
+  name: 'StickyHeader',
   TYPE_MERGE_REQUEST,
   apollo: {
     $subscribe: {
@@ -173,7 +174,7 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="merge-request-sticky-header-wrapper gl-relative gl-top-8"
+    class="merge-request-sticky-header-wrapper panel-top-offset-panel-header-height gl-relative"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >

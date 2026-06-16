@@ -6,15 +6,16 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { useWhatsNew } from '../store';
 import OtherUpdates from './other_updates.vue';
-
-const trackingMixin = Tracking.mixin();
+import TranscendPromoCard from './transcend_promo_card.vue';
 
 export default {
+  name: 'WhatsNewApp',
   components: {
     GlDrawer,
     OtherUpdates,
+    TranscendPromoCard,
   },
-  mixins: [trackingMixin, glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin({ experiment: 'whats_new_placement' }), glFeatureFlagsMixin()],
   props: {
     versionDigest: {
       type: String,
@@ -35,15 +36,19 @@ export default {
       type: Number,
       required: true,
     },
-    withClose: {
-      type: Function,
-      required: false,
-      default: () => {},
-    },
     updateHelpMenuUnreadBadge: {
       type: Function,
       required: false,
       default: () => {},
+    },
+    showTranscendPromo: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    placement: {
+      type: String,
+      required: true,
     },
   },
   computed: {
@@ -67,10 +72,10 @@ export default {
     const body = document.querySelector('body');
     const { namespaceId } = body.dataset;
 
-    this.track('click_whats_new_drawer', {
+    this.track('view_whats_new_drawer', {
       label: 'namespace_id',
       value: namespaceId,
-      property: 'navigation_top',
+      property: this.placement,
     });
   },
   methods: {
@@ -103,10 +108,6 @@ export default {
       this.fetchItems({ page, versionDigest });
     },
     close() {
-      if (this.withClose) {
-        this.withClose();
-      }
-
       this.closeDrawer();
     },
   },
@@ -133,6 +134,8 @@ export default {
       </template>
 
       <div>
+        <transcend-promo-card v-if="showTranscendPromo" />
+
         <other-updates
           :features="features"
           :read-articles="readArticles"

@@ -20,15 +20,17 @@ module API
       end
     end
 
+    # Job token authentication is only supported for project badges, not group badges.
     %w[group project].each do |source_type|
-      boundary_type = source_type.to_sym
+      is_project = source_type == 'project'
+
       params do
         requires :id,
           type: String,
           desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user."
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Gets a list of #{source_type} badges viewable by the authenticated user." do
+        desc "List #{source_type} badges." do
           detail 'This feature was introduced in GitLab 10.6.'
           success Entities::Badge
           is_array true
@@ -38,7 +40,12 @@ module API
           use :pagination
           optional :name, type: String, desc: 'Name for the badge'
         end
-        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
+
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :read_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :read_badges,
+          allow_public_access_for_enabled_project_features: :repository
+
         get ":id/badges", urgency: :low do
           source = find_source(source_type, params[:id])
 
@@ -59,7 +66,10 @@ module API
           requires :image_url, type: String, desc: 'URL of the badge image'
         end
 
-        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :read_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :admin_badges
+
         get ":id/badges/render" do
           authenticate!
 
@@ -75,7 +85,7 @@ module API
           end
         end
 
-        desc "Gets a badge of a #{source_type}." do
+        desc "Get a badge of a #{source_type}." do
           detail 'This feature was introduced in GitLab 10.6.'
           success Entities::Badge
           tags %w[badges]
@@ -86,7 +96,12 @@ module API
         # TODO: Set PUT /projects/:id/badges/:badge_id to low urgency and GET to default urgency
         # after different urgencies are supported for different HTTP verbs.
         # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1670
-        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
+
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :read_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :read_badges,
+          allow_public_access_for_enabled_project_features: :repository
+
         get ":id/badges/:badge_id", urgency: :low do
           source = find_source(source_type, params[:id])
           badge = find_badge(source)
@@ -94,7 +109,7 @@ module API
           present_badges(source, badge)
         end
 
-        desc "Adds a badge to a #{source_type}." do
+        desc "Add a badge to a #{source_type}." do
           detail 'This feature was introduced in GitLab 10.6.'
           success Entities::Badge
           tags %w[badges]
@@ -104,7 +119,11 @@ module API
           requires :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
-        route_setting :authorization, permissions: :create_badge, boundary_type: boundary_type
+
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :create_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :admin_badges
+
         post ":id/badges" do
           source = find_source_if_admin(source_type)
 
@@ -117,7 +136,7 @@ module API
           end
         end
 
-        desc "Updates a badge of a #{source_type}." do
+        desc "Update a badge of a #{source_type}." do
           detail 'This feature was introduced in GitLab 10.6.'
           success Entities::Badge
           tags %w[badges]
@@ -127,7 +146,11 @@ module API
           optional :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
-        route_setting :authorization, permissions: :update_badge, boundary_type: boundary_type
+
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :update_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :admin_badges
+
         put ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
           badge = find_badge(source)
@@ -142,14 +165,19 @@ module API
           end
         end
 
-        desc "Removes a badge from the #{source_type}." do
+        desc "Remove a badge from the #{source_type}." do
           detail 'This feature was introduced in GitLab 10.6.'
+          success code: 204, message: 'Resource deleted'
           tags %w[badges]
         end
         params do
           requires :badge_id, type: Integer, desc: 'The badge ID'
         end
-        route_setting :authorization, permissions: :delete_badge, boundary_type: boundary_type
+
+        route_setting :authentication, job_token_allowed: is_project
+        route_setting :authorization, permissions: :delete_badge, boundary_type: source_type.to_sym,
+          job_token_policies: :admin_badges
+
         delete ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
           badge = find_badge(source)

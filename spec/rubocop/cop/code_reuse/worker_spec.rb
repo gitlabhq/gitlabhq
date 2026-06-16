@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/code_reuse/worker'
 
-RSpec.describe RuboCop::Cop::CodeReuse::Worker do
+RSpec.describe RuboCop::Cop::CodeReuse::Worker, feature_category: :tooling do
   it 'flags the use of a worker in a controller' do
     allow(cop)
       .to receive(:in_controller?)

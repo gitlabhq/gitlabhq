@@ -6,11 +6,16 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :private, :repository, group: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+  let_it_be(:merge_request_author) { create(:user) }
+  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:project) do
+    create(:project, :private, :repository, group: group, maintainers: user,
+      developers: [user2, user3, service_account])
+  end
 
   let_it_be_with_reload(:merge_request) do
     create(
@@ -22,7 +27,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
       assignee_ids: [user3.id],
       source_project: project,
       target_project: project,
-      author: create(:user)
+      author: merge_request_author
     )
   end
 
@@ -30,10 +35,6 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
   let(:opts) { { assignee_ids: [user2.id] } }
 
   before do
-    project.add_maintainer(user)
-    project.add_developer(user2)
-    project.add_developer(user3)
-    project.add_developer(service_account)
     merge_request.errors.clear
   end
 
@@ -98,7 +99,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
       end
 
       it 'does not update the assignees if they do not have access' do
-        opts[:assignee_ids] = [create(:user).id]
+        opts[:assignee_ids] = [unauthorized_user.id]
 
         expect(update_merge_request).to have_attributes(
           assignees: [user3],

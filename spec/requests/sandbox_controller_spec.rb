@@ -14,7 +14,7 @@ RSpec.describe SandboxController, feature_category: :shared do
     end
 
     context 'with a signed-in user' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user, freeze: false) { create(:user) }
 
       before do
         sign_in(user)

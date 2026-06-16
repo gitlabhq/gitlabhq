@@ -25,7 +25,8 @@ Engineering Manager to merge when the feature is deployed and enabled: `@EM`
 | Thursday of milestone week or earlier | TWs (required); PMM and PM Director/Group Manager (optional) | Complete reviews of release post item content |
 | Friday of milestone week or earlier   | TWs or EMs                                                   | Merge content by 00:00 UTC (midnight) |
 
-Note: Not all EMs have Maintainer role, so the EM needs to rely on the TW in this case. If necessary, make the MR dependent on the code MR.
+> [!note]
+> Not all EMs have Maintainer role, so the EM needs to rely on the TW in this case. If necessary, make the MR dependent on the code MR.
 
 Draft your content as soon as possible to avoid missing the cutoff!
 
@@ -46,24 +47,22 @@ Draft your content as soon as possible to avoid missing the cutoff!
   - Describe the benefits in terms of outcomes like productivity, efficiency, velocity, communication.
   - Avoid feature language, like removing a limitation, that focuses on the product and not our users.
   - Avoid assumed knowledge, assume a customer or prospect will be linked this description without context.
-- [ ] Title:
-  - Length limit: 7 words (not including articles or prepositions).
-  - Sentence case.
+- [ ] **Metadata** follows [guidelines](https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata):
+  - [ ] `title`: Use seven words or fewer (excluding articles/prepositions), sentence case.
+  - [ ] `tier`, `offering`, and `stage`: Check formatting and ordering.
+        - Tiers, offerings, and status match the docs and `features.yml`
+  - [ ] `documentation_link`: Uses a relative URL, no `.md` extension, links to accurate and updated docs
+         Not every release item links to an exact match in the documentation. Just ensure the link seems appropriate.
+  - [ ] `work_item`: Links to correct epic, issue, or MR.
+  - [ ] `categories`: Required. Matches an existing term from [`categories.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). If needed, add or update a category as [described in the handbook](https://handbook.gitlab.com/handbook/product/categories/#category-and-feature-changes).
+  - [ ] `level`: If [`primary`](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#primary-vs-secondary):
+    - Include or update [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml) as needed, as described in the [Handbook](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#features).
+    - [Update the pricing theme, if a Premium or Ultimate feature](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/pricing-theme-primary-feature.md).
+  - [ ] `weight`: Default `50`. Only change if the release note must be listed above other items in the section. Smaller numbers are listed first, so change to a smaller number to move an item up in the list. Leave gaps for other items to be inserted above or below.
 - [ ] Content:
   - Make it clear whether the feature is new or an improvement to an existing feature.
   - Ensure all links are functional and have meaningful text for SEO (for example, use descriptive links instead of "click here").
   - Ensure that the text is fewer than 125 words.
-- [ ] Details block:
-  - Use the [tiers, offerings, and status](https://docs.gitlab.com/development/documentation/styleguide/availability_details/#available-options)
-    as detailed in the style guide.
-  - Ensure the documentation link points to the latest docs, and includes the anchor to the relevant section on the page if possible.
-    Not every release item links to an exact match in the documentation. Just ensure the link seems appropriate.
-  - Ensure the documentation is updated and clearly talks about the feature.
-  - Ensure all links to `docs.gitlab.com` content are relative URLs.
-- [ ] For any [primary features](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#primary-vs-secondary):
-  - Be sure to include or revise the [`features.yml` file](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml) as needed, as described in the [Handbook](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#features).
-  - A category is required, matching an entry in the [`categories.yml` file](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). If needed, add or update a category as [described in the handbook](https://handbook.gitlab.com/handbook/product/categories/#category-and-feature-changes).
-  - [Update the pricing theme, if a Premium or Ultimate feature](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/pricing-theme-primary-feature.md).
 - [ ] Add Reviewers: When the above are complete, add the Tech Writer, PMM, and Group Manager or Director as Reviewers.
 - [ ] If this MR is a community contribution, consider nominating the contributor for MVP.
   - Check the `#release-post` channel in Slack for the most recent call for MVP Nominations.
@@ -91,31 +90,28 @@ When this MR is merged, you can view it on the release [preview page](https://do
 <details>
 <summary>Expand for Details </summary>
 
-After [the technical writer from the corresponding group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) is **added as a reviewer to this merge request**, they will perform their review.
+After [the technical writer from the corresponding group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) is **added as a reviewer to this merge request**, they perform their review.
 
-**Please mark a section as complete after you perform all individual checks!**
+> [!warning]
+> Mark a section as complete after you perform all individual checks!
 
-- [ ] Feature:
-  - If the feature is in the primary section, review changes to [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml). Ensure the `category` field contains the relevant categories from [`categories.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml).
-- [ ] Name/title:
-  - Try to limit to 7 words (not including articles or prepositions).
-  - Use sentence case.
-- [ ] Details block:
-  - Ensure the tiers, offerings, and status are correct and match the docs and `features.yml` if applicable.
-  - Ensure the documentation link goes to the correct document and anchor. Not every release item links to an exact match in the documentation.
-    Just ensure the link seems somewhat appropriate.
-  - Ensure the documentation is updated and clearly talks about the feature.
-  - Ensure all links to `docs.gitlab.com` content are relative URLs.
-- [ ] Description:
-  - Review the description for accuracy.
-  - Try to limit to 125 words.
-  - Stay consistent with the documentation. All resources (docs, release post, `features.yml`, etc.) should refer to the feature the same way, including capitalization.
-  - Look for typos or grammar mistakes.
-  - Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, and lines with only spaces).
-  - Review use of whitespace and bulleted lists. Are things easily scannable?
-    Consider adding line breaks or breaking content into bullets if you have more than a few sentences.
-  - Avoid acronyms as much as possible.
-  - Ensure code is wrapped in code blocks.
+- [ ] **Metadata** follows [guidelines](https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata):
+  - [ ] `title`: Uses seven words or fewer (excluding articles/prepositions), sentence case.
+  - [ ] `tier`, `offering`, and `stage`: Check formatting and ordering.
+        - Tiers, offerings, and status match the docs and `features.yml`
+  - [ ] `documentation_link`: Uses a relative URL, no `.md` extension, links to accurate and updated docs
+  - [ ] `work_item`: Links to correct epic, issue, or MR.
+  - [ ] `categories`: Matches an existing term from [`categories.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). If a category doesn't exist, the PM must add one.
+  - [ ] `level`: If `primary`, matches an existing term in [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml). If a feature doesn't exist, the PM must add one.
+  - [ ] `weight`: Default `50`. Only change if the release note must be listed above other items in the section. Smaller numbers are listed first, so change to a smaller number to move an item up in the list. Leave gaps for other items to be inserted above or below.
+- [ ] Content:
+  - If possible, limit to 125 words or fewer.
+  - Make text scannable. Use bullets or line breaks for multiple sentences.
+  - Make sure feature name and capitalization is consistent across docs, release post, and `features.yml`.
+  - Fix typos or grammar mistakes.
+  - If possible, avoid acronyms.
+  - Wrap code in code blocks.
+  - Remove trailing spaces, double spaces, extra blank lines, or whitespace-only lines.
 
 Notes:
 - If checklist items are incomplete, tell the PMs or other team members.

@@ -88,6 +88,18 @@ RSpec.describe Ci::Partitions::ArchiveService, feature_category: :ci_scaling do
           expect { execute }.not_to change { active_partition.reload.status_name }
         end
       end
+
+      context 'when ci_pipeline_archival_setting feature flag is disabled' do
+        let_it_be(:current_until) { 2.hours.ago }
+
+        before do
+          stub_feature_flags(ci_pipeline_archival_setting: false)
+        end
+
+        it 'does not transition the partition even when older than the archive threshold' do
+          expect { execute }.not_to change { active_partition.reload.status_name }
+        end
+      end
     end
   end
 end

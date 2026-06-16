@@ -51,13 +51,6 @@ There are a few ways to view a list of environments for a given project:
 
 ### Environment URL
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags/_index.md) named `soft_validation_on_external_url`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
-
-{{< /history >}}
-
 The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
 
@@ -290,13 +283,6 @@ You cannot set deployment tiers in the UI.
 
 ### Rename an environment
 
-{{< history >}}
-
-- Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
-- Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
-
-{{< /history >}}
-
 You cannot rename an environment.
 
 To achieve the same result as renaming an environment:
@@ -354,8 +340,6 @@ GitLab validates the pipeline configuration at pipeline creation.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
-- [Searching environments within a folder](https://gitlab.com/gitlab-org/gitlab/-/issues/373850) was introduced in GitLab 15.7 with [Feature flag `enable_environments_search_within_folder`](https://gitlab.com/gitlab-org/gitlab/-/issues/382108). Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382108) in GitLab 17.4. Feature flag `enable_environments_search_within_folder` removed.
 
 {{< /history >}}
@@ -581,13 +565,6 @@ manually.
 
 ### Clean up stale environments
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags/_index.md) named `stop_stale_environments`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
-
-{{< /history >}}
-
 Clean up stale environments when you want to stop old environments in a project.
 
 Prerequisites:
@@ -662,12 +639,6 @@ stop_review_app:
 ```
 
 ### Multiple stop actions for an environment
-
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
-
-{{< /history >}}
 
 To configure multiple **parallel** stop actions on an environment, specify the
 [`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple

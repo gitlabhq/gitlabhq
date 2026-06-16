@@ -11,6 +11,7 @@ import setEnvironmentToStopMutation from '../graphql/mutations/set_environment_t
 import isEnvironmentStoppingQuery from '../graphql/queries/is_environment_stopping.query.graphql';
 
 export default {
+  name: 'EnvironmentStop',
   components: {
     GlButton,
   },

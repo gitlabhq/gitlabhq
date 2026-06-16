@@ -15,7 +15,8 @@ module API
           documentation: { example: 18 }
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get all pipeline schedules' do
+        desc 'List all pipeline schedules' do
+          detail 'Lists all pipeline schedules for a project.'
           success code: 200, model: Entities::Ci::PipelineSchedule
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -43,7 +44,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Get a single pipeline schedule' do
+        desc 'Retrieve a pipeline schedule' do
+          detail 'Retrieves a pipeline schedule for a project.'
           success code: 200, model: Entities::Ci::PipelineScheduleDetails
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -61,7 +63,8 @@ module API
           present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails, user: current_user
         end
 
-        desc 'Get all pipelines triggered from a pipeline schedule' do
+        desc 'List all pipelines triggered by a pipeline schedule' do
+          detail 'Lists all pipelines triggered by a pipeline schedule in a project.'
           success code: 200, model: Entities::Ci::PipelineBasic
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -104,7 +107,8 @@ module API
           present paginate(pipelines), with: Entities::Ci::PipelineBasic
         end
 
-        desc 'Create a new pipeline schedule' do
+        desc 'Create a pipeline schedule' do
+          detail 'Creates a pipeline schedule.'
           success code: 201, model: Entities::Ci::PipelineScheduleDetails
           failure [
             { code: 400, message: 'Bad request' },
@@ -149,7 +153,8 @@ module API
           end
         end
 
-        desc 'Edit a pipeline schedule' do
+        desc 'Update a pipeline schedule' do
+          detail 'Updates a pipeline schedule for a project. After the update is done, it is rescheduled automatically.'
           success code: 200, model: Entities::Ci::PipelineScheduleDetails
           failure [
             { code: 400, message: 'Bad request' },
@@ -196,7 +201,8 @@ module API
           end
         end
 
-        desc 'Take ownership of a pipeline schedule' do
+        desc 'Create or update ownership of a pipeline schedule' do
+          detail 'Creates or updates the owner of a pipeline schedule for a project.'
           success code: 201, model: Entities::Ci::PipelineScheduleDetails
           failure [
             { code: 400, message: 'Bad request' },
@@ -225,6 +231,7 @@ module API
         end
 
         desc 'Delete a pipeline schedule' do
+          detail 'Deletes a pipeline schedule for a project.'
           success code: 204
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -245,8 +252,8 @@ module API
           destroy_conditionally!(pipeline_schedule)
         end
 
-        desc 'Play a scheduled pipeline immediately' do
-          detail 'This feature was added in GitLab 12.8'
+        desc 'Run a pipeline schedule' do
+          detail 'Runs a pipeline schedule immediately. The next scheduled run of this pipeline is not affected.'
           success code: 201
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -274,7 +281,8 @@ module API
           end
         end
 
-        desc 'Create a new pipeline schedule variable' do
+        desc 'Create a variable for a pipeline schedule' do
+          detail 'Creates a variable for a pipeline schedule.'
           success code: 201, model: Entities::Ci::Variable
           failure [
             { code: 400, message: 'Bad request' },
@@ -310,7 +318,8 @@ module API
           end
         end
 
-        desc 'Get a single pipeline schedule variable' do
+        desc 'Retrieve a variable for a pipeline schedule' do
+          detail 'Retrieves a specified variable for a pipeline schedule.'
           success code: 200, model: Entities::Ci::Variable
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -331,7 +340,8 @@ module API
           present pipeline_schedule_variable, with: Entities::Ci::Variable
         end
 
-        desc 'Edit a pipeline schedule variable' do
+        desc 'Update a variable for a pipeline schedule' do
+          detail 'Updates a variable for a pipeline schedule.'
           success code: 200, model: Entities::Ci::Variable
           failure [
             { code: 400, message: 'Bad request' },
@@ -365,7 +375,8 @@ module API
           end
         end
 
-        desc 'Delete a pipeline schedule variable' do
+        desc 'Delete a variable for a pipeline schedule' do
+          detail 'Deletes a specified variable for a pipeline schedule.'
           success code: 202, model: Entities::Ci::Variable
           failure [
             { code: 401, message: 'Unauthorized' },

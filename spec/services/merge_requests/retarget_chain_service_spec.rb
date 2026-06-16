@@ -6,12 +6,12 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
   include ProjectForksHelper
 
   let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, assignees: [user]) }
   let_it_be(:project) { merge_request.project }
 
   subject { described_class.new(project: project, current_user: user).execute(merge_request) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 

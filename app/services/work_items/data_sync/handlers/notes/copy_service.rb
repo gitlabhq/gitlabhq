@@ -48,6 +48,14 @@ module WorkItems
             noteable.try(:namespace_id) || noteable.try(:group_id)
           end
 
+          # Returns the sharding key namespace_id for a note row, or nil when the
+          # target is project-scoped (project_id is the sharding key in that case).
+          def sharding_namespace_id_for(noteable)
+            return if noteable.try(:project_id).present?
+
+            namespace_id_for(noteable)
+          end
+
           def copy_notes_emoji(notes_ids_map)
             notes_emoji = ::AwardEmoji.by_awardable('Note', notes_ids_map.keys)
             ::AwardEmoji.insert_all(new_notes_emoji(notes_emoji, notes_ids_map)) if notes_emoji.any?
@@ -101,7 +109,7 @@ module WorkItems
                 attrs['discussion_id'] = new_discussion_ids[note.discussion_id]
                 # need to use `try` to be able to handle Issue model and legacy Epic model instances
                 attrs['project_id'] = target_noteable.try(:project_id)
-                attrs['namespace_id'] = namespace_id_for(target_noteable)
+                attrs['namespace_id'] = sharding_namespace_id_for(target_noteable)
                 attrs['imported_from'] = 'none' # maintaining current copy notes implementation
 
                 # this data is not changed, but it is being serialized, and we need it deserialized for bulk inserts

@@ -3,9 +3,9 @@
 RSpec.shared_examples 'visibility level settings' do |skip_nil_destination_tests|
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:public_group) { create(:group, :public) }
-  let_it_be(:internal_group) { create(:group, :internal) }
-  let_it_be(:private_group) { create(:group, :private) }
+  let_it_be(:public_group, freeze: false) { create(:group, :public) }
+  let_it_be(:internal_group, freeze: false) { create(:group, :internal) }
+  let_it_be(:private_group, freeze: false) { create(:group, :private) }
   let(:data) { { 'visibility' => visibility_level } }
 
   subject(:transformed_data) { described_class.new.transform(context, data) }

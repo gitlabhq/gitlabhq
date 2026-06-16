@@ -47,6 +47,7 @@ GitLab Observability is available and free for all tiers. [Share feedback or req
 1. Add your OTLP endpoint to [start sending telemetry](send.md), or [view CI/CD pipeline telemetry](ci_cd.md).
 1. View your first trace.
 1. Debug a slow request.
+1. [Access the API](api_access.md) to query data programmatically.
 
 <div class="video-fallback">
   Watch: <a href="https://www.youtube.com/watch?v=lZtgor6chMs">GitLab Observability setup</a>.
@@ -127,6 +128,7 @@ valuable for compliance requirements and post-incident analysis.
 
 ## Learn more
 
+- [Access the Observability API](api_access.md). Query traces, metrics, and logs programmatically.
 - [OpenTelemetry documentation](https://opentelemetry.io/docs/instrumentation/). Language-specific instrumentation guides.
 - [GitLab Observability Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/). Pre-built dashboards and examples.
 - [Proposed features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8)

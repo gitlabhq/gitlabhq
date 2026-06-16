@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe UserSettings::SshKeysController, feature_category: :source_code_management do
-  let_it_be(:user) { create(:user, :with_namespace) }
+  let_it_be(:user, freeze: false) { create(:user, :with_namespace) }
 
   before do
     login_as(user)

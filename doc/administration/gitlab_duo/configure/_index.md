@@ -8,7 +8,7 @@ title: Configure GitLab Duo
 
 {{< details >}}
 
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -28,6 +28,7 @@ You can configure GitLab Duo to use:
 - [Your instance is activated with an activation code](../../license.md#activate-gitlab-ee).
   - You cannot use a license key.
   - You cannot use GitLab Duo with an offline license, with the exception of [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md).
+- The host that runs your instance can resolve public hostnames with DNS, even when using an HTTP/S proxy server.
 
 ## Allow outbound connections from the GitLab instance to GitLab Duo
 
@@ -35,6 +36,11 @@ You can configure GitLab Duo to use:
 - For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
   connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
   HTTP/2 traffic.
+- If your instance connects through an HTTP/S proxy server, the host must still be
+  able to resolve public hostnames with DNS. If hostnames can be resolved only
+  through the proxy server, GitLab Duo features like the GitLab Duo health check,
+  the GitLab Credits dashboard, and GitLab Duo Agent Platform might time out or fail.
+  For more information, see [issue 602538](https://gitlab.com/gitlab-org/gitlab/-/issues/602538).
 
 ## Allow inbound connections from clients to the GitLab instance
 
@@ -134,6 +140,7 @@ to send usage data to GitLab. This data is different from the [telemetry data](.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
 - [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
+- Foundational flows readiness checks [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/599536) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -162,7 +169,7 @@ These tests are performed:
 | Network                   | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo). |
 | Synchronization           | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
 | Code Suggestions          | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
-| GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Agentic Chat. |
+| GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Agentic Chat.<br><br>For GitLab Duo Self-Hosted, this test does not pass until you [select a self-hosted model for the GitLab Duo Agent Platform feature](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature).<br><br>Also verifies the following foundational flows prerequisites:<br>- The instance-level flow execution setting is enabled.<br>- The instance-level foundational flows setting is enabled.<br>- At least one active instance runner with the `gitlab--duo` tag is registered and connected, and uses a Docker-compatible executor.|
 | System exchange           | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
 For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
@@ -178,6 +185,15 @@ If you want to host your own language models or AI Gateway:
   This option provides full control over your data and security.
 - Use a [hybrid configuration](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
   where you host your own AI Gateway and models for some features, but configure other features to use the GitLab AI Gateway and vendor models.
+
+## GitLab Dedicated for Government
+
+For GitLab Dedicated for Government, you must use
+GitLab Duo Self-Hosted with FedRAMP-approved models.
+The cloud-based AI Gateway and vendor models are not available for GitLab Dedicated for Government.
+
+For more information, see
+[configure GitLab Duo on GitLab Dedicated for Government](gitlab_dedicated_for_government.md).
 
 ## Related topics
 

@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { normalizeDownstreamPipelines, normalizeStages } from './utils/data_utils';
 import DownstreamPipelines from './downstream_pipelines.vue';
@@ -26,6 +25,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    downstreamCount: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     isMergeTrain: {
       type: Boolean,
@@ -62,7 +66,7 @@ export default {
       return this.upstreamPipeline?.id;
     },
     latestDownstreamPipelines() {
-      return keepLatestDownstreamPipelines(this.formattedDownstreamPipelines);
+      return this.formattedDownstreamPipelines;
     },
     upstreamPipelineStatus() {
       return this.upstreamPipeline?.detailedStatus || this.upstreamPipeline?.details?.status;
@@ -109,8 +113,10 @@ export default {
     <downstream-pipelines
       v-if="hasDownstreamPipelines"
       :pipelines="latestDownstreamPipelines"
+      :total-count="downstreamCount || latestDownstreamPipelines.length"
       :pipeline-path="pipelinePath"
       data-testid="pipeline-mini-graph-downstream"
+      @job-action-executed="$emit('job-action-executed')"
     />
   </div>
 </template>

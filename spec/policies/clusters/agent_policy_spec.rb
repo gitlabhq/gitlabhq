@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::AgentPolicy do
+RSpec.describe Clusters::AgentPolicy, feature_category: :deployment_management do
   let(:cluster_agent) { create(:cluster_agent, name: 'agent') }
   let(:user) { create(:admin) }
   let(:policy) { described_class.new(user, cluster_agent) }

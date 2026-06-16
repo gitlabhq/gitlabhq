@@ -57,8 +57,6 @@ module Gitlab
       end
 
       def write_throttled?(session)
-        return false unless Feature.enabled?(:throttle_session_writes, Feature.current_request)
-
         last_write_at = session[LAST_WRITE_AT_KEY]
         last_write_at && (Time.now.to_i - last_write_at) < WRITE_THROTTLE_INTERVAL
       end

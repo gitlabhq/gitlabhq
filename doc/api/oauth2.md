@@ -414,13 +414,14 @@ The `access token` allows you to make requests to the API on behalf of a user.
 You can pass the token either as GET parameter:
 
 ```plaintext
-GET https://gitlab.example.com/api/v4/user?access_token=OAUTH-TOKEN
+GET https://gitlab.example.com/api/v4/user?access_token=<OAUTH-TOKEN>
 ```
 
 or you can put the token to the Authorization header:
 
 ```shell
-curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/user"
+curl --header "Authorization: Bearer <OAUTH-TOKEN>" \
+  --url "https://gitlab.example.com/api/v4/user"
 ```
 
 ## Access Git over HTTPS with `access token`
@@ -454,7 +455,8 @@ You must supply the access token, either:
 - In the Authorization header:
 
   ```shell
-  curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
+  curl --header "Authorization: Bearer <OAUTH-TOKEN>" \
+    --url "https://gitlab.example.com/oauth/token/info"
   ```
 
 The following is an example response:

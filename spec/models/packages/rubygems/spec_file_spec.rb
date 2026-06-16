@@ -11,7 +11,7 @@ RSpec.describe Packages::Rubygems::SpecFile, feature_category: :package_registry
 
   describe 'loose foreign keys' do
     it_behaves_like 'update by a loose foreign key' do
-      let_it_be(:model) { create(:rubygems_spec_file, status: :default) }
+      let_it_be(:model, freeze: false) { create(:rubygems_spec_file, status: :default) }
 
       let!(:parent) { model.project }
     end
@@ -45,6 +45,44 @@ RSpec.describe Packages::Rubygems::SpecFile, feature_category: :package_registry
     end
   end
 
+  describe '.find_or_build' do
+    let_it_be(:existing_spec_file) { create(:rubygems_spec_file, project: project) }
+
+    subject(:result) { described_class.find_or_build(project_id: project_id, file_name: file_name) }
+
+    context 'when a matching record exists' do
+      let(:project_id) { existing_spec_file.project_id }
+      let(:file_name) { existing_spec_file.file_name }
+
+      it 'returns the existing record' do
+        expect(result).to eq(existing_spec_file)
+        expect(result).to be_persisted
+      end
+    end
+
+    context 'when no matching record exists' do
+      let(:project_id) { project.id }
+      let(:file_name) { 'new_spec_file.gz' }
+
+      it 'returns a new unpersisted record with the given attributes' do
+        expect(result).to be_a_new(described_class)
+        expect(result.project_id).to eq(project_id)
+        expect(result.file_name).to eq(file_name)
+      end
+    end
+
+    context 'when only the project_id matches' do
+      let(:project_id) { existing_spec_file.project_id }
+      let(:file_name) { 'different_file_name.gz' }
+
+      it 'returns a new unpersisted record' do
+        expect(result).to be_a_new(described_class)
+        expect(result.project_id).to eq(project_id)
+        expect(result.file_name).to eq(file_name)
+      end
+    end
+  end
+
   describe '#object_storage_key' do
     it_behaves_like 'object_storage_key callbacks' do
       let(:model) { build(:rubygems_spec_file, project: project) }
@@ -57,7 +95,7 @@ RSpec.describe Packages::Rubygems::SpecFile, feature_category: :package_registry
     end
 
     describe 'readonly object_storage_key' do
-      let_it_be(:model) { create(:rubygems_spec_file, project: project) }
+      let_it_be(:model, freeze: false) { create(:rubygems_spec_file, project: project) }
 
       it 'sets object_storage_key' do
         expect(model.object_storage_key).to be_present

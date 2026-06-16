@@ -4,7 +4,8 @@ classes:
 - Ai::DuoWorkflows::Event
 feature_categories:
 - duo_agent_platform
-description:
+description: Stores control and message events (pause, resume, stop, message, response,
+  require_input) exchanged with Duo Workflow runs, along with delivery status.
 introduced_by_url:
 milestone: '17.5'
 gitlab_schema: gitlab_main_org

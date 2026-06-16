@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
   end
 
   describe 'state machine' do
-    let_it_be(:job) { create(:batched_background_migration_job, :failed) }
+    let_it_be(:job, freeze: false) { create(:batched_background_migration_job, :failed) }
 
     it { expect(described_class.state_machine.states.map(&:name)).to eql(%i[pending running failed succeeded]) }
 
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
           }
         )
 
-        expect { job.run! }.to change(job, :started_at)
+        expect { job.run! }.to change { job.started_at }
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
       end
 
       it 'updates the finished_at' do
-        expect { job.succeed! }.to change(job, :finished_at).from(nil).to(Time)
+        expect { job.succeed! }.to change { job.finished_at }.from(nil).to(Time)
       end
 
       it 'creates a new transition log' do
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
       end
 
       it 'updates the finished_at' do
-        expect { job.failure! }.to change(job, :finished_at).from(nil).to(Time)
+        expect { job.failure! }.to change { job.finished_at }.from(nil).to(Time)
       end
 
       it 'creates a new transition log' do
@@ -495,7 +495,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
 
   describe '#split_and_retry!' do
     let_it_be(:migration) { create(:batched_background_migration, table_name: :events) }
-    let_it_be(:job) { create(:batched_background_migration_job, :failed, batched_migration: migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3) }
+    let_it_be(:job, freeze: false) { create(:batched_background_migration_job, :failed, batched_migration: migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3) }
     let_it_be(:project) { create(:project) }
 
     before_all do

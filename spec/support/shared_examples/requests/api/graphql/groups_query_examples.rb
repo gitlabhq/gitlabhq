@@ -4,12 +4,12 @@ RSpec.shared_examples 'groups query' do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:public_group) { create(:group, :public, name: 'Group A') }
-  let_it_be(:private_group) { create(:group, :private, name: 'Group B') }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:public_group, freeze: false) { create(:group, :public, name: 'Group A') }
+  let_it_be(:private_group, freeze: false) { create(:group, :private, name: 'Group B') }
   let(:current_user) { user }
 
-  let_it_be(:field_name) { :groups }
+  let_it_be(:field_name, freeze: false) { :groups }
   let(:filters) { {} }
 
   let(:group_fields) { all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory securityCategories]) }
@@ -63,7 +63,7 @@ RSpec.shared_examples 'groups query' do
     end
 
     context 'with `search` argument' do
-      let_it_be(:other_group) { create(:group, name: 'other-group') }
+      let_it_be(:other_group, freeze: false) { create(:group, name: 'other-group') }
       let(:filters) { { search: 'oth' } }
 
       it 'filters groups by name' do
@@ -74,7 +74,7 @@ RSpec.shared_examples 'groups query' do
     end
 
     context 'with `owned_only` argument' do
-      let_it_be(:owned_group) { create(:group, name: 'with owner role', owners: user) }
+      let_it_be(:owned_group, freeze: false) { create(:group, name: 'with owner role', owners: user) }
       let(:filters) { { ownedOnly: true } }
 
       it 'return only owned groups' do
@@ -86,7 +86,7 @@ RSpec.shared_examples 'groups query' do
   end
 
   describe 'active argument' do
-    let_it_be(:group_pending_deletion) { create(:group_with_deletion_schedule, owners: user) }
+    let_it_be(:group_pending_deletion, freeze: false) { create(:group_with_deletion_schedule, owners: user) }
 
     context 'when active argument is nil' do
       it 'returns all groups' do
@@ -119,11 +119,11 @@ RSpec.shared_examples 'groups query' do
   end
 
   describe 'group sorting' do
-    let_it_be(:public_group2) { create(:group, :public, name: 'Group C') }
-    let_it_be(:public_group3) { create(:group, :public, name: 'Group D') }
-    let_it_be(:all_groups) { [public_group, public_group2, public_group3] }
-    let_it_be(:first_param) { 2 }
-    let_it_be(:data_path) { [field_name] }
+    let_it_be(:public_group2, freeze: false) { create(:group, :public, name: 'Group C') }
+    let_it_be(:public_group3, freeze: false) { create(:group, :public, name: 'Group D') }
+    let_it_be(:all_groups, freeze: false) { [public_group, public_group2, public_group3] }
+    let_it_be(:first_param, freeze: false) { 2 }
+    let_it_be(:data_path, freeze: false) { [field_name] }
 
     where(:field, :direction, :sorted_groups) do
       'id'   | 'asc'  | lazy { all_groups.sort_by(&:id) }
@@ -142,28 +142,28 @@ RSpec.shared_examples 'groups query' do
     end
 
     context 'when sorting by storage size' do
-      let_it_be(:public_group_project) do
+      let_it_be(:public_group_project, freeze: false) do
         create(:project,
           namespace: public_group,
           statistics: build(:project_statistics, namespace: public_group, storage_size: 100.megabytes)
         )
       end
 
-      let_it_be(:public_group2_project) do
+      let_it_be(:public_group2_project, freeze: false) do
         create(:project,
           namespace: public_group2,
           statistics: build(:project_statistics, namespace: public_group2, storage_size: 200.megabytes)
         )
       end
 
-      let_it_be(:public_group3_project) do
+      let_it_be(:public_group3_project, freeze: false) do
         create(:project,
           namespace: public_group3,
           statistics: build(:project_statistics, namespace: public_group3, storage_size: 50.megabytes)
         )
       end
 
-      let_it_be(:private_group_project) do
+      let_it_be(:private_group_project, freeze: false) do
         create(:project,
           namespace: private_group,
           statistics: build(:project_statistics, namespace: private_group, storage_size: 300.megabytes)
@@ -172,7 +172,11 @@ RSpec.shared_examples 'groups query' do
 
       context 'when user is not admin' do
         # Sorting by ID in descending order is the fallback when the sort option is unrecognized.
-        let_it_be(:fallback_sorted_records) { all_groups.sort_by(&:id).reverse.map { |p| global_id_of(p).to_s } }
+        let_it_be(:fallback_sorted_records, freeze: false) do
+          all_groups.sort_by(&:id).reverse.map do |p|
+            global_id_of(p).to_s
+          end
+        end
 
         it_behaves_like 'sorted paginated query' do
           let(:sort_param) { "storage_size_keyset_asc" }
@@ -186,7 +190,7 @@ RSpec.shared_examples 'groups query' do
       end
 
       context 'when user is admin', :enable_admin_mode do
-        let_it_be(:admin) { create(:admin) }
+        let_it_be(:admin, freeze: false) { create(:admin) }
 
         let(:current_user) { admin }
 

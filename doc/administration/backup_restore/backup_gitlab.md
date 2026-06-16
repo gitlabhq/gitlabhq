@@ -536,6 +536,7 @@ Depending on your installation type, slightly different components can be skippe
 - `registry` (Container registry images)
 - `packages` (Packages)
 - `ci_secure_files` (Project-level secure files)
+- `agent_plan_content` (Agent plan content for work items)
 - `external_diffs` (External merge request diffs)
 
 {{< /tab >}}
@@ -554,6 +555,7 @@ Depending on your installation type, slightly different components can be skippe
 - `registry` (Container registry images)
 - `packages` (Package registry)
 - `ci_secure_files` (Project-level Secure Files)
+- `agent_plan_content` (Agent plan content for work items)
 - `external_diffs` (Merge request diffs)
 
 {{< /tab >}}
@@ -844,7 +846,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
-REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,pages
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,agent_plan_content,pages
 ```
 
 {{< /tab >}}

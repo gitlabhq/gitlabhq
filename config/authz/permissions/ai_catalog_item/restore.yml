@@ -1,0 +1,3 @@
+---
+name: restore_ai_catalog_item
+description: Grants the ability to restore an AI catalog item version as the new latest version

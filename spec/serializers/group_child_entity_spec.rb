@@ -182,15 +182,11 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
         stub_application_setting(deletion_adjourned_period: deletion_adjourned_period)
       end
 
-      context 'when group is marked for deletion' do
-        let_it_be(:date) { Date.new(2025, 4, 14) }
-        let_it_be(:group) { create(:group) }
+      context 'when group is marked for deletion', :freeze_time do
+        let_it_be(:group) { create(:group_with_deletion_schedule, :deletion_scheduled) }
         let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
         let_it_be(:sub_subgroup) { create(:group, name: 'subsubgroup', parent: subgroup) }
         let_it_be(:project) { create(:project, name: 'project 1', group: group) }
-        let_it_be(:deletion_schedule) do
-          create(:group_deletion_schedule, group: group, marked_for_deletion_on: date, deleting_user: user)
-        end
 
         it 'returns marked_for_deletion as true for child projects and groups' do
           [group, subgroup, sub_subgroup, project].each do |item|
@@ -198,8 +194,24 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
           end
         end
 
-        it 'returns marked_for_deletion_on' do
-          expect(described_class.new(group, request: request).as_json[:marked_for_deletion_on]).to eq(date)
+        it 'returns marked_for_deletion_on as the correct Date' do
+          value = described_class.new(group, request: request).as_json[:marked_for_deletion_on]
+
+          expect(value).to be_a(Date)
+          expect(value).to eq(group.deletion_scheduled_at.to_date)
+        end
+
+        context 'when replace_group_deletion_schedule feature flag is disabled' do
+          before do
+            stub_feature_flags(replace_group_deletion_schedule: false)
+          end
+
+          it 'returns marked_for_deletion_on as the correct Date' do
+            value = described_class.new(group, request: request).as_json[:marked_for_deletion_on]
+
+            expect(value).to be_a(Date)
+            expect(value).to eq(group.marked_for_deletion_on)
+          end
         end
 
         it 'returns is_self_deletion_scheduled as true for top group' do
@@ -211,7 +223,8 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
         end
 
         it 'returns permanent_deletion_date as the date the group will be deleted' do
-          expect(described_class.new(group, request: request).as_json[:permanent_deletion_date]).to eq((date + deletion_adjourned_period.days).strftime('%F'))
+          expect(described_class.new(group, request: request).as_json[:permanent_deletion_date])
+            .to eq((Date.current + deletion_adjourned_period.days).strftime('%F'))
         end
       end
 

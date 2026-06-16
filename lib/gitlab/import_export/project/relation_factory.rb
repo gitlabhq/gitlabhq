@@ -42,7 +42,6 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_commits_metadata: 'MergeRequest::CommitsMetadata',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
-                      work_item_description: 'WorkItems::Description',
                       user_contributions: 'User',
                       squash_option: 'Projects::BranchRules::SquashOption' }.freeze
 
@@ -222,7 +221,7 @@ module Gitlab
 
         def resolve_work_item_type(provider, work_item_type_hash, issue_type)
           name = work_item_type_hash&.dig('name')
-          if name && ::Feature.enabled?(:work_item_configurable_types, @importable.root_namespace)
+          if name
             matched = provider.find_by_name(name)
             return matched if matched&.can_user_create_items?
 
@@ -231,7 +230,6 @@ module Gitlab
           end
 
           # Backward compatibility: legacy exports use `base_type` or `issue_type`.
-          # Also used when the `work_item_configurable_types` feature flag is disabled.
           base_type = work_item_type_hash&.dig('base_type') || issue_type
           provider.find_by_base_type(base_type) if base_type
         end

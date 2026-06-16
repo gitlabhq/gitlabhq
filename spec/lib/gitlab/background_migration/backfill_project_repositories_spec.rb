@@ -11,7 +11,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectRepositories, feature
 
     describe '#find_shard_id' do
       it 'creates a new shard when it does not exist yet' do
-        expect { subject.find_shard_id('other') }.to change(Shard, :count).by(1)
+        expect { subject.find_shard_id('other') }.to change { Shard.count }.by(1)
       end
 
       it 'returns the shard when it exists' do

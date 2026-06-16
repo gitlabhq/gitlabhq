@@ -6,7 +6,6 @@ module Authn
     # (instance-wide) and SaaS (namespace-scoped) service account creation checks.
     # Related discussion - https://gitlab.com/gitlab-org/gitlab/-/issues/540776#note_3099330149
     LIMIT_FOR_FREE = 100
-    LIMIT_FOR_TRIAL = 100
 
     class << self
       # CE self-managed has no license, so it is always on the free tier.
@@ -18,7 +17,7 @@ module Authn
 
       # Returns true in CE - SaaS subscription checks do not apply.
       # Overridden in EE to enforce tier-based limits for SaaS namespaces.
-      def creation_allowed_for_saas?(_root_namespace = nil, _provisioned_count = 0)
+      def creation_allowed_for_saas?(_root_namespace = nil)
         true
       end
 

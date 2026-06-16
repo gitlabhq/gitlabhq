@@ -6,6 +6,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 
 export default {
+  name: 'PromoteMilestoneModal',
   components: {
     GlModal,
   },

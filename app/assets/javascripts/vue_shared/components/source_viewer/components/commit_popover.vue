@@ -36,7 +36,7 @@ export default {
       );
     },
     authoredDate() {
-      return this.commit.authoredDate;
+      return this.commit?.authoredDate;
     },
     commitUrl() {
       return this.commit.webPath || this.commit.commitUrl;
@@ -52,7 +52,7 @@ export default {
 
 <template>
   <gl-popover
-    :container="popoverTargetId"
+    container="viewport"
     :target="popoverTargetId"
     placement="top"
     boundary="viewport"
@@ -67,28 +67,31 @@ export default {
       <!-- Commit title -->
       <gl-link
         :href="commitUrl"
-        class="gl-text-default hover:gl-text-default"
+        class="gl-h-5 gl-text-default hover:gl-text-default"
         data-testid="commit-title-link"
       >
         <gl-truncate :text="commit.title" :lines="2" class="gl-font-bold" />
       </gl-link>
 
-      <!-- Author info -->
-      <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
-        <gl-avatar :src="avatarUrl" :size="16" :alt="authorName" />
-        <span data-testid="commit-author">{{ authorName }}</span>
-      </div>
+      <!-- Author info + Commit SHA -->
+      <div class="gl-flex gl-items-center gl-gap-4">
+        <!-- Author info -->
+        <div class="gl-inline-flex gl-items-center gl-gap-2 gl-text-subtle">
+          <gl-avatar :src="avatarUrl" :size="16" :alt="authorName" />
+          <span data-testid="commit-author">{{ authorName }}</span>
+        </div>
 
-      <!-- Commit SHA -->
-      <div class="gl-flex gl-items-center gl-gap-2">
-        <gl-icon name="commit" :size="14" class="gl-text-subtle" />
-        <gl-link
-          :href="commitUrl"
-          class="gl-font-monospace gl-text-subtle hover:gl-text-default"
-          data-testid="commit-sha-link"
-        >
-          {{ commit.shortId }}
-        </gl-link>
+        <!-- Commit SHA -->
+        <div class="gl-inline-flex gl-items-center gl-gap-2">
+          <gl-icon name="commit" :size="14" class="gl-text-subtle" />
+          <gl-link
+            :href="commitUrl"
+            class="gl-font-monospace gl-text-subtle hover:gl-text-default"
+            data-testid="commit-sha-link"
+          >
+            {{ commit.shortId }}
+          </gl-link>
+        </div>
       </div>
     </div>
   </gl-popover>

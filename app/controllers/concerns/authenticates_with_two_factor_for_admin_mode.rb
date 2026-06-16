@@ -7,7 +7,7 @@ module AuthenticatesWithTwoFactorForAdminMode
     include AuthenticatesWithTwoFactor
   end
 
-  def admin_mode_prompt_for_two_factor(user)
+  def admin_mode_prompt_for_two_factor(user, status: :ok)
     @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Set @user for Admin views
 
     return handle_locked_user(user) unless user.can?(:log_in)
@@ -15,7 +15,7 @@ module AuthenticatesWithTwoFactorForAdminMode
     session[:otp_user_id] = user.id
     setup_webauthn_authentication(user)
 
-    render 'admin/sessions/two_factor', layout: 'application'
+    render 'admin/sessions/two_factor', layout: 'application', status: status
   end
 
   def admin_mode_authenticate_with_two_factor
@@ -86,8 +86,13 @@ module AuthenticatesWithTwoFactorForAdminMode
     user.increment_failed_attempts!
     log_failed_two_factor(user, method)
 
-    Gitlab::AppLogger.info("Failed Admin Mode Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
+    Gitlab::AppLogger.info(
+      message: "Failed Admin Mode Login",
+      username: user.username,
+      method: method,
+      remote_ip: request.remote_ip
+    )
     flash.now[:alert] = message
-    admin_mode_prompt_for_two_factor(user)
+    admin_mode_prompt_for_two_factor(user, status: :unauthorized)
   end
 end

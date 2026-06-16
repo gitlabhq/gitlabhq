@@ -2,6 +2,7 @@ import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
 import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 export const calculatePipelineCountPercentage = (a, b) => {
   try {
@@ -14,7 +15,8 @@ export const calculatePipelineCountPercentage = (a, b) => {
     if (Number.isFinite(ratio)) {
       return ratio * 100;
     }
-  } catch {
+  } catch (error) {
+    Sentry.captureException(error);
     // return below
   }
   return undefined;
@@ -33,6 +35,17 @@ export const calculateDatesFromRelativeDays = (days) => {
 export const formatPipelineCountPercentage = (a, b) => {
   const percent = calculatePipelineCountPercentage(a, b);
   return percent !== undefined ? getFormatter(SUPPORTED_FORMATS.percentHundred)(percent, 0) : '-';
+};
+
+// Returns BigInt(successCount) + BigInt(failedCount) as a string. Canceled/skipped
+// are excluded so they don't dilute the rate. Falls back to `fallbackCount` on parse error.
+export const calculateRateDenominator = (successCount, failedCount, fallbackCount = null) => {
+  try {
+    return (BigInt(successCount ?? 0) + BigInt(failedCount ?? 0)).toString();
+  } catch (error) {
+    Sentry.captureException(error);
+    return fallbackCount;
+  }
 };
 
 export const formatPipelineDuration = (seconds) => {

@@ -36,8 +36,8 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   describe '.find_by_uid_and_provider' do
     let(:provider) { 'provider' }
     let(:uid) { 'uid' }
-    let(:user) { create(:user) }
-    let!(:identity) { create(:identity, provider: provider, extern_uid: uid, user: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:identity) { create(:identity, provider: 'provider', extern_uid: 'uid', user: user) }
 
     context 'when user exists for given uid and provider' do
       it 'returns the user for given uid and provider' do
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe '#persisted?' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       expect(oauth_user.persisted?).to be_truthy
@@ -382,7 +382,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
               stub_ldap_config(sync_name: false)
             end
 
-            let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter', username: 'john') }
+            let!(:existing_user) do
+              create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter',
+                username: 'john')
+            end
 
             it "updates the gl_user name" do
               oauth_user.save # rubocop:disable Rails/SaveBang
@@ -397,7 +400,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
               stub_ldap_config(sync_name: true)
             end
 
-            let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter', username: 'john') }
+            let!(:existing_user) do
+              create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'twitter',
+                username: 'john')
+            end
 
             it "updates the gl_user name" do
               oauth_user.save # rubocop:disable Rails/SaveBang
@@ -431,14 +437,14 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:name) { 'John Doe' }
-              allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
+              allow(ldap_user).to receive(:name).and_return('John Doe')
+              allow(ldap_user).to receive(:email).and_return(['johndoe@example.com', 'john2@example.com'])
               allow(ldap_user).to receive(:dn) { dn }
 
               allow(ldap_user_2).to receive(:uid) { uid_2 }
               allow(ldap_user_2).to receive(:username) { uid_2 }
-              allow(ldap_user_2).to receive(:name) { 'Beck Potter' }
-              allow(ldap_user_2).to receive(:email) { ['beckpotter@example.com', 'beck2@example.com'] }
+              allow(ldap_user_2).to receive(:name).and_return('Beck Potter')
+              allow(ldap_user_2).to receive(:email).and_return(['beckpotter@example.com', 'beck2@example.com'])
               allow(ldap_user_2).to receive(:dn) { dn }
             end
 
@@ -464,7 +470,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                   expect(gl_user.name).to eql 'John Doe'
                   expect(gl_user.email).to eql 'johndoe@example.com'
                   expect(gl_user.identities.length).to be 2
-                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  identities_as_hash = gl_user.identities.map do |id|
+                    { provider: id.provider, extern_uid: id.extern_uid }
+                  end
                   expect(identities_as_hash).to match_array(
                     [
                       { provider: 'ldapmain', extern_uid: dn },
@@ -492,13 +500,16 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                 before do
                   allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
                   allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with(uid, any_args).and_return(nil)
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with(info_hash[:email], any_args).and_return(ldap_user)
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with(info_hash[:email], any_args)
+                    .and_return(ldap_user)
 
                   oauth_user.save # rubocop:disable Rails/SaveBang
                 end
 
                 it 'creates the LDAP identity' do
-                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  identities_as_hash = gl_user.identities.map do |id|
+                    { provider: id.provider, extern_uid: id.extern_uid }
+                  end
                   expect(identities_as_hash).to include({ provider: 'ldapmain', extern_uid: dn })
                 end
               end
@@ -518,7 +529,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                   stub_ldap_config(sync_name: false)
                 end
 
-                let!(:existing_user) { create(:omniauth_user, name: 'John Deo', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+                let!(:existing_user) do
+                  create(:omniauth_user, name: 'John Deo', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain',
+                    username: 'john')
+                end
 
                 it "does not update the user name" do
                   oauth_user.save # rubocop:disable Rails/SaveBang
@@ -533,7 +547,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                   stub_ldap_config(sync_name: true)
                 end
 
-                let!(:existing_user) { create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+                let!(:existing_user) do
+                  create(:omniauth_user, name: 'John Swift', email: 'john@example.com', extern_uid: dn, provider: 'ldapmain',
+                    username: 'john')
+                end
 
                 it "updates the user name" do
                   oauth_user.save # rubocop:disable Rails/SaveBang
@@ -551,7 +568,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
                 oauth_user.save # rubocop:disable Rails/SaveBang
 
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                identities_as_hash = gl_user.identities.map do |id|
+                  { provider: id.provider, extern_uid: id.extern_uid }
+                end
                 expect(identities_as_hash).to match_array(result_identities(dn, uid))
               end
 
@@ -563,7 +582,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
                   oauth_user.save # rubocop:disable Rails/SaveBang
 
-                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  identities_as_hash = gl_user.identities.map do |id|
+                    { provider: id.provider, extern_uid: id.extern_uid }
+                  end
                   expect(identities_as_hash).to match_array(result_identities(dn, uid))
                 end
               end
@@ -584,7 +605,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
               it 'does not save the identity' do
                 oauth_user.save # rubocop:disable Rails/SaveBang
 
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                identities_as_hash = gl_user.identities.map do |id|
+                  { provider: id.provider, extern_uid: id.extern_uid }
+                end
                 expect(identities_as_hash).to match_array([{ provider: 'twitter', extern_uid: uid }])
               end
             end
@@ -594,8 +617,8 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:name) { nil }
-              allow(ldap_user).to receive(:email) { nil }
+              allow(ldap_user).to receive(:name).and_return(nil)
+              allow(ldap_user).to receive(:email).and_return(nil)
               allow(ldap_user).to receive(:dn) { dn }
 
               allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
@@ -624,8 +647,8 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
           context 'and a corresponding LDAP person with a non-default username' do
             before do
               allow(ldap_user).to receive(:uid) { uid }
-              allow(ldap_user).to receive(:username) { 'johndoe@example.com' }
-              allow(ldap_user).to receive(:email) { %w[johndoe@example.com john2@example.com] }
+              allow(ldap_user).to receive(:username).and_return('johndoe@example.com')
+              allow(ldap_user).to receive(:email).and_return(%w[johndoe@example.com john2@example.com])
               allow(ldap_user).to receive(:dn) { dn }
             end
 
@@ -687,7 +710,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                 expect(gl_user.name).to eql 'John Doe'
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to be 2
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                identities_as_hash = gl_user.identities.map do |id|
+                  { provider: id.provider, extern_uid: id.extern_uid }
+                end
                 expect(identities_as_hash).to match_array(
                   [
                     { provider: 'ldapmain', extern_uid: dn },
@@ -712,7 +737,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
             end
 
             context "and LDAP user has an account already" do
-              let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@mail.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+              let!(:existing_user) do
+                create(:omniauth_user, name: 'John Doe', email: 'john@mail.com', extern_uid: dn, provider: 'ldapmain',
+                  username: 'john')
+              end
 
               before do
                 allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
@@ -726,7 +754,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                 expect(gl_user.name).to eql 'John Doe'
                 expect(gl_user.email).to eql 'john@mail.com'
                 expect(gl_user.identities.length).to be 2
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                identities_as_hash = gl_user.identities.map do |id|
+                  { provider: id.provider, extern_uid: id.extern_uid }
+                end
                 expect(identities_as_hash).to match_array(
                   [
                     { provider: 'ldapmain', extern_uid: dn },
@@ -835,7 +865,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
           stub_ldap_setting(enabled: true)
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
-          allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
+          allow(ldap_user).to receive(:email).and_return(['johndoe@example.com', 'john2@example.com'])
           allow(ldap_user).to receive(:dn) { dn }
           allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
         end
@@ -859,7 +889,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         end
 
         context 'and LDAP user has an account already' do
-          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+          let!(:existing_user) do
+            create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john')
+          end
 
           it_behaves_like 'not being blocked on creation' do
             before do
@@ -917,7 +949,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe 'ensure backwards compatibility with sync email from provider option' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
       stub_omniauth_config(sync_email_from_provider: 'my-provider')
@@ -971,14 +1003,16 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
     context 'when collision with existing user' do
       it 'generates the username with a counter' do
         oauth_user.save # rubocop:disable Rails/SaveBang
-        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider, info: { nickname: 'johngitlab-ETC@othermail.com', email: 'john@othermail.com' }))
+        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider,
+          info: { nickname: 'johngitlab-ETC@othermail.com', email: 'john@othermail.com' }))
 
         expect(oauth_user2.gl_user.username).to eq('johngitlab-ETC1')
       end
 
       it 'generates the username with a counter for special characters' do
         oauth_user.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord model, no save! method
-        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider, info: { nickname: 'johngitlab---ETC@othermail.com', email: 'john@othermail.com' }))
+        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider,
+          info: { nickname: 'johngitlab---ETC@othermail.com', email: 'john@othermail.com' }))
 
         expect(oauth_user2.gl_user.username).to eq('johngitlab-ETC1')
       end
@@ -1013,7 +1047,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe 'updating email with sync profile' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
       stub_omniauth_config(sync_profile_from_provider: ['my-provider'])
@@ -1058,7 +1092,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe 'updating name' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
       stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
@@ -1084,7 +1118,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe 'updating location' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
       stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
@@ -1112,7 +1146,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe 'updating user info' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     context "update all info" do
       before do
@@ -1226,8 +1260,8 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
     # rubocop:disable RSpec/AnyInstanceOf
     before do
-      allow_any_instance_of(described_class).to receive(:gl_user) { nil }
-      allow_any_instance_of(described_class).to receive(:sync_profile_from_provider?) { true } # to make the code flow proceed until gl_user.build_user_synced_attributes_metadata is called
+      allow_any_instance_of(described_class).to receive(:gl_user).and_return(nil)
+      allow_any_instance_of(described_class).to receive(:sync_profile_from_provider?).and_return(true) # to make the code flow proceed until gl_user.build_user_synced_attributes_metadata is called
     end
     # rubocop:enable RSpec/AnyInstanceOf
 
@@ -1237,7 +1271,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
   end
 
   describe '._uid_and_provider' do
-    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it 'normalizes extern_uid' do
       allow(oauth_user.auth_hash).to receive(:uid).and_return('MY-UID')

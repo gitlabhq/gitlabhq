@@ -6,9 +6,9 @@ RSpec.describe Mutations::DesignManagement::Move, feature_category: :api do
   include DesignManagementTestHelpers
   include GraphqlHelpers
 
-  let_it_be(:issue) { create(:issue) }
-  let_it_be(:designs) { create_list(:design, 3, issue: issue) }
-  let_it_be(:developer) { create(:user, developer_of: issue.project) }
+  let_it_be(:issue, freeze: false) { create(:issue) }
+  let_it_be(:designs, freeze: false) { create_list(:design, 3, issue: issue) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: issue.project) }
 
   let(:current_user) { developer }
 

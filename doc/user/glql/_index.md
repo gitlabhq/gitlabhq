@@ -154,28 +154,12 @@ Supported parameters:
 | ------------- | --------------------------------------------- | ----------- |
 | `collapsed`   | `false`                                       | Whether to collapse or expand the view. |
 | `description` | None                                          | An optional description to display below the title. |
-| `display`     | `table`                                       | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
+| `display`     | `list`                                        | How to display query results. For the available types, see [Display types](#display-types). |
+| `displayConfig` | None                                        | Display-type-specific options, such as `stacked` for column charts. See [Display types](display_types.md). |
 | `fields`      | `title`                                       | A comma-separated list of [fields](fields.md) to include in the view. |
 | `limit`       | `100`                                         | How many items to display on the first page. The maximum value is `100`. |
 | `sort`        | `updated desc`                                | The [field to sort the data by](fields.md) followed by a sort order (`asc` or `desc`). |
 | `title`       | `Embedded table view` or `Embedded list view` | A title displayed at the top of the embedded view. |
-
-For example, to display the first five issues assigned to the current user in the `gitlab-org/gitlab`
-project as a list, sorted by due date (earliest first) and displaying the `title`, `health`, and `due` fields:
-
-````yaml
-```glql
-display: list
-fields: title, health, due
-limit: 5
-sort: due asc
-query: type = Issue AND group = "gitlab-org" AND assignee = currentUser() AND state = opened
-```
-````
-
-This source should render a list like the one below:
-
-![An embedded view with a list of issues assigned to the current user](img/glql_list_v18_5.png)
 
 #### Pagination
 
@@ -216,6 +200,14 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 
 This source displays a view with columns `Title`, `Workflow` and `Priority`.
 
+### Display types
+
+The `display` parameter controls how an embedded view renders query results, for example as a
+list, table, or column chart. By default, results display as a list.
+
+For the full list of display types and their configuration, see
+[GLQL display types](display_types.md).
+
 ### View actions
 
 {{< history >}}
@@ -236,6 +228,93 @@ Supported actions:
 | Copy source   | Copy the source of the view to clipboard.                      |
 | Copy contents | Copy the table or list contents to clipboard. |
 | Reload        | Reload this view.                                              |
+
+## Analytics mode
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+
+{{< /history >}}
+
+GLQL supports an analytics mode for data sources that provide
+aggregated metrics. Analytics mode queries use `dimensions` and `metrics`
+instead of `fields` to group and aggregate data.
+
+Some data sources support both standard and analytics mode.
+See each [data source](data_sources/_index.md) page for supported modes.
+
+### Syntax
+
+Analytics mode queries use the following structure:
+
+````yaml
+```glql
+mode: analytics
+query: type = <DataSource> and <filters>
+dimensions: <dimension fields>
+metrics: <metric fields>
+sort: <field> <direction>
+limit: <number>
+```
+````
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `mode: analytics` | Yes | Required to use analytics mode. |
+| `metrics` | Yes | Aggregated values to compute. At least one metric is required. |
+| `dimensions` | No | Fields to group results by. Select any combination, or omit entirely to return a single aggregated row. |
+| `sort` | No | Sort fields must also appear in your selected dimensions or metrics. |
+| `limit` | No | Defaults to `100`. Maximum value is `100`. |
+
+### Custom aliases
+
+Use the `as` keyword to rename dimension or metric columns:
+
+```plaintext
+dimensions: language as "Language", ideName as "IDE"
+metrics: totalCount as "Total", acceptanceRate as "Acceptance Rate"
+```
+
+### Sorting
+
+Sort by any field that appears in your selected dimensions or metrics.
+You cannot sort by a field that is not in your selected dimensions or metrics.
+
+```plaintext
+sort: acceptanceRate desc
+```
+
+Multiple sort fields are supported:
+
+```plaintext
+sort: totalCount desc, acceptanceRate asc
+```
+
+### Example
+
+The following query returns Code Suggestions acceptance rate by language
+for the last 30 days, sorted by acceptance rate:
+
+````yaml
+```glql
+display: table
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language as "Language"
+metrics: totalCount as "Total", acceptanceRate as "Acceptance Rate"
+sort: acceptanceRate desc
+```
+````
+
+For more information, see the examples for a specific [data source](data_sources/_index.md).
 
 ## Advanced Search integration
 

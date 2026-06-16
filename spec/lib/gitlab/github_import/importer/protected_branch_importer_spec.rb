@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:namespace_setting) { create(:namespace_settings, default_branch_protection_defaults: {}) }
-  let_it_be(:group) { create(:group, namespace_settings: namespace_setting) }
+  let_it_be(:namespace_setting, freeze: false) { create(:namespace_settings, default_branch_protection_defaults: {}) }
+  let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_setting) }
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :github_import,

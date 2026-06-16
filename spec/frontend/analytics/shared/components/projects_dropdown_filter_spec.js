@@ -436,4 +436,24 @@ describe('ProjectsDropdownFilter component', () => {
       });
     });
   });
+
+  describe('disabled prop', () => {
+    it('defaults to not disabled and runs the initial search on mount', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findDropdown().props('disabled')).toBe(false);
+      expect(findDropdownButton().props('disabled')).toBe(false);
+      expect(spyQuery).toHaveBeenCalled();
+    });
+
+    it('forwards disabled=true to the dropdown and the toggle button, and skips the initial search on mount', async () => {
+      createComponent({ props: { disabled: true } });
+      await waitForPromises();
+
+      expect(findDropdown().props('disabled')).toBe(true);
+      expect(findDropdownButton().props('disabled')).toBe(true);
+      expect(spyQuery).not.toHaveBeenCalled();
+    });
+  });
 });

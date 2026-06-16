@@ -2,8 +2,8 @@
 
 RSpec.shared_examples 'includes LinkableItem concern' do
   describe 'validation' do
-    let_it_be(:task) { create(:work_item, :task, project: project) }
-    let_it_be(:issue) { create(:work_item, :issue, project: project) }
+    let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
+    let_it_be(:issue, freeze: false) { create(:work_item, :issue, project: project) }
 
     subject(:link) { build(link_factory, source_id: source.id, target_id: target.id) }
 
@@ -27,7 +27,7 @@ RSpec.shared_examples 'includes LinkableItem concern' do
         end
 
         context 'with existing link parent' do
-          let_it_be(:relationship) { create(:parent_link, work_item_parent: issue, work_item: task) }
+          let_it_be(:relationship, freeze: false) { create(:parent_link, work_item_parent: issue, work_item: task) }
 
           it_behaves_like 'invalid due to existing link' do
             let(:source) { issue }
@@ -98,8 +98,8 @@ RSpec.shared_examples 'includes LinkableItem concern' do
     end
 
     describe '.for_items' do
-      let_it_be(:source_link) { create(link_factory, source: item, target: item1) }
-      let_it_be(:target_link) { create(link_factory, source: item2, target: item) }
+      let_it_be(:source_link, freeze: false) { create(link_factory, source: item, target: item1) }
+      let_it_be(:target_link, freeze: false) { create(link_factory, source: item2, target: item) }
 
       it 'includes links when item is source' do
         expect(described_class.for_items(item, item1)).to contain_exactly(source_link)
@@ -111,10 +111,10 @@ RSpec.shared_examples 'includes LinkableItem concern' do
     end
 
     describe '.for_source_and_target' do
-      let_it_be(:item3) { create(:work_item, project: project) }
-      let_it_be(:link1) { create(link_factory, source: item, target: item1) }
-      let_it_be(:link2) { create(link_factory, source: item, target: item2) }
-      let_it_be(:link3) { create(link_factory, source: item, target: item3) }
+      let_it_be(:item3, freeze: false) { create(:work_item, project: project) }
+      let_it_be(:link1, freeze: false) { create(link_factory, source: item, target: item1) }
+      let_it_be(:link2, freeze: false) { create(link_factory, source: item, target: item2) }
+      let_it_be(:link3, freeze: false) { create(link_factory, source: item, target: item3) }
 
       it 'includes links for provided source and target' do
         expect(described_class.for_source_and_target(item, [item1, item2])).to contain_exactly(link1, link2)

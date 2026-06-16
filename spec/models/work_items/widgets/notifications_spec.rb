@@ -14,6 +14,6 @@ RSpec.describe WorkItems::Widgets::Notifications, feature_category: :team_planni
   end
 
   describe '#subscribed?' do
-    it { expect(described_class.new(work_item).subscribed?(work_item.author, work_item.project)).to eq(true) }
+    it { expect(described_class.new(work_item).subscribed?(work_item.author, work_item.project)).to be(true) }
   end
 end

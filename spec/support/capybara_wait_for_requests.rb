@@ -20,21 +20,4 @@ module Capybara
 
     prepend WaitForRequestsAfterVisitPage
   end
-
-  module Node
-    module Actions
-      include CapybaraHelpers
-      include WaitForRequests
-
-      module WaitForRequestsAfterClickButton
-        def click_button(locator = nil, max_wait_time: 2 * Capybara.default_max_wait_time, **options)
-          super(locator, **options)
-
-          wait_for_requests(max_wait_time: max_wait_time)
-        end
-      end
-
-      prepend WaitForRequestsAfterClickButton
-    end
-  end
 end

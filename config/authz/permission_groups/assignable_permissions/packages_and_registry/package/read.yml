@@ -9,6 +9,7 @@ available_for:
   - granular_access_token
 permissions:
   - authenticate_conan_package
+  - download_cargo_package
   - download_debian_distribution_packages_index
   - download_debian_distribution_release
   - download_debian_package

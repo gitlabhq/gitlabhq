@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Admin::Organizations::DashboardController, feature_category: :organization do
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:organization_owner) { create(:user, :organization_owner, organization: organization) }
-  let_it_be(:regular_user) { create(:user) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:organization_owner, freeze: false) { create(:user, :organization_owner, organization: organization) }
+  let_it_be(:regular_user, freeze: false) { create(:user) }
 
   shared_examples 'the feature flag is disabled' do
     before do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigation do
-  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
+  let_it_be(:project, freeze: false) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
   let_it_be(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 

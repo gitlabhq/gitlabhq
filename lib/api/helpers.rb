@@ -127,7 +127,7 @@ module API
     end
 
     def save_current_user_in_env(user)
-      env[API_USER_ENV] = { user_id: user.id, username: user.username }
+      env[API_USER_ENV] = { user_id: user.id, username: user.username, user_is_bot: user.respond_to?(:bot?) && user.bot? }
 
       if GLOBAL_ID_LOG_REGEXES.any? { |re| re.match?(env["api.endpoint"]&.namespace) }
         env[API_USER_ENV][:global_user_id] = Gitlab::GlobalAnonymousId.user_id(user)
@@ -727,7 +727,7 @@ module API
           '500 Internal Server Error'
         end
 
-      rack_response({ 'message' => response_message }.to_json, 500)
+      error!({ 'message' => response_message }, 500)
     end
 
     # project helpers
@@ -767,6 +767,28 @@ module API
       present_carrierwave_file!(file, **args)
     end
 
+    # When a response body is delegated to Workhorse the Rails body is `''`.
+    # Rack::ETag then digests that empty body and emits the same weak ETag
+    # for every response, which combined with Rack::ConditionalGet causes
+    # spurious 304s (gitlab-org/gitlab#371991). Callers that can derive a
+    # content-based ETag should pass one via the `etag:` kwarg; otherwise we
+    # suppress Rack::ETag's default by setting Last-Modified, matching the
+    # approach used for streaming responses in ApplicationController.
+    #
+    # Gated by the `workhorse_download_etag_caching` feature flag so the change
+    # in response headers can be de-risked on GitLab.com. Uses `@project` (set
+    # by `user_project` / `find_project!` on project-scoped endpoints) as the
+    # actor; project-less endpoints fall back to nil, the global gate.
+    def apply_etag_or_suppress_rack_etag!(etag)
+      return unless Feature.enabled?(:workhorse_download_etag_caching, @project) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @project is the conventional memoized project for API endpoints
+
+      if etag
+        header 'ETag', etag
+      elsif !headers['Last-Modified']
+        header 'Last-Modified', '0'
+      end
+    end
+
     # Return back the given file depending on the object storage configuration.
     # For disabled mode, the disk file is returned.
     # For enabled mode, the response depends on the direct download support:
@@ -780,8 +802,11 @@ module API
     # @content_type controls the Content-Type response header. By default, it will rely on the 'application/octet-stream' value or the content type detected by carrierwave.
     # @extra_response_headers. Set additional response headers. Not used in the direct download supported case.
     # @extra_send_url_params. Additional parameters to send to workhorse send_url call. See Gitlab::Workhorse.send_url for more information
-    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil, extra_response_headers: {}, extra_send_url_params: {})
+    # @etag. Optional content-derived ETag string (e.g. %("<sha256>")). When nil, Rack::ETag's default empty-body ETag is suppressed instead.
+    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil, extra_response_headers: {}, extra_send_url_params: {}, etag: nil)
       return not_found! unless file&.exists?
+
+      apply_etag_or_suppress_rack_etag!(etag)
 
       if content_disposition
         response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: content_disposition, filename: file.filename)
@@ -1040,13 +1065,15 @@ module API
     end
 
     # Deprecated. Use `send_artifacts_entry` instead.
-    def legacy_send_artifacts_entry(file, entry)
+    def legacy_send_artifacts_entry(file, entry, etag: nil)
+      apply_etag_or_suppress_rack_etag!(etag)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
 
       body ''
     end
 
-    def send_artifacts_entry(file, entry)
+    def send_artifacts_entry(file, entry, etag: nil)
+      apply_etag_or_suppress_rack_etag!(etag)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
       header(*Gitlab::Workhorse.detect_content_type)
 

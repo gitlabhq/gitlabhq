@@ -38,6 +38,7 @@ module NamespaceSettings
       # in their respective remove_unallowed_params methods.
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
       handle_jwt_ci_cd_job_token_enabled
+      handle_granular_tokens_enforcement
 
       if group.namespace_settings
         group.namespace_settings.attributes = settings_params
@@ -81,6 +82,19 @@ module NamespaceSettings
 
       jwt_enabled = Gitlab::Utils.to_boolean(settings_params[:jwt_ci_cd_job_token_enabled])
       settings_params[:jwt_ci_cd_job_token_opted_out] = !jwt_enabled
+    end
+
+    def handle_granular_tokens_enforcement
+      return if settings_params[:enforce_granular_tokens].nil? &&
+        settings_params[:granular_tokens_enforced_after].nil?
+
+      return if group.root?
+
+      settings_params.delete(:enforce_granular_tokens)
+      settings_params.delete(:granular_tokens_enforced_after)
+      group.namespace_settings.errors.add(
+        :personal_access_token_settings, _('can only be configured on a top-level group.')
+      )
     end
 
     def validate_resource_access_token_creation_allowed_param

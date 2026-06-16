@@ -2,6 +2,8 @@
 description: tracks when a user initiates the deletion of selected package files in the package registry.
 action: request_delete_selected_package_file
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: '15.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93169
 tiers:

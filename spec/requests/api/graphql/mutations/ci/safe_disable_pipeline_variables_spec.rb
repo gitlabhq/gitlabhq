@@ -61,6 +61,15 @@ RSpec.describe 'SafeDisablePipelineVariables', feature_category: :pipeline_compo
       expect(graphql_errors).to be_nil
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_ci_cd_setting do
+      let(:boundary_object) { group }
+      let(:mutation) do
+        graphql_mutation(:safe_disable_pipeline_variables, { full_path: group.full_path }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when bad arguments are provided' do
       let(:variables) { { full_path: 'non-existent-group' } }
 

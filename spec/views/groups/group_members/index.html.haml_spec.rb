@@ -32,8 +32,30 @@ RSpec.describe 'groups/group_members/index', :aggregate_failures, feature_catego
     it 'renders as expected', :aggregate_failures do
       render
 
-      expect(rendered).not_to have_content('Group members')
+      expect(rendered).to have_content('Group members')
       expect(rendered).not_to have_content('You can invite a new member')
+    end
+  end
+
+  describe 'Security Manager role banner' do
+    context 'when current user can admin group members' do
+      before do
+        group.add_owner(user)
+      end
+
+      it 'renders the banner mount point' do
+        render
+
+        expect(rendered).to have_selector('#js-security-manager-role-banner')
+      end
+    end
+
+    context 'when current user cannot admin group members' do
+      it 'does not render the banner mount point' do
+        render
+
+        expect(rendered).not_to have_selector('#js-security-manager-role-banner')
+      end
     end
   end
 

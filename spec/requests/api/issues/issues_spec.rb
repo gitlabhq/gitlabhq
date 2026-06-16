@@ -5,25 +5,25 @@ require 'spec_helper'
 RSpec.describe API::Issues, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
   let_it_be(:private_mrs_project) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE, reporters: user)
   end
 
-  let_it_be(:user2) { create(:user) }
+  let_it_be(:user2, freeze: false) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user, guest_of: [project, private_mrs_project]) }
   let_it_be(:planner) { create(:user, planner_of: [project]) }
-  let_it_be(:owner) { create(:user, owner_of: [project]) }
-  let_it_be(:author)      { create(:author) }
-  let_it_be(:assignee)    { create(:assignee) }
+  let_it_be(:owner, freeze: false) { create(:user, owner_of: [project]) }
+  let_it_be(:author, freeze: false)      { create(:author) }
+  let_it_be(:assignee, freeze: false)    { create(:assignee) }
   let_it_be(:admin) { create(:user, :admin) }
 
-  let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be(:milestone, freeze: false) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:empty_milestone) { create(:milestone, title: '2.0.0', project: project) }
 
-  let_it_be(:closed_issue) do
+  let_it_be(:closed_issue, freeze: false) do
     create(
       :closed_issue,
       author: user,
@@ -37,7 +37,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     )
   end
 
-  let_it_be(:confidential_issue) do
+  let_it_be(:confidential_issue, freeze: false) do
     create(
       :issue,
       :confidential,
@@ -49,7 +49,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     )
   end
 
-  let_it_be(:issue) do
+  let_it_be(:issue, freeze: false) do
     create(
       :issue,
       author: user,
@@ -1126,10 +1126,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context "when issues are filtered by authorization" do
-      let_it_be(:current_user) { create(:user) }
+      let_it_be(:current_user, freeze: false) { create(:user) }
 
       let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project, namespace: group, developers: [current_user]) }
+      let_it_be(:project, freeze: false) { create(:project, namespace: group, developers: [current_user]) }
 
       let_it_be(:restricted_issue) { create(:issue, project: project, assignees: [current_user]) }
       let_it_be(:unrestricted_issue) { create(:issue, project: project, assignees: [current_user]) }
@@ -1332,7 +1332,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(nil)
+          expect(json_response.dig('_links', 'closed_as_duplicate_of')).to be_nil
         end
       end
 
@@ -1580,8 +1580,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid/reorder' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project, group: group) }
     let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
     let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
     let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }

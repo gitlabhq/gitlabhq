@@ -1,0 +1,14 @@
+---
+table_name: cd_services
+classes:
+- Cd::Service
+feature_categories:
+- continuous_delivery
+description: Continuous Delivery Service, a deployable unit within an Application
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237280
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

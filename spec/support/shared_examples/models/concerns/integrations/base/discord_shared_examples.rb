@@ -25,7 +25,7 @@ RSpec.shared_examples Integrations::Base::Discord do
   end
 
   describe 'Validations' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     subject(:discord_integration) { build(:discord_integration, project: project) }
 
@@ -153,9 +153,9 @@ RSpec.shared_examples Integrations::Base::Discord do
   describe '#execute' do
     include StubRequests
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let(:webhook_url) { "https://discord.com/" }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
@@ -247,8 +247,8 @@ RSpec.shared_examples Integrations::Base::Discord do
     end
 
     context 'with issue and work item notifications' do
-      let_it_be(:issue) { create(:issue, project: project, author: user) }
-      let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+      let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user) }
+      let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project, author: user) }
 
       context 'with issue' do
         let(:sample_data) { issue.to_hook_data(user) }

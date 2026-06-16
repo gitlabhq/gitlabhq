@@ -137,4 +137,18 @@ describe('Board Column Component', () => {
 
     expect(wrapper.emitted('dragStop')).toHaveLength(1);
   });
+
+  it('passes focused prop to BoardList', () => {
+    createComponent();
+
+    expect(findList().props('focused')).toBe(false);
+  });
+
+  it('bubbles up focus-adjacent event from BoardList', () => {
+    createComponent();
+
+    findList().vm.$emit('focus-adjacent', 1);
+
+    expect(wrapper.emitted('focus-adjacent')).toEqual([[1]]);
+  });
 });

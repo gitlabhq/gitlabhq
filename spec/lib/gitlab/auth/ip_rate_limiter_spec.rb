@@ -30,20 +30,20 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
 
   describe '#register_fail!' do
     it 'bans after 3 consecutive failures' do
-      expect(subject.banned?).to be_falsey
+      expect(rate_limiter.banned?).to be_falsey
 
-      3.times { subject.register_fail! }
+      3.times { rate_limiter.register_fail! }
 
-      expect(subject.banned?).to be_truthy
+      expect(rate_limiter.banned?).to be_truthy
     end
 
     shared_examples 'whitelisted IPs' do
       it 'does not ban after max retry limit' do
-        expect(subject.banned?).to be_falsey
+        expect(rate_limiter.banned?).to be_falsey
 
-        3.times { subject.register_fail! }
+        3.times { rate_limiter.register_fail! }
 
-        expect(subject.banned?).to be_falsey
+        expect(rate_limiter.banned?).to be_falsey
       end
     end
 
@@ -70,19 +70,19 @@ RSpec.describe Gitlab::Auth::IpRateLimiter, :use_clean_rails_memory_store_cachin
     it 'does not call Rack::Attack::Allow2Ban.reset!' do
       expect(Rack::Attack::Allow2Ban).not_to receive(:reset!)
 
-      subject.reset!
+      rate_limiter.reset!
     end
 
     it 'does not call Rack::Attack::Allow2Ban.banned?' do
       expect(Rack::Attack::Allow2Ban).not_to receive(:banned?)
 
-      subject.banned?
+      rate_limiter.banned?
     end
 
     it 'does not call Rack::Attack::Allow2Ban.filter' do
       expect(Rack::Attack::Allow2Ban).not_to receive(:filter)
 
-      subject.register_fail!
+      rate_limiter.register_fail!
     end
   end
 

@@ -4,6 +4,8 @@ action: change_discussion_sort_direction
 extra_properties:
 identifiers:
 product_group: product_planning
+product_categories:
+- team_planning
 milestone: "12.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28717
 tiers:

@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Import::Offline::ExportStatus, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:offline_import) { create(:bulk_import, configuration: nil, offline_configuration: nil) }
-  let_it_be(:entity) { create(:bulk_import_entity, :group_entity, :with_portable, bulk_import: offline_import) }
+  let_it_be(:offline_import, freeze: false) { create(:bulk_import, configuration: nil, offline_configuration: nil) }
+  let_it_be(:entity, freeze: false) do
+    create(:bulk_import_entity, :group_entity, :with_portable, bulk_import: offline_import)
+  end
+
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:configuration) do
     create(

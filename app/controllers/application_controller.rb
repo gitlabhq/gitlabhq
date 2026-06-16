@@ -218,7 +218,13 @@ class ApplicationController < BaseActionController
   end
 
   def after_sign_out_path_for(_resource)
-    Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
+    path = Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
+
+    if Gitlab::Auth.omniauth_enabled? && Gitlab.config.omniauth.auto_sign_in_with_provider.present?
+      path = Gitlab::Utils.add_url_parameters(path, auto_sign_in: 'false')
+    end
+
+    path
   end
 
   def can?(user, action, subject = :global)

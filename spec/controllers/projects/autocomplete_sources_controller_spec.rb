@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AutocompleteSourcesController do
-  let_it_be(:group, reload: true) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:private_group) { create(:group, :private) }
   let_it_be(:project, freeze: false) { create(:project, namespace: group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }

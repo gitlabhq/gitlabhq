@@ -17,4 +17,17 @@ RSpec.describe MergeRequests::ProcessAutoMergeFromEventWorker, feature_category:
   it_behaves_like 'process auto merge from event worker' do
     let(:event) { ::MergeRequests::DraftStateChangeEvent.new(data: data) }
   end
+
+  it_behaves_like 'process auto merge from event worker' do
+    let(:data) { { merge_request_id: merge_request_id, project_id: project.id } }
+    let(:event) { ::MergeRequests::PipelineCreationCompletedEvent.new(data: data) }
+  end
+
+  it_behaves_like 'subscribes to event' do
+    let(:event) do
+      ::MergeRequests::PipelineCreationCompletedEvent.new(
+        data: { merge_request_id: merge_request.id, project_id: project.id }
+      )
+    end
+  end
 end

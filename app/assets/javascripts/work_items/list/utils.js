@@ -116,6 +116,27 @@ export const getInitialPageParams = (
   beforeCursor,
 });
 
+// REST keyset cursors include the `_kd` direction marker; GraphQL cursors do not.
+// A cursor is considered compatible when its presence (or absence) of `_kd` matches
+// the API mode being used. Empty/invalid cursors are treated as compatible so they
+// pass through unchanged and can be handled by downstream logic.
+export const isCursorCompatibleWithApi = (cursor, useRestApi) => {
+  if (!cursor) return true;
+
+  let decoded;
+  try {
+    decoded = JSON.parse(atob(cursor));
+  } catch (e) {
+    return true;
+  }
+
+  if (!decoded || typeof decoded !== 'object' || Array.isArray(decoded)) return true;
+
+  const hasDirectionMarker = Object.hasOwn(decoded, '_kd');
+
+  return useRestApi ? hasDirectionMarker : !hasDirectionMarker;
+};
+
 export const getSortKey = (sort, sortMap = urlSortParams) =>
   Object.keys(sortMap).find((key) => sortMap[key] === sort);
 

@@ -80,7 +80,7 @@ module ContainerRegistry
 
     def faraday(timeout_enabled: true)
       @faraday ||= faraday_base(timeout_enabled: timeout_enabled) do |conn|
-        initialize_connection(conn, @options, &method(:configure_connection))
+        initialize_connection(conn, @options) { |connection| configure_connection(connection) }
       end
     end
 

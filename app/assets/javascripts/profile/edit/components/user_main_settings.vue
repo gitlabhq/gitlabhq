@@ -65,6 +65,7 @@ export default {
       default: '',
     },
   },
+  emits: ['change'],
   computed: {
     form: {
       get() {

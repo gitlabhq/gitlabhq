@@ -33,7 +33,7 @@ module Organizations
     end
 
     def authorized?
-      Ability.allowed?(current_user, :admin_organization, organization)
+      Ability.allowed?(current_user, :update_organization, organization)
     end
 
     def with_limited_counter(resource)

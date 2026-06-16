@@ -99,6 +99,31 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       end
     end
 
+    describe '.for_offline_export_in_progress' do
+      let_it_be(:offline_export) { create(:offline_export) }
+      let_it_be(:other_offline_export) { create(:offline_export) }
+      let_it_be(:pending_export) { create(:bulk_import_export, :pending, offline_export: offline_export) }
+      let_it_be(:started_export) do
+        create(:bulk_import_export, :started, offline_export: offline_export, relation: 'labels')
+      end
+
+      let_it_be(:finished_export) do
+        create(:bulk_import_export, :finished, offline_export: offline_export, relation: 'milestones')
+      end
+
+      let_it_be(:failed_export) do
+        create(:bulk_import_export, :failed, offline_export: offline_export, relation: 'badges')
+      end
+
+      let_it_be(:other_export) { create(:bulk_import_export, :pending, offline_export: other_offline_export) }
+
+      it 'returns pending and started exports for the given offline export' do
+        result = described_class.for_offline_export_in_progress(offline_export)
+
+        expect(result).to contain_exactly(pending_export, started_export)
+      end
+    end
+
     describe '.group_exports' do
       let_it_be(:group_export) { create(:bulk_import_export, group: group, project: nil) }
       let_it_be(:project_export) { create(:bulk_import_export, group: nil, project: project) }
@@ -343,13 +368,13 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
     context 'when the relation has user contribitions' do
       let(:relation) { 'issues' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the relation does not have user contribitions' do
       let(:relation) { 'labels' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -364,6 +389,20 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       subject(:export) { create(:bulk_import_export) }
 
       it { is_expected.not_to be_offline }
+    end
+  end
+
+  describe '#import_source' do
+    context 'when associated to an offline export' do
+      subject(:export) { create(:bulk_import_export, :offline) }
+
+      it { expect(export.import_source).to eq(Import::SOURCE_OFFLINE_TRANSFER) }
+    end
+
+    context 'when not associated to an offline export' do
+      subject(:export) { create(:bulk_import_export) }
+
+      it { expect(export.import_source).to eq(Import::SOURCE_DIRECT_TRANSFER) }
     end
   end
 

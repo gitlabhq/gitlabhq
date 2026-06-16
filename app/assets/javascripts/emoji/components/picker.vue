@@ -16,6 +16,7 @@ import VirtualList from './virtual_list.vue';
 import { addToFrequentlyUsed, getEmojiCategories, hasFrequentlyUsedEmojis } from './utils';
 
 export default {
+  name: 'EmojiPicker',
   components: {
     GlButton,
     GlDisclosureDropdown,

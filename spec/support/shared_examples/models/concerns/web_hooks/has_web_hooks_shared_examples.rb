@@ -5,7 +5,7 @@ RSpec.shared_examples 'something that has web-hooks' do
     subject { object.any_hook_failed? }
 
     context 'when there are no hooks' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when there are hooks' do
@@ -14,7 +14,7 @@ RSpec.shared_examples 'something that has web-hooks' do
         create_hook
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
 
       context 'when there is a failed hook' do
         before do
@@ -22,7 +22,7 @@ RSpec.shared_examples 'something that has web-hooks' do
           hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end
@@ -38,7 +38,7 @@ RSpec.shared_examples 'something that has web-hooks' do
             .and_call_original
         end
 
-        expect(object.cache_web_hook_failure).to eq(true)
+        expect(object.cache_web_hook_failure).to be(true)
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.shared_examples 'something that has web-hooks' do
         object.cache_web_hook_failure(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when stored as false' do
@@ -77,7 +77,7 @@ RSpec.shared_examples 'something that has web-hooks' do
         object.cache_web_hook_failure(false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -87,8 +87,8 @@ RSpec.shared_examples 'something that has web-hooks' do
         expect(object.get_web_hook_failure).to be_nil
         expect(object).to receive(:any_hook_failed?).and_return(true)
 
-        expect(object.fetch_web_hook_failure).to eq(true)
-        expect(object.get_web_hook_failure).to eq(true)
+        expect(object.fetch_web_hook_failure).to be(true)
+        expect(object.get_web_hook_failure).to be(true)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.shared_examples 'something that has web-hooks' do
       it 'does not call #any_hook_failed?' do
         expect(object).not_to receive(:any_hook_failed?)
 
-        expect(object.fetch_web_hook_failure).to eq(true)
+        expect(object.fetch_web_hook_failure).to be(true)
       end
     end
   end

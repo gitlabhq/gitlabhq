@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def execute
-        info(project.id, message: "starting importer")
+        info(project.id, message: "starting importer", Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
 
         retval =
           if parallel?
@@ -60,7 +60,7 @@ module Gitlab
         # not scheduling anything.
         Gitlab::Cache::Import::Caching.expire(already_imported_cache_key,
           Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
-        info(project.id, message: "importer finished")
+        info(project.id, message: "importer finished", Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
 
         retval
       rescue StandardError => e

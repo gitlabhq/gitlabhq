@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'concerning versionless param' do
-  let_it_be(:versionless_package) { create(:maven_package, project: project, version: nil) }
+  let_it_be(:versionless_package, freeze: false) { create(:maven_package, project: project, version: nil) }
 
   it { is_expected.not_to include(versionless_package) }
 
@@ -19,8 +19,8 @@ RSpec.shared_examples 'concerning versionless param' do
 end
 
 RSpec.shared_examples 'concerning package statuses' do
-  let_it_be(:hidden_package) { create(:maven_package, :hidden, project: project) }
-  let_it_be(:error_package) { create(:maven_package, :error, project: project) }
+  let_it_be(:hidden_package, freeze: false) { create(:maven_package, :hidden, project: project) }
+  let_it_be(:error_package, freeze: false) { create(:maven_package, :error, project: project) }
 
   context 'displayable packages' do
     it { is_expected.not_to include(hidden_package) }

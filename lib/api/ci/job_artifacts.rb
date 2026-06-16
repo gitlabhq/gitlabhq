@@ -18,14 +18,26 @@ module API
         end
 
         def audit_download(build, filename); end
+
+        # Returns a strong ETag derived from the archive's sha256 (and an
+        # optional entry path, for the raw file endpoints), or nil when no
+        # sha256 is available. Passed to the presenter helpers via the
+        # `etag:` kwarg. See gitlab-org/gitlab#371991.
+        def artifact_etag(build, path: nil)
+          archive = build&.job_artifacts_archive
+          return unless archive&.file_sha256
+
+          digest = path ? Digest::SHA256.hexdigest("#{archive.file_sha256}:#{path}") : archive.file_sha256
+          %("#{digest}")
+        end
       end
 
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Download the artifacts archive from a job' do
-          detail 'This feature was introduced in GitLab 8.10'
+        desc 'Retrieve job artifacts' do
+          detail 'Retrieves the artifacts archive for the latest successful job on a specified branch or tag.'
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -68,7 +80,7 @@ module API
           not_found! unless latest_build.artifacts_file&.exists?
 
           audit_download(latest_build, latest_build.artifacts_file.filename)
-          present_artifacts_file!(latest_build.artifacts_file)
+          present_artifacts_file!(latest_build.artifacts_file, etag: artifact_etag(latest_build))
         end
 
         desc 'Download a specific file from artifacts archive from a ref' do
@@ -121,7 +133,7 @@ module API
 
           bad_request! unless path.valid?
 
-          send_artifacts_entry(build.artifacts_file, path)
+          send_artifacts_entry(build.artifacts_file, path, etag: artifact_etag(build, path: params[:artifact_path]))
         end
 
         desc 'Download the artifacts archive from a job' do
@@ -148,11 +160,11 @@ module API
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
           audit_download(build, build.artifacts_file.filename) if build.artifacts_file
-          present_artifacts_file!(build.artifacts_file)
+          present_artifacts_file!(build.artifacts_file, etag: artifact_etag(build))
         end
 
-        desc 'List all files in the artifacts archive' do
-          detail 'Lists all files and directories in the artifacts archive without extracting them'
+        desc 'List all files in an artifacts archive' do
+          detail 'Lists all files in a specified artifacts archive without extracting them.'
           success code: 200, model: Entities::Ci::JobArtifactEntry
           is_array true
           failure [
@@ -234,10 +246,16 @@ module API
           # Since Content-Type is controlled by Rails and Workhorse, if a wrong
           # content-type is sent, it could cause a regression on pages rendering.
           # See https://gitlab.com/gitlab-org/gitlab/-/issues/357078 for more information.
-          legacy_send_artifacts_entry(build.artifacts_file, path)
+          legacy_send_artifacts_entry(
+            build.artifacts_file,
+            path,
+            etag: artifact_etag(build, path: params[:artifact_path])
+          )
         end
 
-        desc 'Keep the artifacts to prevent them from being deleted' do
+        desc 'Retain job artifacts' do
+          detail 'Retains job artifacts. Prevents artifacts for a job from being automatically deleted when they ' \
+            'reach their expiration date.'
           success ::API::Entities::Ci::Job
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -261,8 +279,8 @@ module API
           present build, with: ::API::Entities::Ci::Job
         end
 
-        desc 'Delete the artifacts files from a job' do
-          detail 'This feature was introduced in GitLab 11.9'
+        desc 'Delete job artifacts' do
+          detail 'Deletes job artifacts from a specified job in a project.'
           success code: 204
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -287,7 +305,8 @@ module API
           status :no_content
         end
 
-        desc 'Expire the artifacts files from a project' do
+        desc 'Delete all job artifacts in a project' do
+          detail 'Deletes job artifacts from all jobs in a specified project.'
           success code: 202
           failure [
             { code: 401, message: 'Unauthorized' },

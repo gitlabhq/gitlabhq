@@ -38,6 +38,10 @@ RSpec.describe 'User updates feature flag', :js, feature_category: :feature_flag
       end
       click_button 'Save changes'
 
+      within_feature_flag_row(1) do
+        expect(page).to have_content 'Percent of users - 15%'
+      end
+
       edit_feature_flag_button.click
 
       within_strategy_row(1) do

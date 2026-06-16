@@ -7,6 +7,7 @@ import { mapActions, mapGetters } from 'vuex';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget` instead.
 export default {
+  name: 'DropdownButton',
   components: {
     GlButton,
     GlIcon,

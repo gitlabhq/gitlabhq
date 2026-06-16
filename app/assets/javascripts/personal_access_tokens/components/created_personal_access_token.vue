@@ -27,6 +27,14 @@ export default {
       copied: false,
     };
   },
+  computed: {
+    formInputGroupProps() {
+      return {
+        'data-testid': 'created-access-token-field',
+        autocomplete: 'off',
+      };
+    },
+  },
 };
 </script>
 
@@ -42,6 +50,7 @@ export default {
       </p>
       <input-copy-toggle-visibility
         :value="token"
+        :form-input-group-props="formInputGroupProps"
         readonly
         size="xl"
         class="gl-mb-0"

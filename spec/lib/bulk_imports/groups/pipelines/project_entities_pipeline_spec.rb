@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:destination_group) { create(:group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:destination_group, freeze: false) { create(:group) }
 
-  let_it_be(:entity) do
+  let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
       group: destination_group,
@@ -14,8 +14,8 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
     )
   end
 
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   subject { described_class.new(context) }
 

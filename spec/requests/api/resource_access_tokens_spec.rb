@@ -865,7 +865,8 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
   end
 
   context 'when the resource is a project' do
-    let_it_be(:resource) { create(:project, group: create(:group)) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:resource) { create(:project, group: group) }
     let_it_be(:namespace) { resource.project_namespace }
     let_it_be(:other_resource) { create(:project) }
     let_it_be(:other_resource_namespace) { other_resource.project_namespace }
@@ -881,7 +882,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
   end
 
   context 'when the resource is a group' do
-    let_it_be(:resource) { create(:group) }
+    let_it_be(:resource, freeze: false) { create(:group) }
     let_it_be(:namespace) { resource }
     let_it_be(:other_resource) { create(:group) }
     let_it_be(:other_resource_namespace) { other_resource }

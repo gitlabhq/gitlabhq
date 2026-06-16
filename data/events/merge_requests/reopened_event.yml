@@ -1,6 +1,6 @@
 ---
 event: MergeRequests::ReopenedEvent
 description: Published when a closed merge request is reopened, so EE subscribers
-  (such as Cluster Agent AutoFlow workers) can react to the state change.
+  can react to the state change.
 feature_category: code_review_workflow
 ee_only: true

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples Integrations::Base::DiffblueCover do
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project, freeze: false) { build(:project) }
 
   subject(:integration) { build(:diffblue_cover_integration, project: project) }
 

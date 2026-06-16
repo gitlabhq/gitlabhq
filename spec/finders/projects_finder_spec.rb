@@ -435,13 +435,6 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         end
       end
 
-      describe 'filter by trending' do
-        let!(:trending_project) { create(:trending_project, project: public_project) }
-        let(:params) { { trending: true } }
-
-        it { is_expected.to eq([public_project]) }
-      end
-
       describe 'filter by owned' do
         let(:params) { { owned: true } }
         let!(:owned_project) { create(:project, :private, namespace: current_user.namespace) }

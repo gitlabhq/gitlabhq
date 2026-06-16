@@ -92,28 +92,6 @@ function strip_executable_binaries() {
 }
 
 # Fixtures functions
-function check_fixtures_download() {
-  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
-    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
-    return 1
-  fi
-
-  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
-    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
-    return 1
-  fi
-
-  if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
-    return 1
-  else
-    if tooling/bin/find_only_allowed_files_changes && ! fixtures_archive_doesnt_exist; then
-      return 0
-    else
-      return 1
-    fi
-  fi
-}
-
 function create_and_upload_graphql_schema_package() {
   create_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PATH}"
   upload_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PACKAGE_URL}"

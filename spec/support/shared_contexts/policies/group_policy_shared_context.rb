@@ -2,29 +2,29 @@
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers -- Shared context provides fixtures for all group policy tests
 RSpec.shared_context 'GroupPolicy context' do
-  let_it_be(:organization) { create(:common_organization) }
-  let_it_be(:group, refind: true) do
+  let_it_be(:organization, freeze: false) { create(:common_organization) }
+  let_it_be_with_refind(:group) do
     create(:group, :private, :owner_subgroup_creation_only, :allow_runner_registration_token,
       organization: organization)
   end
 
-  let_it_be(:subgroup) { create(:group, :private, parent: group) }
+  let_it_be(:subgroup, freeze: false) { create(:group, :private, parent: group) }
 
-  let_it_be(:anonymous) { nil }
-  let_it_be(:guest) { create(:user, guest_of: group) }
-  let_it_be(:planner) { create(:user, planner_of: group) }
-  let_it_be(:reporter) { create(:user, reporter_of: group) }
-  let_it_be(:security_manager) { create(:user, security_manager_of: group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
-  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
-  let_it_be(:owner) { create(:user, owner_of: group) }
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:non_group_member) { create(:user) }
-  let_it_be(:external_user) { create(:user, :external) }
-  let_it_be(:subgroup_guest) { create(:user, guest_of: subgroup) }
-  let_it_be(:subgroup_maintainer) { create(:user, maintainer_of: subgroup) }
+  let_it_be(:anonymous, freeze: false) { nil }
+  let_it_be(:guest, freeze: false) { create(:user, guest_of: group) }
+  let_it_be(:planner, freeze: false) { create(:user, planner_of: group) }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: group) }
+  let_it_be(:security_manager, freeze: false) { create(:user, security_manager_of: group) }
+  let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
+  let_it_be(:maintainer, freeze: false) { create(:user, maintainer_of: group) }
+  let_it_be(:owner, freeze: false) { create(:user, owner_of: group) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:non_group_member, freeze: false) { create(:user) }
+  let_it_be(:external_user, freeze: false) { create(:user, :external) }
+  let_it_be(:subgroup_guest, freeze: false) { create(:user, guest_of: subgroup) }
+  let_it_be(:subgroup_maintainer, freeze: false) { create(:user, maintainer_of: subgroup) }
 
-  let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
+  let_it_be(:organization_owner, freeze: false) { create(:organization_user, :owner, organization: organization).user }
 
   let(:public_anonymous_permissions) do
     %i[
@@ -171,7 +171,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:admin_permissions) do
     (owner_permissions + %i[
-      admin_organization
+      update_organization
       read_confidential_issues
       read_internal_note
     ]).uniq

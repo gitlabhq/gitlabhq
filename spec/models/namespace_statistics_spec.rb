@@ -82,7 +82,7 @@ RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables
   end
 
   describe '#update_storage_size' do
-    let_it_be(:statistics, reload: true) { create(:namespace_statistics, namespace: group) }
+    let_it_be_with_reload(:statistics) { create(:namespace_statistics, namespace: group) }
 
     it 'sets storage_size to the dependency_proxy_size' do
       statistics.dependency_proxy_size = 3
@@ -94,7 +94,7 @@ RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables
   end
 
   describe '#update_dependency_proxy_size' do
-    let_it_be(:statistics, reload: true) { create(:namespace_statistics, namespace: group) }
+    let_it_be_with_reload(:statistics) { create(:namespace_statistics, namespace: group) }
     let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest, group: group, size: 50) }
     let_it_be(:dependency_proxy_blob) { create(:dependency_proxy_blob, group: group, size: 50) }
 

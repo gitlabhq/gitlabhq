@@ -1,0 +1,88 @@
+---
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: API de release de groupe
+---
+
+{{< details >}}
+
+- Édition :  Gratuite, GitLab Premium, GitLab Ultimate
+- Offre :  GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/351703) dans GitLab 14.10 [avec un indicateur](../administration/feature_flags/_index.md) nommé `group_releases_finder_inoperator`. Désactivé par défaut.
+- [Disponible de manière générale](https://gitlab.com/gitlab-org/gitlab/-/issues/355463) dans GitLab 15.0. L'indicateur de fonctionnalité `group_releases_finder_inoperator` a été supprimé.
+
+{{< /history >}}
+
+Utilisez cette API pour interagir avec les [releases de projets](../user/project/releases/_index.md) dans des groupes.
+
+> [!note]
+> Pour interagir directement avec les releases de projets, consultez l'[API de release de projet](releases/_index.md).
+
+## Lister toutes les releases dans un groupe {#list-all-releases-in-a-group}
+
+Liste toutes les releases pour les projets dans un groupe spécifié.
+
+```plaintext
+GET /groups/:id/releases
+GET /groups/:id/releases?simple=true
+```
+
+Paramètres :
+
+| Attribut | Type           | Obligatoire | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | entier ou chaîne | oui      | L'ID ou le [chemin encodé en URL](rest/_index.md#namespaced-paths) du groupe. |
+| `sort`    | string         | non       | La direction de l'ordre. Valeurs possibles : `desc` ou `asc`. |
+| `simple`  | boolean        | non       | Si `true`, retourne uniquement les champs limités pour chaque release. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>"
+   --url "https://gitlab.example.com/api/v4/groups/5/releases"
+```
+
+Exemple de réponse :
+
+```json
+[
+  {
+    "name": "standard release",
+    "tag_name": "releasetag",
+    "description": "",
+    "created_at": "2022-01-10T15:23:15.529Z",
+    "released_at": "2022-01-10T15:23:15.529Z",
+    "author": {
+      "id": 1,
+      "username": "root",
+      "name": "Administrator",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "https://gitlab.com/root"
+    },
+    "commit": {
+      "id": "e8cbb845ae5a53a2fef2938cf63cf82efc10d993",
+      "short_id": "e8cbb845",
+      "created_at": "2022-01-10T15:20:29.000+00:00",
+      "parent_ids": [],
+      "title": "Update test",
+      "message": "Update test",
+      "author_name": "Administrator",
+      "author_email": "admin@example.com",
+      "authored_date": "2022-01-10T15:20:29.000+00:00",
+      "committer_name": "Administrator",
+      "committer_email": "admin@example.com",
+      "committed_date": "2022-01-10T15:20:29.000+00:00",
+      "trailers": {},
+      "web_url": "https://gitlab.com/groups/gitlab-org/-/commit/e8cbb845ae5a53a2fef2938cf63cf82efc10d993"
+    },
+    "upcoming_release": false,
+    "commit_path": "/testgroup/test/-/commit/e8cbb845ae5a53a2fef2938cf63cf82efc10d993",
+    "tag_path": "/testgroup/test/-/tags/testtag"
+  }
+]
+```

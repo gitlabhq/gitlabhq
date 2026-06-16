@@ -233,6 +233,7 @@ type Config struct {
 	Redis                        *RedisConfig             `toml:"redis" json:"redis"`
 	Backend                      *url.URL                 `toml:"-"`
 	CableBackend                 *url.URL                 `toml:"-"`
+	IAMServiceURL                *url.URL                 `toml:"-"` // AUTH-011: optional; nil disables OAuth IAM proxy routing
 	Version                      string                   `toml:"-"`
 	DocumentRoot                 string                   `toml:"-"`
 	DevelopmentMode              bool                     `toml:"-"`

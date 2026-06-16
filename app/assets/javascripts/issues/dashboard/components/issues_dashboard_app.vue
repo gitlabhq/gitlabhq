@@ -61,7 +61,6 @@ import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import { NAME_TO_ENUM_MAP } from '~/work_items/constants';
 import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -193,24 +192,18 @@ export default {
       const params = convertToApiParams(this.filterTokens, {
         hasStatusFeature: this.hasStatusFeature,
       });
-      if (this.glFeatures.workItemConfigurableTypes) {
-        if (params.types) {
-          params.workItemTypeIds = convertNumberToGid(params.types);
-          delete params.types;
-        }
-        if (params.not?.types) {
-          params.not.workItemTypeIds = convertNumberToGid(params.not.types);
-          delete params.not.types;
-        }
+      if (params.types) {
+        params.workItemTypeIds = convertNumberToGid(params.types);
+        delete params.types;
+      }
+      if (params.not?.types) {
+        params.not.workItemTypeIds = convertNumberToGid(params.not.types);
+        delete params.not.types;
       }
       return params;
     },
     defaultWorkItemTypes() {
-      return this.workItemTypes
-        .filter((type) => type.isFilterableListView)
-        .map((type) =>
-          this.glFeatures.workItemConfigurableTypes ? type.id : NAME_TO_ENUM_MAP[type.name],
-        );
+      return this.workItemTypes.filter((type) => type.isFilterableListView).map((type) => type.id);
     },
     dropdownItems() {
       return [
@@ -248,7 +241,6 @@ export default {
       );
     },
     queryVariables() {
-      const field = this.glFeatures.workItemConfigurableTypes ? 'workItemTypeIds' : 'types';
       return {
         hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
         isSignedIn: this.isSignedIn,
@@ -256,7 +248,7 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
-        [field]: this.apiFilterParams[field] || this.defaultWorkItemTypes,
+        workItemTypeIds: this.apiFilterParams.workItemTypeIds || this.defaultWorkItemTypes,
       };
     },
     renderedIssues() {

@@ -39,8 +39,8 @@ If the secondary site is not able to reconnect, use the following steps to remov
 
    Slots where `active` is `f` are inactive.
 
-- If this slot should be active, because you have a **secondary** site configured using that slot:
-  - Look for the [PostgreSQL logs](../../../logs/_index.md#postgresql-logs) for the **secondary** site,
+- If this slot should be active, because you have a secondary site configured using that slot:
+  - Look for the [PostgreSQL logs](../../../logs/_index.md#postgresql-logs) for the secondary site,
      to view why the replication is not running.
   - If the secondary site is no longer able to reconnect:
 
@@ -74,8 +74,8 @@ To fix this, you should [remove the inactive replication slot](#removing-an-inac
 ## Message: `ERROR:  replication slots can only be used if max_replication_slots > 0`?
 
 This means that the `max_replication_slots` PostgreSQL variable needs to
-be set on the **primary** database. This setting defaults to 1. You may need to
-increase this value if you have more **secondary** sites.
+be set on the primary database. This setting defaults to 1. You may need to
+increase this value if you have more secondary sites.
 
 Be sure to restart PostgreSQL for this to take effect. See the
 [PostgreSQL replication setup](../../setup/database.md#postgresql-replication) guide for more details.
@@ -83,17 +83,17 @@ Be sure to restart PostgreSQL for this to take effect. See the
 ## Message: `replication slot "geo_secondary_my_domain_com" does not exist`
 
 This error occurs when PostgreSQL does not have a replication slot for the
-**secondary** site by that name:
+secondary site by that name:
 
 ```plaintext
 FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist
 ```
 
-You may want to rerun the [replication process](../../setup/database.md) on the **secondary** site .
+You may want to rerun the [replication process](../../setup/database.md) on the secondary site .
 
 ## Message: `Command exceeded allowed execution time` when setting up replication?
 
-This may happen while [initiating the replication process](../../setup/database.md#step-3-initiate-the-replication-process) on the **secondary** site,
+This may happen while [initiating the replication process](../../setup/database.md#step-3-initiate-the-replication-process) on the secondary site,
 and indicates your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
@@ -112,7 +112,7 @@ the default 30 minutes. Adjust as required for your installation.
 
 ## Message: `PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device`
 
-Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
+Determine if you have any unused replication slots in the primary database. This can cause large amounts of
 log data to build up in `pg_xlog`.
 
 [Removing the inactive slots](#removing-an-inactive-replication-slot) can reduce the amount of space used in the `pg_xlog`.
@@ -130,12 +130,12 @@ These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
 [`hot_standby_feedback`](https://www.postgresql.org/docs/16/hot-standby.html#HOT-STANDBY-CONFLICT).
-This increases the likelihood of bloat on the **primary** site as it prevents
+This increases the likelihood of bloat on the primary site as it prevents
 `VACUUM` from removing recently-dead rows. However, it has been used
 successfully in production on GitLab.com.
 
 To enable `hot_standby_feedback`, add the following to `/etc/gitlab/gitlab.rb`
-on the **secondary** site:
+on the secondary site:
 
 ```ruby
 postgresql['hot_standby_feedback'] = 'on'

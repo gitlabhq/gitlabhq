@@ -20,7 +20,12 @@ module Gitlab
             return move_to_next_stage(project, {})
           end
 
-          info(project.id, message: 'starting importer', importer: 'Importer::CollaboratorsImporter')
+          info(
+            project.id,
+            message: 'starting importer',
+            importer: 'Importer::CollaboratorsImporter',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
 
           waiter = Importer::CollaboratorsImporter.new(project, client).execute
 
@@ -46,7 +51,8 @@ module Gitlab
             log_attributes(
               project.id,
               message: 'no push access rights to fetch collaborators',
-              importer: 'Importer::CollaboratorsImporter'
+              importer: 'Importer::CollaboratorsImporter',
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
             )
           )
         end

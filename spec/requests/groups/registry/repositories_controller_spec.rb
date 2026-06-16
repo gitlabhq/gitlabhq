@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Groups::Registry::RepositoriesController, feature_category: :container_registry do
-  let_it_be(:group, reload: true) { create(:group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   before do
     stub_container_registry_config(enabled: true, key: 'spec/fixtures/x509_certificate_pk.key')
     stub_container_registry_tags(repository: :any, tags: [])
     stub_container_registry_info
-    group.add_reporter(user)
+    group.add_reporter(user) # -- Does not work in before_all
     login_as(user)
   end
 
@@ -20,6 +20,7 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
       response
     end
 
+    it_behaves_like 'pushed feature flag', :container_registry_display_supported_platforms
     it { is_expected.to have_gitlab_http_status(:ok) }
 
     it 'avoids N+1 queries' do
@@ -51,6 +52,7 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
       response
     end
 
+    it_behaves_like 'pushed feature flag', :container_registry_display_supported_platforms
     it { is_expected.to have_gitlab_http_status(:ok) }
   end
 end

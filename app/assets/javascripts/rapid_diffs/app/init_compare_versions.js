@@ -8,11 +8,12 @@ export const initCompareVersions = (el, appData) => {
   const {
     source_versions: sourceVersions,
     target_versions: targetVersions,
+    context_commits: contextCommits,
     commit,
   } = appData.versions;
   const versionsStore = useMergeRequestVersions(pinia);
 
-  versionsStore.setVersions({ sourceVersions, targetVersions });
+  versionsStore.setVersions({ sourceVersions, targetVersions, contextCommits });
 
   if (commit) {
     versionsStore.setCommit(commit);
@@ -34,6 +35,7 @@ export const initCompareVersions = (el, appData) => {
         props: {
           sourceVersions: versionsStore.sourceVersions,
           targetVersions: versionsStore.targetVersions,
+          contextCommits: versionsStore.contextCommits,
         },
       });
     },

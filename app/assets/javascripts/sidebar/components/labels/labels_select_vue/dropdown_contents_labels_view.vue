@@ -18,6 +18,7 @@ import LabelItem from './label_item.vue';
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue` instead.
 export default {
+  name: 'DropdownContentsLabelsView',
   components: {
     GlIntersectionObserver,
     GlLoadingIcon,

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe "Private Project Access", feature_category: :system_access do
   include AccessMatchers
 
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :private, :repository, :with_namespace_settings, public_builds: false)
   end
 

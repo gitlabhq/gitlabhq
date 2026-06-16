@@ -1,0 +1,9 @@
+---
+name: activate_user
+description: Grants the ability to activate users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - activate_user

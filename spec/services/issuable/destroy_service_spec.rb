@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Issuable::DestroyService, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
 
   subject(:service) { described_class.new(container: project, current_user: user) }
 

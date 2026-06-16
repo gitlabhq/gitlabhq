@@ -80,6 +80,7 @@
       @apply gl-ml-5;
     }
 
+    // stylelint-disable-next-line gitlab/no-has -- scoped to a specific details element
     &:not(:has(summary)):not([open]) {
       @apply gl-font-bold;
     }
@@ -119,6 +120,7 @@
 
   // the z-index of the mark is set to -1, so it's below the table cells
   // unless they have their own stacking context
+  // stylelint-disable-next-line gitlab/no-has -- scoped to table cells with mark content
   td:has(mark), th:has(mark) {
     isolation: isolate;
   }
@@ -234,6 +236,7 @@
   }
 
   // Fix border bleed.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to gl-table-shadow element
   .gl-table-shadow:not(:has(+ .glql-load-more)) {
     clip-path: inset(0 round 0 0 1px 1px);
   }
@@ -880,6 +883,7 @@
   }
 
   /* Vertically align badges with icons */
+  /* stylelint-disable-next-line gitlab/no-has -- scoped to gl-badge element */
   .gl-badge:has(> svg) {
     position: relative;
     bottom: -3px;

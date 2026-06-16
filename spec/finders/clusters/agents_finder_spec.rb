@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::AgentsFinder do
+RSpec.describe Clusters::AgentsFinder, feature_category: :deployment_management do
   describe '#execute' do
     let(:project) { create(:project) }
     let(:user) { create(:user, maintainer_of: project) }

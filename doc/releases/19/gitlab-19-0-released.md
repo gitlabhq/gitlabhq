@@ -308,7 +308,7 @@ GitLab Duo respects branch protection rules and does not force-push to
 protected branches.
 
 This feature is in beta and is gated behind the `mr_ai_resolve_conflicts` feature flag,
-disabled by default.
+enabled by default.
 
 ### Restrict the AI Catalog to a group hierarchy
 
@@ -516,6 +516,44 @@ could time out and return `500` errors. SCIM `DELETE` and `PATCH` requests now r
 success response immediately. Membership removal is handled asynchronously, so identity
 providers and SCIM clients receive consistent success responses.
 
+### Filter Credits dashboard by product and date (Beta)
+
+<!-- categories: Consumables Cost Management -->
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Links: [Documentation](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard)
+
+{{< /details >}}
+
+The in-product GitLab Credits dashboard now supports product filtering, date
+range selection, and Secrets Manager usage visibility.
+
+You can filter usage by product (including GitLab Duo and Secrets Manager) 
+and date range, see a daily usage chart across selected products, and
+review per-user attribution with a Usage control status column.
+
+The dashboard also includes usage from service accounts so automated activity
+is reflected in per-user attribution, and surfaces non-billable and beta
+events such as Secrets Manager Open Beta activity. This gives you a complete
+view of credit consumption in your organization.
+
+### Review prior months of Credits usage (Beta)
+
+<!-- categories: Consumables Cost Management -->
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Links: [Documentation](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard)
+
+{{< /details >}}
+
+In previous versions of GitLab, the Credits dashboard showed only the current billing month, so you couldn't compare trends, audit a usage spike after the fact, or build a budget conversation around prior consumption. Now you can navigate to prior billing months in the Credits dashboard.
+
 ## Unified DevOps and Security
 
 ### Auto remediation for vulnerable dependencies (Experiment)
@@ -576,7 +614,7 @@ The profile activates two scan triggers:
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#dependency-resolution) | [Related epic](https://gitlab.com/groups/gitlab-org/-/work_items/590734)
+- Links: [Documentation](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md#dependency-resolution), [Related epic](https://gitlab.com/groups/gitlab-org/-/work_items/590734)
 
 {{< /details >}}
 
@@ -627,6 +665,22 @@ Remediation guidance is now included for the following checks:
 - [TLS configuration](../../user/application_security/api_security_testing/checks/tls_server_configuration_check.md)
 - [Authentication token](../../user/application_security/api_security_testing/checks/authentication_token_check.md)
 - [XML injection](../../user/application_security/api_security_testing/checks/xml_injection_check.md)
+
+### Security data in merge request Reports tab
+
+<!-- categories: Vulnerability Management -->
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
+- Links: [Documentation](../../user/project/merge_requests/reports.md), [Related epic](https://gitlab.com/groups/gitlab-org/-/work_items/20406)
+
+{{< /details >}}
+
+Merge requests include a new Reports tab that shows all findings from security scans, license compliance results, and code quality reports for the pipeline.
+
+GitLab bot comments in the activity feed are still available to view any policy violations that prevent the merge request from being merged.
 
 ### Improved array support for CI/CD inputs
 
@@ -700,8 +754,7 @@ path across your organization.
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
-- Links: [Documentation](../../administration/instance_limits.md#merge-train-parallel-pipeline-limit),
- [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/374188)
+- Links: [Documentation](../../administration/cicd/limits.md#merge-train-parallel-pipeline-limit), [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/374188)
 
 {{< /details >}}
 

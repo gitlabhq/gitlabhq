@@ -25,6 +25,8 @@ module Types
           Types::AlertManagement::AlertType
         when WikiPage::Meta
           Types::Wikis::WikiPageType
+        when ::Commit
+          ::Types::Repositories::CommitType
         else
           raise "Unknown GraphQL type for #{object}"
         end

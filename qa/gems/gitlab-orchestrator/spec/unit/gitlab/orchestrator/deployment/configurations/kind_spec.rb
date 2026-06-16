@@ -21,6 +21,40 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
     instance_double(Gitlab::Orchestrator::Kubectl::Client, create_resource: "", execute: "", patch: "")
   end
 
+  let(:helmclient) do
+    instance_double(Gitlab::Orchestrator::Helm::Client, add_helm_chart: nil, upgrade: nil, uninstall: nil)
+  end
+
+  let(:valkey) do
+    instance_double(
+      Gitlab::Orchestrator::Deployment::Services::Valkey,
+      install: nil,
+      host: "valkey.gitlab.svc.cluster.local",
+      auth_secret_name: "valkey-auth",
+      auth_secret_key: "default"
+    )
+  end
+
+  let(:cnpg) do
+    instance_double(
+      Gitlab::Orchestrator::Deployment::Services::CloudNativePG,
+      install: nil,
+      host: "cnpg-rw.gitlab.svc.cluster.local",
+      password_secret_name: "cnpg-app",
+      password_secret_key: "password"
+    )
+  end
+
+  let(:garage) do
+    instance_double(
+      Gitlab::Orchestrator::Deployment::Services::Garage,
+      install: nil,
+      object_storage_secret_name: "garage-gitlab-object-storage",
+      s3cmd_secret_name: "garage-gitlab-object-storage-s3cmd",
+      registry_storage_secret_name: "garage-gitlab-registry-storage"
+    )
+  end
+
   let(:port_mappings) do
     {
       80 => 32080,
@@ -34,11 +68,20 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
     allow(Gitlab::Orchestrator::Kind::Cluster).to receive(:host_port_mapping).with(80).and_return(port_mappings[80])
     allow(Gitlab::Orchestrator::Kind::Cluster).to receive(:host_port_mapping).with(5000).and_return(port_mappings[5000])
     allow(Gitlab::Orchestrator::Kubectl::Client).to receive(:new).and_return(kubeclient)
+    allow(Gitlab::Orchestrator::Helm::Client).to receive(:new).and_return(helmclient)
+    allow(Gitlab::Orchestrator::Deployment::Services::Valkey).to receive(:new).and_return(valkey)
+    allow(Gitlab::Orchestrator::Deployment::Services::CloudNativePG).to receive(:new).and_return(cnpg)
+    allow(Gitlab::Orchestrator::Deployment::Services::Garage).to receive(:new).and_return(garage)
   end
 
   it "runs pre-deployment setup", :aggregate_failures do
-    expect { configuration.run_pre_deployment_setup }.to output(/Creating admin user initial password secret/).to_stdout
+    expect { configuration.run_pre_deployment_setup }.to output(
+      /Installing external services.*Creating admin user initial password secret/m
+    ).to_stdout
 
+    expect(valkey).to have_received(:install)
+    expect(cnpg).to have_received(:install)
+    expect(garage).to have_received(:install)
     expect(kubeclient).to have_received(:create_resource).with(
       Gitlab::Orchestrator::Kubectl::Resources::Secret.new("gitlab-initial-root-password", "password", "password")
     )
@@ -113,6 +156,9 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
   end
 
   it "returns configuration specific values" do
+    # values depends on external services being installed first
+    expect { configuration.run_pre_deployment_setup }.to output.to_stdout
+
     expect(configuration.values).to eq({
       global: {
         shell: {
@@ -133,9 +179,69 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
               configmap: "pre-receive-hook"
             }
           }
+        },
+        ingress: {
+          enabled: true,
+          configureCertmanager: false,
+          tls: { enabled: false }
+        },
+        minio: { enabled: false },
+        gatewayApi: { enabled: false, configureCertmanager: false, installEnvoy: false },
+        psql: {
+          host: "cnpg-rw.gitlab.svc.cluster.local",
+          password: {
+            secret: "cnpg-app",
+            key: "password"
+          }
+        },
+        redis: {
+          host: "valkey.gitlab.svc.cluster.local",
+          auth: {
+            secret: "valkey-auth",
+            key: "default"
+          }
+        },
+        appConfig: {
+          object_store: {
+            enabled: true,
+            proxy_download: true,
+            connection: {
+              secret: "garage-gitlab-object-storage",
+              key: "config"
+            }
+          },
+          artifacts: { bucket: "gitlab-artifacts" },
+          lfs: { bucket: "git-lfs" },
+          uploads: { bucket: "gitlab-uploads" },
+          packages: { bucket: "gitlab-packages" },
+          externalDiffs: { enabled: true, bucket: "gitlab-mr-diffs" },
+          terraformState: { enabled: true, bucket: "gitlab-terraform-state" },
+          ciSecureFiles: { enabled: true, bucket: "gitlab-ci-secure-files" },
+          dependencyProxy: { enabled: true, bucket: "gitlab-dependency-proxy" }
         }
       },
+      gitlab: {
+        toolbox: {
+          backups: {
+            objectStorage: {
+              config: {
+                secret: "garage-gitlab-object-storage-s3cmd",
+                key: "config"
+              }
+            }
+          }
+        }
+      },
+      registry: {
+        storage: {
+          secret: "garage-gitlab-registry-storage",
+          key: "config",
+          redirect: { disable: true }
+        }
+      },
+      certmanager: { install: false },
       "nginx-ingress": {
+        enabled: true,
         controller: {
           replicaCount: 1,
           minAavailable: 1,

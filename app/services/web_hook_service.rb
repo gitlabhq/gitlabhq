@@ -234,7 +234,7 @@ class WebHookService
 
       headers['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
 
-      if Feature.enabled?(:webhook_signing_token, hook.parent) && hook.signing_token.present?
+      if hook.signing_token.present?
         headers[Gitlab::WebHooks::WEBHOOK_SIGNATURE_HEADER] = build_signature(timestamp, idempotency_key)
       end
 

@@ -64,7 +64,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
         it 'logs an error' do
           expect(logger).to receive(:error).with(
             hash_including(
-              importer: 'gitlab_migration',
+              importer: Import::SOURCE_OFFLINE_TRANSFER,
               offline_export_id: offline_export.id,
               project_id: project.id,
               project_name: project.name,
@@ -103,12 +103,12 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when all exports have finished or failed' do
-        let!(:issues_export) do
+        let_it_be(:issues_export) do
           create(:bulk_import_export, :finished, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:merge_requests_export) do
+        let_it_be(:merge_requests_export) do
           create(:bulk_import_export, :failed, :offline, project: project, relation: 'merge_requests',
             offline_export: offline_export)
         end
@@ -117,12 +117,12 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when an export relating to users is still in started state' do
-        let!(:issues_export) do
+        let_it_be(:issues_export) do
           create(:bulk_import_export, :finished, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:merge_requests_export) do
+        let_it_be_with_reload(:merge_requests_export) do
           create(:bulk_import_export, :started, :offline, project: project, relation: 'merge_requests',
             offline_export: offline_export)
         end
@@ -139,12 +139,12 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when an export relating to users is still in pending state' do
-        let!(:issues_export) do
+        let_it_be(:issues_export) do
           create(:bulk_import_export, :finished, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:merge_requests_export) do
+        let_it_be_with_reload(:merge_requests_export) do
           create(:bulk_import_export, :pending, :offline, project: project, relation: 'merge_requests',
             offline_export: offline_export)
         end
@@ -161,7 +161,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when an export not relating to users is still incomplete' do
-        let!(:labels_export) do
+        let_it_be(:labels_export) do
           create(:bulk_import_export, :started, :offline, project: project, relation: 'labels',
             offline_export: offline_export)
         end
@@ -170,12 +170,12 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when both user-related and non-user-related exports exist with different statuses' do
-        let!(:issues_export) do
+        let_it_be_with_reload(:issues_export) do
           create(:bulk_import_export, :started, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:labels_export) do
+        let_it_be_with_reload(:labels_export) do
           create(:bulk_import_export, :started, :offline, project: project, relation: 'labels',
             offline_export: offline_export)
         end
@@ -215,7 +215,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when user contributions have already finished' do
-        let!(:user_contributions_export) do
+        let_it_be(:user_contributions_export) do
           create(:bulk_import_export, :finished, project: project, relation: 'user_contributions',
             offline_export: offline_export)
         end
@@ -224,7 +224,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when user contributions have already failed' do
-        let!(:user_contributions_export) do
+        let_it_be(:user_contributions_export) do
           create(:bulk_import_export, :failed, project: project, relation: 'user_contributions',
             offline_export: offline_export)
         end
@@ -233,7 +233,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when direct transfer exports exist but no offline exports' do
-        let!(:direct_transfer_issues_export) do
+        let_it_be(:direct_transfer_issues_export) do
           create(:bulk_import_export, :started, project: project, relation: 'issues')
         end
 
@@ -249,16 +249,16 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when direct transfer exports are in progress but offline exports are complete' do
-        let!(:offline_issues_export) do
+        let_it_be(:offline_issues_export) do
           create(:bulk_import_export, :finished, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:direct_transfer_issues_export) do
+        let_it_be(:direct_transfer_issues_export) do
           create(:bulk_import_export, :started, project: project, relation: 'issues')
         end
 
-        let!(:direct_transfer_merge_requests_export) do
+        let_it_be(:direct_transfer_merge_requests_export) do
           create(:bulk_import_export, :pending, project: project, relation: 'merge_requests')
         end
 
@@ -266,16 +266,16 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
       end
 
       context 'when offline exports are in progress but direct transfer exports are complete' do
-        let!(:offline_issues_export) do
+        let_it_be(:offline_issues_export) do
           create(:bulk_import_export, :started, :offline, project: project, relation: 'issues',
             offline_export: offline_export)
         end
 
-        let!(:direct_transfer_issues_export) do
+        let_it_be(:direct_transfer_issues_export) do
           create(:bulk_import_export, :finished, project: project, relation: 'issues')
         end
 
-        let!(:direct_transfer_merge_requests_export) do
+        let_it_be(:direct_transfer_merge_requests_export) do
           create(:bulk_import_export, :finished, project: project, relation: 'merge_requests')
         end
 
@@ -299,7 +299,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
 
       expect(logger).to receive(:error).with(
         hash_including(
-          importer: 'gitlab_migration',
+          importer: Import::SOURCE_OFFLINE_TRANSFER,
           offline_export_id: offline_export.id,
           project_id: project.id,
           project_name: project.name,

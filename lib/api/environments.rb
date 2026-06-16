@@ -17,8 +17,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List environments' do
-        detail 'Get all environments for a given project. This feature was introduced in GitLab 8.11.'
+      desc 'List all environments' do
+        detail 'Lists all environments for a specified project.'
         success Entities::Environment
         is_array true
         failure [
@@ -53,8 +53,8 @@ module API
         present paginate(environments), with: Entities::Environment, current_user: current_user
       end
 
-      desc 'Create a new environment' do
-        detail 'Creates a new environment with the given name and `external_url`. It returns `201` if the environment was successfully created, `400` for wrong parameters. This feature was introduced in GitLab 8.11.'
+      desc 'Create an environment' do
+        detail 'Creates an environment for a specified project.'
         success Entities::Environment
         failure [
           { code: 400, message: 'Bad request' },
@@ -100,7 +100,7 @@ module API
       end
 
       desc 'Update an existing environment' do
-        detail 'Updates an existing environment name and/or `external_url`. It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned. This feature was introduced in GitLab 8.11.'
+        detail 'Updates an existing environment for a project.'
         success Entities::Environment
         failure [
           { code: 400, message: 'Bad request' },
@@ -155,8 +155,9 @@ module API
         end
       end
 
-      desc 'Delete multiple stopped review apps' do
-        detail 'It schedules for deletion multiple environments that have already been stopped and are in the review app folder. The actual deletion is performed after 1 week from the time of execution. By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.'
+      desc 'Schedule multiple stopped review apps for deletion' do
+        detail 'Schedules multiple stopped review apps for deletion. The deletion is performed after 1 week. By ' \
+          'default, only environments 30 days or older are deleted.'
         success Entities::EnvironmentBasic
         failure [
           { code: 400, message: 'Bad request' },
@@ -193,7 +194,7 @@ module API
       end
 
       desc 'Delete an environment' do
-        detail 'It returns 204 if the environment was successfully deleted, and 404 if the environment does not exist. This feature was introduced in GitLab 8.11.'
+        detail 'Deletes an environment from a project. The environment must be stopped first.'
         success Entities::Environment
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -217,7 +218,7 @@ module API
       end
 
       desc 'Stop an environment' do
-        detail 'It returns 200 if the environment was successfully stopped.'
+        detail 'Stops a specified running environment.'
         success Entities::Environment
         failure [
           { code: 400, message: 'Bad request' },
@@ -253,7 +254,8 @@ module API
       end
 
       desc 'Stop stale environments' do
-        detail 'It returns `200` if stale environment check was scheduled successfully'
+        detail 'Stops all environments that were last modified or deployed to before a specified date. Excludes ' \
+          'protected environments.'
         failure [
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' }
@@ -284,7 +286,8 @@ module API
         present message: service_response.message
       end
 
-      desc 'Get a specific environment' do
+      desc 'Retrieve an environment' do
+        detail 'Retrieves a specified environment for a project.'
         success Entities::Environment
         failure [
           { code: 401, message: 'Unauthorized' },

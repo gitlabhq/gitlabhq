@@ -4,6 +4,7 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { __ } from '~/locale';
 
 export default {
+  name: 'SourceBranchRemovalStatus',
   i18n: {
     removesBranchText: __('Deletes the source branch'),
     tooltipTitle: __('A user with write access to the source branch selected this option'),

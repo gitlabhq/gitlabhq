@@ -51,7 +51,8 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           label_ids: labels.map(&:id),
           milestone_id: milestone.id,
           milestone: milestone,
-          due_date: Date.tomorrow }
+          due_date: Date.tomorrow,
+          start_date: Date.tomorrow }
       end
 
       before_all do
@@ -89,6 +90,49 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
                 id: an_instance_of(Integer),
                 namespace_id: project.project_namespace_id
               )
+          end
+
+          it 'publishes a CreatedEvent cloud event' do
+            expect { result }
+              .to publish_event(::WorkItems::CreatedEvent)
+          end
+
+          context 'when the issue is imported' do
+            before do
+              opts[:imported_from] = :github
+            end
+
+            it 'does not publish a CreatedEvent cloud event' do
+              expect { result }
+                .not_to publish_event(::WorkItems::CreatedEvent)
+            end
+
+            it 'still publishes the legacy WorkItemCreatedEvent' do
+              expect { result }
+                .to publish_event(::WorkItems::WorkItemCreatedEvent)
+            end
+          end
+
+          context 'when the issue has an external author (service desk)' do
+            let(:opts) { { title: 'private issue', description: 'please fix', external_author: 'user@example.com' } }
+
+            it 'does not publish a CreatedEvent cloud event' do
+              expect { result }
+                .not_to publish_event(::WorkItems::CreatedEvent)
+            end
+          end
+
+          context 'when current_user is not human' do
+            let(:user) { create(:user, :service_account) }
+
+            before do
+              project.add_guest(user)
+            end
+
+            it 'does not publish a CreatedEvent cloud event' do
+              expect { result }
+                .not_to publish_event(::WorkItems::CreatedEvent)
+            end
           end
         end
 
@@ -215,13 +259,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
-      it_behaves_like 'syncs successfully to work_item_description' do
-        let(:opts) { { title: "Hello", description: "Hello World" } }
-        let(:issue) { result.payload[:issue] }
-
-        subject(:result) { service.execute }
-      end
-
       context 'when skip_system_notes is true' do
         let(:issue) { described_class.new(container: project, current_user: user, params: opts).execute(skip_system_notes: true) }
 
@@ -330,6 +367,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+          expect(issue.start_date).to be_nil
         end
 
         it 'can create confidential issues' do
@@ -781,7 +819,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
     end
 
     context 'resolving discussions' do
-      let_it_be(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+      let_it_be(:discussion, freeze: false) { create(:diff_note_on_merge_request).to_discussion }
       let_it_be(:merge_request) { discussion.noteable }
       let_it_be(:project) { merge_request.source_project }
 
@@ -912,7 +950,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
     context 'add related issue' do
       let_it_be(:private_project) { create(:project) }
-      let_it_be(:related_issue) { create(:issue, project: private_project) }
+      let_it_be_with_reload(:related_issue) { create(:issue, project: private_project) }
 
       let(:opts) do
         { title: 'A new issue', add_related_issue: related_issue }

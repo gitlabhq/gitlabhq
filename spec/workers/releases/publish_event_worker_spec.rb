@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Releases::PublishEventWorker, feature_category: :release_evidence do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be_with_reload(:release) { create(:release, project: project, released_at: Time.current) }
 
   before do

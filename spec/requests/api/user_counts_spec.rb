@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::UserCounts, feature_category: :service_ping do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user, assignees: [user]) }
   let_it_be(:todo) { create(:todo, :pending, user: user, project: project) }
 
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, title: "Test") }

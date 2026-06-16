@@ -58,6 +58,10 @@ module BulkImports
       end
       strong_memoize_attr :offline_configuration
 
+      def import_source
+        @import_source ||= bulk_import.import_source
+      end
+
       def source_ghost_user_id
         @source_ghost_user_id ||= BulkImports::SourceInternalUserFinder.new(configuration).cached_ghost_user_id
       end
@@ -65,8 +69,8 @@ module BulkImports
       def source_user_mapper
         @source_user_mapper ||= Gitlab::Import::SourceUserMapper.new(
           namespace: portable.root_ancestor,
-          import_type: Import::SOURCE_DIRECT_TRANSFER,
-          source_hostname: configuration.url
+          import_type: import_source,
+          source_hostname: offline? ? offline_configuration.source_hostname : configuration.url
         )
       end
 

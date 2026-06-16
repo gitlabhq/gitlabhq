@@ -21,7 +21,8 @@ RSpec.describe API::Entities::Organizations::Organization, feature_category: :or
       created_at: organization.created_at,
       updated_at: organization.updated_at,
       web_url: organization.web_url,
-      avatar_url: avatar_url
+      avatar_url: avatar_url,
+      visibility: organization.visibility
     )
   end
 end

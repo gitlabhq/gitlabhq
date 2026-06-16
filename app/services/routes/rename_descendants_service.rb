@@ -21,6 +21,7 @@ module Routes
       @parent_route = parent_route
       @routes_to_update = []
       @redirect_routes_to_insert = []
+      @project_burns_to_insert = []
       @route_claims_destroy_metadata = []
       @route_claims_create_ids = []
     end
@@ -28,6 +29,7 @@ module Routes
     def execute(changes)
       process_changes(changes)
       update_routes_for_descendants
+      burn_descendant_project_paths
       create_redirect_routes_for_descendants
     end
 
@@ -44,7 +46,10 @@ module Routes
       old_path_of_parent = changes.old_path_of_parent
       old_name_of_parent = changes.old_name_of_parent
 
-      descendant_routes_inside(old_path_of_parent).each_batch(of: BATCH_SIZE) do |relation|
+      # Batch by :path instead of the default :id so PostgreSQL can use the
+      # index_routes_on_path_text_pattern_ops index for both the LIKE filter
+      # and the ORDER BY, avoiding a slow sequential scan on the id index.
+      descendant_routes_inside(old_path_of_parent).each_batch(of: BATCH_SIZE, column: :path) do |relation|
         relation.each do |descendant_route|
           attributes_to_update = {}
 
@@ -63,7 +68,26 @@ module Routes
           collect_route_claims_metadata(descendant_route, attributes_to_update)
           push_to_routes_data(descendant_route, attributes_to_update)
           push_to_redirect_routes_data(descendant_route) if attributes_to_update[:path]
+          push_to_burn_data(descendant_route, attributes_to_update)
         end
+      end
+    end
+
+    def push_to_burn_data(descendant_route, attributes_to_update)
+      return unless attributes_to_update[:path]
+      return unless descendant_route.source_type == 'Project'
+
+      @project_burns_to_insert << {
+        path: descendant_route.path,
+        project_id: descendant_route.source_id
+      }
+    end
+
+    def burn_descendant_project_paths
+      return if @project_burns_to_insert.blank?
+
+      @project_burns_to_insert.each_slice(BATCH_SIZE) do |slice|
+        ::Authn::BurnedProjectRoute.bulk_burn!(slice)
       end
     end
 

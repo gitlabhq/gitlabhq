@@ -7,14 +7,14 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let_it_be(:admin) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
-  let_it_be(:group) { create(:group, path: 'environments-group') }
-  let_it_be(:project) { create(:project, :repository, group: group, path: 'environments-project') }
+  let_it_be(:admin, freeze: false) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
+  let_it_be(:group, freeze: false) { create(:group, path: 'environments-group') }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group, path: 'environments-project') }
 
-  let_it_be(:environment) { create(:environment, name: 'staging', project: project) }
+  let_it_be(:environment, freeze: false) { create(:environment, name: 'staging', project: project) }
 
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, :success, pipeline: pipeline) }
+  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+  let_it_be(:build, freeze: false) { create(:ci_build, :success, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -43,19 +43,19 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
     end
 
     context 'with deployments' do
-      let_it_be(:deployment) do
+      let_it_be(:deployment, freeze: false) do
         create(:deployment, :success, environment: environment, deployable: nil)
       end
 
-      let_it_be(:deployment_success) do
+      let_it_be(:deployment_success, freeze: false) do
         create(:deployment, :success, environment: environment, deployable: build, finished_at: 1.hour.since)
       end
 
-      let_it_be(:deployment_failed) do
+      let_it_be(:deployment_failed, freeze: false) do
         create(:deployment, :failed, environment: environment, deployable: build)
       end
 
-      let_it_be(:deployment_running) do
+      let_it_be(:deployment_running, freeze: false) do
         create(:deployment, :running, environment: environment, deployable: build)
       end
 

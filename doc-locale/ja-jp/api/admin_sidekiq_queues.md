@@ -1,8 +1,8 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Sidekiqキュー管理 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Sidekiqキューの管理API
 ---
 
 {{< details >}}
@@ -12,15 +12,17 @@ title: Sidekiqキュー管理
 
 {{< /details >}}
 
-指定されたメタデータに一致するSidekiqキューからジョブを削除します。
+## Sidekiqキューからジョブを削除 {#delete-jobs-from-a-sidekiq-queue}
+
+指定されたメタデータに一致するジョブをSidekiqキューから削除します。
 
 レスポンスには3つのフィールドがあります:
 
 1. `deleted_jobs` - リクエストによって削除されたジョブの数。
-1. `queue_size` - リクエストの処理後、キューに残っているサイズ。
-1. `completed` - リクエストが時間内にキュー全体を処理できたかどうか。そうでない場合、同じパラメータで再試行すると、さらにジョブが削除される可能性があります（最初のリクエストの発行後に追加されたものも含む）。
+1. `queue_size` - リクエストの処理後に残ったキューのサイズ。
+1. `completed` - リクエストがキュー全体を時間内に処理できたかどうか。時間内に処理できなかった場合、同じパラメータで再試行すると、さらにジョブが削除される可能性があります（最初のリクエストが発行された後に加えられたジョブを含む）。
 
-このAPIエンドポイントは、管理者のみが使用できます。
+このAPIエンドポイントは管理者のみが利用できます。
 
 ```plaintext
 DELETE /admin/sidekiq/queues/:queue_name
@@ -28,18 +30,18 @@ DELETE /admin/sidekiq/queues/:queue_name
 
 | 属性           | 型   | 必須 | 説明 |
 |---------------------|--------|----------|-------------|
-| `queue_name`        | 文字列 | はい      | 削除するジョブの送信元キューの名前。 |
-| `user`              | 文字列 | いいえ       | ジョブのスケジュールを設定したユーザー名 |
-| `project`           | 文字列 | いいえ       | ジョブのスケジュール元となったプロジェクトのフルパス |
+| `queue_name`        | 文字列 | はい      | ジョブを削除するキューの名前 |
+| `user`              | 文字列 | いいえ       | ジョブをスケジュールしたユーザー名 |
+| `project`           | 文字列 | いいえ       | ジョブがスケジュールされたプロジェクトのフルパス |
 | `root_namespace`    | 文字列 | いいえ       | プロジェクトのルートネームスペース |
-| `subscription_plan` | 文字列 | いいえ       | ルートネームスペースのサブスクリプションプラン（GitLab.comのみ） |
-| `caller_id`         | 文字列 | いいえ       | ジョブのスケジュールを設定するエンドポイントまたはバックグラウンドジョブ（例：`ProjectsController#create`、`/api/:version/projects/:id`、`PostReceive`） |
-| `feature_category`  | 文字列 | いいえ       | バックグラウンドジョブの機能カテゴリー（例：`team_planning`または`code_review`） |
-| `worker_class`      | 文字列 | いいえ       | バックグラウンドジョブワーカーのクラス（例：`PostReceive`または`MergeWorker`） |
+| `subscription_plan` | 文字列 | いいえ       | ルートネームスペースのサブスクリプションプラン (GitLab.comのみ) |
+| `caller_id`         | 文字列 | いいえ       | ジョブをスケジュールしたエンドポイントまたはバックグラウンドジョブ（例: `ProjectsController#create`、`/api/:version/projects/:id`、`PostReceive`） |
+| `feature_category`  | 文字列 | いいえ       | バックグラウンドジョブの機能カテゴリ（例: `team_planning`または`code_review`） |
+| `worker_class`      | 文字列 | いいえ       | バックグラウンドジョブワーカーのクラス（例: `PostReceive`または`MergeWorker`） |
 
 `queue_name`以外の属性が少なくとも1つ必要です。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -47,7 +49,7 @@ curl --request DELETE \
 --url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

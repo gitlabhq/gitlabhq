@@ -1,4 +1,5 @@
-import { GlFormInput, GlFormRadioGroup, GlForm } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlFormRadioGroup, GlForm } from '@gitlab/ui';
+import { nextTick } from 'vue';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import VersionSelectForm from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/version_select_form.vue';
@@ -11,6 +12,7 @@ describe('VersionSelectForm', () => {
   const findFormRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findForm = () => wrapper.findComponent(GlForm);
   const findInput = () => wrapper.findComponent(GlFormInput);
+  const findInstanceUrlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findSelfManagedAlert = () => wrapper.findComponent(SelfManagedAlert);
   const findSetupInstructions = () => wrapper.findComponent(SetupInstructions);
   const findBackButton = () => wrapper.findByTestId('back-button');
@@ -95,14 +97,48 @@ describe('VersionSelectForm', () => {
         expectSelfManagedFlowAtStep(3);
 
         describe('when form is submitted', () => {
-          it('emits "submit" event with the input field value as the payload', () => {
-            const mockInstanceUrl = 'https://gitlab.example.com';
+          it.each`
+            inputValue                      | emittedValue
+            ${'https://gitlab.example.com'} | ${'https://gitlab.example.com'}
+            ${'http://gitlab.example.com'}  | ${'http://gitlab.example.com'}
+            ${'gitlab.example.com'}         | ${'https://gitlab.example.com'}
+            ${'gitlab.example.com/gitlab'}  | ${'https://gitlab.example.com/gitlab'}
+            ${'  gitlab.example.com  '}     | ${'https://gitlab.example.com'}
+            ${'/gitlab'}                    | ${'/gitlab'}
+          `(
+            'emits "submit" with $emittedValue when input is $inputValue',
+            ({ inputValue, emittedValue }) => {
+              findInput().vm.$emit('input', inputValue);
+              submitForm();
 
-            findInput().vm.$emit('input', mockInstanceUrl);
-            submitForm();
+              expect(wrapper.emitted('submit')[0][0]).toBe(emittedValue);
+            },
+          );
+        });
 
-            expect(wrapper.emitted('submit')[0][0]).toBe(mockInstanceUrl);
-          });
+        describe('scheme hint in the form group description', () => {
+          const defaultDescription = VersionSelectForm.i18n.instanceURLInputDescription;
+
+          it.each`
+            inputValue                      | expectedDescription
+            ${''}                           | ${defaultDescription}
+            ${'gitlab.example.com'}         | ${"We'll use https://gitlab.example.com"}
+            ${'gitlab.example.com/gitlab'}  | ${"We'll use https://gitlab.example.com/gitlab"}
+            ${'  gitlab.example.com  '}     | ${"We'll use https://gitlab.example.com"}
+            ${'https://gitlab.example.com'} | ${defaultDescription}
+            ${'http://gitlab.example.com'}  | ${defaultDescription}
+            ${'/gitlab'}                    | ${defaultDescription}
+          `(
+            'shows description "$expectedDescription" when input is "$inputValue"',
+            async ({ inputValue, expectedDescription }) => {
+              findInput().vm.$emit('input', inputValue);
+              await nextTick();
+
+              expect(findInstanceUrlFormGroup().attributes('description')).toBe(
+                expectedDescription,
+              );
+            },
+          );
         });
 
         describe('when back button is clicked', () => {

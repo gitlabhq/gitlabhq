@@ -15,6 +15,20 @@ RSpec.describe 'Create Environment', feature_category: :environment_management d
     graphql_mutation(:environment_create, input)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_environment do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :environment_create,
+        { project_path: project.full_path, name: 'production', external_url: 'https://gitlab.com/' },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when creating an environment' do
     let(:input) do
       {

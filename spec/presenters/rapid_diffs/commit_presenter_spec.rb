@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_management do
-  let_it_be(:commit) { build_stubbed(:commit) }
+  let_it_be(:commit, freeze: false) { build_stubbed(:commit) }
   let_it_be(:project) { commit.project }
   let_it_be(:namespace) { project.namespace }
   let_it_be(:current_user) { build_stubbed(:user) }

@@ -1,0 +1,14 @@
+---
+table_name: cd_artifact_sources
+classes:
+- Cd::ArtifactSource
+feature_categories:
+- continuous_delivery
+description: Per-Service configuration pointing to where deployable artifacts originate
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237280
+milestone: '19.1'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

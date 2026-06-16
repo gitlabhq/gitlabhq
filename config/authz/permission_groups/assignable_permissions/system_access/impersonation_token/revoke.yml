@@ -1,0 +1,9 @@
+---
+name: revoke_impersonation_token
+description: Grants the ability to revoke impersonation tokens
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_impersonation_token

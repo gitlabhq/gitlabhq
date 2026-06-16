@@ -31,9 +31,9 @@ This section includes relevant screenshots of the following example configuratio
 - [OneLogin](#onelogin)
 
 > [!warning]
-> These screenshots are updated only as needed by GitLab Support. They are **not** official documentation.
+> These screenshots are updated only as needed by GitLab Support. They are not official documentation.
 
-If you are currently having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/).
+If you are currently having an issue with GitLab, you may want to check your [support options](https://support.gitlab.com/).
 
 ## Azure Active Directory
 

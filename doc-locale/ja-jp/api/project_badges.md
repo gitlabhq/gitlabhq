@@ -1,7 +1,7 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトバッジAPI
 ---
 
@@ -12,9 +12,9 @@ title: プロジェクトバッジAPI
 
 {{< /details >}}
 
-このAPIを使用して、[プロジェクトバッジ](../user/project/badges.md)を管理およびレビューします。
+このAPIを使用して、プロジェクトの[バッジ](../user/project/badges.md)を管理します。
 
-バッジには、リンクとイメージのURLの両方で置き換えられるプレースホルダーを含めることができます。使用できるプレースホルダーは次のとおりです:
+バッジは、リンクと画像URLの両方でリアルタイムに置き換えられるプレースホルダーをサポートしています。次のプレースホルダーを使用できます:
 
 - `%{project_path}`: プロジェクトパスに置き換えられます。
 - `%{project_title}`: プロジェクトのタイトルに置き換えられます。
@@ -28,9 +28,9 @@ title: プロジェクトバッジAPI
 - `%{commit_sha}`: プロジェクトの最後のコミットSHAに置き換えられます。
 - `%{latest_tag}`: プロジェクトの最後のタグに置き換えられます。
 
-## プロジェクトのすべてのバッジをリスト表示する {#list-all-badges-of-a-project}
+## プロジェクトのすべてのバッジを一覧表示 {#list-all-badges-of-a-project}
 
-プロジェクトのバッジとそのグループバッジのリストを取得します。
+グループバッジを含む、プロジェクトのすべてのバッジを一覧表示します。
 
 ```plaintext
 GET /projects/:id/badges
@@ -39,7 +39,7 @@ GET /projects/:id/badges
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `name`    | 文字列         | いいえ  | 返すバッジの名前（大文字と小文字を区別）。 |
+| `name`    | 文字列         | いいえ  | 返却するバッジの名前 (大文字と小文字を区別)。 |
 
 ```shell
 curl --request GET \
@@ -47,7 +47,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges?name=Coverage"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -72,9 +72,9 @@ curl --request GET \
 ]
 ```
 
-## プロジェクトのバッジを取得する {#get-a-badge-of-a-project}
+## プロジェクトのバッジを取得する {#retrieve-a-badge-of-a-project}
 
-プロジェクトのバッジを取得します。
+プロジェクトのバッジを取得する。
 
 ```plaintext
 GET /projects/:id/badges/:badge_id
@@ -91,7 +91,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/:badge_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -105,9 +105,9 @@ curl --request GET \
 }
 ```
 
-## プロジェクトにバッジを追加する {#add-a-badge-to-a-project}
+## プロジェクトにバッジを作成する {#create-a-badge-for-a-project}
 
-プロジェクトにバッジを追加します。
+プロジェクトにバッジを作成します。
 
 ```plaintext
 POST /projects/:id/badges
@@ -117,17 +117,19 @@ POST /projects/:id/badges
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `link_url` | 文字列         | はい | バッジリンクのURL |
-| `image_url` | 文字列 | はい | バッジイメージのURL |
+| `image_url` | 文字列 | はい | バッジ画像のURL |
 | `name` | 文字列 | いいえ | バッジの名前 |
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/main&image_url=https://shields.io/my/badge1&name=mybadge" \
+  --form "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/main" \
+  --form "image_url=https://shields.io/my/badge1" \
+  --form "name=mybadge" \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -141,7 +143,7 @@ curl --request POST \
 }
 ```
 
-## プロジェクトのバッジを編集する {#edit-a-badge-of-a-project}
+## プロジェクトのバッジを更新する {#update-a-badge-of-a-project}
 
 プロジェクトのバッジを更新します。
 
@@ -154,7 +156,7 @@ PUT /projects/:id/badges/:badge_id
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `badge_id` | 整数 | はい   | バッジID |
 | `link_url` | 文字列         | いいえ | バッジリンクのURL |
-| `image_url` | 文字列 | いいえ | バッジイメージのURL |
+| `image_url` | 文字列 | いいえ | バッジ画像のURL |
 | `name` | 文字列 | いいえ | バッジの名前 |
 
 ```shell
@@ -163,7 +165,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/:badge_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -177,9 +179,9 @@ curl --request PUT \
 }
 ```
 
-## プロジェクトからバッジを削除する {#remove-a-badge-from-a-project}
+## プロジェクトからバッジを削除する {#delete-a-badge-from-a-project}
 
-プロジェクトからバッジを削除します。このエンドポイントを使用すると、プロジェクトバッジのみが削除されます。
+プロジェクトからバッジを削除します。グループバッジを削除するには、代わりに[グループバッジAPI](group_badges.md)を使用します。
 
 ```plaintext
 DELETE /projects/:id/badges/:badge_id
@@ -196,9 +198,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/:badge_id"
 ```
 
-## プロジェクトからバッジをプレビューする {#preview-a-badge-from-a-project}
+## プロジェクトからバッジをプレビュー {#preview-a-badge-from-a-project}
 
-プレースホルダー補間の解決後、`link_url`と`image_url`の最終的なURLがどうなるかを返します。
+プレースホルダーの補間が解決された後、`link_url`と`image_url`の最終URLがどうなるかを返します。
 
 ```plaintext
 GET /projects/:id/badges/render
@@ -208,7 +210,7 @@ GET /projects/:id/badges/render
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `link_url` | 文字列         | はい | バッジリンクのURL|
-| `image_url` | 文字列 | はい | バッジイメージのURL |
+| `image_url` | 文字列 | はい | バッジ画像のURL |
 
 ```shell
 curl --request GET \
@@ -216,7 +218,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/render?link_url=http%3A%2F%2Fexample.com%2Fci_status.svg%3Fproject%3D%25%7Bproject_path%7D%26ref%3D%25%7Bdefault_branch%7D&image_url=https%3A%2F%2Fshields.io%2Fmy%2Fbadge"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

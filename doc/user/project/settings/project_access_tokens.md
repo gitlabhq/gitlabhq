@@ -42,39 +42,6 @@ Prerequisites:
 >
 > On GitLab Self-Managed and GitLab Dedicated, project access tokens are available with any license.
 
-## View your access tokens
-
-{{< history >}}
-
-- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
-- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
-- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
-- Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
-
-{{< /history >}}
-
-The project access tokens page displays information about your access tokens.
-
-From this page, you can perform the following actions:
-
-- Create, rotate, and revoke project access tokens.
-- View all active and inactive project access tokens.
-- View token information, including, scopes, assigned roles, and expiration dates.
-- View usage information, including usage dates, and of the last five distinct connection IP addresses.
-  > [!note]
-  > GitLab periodically updates token usage information when the token performs a Git operation or
-  > authenticates an operation with the [REST](../../../api/rest/_index.md) or
-  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
-  > token usage IP addresses update every minute.
-
-To view your project access tokens:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **Access tokens**.
-
-Active and usable access tokens are stored in the **Active project access tokens** section.
-Expired, rotated, or revoked tokens are stored in the **Inactive project access tokens** section.
-
 ## Create a project access token
 
 {{< history >}}
@@ -147,6 +114,39 @@ Scopes define the actions available when you authenticate with a project access 
 > If you have enabled [external authorization](../../../administration/settings/external_authorization.md),
 > personal access tokens cannot access container or package registries. To restore access,
 > turn off external authorization.
+
+## View your access tokens
+
+{{< history >}}
+
+- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
+- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
+- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
+- Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
+
+{{< /history >}}
+
+The project access tokens page displays information about your access tokens.
+
+From this page, you can perform the following actions:
+
+- Create, rotate, and revoke project access tokens.
+- View all active and inactive project access tokens.
+- View token information, including, scopes, assigned roles, and expiration dates.
+- View usage information, including usage dates, and of the last five distinct connection IP addresses.
+  > [!note]
+  > GitLab periodically updates token usage information when the token performs a Git operation or
+  > authenticates an operation with the [REST](../../../api/rest/_index.md) or
+  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
+  > token usage IP addresses update every minute.
+
+To view your project access tokens:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **Access tokens**.
+
+Active and usable access tokens are stored in the **Active project access tokens** section.
+Expired, rotated, or revoked tokens are stored in the **Inactive project access tokens** section.
 
 ## Rotate a project access token
 

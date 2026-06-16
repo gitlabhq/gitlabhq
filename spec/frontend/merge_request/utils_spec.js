@@ -167,6 +167,19 @@ describe('Merge request utils', () => {
       const position = JSON.parse(result.data.note.position);
       expect(position.ignore_whitespace_change).toBe(true);
     });
+
+    it('forces ignore_whitespace_change to false when showWhitespace override is true', () => {
+      const result = buildLineDiscussionData({
+        discussion,
+        noteBody: 'test comment',
+        noteableData,
+        viewConfig: { ...viewConfig, showWhitespace: false },
+        diffRefs,
+        showWhitespace: true,
+      });
+      const position = JSON.parse(result.data.note.position);
+      expect(position.ignore_whitespace_change).toBe(false);
+    });
   });
 
   describe('buildDraftLineDiscussionData', () => {
@@ -216,6 +229,18 @@ describe('Merge request utils', () => {
       expect(position.ignore_whitespace_change).toBe(true);
     });
 
+    it('forces ignore_whitespace_change to false when showWhitespace override is true', () => {
+      const result = buildDraftLineDiscussionData({
+        discussion,
+        noteBody: 'draft comment',
+        viewConfig: { ...viewConfig, showWhitespace: false },
+        diffRefs,
+        showWhitespace: true,
+      });
+      const position = JSON.parse(result.note.position);
+      expect(position.ignore_whitespace_change).toBe(false);
+    });
+
     it('uses explicit position_type when provided', () => {
       const result = buildDraftLineDiscussionData({
         discussion: {
@@ -238,6 +263,29 @@ describe('Merge request utils', () => {
         diffRefs,
       });
       expect(result.note.line_code).toBeNull();
+    });
+
+    it('uses sourceHeadSha as head_sha when provided', () => {
+      const result = buildDraftLineDiscussionData({
+        discussion,
+        noteBody: 'draft comment',
+        viewConfig,
+        diffRefs,
+        sourceHeadSha: 'source_branch_head',
+      });
+      const position = JSON.parse(result.note.position);
+      expect(position.head_sha).toBe('source_branch_head');
+    });
+
+    it('falls back to diffRefs.head_sha when sourceHeadSha is not provided', () => {
+      const result = buildDraftLineDiscussionData({
+        discussion,
+        noteBody: 'draft comment',
+        viewConfig,
+        diffRefs,
+      });
+      const position = JSON.parse(result.note.position);
+      expect(position.head_sha).toBe('head222');
     });
   });
 

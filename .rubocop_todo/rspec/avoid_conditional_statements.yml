@@ -55,6 +55,5 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/projects/show/user_sees_git_instructions_spec.rb'
     - 'spec/features/projects_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'
-    - 'spec/features/users/login_spec.rb'
     - 'spec/features/work_items/issues/create_issue_for_discussions_in_merge_request_spec.rb'
     - 'spec/features/work_items/issues/labels_hierarchy_spec.rb'

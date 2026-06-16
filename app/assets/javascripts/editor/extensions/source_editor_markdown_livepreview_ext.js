@@ -133,9 +133,11 @@ export class EditorMarkdownPreviewExtension {
     const { el: previewEl } = this.preview;
     fetchPreview(instance.getValue(), this.preview.path)
       .then((data) => {
-        previewEl.innerHTML = sanitize(data);
-        previewEl.style.display = 'block';
-        renderGFM(previewEl);
+        if (this.preview.shown) {
+          previewEl.innerHTML = sanitize(data);
+          previewEl.style.display = 'block';
+          renderGFM(previewEl);
+        }
       })
       .catch(() => createAlert(BLOB_PREVIEW_ERROR));
   }

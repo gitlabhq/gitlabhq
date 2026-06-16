@@ -129,6 +129,28 @@ RSpec.describe API::ImportBitbucketServer, :with_current_organization, feature_c
       end
     end
 
+    context 'with an invalid project key' do
+      it 'returns 422 with an error message' do
+        post api("/import/bitbucket_server", user), params: params.merge(
+          bitbucket_server_project: 'PROJ?ECT'
+        )
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']['error']).to include(_('Missing or invalid project key'))
+      end
+    end
+
+    context 'with an invalid repository slug' do
+      it 'returns 422 with an error message' do
+        post api("/import/bitbucket_server", user), params: params.merge(
+          bitbucket_server_repo: 'my~repo'
+        )
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']['error']).to include(_('Missing or invalid repository slug'))
+      end
+    end
+
     context 'with a new namespace' do
       before do
         Grape::Endpoint.before_each do |endpoint|

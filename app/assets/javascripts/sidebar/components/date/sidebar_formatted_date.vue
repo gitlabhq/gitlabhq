@@ -2,6 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 
 export default {
+  name: 'SidebarFormattedDate',
   components: {
     GlButton,
   },

@@ -14,14 +14,14 @@ title: Automatic background verification
 {{< /details >}}
 
 Automatic background verification ensures that the transferred data matches a
-calculated checksum. If the checksum of the data on the **primary** site matches checksum of the
-data on the **secondary** site, the data transferred successfully. Following a planned failover,
+calculated checksum. If the checksum of the data on the primary site matches checksum of the
+data on the secondary site, the data transferred successfully. Following a planned failover,
 any corrupted data may be **lost**, depending on the extent of the corruption.
 
-If verification fails on the **primary** site, this indicates Geo is replicating a corrupted object.
-You can restore it from backup or remove it from the **primary** site to resolve the issue.
+If verification fails on the primary site, this indicates Geo is replicating a corrupted object.
+You can restore it from backup or remove it from the primary site to resolve the issue.
 
-If verification succeeds on the **primary** site but fails on the **secondary** site,
+If verification succeeds on the primary site but fails on the secondary site,
 this indicates that the object was corrupted during the replication process.
 Geo actively try to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset the verification for
@@ -36,7 +36,7 @@ Prerequisites:
 
 - Administrator access.
 
-On the **primary** site:
+On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
@@ -46,7 +46,7 @@ On the **primary** site:
 
    ![Verification information tab with an overview of a healthy primary Geo instance.](img/verification_status_primary_v14_0.png)
 
-On the **secondary** site:
+On the secondary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
@@ -58,7 +58,7 @@ On the **secondary** site:
 
 ## Using checksums to compare Geo sites
 
-To check the health of Geo **secondary** sites, we use a checksum over the list of
+To check the health of Geo secondary sites, we use a checksum over the list of
 Git references and their values. The checksum includes `HEAD`, `heads`, `tags`,
 `notes`, and GitLab-specific references to ensure true consistency. If two sites
 have the same checksum, then they definitely hold the same references. We compute
@@ -74,11 +74,11 @@ data. The default and recommended re-verification interval is 7 days, though
 an interval as short as 1 day can be set. Shorter intervals reduce risk but
 increase load and vice versa.
 
-On the **primary** site:
+On the primary site:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Geo** > **Sites**.
-1. Select **Edit** for the **primary** site to customize the minimum
+1. Select **Edit** for the primary site to customize the minimum
    re-verification interval:
 
    ![Window with configuration attributes of a Geo node.](img/reverification-interval_v11_6.png)
@@ -96,9 +96,9 @@ be resynced with a back-off period. You can also manually [resync and reverify i
 
 {{< /history >}}
 
-If the **primary** and **secondary** sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
+If the primary and secondary sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
-1. On the **primary** site:
+1. On the primary site:
    1. In the upper-right corner, select **Admin**.
    1. In the left sidebar, select **Overview** > **Projects**.
    1. Find the project that you want to check the checksum differences and
@@ -117,13 +117,13 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
    cd /var/opt/gitlab/git-data/repositories
    ```
 
-   1. Run the following command on the **primary** site, redirecting the output to a file:
+   1. Run the following command on the primary site, redirecting the output to a file:
 
       ```shell
       git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-site-refs
       ```
 
-   1. Run the following command on the **secondary** site, redirecting the output to a file:
+   1. Run the following command on the secondary site, redirecting the output to a file:
 
       ```shell
       git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-site-refs

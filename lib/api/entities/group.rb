@@ -51,7 +51,7 @@ module API
       end
 
       # It is always enabled since 18.0
-      expose :marked_for_deletion_on
+      expose(:marked_for_deletion_on) { |group, _options| group.self_deletion_scheduled_deletion_created_on&.to_date }
 
       expose :root_storage_statistics, using: Entities::Namespace::RootStorageStatistics,
         if: ->(group, opts) {

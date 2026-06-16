@@ -180,8 +180,7 @@ export default {
   },
   computed: {
     downstreamPipelines() {
-      const downstream = this.pipeline.triggered;
-      return keepLatestDownstreamPipelines(downstream);
+      return keepLatestDownstreamPipelines(this.pipeline.triggered || []);
     },
     hasPipeline() {
       return this.pipeline && Object.keys(this.pipeline).length > 0;

@@ -6,8 +6,8 @@ RSpec.describe Projects::Settings::ServiceAccountsController, feature_category: 
   include AdminModeHelper
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:admin, freeze: false) { create(:admin) }
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
 

@@ -1,8 +1,9 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: エピックAPI（非推奨）
+description: 公式のGitLabエピックAPIドキュメントを確認してください。プログラムによってグループ内のエピックを効率的に一覧表示、作成、更新、削除する方法をご確認ください。
 ---
 
 {{< details >}}
@@ -12,57 +13,41 @@ title: エピックAPI（非推奨）
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> エピックREST APIはGitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)になり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
 
-エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
+エピックへのすべてのAPIコールは認証する必要があります。
 
-{{< /alert >}}
+ユーザーがプライベートグループのメンバーでない場合、そのグループへの`GET`リクエストは`404`ステータスコードを返します。
 
-エピックに対するすべてのAPIコールは認証されている必要があります。
-
-ユーザーがプライベートグループのメンバーではない場合、そのグループに対する`GET`リクエストの結果として、`404`ステータスコードが返されます。
-
-エピック機能が利用できない場合、`403`ステータスcodeが返されます。
+エピック機能が利用できない場合、`403`ステータスコードが返されます。
 
 ## 従来のエピックIDとWorkItem ID {#legacy-epic-ids-and-workitem-ids}
 
-従来のエピックIDはWorkItem IDと同じではありません。`iid`のみが一致します。ただし、エピックに対応するWorkItem IDを取得するには、レスポンスに`work_item_id`が含まれています。
+従来のエピックIDはWorkItem IDと同じではありません。`iid`のみが一致します。ただし、エピックに対応するWorkItem IDを取得するには、レスポンスに`work_item_id`が含まれます。
 
-このIDはWorkItem GraphQL APIに使用できます。例：`work_item_id`はWorkItem GraphQL APIのグローバルID `gid://gitlab/WorkItem/123`になります。
+このIDはWorkItem GraphQL APIで使用できます。例えば、`work_item_id`はWorkItem GraphQL API上でGlobal ID `gid://gitlab/WorkItem/123`となります。
 
 ## エピックイシューAPI {#epic-issues-api}
 
-[エピックイシューAPI](epic_issues.md)を使用すると、エピックに関連付けられたイシューを操作できます。
+The [エピックイシューAPI](epic_issues.md)を使用すると、エピックに関連付けられたイシューを操作できます。
 
 ## マイルストーン日付インテグレーション {#milestone-dates-integration}
 
-開始日と期日は関連するイシューのマイルストーンから動的に取得できるため、ユーザーが編集権限を持っている場合、追加のフィールドが表示されます。これには、2つのブール値フィールド`start_date_is_fixed`と`due_date_is_fixed`、および4つの日付フィールド`start_date_fixed`、`start_date_from_inherited_source`、`due_date_fixed`、`due_date_from_inherited_source`が含まれます。
+開始日と期日は関連するイシューのマイルストーンから動的に取得できるため、ユーザーが編集権限を持っている場合に限り、追加のフィールドが表示されます。これらには、2つのブール型フィールド`start_date_is_fixed`と`due_date_is_fixed`、および4つの日付フィールド`start_date_fixed`、`start_date_from_inherited_source`、`due_date_fixed`、`due_date_from_inherited_source`が含まれます。
 
 - `due_date`を優先して、`end_date`は非推奨になりました。
-- `start_date_from_inherited_source`を優先して、`start_date_from_milestones`は非推奨になりました。
-- `due_date_from_inherited_source`を優先して、`due_date_from_milestones`は非推奨になりました。
+- `start_date_from_milestones`は、`start_date_from_inherited_source`に非推奨となりました。
+- `due_date_from_milestones`は、`due_date_from_inherited_source`に非推奨となりました。
 
-## エピックのページネーション {#epics-pagination}
+## すべてのグループエピックを一覧表示 {#list-all-group-epics}
 
-APIの結果はページネーションされるため、デフォルトでは、`GET`リクエストは一度に20件の結果を返します。
+指定されたグループとそのサブグループのすべてのエピックを一覧表示します。
 
-詳細については、[ページネーション](rest/_index.md#pagination)を参照してください。
+レスポンスは[ページ付けされています](rest/_index.md#pagination)。デフォルトでは20件の結果が返されます。
 
-{{< alert type="warning" >}}
-
-[GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)以降、レスポンスの`reference`属性は、`references`の代わりに非推奨になりました。
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-`references.relative`は、リクエストされているエピックの祖先グループに対する相対的なものです。エピックがoriginグループからフェッチされる場合、`relative`形式は`short`形式と同じです。エピックがグループ間でリクエストされる場合、`relative`形式は`full`形式と同じになると予想されます。
-
-{{< /alert >}}
-
-## グループのエピックをリスト表示 {#list-epics-for-a-group}
-
-リクエストされたグループとそのサブグループのすべてのエピックを取得します。
+> [!note]
+> `references.relative`は、エピックがリクエストされているグループに対して相対的です。エピックがそのoriginグループからフェッチされる場合、`relative`形式は`short`形式と同じです。エピックが複数のグループにわたってリクエストされる場合、`relative`形式は`full`形式と同じであると想定されます。
 
 ```plaintext
 GET /groups/:id/epics
@@ -74,22 +59,22 @@ GET /groups/:id/epics?state=opened
 | 属性           | 型             | 必須   | 説明                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | 整数または文字列   | はい        | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)               |
-| `author_id`         | 整数          | いいえ         | 指定されたユーザー`id`によって作成されたエピックを返します                                                                                 |
-| `author_username`   | 文字列           | いいえ         | 指定された`username`のユーザーによって作成されたエピックを返します。 |
-| `labels`            | 文字列           | いいえ         | カンマ区切りのラベル名と一致するエピックを返します。エピックグループまたは親グループからのラベル名を使用できます |
+| `author_id`         | 整数          | いいえ         | 指定されたユーザー`id`によって作成されたエピックを返します。                                                                                 |
+| `author_username`   | 文字列           | いいえ         | 指定された`username`を持つユーザーによって作成されたエピックを返します。 |
+| `labels`            | 文字列           | いいえ         | コンマ区切りのラベル名リストに一致するエピックを返します。エピックグループまたは親グループのラベル名を使用できます。 |
 | `with_labels_details` | ブール値        | いいえ         | `true`の場合、レスポンスではラベルフィールドの各ラベルに関する詳細（`:name`、`:color`、`:description`、`:description_html`、`:text_color`）が返されます。デフォルトは`false`です。 |
-| `order_by`          | 文字列           | いいえ         | `created_at`、`updated_at`、または`title`フィールドでソートされたエピックを返します。デフォルトは`created_at`です                              |
-| `sort`              | 文字列           | いいえ         | `asc`または`desc`順にソートされたエピックを返します。デフォルトは`desc`です                                                             |
-| `search`            | 文字列           | いいえ         | `title`と`description`に対してエピックを検索します                                                                        |
-| `state`             | 文字列           | いいえ         | `state`に対してエピックを検索します。可能なフィルター：`opened`、`closed`、および`all`、デフォルト：`all`                          |
-| `created_after`     | 日時         | いいえ         | 指定時刻以降に作成されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します |
-| `created_before`    | 日時         | いいえ         | 指定時刻以前に作成されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します |
-| `updated_after`     | 日時         | いいえ         | 指定時刻以降に更新されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します |
-| `updated_before`    | 日時         | いいえ         | 指定時刻以前に更新されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します |
-| `include_ancestor_groups` | ブール値    | いいえ         | リクエストされたグループの祖先からのエピックを含めます。デフォルトは`false`です                                                      |
-| `include_descendant_groups` | ブール値  | いいえ         | リクエストされたグループの子孫からのエピックを含めます。デフォルトは`true`です                                                     |
-| `my_reaction_emoji` | 文字列           | いいえ         | 指定された絵文字で認証済みユーザーによってリアクションされたエピックを返します。`None`は、リアクションが付与されていないエピックを返します。`Any`は、少なくとも1つのリアクションが付与されたエピックを返します。 |
-| `not` | ハッシュ | いいえ | 指定されたパラメータに一致しないエピックを返します。`author_id`、`author_username`、`labels`を指定できます。 |
+| `order_by`          | 文字列           | いいえ         | `created_at`、`updated_at`、または`title`フィールドで並べ替えられたエピックを返します。デフォルトは`created_at`です。                              |
+| `sort`              | 文字列           | いいえ         | `asc`または`desc`の順序でソートされたエピックを返します。デフォルトは`desc`です。                                                             |
+| `search`            | 文字列           | いいえ         | エピックの`title`と`description`に対して検索します。                                                                        |
+| `state`             | 文字列           | いいえ         | エピックの`state`に対して検索します。可能なフィルター: `opened`、`closed`、`all`。デフォルト: `all`                          |
+| `created_after`     | 日時         | いいえ         | 指定された時刻以降に作成されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `created_before`    | 日時         | いいえ         | 指定された時刻以前に作成されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_after`     | 日時         | いいえ         | 指定された時刻以降に更新されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `updated_before`    | 日時         | いいえ         | 指定された時刻以前に更新されたエピックを返します。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。 |
+| `include_ancestor_groups` | ブール値    | いいえ         | リクエストされたグループの祖先からのエピックを含めます。デフォルトは`false`です。                                                      |
+| `include_descendant_groups` | ブール値  | いいえ         | リクエストされたグループの子孫からのエピックを含めます。デフォルトは`true`です。                                                     |
+| `my_reaction_emoji` | 文字列           | いいえ         | 認証済みユーザーによって指定された絵文字でリアクションされたエピックを返します。`None`はリアクションが付けられていないエピックを返します。`Any`は少なくとも1つのリアクションが付けられたエピックを返します。 |
+| `not` | ハッシュ | いいえ | 指定されたパラメータに一致しないエピックを返します。以下を受け入れます: `author_id`、`author_username`、`labels`。 |
 
 ```shell
 curl --request GET \
@@ -97,7 +82,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/1/epics"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -207,9 +192,9 @@ curl --request GET \
 ]
 ```
 
-## 単一のエピック {#single-epic}
+## エピックを取得する {#retrieve-an-epic}
 
-単一のエピックを取得します。
+指定されたグループのエピックを取得する。
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid
@@ -226,7 +211,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -284,15 +269,12 @@ curl --request GET \
 }
 ```
 
-## 新しいエピック {#new-epic}
+## エピックを作成する {#create-an-epic}
 
-新しいエピックを作成します。
+指定されたグループにエピックを作成します。
 
-{{< alert type="note" >}}
-
-GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448)以降、`start_date`と`end_date`は複合値を表すようになったため、直接割り当てるべきではありません。代わりに、`*_is_fixed`フィールドと`*_fixed`フィールドを使用して設定できます。
-
-{{< /alert >}}
+> [!note]
+> GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448)以降、`start_date`と`end_date`は複合値を表すようになったため、直接割り当てるべきではありません。代わりに`*_is_fixed`と`*_fixed`フィールドを介して設定できます。
 
 ```plaintext
 POST /groups/:id/epics
@@ -301,16 +283,16 @@ POST /groups/:id/epics
 | 属性           | 型             | 必須   | 説明                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | 整数または文字列   | はい        | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                |
-| `title`             | 文字列           | はい        | エピックのタイトル。 |
-| `labels`            | 文字列           | いいえ         | カンマ区切りのラベルのリスト |
+| `title`             | 文字列           | はい        | エピックのタイトル |
+| `labels`            | 文字列           | いいえ         | コンマ区切りのラベルリスト |
 | `description`       | 文字列           | いいえ         | エピックの説明。1,048,576文字に制限されています。  |
-| `color`             | 文字列           | いいえ         | エピックの色。`epic_highlight_color`というfeature flag（デフォルトでは無効）の背後 |
-| `confidential`      | ブール値          | いいえ         | エピックを機密にするかどうか |
-| `created_at`        | 文字列           | いいえ         | エピックが作成されたとき。日時文字列（ISO 8601形式）。たとえば`2016-03-11T03:45:40Z`などです。管理者権限またはプロジェクト・グループオーナー権限が必要です。 |
-| `start_date_is_fixed` | ブール値        | いいえ         | 開始日を`start_date_fixed`から取得するか、マイルストーンから取得するか |
-| `start_date_fixed`  | 文字列           | いいえ         | エピックの固定開始日 |
-| `due_date_is_fixed` | ブール値          | いいえ         | 期日を`due_date_fixed`から取得するか、マイルストーンから取得するか |
-| `due_date_fixed`    | 文字列           | いいえ         | エピックの固定期日 |
+| `color`             | 文字列           | いいえ         | エピックの色。`epic_highlight_color`という機能フラグの背後にあります（デフォルトで無効）。 |
+| `confidential`      | ブール値          | いいえ         | そのエピックが機密であるべきかどうか |
+| `created_at`        | 文字列           | いいえ         | エピックが作成された日時。日付時刻文字列、ISO 8601形式。例: `2016-03-11T03:45:40Z`。管理者またはプロジェクト/グループオーナーの権限が必要です。 |
+| `start_date_is_fixed` | ブール値        | いいえ         | 開始日が`start_date_fixed`から取得されるべきか、またはマイルストーンから取得されるべきか。 |
+| `start_date_fixed`  | 文字列           | いいえ         | エピックの固定開始日。 |
+| `due_date_is_fixed` | ブール値          | いいえ         | 期日が`due_date_fixed`から取得されるべきか、またはマイルストーンから取得されるべきか。 |
+| `due_date_fixed`    | 文字列           | いいえ         | エピックの固定期日。 |
 | `parent_id`         | 整数または文字列   | いいえ         | 親エピックのID |
 
 ```shell
@@ -319,7 +301,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description&parent_id=29"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -377,9 +359,9 @@ curl --request POST \
 }
 ```
 
-## エピックの更新 {#update-epic}
+## エピックを更新する {#update-an-epic}
 
-エピックを更新します。
+指定されたグループのエピックを更新します。
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid
@@ -390,19 +372,19 @@ PUT /groups/:id/epics/:epic_iid
 | `id`                | 整数または文字列   | はい        | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | 整数または文字列   | はい        | エピックの内部ID  |
 | `add_labels`        | 文字列           | いいえ         | イシューに追加するラベル名のカンマ区切りリスト。 |
-| `confidential`      | ブール値          | いいえ         | エピックを機密にするかどうか |
+| `confidential`      | ブール値          | いいえ         | そのエピックが機密であるべきかどうか |
 | `description`       | 文字列           | いいえ         | エピックの説明。1,048,576文字に制限されています。  |
-| `due_date_fixed`    | 文字列           | いいえ         | エピックの固定期日 |
-| `due_date_is_fixed` | ブール値          | いいえ         | 期日を`due_date_fixed`から取得するか、マイルストーンから取得するか |
-| `labels`            | 文字列           | いいえ         | イシューのラベル名のカンマ区切りリスト。すべてのラベルの割り当てを解除するには、空の文字列に設定します。 |
+| `due_date_fixed`    | 文字列           | いいえ         | エピックの固定期日。 |
+| `due_date_is_fixed` | ブール値          | いいえ         | 期日が`due_date_fixed`から取得されるべきか、またはマイルストーンから取得されるべきか。 |
+| `labels`            | 文字列           | いいえ         | イシューのラベル名のカンマ区切りリスト。すべてのラベルの割り当てを解除するには、空の文字列を設定します。 |
 | `parent_id`         | 整数または文字列   | いいえ         | 親エピックのID。 |
 | `remove_labels`     | 文字列           | いいえ         | イシューから削除するラベル名のカンマ区切りリスト。 |
-| `start_date_fixed`  | 文字列           | いいえ         | エピックの固定開始日 |
-| `start_date_is_fixed` | ブール値        | いいえ         | 開始日を`start_date_fixed`から取得するか、マイルストーンから取得するか |
-| `state_event`       | 文字列           | いいえ         | エピックのステータスイベント。`close`を設定してエピックを閉じ、`reopen`を設定して再度開きます |
+| `start_date_fixed`  | 文字列           | いいえ         | エピックの固定開始日。 |
+| `start_date_is_fixed` | ブール値        | いいえ         | 開始日が`start_date_fixed`から取得されるべきか、またはマイルストーンから取得されるべきか。 |
+| `state_event`       | 文字列           | いいえ         | エピックのステートイベント。`close`を設定してエピックをクローズし、`reopen`を設定して再オープンします。 |
 | `title`             | 文字列           | いいえ         | エピックのタイトル |
-| `updated_at`        | 文字列           | いいえ         | エピックが更新されたとき。日時文字列（ISO 8601形式）。たとえば`2016-03-11T03:45:40Z`などです。管理者権限またはプロジェクト・グループオーナー権限が必要です。 |
-| `color`             | 文字列           | いいえ         | エピックの色。`epic_highlight_color`というfeature flag（デフォルトでは無効）の背後 |
+| `updated_at`        | 文字列           | いいえ         | エピックが更新された日時。日付時刻文字列、ISO 8601形式。例: `2016-03-11T03:45:40Z`。管理者またはプロジェクト/グループオーナーの権限が必要です。 |
+| `color`             | 文字列           | いいえ         | エピックの色。`epic_highlight_color`という機能フラグの背後にあります（デフォルトで無効）。 |
 
 ```shell
 curl --request PUT \
@@ -410,7 +392,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title&parent_id=29"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -462,15 +444,15 @@ curl --request PUT \
 }
 ```
 
-## エピックを削除 {#delete-epic}
+## エピックを削除する {#delete-an-epic}
 
 {{< history >}}
 
-- GitLab 16.11で[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/452189)されました。GitLab 16.10以前では、エピックを削除すると、そのすべての子エピックとその子孫も削除されます。必要に応じて、削除する前に、親エピックから子エピックを削除できます。
+- GitLab 16.11で[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/452189)されました。GitLab 16.10以前では、エピックを削除すると、そのすべての子エピックとその子孫も削除されます。必要に応じて、親エピックを削除する前に、子エピックを親エピックから削除できます。
 
 {{< /history >}}
 
-エピックを削除します
+指定されたグループからエピックを削除します。
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid
@@ -487,9 +469,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-## To Doアイテムを作成する {#create-a-to-do-item}
+## エピックのTo-Doアイテムを作成する {#create-a-to-do-item-for-an-epic}
 
-エピックに関する現在のユーザーのTo-Doアイテムを手動で作成します。そのエピックに関してユーザーのTo-Doアイテムがすでに存在する場合、ステータスコード`304`が返されます。
+指定されたエピックで現在のユーザーのTo-Doアイテムを作成します。そのエピックでユーザーのTo-Doアイテムがすでに存在する場合、ステータスコード304が返されます。
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/todo
@@ -506,7 +488,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5/todo"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

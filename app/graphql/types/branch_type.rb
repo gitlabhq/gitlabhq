@@ -6,10 +6,7 @@ module Types
     graphql_name 'Branch'
 
     authorize_granular_token permissions: :read_branch,
-      boundary: ->(obj) {
-        container = obj.dereferenced_target&.repository&.container
-        container if container.is_a?(Project)
-      },
+      boundary: :project,
       boundary_type: :project
 
     field :name,

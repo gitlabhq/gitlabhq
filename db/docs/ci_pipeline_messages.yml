@@ -4,7 +4,7 @@ classes:
 - Ci::PipelineMessage
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores warning and informational messages associated with CI pipelines.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33762
 milestone: '13.2'
 gitlab_schema: gitlab_ci

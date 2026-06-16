@@ -439,4 +439,7 @@ export default {
       viewer.manuallyCollapsed = collapsed;
     });
   },
+  [types.SET_GITALY_ERROR_MESSAGE](state, gitalyErrorMessage) {
+    state.gitalyErrorMessage = gitalyErrorMessage;
+  },
 };

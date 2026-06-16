@@ -40,30 +40,38 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   shared_examples 'index app data' do
-    it 'returns expected data object' do
-      expect(data).to eq(
-        {
-          'new_organization_url' => new_organization_path,
-          'can_create_organization' => true
-        }
-      )
+    context 'when on GitLab.com', :saas do
+      it 'returns expected data object' do
+        expect(data).to eq(
+          {
+            'new_organization_url' => new_organization_path,
+            'can_create_organization' => true
+          }
+        )
+      end
+
+      context 'when can_create_organization admin setting is disabled' do
+        before do
+          stub_application_setting(can_create_organization: false)
+        end
+
+        it 'returns false for can_create_organization' do
+          expect(data['can_create_organization']).to be(false)
+        end
+      end
+
+      context 'when organization_switching feature flag is disabled' do
+        before do
+          stub_feature_flags(organization_switching: false)
+        end
+
+        it 'returns false for can_create_organization' do
+          expect(data['can_create_organization']).to be(false)
+        end
+      end
     end
 
-    context 'when can_create_organization admin setting is disabled' do
-      before do
-        stub_application_setting(can_create_organization: false)
-      end
-
-      it 'returns false for can_create_organization' do
-        expect(data['can_create_organization']).to be(false)
-      end
-    end
-
-    context 'when organization_switching feature flag is disabled' do
-      before do
-        stub_feature_flags(organization_switching: false)
-      end
-
+    context 'when on self-managed' do
       it 'returns false for can_create_organization' do
         expect(data['can_create_organization']).to be(false)
       end
@@ -132,7 +140,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   describe '#organization_show_app_data' do
     before do
       allow(helper).to receive(:can?).with(user, :read_artifact_registry, organization).and_return(true)
-      allow(helper).to receive(:can?).with(user, :admin_organization, organization).and_return(true)
+      allow(helper).to receive(:can?).with(user, :update_organization, organization).and_return(true)
     end
 
     it 'returns expected json' do

@@ -9,7 +9,7 @@ module API
           authorize! :update_work_item, work_item
 
           update_params = build_update_work_item_params
-          widget_params = extract_update_feature_params(work_item.resource_parent)
+          widget_params = extract_update_feature_params(work_item)
           validate_supported_widgets!(work_item.work_item_type, work_item.resource_parent, widget_params)
 
           ::WorkItems::UpdateService.new(
@@ -21,7 +21,20 @@ module API
         end
 
         def render_work_item_update(result)
-          render_work_item_response(result, status: 200)
+          # Update can flip subscription state via subscription_event in the same request, so the renderer needs the
+          # newly loaded subscription row to report the right `subscribed` value. Create doesn't flip subscriptions, so
+          # it skips this. Skipped on failure: WorkItems::UpdateService passes back the work item on validation errors,
+          # but render_work_item_response calls render_api_error! on those, so the cache would be discarded.
+          feature_keys = requested_feature_keys(params[:features]&.keys&.join(','))
+          work_item = result[:work_item]
+          subscriptions =
+            if result[:status] == :success && work_item
+              preload_notifications_subscriptions([work_item], feature_keys)
+            else
+              {}
+            end
+
+          render_work_item_response(result, status: 200, notifications_subscriptions: subscriptions)
         end
 
         private
@@ -34,10 +47,10 @@ module API
           update_params
         end
 
-        def extract_update_feature_params(_resource_parent)
+        def extract_update_feature_params(work_item)
           return {} unless params.key?(:features)
 
-          params[:features].to_h.deep_symbolize_keys.each_with_object({}) do |(key, value), hash|
+          widget_params = params[:features].to_h.deep_symbolize_keys.each_with_object({}) do |(key, value), hash|
             widget_key = :"#{key}_widget"
 
             case key
@@ -63,6 +76,9 @@ module API
 
             hash[widget_key] = value
           end
+
+          strip_disabled_widget_params!(widget_params, work_item.work_item_type, work_item.resource_parent)
+          widget_params
         end
       end
     end

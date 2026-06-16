@@ -151,6 +151,11 @@ module Projects
           error: dry_run.to_s.titleize
         )
       )
+    rescue Faraday::Error => e
+      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+      raise_validation_error(
+        s_('UpdateProject|Cannot rename project: failed to connect to the container registry. Please try again later.')
+      )
     end
 
     def validate_pages_primary_domain

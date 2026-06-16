@@ -28,6 +28,7 @@ export default {
       default: null,
     },
   },
+  emits: ['clickFile'],
   data() {
     return {
       openedOnce: false,

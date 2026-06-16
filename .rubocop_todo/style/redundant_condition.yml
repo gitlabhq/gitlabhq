@@ -3,7 +3,6 @@
 Style/RedundantCondition:
   Exclude:
     - 'app/helpers/avatars_helper.rb'
-    - 'app/models/user.rb'
     - 'app/workers/delete_user_worker.rb'
     - 'ee/app/graphql/ee/resolvers/board_item_filterable.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'

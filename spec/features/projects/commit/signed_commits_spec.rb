@@ -188,16 +188,6 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
           it 'label is mapped verified' do
             expect_to_have_label_content(commit.sha, mapped_message, "SSH key fingerprint: #{fingerprint}")
           end
-
-          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
-            before do
-              stub_feature_flags(check_for_mailmapped_commit_emails: false)
-            end
-
-            it 'label is verified' do
-              expect_to_have_label_content(commit.sha, message, "SSH key fingerprint: #{fingerprint}")
-            end
-          end
         end
       end
 
@@ -223,16 +213,6 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
           it 'label is mapped verified' do
             expect_to_have_label_content(commit.sha, mapped_message, "GPG Key ID: #{fingerprint}")
-          end
-
-          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
-            before do
-              stub_feature_flags(check_for_mailmapped_commit_emails: false)
-            end
-
-            it 'label is verified' do
-              expect_to_have_label_content(commit.sha, message, "GPG Key ID: #{fingerprint}")
-            end
           end
         end
       end
@@ -283,16 +263,6 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
           it 'label is mapped verified' do
             expect_to_have_label_content(commit.sha, mapped_message, fingerprint)
-          end
-
-          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
-            before do
-              stub_feature_flags(check_for_mailmapped_commit_emails: false)
-            end
-
-            it 'label is verified' do
-              expect_to_have_label_content(commit.sha, message, fingerprint)
-            end
           end
         end
       end

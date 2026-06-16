@@ -36,6 +36,20 @@ module Packages
         validates :file_store, presence: true
         validates :file_sha256, presence: true, bytesize: { maximum: -> { FILE_SHA256_MAX_LENGTH } }
 
+        # The sharding key column is also populated by a BEFORE INSERT DB trigger
+        # (installed by Cells sharding), but Rails does not re-read trigger-modified
+        # columns into memory, so the attribute stays nil in any callback that runs
+        # before reload. Setting it here keeps the in-memory value consistent with
+        # the DB row for code such as the Geo verification-state callback.
+        before_validation :set_sharding_key_from_distribution, on: :create
+
+        def set_sharding_key_from_distribution
+          return unless component&.distribution
+
+          key = self.class.container_foreign_key
+          self[key] ||= component.distribution[key]
+        end
+
         scope :with_container, ->(container) do
           joins(component: :distribution)
             .where("packages_debian_#{container_type}_distributions" => { container_foreign_key => container.id })

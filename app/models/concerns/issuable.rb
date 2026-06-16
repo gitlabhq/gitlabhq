@@ -435,9 +435,18 @@ module Issuable
     #
     # Returns an array of Arel columns
     #
-    def grouping_columns(sort)
+    def grouping_columns(sort, use_cte: false)
       sort = sort.to_s
-      grouping_columns = [arel_table[:id]]
+
+      # When the relation has been wrapped in a CTE by the search optimisation,
+      # Postgres cannot infer functional dependency on the CTE's columns even
+      # though CTE aliases `merge_requests`. Grouping by every issuable column
+      # satisfies PG without changing query semantics.
+      grouping_columns = if use_cte
+                           attribute_names.map { |attr| arel_table[attr.to_sym] }
+                         else
+                           [arel_table[:id]]
+                         end
 
       if %w[milestone_due_desc milestone_due_asc milestone].include?(sort)
         milestone_table = Milestone.arel_table

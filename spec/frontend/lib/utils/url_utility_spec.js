@@ -773,6 +773,24 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isHostLike', () => {
+    it.each`
+      value                        | valid
+      ${'gitlab.com'}              | ${true}
+      ${'gitlab.example.com/path'} | ${true}
+      ${'192.168.1.1'}             | ${true}
+      ${'sub-domain.example.com'}  | ${true}
+      ${'https://gitlab.com'}      | ${false}
+      ${'/users/sign_in'}          | ${false}
+      ${'-leading-hyphen.com'}     | ${false}
+      ${'.leading-dot.com'}        | ${false}
+      ${'no-dot'}                  | ${false}
+      ${''}                        | ${false}
+    `('returns $valid for $value', ({ value, valid }) => {
+      expect(urlUtils.isHostLike(value)).toBe(valid);
+    });
+  });
+
   describe('isRootRelative', () => {
     it.each`
       url                                       | valid

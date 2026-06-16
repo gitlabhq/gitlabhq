@@ -4,7 +4,8 @@ classes:
 - Operations::FeatureFlag
 feature_categories:
 - feature_flags
-description: TODO
+description: Stores user-defined feature flags exposed via the Unleash API for controlling
+  feature rollouts in external applications.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433
 milestone: '11.4'
 gitlab_schema: gitlab_main_org

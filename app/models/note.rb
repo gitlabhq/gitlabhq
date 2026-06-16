@@ -99,7 +99,12 @@ class Note < ApplicationRecord
   accepts_nested_attributes_for :note_metadata
 
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true, unless: :for_personal_snippet?
+  # For project-scoped notes, project_id is the authoritative sharding key and
+  # namespace_id is intentionally left nil. Group-scoped noteables that are not
+  # project-backed (group-level work items, epics, group wiki notes) still
+  # require namespace. See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+  # and the cleanup BBM in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238033.
+  validates :namespace, presence: true, unless: -> { for_personal_snippet? || for_project_noteable? }
   validates :organization, presence: true, if: :for_personal_snippet?
 
   validates :noteable_type, presence: true
@@ -267,6 +272,13 @@ class Note < ApplicationRecord
 
     def parent_object_field
       :noteable
+    end
+
+    def supported_keyset_orderings
+      {
+        created_at: [:asc, :desc],
+        updated_at: [:asc, :desc]
+      }
     end
 
     # Group diff discussions by line code or file path.
@@ -440,9 +452,17 @@ class Note < ApplicationRecord
     return commit if for_commit?
 
     super
-  rescue StandardError
+  rescue StandardError => e
     # Temp fix to prevent app crash
     # if note commit id doesn't exist
+    Gitlab::ErrorTracking.track_exception(
+      e,
+      note_id: id,
+      noteable_type: noteable_type,
+      noteable_id: noteable_id,
+      commit_id: commit_id,
+      discussion_id: discussion_id
+    )
     nil
   end
 
@@ -817,12 +837,15 @@ class Note < ApplicationRecord
   def ensure_namespace_id
     return if namespace_id.present? && !noteable_changed? && !project_changed?
 
-    self.namespace_id = if for_issue?
-                          # Some issues are not project noteables (e.g. group-level work items)
-                          # so we need this separate condition
+    # Group-level noteables (no project_id) use namespace_id as their sharding
+    # key. Wiki page notes also retain namespace_id because their cascading
+    # user-mention trigger does not have a project_id fallback.
+    # Other project-scoped notes are keyed solely by project_id.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+    self.namespace_id = if group_level_issue?
                           noteable&.namespace_id
-                        elsif for_project_noteable?
-                          project&.project_namespace_id
+                        elsif for_wiki_page?
+                          noteable&.namespace_id || project&.project_namespace_id
                         end
   end
 

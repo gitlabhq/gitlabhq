@@ -3,6 +3,8 @@ description: Tracks when GitLab did not have the Python package available in the
 action: pypi_request_forward
 identifiers:
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: '13.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40174
 tiers:

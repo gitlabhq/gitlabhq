@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_integration do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:image) { 'test_docker_image' }
-  let_it_be(:source) { :duo_workflow }
-  let_it_be(:commands) { ['echo hello world'] }
-  let_it_be(:variables) { { 'MY_ENV_VAR' => 'my env var value' } }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:image, freeze: false) { 'test_docker_image' }
+  let_it_be(:source, freeze: false) { :duo_workflow }
+  let_it_be(:commands, freeze: false) { ['echo hello world'] }
+  let_it_be(:variables, freeze: false) { { 'MY_ENV_VAR' => 'my env var value' } }
 
-  let_it_be(:workload_definition) do
+  let_it_be(:workload_definition, freeze: false) do
     definition = ::Ci::Workloads::WorkloadDefinition.new
     definition.image = image
     definition.commands = commands

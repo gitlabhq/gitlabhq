@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::DeployKeysPresenter do
-  let_it_be(:project, refind: true) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
   let_it_be(:other_project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: [project, other_project]) }
 

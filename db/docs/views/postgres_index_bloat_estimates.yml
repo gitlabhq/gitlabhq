@@ -1,8 +1,6 @@
 ---
 view_name: postgres_index_bloat_estimates
 description: Estimate index bloat in bytes
-classes:
-- Gitlab::Database::PostgresIndexBloatEstimate
 feature_categories:
 - database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48698

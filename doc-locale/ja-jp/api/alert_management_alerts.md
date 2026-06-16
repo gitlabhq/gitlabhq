@@ -1,8 +1,8 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Alert management alerts API
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: アラート管理アラートAPI
 ---
 
 {{< details >}}
@@ -12,11 +12,13 @@ title: Alert management alerts API
 
 {{< /details >}}
 
-このAPIを使用して、メトリクスの[アラート](../operations/incident_management/alerts.md)の画像とやり取りします。
+このAPIを使用して、[アラート](../operations/incident_management/alerts.md)のメトリクス画像と対話します。
 
-追加のエンドポイントは、[GraphQL API](graphql/reference/_index.md#alertmanagementalert)で使用できます。
+追加のエンドポイントは、[GraphQL API](graphql/reference/_index.md#alertmanagementalert)で利用できます。
 
 ## メトリクスの画像をアップロードする {#upload-metric-image}
+
+指定されたアラートのメトリクス画像をアップロードします。
 
 ```plaintext
 POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
@@ -27,7 +29,7 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `alert_iid` | 整数        | はい      | プロジェクトのアラートの内部ID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -37,7 +39,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -50,7 +52,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## メトリクスの画像をリストする {#list-metric-images}
+## すべてのメトリクス画像を一覧表示 {#list-all-metric-images}
+
+指定されたアラートのすべてのメトリクス画像を一覧表示します。
 
 ```plaintext
 GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
@@ -61,14 +65,14 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `alert_iid` | 整数        | はい      | プロジェクトのアラートの内部ID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -91,7 +95,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## メトリクスの画像を更新する {#update-metric-image}
+## メトリクス画像を更新 {#update-a-metric-image}
+
+指定されたアラートのメトリクス画像を更新します。
 
 ```plaintext
 PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
@@ -105,7 +111,7 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 | `url`       | 文字列         | いいえ       | 詳細なメトリクス情報を表示するためのURL。 |
 | `url_text`  | 文字列         | いいえ       | 画像またはURLの説明。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -114,7 +120,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -127,7 +133,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## メトリクスの画像を削除する {#delete-metric-image}
+## メトリクス画像を削除 {#delete-a-metric-image}
+
+指定されたアラートのメトリクス画像を削除します。
 
 ```plaintext
 DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
@@ -139,7 +147,7 @@ DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 | `alert_iid` | 整数        | はい      | プロジェクトのアラートの内部ID。 |
 | `image_id`  | 整数        | はい      | 画像のID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -147,7 +155,7 @@ curl --request DELETE \
   --url  "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
 ```
 
-次のステータスコードを返すことができます:
+次のステータスコードを返すことができます。
 
-- 画像が正常に削除された場合は`204 No Content`。
-- 画像を削除できなかった場合は`422 Unprocessable`。
+- `204 No Content`: 画像が正常に削除された場合。
+- `422 Unprocessable`: 画像を削除できなかった場合。

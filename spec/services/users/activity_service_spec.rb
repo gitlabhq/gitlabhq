@@ -108,6 +108,18 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
       it_behaves_like 'does not update last_activity_on'
     end
 
+    context 'when the user is frozen' do
+      let(:last_activity_on) { nil }
+
+      before do
+        user.freeze
+      end
+
+      it 'does not raise' do
+        expect { subject.execute }.not_to raise_error
+      end
+    end
+
     context 'when a lease could not be obtained' do
       let(:last_activity_on) { nil }
 

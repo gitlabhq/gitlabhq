@@ -383,6 +383,35 @@ export default {
 > [!note]
 > When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.
 
+### Tracking with the tracking mixin
+
+Use `Tracking.mixin` to add a `track` method to Vue components that automatically
+includes the experiment context. Call `this.track()` in your component to fire
+events with the correct experiment context.
+
+```vue
+<script>
+import Tracking from '~/tracking';
+
+export default {
+  mixins: [Tracking.mixin({ experiment: 'pill_color' })],
+  mounted() {
+    this.track('show_form', {
+      label: 'pill_color_form',
+    });
+  },
+};
+</script>
+
+<template>
+  <form>
+    <!-- form content -->
+  </form>
+</template>
+```
+
+When the component mounts, the `track` call fires a `show_form` event that includes the `pill_color` experiment context, which the data team can use to join experiment assignment with interaction events.
+
 ## Experiment development best practices
 
 ### Validate event structure locally before staging

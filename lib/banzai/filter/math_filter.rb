@@ -11,9 +11,12 @@ module Banzai
       prepend Concerns::PipelineTimingCheck
       include ::Gitlab::Utils::StrongMemoize
 
-      CSS_MATH_STYLE = 'pre[data-math-style], code[data-math-style], span[data-math-style]'
+      CSS_MATH_STYLE = 'pre[data-math-style], pre[data-canonical-lang="math"], ' \
+        'code[data-math-style], span[data-math-style]'
       XPATH_MATH_STYLE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH_STYLE).freeze
       TAG_CLASS = 'js-render-math'
+      LANG_ATTR = 'data-canonical-lang'
+      MATH_STYLE_ATTR = 'data-math-style'
 
       # Limit to how many nodes can be marked as math elements.
       # Prevents timeouts for large notes.
@@ -35,7 +38,11 @@ module Banzai
         doc.xpath(XPATH_MATH_STYLE).each do |node|
           break if render_nodes_limit_reached?(@nodes_count)
 
-          node[:class] = MarkdownFilter.glfm_markdown?(context) ? TAG_CLASS : MATH_CLASSES
+          if node.name == 'pre' && node[LANG_ATTR] == 'math' && !node[MATH_STYLE_ATTR]
+            node.set_attribute(MATH_STYLE_ATTR, 'display')
+          end
+
+          node[:class] = TAG_CLASS
 
           @nodes_count += 1
         end

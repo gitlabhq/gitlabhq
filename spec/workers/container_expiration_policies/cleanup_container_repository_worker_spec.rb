@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:repository, refind: true) { create(:container_repository, :cleanup_scheduled, expiration_policy_started_at: 1.month.ago) }
-  let_it_be(:other_repository, refind: true) { create(:container_repository, expiration_policy_started_at: 15.days.ago) }
+  let_it_be_with_refind(:repository) { create(:container_repository, :cleanup_scheduled, expiration_policy_started_at: 1.month.ago) }
+  let_it_be_with_refind(:other_repository) { create(:container_repository, expiration_policy_started_at: 15.days.ago) }
 
   let(:project) { repository.project }
   let(:policy) { project.container_expiration_policy }
@@ -357,7 +357,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
         it 'selects the correct repository', :freeze_time do
           case expected_selected_repository
           when :none
-            expect(subject).to eq(nil)
+            expect(subject).to be_nil
             next
           when :repository
             expect(subject).to eq(repository)
@@ -387,8 +387,22 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
       end
     end
 
+    context 'when one repository has null started_at and another has a past started_at' do
+      let_it_be(:never_processed_repository, freeze: false) { create(:container_repository) }
+
+      before do
+        policy.update!(next_run_at: 5.minutes.ago)
+        repository.update!(expiration_policy_cleanup_status: :cleanup_unscheduled, expiration_policy_started_at: 1.hour.ago)
+        never_processed_repository.project.container_expiration_policy.update_columns(enabled: true, next_run_at: 5.minutes.ago)
+      end
+
+      it 'selects the repository with null started_at first' do
+        expect(worker.send(:container_repository)).to eq(never_processed_repository)
+      end
+    end
+
     context 'with another repository in cleanup unfinished state' do
-      let_it_be(:another_repository) { create(:container_repository, :cleanup_unfinished) }
+      let_it_be(:another_repository, freeze: false) { create(:container_repository, :cleanup_unfinished) }
 
       before do
         policy.update_column(:next_run_at, 5.minutes.ago)
@@ -467,7 +481,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
   end
 
   describe '#remaining_work_count' do
-    let_it_be(:disabled_repository) { create(:container_repository, :cleanup_scheduled) }
+    let_it_be(:disabled_repository, freeze: false) { create(:container_repository, :cleanup_scheduled) }
 
     let(:capacity) { 10 }
 
@@ -502,7 +516,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
     end
 
     context 'with container repositories waiting for cleanup' do
-      let_it_be(:unfinished_repositories) { create_list(:container_repository, 2, :cleanup_unfinished) }
+      let_it_be(:unfinished_repositories, freeze: false) { create_list(:container_repository, 2, :cleanup_unfinished) }
 
       it { is_expected.to eq(3) }
     end

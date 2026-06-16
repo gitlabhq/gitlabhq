@@ -13,12 +13,6 @@ title: Use GCP Secret Manager secrets in GitLab CI/CD
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
-
-{{< /history >}}
-
 You can use secrets stored in the [Google Cloud (GCP) Secret Manager](https://cloud.google.com/security/products/secret-manager)
 in your GitLab CI/CD pipelines.
 
@@ -177,5 +171,5 @@ The job can't be created because one or more of the required variables are not d
 
 ### `WARNING: Not resolved: no resolver that can handle the secret` warning
 
-The Google Cloud Secret Manager integration requires at least GitLab 16.8 and GitLab Runner 16.8.
-This warning appears if the job is executed by a runner using a version earlier than 16.8.
+This warning appears when the runner version doesn't support the Google Cloud Secret Manager integration.
+Upgrade your runner to a supported version.

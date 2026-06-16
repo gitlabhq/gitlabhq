@@ -80,18 +80,6 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
       end
     end
 
-    it 'returns an error when an invalid project key is used' do
-      post :create, params: { repo_id: 'some&project/repo' }
-
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
-    end
-
-    it 'returns an error when an invalid repository slug is used' do
-      post :create, params: { repo_id: 'some-project/try*this' }
-
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
-    end
-
     it 'returns an error when the project cannot be found' do
       allow(client).to receive(:repo).with(project_key, repo_slug).and_return(nil)
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   it 'ignores non-GFM links' do
     html = %(See <a href="https://google.com/">Google</a>)

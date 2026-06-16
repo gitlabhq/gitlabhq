@@ -8,6 +8,7 @@ module Gitlab
         include ::Gitlab::Graphql::Authorize::AuthorizeResource
 
         BOUNDARY_TYPE_EVALUATION_ORDER = %w[project group user instance].freeze
+        TRAVERSAL_BOUNDARY_TYPES = %w[project group].freeze
 
         def resolve(object:, arguments:, context:, **rest)
           authorize_field(object, arguments, context)
@@ -25,9 +26,13 @@ module Gitlab
           matching_directive = find_matching_directive(directives, object, arguments, context)
 
           boundary = boundary(object, arguments, context, matching_directive)
-          permissions = permissions(matching_directive)
 
-          authorize_with_cache!(context, boundary, permissions)
+          if traversal?(matching_directive)
+            authorize_traversal_with_cache!(context, boundary)
+          else
+            permissions = permissions(matching_directive)
+            authorize_with_cache!(context, boundary, permissions)
+          end
         end
 
         def authorization_enabled?(context)
@@ -36,20 +41,47 @@ module Gitlab
         end
 
         def authorize_with_cache!(context, boundary, permissions)
-          cache = context[:authz_cache] ||= Set.new
-          cache_key = [permissions&.sort, boundary&.class, boundary&.namespace&.id]
+          with_authz_cache(context, [permissions&.sort, *boundary_cache_key(boundary)]) do
+            response = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+              boundaries: boundary,
+              permissions: permissions,
+              token: context[:access_token]
+            ).execute
 
+            raise_resource_not_available_error!(response.message) if response.error?
+          end
+        end
+
+        def authorize_traversal_with_cache!(context, boundary)
+          with_authz_cache(context, [:traversal, *boundary_cache_key(boundary)]) do
+            token = context[:access_token]
+            not_found = ::Authz::Tokens::AuthorizeGranularScopesService::NOT_FOUND_MESSAGE
+
+            raise_resource_not_available_error!(not_found) unless boundary && token.can?(:read_boundary, boundary)
+          end
+        end
+
+        def boundary_cache_key(boundary)
+          [boundary&.class, boundary&.namespace&.id]
+        end
+
+        def with_authz_cache(context, cache_key)
+          cache = context[:authz_cache] ||= Set.new
           return if cache.include?(cache_key)
 
-          response = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-            boundaries: boundary,
-            permissions: permissions,
-            token: context[:access_token]
-          ).execute
-
-          raise_resource_not_available_error!(response.message) if response.error?
+          yield
 
           cache.add(cache_key)
+        end
+
+        # traversal: true only applies to project and group boundaries.
+        # All other boundary types fall back to the regular permission check.
+        def traversal?(directive)
+          return false unless directive
+          return false unless directive.arguments[:traversal] == true
+
+          boundary_type = directive.arguments[:boundary_type]&.downcase
+          TRAVERSAL_BOUNDARY_TYPES.include?(boundary_type)
         end
 
         # When multiple directives exist (multi-boundary), select the one whose boundary_type
@@ -82,15 +114,11 @@ module Gitlab
         def boundary(object, arguments, context, directive)
           return unless directive
 
-          boundary_type = directive.arguments[:boundary_type]
-          procs = @field.owner.try(:granular_token_boundary_procs) || {}
-
           BoundaryExtractor.new(
             object: object,
             arguments: arguments,
             context: context,
-            directive: directive,
-            boundary_proc: procs[boundary_type]
+            directive: directive
           ).extract
         end
 

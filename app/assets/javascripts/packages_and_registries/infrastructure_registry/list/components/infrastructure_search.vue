@@ -1,12 +1,13 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { LIST_KEY_PACKAGE_TYPE } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import { useInfrastructureList } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import { sortableFields } from '~/packages_and_registries/infrastructure_registry/list/utils';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 export default {
+  name: 'InfrastructureSearch',
   components: { RegistrySearch, UrlSync },
   inject: {
     isGroupPage: {
@@ -14,16 +15,13 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      sorting: (state) => state.sorting,
-      filter: (state) => state.filter,
-    }),
+    ...mapState(useInfrastructureList, ['sorting', 'filter']),
     sortableFields() {
       return sortableFields(this.isGroupPage).filter((h) => h.orderBy !== LIST_KEY_PACKAGE_TYPE);
     },
   },
   methods: {
-    ...mapActions(['setSorting', 'setFilter']),
+    ...mapActions(useInfrastructureList, ['setSorting', 'setFilter']),
     updateSorting(newValue) {
       this.setSorting(newValue);
       this.$emit('update');

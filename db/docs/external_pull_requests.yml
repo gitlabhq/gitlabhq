@@ -4,7 +4,8 @@ classes:
 - Ci::ExternalPullRequest
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores GitHub pull request metadata for CI/CD-only mirrored projects,
+  including source and target branches, SHAs, and open or closed status.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ca6a1f33f91a8cceadebfb9c4e9ac6afa340f71d
 milestone: '12.3'
 gitlab_schema: gitlab_ci

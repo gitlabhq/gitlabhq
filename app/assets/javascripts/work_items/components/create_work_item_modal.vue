@@ -113,6 +113,7 @@ export default {
       default: null,
     },
   },
+  emits: ['hideModal', 'work-item-created'],
   data() {
     const draftWorkItemType = getDraftWorkItemType({
       fullPath: this.fullPath,

@@ -21,7 +21,7 @@ module Sidebars
 
         override :render?
         def render?
-          can?(context.current_user, :admin_organization, context.container)
+          can?(context.current_user, :update_organization, context.container)
         end
 
         override :configure_menu_items

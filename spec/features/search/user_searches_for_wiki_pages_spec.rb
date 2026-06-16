@@ -6,8 +6,8 @@ RSpec.describe 'User searches for wiki pages', :js, :clean_gitlab_redis_rate_lim
   feature_category: :global_search do
   include ListboxHelpers
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
-  let_it_be(:wiki_page) do
+  let_it_be(:project, freeze: false) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
+  let_it_be(:wiki_page, freeze: false) do
     create(:wiki_page, wiki: project.wiki, title: 'directory/title', content: 'Some Wiki content')
   end
 

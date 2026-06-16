@@ -74,6 +74,10 @@ describe('Blob Header Default Actions', () => {
       });
     });
 
+    it('renders the sticky header above the line numbers', () => {
+      expect(wrapper.classes()).toContain('gl-z-4');
+    });
+
     describe('DefaultActions component', () => {
       it('renders DefaultActions', () => {
         expect(findDefaultActions().exists()).toBe(true);

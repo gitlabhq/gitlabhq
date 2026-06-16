@@ -124,6 +124,8 @@ module Gitlab
       end
 
       class Definition
+        SKIP_INCLUDE_DIRECTIVES = %w[skip include].freeze
+
         attr_reader :file, :imports
 
         def initialize(path, fragments)
@@ -146,18 +148,16 @@ module Gitlab
           redacted if printer.fields_printed > 0
         end
 
+        # @skip / @include directives are driven by a Boolean `if` argument and
+        # may reference distinct variables. Enumerate every true/false assignment
+        # of those variables so the reported complexity is the worst case for
+        # any single variable assignment rather than summing mutually-exclusive
+        # branches.
         def complexity(schema)
-          # See BaseResolver::resolver_complexity
-          # we want to see the max possible complexity.
-          fake_args = Struct
-            .new(:if, :keyword_arguments)
-            .new(nil, { sort: true, search: true })
+          variable_names = directive_if_variable_names
+          assignments = boolean_assignments(variable_names)
 
-          query = GraphQL::Query.new(schema, text)
-          # We have no arguments, so fake them.
-          query.define_singleton_method(:arguments_for) { |_x, _y| fake_args }
-
-          GraphQL::Analysis::AST.analyze_query(query, [GraphQL::Analysis::AST::QueryComplexity]).first
+          assignments.map { |assignment| complexity_for_assignment(schema, assignment) }.max
         end
 
         def query
@@ -201,6 +201,71 @@ module Gitlab
 
         def fragment(path)
           @fragments.get(path)
+        end
+
+        # Compute complexity for one boolean assignment of @skip / @include
+        # variables. Field-level argument lookups still get the historical
+        # fake values so resolver_complexity (see BaseResolver) yields the
+        # maximum possible cost.
+        def complexity_for_assignment(schema, var_assignment)
+          query = GraphQL::Query.new(schema, text)
+
+          query.define_singleton_method(:arguments_for) do |ast_node, defn|
+            if defn.is_a?(Class) && defn < GraphQL::Schema::Directive
+              if_arg = ast_node.arguments.find { |a| a.name == 'if' }
+              if_value = case if_arg&.value
+                         when GraphQL::Language::Nodes::VariableIdentifier
+                           var_assignment[if_arg.value.name]
+                         when true, false
+                           if_arg.value
+                         end
+              Struct.new(:if).new(if_value)
+            else
+              Struct.new(:keyword_arguments).new({ sort: true, search: true })
+            end
+          end
+
+          GraphQL::Analysis::AST.analyze_query(query, [GraphQL::Analysis::AST::QueryComplexity]).first
+        end
+
+        # @return [Array<String>] variable names referenced by @skip / @include `if:` args.
+        def directive_if_variable_names
+          return [] if text.blank?
+
+          variables = Set.new
+          document = ::GraphQL.parse(text)
+
+          visit_directives(document) do |directive|
+            next unless SKIP_INCLUDE_DIRECTIVES.include?(directive.name)
+
+            if_arg = directive.arguments.find { |a| a.name == 'if' }
+            next unless if_arg&.value.is_a?(::GraphQL::Language::Nodes::VariableIdentifier)
+
+            variables << if_arg.value.name
+          end
+
+          variables.to_a
+        rescue ::GraphQL::ParseError
+          []
+        end
+
+        def visit_directives(node, &block)
+          node.directives.each(&block) if node.respond_to?(:directives)
+
+          if node.respond_to?(:selections)
+            node.selections.each { |child| visit_directives(child, &block) }
+          elsif node.respond_to?(:definitions)
+            node.definitions.each { |child| visit_directives(child, &block) }
+          end
+        end
+
+        # @return [Array<Hash>] every 2^N combination of true/false for the given variable names.
+        def boolean_assignments(variable_names)
+          return [{}] if variable_names.empty?
+
+          variable_names.reduce([{}]) do |acc, name|
+            acc.flat_map { |a| [a.merge(name => true), a.merge(name => false)] }
+          end
         end
       end
 

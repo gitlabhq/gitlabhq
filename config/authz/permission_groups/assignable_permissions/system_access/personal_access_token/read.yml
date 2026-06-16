@@ -2,6 +2,7 @@
 name: read_personal_access_token
 description: Grants the ability to view personal access tokens
 boundaries:
+  - group
   - user
 available_for:
   - granular_access_token

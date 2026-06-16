@@ -132,6 +132,137 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
     end
   end
 
+  describe '#export_definition' do
+    it 'returns partition_name, from, and to as ISO 8601 strings' do
+      partition = described_class.new('foo', '2020-04-01', '2020-05-01', partition_name: 'foo_202004')
+
+      expect(partition.export_definition).to eq(
+        { partition_name: 'foo_202004', from: '2020-04-01', to: '2020-05-01' }
+      )
+    end
+
+    it 'returns nil for from when the partition starts at MINVALUE' do
+      partition = described_class.new('foo', nil, '2020-05-01', partition_name: 'foo_000000')
+
+      expect(partition.export_definition).to eq(
+        { partition_name: 'foo_000000', from: nil, to: '2020-05-01' }
+      )
+    end
+  end
+
+  describe '.from_export_definition' do
+    let(:table) { 'foo' }
+    let(:partition_name) { 'foo_202004' }
+
+    it 'parses symbol-key hash' do
+      partition = described_class.from_export_definition(table, partition_name,
+        { from: '2020-04-01', to: '2020-05-01' })
+
+      expect(partition.from).to eq(Date.parse('2020-04-01'))
+      expect(partition.to).to eq(Date.parse('2020-05-01'))
+      expect(partition.partition_name).to eq(partition_name)
+    end
+
+    it 'parses string-key hash (JSON-parsed input)' do
+      partition = described_class.from_export_definition(table, partition_name,
+        { 'from' => '2020-04-01', 'to' => '2020-05-01' })
+
+      expect(partition.from).to eq(Date.parse('2020-04-01'))
+      expect(partition.to).to eq(Date.parse('2020-05-01'))
+    end
+
+    it 'handles nil from (MINVALUE partition)' do
+      partition = described_class.from_export_definition(table, 'foo_000000', { from: nil, to: '2020-05-01' })
+
+      expect(partition.from).to be_nil
+      expect(partition.to).to eq(Date.parse('2020-05-01'))
+    end
+
+    it 'raises ArgumentError for an invalid date string' do
+      expect { described_class.from_export_definition(table, partition_name, { from: 'not-a-date', to: '2020-05-01' }) }
+        .to raise_error(ArgumentError)
+    end
+
+    it 'roundtrips through export_definition' do
+      original = described_class.new(table, '2020-04-01', '2020-05-01', partition_name: partition_name)
+      restored = described_class.from_export_definition(table, partition_name, original.export_definition)
+
+      expect(restored.from).to eq(original.from)
+      expect(restored.to).to eq(original.to)
+    end
+
+    it 'roundtrips a MINVALUE partition through export_definition' do
+      original = described_class.new(table, nil, '2020-05-01', partition_name: 'foo_000000')
+      restored = described_class.from_export_definition(table, 'foo_000000', original.export_definition)
+
+      expect(restored.from).to be_nil
+      expect(restored.to).to eq(original.to)
+    end
+  end
+
+  describe '#covers?' do
+    def make_partition(from, to)
+      suffix = from ? Date.parse(from.to_s).strftime('%Y%m') : '000000'
+      described_class.new('foo', from, to, partition_name: "foo_#{suffix}")
+    end
+
+    let(:partition) { make_partition('2020-03-01', '2020-06-01') }
+
+    it 'returns true for exact same bounds' do
+      expect(partition.covers?(make_partition('2020-03-01', '2020-06-01'))).to be(true)
+    end
+
+    it 'returns true when other is strictly contained' do
+      expect(partition.covers?(make_partition('2020-04-01', '2020-05-01'))).to be(true)
+    end
+
+    it 'returns true when other has the same lower bound and a narrower upper bound' do
+      expect(partition.covers?(make_partition('2020-03-01', '2020-05-01'))).to be(true)
+    end
+
+    it 'returns true when other has a wider lower bound and the same upper bound' do
+      expect(partition.covers?(make_partition('2020-04-01', '2020-06-01'))).to be(true)
+    end
+
+    it 'returns false when other extends beyond the upper bound' do
+      expect(partition.covers?(make_partition('2020-03-01', '2020-07-01'))).to be(false)
+    end
+
+    it 'returns false when other starts before the lower bound' do
+      expect(partition.covers?(make_partition('2020-02-01', '2020-06-01'))).to be(false)
+    end
+
+    it 'returns false when ranges do not overlap' do
+      expect(partition.covers?(make_partition('2020-07-01', '2020-08-01'))).to be(false)
+    end
+
+    it 'returns false when other completely contains self' do
+      expect(partition.covers?(make_partition('2020-01-01', '2020-08-01'))).to be(false)
+    end
+
+    context 'when self has a MINVALUE lower bound (nil from)' do
+      let(:partition) { make_partition(nil, '2026-05-01') }
+
+      it 'returns true for a bounded partition within the range' do
+        expect(partition.covers?(make_partition('2020-01-01', '2020-02-01'))).to be(true)
+      end
+
+      it 'returns true for another MINVALUE partition with the same upper bound' do
+        expect(partition.covers?(make_partition(nil, '2026-05-01'))).to be(true)
+      end
+
+      it 'returns false when other extends beyond the upper bound' do
+        expect(partition.covers?(make_partition('2020-01-01', '2026-06-01'))).to be(false)
+      end
+    end
+
+    context 'when other has a MINVALUE lower bound (nil from)' do
+      it 'returns false when self has a bounded lower bound' do
+        expect(partition.covers?(make_partition(nil, '2020-06-01'))).to be(false)
+      end
+    end
+  end
+
   describe 'Comparable, #<=>' do
     let(:table) { 'foo' }
 

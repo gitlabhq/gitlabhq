@@ -96,6 +96,20 @@ RSpec.describe 'Destroying a container repository', feature_category: :container
       it_behaves_like 'denying the mutation request'
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_container_repository do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(:destroy_container_repository, { id: id }, 'errors')
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+      before_all do
+        project.add_maintainer(current_user)
+      end
+    end
+
     context 'when the project has tag protection rules' do
       before_all do
         create(

@@ -3,6 +3,7 @@ import { GlBadge, GlTooltipDirective, GlResizeObserverDirective } from '@gitlab/
 import { RUNNER_TAG_BADGE_VARIANT } from '../constants';
 
 export default {
+  name: 'RunnerTag',
   components: {
     GlBadge,
   },

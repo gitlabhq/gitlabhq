@@ -5,6 +5,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { resetServiceWorkersPublicPath } from '~/lib/utils/webpack';
 
 const resetWebpackPublicPath = (relativeRootPath) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- validation checks for path format using '/' and '//', not navigational URLs
   if (!relativeRootPath || !relativeRootPath.startsWith('/') || relativeRootPath.startsWith('//')) {
     return;
   }

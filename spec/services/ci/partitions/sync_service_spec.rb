@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
-  let_it_be_with_reload(:ci_partition) { create(:ci_partition, :current) }
-  let_it_be_with_reload(:next_ci_partition) { create(:ci_partition) }
+  let_it_be_with_reload(:ci_partition) { create(:ci_partition, :current, id: 101) }
+  let_it_be_with_reload(:next_ci_partition) { create(:ci_partition, id: 102) }
 
   let(:service) { described_class.new(ci_partition) }
   let(:current_status) { Ci::Partition.statuses[:current] }
@@ -61,6 +61,12 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
             .and change { next_ci_partition.reload.status }.from(preparing_status).to(current_status)
         end
 
+        it 'invalidates the PartitionCache' do
+          expect(Gitlab::Ci::Pipeline::PartitionCache).to receive(:invalidate)
+
+          execute_service
+        end
+
         context 'with pipelines in the outgoing partition' do
           let_it_be(:pipeline_first) { create(:ci_pipeline, partition_id: ci_partition.id) }
           let_it_be(:pipeline_last) { create(:ci_pipeline, partition_id: ci_partition.id) }
@@ -97,6 +103,12 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
 
         it 'does not update pipelines_id_range' do
           expect { execute_service }.not_to change { ci_partition.reload.pipelines_id_range }
+        end
+
+        it 'does not invalidate the PartitionCache' do
+          expect(Gitlab::Ci::Pipeline::PartitionCache).not_to receive(:invalidate)
+
+          execute_service
         end
       end
 

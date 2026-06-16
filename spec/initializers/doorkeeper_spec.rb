@@ -3,7 +3,31 @@
 require 'spec_helper'
 require_relative '../../config/initializers/doorkeeper'
 
-RSpec.describe Doorkeeper.configuration do
+RSpec.describe Doorkeeper.configuration, feature_category: :system_access do
+  describe '#custom_access_token_expires_in' do
+    subject(:expires_in) { Doorkeeper.configuration.custom_access_token_expires_in.call }
+
+    context 'when oauth_access_token_expires_in is not set' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:oauth_access_token_expires_in).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(expires_in).to eq(nil)
+      end
+    end
+
+    context 'when oauth_access_token_expires_in is configured' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:oauth_access_token_expires_in).and_return(900)
+      end
+
+      it 'returns the configured value' do
+        expect(expires_in).to eq(900)
+      end
+    end
+  end
+
   describe '#default_scopes' do
     it 'matches Gitlab::Auth::DEFAULT_SCOPES' do
       expect(subject.default_scopes).to eq Gitlab::Auth::DEFAULT_SCOPES

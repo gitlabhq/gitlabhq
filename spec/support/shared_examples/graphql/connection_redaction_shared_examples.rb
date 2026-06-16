@@ -17,7 +17,7 @@ RSpec.shared_examples 'a redactable connection' do
     end
   end
 
-  let_it_be(:constant_redactor) do
+  let_it_be(:constant_redactor, freeze: false) do
     Class.new do
       def initialize(remove)
         @remove = remove

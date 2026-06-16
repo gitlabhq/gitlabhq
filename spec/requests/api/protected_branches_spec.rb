@@ -89,7 +89,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
@@ -195,7 +195,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -206,7 +206,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -217,7 +217,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -228,7 +228,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -239,7 +239,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -250,7 +250,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
@@ -261,7 +261,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(false)
+        expect(json_response['allow_force_push']).to be(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
@@ -272,7 +272,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['allow_force_push']).to eq(true)
+        expect(json_response['allow_force_push']).to be(true)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end

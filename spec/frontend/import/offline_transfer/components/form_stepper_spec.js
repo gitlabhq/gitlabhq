@@ -110,6 +110,12 @@ describe('FormStepper', () => {
       expect(findAllStepContents().at(0).text()).toContain('Select tab content');
     });
 
+    it('forward movement emits "stepped-forward" event', async () => {
+      await clickContinue();
+
+      expect(wrapper.emitted('stepped-forward')).toHaveLength(1);
+    });
+
     it('updates tab heading styles after advancing: step 0 becomes completed, step 1 becomes active', async () => {
       await clickContinue();
 
@@ -190,6 +196,15 @@ describe('FormStepper', () => {
 
       expect(findAllStepContents().at(0).text()).toContain('Authenticate tab content');
       expect(wrapper.emitted('validation-failed')).toHaveLength(1);
+    });
+
+    it('does not emit "stepped-forward" when validation fails', async () => {
+      const validateStep = jest.fn().mockResolvedValue(false);
+      createComponent({ propsData: { validateStep } });
+
+      await clickContinue();
+
+      expect(wrapper.emitted('stepped-forward')).toBeUndefined();
     });
 
     it('disables the continue button while validation is in progress', async () => {

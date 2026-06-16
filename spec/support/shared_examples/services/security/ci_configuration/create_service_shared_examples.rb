@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.shared_examples_for 'services security ci configuration create service' do |skip_w_params|
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be(:user, freeze: false) { create(:user) }
 
   describe '#execute' do
     let(:params) { {} }
@@ -159,7 +159,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
       end
 
       context 'when exception is raised' do
-        let_it_be(:project) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
         let(:mock_sha) { '123456' }
         let(:commit_instance) { instance_double(Gitlab::Git::Commit, sha: mock_sha) }
 
@@ -267,7 +267,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
 
       context 'when the project is empty' do
         let(:params) { {} }
-        let_it_be(:project) { create(:project_empty_repo) }
+        let_it_be(:project, freeze: false) { create(:project_empty_repo) }
 
         it 'returns a ServiceResponse error' do
           expect(result).to be_kind_of(ServiceResponse)

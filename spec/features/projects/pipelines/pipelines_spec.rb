@@ -816,7 +816,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'when gitlab ci file is present' do
-        let_it_be(:project) { create(:project, :small_repo, files: { '.gitlab-ci.yml' => 'test' }) }
+        let_it_be(:project, freeze: false) { create(:project, :small_repo, files: { '.gitlab-ci.yml' => 'test' }) }
 
         it 'does not show migration prompt' do
           expect_not_to_show_prompt

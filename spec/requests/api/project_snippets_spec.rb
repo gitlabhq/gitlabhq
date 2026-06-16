@@ -9,7 +9,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
   let_it_be(:project_no_snippets) { create(:project, :snippets_disabled) }
   let_it_be(:user) { create(:user, developer_of: project_no_snippets) }
   let_it_be(:admin) { create(:admin, developer_of: project_no_snippets) }
-  let_it_be(:public_snippet, reload: true) { create(:project_snippet, :public, :repository, project: project) }
+  let_it_be_with_reload(:public_snippet) { create(:project_snippet, :public, :repository, project: project) }
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
     let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: public_snippet) }
@@ -390,7 +390,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
-    let_it_be(:snippet, refind: true) { public_snippet }
+    let_it_be_with_refind(:snippet) { public_snippet }
     let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/" }
 
     it_behaves_like 'DELETE request permissions for admin mode'

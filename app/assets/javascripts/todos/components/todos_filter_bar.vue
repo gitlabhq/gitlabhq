@@ -269,6 +269,7 @@ export default {
       required: true,
     },
   },
+  emits: ['filters-changed'],
   data() {
     return {
       isAscending: false,

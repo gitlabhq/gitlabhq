@@ -9,6 +9,8 @@ module Mutations
         include FindsProject
 
         authorize :admin_project
+        authorize_granular_token permissions: :delete_job_token_scope_allowlist,
+          boundary_argument: :project_path, boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

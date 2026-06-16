@@ -6,7 +6,7 @@ RSpec.shared_context 'with current_organization setting' do
   include_context 'with Organization URL helpers'
 
   unless method_defined?(:current_organization)
-    let_it_be(:current_organization, reload: true) { create(:common_organization) }
+    let_it_be_with_reload(:current_organization) { create(:common_organization) }
   end
 
   before do |example|

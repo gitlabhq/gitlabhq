@@ -9,12 +9,12 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
   include WorkhorseHelpers
   include WorkhorseLfsHelpers
 
-  let_it_be(:project, reload: true) { create(:project, :empty_repo) }
+  let_it_be_with_reload(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user) }
 
   context 'with projects' do
     it_behaves_like 'LFS http requests' do
-      let_it_be(:other_project, reload: true) { create(:project, :empty_repo) }
+      let_it_be_with_reload(:other_project) { create(:project, :empty_repo) }
 
       let(:container) { project }
       let(:authorize_guest) { project.add_guest(user) }

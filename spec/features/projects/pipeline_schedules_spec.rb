@@ -317,7 +317,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       end
 
       context 'when project is public' do
-        let_it_be(:public_project) { create(:project, :repository, :public, public_builds: true) }
+        let_it_be(:public_project, freeze: false) { create(:project, :repository, :public, public_builds: true) }
 
         it 'shows Pipelines Schedules page' do
           visit project_pipeline_schedules_path(public_project, scope: scope)

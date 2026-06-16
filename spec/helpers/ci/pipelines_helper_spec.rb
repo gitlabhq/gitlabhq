@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, freeze: false) { create(:project) }
 
   describe 'has_gitlab_ci?' do
     using RSpec::Parameterized::TableSyntax
@@ -85,9 +85,9 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
 
     subject { helper.pipelines_list_data(project)[:show_jenkins_ci_prompt] }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :repository) }
-    let_it_be(:repository) { project.repository }
+    let_it_be(:repository, freeze: false) { project.repository }
 
     before do
       sign_in(user)
@@ -145,7 +145,7 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
       end
 
       context 'when there is a current_user' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:user, freeze: false) { create(:user) }
 
         before_all do
           project.add_developer(user)

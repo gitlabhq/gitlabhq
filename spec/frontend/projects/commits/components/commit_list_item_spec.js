@@ -7,7 +7,6 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
 import CommitListItemDescription from '~/projects/commits/components/commit_list_item_description.vue';
 import CommitListItemBadges from '~/projects/commits/components/commit_list_item_badges.vue';
-import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import { mockCommit } from './mock_data';
 
 describe('CommitListItem', () => {
@@ -43,10 +42,8 @@ describe('CommitListItem', () => {
   const findCommitBadges = () => wrapper.findComponent(CommitListItemBadges);
   const findActionButtons = () => wrapper.findComponent(CommitListItemActionButtons);
   const findDescription = () => wrapper.findComponent(CommitListItemDescription);
-  const findExpandCollapseButton = () => wrapper.findComponent(ExpandCollapseButton);
   const findOverflowMenu = () => wrapper.findByTestId('overflow-menu');
-  const findNarrowScreenExpandCollapseContainer = () =>
-    wrapper.findByTestId('narrow-screen-expand-collapse-button-container');
+  const findCommitRow = () => wrapper.findByTestId('commit-row');
 
   describe('avatar rendering', () => {
     describe('when commit has author', () => {
@@ -91,18 +88,10 @@ describe('CommitListItem', () => {
       expect(titleLink.text()).toBe(mockCommit.title);
     });
 
-    it('applies italic styling when commit has no message', () => {
-      createComponent({
-        commit: { ...mockCommit, message: null },
-      });
-      const titleLink = findCommitTitleLink();
-      expect(titleLink.classes()).toContain('gl-italic');
-    });
-
     it('renders truncated text with tooltip enabled', () => {
       const titleLink = findCommitTitleLink();
 
-      expect(titleLink.classes()).toContain('gl-truncate');
+      expect(titleLink.classes()).toContain('@md/panel:gl-truncate');
       expect(titleLink.attributes('title')).toBe(mockCommit.title);
     });
   });
@@ -190,27 +179,46 @@ describe('CommitListItem', () => {
         expect(overflowMenu.classes()).toContain('@md/panel:gl-hidden');
       });
     });
+  });
 
-    describe('expand/collapse button container', () => {
-      it('renders expand/collapse button container with narrow screens only classes', () => {
-        const container = findNarrowScreenExpandCollapseContainer();
-        expect(container.classes()).toContain('@md/panel:gl-hidden');
+  describe('row click to show/hide description', () => {
+    describe('when commit has description', () => {
+      it('shows description when row is clicked', async () => {
+        await findCommitRow().trigger('click');
+        expect(findDescription().isVisible()).toBe(true);
       });
 
-      it('renders expand/collapse button inside container', () => {
-        const expandCollapseButton = findExpandCollapseButton();
-        expect(expandCollapseButton.props()).toMatchObject({
-          isCollapsed: true,
-          anchorId: `commit-list-item-${mockCommit.id}`,
-          size: 'medium',
-        });
+      it('hides description on second click', async () => {
+        await findCommitRow().trigger('click');
+        expect(findActionButtons().props('isCollapsed')).toBe(false);
+
+        await findCommitRow().trigger('click');
+        expect(findActionButtons().props('isCollapsed')).toBe(true);
       });
 
-      it('handles click event from expand/collapse button', async () => {
-        const expandCollapseButton = findExpandCollapseButton();
-        await expandCollapseButton.vm.$emit('click');
-        const description = findDescription();
-        expect(description.isVisible()).toBe(true);
+      it('toggles via keyboard Enter key', async () => {
+        await findCommitRow().trigger('keydown.enter');
+        expect(findDescription().isVisible()).toBe(true);
+      });
+
+      it('toggles via keyboard Space key', async () => {
+        await findCommitRow().trigger('keydown.space');
+        expect(findDescription().isVisible()).toBe(true);
+      });
+
+      it('applies cursor-pointer class', () => {
+        expect(findCommitRow().classes()).toContain('gl-cursor-pointer');
+      });
+
+      it('sets tabindex="0"', () => {
+        expect(findCommitRow().attributes('tabindex')).toBe('0');
+      });
+
+      it('sets aria-expanded to false initially and true after click', async () => {
+        expect(findCommitRow().attributes('aria-expanded')).toBe('false');
+
+        await findCommitRow().trigger('click');
+        expect(findCommitRow().attributes('aria-expanded')).toBe('true');
       });
     });
 
@@ -219,15 +227,28 @@ describe('CommitListItem', () => {
         createComponent({ commit: { ...mockCommit, description: null } });
       });
 
-      it('does not render expand/collapse button container', () => {
-        expect(findNarrowScreenExpandCollapseContainer().exists()).toBe(false);
+      it('does not show description on click', async () => {
+        await findCommitRow().trigger('click');
+        expect(findActionButtons().props('isCollapsed')).toBe(true);
+      });
+
+      it('does not apply cursor-pointer class', () => {
+        expect(findCommitRow().classes()).not.toContain('gl-cursor-pointer');
+      });
+
+      it('sets tabindex="-1"', () => {
+        expect(findCommitRow().attributes('tabindex')).toBe('-1');
+      });
+
+      it('does not set aria-expanded', () => {
+        expect(findCommitRow().attributes('aria-expanded')).toBeUndefined();
       });
     });
   });
 
   describe('description', () => {
     it('passes commit sha to description component', async () => {
-      await findExpandCollapseButton().vm.$emit('click');
+      await findActionButtons().vm.$emit('click');
       expect(findDescription().props('commitSha')).toBe(mockCommit.sha);
     });
   });

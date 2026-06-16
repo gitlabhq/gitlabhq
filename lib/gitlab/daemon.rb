@@ -17,7 +17,7 @@ module Gitlab
       end
 
       @instance = new(*args, **options)
-      Kernel.at_exit(&@instance.method(:stop))
+      Kernel.at_exit { @instance.stop }
       @instance
     end
 

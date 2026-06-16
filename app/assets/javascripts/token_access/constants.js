@@ -1,6 +1,7 @@
 import { keyBy } from 'lodash-es';
 import { s__, __ } from '~/locale';
 
+export const RESOURCE_BADGES = { value: 'BADGES', text: s__('JobToken|Badges') };
 export const RESOURCE_DEPLOYMENTS = { value: 'DEPLOYMENTS', text: s__('JobToken|Deployments') };
 export const RESOURCE_ENVIRONMENTS = { value: 'ENVIRONMENTS', text: s__('JobToken|Environments') };
 export const RESOURCE_JOBS = { value: 'JOBS', text: s__('JobToken|Jobs') };
@@ -22,6 +23,16 @@ export const RESOURCE_WORK_ITEMS = { value: 'WORK_ITEMS', text: s__('JobToken|Wo
 const READ = s__('JobToken|Read');
 const READ_AND_WRITE = s__('JobToken|Read and write');
 
+export const POLICY_READ_BADGES = {
+  value: 'READ_BADGES',
+  text: READ,
+  resource: RESOURCE_BADGES,
+};
+export const POLICY_ADMIN_BADGES = {
+  value: 'ADMIN_BADGES',
+  text: READ_AND_WRITE,
+  resource: RESOURCE_BADGES,
+};
 export const POLICY_READ_DEPLOYMENTS = {
   value: 'READ_DEPLOYMENTS',
   text: READ,
@@ -125,6 +136,10 @@ export const POLICY_READ_WORK_ITEMS = {
 export const POLICY_NONE = { value: '', text: __('None') };
 
 export const POLICIES_BY_RESOURCE = [
+  {
+    resource: RESOURCE_BADGES,
+    policies: [POLICY_NONE, POLICY_READ_BADGES, POLICY_ADMIN_BADGES],
+  },
   {
     resource: RESOURCE_DEPLOYMENTS,
     policies: [POLICY_NONE, POLICY_READ_DEPLOYMENTS, POLICY_ADMIN_DEPLOYMENTS],

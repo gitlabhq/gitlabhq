@@ -19,14 +19,20 @@ title: Customize review instructions for GitLab Duo
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
 - Feature flag `duo_code_review_custom_instructions` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802) in GitLab 18.3.
 - Feature flag `duo_code_review_custom_instructions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262) in GitLab 18.4.
+- Union patterns (for example, `{rb,ts}`) in `fileFilters` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952) in GitLab 19.1.
 
 {{< /history >}}
 
-Create custom merge request review instructions to ensure that GitLab Duo applies consistent and
-specific code review standards to your project.
+Create custom review instructions to provide standards for GitLab Duo to reference when reviewing merge requests.
 
-For example, you can enforce Ruby style conventions only on Ruby files, and Go style
-conventions on Go files.
+For example, you can guide GitLab Duo to focus on Ruby style conventions for Ruby files, and Go style
+conventions for Go files.
+
+> [!note]
+> Custom review instructions are guidance for the AI reviewer, not enforced policies.
+> GitLab Duo uses them as context to shape its review, but cannot guarantee every instruction
+> is applied in every case. Do not rely on custom instructions for security controls,
+> compliance obligations, or other requirements where consistent enforcement is needed.
 
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
@@ -52,8 +58,9 @@ To configure custom merge request review instructions:
          <your_custom_review_instructions>
    ```
 
-   The `fileFilters` section is mandatory. Use glob patterns in this section to target specific files for
-   the custom review rules.
+   The `fileFilters` section is optional. Use glob patterns in this section to target the instruction
+   to specific files. If you omit `fileFilters` or leave it empty, GitLab Duo applies the
+   instruction to every file in the merge request.
 
    For example:
 
@@ -160,8 +167,9 @@ Prerequisites:
 To configure custom review instructions for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Under **Custom review instructions for groups**, select a project in your group.
+1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
+1. Under **Custom review instructions for groups**, select the project that contains the
+   `.gitlab/duo/mr-review-instructions.yaml` file with your group's review instructions.
 1. Select **Save changes**.
 
 ## Best practices
@@ -173,6 +181,9 @@ When writing custom review instructions:
 - Focus on the most important standards.
 - Explain the "why" when helpful.
 - Start with straightforward instructions, and add complexity as needed.
+- Write instructions as guidance, not mandates. Instructions are hints that
+  shape review behavior, not policies that GitLab Duo is required to follow. Avoid
+  wording like "always flag" or "never allow". This phrasing can mislead collaborators into thinking the behavior is guaranteed.
 
 For example:
 
@@ -201,7 +212,7 @@ For example, for a project that contains Ruby files:
 | `!**/*.test.rb` | Exclude all Ruby test files |
 | `!spec/**/*.rb` | Exclude all Ruby files in the `spec` directory and its subdirectories |
 | `!tests/**/*`   | Exclude all files in the `tests` directory and its subdirectories |
-| `**/*.{js,jsx}` | JavaScript and JSX files in all directories |
+| `**/*.{js,jsx}` | JavaScript and JSX files in all directories (GitLab 19.1 and later) |
 
 The following example shows the difference between `**/*.rb` and `*.rb`:
 

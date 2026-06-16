@@ -4,7 +4,9 @@ classes:
 - PersonalAccessToken
 feature_categories:
 - system_access
-description: TODO
+description: Stores all user-owned API tokens, including personal access tokens and
+  group/project access tokens (which are owned by bot users), with their token digest,
+  scopes, and expiry.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3a609038748055a27c7e01cf4b55d8249709c9cc
 milestone: '8.9'
 gitlab_schema: gitlab_main_org

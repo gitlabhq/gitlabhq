@@ -2,14 +2,16 @@
 import { pick } from 'lodash-es';
 import { sha256 } from '~/lib/utils/text_utility';
 import { InternalEvents } from '~/tracking';
-import { MODE_ANALYTICS } from '~/glql/constants';
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_DISPLAY_TYPE,
+  PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT,
+} from '~/glql/constants';
 import { parse } from '../../core/parser';
 import { execute } from '../../core/executor';
 import { transform } from '../../core/transformer';
 import DataPresenter from '../presenters/data.vue';
 import GlqlPagination from './pagination.vue';
-
-const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'GlqlResolver',
@@ -46,8 +48,16 @@ export default {
     hasDisplayType() {
       return Boolean(this.config?.display);
     },
+    isPaginatedDisplayWithDefaultLimit() {
+      return PAGINATED_DISPLAY_TYPES_WITH_DEFAULT_LIMIT.has(
+        this.config?.display ?? DEFAULT_DISPLAY_TYPE,
+      );
+    },
     hasNextPage() {
-      return Boolean(this.data?.count && this.data.nodes?.length < this.data.count);
+      return (
+        this.isPaginatedDisplayWithDefaultLimit &&
+        Boolean(this.data?.count && this.data.nodes?.length < this.data.count)
+      );
     },
   },
   watch: {
@@ -108,18 +118,21 @@ export default {
         this.fields = fields;
         this.mode = mode;
 
-        this.setVariable('limit', this.config.limit ?? DEFAULT_PAGE_SIZE);
+        // Honor an explicit `limit:` from the user. Otherwise, only paginated
+        // display types (lists, tables) get the default page size; aggregated
+        // displays (charts) fetch the full result set in one round-trip.
+        if (this.config.limit != null) {
+          this.setVariable('limit', this.config.limit);
+        } else if (this.isPaginatedDisplayWithDefaultLimit) {
+          this.setVariable('limit', DEFAULT_PAGE_SIZE);
+        }
 
         const executionResult = await execute(this.query, this.variables);
 
-        if (this.mode === MODE_ANALYTICS) {
-          this.data = await transform(executionResult, {
-            fields: this.fields,
-            mode: this.mode,
-          });
-        } else {
-          this.data = await transform(executionResult, this.config);
-        }
+        this.data = await transform(executionResult, {
+          fields: this.fields,
+          mode: this.mode,
+        });
 
         this.trackRender();
       } catch (error) {
@@ -134,21 +147,15 @@ export default {
     async loadMore() {
       try {
         this.setVariable('after', this.data.pageInfo?.endCursor);
-        this.setVariable('limit', DEFAULT_PAGE_SIZE);
         this.loading = true;
         this.emitChange();
 
         const executionResult = await execute(this.query, this.variables);
 
-        let data;
-        if (this.mode === MODE_ANALYTICS) {
-          data = await transform(executionResult, {
-            fields: this.fields,
-            mode: this.mode,
-          });
-        } else {
-          data = await transform(executionResult, this.config);
-        }
+        const data = await transform(executionResult, {
+          fields: this.fields,
+          mode: this.mode,
+        });
 
         this.data = {
           ...this.data,
@@ -195,6 +202,7 @@ export default {
       <glql-pagination
         :count="data.nodes.length"
         :total-count="data.count"
+        :page-size="variables.limit.value"
         :loading="loading"
         @loadMore="loadMore"
       />

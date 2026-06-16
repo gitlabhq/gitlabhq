@@ -50,6 +50,8 @@ export const FORM_FIELD_DESCRIPTION_VALIDATORS = [
   ),
 ];
 
+export const ORGANIZATION_STATE_UNCONFIRMED = 'UNCONFIRMED';
+
 export const SORT_DIRECTION_ASC = 'asc';
 export const SORT_DIRECTION_DESC = 'desc';
 

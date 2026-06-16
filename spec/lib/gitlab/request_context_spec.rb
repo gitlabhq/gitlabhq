@@ -49,6 +49,27 @@ RSpec.describe Gitlab::RequestContext, :request_store, feature_category: :applic
     end
   end
 
+  describe '.apdex_duration_s' do
+    let(:start_monotonic_time) { 100.0 }
+
+    context 'when request_start_monotonic_time is set' do
+      before do
+        subject.request_start_monotonic_time = start_monotonic_time
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100.5)
+      end
+
+      it 'returns the elapsed time in seconds rounded to microsecond precision' do
+        expect(described_class.apdex_duration_s).to eq(Gitlab::Utils.ms_to_round_sec(500.0))
+      end
+    end
+
+    context 'when request_start_monotonic_time is not set' do
+      it 'returns nil' do
+        expect(described_class.apdex_duration_s).to be_nil
+      end
+    end
+  end
+
   describe '#request_deadline' do
     let(:request_start_time) { 1575982156.206008 }
 

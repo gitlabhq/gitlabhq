@@ -7,7 +7,8 @@ import {
   GlFormRadio,
   GlButton,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import { isAbsolute, isHostLike } from '~/lib/utils/url_utility';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 import SelfManagedAlert from './self_managed_alert.vue';
@@ -61,6 +62,26 @@ export default {
     showVersionSelect() {
       return !this.showSetupInstructions && !this.showSelfManagedInstanceInput;
     },
+    normalizedSelfManagedBasePath() {
+      const value = this.selfManagedBasePathInput;
+      if (!value) return '';
+      if (isAbsolute(value)) return value;
+      if (isHostLike(value)) return `https://${value}`;
+      return value;
+    },
+    showSchemeHint() {
+      const value = this.selfManagedBasePathInput;
+      if (!value || isAbsolute(value)) return false;
+      return isHostLike(value);
+    },
+    instanceUrlDescription() {
+      if (this.showSchemeHint) {
+        return sprintf(this.$options.i18n.instanceURLSchemeHint, {
+          url: this.normalizedSelfManagedBasePath,
+        });
+      }
+      return this.$options.i18n.instanceURLInputDescription;
+    },
   },
   methods: {
     onSubmit() {
@@ -70,8 +91,9 @@ export default {
       }
 
       const gitlabBasePath = this.isSelfManagedSelected
-        ? this.selfManagedBasePathInput
+        ? this.normalizedSelfManagedBasePath
         : GITLAB_COM_BASE_PATH;
+
       this.$emit('submit', gitlabBasePath);
     },
 
@@ -95,6 +117,7 @@ export default {
     buttonSave: __('Save'),
     instanceURLInputLabel: s__('JiraConnect|GitLab instance URL'),
     instanceURLInputDescription: s__('JiraConnect|For example: https://gitlab.example.com'),
+    instanceURLSchemeHint: s__("JiraConnect|We'll use %{url}"),
   },
 };
 </script>
@@ -129,12 +152,13 @@ export default {
     <div v-else-if="showSelfManagedInstanceInput">
       <gl-form-group
         :label="$options.i18n.instanceURLInputLabel"
-        :description="$options.i18n.instanceURLInputDescription"
+        :description="instanceUrlDescription"
         label-for="self-managed-instance-input"
       >
         <gl-form-input
           id="self-managed-instance-input"
-          v-model="selfManagedBasePathInput"
+          v-model.trim="selfManagedBasePathInput"
+          data-testid="self-managed-instance-input"
           required
         />
       </gl-form-group>

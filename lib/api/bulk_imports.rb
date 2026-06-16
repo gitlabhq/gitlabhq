@@ -40,8 +40,8 @@ module API
     end
 
     resource :bulk_imports do
-      desc 'Start a new GitLab Migration' do
-        detail 'This feature was introduced in GitLab 14.2.'
+      desc 'Start a group or project migration' do
+        detail 'Starts a group or project migration. To migrate a project, specify `entities[project_entity]`.'
         success code: 201, model: Entities::BulkImport
         consumes ['application/x-www-form-urlencoded']
         failure [
@@ -122,8 +122,8 @@ module API
         end
       end
 
-      desc 'List all GitLab Migrations' do
-        detail 'This feature was introduced in GitLab 14.1.'
+      desc 'List all group or project migrations' do
+        detail 'Lists all group or project migrations.'
         is_array true
         success code: 200, model: Entities::BulkImport
         failure [
@@ -145,8 +145,8 @@ module API
         present paginate(bulk_imports), with: Entities::BulkImport
       end
 
-      desc "List all GitLab Migrations' entities" do
-        detail 'This feature was introduced in GitLab 14.1.'
+      desc 'List all group or project migration entities' do
+        detail 'Lists all group or project migration entities.'
         is_array true
         success code: 200, model: Entities::BulkImports::Entity
         failure [
@@ -173,8 +173,8 @@ module API
         present paginate(entities), with: Entities::BulkImports::Entity
       end
 
-      desc 'Get GitLab Migration details' do
-        detail 'This feature was introduced in GitLab 14.1.'
+      desc 'Retrieve a group or project migration' do
+        detail 'Retrieves details of a group or project migration.'
         success code: 200, model: Entities::BulkImport
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -191,8 +191,8 @@ module API
         present bulk_import, with: Entities::BulkImport
       end
 
-      desc "List GitLab Migration entities" do
-        detail 'This feature was introduced in GitLab 14.1.'
+      desc 'List all group or project migration entities' do
+        detail 'Lists all group or project migration entities for a specified migration.'
         is_array true
         success code: 200, model: Entities::BulkImports::Entity
         failure [
@@ -213,8 +213,8 @@ module API
         present paginate(bulk_import_entities), with: Entities::BulkImports::Entity
       end
 
-      desc 'Get GitLab Migration entity details' do
-        detail 'This feature was introduced in GitLab 14.1.'
+      desc 'Retrieve a group or project migration entity' do
+        detail 'Retrieves details of a group or project migration entity.'
         success code: 200, model: Entities::BulkImports::Entity
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -232,8 +232,9 @@ module API
         present bulk_import_entity, with: Entities::BulkImports::Entity
       end
 
-      desc 'Get GitLab Migration entity failures' do
-        detail 'This feature was introduced in GitLab 16.6'
+      desc 'List all failed import records for a migration entity' do
+        detail 'Lists all failed import records for a group or project migration entity. This feature was ' \
+          'introduced in GitLab 16.6.'
         success code: 200, model: Entities::BulkImports::EntityFailure
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -251,8 +252,8 @@ module API
         present paginate(bulk_import_entity.failures), with: Entities::BulkImports::EntityFailure
       end
 
-      desc 'Cancel GitLab Migration' do
-        detail 'This feature was introduced in GitLab 17.1'
+      desc 'Cancel a migration' do
+        detail 'Cancels a direct transfer migration. This feature was introduced in GitLab 17.1.'
         success code: 200, model: Entities::BulkImport
         failure [
           { code: 401, message: 'Unauthorized' },

@@ -40,7 +40,7 @@ RSpec.describe IncidentManagement::TimelineEvent do
       create(:incident_management_timeline_event, project: project, occurred_at: 3.minutes.ago)
     end
 
-    let_it_be(:occurred_2mins_ago) do
+    let_it_be(:occurred_2mins_ago, freeze: false) do
       create(:incident_management_timeline_event, project: project, occurred_at: 2.minutes.ago)
     end
 

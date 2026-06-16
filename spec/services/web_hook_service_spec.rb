@@ -207,21 +207,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         expect(request.headers['Webhook-Signature']).to eq(expected)
       end
 
-      context 'when webhook_signing_token feature flag is disabled' do
-        before do
-          stub_feature_flags(webhook_signing_token: false)
-        end
-
-        it 'does not include Webhook-Signature but still includes webhook-id' do
-          service_instance.execute
-
-          headers = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last.headers
-          expect(headers).not_to have_key('Webhook-Signature')
-          expect(headers['Webhook-Timestamp']).to match(/\A\d+\z/)
-          expect(headers['Webhook-Id']).to match(/\A[0-9a-f-]{36}\z/)
-        end
-      end
-
       context 'when both token and signing_token are set' do
         before do
           project_hook.token = generate(:token)

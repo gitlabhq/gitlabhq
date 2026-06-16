@@ -77,7 +77,7 @@ module Users
       # 74 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132751
       # 75 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221970
       security_policy_protected_branch_modification: 76, # EE-only
-      vulnerability_report_grouping: 77, # EE-only
+      # 77 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238671
       # 78 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161010,
       # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
       # 80 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224957
@@ -130,7 +130,8 @@ module Users
       # 126 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227807
       work_items_onboarding_modal: 127,
       duo_panel_empty_state_auto_expanded: 128, # EE-only
-      inline_blame_popover: 129
+      inline_blame_popover: 129,
+      security_manager_role: 130
     }
 
     validates :feature_name,

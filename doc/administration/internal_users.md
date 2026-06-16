@@ -19,22 +19,18 @@ description: Enable automated system operations through internal bot users for G
 
 {{< /history >}}
 
-GitLab uses internal users (sometimes referred to as "bots") to perform actions or functions that cannot be attributed
-to a regular user.
+Internal users (also called "bots") are system accounts that GitLab creates automatically to perform
+specific background actions. GitLab uses them when a regular user account is not applicable, such as when
+generating alerts or automatic review feedback. Internal users have usernames and email addresses, so their
+actions can be attributed to them. They do not count towards a license limit and cannot be created manually.
 
-Internal users:
-
-- Are created automatically by GitLab and do not count towards a license limit. You cannot create internal users manually.
-- Are used when a traditional user account isn't applicable. For example, when generating alerts or automatic review
-  feedback.
-- Have reduced access and a very specific purpose. They cannot be used for regular user actions, such as authentication
-  or API requests.
-- Have email addresses and names that can be attributed to any actions they perform.
+Internal users have limited access and cannot be used directly for many actions such as authentication.
+Some bots have access to make API requests, but most cannot.
 
 Internal users are sometimes created as part of feature development. For example, the GitLab Migration Bot for
 [migrating](https://gitlab.com/gitlab-org/gitlab/-/issues/216120) from GitLab Snippets to
-[Versioned Snippets](../user/snippets.md#versioned-snippets). GitLab Migration Bot was used as the author of snippets
-when a snippet's original author wasn't available. For example, when the user was disabled.
+[Versioned Snippets](../user/snippets.md#versioned-snippets). This bot was assigned as the snippet author
+when the original author was not available.
 
 Other examples of internal users:
 
@@ -69,12 +65,22 @@ GitLab Security Bot is an internal user responsible for commenting on merge requ
 
 ## GitLab Security Policy Bot
 
+{{< history >}}
+
+- [API access granted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235671) in GitLab 19.1.
+
+{{< /history >}}
+
 GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
-defined in [security policies](../user/application_security/policies/_index.md#gitlab-security-policy-bot-user). This account is
-created in every project on which a security policy is enforced.
+defined in [security policies](../user/application_security/policies/_index.md#gitlab-security-policy-bot-user).
+This account is created in every project with a security policy enforced.
 
 For scheduled pipeline execution policies, this bot can read CI/CD configuration from private
 projects when project owners explicitly allow access.
+
+In GitLab 19.1 and later, the bot can access the API to perform actions such as downloading artifacts from earlier
+pipeline stages as part of scheduled pipeline execution policies. To limit the risks of API access, the bot can
+only access endpoints permitted by its role in the projects it is a member of.
 
 Bot access has these limits:
 
@@ -84,4 +90,4 @@ Bot access has these limits:
   the root ancestor group.
 
 To set up Security Policy Bot access, see
-[scheduled pipeline execution policies](../user/application_security/policies/scheduled_pipeline_execution_policies.md#option-2-allow-security-policy-bot-access-to-private-projects).
+[scheduled pipeline execution policies](../user/application_security/policies/scheduled_pipeline_execution_policies.md#option-2-allow-security-policy-bot-access-to-private-or-internal-projects).

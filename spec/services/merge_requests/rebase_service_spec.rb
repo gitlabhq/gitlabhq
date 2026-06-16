@@ -74,7 +74,7 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         merge_request.reload
 
         expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
-        expect(merge_request.rebase_jid).to eq(nil)
+        expect(merge_request.rebase_jid).to be_nil
 
         allow(repository).to receive(:gitaly_operation_client).and_call_original
         merge_request.update!(rebase_jid: rebase_jid)
@@ -82,8 +82,8 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         service.execute(merge_request)
         merge_request.reload
 
-        expect(merge_request.merge_error).to eq(nil)
-        expect(merge_request.rebase_jid).to eq(nil)
+        expect(merge_request.merge_error).to be_nil
+        expect(merge_request.rebase_jid).to be_nil
       end
     end
 
@@ -168,6 +168,22 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         expect(service.execute(merge_request)).to match(
           status: :error,
           message: merge_error)
+      end
+    end
+
+    context 'with a git command failure' do
+      let(:command_error) { "error" }
+      let(:merge_error) { "Rebase failed: #{command_error}." }
+
+      before do
+        allow(repository).to receive(:gitaly_operation_client).and_raise(Gitlab::Git::CommandError, command_error)
+      end
+
+      it 'saves a specific message and returns an error', :aggregate_failures do
+        result = subject.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq merge_error
+        expect(result).to match(status: :error, message: merge_error)
       end
     end
 

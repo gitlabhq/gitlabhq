@@ -10,9 +10,8 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Validates a CI YAML configuration with a namespace' do
-        detail 'Checks if a project’s .gitlab-ci.yml configuration in a given commit (by default HEAD of the
-        project’s default branch) is valid'
+      desc 'Validate existing CI/CD configuration' do
+        detail 'Validates the `.gitlab-ci.yml` configuration for a specified project.'
         success Entities::Ci::Lint::Result
         tags %w[ci_lint]
         failure [
@@ -57,8 +56,8 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Validate a CI YAML configuration with a namespace' do
-        detail 'Checks if CI/CD YAML configuration is valid. This endpoint has namespace specific context'
+      desc 'Validate a CI/CD configuration' do
+        detail 'Validates a provided CI/CD configuration in the context of a specified project.'
         success code: 200, model: Entities::Ci::Lint::Result
         tags %w[ci_lint]
       end

@@ -10,11 +10,10 @@ module DbCleaner
   end
 
   def all_connection_classes
-    ::ActiveRecord::Base
-      .connection_handler
-      .connection_pool_list(:writing)
-      .map { |pool| base_class_for(pool) }
-      .uniq
+    # In Rails 8, connection_pool_list(:writing) is no longer available.
+    # Use GitLab's database_base_models instead, which returns the model
+    # classes (ActiveRecord::Base, Ci::ApplicationRecord, etc.) directly.
+    Gitlab::Database.database_base_models.values
   end
 
   def delete_from_all_tables!(except: [])

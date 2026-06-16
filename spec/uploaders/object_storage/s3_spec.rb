@@ -6,7 +6,7 @@ RSpec.describe ObjectStorage::S3, feature_category: :source_code_management do
   describe '.signed_head_url' do
     subject { described_class.signed_head_url(package_file.file) }
 
-    let(:package_file) { create(:package_file) }
+    let(:package_file) { build_stubbed(:package_file) }
 
     context 'when the provider is AWS' do
       before do

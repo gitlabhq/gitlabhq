@@ -7,6 +7,9 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     api_failure: 'There has been an API failure, please try again',
     stuck_or_timeout_failure: 'There has been a timeout failure or the job got stuck. Check your timeout limits or try again',
     runner_system_failure: 'There has been a runner system failure, please try again',
+    runner_configuration_error: 'There has been a configuration error. Check your job configuration or contact your runner administrator.',
+    runner_external_dependency_failure: 'The runner could not reach an external dependency. Please try again.',
+    runner_interrupted: 'The runner process was interrupted before this job could finish. The job is safe to retry.',
     missing_dependency_failure: 'There has been a missing dependency failure',
     runner_unsupported: 'No runners support the requirements to run this job.',
     stale_schedule: 'Delayed job could not be executed by some reason, please try again',
@@ -27,6 +30,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     insufficient_upstream_permissions: 'This job could not be executed because of insufficient permissions to track the upstream project.',
     upstream_bridge_project_not_found: 'This job could not be executed because upstream bridge project could not be found.',
     invalid_bridge_trigger: 'This job could not be executed because downstream pipeline trigger definition is invalid',
+    downstream_project_trigger_resolved_to_empty: 'This job could not be executed because the trigger:project value resolved to a blank value. Check that the variables or inputs used in trigger:project are set.',
     downstream_bridge_project_not_found: 'This job could not be executed because downstream bridge project could not be found',
     protected_environment_failure: 'The environment this job is deploying to is protected. Only users with permission may successfully run this job.',
     insufficient_bridge_permissions: 'This job could not be executed because of insufficient permissions to create a downstream pipeline',
@@ -48,7 +52,10 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.',
     reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
     job_router_failure: 'The Job Router failed to run this job.',
-    job_token_expired: 'The CI job token has expired. The job may have exceeded the maximum time limit.'
+    job_token_expired: 'The CI job token has expired. The job may have exceeded the maximum time limit.',
+    id_token_burned_project_path: 'CI ID token issuance is disabled because this project\'s path was previously used by a different project. ' \
+      'To restore CI ID tokens, set `id_token_sub_claim_components` to start with `project_id` ' \
+      '(for example, `["project_id", "ref_type", "ref"]`) and update your cloud trust policy to match.'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

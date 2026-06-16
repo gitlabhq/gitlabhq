@@ -56,7 +56,6 @@ describe('parse', () => {
 {
   "config": {
     "display": "list",
-    "fields": "title",
   },
   "fields": [
     {

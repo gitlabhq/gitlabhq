@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'project issuable templates context' do
-  let_it_be(:issuable_template_files) do
+  let_it_be(:issuable_template_files, freeze: false) do
     {
       '.gitlab/issue_templates/issue-bar.md' => 'Issue Template Bar',
       '.gitlab/issue_templates/issue-foo.md' => 'Issue Template Foo',

@@ -1,5 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { nextTick, reactive } from 'vue';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '~/repository/constants';
@@ -76,6 +77,15 @@ describe('useFileTreeBrowserVisibility', () => {
 
       consoleSpy.mockRestore();
     });
+
+    it('does not write to localStorage when it is unavailable', () => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+
+      store.setFileTreeBrowserIsExpanded(true);
+
+      expect(store.fileTreeBrowserIsExpanded).toBe(true);
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
   });
 
   describe('resetFileTreeBrowserAllStates', () => {
@@ -137,6 +147,15 @@ describe('useFileTreeBrowserVisibility', () => {
       expect(store.fileTreeBrowserIsExpanded).toBe(false);
 
       consoleSpy.mockRestore();
+    });
+
+    it('defaults to expanded and does not read localStorage when it is unavailable', () => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+
+      store.loadFileTreeBrowserExpandedFromLocalStorage();
+
+      expect(store.fileTreeBrowserIsExpanded).toBe(true);
+      expect(localStorage.getItem).not.toHaveBeenCalled();
     });
   });
 

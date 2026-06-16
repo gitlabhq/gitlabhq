@@ -140,17 +140,15 @@ At any time you can revoke any access by selecting **Revoke**.
 
 ## Access token expiration
 
-Access tokens expire after two hours. Integrations that use access tokens must
-generate new ones using the `refresh_token` attribute. Refresh tokens may be
-used even after the `access_token` itself expires.
-See [OAuth 2.0 token documentation](../api/oauth2.md) for more detailed
-information on how to refresh expired access tokens.
+{{< history >}}
 
-This expiration setting is set in the GitLab codebase using the
-`access_token_expires_in` configuration from
-[Doorkeeper](https://github.com/doorkeeper-gem/doorkeeper), the library that
-provides GitLab as an OAuth provider functionality. The expiration setting is
-not configurable.
+- OAuth access token expiry configurable by instance administrators [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237354) in GitLab 19.1.
+
+{{< /history >}}
+
+By default, access tokens expire after two hours (7200 seconds). Integrations that use access tokens must generate a new token with the `refresh_token` attribute. Refresh tokens can be used even after the access token itself expires. For information on how to refresh expired access tokens, see [OAuth 2.0 token documentation](../api/oauth2.md).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can configure the token lifetime. For more information, see [modify OAuth access token maximum lifetime](../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-oauth-access-tokens).
 
 When applications are deleted, all grants and tokens associated with the
 application are also deleted.

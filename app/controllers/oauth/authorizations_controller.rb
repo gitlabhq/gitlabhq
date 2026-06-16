@@ -6,8 +6,6 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Utils::StrongMemoize
   include RequestPayloadLogger
 
-  alias_method :auth_user, :current_user
-
   prepend_before_action :set_current_organization
 
   before_action :add_gon_variables
@@ -40,6 +38,12 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   private
+
+  # In Rails 8 alias_method at class-body level fails when the aliased method
+  # is not yet in the ancestor chain at load time. Define explicitly instead.
+  def auth_user
+    current_user
+  end
 
   def audit_oauth_authorization
     return unless performed? && (response.successful? || response.redirect?) && pre_auth&.client

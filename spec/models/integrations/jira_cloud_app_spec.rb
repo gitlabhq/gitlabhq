@@ -70,7 +70,7 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
   end
 
   describe 'validation and formatting of deployment_gating_environments' do
-    let_it_be(:integration) { create(:jira_cloud_app_integration) }
+    let_it_be(:integration, freeze: false) { create(:jira_cloud_app_integration) }
 
     it 'deduplicates environment names' do
       integration.jira_cloud_app_enable_deployment_gating = true

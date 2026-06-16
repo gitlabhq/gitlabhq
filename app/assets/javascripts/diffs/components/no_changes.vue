@@ -6,6 +6,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
+  name: 'NoChanges',
   i18n: {
     title: s__('MergeRequest|There are no changes yet'),
     message: __('No changes between %{source} and %{target}'),

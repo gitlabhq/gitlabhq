@@ -4,12 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :mlops do
   describe '#execute' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project) }
-    let_it_be(:model) { create(:ml_models, user: user, project: project) }
-    let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
-    let_it_be(:package) { model_version.package }
+    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, user: user, project: project) }
+    let_it_be(:model, freeze: false) { create(:ml_models, user: user, project: project) }
+    let_it_be(:model_version, freeze: false) do
+      create(:ml_model_versions, :with_package, model: model, version: '0.1.0')
+    end
+
+    let_it_be(:package, freeze: false) { model_version.package }
 
     let(:build) { instance_double(Ci::Build, pipeline: pipeline) }
 

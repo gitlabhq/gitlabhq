@@ -3,7 +3,7 @@
 class AddIndexSecurityFindingsOnScanIdSeverityAndId < Gitlab::Database::Migration[2.3]
   include Gitlab::Database::PartitioningMigrationHelpers
 
-  milestone '19.0'
+  milestone '19.1'
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_security_findings_on_scan_id_and_severity_and_id'

@@ -31,5 +31,5 @@
                 = boolean_to_icon(server.up_to_date?)
     - else
       .empty-state
-        .text-center
+        %div{ class: "!gl-text-center" }
           %h4= _("No connection could be made to a Gitaly server, please check your logs!")

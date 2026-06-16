@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples_for 'service deleting label links of an issuable' do
-  let_it_be(:label_link) { create(:label_link, target: target) }
+  let_it_be(:label_link, freeze: false) { create(:label_link, target: target) }
 
   def execute
     described_class.new(target.id, target.class.name).execute

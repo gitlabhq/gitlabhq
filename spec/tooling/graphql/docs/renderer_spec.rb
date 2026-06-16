@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'tmpdir'
 require_relative '../../../../tooling/graphql/docs/renderer'
 
-RSpec.describe Tooling::Graphql::Docs::Renderer do
+RSpec.describe Tooling::Graphql::Docs::Renderer, feature_category: :api do
   let(:template) { Rails.root.join('tooling/graphql/docs/templates/default.md.haml') }
   let(:field_description) { 'List of objects.' }
   let(:type) { ::GraphQL::Types::Int }
@@ -85,7 +85,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         expectation = <<~DOC
           ### `ArrayTest`
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -104,7 +104,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             Returns [`ArrayTest`](#arraytest).
 
-            #### Arguments
+            Arguments:
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
@@ -140,7 +140,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         expectation = <<~DOC
           ### `OrderingTest`
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -189,7 +189,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           Testing doc refs.
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -204,7 +204,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           Returns [`String!`](#string).
 
-          ###### Arguments
+          Arguments:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -294,7 +294,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          Returns [`String!`](#string).
 
-         ###### Arguments
+         Arguments:
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
@@ -341,7 +341,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A thing we used to use, but no longer support.
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -362,7 +362,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           Returns [`String!`](#string).
 
-          ###### Arguments
+          Arguments:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -430,7 +430,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          Returns [`String!`](#string).
 
-         ###### Arguments
+         Arguments:
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
@@ -468,7 +468,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A thing with fields in alpha.
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -487,7 +487,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           Returns [`String!`](#string).
 
-          ###### Arguments
+          Arguments:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -585,7 +585,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             A test for rendering IDs.
 
-            #### Fields
+            Fields:
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
@@ -633,6 +633,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             milestone: '72.34'
           }
 
+        mutation.argument :experimental_arg,
+          type: GraphQL::Types::Float,
+          required: false,
+          description: 'An argument',
+          experiment: { milestone: '12.34' }
+
         mutation.field :everything,
           type: GraphQL::Types::String,
           null: true,
@@ -647,6 +653,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             replacement: 'everything',
             milestone: '72.34'
           }
+
+        mutation.field :experimental_field,
+          type: GraphQL::Types::String,
+          null: true,
+          description: 'A field',
+          experiment: { milestone: '72.34' }
 
         mutation
       end
@@ -664,22 +676,24 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             Input type: `MakeItPrettyInput`
 
-            #### Arguments
+            Arguments:
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
             | <a id="mutation-makeitpretty-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+            | <a id="mutation-makeitpretty-experimentalarg"></a>`experimentalArg` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Introduced** in GitLab 12.34. **Status**: Experiment. An argument. |
             | <a id="mutation-makeitpretty-prettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
-            | <a id="mutation-makeitpretty-pulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
+            | <a id="mutation-makeitpretty-pulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated** in GitLab 72.34. This was renamed. Use: `prettinessFactor`. |
 
-            #### Fields
+            Fields:
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
             | <a id="mutation-makeitpretty-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutation-makeitpretty-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
             | <a id="mutation-makeitpretty-everything"></a>`everything` | [`String`](#string) | What we made prettier. |
-            | <a id="mutation-makeitpretty-omnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
+            | <a id="mutation-makeitpretty-experimentalfield"></a>`experimentalField` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 72.34. **Status**: Experiment. A field. |
+            | <a id="mutation-makeitpretty-omnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 72.34. This was renamed. Use: `everything`. |
           DOC
         end
       end
@@ -712,12 +726,60 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A time-frame defined as a closed inclusive range of two dates.
 
-          #### Arguments
+          Arguments:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
           | <a id="timeframe-end"></a>`end` | [`Date!`](#date) | End of the range. |
           | <a id="timeframe-start"></a>`start` | [`Date!`](#date) | Start of the range. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
+    context 'when an input type has deprecated and experiment fields' do
+      let(:type) do
+        input_type = Class.new(::Types::BaseInputObject) do
+          graphql_name 'FilterInput'
+          description 'A filter input.'
+
+          argument :name, GraphQL::Types::String,
+            required: false,
+            description: 'Name to filter by.'
+          argument :legacy_field, GraphQL::Types::String,
+            required: false,
+            description: 'A legacy filter.',
+            deprecated: { reason: :renamed, replacement: 'name', milestone: '15.0' }
+          argument :experimental_field, GraphQL::Types::String,
+            required: false,
+            description: 'An experimental filter.',
+            experiment: { milestone: '16.0' }
+        end
+
+        Class.new(::Types::BaseObject) do
+          graphql_name 'InputObjectTest'
+          description 'A test for input object types.'
+
+          field :wibble, type: ::GraphQL::Types::Int, null: true do
+            argument :filter, type: input_type, required: false, description: 'Filter applied.'
+          end
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          ### `FilterInput`
+
+          A filter input.
+
+          Arguments:
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="filterinput-experimentalfield"></a>`experimentalField` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. An experimental filter. |
+          | <a id="filterinput-legacyfield"></a>`legacyField` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 15.0. This was renamed. Use: `name`. |
+          | <a id="filterinput-name"></a>`name` | [`String`](#string) | Name to filter by. |
         DOC
       end
 
@@ -765,7 +827,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A test for abstract types.
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -793,7 +855,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           - [`AfricanSwallow`](#africanswallow)
 
-          ##### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -805,7 +867,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A swallow from Africa.
 
-          #### Fields
+          Fields:
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |

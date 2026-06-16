@@ -16,8 +16,8 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
   end
 
   describe 'associations' do
-    let_it_be(:worker) { create(worker_factory) } # rubocop:disable Rails/SaveBang -- factory, not an AR object
-    let_it_be(:job) { create(job_factory, worker: worker, worker_partition: worker.partition) }
+    let_it_be(:worker, freeze: false) { create(worker_factory) } # rubocop:disable Rails/SaveBang -- factory, not an AR object
+    let_it_be(:job, freeze: false) { create(job_factory, worker: worker, worker_partition: worker.partition) }
 
     it { is_expected.to belong_to(:worker).inverse_of(:jobs) }
 
@@ -38,10 +38,10 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
   end
 
   describe 'scopes' do
-    let_it_be(:job_1) { create(job_factory, :pending) }
-    let_it_be(:job_2) { create(job_factory, :running) }
-    let_it_be(:job_3) { create(job_factory, :failed, attempts: 3) }
-    let_it_be(:job_4) { create(job_factory, :succeeded) }
+    let_it_be(:job_1, freeze: false) { create(job_factory, :pending) }
+    let_it_be(:job_2, freeze: false) { create(job_factory, :running) }
+    let_it_be(:job_3, freeze: false) { create(job_factory, :failed, attempts: 3) }
+    let_it_be(:job_4, freeze: false) { create(job_factory, :succeeded) }
 
     describe '.executable' do
       it 'returns jobs with only with pending or running status' do
@@ -115,7 +115,7 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
     end
 
     describe '.finished' do
-      let_it_be(:job_6) { create(job_factory, :failed, finished_at: 2.hours.ago) }
+      let_it_be(:job_6, freeze: false) { create(job_factory, :failed, finished_at: 2.hours.ago) }
 
       it 'returns jobs with non-nil finished_at' do
         expect(described_class.finished).to contain_exactly(job_4, job_6)
@@ -123,8 +123,8 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
     end
 
     describe '.successful_in_execution_order' do
-      let_it_be(:job_7) { create(job_factory, :succeeded, finished_at: 1.hour.ago) }
-      let_it_be(:job_8) { create(job_factory, :succeeded, finished_at: 3.hours.ago) }
+      let_it_be(:job_7, freeze: false) { create(job_factory, :succeeded, finished_at: 1.hour.ago) }
+      let_it_be(:job_8, freeze: false) { create(job_factory, :succeeded, finished_at: 3.hours.ago) }
 
       it 'returns finished succeeded jobs ordered by finished_at' do
         expect(described_class.successful_in_execution_order).to match_array([job_8, job_4, job_7])
@@ -243,7 +243,7 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
   describe 'state machine transitions' do
     context 'with logging' do
       let(:error_event) { StandardError.new('timeout') }
-      let_it_be(:pending_job) { create(job_factory, :pending) }
+      let_it_be(:pending_job, freeze: false) { create(job_factory, :pending) }
 
       it 'logs state transitions' do
         expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
@@ -274,7 +274,7 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
   describe '#time_efficiency' do
     subject { job.time_efficiency }
 
-    let_it_be(:worker) { create(worker_factory, interval: 120.seconds) }
+    let_it_be(:worker, freeze: false) { create(worker_factory, interval: 120.seconds) }
     let(:job) { create(job_factory, :succeeded, worker: worker, worker_partition: worker.partition) }
 
     context 'when job has not yet succeeded' do

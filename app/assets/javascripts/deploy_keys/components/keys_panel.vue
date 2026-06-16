@@ -2,6 +2,7 @@
 import DeployKey from './key.vue';
 
 export default {
+  name: 'KeysPanel',
   components: {
     DeployKey,
   },

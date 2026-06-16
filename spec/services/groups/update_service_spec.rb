@@ -10,8 +10,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
   describe "#execute" do
     context 'with project' do
-      let!(:group) { create(:group, :public) }
-      let(:project) { create(:project, namespace: group) }
+      let_it_be(:group) { create(:group, :public) }
 
       context 'located in a subgroup' do
         let(:subgroup) { create(:group, parent: group) }
@@ -820,7 +819,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
   context 'change shared Runners config' do
     let(:group) { create(:group) }
-    let(:project) { create(:project, shared_runners_enabled: true, group: group) }
 
     subject { described_class.new(group, user, shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE).execute }
 

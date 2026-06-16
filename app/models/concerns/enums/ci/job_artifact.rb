@@ -37,7 +37,6 @@ module Enums
         load_performance: 'load-performance.json',
         metrics: 'metrics.txt',
         lsif: 'lsif.json',
-        scip: 'index.scip',
         dotenv: '.env',
         cobertura: 'cobertura-coverage.xml',
         jacoco: 'jacoco-coverage.xml',
@@ -49,9 +48,8 @@ module Enums
         api_fuzzing: 'gl-api-fuzzing-report.json',
         cyclonedx: 'gl-sbom.cdx.json',
         annotations: 'gl-annotations.json',
-        repository_xray: 'gl-repository-xray.json',
-        sarif: 'gl-sarif-report.sarif',
-        environment_key: 'environment_key.txt'
+        repository_xray: 'gl-repository-xray.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/500146
+        sarif: 'gl-sarif-report.sarif'
       }.freeze
 
       INTERNAL_TYPES = {
@@ -70,10 +68,9 @@ module Enums
         jacoco: :gzip,
         cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
         lsif: :zip,
-        scip: :zip,
         cyclonedx: :gzip,
         annotations: :gzip,
-        repository_xray: :gzip,
+        repository_xray: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/500146
 
         # Security reports and license scanning reports are raw artifacts
         # because they used to be fetched by the frontend, but this is not the case anymore.
@@ -98,8 +95,7 @@ module Enums
         requirements_v2: :raw,
         coverage_fuzzing: :raw,
         api_fuzzing: :raw,
-        sarif: :raw,
-        environment_key: :raw
+        sarif: :raw
       }.freeze
 
       DOWNLOADABLE_TYPES = %w[
@@ -116,7 +112,6 @@ module Enums
         junit
         license_scanning
         lsif
-        scip
         metrics
         performance
         browser_performance
@@ -130,8 +125,27 @@ module Enums
         sarif
       ].freeze
 
+      SECURITY_REPORT_FILE_TYPES = %w[sast secret_detection dependency_scanning container_scanning
+        cluster_image_scanning dast coverage_fuzzing api_fuzzing sarif].freeze
+
+      SECURITY_REPORT_AND_CYCLONEDX_REPORT_FILE_TYPES = (SECURITY_REPORT_FILE_TYPES | %w[cyclonedx]).freeze
+
+      SECURITY_ALL_REPORT_FILE_TYPES = (SECURITY_REPORT_AND_CYCLONEDX_REPORT_FILE_TYPES | %w[license_scanning]).freeze
+
       def self.non_erasable_file_types
         NON_ERASABLE_FILE_TYPES
+      end
+
+      def self.security_report_file_types
+        SECURITY_REPORT_FILE_TYPES
+      end
+
+      def self.security_report_and_cyclonedx_report_file_types
+        SECURITY_REPORT_AND_CYCLONEDX_REPORT_FILE_TYPES
+      end
+
+      def self.all_security_report_file_types
+        SECURITY_ALL_REPORT_FILE_TYPES
       end
 
       def self.report_file_types
@@ -192,11 +206,11 @@ module Enums
           cyclonedx: 28, ## EE-specific
           requirements_v2: 29, ## EE-specific
           annotations: 30,
-          repository_xray: 31, ## EE-specific
+          repository_xray: 31, ## EE-specific, DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/500146
           jacoco: 32,
-          scip: 33, # SCIP data for code navigation
-          sarif: 34, ## EE-specific
-          environment_key: 35
+          # 33 was scip, removed in 19.1 - do not reuse
+          sarif: 34 ## EE-specific
+          # 35 was environment_key, removed in 19.1 - do not reuse
         }
       end
 

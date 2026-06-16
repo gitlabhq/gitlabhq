@@ -430,12 +430,14 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
       end
 
       context 'when build pending state is outdated' do
+        let(:pending_state_created_at) { 10.minutes.ago }
+
         before do
           build.create_pending_state(
             state: 'failed',
             trace_checksum: 'crc32:12345678',
             failure_reason: 'script_failure',
-            created_at: 10.minutes.ago
+            created_at: pending_state_created_at
           )
         end
 
@@ -448,6 +450,26 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
 
           expect(build.reload).to be_failed
           expect(build.failure_reason).to eq 'script_failure'
+        end
+
+        it 'anchors finished_at to pending_state.created_at, not the discard time' do
+          execute
+
+          expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
+        end
+
+        context 'when ci_anchor_finished_at_to_pending_state is disabled' do
+          before do
+            stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
+          end
+
+          it 'sets finished_at to Time.current at transition time (pre-fix behavior)' do
+            freeze_time do
+              execute
+
+              expect(build.reload.finished_at).to be_like_time(Time.current)
+            end
+          end
         end
 
         it 'increments discarded traces metric' do

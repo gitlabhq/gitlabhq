@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::EachDatabase do
+RSpec.describe Gitlab::Database::EachDatabase, feature_category: :database do
   describe '.each_connection' do
     let(:database_base_models) { { main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access }
 

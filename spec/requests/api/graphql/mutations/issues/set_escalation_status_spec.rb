@@ -70,4 +70,18 @@ RSpec.describe 'Setting the escalation status of an incident', feature_category:
 
     it_behaves_like 'an invalid argument to the mutation', argument_name: :status
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_issue do
+    let(:user) { developer }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :issue_set_escalation_status,
+        { project_path: project.full_path, iid: issue.iid.to_s, status: 'ACKNOWLEDGED' },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 end

@@ -55,6 +55,10 @@ module Namespaces
     end
 
     def sync_attributes_from_project(project)
+      # No-op on frozen records: production records are never frozen,
+      # so this only guards frozen shared test fixtures from a lazy write.
+      return if frozen?
+
       attributes_to_sync = project
                              .changes
                              .slice(*SYNCED_ATTRIBUTES)

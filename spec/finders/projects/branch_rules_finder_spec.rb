@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_management, type: :model do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:all_branches_rule) { Projects::AllBranchesRule.new(project) }
   let_it_be(:custom_rules) { [all_branches_rule] }
 

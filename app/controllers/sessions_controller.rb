@@ -154,8 +154,7 @@ class SessionsController < Devise::SessionsController
   # See issue #579942 / epic #19488 for the onboarding presenter plan.
   # Overridden in EE to add SaaS guard.
   def should_redirect_to_sm_onboarding?(resource)
-    Feature.enabled?(:self_managed_welcome_onboarding, :instance) &&
-      !Gitlab::CurrentSettings.gitlab_dedicated_instance? &&
+    !Gitlab::CurrentSettings.gitlab_dedicated_instance? &&
       resource.can_admin_all_resources? &&
       !Group.exists?
   end
@@ -292,7 +291,7 @@ class SessionsController < Devise::SessionsController
 
   def store_redirect_uri
     redirect_uri =
-      if request.referer.present? && (params['redirect_to_referer'] == 'yes')
+      if request.referer.present? && (params.permit(:redirect_to_referer)[:redirect_to_referer] == 'yes')
         URI(request.referer)
       else
         URI(request.url)
@@ -320,7 +319,7 @@ class SessionsController < Devise::SessionsController
 
     # If a "auto_sign_in" query parameter is set to a falsy value, don't auto sign-in.
     # Otherwise, the default is to auto sign-in.
-    return if Gitlab::Utils.to_boolean(params[:auto_sign_in]) == false
+    return if Gitlab::Utils.to_boolean(params.permit(:auto_sign_in)[:auto_sign_in]) == false
 
     # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
     # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
@@ -408,7 +407,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def set_invite_params
-    @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+    @invite_email = ActionController::Base.helpers.sanitize(params.permit(:invite_email)[:invite_email])
   end
 
   def store_login_challenge

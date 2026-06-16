@@ -19,8 +19,12 @@ RSpec.describe Import::Offline::Imports::Projects::Stage, feature_category: :imp
 
       expect(pipelines).to include(
         hash_including({
-          pipeline: BulkImports::Common::Pipelines::EntityFinisher,
+          pipeline: Import::Offline::Projects::Pipelines::ProjectPipeline,
           stage: 0
+        }),
+        hash_including({
+          pipeline: BulkImports::Common::Pipelines::EntityFinisher,
+          stage: 1
         })
       )
     end

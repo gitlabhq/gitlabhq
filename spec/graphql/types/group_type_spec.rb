@@ -338,7 +338,8 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     let_it_be(:group, freeze: false) { create(:group, developers: user) }
     let_it_be(:marked_for_deletion_on) { Time.new(2025, 5, 25) }
     let_it_be(:pending_delete_group) do
-      create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_on, developers: user)
+      create(:group_with_deletion_schedule, :deletion_scheduled, deletion_scheduled_at: marked_for_deletion_on,
+        developers: user)
     end
 
     let_it_be(:parent_pending_delete_group) { create(:group, parent: pending_delete_group) }
@@ -382,13 +383,15 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
       it 'marked_for_deletion_on returns correct date' do
         expect(Time.zone.parse(group_data[:marked_for_deletion_on]))
-          .to eq(pending_delete_group.marked_for_deletion_on.iso8601)
+          .to eq(pending_delete_group.self_deletion_scheduled_deletion_created_on.iso8601)
       end
 
       it 'returns date group will be permanently deleted for permanent_deletion_date' do
         expect(group_data[:permanent_deletion_date])
           .to eq(
-            ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_on).strftime('%F')
+            ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(
+              pending_delete_group.self_deletion_scheduled_deletion_created_on
+            ).strftime('%F')
           )
       end
     end
@@ -439,7 +442,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       end
 
       let_it_be(:pending_delete_group2) do
-        create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_on, developers: user)
+        create(:group, :deletion_scheduled, deletion_scheduled_at: marked_for_deletion_on, developers: user)
       end
 
       let_it_be(:parent_pending_delete_group2) { create(:group, parent: pending_delete_group2) }

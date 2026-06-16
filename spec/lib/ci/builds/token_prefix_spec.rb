@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Builds::TokenPrefix, feature_category: :continuous_integration do
-  let_it_be(:job) { build_stubbed(:ci_build, partition_id: 201) }
+  let_it_be(:job, freeze: false) { build_stubbed(:ci_build, partition_id: 201) }
 
   let(:encoded_partition_id) { 201.to_s(16) }
 

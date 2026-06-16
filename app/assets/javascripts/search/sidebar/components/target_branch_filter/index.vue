@@ -6,13 +6,13 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { autocompleteMergeRequestTargetBranchesPath } from '~/lib/utils/path_helpers/autocomplete';
 import { InternalEvents } from '~/tracking';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 import {
   EVENT_SELECT_TARGET_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE,
   TARGET_BRANCH_PARAM,
   NOT_TARGET_BRANCH_PARAM,
-  TARGET_BRANCH_ENDPOINT_PATH,
 } from '../../constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -55,7 +55,7 @@ export default {
   methods: {
     ...mapActions(['setQuery', 'applyQuery']),
     getMergeRequestTargetBranchesEndpoint() {
-      const endpoint = `${gon.relative_url_root || ''}${TARGET_BRANCH_ENDPOINT_PATH}`;
+      const endpoint = autocompleteMergeRequestTargetBranchesPath({ format: 'json' });
       const params = this.projectInitialJson?.id
         ? { project_id: this.projectInitialJson.id }
         : { group_id: this.groupInitialJson?.id };

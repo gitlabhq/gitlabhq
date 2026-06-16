@@ -579,6 +579,28 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
     end
 
+    context 'MVCC manifest pin in metadata' do
+      context 'when an mvcc_manifest is set on the application context' do
+        it 'injects x-gitaly-mvcc-manifest into gRPC metadata' do
+          manifest_sha = '1234567890abcdef1234567890abcdef12345678'
+          metadata = {}
+          ::Gitlab::ApplicationContext.with_context(mvcc_manifest: manifest_sha) do
+            metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+          end
+
+          expect(metadata['x-gitaly-mvcc-manifest']).to eq(manifest_sha)
+        end
+      end
+
+      context 'when no mvcc_manifest is set on the application context' do
+        it 'does not inject x-gitaly-mvcc-manifest into gRPC metadata' do
+          metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+
+          expect(metadata).not_to have_key('x-gitaly-mvcc-manifest')
+        end
+      end
+    end
+
     describe '.fetch_relative_path' do
       subject { described_class.request_kwargs('default', timeout: 1)[:metadata]['relative-path-bin'] }
 

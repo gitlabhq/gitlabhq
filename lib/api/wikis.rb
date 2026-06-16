@@ -36,7 +36,8 @@ module API
           @container = Gitlab::Lazy.new { find_container(container_resource) }
         end
 
-        desc 'Get a list of wiki pages' do
+        desc "List all wiki pages for a #{boundary_type}" do
+          detail "Lists all wiki pages for a specified #{boundary_type}."
           success Entities::WikiPageBasic
           failure [
             { code: 404, message: 'Not found' }
@@ -61,7 +62,8 @@ module API
           present container.wiki.list_pages(load_content: params[:with_content]), options
         end
 
-        desc 'Get a wiki page' do
+        desc "Retrieve a wiki page for a #{boundary_type}" do
+          detail "Retrieves a specified wiki page for a #{boundary_type}."
           success Entities::WikiPage
           failure [
             { code: 404, message: 'Not found' }
@@ -87,7 +89,8 @@ module API
           present wiki_page(params[:version]), options
         end
 
-        desc 'Create a wiki page' do
+        desc "Create a wiki page for a #{boundary_type}" do
+          detail "Creates a wiki page for a specified #{boundary_type}. Requests can define the title, slug, and content."
           success Entities::WikiPage
           failure [
             { code: 400, message: 'Validation error' },
@@ -119,7 +122,8 @@ module API
           end
         end
 
-        desc 'Update a wiki page' do
+        desc "Update a wiki page for a #{boundary_type}" do
+          detail "Updates a specified wiki page for a #{boundary_type}."
           success Entities::WikiPage
           failure [
             { code: 400, message: 'Validation error' },
@@ -154,7 +158,8 @@ module API
           end
         end
 
-        desc 'Delete a wiki page' do
+        desc "Delete a wiki page for a #{boundary_type}" do
+          detail "Deletes a specified wiki page for a #{boundary_type}."
           success code: 204
           failure [
             { code: 400, message: 'Validation error' },
@@ -181,8 +186,8 @@ module API
           end
         end
 
-        desc 'Upload an attachment to the wiki repository' do
-          detail 'This feature was introduced in GitLab 11.3.'
+        desc "Upload an attachment to a #{boundary_type} wiki" do
+          detail "Uploads a file to the `uploads` directory in a specified #{boundary_type} wiki."
           success Entities::WikiAttachment
           failure [
             { code: 404, message: 'Not found' }

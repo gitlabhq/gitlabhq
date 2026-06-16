@@ -50,8 +50,28 @@ Gitlab::Metrics.client.configure do |config|
 end
 
 Gitlab::Application.configure do |config|
-  # 0 should be Sentry to catch errors in this middleware
-  config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
+  if ENV['DEBUG_DURATION_S']
+    # Experimental: relocate the RequestStore scope and the request-context-aware
+    # middlewares to the top of the stack so Gitlab::Metrics::RequestsRackMiddleware
+    # measures the full Rack pipeline.
+    #
+    # Order produced (just after Labkit::Middleware::Rack):
+    #   RequestStore::Middleware
+    #     -> Gitlab::Middleware::RequestContext
+    #     -> Gitlab::Metrics::RequestsRackMiddleware
+    #
+    # RequestStore::Middleware must remain above Gitlab::Middleware::RequestContext so
+    # Gitlab::SafeRequestStore stays active for the request-context singleton and for
+    # the apdex_duration_s value read by lograge's custom_options callback
+    # (lib/gitlab/lograge/custom_options.rb).
+    config.middleware.move_after Labkit::Middleware::Rack, RequestStore::Middleware
+    config.middleware.insert_after RequestStore::Middleware, Gitlab::Middleware::RequestContext
+    config.middleware.insert_after Gitlab::Middleware::RequestContext, Gitlab::Metrics::RequestsRackMiddleware
+  else
+    config.middleware.insert_after RequestStore::Middleware, Gitlab::Middleware::RequestContext
+    # 0 should be Sentry to catch errors in this middleware
+    config.middleware.insert_after Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware
+  end
 end
 
 ActiveRecord::ConnectionAdapters::ConnectionPool.prepend(Gitlab::Patch::ConnectionPoolExtendedStat)

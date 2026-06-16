@@ -6,7 +6,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:commit)  { project.commit }
+  let_it_be(:commit, freeze: false) { project.commit }
 
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
@@ -103,6 +103,14 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       expect(link.attr('data-commit')).to eq commit.id
     end
 
+    it 'includes a data-project-path attribute' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-project-path')
+      expect(link.attr('data-project-path')).to eq project.full_path
+    end
+
     it 'supports an :only_path context' do
       doc = reference_filter("See #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
@@ -168,6 +176,24 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       act = "Committed #{invalidate_reference(reference)}"
 
       expect(reference_filter(act).to_html).to include act
+    end
+
+    it 'includes a data-project-path attribute for the referenced project' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-project-path')
+      expect(link.attr('data-project-path')).to eq project2.full_path
+    end
+  end
+
+  context 'when parent is nil' do
+    it 'falls back to base data attributes without project_path' do
+      filter = described_class.new(nil, project: project)
+      result = filter.data_attributes_for('original', nil, commit)
+
+      expect(result).to include(original: 'original', commit: commit.id)
+      expect(result).not_to have_key(:project_path)
     end
   end
 

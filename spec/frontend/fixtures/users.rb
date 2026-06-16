@@ -7,9 +7,9 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
   include ApiHelpers
   include DesignManagementTestHelpers
 
-  let_it_be(:followers) { create_list(:user, 5) }
-  let_it_be(:followees) { create_list(:user, 5) }
-  let_it_be(:user) { create(:user, followers: followers, followees: followees) }
+  let_it_be(:followers, freeze: false) { create_list(:user, 5) }
+  let_it_be(:followees, freeze: false) { create_list(:user, 5) }
+  let_it_be(:user, freeze: false) { create(:user, followers: followers, followees: followees) }
 
   describe API::Users, '(JavaScript fixtures)', type: :request do
     it 'api/users/followers/get.json' do
@@ -26,8 +26,8 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
   end
 
   describe UsersController, '(JavaScript fixtures)', type: :controller do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project_empty_repo, group: group) }
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:project, freeze: false) { create(:project_empty_repo, group: group) }
 
     if Gitlab.ee?
       include_context '[EE] with user contribution events'
@@ -37,7 +37,7 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
 
     before do
       enable_design_management
-      stub_licensed_features(epics: true)
+      stub_licensed_features(epics: true, requirements: true)
       group.add_owner(user)
       project.add_maintainer(user)
       sign_in(user)
@@ -54,12 +54,12 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
     include GraphqlHelpers
 
     context 'for user achievements' do
-      let_it_be(:group) { create(:group, :public) }
-      let_it_be(:private_group) { create(:group, :private) }
-      let_it_be(:multiple_achievement) { create(:achievement, namespace: group, name: 'Multiple') }
-      let_it_be(:achievements) { create_list(:achievement, 6, namespace: group) }
-      let_it_be(:achievement_from_private_group) { create(:achievement, namespace: private_group) }
-      let_it_be(:achievement_with_avatar_and_description) do
+      let_it_be(:group, freeze: false) { create(:group, :public) }
+      let_it_be(:private_group, freeze: false) { create(:group, :private) }
+      let_it_be(:multiple_achievement, freeze: false) { create(:achievement, namespace: group, name: 'Multiple') }
+      let_it_be(:achievements, freeze: false) { create_list(:achievement, 6, namespace: group) }
+      let_it_be(:achievement_from_private_group, freeze: false) { create(:achievement, namespace: private_group) }
+      let_it_be(:achievement_with_avatar_and_description, freeze: false) do
         create(:achievement,
           namespace: group,
           description: 'Description',

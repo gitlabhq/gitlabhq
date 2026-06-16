@@ -6,6 +6,7 @@ import { dateFields } from '../../constants';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
 
 export default {
+  name: 'SidebarInheritDate',
   components: {
     GlFormRadio,
     SidebarFormattedDate,

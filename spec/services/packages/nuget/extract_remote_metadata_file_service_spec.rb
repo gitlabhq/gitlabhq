@@ -50,7 +50,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
 
     context 'when nuspec file is fragmented' do
       let_it_be(:nuspec_path) { expand_fixture_path('packages/nuget/with_metadata.nuspec') }
-      let_it_be(:tmp_zip) { Tempfile.new('nuget_zip') }
+      let_it_be(:tmp_zip, freeze: false) { Tempfile.new('nuget_zip') }
       let_it_be(:zipped_nuspec) { zip_nuspec_file(nuspec_path, tmp_zip.path).get_raw_input_stream.read }
       let_it_be(:fragments) { zipped_nuspec.chars.each_slice(zipped_nuspec.size / 2).map(&:join) }
 

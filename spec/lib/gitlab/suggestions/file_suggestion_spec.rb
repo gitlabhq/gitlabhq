@@ -219,15 +219,15 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
       let(:suggestions) { [multi_suggestion1, multi_suggestion2, multi_suggestion3] }
 
       context 'when the previous suggestion increases the line count' do
-        let!(:multi_suggestion1) do
+        let_it_be(:multi_suggestion1) do
           create_suggestion(9, "      *** SUGGESTION 1 ***\n      *** SECOND LINE ***\n      *** THIRD LINE ***\n")
         end
 
-        let!(:multi_suggestion2) do
+        let_it_be(:multi_suggestion2) do
           create_suggestion(15, "      *** SUGGESTION 2 ***\n      *** SECOND LINE ***\n")
         end
 
-        let!(:multi_suggestion3) do
+        let_it_be(:multi_suggestion3) do
           create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
         end
 
@@ -280,15 +280,15 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
       end
 
       context 'when the previous suggestion decreases and increases the line count' do
-        let!(:multi_suggestion1) do
+        let_it_be(:multi_suggestion1) do
           create_suggestion(9, "    *** SUGGESTION 1 ***\n", 1, 1)
         end
 
-        let!(:multi_suggestion2) do
+        let_it_be(:multi_suggestion2) do
           create_suggestion(15, "      *** SUGGESTION 2 ***\n      *** SECOND LINE ***\n")
         end
 
-        let!(:multi_suggestion3) do
+        let_it_be(:multi_suggestion3) do
           create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
         end
 
@@ -337,15 +337,15 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
       end
 
       context 'when the previous suggestion replaces with the same number of lines' do
-        let!(:multi_suggestion1) do
+        let_it_be(:multi_suggestion1) do
           create_suggestion(9, "    *** SUGGESTION 1 ***\n    *** SECOND LINE ***\n    *** THIRD LINE ***\n", 1, 1)
         end
 
-        let!(:multi_suggestion2) do
+        let_it_be(:multi_suggestion2) do
           create_suggestion(15, "      *** SUGGESTION 2 ***\n")
         end
 
-        let!(:multi_suggestion3) do
+        let_it_be(:multi_suggestion3) do
           create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
         end
 
@@ -397,15 +397,15 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
       context 'when the previous suggestion replaces multiple lines and the suggestions were applied out of order' do
         let(:suggestions) { [multi_suggestion1, multi_suggestion3, multi_suggestion2] }
 
-        let!(:multi_suggestion1) do
+        let_it_be(:multi_suggestion1) do
           create_suggestion(9, "    *** SUGGESTION 1 ***\n    *** SECOND LINE ***\n    *** THIRD LINE ***\n", 1, 1)
         end
 
-        let!(:multi_suggestion3) do
+        let_it_be(:multi_suggestion3) do
           create_suggestion(19, "    *** SUGGESTION 3 ***\n", 1, 1)
         end
 
-        let!(:multi_suggestion2) do
+        let_it_be(:multi_suggestion2) do
           create_suggestion(15, "    *** SUGGESTION 2 ***\n", 1, 1)
         end
 

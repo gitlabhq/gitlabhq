@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Peek::Views::ExternalHttp, :request_store do
+RSpec.describe Peek::Views::ExternalHttp, :request_store, feature_category: :tooling do
   subject { described_class.new }
 
   let(:subscriber) { Gitlab::Metrics::Subscribers::ExternalHttp.new }

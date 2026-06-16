@@ -70,18 +70,7 @@ For more information, see [review apps](../../../ci/review_apps/_index.md).
 
 ## License compliance
 
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-To view a list of licenses that detected for your project's dependencies,
-configure [license compliance](../../compliance/license_scanning_of_cyclonedx_files/_index.md)
-for your project.
-
-![Example of the license compliance information shown on a merge request.](img/license_compliance_widget_v15_3.png)
+For license compliance information in merge requests, see [merge request reports](reports.md).
 
 ## Security policies
 
@@ -109,9 +98,4 @@ see the status of these checks in merge requests
 
 ## Application security scanning
 
-If you enable any application security scanning tools,
-GitLab shows the results in the security scanning widget.
-For more information, see [security scanning results](../../application_security/detect/security_scanning_results.md).
-
-Security reports from [child pipelines](../../../ci/pipelines/downstream_pipelines.md#view-child-pipeline-reports-in-merge-requests)
-are displayed in the security scanning widget alongside the results for the parent pipeline.
+For application security scanning results in merge requests, see [merge request reports](reports.md).

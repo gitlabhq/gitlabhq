@@ -10,11 +10,12 @@ import {
   TYPENAME_NOTE,
   TYPENAME_USER,
 } from '~/graphql_shared/constants';
-import { Mousetrap } from '~/lib/mousetrap';
+import { Mousetrap, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import {
@@ -57,6 +58,7 @@ export default {
     WorkItemHistoryOnlyFilterNote,
     WorkItemNotesLoading,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroup'],
   props: {
     fullPath: {
@@ -345,6 +347,7 @@ export default {
           after: this.after,
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
           sort: DISCUSSIONS_SORT_ENUM[this.initialSortOrder],
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       update(data) {
@@ -475,6 +478,8 @@ export default {
       return node.closest('.js-timeline-entry').getAttribute('discussion-id');
     },
     async quoteReply(e) {
+      suppressShortcutsUntilInputFocus();
+
       const discussionId = this.getDiscussionIdFromSelection();
       const text = await CopyAsGFM.selectionToGfm();
 

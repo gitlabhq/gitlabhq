@@ -6,6 +6,9 @@ import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_o
 import {
   GITLAB_COM_BASE_PATH,
   I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+  I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE,
+  I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE,
+  OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK,
   OAUTH_WINDOW_OPTIONS,
 } from '~/jira_connect/subscriptions/constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,7 +19,7 @@ import {
   fetchOAuthToken,
 } from '~/jira_connect/subscriptions/api';
 import createStore from '~/jira_connect/subscriptions/store';
-import { SET_ACCESS_TOKEN } from '~/jira_connect/subscriptions/store/mutation_types';
+import { SET_ACCESS_TOKEN, SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/jira_connect/subscriptions/utils');
@@ -57,6 +60,17 @@ describe('SignInOauthButton', () => {
   };
 
   const findButton = () => wrapper.findComponent(GlButton);
+
+  const mockUserAgentBrands = (brands) => {
+    Object.defineProperty(navigator, 'userAgentData', {
+      value: brands === undefined ? undefined : { brands },
+      configurable: true,
+    });
+  };
+
+  afterEach(() => {
+    mockUserAgentBrands(undefined);
+  });
   describe('when `gitlabBasePath` is GitLab.com', () => {
     it('displays a button', () => {
       createComponent();
@@ -100,6 +114,84 @@ describe('SignInOauthButton', () => {
       it('calls `window.open` with correct arguments', () => {
         expect(window.open).toHaveBeenCalledWith(
           `${mockBasePath}/mockOauth?code_challenge=mock-challenge&code_challenge_method=S256&client_id=${mockClientId}`,
+          I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+          OAUTH_WINDOW_OPTIONS,
+        );
+      });
+    });
+
+    describe('when `gitlabBasePath` is hosted at a subpath', () => {
+      const mockClientId = '798412381';
+      const mockSubpathBasePath = 'https://gitlab.mycompany.com/gitlab';
+      const expectedAuthorizeUrl = `${mockSubpathBasePath}/oauth/authorize?code_challenge=mock-challenge&code_challenge_method=S256&client_id=${mockClientId}`;
+      const buildOauthMetadata = (oauthAuthorizeUrl) => ({
+        ...mockOauthMetadata,
+        oauth_authorize_url: oauthAuthorizeUrl,
+      });
+
+      const triggerSignIn = async (oauthMetadata, basePath) => {
+        fetchOAuthApplicationId.mockReturnValue({ data: { application_id: mockClientId } });
+        jest.spyOn(window, 'open').mockReturnValue();
+
+        store = createStore();
+        wrapper = shallowMount(SignInOauthButton, {
+          store,
+          provide: { oauthMetadata },
+          propsData: { gitlabBasePath: basePath },
+        });
+
+        findButton().vm.$emit('click');
+        await nextTick();
+        await waitForPromises();
+      };
+
+      it('does not duplicate the subpath when the backend URL already includes it', async () => {
+        await triggerSignIn(
+          buildOauthMetadata('https://gitlab.mycompany.com/gitlab/oauth/authorize'),
+          mockSubpathBasePath,
+        );
+
+        expect(window.open).toHaveBeenCalledWith(
+          expectedAuthorizeUrl,
+          I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+          OAUTH_WINDOW_OPTIONS,
+        );
+      });
+
+      it('prepends the subpath when the backend URL is missing it', async () => {
+        await triggerSignIn(
+          buildOauthMetadata('https://gitlab.com/oauth/authorize'),
+          mockSubpathBasePath,
+        );
+
+        expect(window.open).toHaveBeenCalledWith(
+          expectedAuthorizeUrl,
+          I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+          OAUTH_WINDOW_OPTIONS,
+        );
+      });
+
+      it('strips a trailing slash from the base path to avoid double slashes', async () => {
+        await triggerSignIn(
+          buildOauthMetadata('https://gitlab.com/oauth/authorize'),
+          `${mockSubpathBasePath}/`,
+        );
+
+        expect(window.open).toHaveBeenCalledWith(
+          expectedAuthorizeUrl,
+          I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
+          OAUTH_WINDOW_OPTIONS,
+        );
+      });
+
+      it('handles a trailing slash on the base path when the backend URL already includes the subpath', async () => {
+        await triggerSignIn(
+          buildOauthMetadata('https://gitlab.mycompany.com/gitlab/oauth/authorize'),
+          `${mockSubpathBasePath}/`,
+        );
+
+        expect(window.open).toHaveBeenCalledWith(
+          expectedAuthorizeUrl,
           I18N_DEFAULT_SIGN_IN_BUTTON_TEXT,
           OAUTH_WINDOW_OPTIONS,
         );
@@ -239,6 +331,91 @@ describe('SignInOauthButton', () => {
 
           it('sets `loading` prop of button to `false`', () => {
             expect(findButton().props('loading')).toBe(false);
+          });
+        });
+
+        describe('when token request fails with a network error on a self-managed instance', () => {
+          const mockBasePath = 'https://gitlab.mycompany.com';
+
+          const triggerNetworkErrorOnSelfManaged = async () => {
+            createComponent({ props: { gitlabBasePath: mockBasePath } });
+            // axios surfaces a network failure (e.g. Chromium LNA blocking
+            // the request before any preflight) as an error with no `response`.
+            fetchOAuthToken.mockRejectedValue({ message: 'Network Error' });
+
+            findButton().vm.$emit('click');
+            await nextTick();
+
+            window.dispatchEvent(new MessageEvent('message', mockEvent));
+            await waitForPromises();
+          };
+
+          describe('and the browser is Chromium 142+', () => {
+            beforeEach(async () => {
+              mockUserAgentBrands([{ brand: 'Chromium', version: '142' }]);
+              await triggerNetworkErrorOnSelfManaged();
+            });
+
+            it('commits a Local Network Access alert', () => {
+              expect(store.commit).toHaveBeenCalledWith(SET_ALERT, {
+                linkUrl: OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK,
+                title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE,
+                message: I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE,
+                variant: 'danger',
+              });
+            });
+
+            it('does not emit the generic `error` event', () => {
+              expect(wrapper.emitted('error')).toBeUndefined();
+            });
+          });
+
+          describe('and the browser is Chromium older than 142', () => {
+            beforeEach(async () => {
+              mockUserAgentBrands([{ brand: 'Chromium', version: '141' }]);
+              await triggerNetworkErrorOnSelfManaged();
+            });
+
+            it('emits the generic `error` event and does not commit the LNA alert', () => {
+              expect(wrapper.emitted('error')[0]).toEqual([]);
+              expect(store.commit).not.toHaveBeenCalledWith(
+                SET_ALERT,
+                expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
+              );
+            });
+          });
+
+          describe('and the browser is not Chromium-based (no UA Client Hints)', () => {
+            beforeEach(async () => {
+              mockUserAgentBrands(undefined);
+              await triggerNetworkErrorOnSelfManaged();
+            });
+
+            it('emits the generic `error` event and does not commit the LNA alert', () => {
+              expect(wrapper.emitted('error')[0]).toEqual([]);
+              expect(store.commit).not.toHaveBeenCalledWith(
+                SET_ALERT,
+                expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
+              );
+            });
+          });
+        });
+
+        describe('when token request fails with a network error on GitLab.com', () => {
+          beforeEach(async () => {
+            mockUserAgentBrands([{ brand: 'Chromium', version: '142' }]);
+            fetchOAuthToken.mockRejectedValue({ message: 'Network Error' });
+
+            window.dispatchEvent(new MessageEvent('message', mockEvent));
+            await waitForPromises();
+          });
+
+          it('emits the generic `error` event and does not commit the LNA alert', () => {
+            expect(wrapper.emitted('error')[0]).toEqual([]);
+            expect(store.commit).not.toHaveBeenCalledWith(
+              SET_ALERT,
+              expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
+            );
           });
         });
       });

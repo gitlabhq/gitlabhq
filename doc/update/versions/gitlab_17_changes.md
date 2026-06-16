@@ -826,7 +826,7 @@ application automatically generates the missing secrets at startup.
    - Case 3: If different key IDs are used for the same data across nodes (for example, if node 1 shows `-bb32 => 1` and node 2 shows `-83kf => 1`):
      - This requires re-encrypting all data with a single encryption key.
      - Alternatively, if you're willing to lose some data, you can delete records so all remaining records use the same key ID.
-     - Contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
+     - Contact [GitLab Support](https://support.gitlab.com/) for assistance.
 
 1. After deciding which node is the reference node, decide which of the reference node's secrets must be copied to the other nodes.
 1. On all Sidekiq and Rails nodes except the reference node:

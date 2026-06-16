@@ -5,6 +5,7 @@ import { EMOJIS_PER_ROW } from '../constants';
 import { getEmojiCategories, generateCategoryHeight } from './utils';
 
 export default {
+  name: 'EmojiList',
   props: {
     searchValue: {
       type: String,

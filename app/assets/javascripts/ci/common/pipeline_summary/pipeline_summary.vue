@@ -149,12 +149,12 @@ export default {
 </script>
 
 <template>
-  <div class="w-100">
+  <div class="!gl-w-full">
     <div v-if="isLoading" class="gl-mx-2 gl-flex !gl-items-center">
       <gl-loading-icon class="gl-mr-4" />
       {{ $options.i18n.loadingText }}
     </div>
-    <div v-else class="w-100 gl-flex !gl-items-center">
+    <div v-else class="gl-flex !gl-w-full !gl-items-center">
       <div
         class="justify-space-between gl-flex !gl-grow gl-flex-wrap gl-gap-3"
         :class="{ '!gl-items-center': !finishedAt }"

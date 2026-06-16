@@ -47,7 +47,7 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 	wf, err := client.ExecuteWorkflow(r.Context())
 	if err != nil {
 		closeErr := client.Close()
-		return nil, fmt.Errorf("failed to initialize stream: %v", errors.Join(err, closeErr))
+		return nil, fmt.Errorf("failed to initialize stream: %w", errors.Join(err, closeErr))
 	}
 	sessionsTotal.Inc()
 
@@ -63,7 +63,7 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(r.Context())
 		if err != nil {
 			_ = cloudServiceClient.Close()
-			return nil, fmt.Errorf("failed to initialize cloud service stream: %v", err)
+			return nil, fmt.Errorf("failed to initialize cloud service stream: %w", err)
 		}
 	}
 

@@ -1,0 +1,9 @@
+---
+name: read_ldap_group
+description: Grants the ability to read LDAP groups
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_ldap_group

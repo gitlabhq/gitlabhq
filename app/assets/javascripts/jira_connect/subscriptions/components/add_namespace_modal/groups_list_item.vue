@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GroupItemName from '../group_item_name.vue';
 import { I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE } from '../../constants';
 
@@ -41,7 +42,12 @@ export default {
           subscriptionsPath: this.subscriptionsPath,
         });
       } catch (error) {
-        this.$emit('error', error?.response?.data?.error || I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE);
+        const message =
+          error?.response?.data?.errors ||
+          error?.response?.data?.message ||
+          I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE;
+        this.$emit('error', message);
+        Sentry.captureException(error);
       }
       this.isLoading = false;
     },

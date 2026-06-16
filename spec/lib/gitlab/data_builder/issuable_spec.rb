@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Issuable do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:reusable_project) { create(:project, :repository, group: group) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:reusable_project, freeze: false) { create(:project, :repository, group: group) }
 
   # This shared example requires a `builder` and `user` variable
   shared_examples 'issuable hook data' do |kind, hook_data_issuable_builder_class|
@@ -132,12 +132,15 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
   describe '#build' do
     it_behaves_like 'issuable hook data', 'issue', Gitlab::HookData::IssueBuilder do
-      let_it_be(:issuable) { create(:issue, description: 'A description', project: reusable_project) }
+      let_it_be(:issuable, freeze: false) { create(:issue, description: 'A description', project: reusable_project) }
       let(:builder) { described_class.new(issuable) }
     end
 
     it_behaves_like 'issuable hook data', 'merge_request', Gitlab::HookData::MergeRequestBuilder do
-      let_it_be(:issuable) { create(:merge_request, description: 'A description', source_project: reusable_project) }
+      let_it_be(:issuable, freeze: false) do
+        create(:merge_request, description: 'A description', source_project: reusable_project)
+      end
+
       let(:builder) { described_class.new(issuable) }
     end
 
@@ -193,8 +196,8 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
     end
 
     context 'when merge_request has reviewers and changes with re-requested reviewer' do
-      let_it_be(:reviewer1) { create(:user) }
-      let_it_be(:reviewer2) { create(:user) }
+      let_it_be(:reviewer1, freeze: false) { create(:user) }
+      let_it_be(:reviewer2, freeze: false) { create(:user) }
       let(:merge_request) do
         create(:merge_request, reviewers: [reviewer1, reviewer2], source_project: reusable_project)
       end

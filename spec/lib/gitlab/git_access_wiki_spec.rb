@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccessWiki do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user, freeze: false) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :wiki_repo) }
 
   let(:wiki) { create(:project_wiki, project: project) }
@@ -107,8 +107,8 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
 
     context 'when the actor is a deploy token' do
-      let_it_be(:actor) { create(:deploy_token, projects: [project]) }
-      let_it_be(:user) { actor }
+      let_it_be(:actor, freeze: false) { create(:deploy_token, projects: [project]) }
+      let_it_be(:user, freeze: false) { actor }
 
       before do
         project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)
@@ -136,9 +136,12 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
 
     context 'when the actor is a deploy key' do
-      let_it_be(:actor) { create(:deploy_key) }
-      let_it_be(:deploy_key_project) { create(:deploy_keys_project, project: project, deploy_key: actor) }
-      let_it_be(:user) { actor }
+      let_it_be(:actor, freeze: false) { create(:deploy_key) }
+      let_it_be(:deploy_key_project, freeze: false) do
+        create(:deploy_keys_project, project: project, deploy_key: actor)
+      end
+
+      let_it_be(:user, freeze: false) { actor }
 
       before do
         project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)

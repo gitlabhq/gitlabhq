@@ -39,7 +39,7 @@ RSpec.shared_examples 'board lists destroy request' do
 
     context 'when given id is not for a list' do
       # could be any non-list thing
-      let_it_be(:list) { group }
+      let_it_be(:list, freeze: false) { group }
 
       it 'returns an error' do
         subject

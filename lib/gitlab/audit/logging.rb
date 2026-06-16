@@ -36,8 +36,7 @@ module Gitlab
       end
 
       def build_event_attributes(event)
-        {
-          id: event.id,
+        attributes = {
           created_at: event.created_at,
           author_id: event.author_id,
           target_id: event.target_id,
@@ -49,6 +48,12 @@ module Gitlab
           target_details: event.target_details,
           target_type: event.target_type
         }.merge(additional_attributes(event))
+
+        # When legacy writes are skipped, events won't have an ID.
+        # Omit the id field so the new table uses its default sequence (shared_audit_event_id_seq).
+        attributes[:id] = event.id if event.id.present?
+
+        attributes
       end
 
       def additional_attributes(event)

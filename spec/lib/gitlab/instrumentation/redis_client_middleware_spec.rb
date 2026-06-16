@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClientMiddleware, :request_store, f
   using RSpec::Parameterized::TableSyntax
   include RedisHelpers
 
-  let_it_be(:redis_store_class) { define_helper_redis_store_class }
+  let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
 
   before do
     redis_store_class.with(&:flushdb)
@@ -33,11 +33,13 @@ RSpec.describe Gitlab::Instrumentation::RedisClientMiddleware, :request_store, f
       # Exercise counting of a bulk reply
       [[:set, 'foo', 'bar' * 100]] | [:get, 'foo'] | (3 + 3) | (3 * 100)
 
-      # Nested array response: [['foo', 0], ['bar', 1.1000000000000001]] due to Redis precision
-      # See https://github.com/redis/redis/issues/1499
+      # Nested array response: [['foo', 0], ['bar', 1.1]]. Redis 7.2+ and Valkey
+      # return the shortest round-trip float representation (Grisu2) rather than
+      # Redis 7.0's full %.17g precision ("1.1000000000000001"). See
+      # https://github.com/redis/redis/pull/10587.
       [[:zadd, 'myset', 0, 'foo'],
         [:zadd, 'myset', 1.1,
-          'bar']] | [:zrange, 'myset', 0, -1, 'withscores'] | (6 + 5 + 1 + 2 + 10) | (3 + 1 + 3 + 18)
+          'bar']] | [:zrange, 'myset', 0, -1, 'withscores'] | (6 + 5 + 1 + 2 + 10) | (3 + 1 + 3 + 3)
     end
 
     with_them do

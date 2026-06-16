@@ -78,6 +78,16 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
       expect(file_data['blob_raw_path']).to include(content_sha)
       expect(file_data['blob_raw_path']).to include('path/to/file.rb')
     end
+
+    it 'merges externally-provided extra_file_data into file_data' do
+      render_component(extra_file_data: { show_whitespace: true, custom_key: 'custom_value' })
+
+      diff_file_element = page.find('diff-file')
+      file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
+      expect(file_data['show_whitespace']).to be(true)
+      expect(file_data['custom_key']).to eq('custom_value')
+      expect(file_data['code_review_id']).to eq(diff_file.code_review_id)
+    end
   end
 
   describe 'viewed toggle' do

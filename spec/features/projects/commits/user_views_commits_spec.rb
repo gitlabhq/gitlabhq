@@ -8,9 +8,13 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
 
+  before do
+    stub_feature_flags(project_commits_refactor: false)
+  end
+
   shared_examples 'private project access denied' do
     context 'when project is private' do
-      let_it_be(:project) { create_default(:project, :private, :repository, group: group) }
+      let_it_be(:project, freeze: false) { create_default(:project, :private, :repository, group: group) }
 
       context 'and user is an inherited member from the group' do
         context 'and user is a guest' do
@@ -52,13 +56,15 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
 
   describe 'Commits List' do
     context 'when project is public' do
-      let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
+      let_it_be(:project, freeze: false) { create_default(:project, :public, :repository, group: group) }
 
       it_behaves_like 'has expected number of commits'
     end
 
     context 'when project is public with private repository' do
-      let_it_be(:project) { create_default(:project, :public, :repository, :repository_private, group: group) }
+      let_it_be(:project, freeze: false) do
+        create_default(:project, :public, :repository, :repository_private, group: group)
+      end
 
       context 'and user is an inherited member from the group' do
         context 'and user is a guest' do
@@ -84,13 +90,15 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
       end
 
       context 'when project is public' do
-        let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
+        let_it_be(:project, freeze: false) { create_default(:project, :public, :repository, group: group) }
 
         it_behaves_like 'has expected number of commits with refactor'
       end
 
       context 'when project is public with private repository' do
-        let_it_be(:project) { create_default(:project, :public, :repository, :repository_private, group: group) }
+        let_it_be(:project, freeze: false) do
+          create_default(:project, :public, :repository, :repository_private, group: group)
+        end
 
         context 'and user is an inherited member from the group' do
           context 'and user is a guest' do
@@ -112,7 +120,7 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
   end
 
   describe 'Single commit', :js do
-    let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
+    let_it_be(:project, freeze: false) { create_default(:project, :public, :repository, group: group) }
     let_it_be(:sha) { sample_commit.sha }
 
     it 'passes axe automated accessibility testing' do
@@ -125,7 +133,7 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
     end
 
     context 'when displayed with rapid_diffs' do
-      let_it_be(:diffs) { project.commit(sha).diffs }
+      let_it_be(:diffs, freeze: false) { project.commit(sha).diffs }
 
       before do
         visit project_commit_path(project, sha)

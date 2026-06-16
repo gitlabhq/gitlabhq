@@ -208,7 +208,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     end
 
     context 'when namespace_id query param is provided' do
-      let_it_be(:current_user) { create(:user) }
+      let_it_be(:current_user, freeze: false) { create(:user) }
 
       let(:namespace) { create(:namespace) }
 

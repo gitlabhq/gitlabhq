@@ -119,8 +119,9 @@ module API
         ::Packages::PackageFileUploader.workhorse_authorize(has_length: true, maximum_size: project.actual_limits.npm_max_file_size)
       end
 
-      desc 'Create or deprecate NPM package' do
-        detail 'Create was introduced in GitLab 11.8 & deprecate support was added in 16.0'
+      desc 'Create or deprecate an NPM package' do
+        detail 'Creates or deprecates an NPM package for a specified project. Deprecate support was added in ' \
+          'GitLab 16.0.'
         success code: 200
         failure [
           { code: 400, message: 'Bad Request' },

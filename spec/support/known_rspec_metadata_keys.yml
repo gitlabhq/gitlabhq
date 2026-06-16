@@ -135,6 +135,7 @@
 - :sidekiq_inline
 - :sidekiq_mailers
 - :sidekiq_might_not_need_inline
+- :silence_output
 - :silence_stdout
 - :skip
 - :skip_aggregate_loader_mock
@@ -187,3 +188,4 @@
 - :zoekt_settings_enabled
 - :disable_security_manager
 - :disable_wip_custom_abilities
+- :duo_panel_auto_expand

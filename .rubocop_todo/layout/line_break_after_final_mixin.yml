@@ -10,7 +10,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/workers/ci/stuck_builds/drop_scheduled_worker.rb'
     - 'app/workers/ci/update_locked_unknown_artifacts_worker.rb'
     - 'app/workers/concurrency_limit/resume_worker.rb'
-    - 'app/workers/expire_build_artifacts_worker.rb'
     - 'app/workers/members/expiring_worker.rb'
     - 'app/workers/metrics/global_metrics_update_worker.rb'
     - 'app/workers/namespaces/process_outdated_namespace_descendants_cron_worker.rb'

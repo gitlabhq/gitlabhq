@@ -793,9 +793,9 @@ administrative duties.
 
 {{< /history >}}
 
-When [restricted access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
+When [restricted access](../../../subscriptions/manage_seats.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
 
-For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../user/group/manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../subscriptions/manage_seats.md#provisioning-behavior-with-saml-scim-and-ldap).
 
 #### Supported LDAP group types/attributes
 

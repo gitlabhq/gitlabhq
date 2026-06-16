@@ -4,7 +4,8 @@ classes:
 - Ci::Minutes::ProjectMonthlyUsage
 feature_categories:
 - continuous_integration
-description: TODO
+description: Stores monthly CI/CD compute minutes usage aggregated at the project
+  level.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53460
 milestone: '13.9'
 gitlab_schema: gitlab_ci

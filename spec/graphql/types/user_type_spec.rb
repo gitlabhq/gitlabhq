@@ -43,6 +43,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       projectMemberships
       starredProjects
       contributedProjects
+      events
       callouts
       groupCallouts
       namespace

@@ -35,7 +35,9 @@ import {
 describe('work items graphql cache utils', () => {
   const originalFeatures = window.gon.features;
   const id = 'gid://gitlab/WorkItem/10';
-  const mockCacheData = {
+  const existingChild = { id: 'gid://gitlab/WorkItem/20', title: 'Child' };
+
+  const widgetsCacheData = {
     workItem: {
       id: 'gid://gitlab/WorkItem/10',
       title: 'Work item',
@@ -44,18 +46,30 @@ describe('work items graphql cache utils', () => {
           type: WIDGET_TYPE_HIERARCHY,
           hasChildren: true,
           count: 1,
-          children: {
-            nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/20',
-                title: 'Child',
-              },
-            ],
-          },
+          children: { nodes: [existingChild] },
         },
       ],
     },
   };
+
+  const featuresCacheData = {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/10',
+      title: 'Work item',
+      features: {
+        hierarchy: {
+          hasChildren: true,
+          count: 1,
+          children: { nodes: [existingChild] },
+        },
+      },
+      widgets: [],
+    },
+  };
+
+  const readHierarchy = (data) =>
+    data.workItem.features?.hierarchy ??
+    data.workItem.widgets.find((w) => w.type === WIDGET_TYPE_HIERARCHY);
 
   beforeEach(() => {
     window.gon.features = {};
@@ -65,46 +79,35 @@ describe('work items graphql cache utils', () => {
     window.gon.features = originalFeatures;
   });
 
-  describe('addHierarchyChild', () => {
-    it('updates the work item with a new child', () => {
+  describe.each`
+    state         | flagEnabled | cacheData
+    ${'disabled'} | ${false}    | ${widgetsCacheData}
+    ${'enabled'}  | ${true}     | ${featuresCacheData}
+  `('addHierarchyChild when workItemFeaturesField is $state', ({ flagEnabled, cacheData }) => {
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: flagEnabled };
+    });
+
+    it('reads and writes the tree query with the correct variables', () => {
       const mockCache = {
-        readQuery: () => mockCacheData,
+        readQuery: jest.fn(() => cacheData),
         writeQuery: jest.fn(),
       };
-
-      const child = {
-        id: 'gid://gitlab/WorkItem/30',
-        title: 'New child',
-      };
+      const child = { id: 'gid://gitlab/WorkItem/30', title: 'New child' };
+      const expectedVariables = { id, useWorkItemFeatures: flagEnabled };
 
       addHierarchyChild({ cache: mockCache, id, workItem: child });
 
-      expect(mockCache.writeQuery).toHaveBeenCalledWith({
+      expect(mockCache.readQuery).toHaveBeenCalledWith({
         query: getWorkItemTreeQuery,
-        variables: { id },
-        data: {
-          workItem: {
-            id: 'gid://gitlab/WorkItem/10',
-            title: 'Work item',
-            widgets: [
-              {
-                type: WIDGET_TYPE_HIERARCHY,
-                hasChildren: true,
-                count: 2,
-                children: {
-                  nodes: [
-                    child,
-                    {
-                      id: 'gid://gitlab/WorkItem/20',
-                      title: 'Child',
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
+        variables: expectedVariables,
       });
+      const writeCall = mockCache.writeQuery.mock.calls[0][0];
+      expect(writeCall.variables).toEqual(expectedVariables);
+      const hierarchy = readHierarchy(writeCall.data);
+      expect(hierarchy.hasChildren).toBe(true);
+      expect(hierarchy.count).toBe(2);
+      expect(hierarchy.children.nodes).toEqual([child, existingChild]);
     });
 
     it('does not update the work item when there is no cache data', () => {
@@ -113,46 +116,42 @@ describe('work items graphql cache utils', () => {
         writeQuery: jest.fn(),
       };
 
-      const child = {
-        id: 'gid://gitlab/WorkItem/30',
-        title: 'New child',
-      };
-
-      addHierarchyChild({ cache: mockCache, id, workItem: child });
+      addHierarchyChild({
+        cache: mockCache,
+        id,
+        workItem: { id: 'gid://gitlab/WorkItem/30', title: 'New child' },
+      });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });
   });
 
   describe('addHierarchyChildren', () => {
-    it('updates the work item with new children', () => {
+    const existingHierarchy = {
+      __typename: 'WorkItemWidgetHierarchy',
+      type: 'HIERARCHY',
+      children: {
+        nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99', state: 'OPEN' }],
+      },
+      count: 1,
+      hasChildren: true,
+    };
+
+    const callModify = () => {
       const mockCache = {
         identify: jest.fn().mockReturnValue(`WorkItem:${id}`),
         modify: jest.fn(),
       };
-
       addHierarchyChildren({
         cache: mockCache,
         id,
         newChildren: [childrenWorkItems[1], childrenWorkItems[0]],
       });
+      return mockCache.modify.mock.calls[0][0].fields;
+    };
 
-      const { fields } = mockCache.modify.mock.calls[0][0];
-      const result = fields.widgets([
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-          type: 'HIERARCHY',
-          children: {
-            nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99', state: 'OPEN' }],
-          },
-          count: 1,
-          hasChildren: true,
-        },
-      ]);
-
-      const updated = result.find((w) => w.type === 'HIERARCHY');
-
-      expect(updated).toEqual(
+    const expectMergedChildren = (hierarchy) => {
+      expect(hierarchy).toEqual(
         expect.objectContaining({
           __typename: 'WorkItemWidgetHierarchy',
           children: expect.objectContaining({
@@ -167,10 +166,34 @@ describe('work items graphql cache utils', () => {
         }),
       );
 
-      // Optional: ensure open children come before closed ones
-      const openIndex = updated.children.nodes.findIndex((n) => n.state !== STATE_CLOSED);
-      const closedIndex = updated.children.nodes.findIndex((n) => n.state === STATE_CLOSED);
+      // open children come before closed ones
+      const openIndex = hierarchy.children.nodes.findIndex((n) => n.state !== STATE_CLOSED);
+      const closedIndex = hierarchy.children.nodes.findIndex((n) => n.state === STATE_CLOSED);
       if (closedIndex !== -1) expect(openIndex).toBeLessThan(closedIndex);
+    };
+
+    it('merges new children into the hierarchy widget on the widgets[] path', () => {
+      const fields = callModify();
+      const result = fields.widgets([existingHierarchy]);
+
+      expectMergedChildren(result.find((w) => w.type === 'HIERARCHY'));
+    });
+
+    it('merges new children into the hierarchy on the features path', () => {
+      const fields = callModify();
+      const result = fields.features({
+        __typename: 'WorkItemFeatures',
+        hierarchy: existingHierarchy,
+      });
+
+      expectMergedChildren(result.hierarchy);
+    });
+
+    it('passes features through unchanged when features.hierarchy is absent', () => {
+      const fields = callModify();
+      const existingFeatures = { __typename: 'WorkItemFeatures' };
+
+      expect(fields.features(existingFeatures)).toBe(existingFeatures);
     });
 
     it('does not update the work item when there is no cache data', () => {
@@ -193,40 +216,34 @@ describe('work items graphql cache utils', () => {
     });
   });
 
-  describe('removeHierarchyChild', () => {
-    it('updates the work item with a new child', () => {
+  describe.each`
+    state         | flagEnabled | cacheData
+    ${'disabled'} | ${false}    | ${widgetsCacheData}
+    ${'enabled'}  | ${true}     | ${featuresCacheData}
+  `('removeHierarchyChild when workItemFeaturesField is $state', ({ flagEnabled, cacheData }) => {
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: flagEnabled };
+    });
+
+    it('reads and writes the tree query with the correct variables', () => {
       const mockCache = {
-        readQuery: () => mockCacheData,
+        readQuery: jest.fn(() => cacheData),
         writeQuery: jest.fn(),
       };
+      const expectedVariables = { id, useWorkItemFeatures: flagEnabled };
 
-      const childToRemove = {
-        id: 'gid://gitlab/WorkItem/20',
-        title: 'Child',
-      };
+      removeHierarchyChild({ cache: mockCache, id, workItem: existingChild });
 
-      removeHierarchyChild({ cache: mockCache, id, workItem: childToRemove });
-
-      expect(mockCache.writeQuery).toHaveBeenCalledWith({
+      expect(mockCache.readQuery).toHaveBeenCalledWith({
         query: getWorkItemTreeQuery,
-        variables: { id },
-        data: {
-          workItem: {
-            id: 'gid://gitlab/WorkItem/10',
-            title: 'Work item',
-            widgets: [
-              {
-                type: WIDGET_TYPE_HIERARCHY,
-                hasChildren: false,
-                count: 0,
-                children: {
-                  nodes: [],
-                },
-              },
-            ],
-          },
-        },
+        variables: expectedVariables,
       });
+      const writeCall = mockCache.writeQuery.mock.calls[0][0];
+      expect(writeCall.variables).toEqual(expectedVariables);
+      const hierarchy = readHierarchy(writeCall.data);
+      expect(hierarchy.hasChildren).toBe(false);
+      expect(hierarchy.count).toBe(0);
+      expect(hierarchy.children.nodes).toEqual([]);
     });
 
     it('does not update the work item when there is no cache data', () => {
@@ -235,12 +252,7 @@ describe('work items graphql cache utils', () => {
         writeQuery: jest.fn(),
       };
 
-      const childToRemove = {
-        id: 'gid://gitlab/WorkItem/20',
-        title: 'Child',
-      };
-
-      removeHierarchyChild({ cache: mockCache, id, workItem: childToRemove });
+      removeHierarchyChild({ cache: mockCache, id, workItem: existingChild });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });

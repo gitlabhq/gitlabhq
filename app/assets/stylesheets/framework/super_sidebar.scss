@@ -1,71 +1,59 @@
+/* stylelint-disable scss/at-rule-no-unknown */
+/**
+ * SCSS variables
+ */
 $super-sidebar-transition-delay: 0.4s;
 $super-sidebar-transition-duration: 0.2s;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration * 0.25;
 $command-palette-spacing: px-to-rem(14px);
 
-@mixin notification-dot($color, $size, $top, $left) {
-  background-color: $color;
-  border: 2px solid var(--body-background-color);
-  position: absolute;
-  height: $size;
-  width: $size;
-  top: $top;
-  left: $left;
-  border-radius: 50%;
-  transition: background-color 100ms linear, border-color 100ms linear;
-}
-
-.super-sidebar-skip-to {
-  top: $calc-application-bars-height;
-  z-index: $super-sidebar-skip-to-z-index;
-}
-
-.super-sidebar,
-.application-chrome {
+/**
+ * CSS Custom properties
+ */
+:root {
   --body-background-color: var(--gl-background-color-strong);
 
-  --super-sidebar-accent-color-fg: var(--gl-color-blue-800);
-  --super-sidebar-accent-color-bg: var(--gl-color-blue-100);
+  --super-sidebar-theme-color: var(--gl-color-neutral-500);
+  --super-sidebar-theme-accent-color: var(--gl-color-blue-500);
+  --super-sidebar-theme-accent-badge-color: var(--super-sidebar-theme-accent-color);
 
-  --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-dark-8);
-  --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-dark-16);
-  --super-sidebar-nav-item-current-bg: var(--super-sidebar-accent-color-bg);
+  --super-sidebar-accent-foreground-color: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 20) 20);
+  --super-sidebar-accent-background-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 16%);
 
+  --super-sidebar-hr-border-color: var(--gl-color-alpha-dark-8);
   --super-sidebar-hr-mix-blend-mode: multiply;
 }
 
-.gl-dark .super-sidebar,
-.gl-dark.application-chrome {
+:root.gl-dark {
   --body-background-color: var(--gl-background-color-subtle);
 
-  --super-sidebar-accent-color-fg: var(--gl-color-blue-200);
-  --super-sidebar-accent-color-bg: var(--gl-color-neutral-950);
+  --super-sidebar-theme-color: var(--gl-color-neutral-500);
+  --super-sidebar-theme-accent-color: var(--gl-color-blue-500);
+  --super-sidebar-theme-accent-badge-color: hsl(from var(--super-sidebar-theme-accent-color) h calc(s - 10) calc(l + 20));
 
-  --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-light-16);
-  --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-light-24);
-  --super-sidebar-nav-item-current-bg: rgb(from var(--super-sidebar-accent-color-fg) r g b / 15%);
+  --super-sidebar-accent-foreground-color: hsl(from var(--super-sidebar-theme-accent-color) h s 88);
+  --super-sidebar-accent-background-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 32%);
 
+  --super-sidebar-hr-border-color: var(--gl-color-alpha-light-16);
   --super-sidebar-hr-mix-blend-mode: color-dodge;
 }
 
+/**
+ * Themes
+ */
 @mixin super-sidebar-theme(
   $theme-color,
   $theme-accent-color,
   $background,
-  $accent-color-fg,
-  $accent-color-bg,
-  $accent-color-badge: $accent-color-fg,
-  $accent-notification-dot: $accent-color-fg,
+  $accent-foreground-color,
+  $accent-background-color,
+  $accent-notification-dot: $accent-foreground-color,
 ) {
-  .super-sidebar,
-  &.application-chrome {
-    --theme-color: #{$theme-color};
-    --theme-accent-color: #{$theme-accent-color};
-    --body-background-color: #{$background};
-    --super-sidebar-accent-color-fg: #{$accent-color-fg};
-    --super-sidebar-accent-color-bg: #{$accent-color-bg};
-    --super-sidebar-accent-color-badge: #{$accent-color-badge};
-  }
+  --super-sidebar-theme-color: #{$theme-color};
+  --super-sidebar-theme-accent-color: #{$theme-accent-color};
+  --body-background-color: #{$background};
+  --super-sidebar-accent-foreground-color: #{$accent-foreground-color};
+  --super-sidebar-accent-background-color: #{$accent-background-color};
 }
 
 .ui-indigo {
@@ -73,8 +61,8 @@ $command-palette-spacing: px-to-rem(14px);
     $theme-color: var(--gl-color-purple-500),
     $theme-accent-color: var(--gl-color-purple-500),
     $background: var(--gl-color-purple-50),
-    $accent-color-fg: var(--gl-color-purple-800),
-    $accent-color-bg: var(--gl-color-purple-100),
+    $accent-foreground-color: var(--gl-color-purple-800),
+    $accent-background-color: var(--gl-color-purple-100),
     $accent-notification-dot: var(--gl-color-purple-500),
   );
 
@@ -83,8 +71,8 @@ $command-palette-spacing: px-to-rem(14px);
       $theme-color: var(--gl-color-purple-500),
       $theme-accent-color: var(--gl-color-purple-500),
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-purple-200),
-      $accent-color-bg: var(--gl-background-color-subtle),
+      $accent-foreground-color: var(--gl-color-purple-200),
+      $accent-background-color: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-purple-200),
     );
   }
@@ -95,8 +83,8 @@ $command-palette-spacing: px-to-rem(14px);
     $theme-color: var(--gl-color-blue-500),
     $theme-accent-color: var(--gl-color-blue-500),
     $background: var(--gl-color-blue-50),
-    $accent-color-fg: var(--gl-color-blue-900),
-    $accent-color-bg: var(--gl-color-blue-100),
+    $accent-foreground-color: var(--gl-color-blue-900),
+    $accent-background-color: var(--gl-color-blue-100),
     $accent-notification-dot: var(--gl-color-blue-500),
   );
 
@@ -105,9 +93,8 @@ $command-palette-spacing: px-to-rem(14px);
       $theme-color: var(--gl-color-blue-500),
       $theme-accent-color: var(--gl-color-blue-500),
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-blue-100),
-      $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-blue-200),
+      $accent-foreground-color: var(--gl-color-blue-100),
+      $accent-background-color: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-blue-200),
     );
   }
@@ -118,8 +105,8 @@ $command-palette-spacing: px-to-rem(14px);
     $theme-color: var(--gl-color-green-500),
     $theme-accent-color: var(--gl-color-green-500),
     $background: var(--gl-color-green-50),
-    $accent-color-fg: var(--gl-color-green-900),
-    $accent-color-bg: var(--gl-color-green-100),
+    $accent-foreground-color: var(--gl-color-green-900),
+    $accent-background-color: var(--gl-color-green-100),
     $accent-notification-dot: var(--gl-color-green-500),
   );
 
@@ -128,8 +115,8 @@ $command-palette-spacing: px-to-rem(14px);
       $theme-color: var(--gl-color-green-400),
       $theme-accent-color: var(--gl-color-green-400),
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-green-200),
-      $accent-color-bg: var(--gl-background-color-subtle),
+      $accent-foreground-color: var(--gl-color-green-200),
+      $accent-background-color: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-green-200),
     );
   }
@@ -140,8 +127,8 @@ $command-palette-spacing: px-to-rem(14px);
     $theme-color: var(--gl-color-red-500),
     $theme-accent-color: var(--gl-color-red-500),
     $background: var(--gl-color-red-50),
-    $accent-color-fg: var(--gl-color-red-800),
-    $accent-color-bg: var(--gl-color-red-100),
+    $accent-foreground-color: var(--gl-color-red-800),
+    $accent-background-color: var(--gl-color-red-100),
     $accent-notification-dot: var(--gl-color-red-600),
   );
 
@@ -150,8 +137,8 @@ $command-palette-spacing: px-to-rem(14px);
       $theme-color: var(--gl-color-red-500),
       $theme-accent-color: var(--gl-color-red-500),
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-red-200),
-      $accent-color-bg: var(--gl-background-color-subtle),
+      $accent-foreground-color: var(--gl-color-red-200),
+      $accent-background-color: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-red-200),
     );
   }
@@ -162,8 +149,8 @@ $command-palette-spacing: px-to-rem(14px);
     $theme-color: var(--gl-color-neutral-500),
     $theme-accent-color: var(--gl-color-neutral-500),
     $background: var(--gl-background-color-strong),
-    $accent-color-fg: var(--gl-color-neutral-800),
-    $accent-color-bg: var(--gl-color-neutral-100),
+    $accent-foreground-color: var(--gl-color-neutral-800),
+    $accent-background-color: var(--gl-color-neutral-100),
     $accent-notification-dot: var(--gl-color-neutral-500),
   );
 
@@ -172,37 +159,59 @@ $command-palette-spacing: px-to-rem(14px);
       $theme-color: var(--gl-color-neutral-500),
       $theme-accent-color: var(--gl-color-neutral-500),
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-neutral-100),
-      $accent-color-bg: var(--gl-background-color-subtle),
+      $accent-foreground-color: var(--gl-color-neutral-100),
+      $accent-background-color: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-neutral-200),
     );
   }
 }
 
-.ui-neutral {
-  --theme-color: var(--gl-color-neutral-500);
-  --theme-accent-color: var(--gl-color-blue-500);
+/**
+ * Skip to
+ */
+.super-sidebar-skip-to {
+  top: $calc-application-bars-height;
+  z-index: $super-sidebar-skip-to-z-index;
 }
 
-html:not(.application-chrome) .super-sidebar {
-  @media (forced-colors: active) {
-    border-right: 1px solid;
-  }
+/**
+ * Super sidebar wrapper
+ */
+.super-sidebar-wrapper {
+  @apply gl-absolute;
+  @apply xl:gl-static;
+  @apply gl-w-0;
+  @apply gl-h-0;
+  @apply xl:gl-h-auto;
+  @apply xl:gl-w-auto;
+  @apply xl:gl-ml-0;
+  @apply gl-min-h-0;
 }
 
+/**
+ * Super sidebar
+ */
 .super-sidebar {
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: $calc-application-bars-height;
+  position: relative;
+  top: 0;
   bottom: $calc-application-footer-height;
   left: 0;
+  @apply gl-h-full;
+  @apply xl:-gl-mx-3;
   background-color: var(--body-background-color);
+  @apply xl:gl-bg-transparent;
   transform: translate3d(0, 0, 0);
   z-index: $super-sidebar-z-index;
+  @apply max-xl:forced-colors:gl-border-r;
 
   &:not(.super-sidebar-is-icon-only) {
-    width: $super-sidebar-width;
+    width: min(80%, 320px);
+
+    @include media-breakpoint-up(xl) {
+      width: $super-sidebar-width;
+    }
   }
 
   &:is(.super-sidebar-is-icon-only) {
@@ -215,14 +224,35 @@ html:not(.application-chrome) .super-sidebar {
 
   .nav-flyout-menu {
     z-index: $super-sidebar-nav-flayout-menu-z-index;
+    @include gl-prefers-reduced-motion-transition;
+    transition: opacity .2s $gl-easing-out-cubic;
+
+    @starting-style {
+      opacity: 0;
+    }
   }
 
   &.super-sidebar-loading {
+    position: static;
+    width: 0;
     transform: translate3d(-100%, 0, 0);
     transition: none;
 
     @include media-breakpoint-up(xl) {
+      position: relative;
+      left: 0;
+      top: 0;
       transform: translate3d(0, 0, 0);
+    }
+
+    &:not(.super-sidebar-is-icon-only) {
+      @include media-breakpoint-up(xl) {
+        width: $super-sidebar-width;
+      }
+    }
+
+    &.super-sidebar-is-icon-only {
+      width: $gl-button-medium-size;
     }
   }
 
@@ -230,74 +260,13 @@ html:not(.application-chrome) .super-sidebar {
     @apply gl-transition-transform;
   }
 
-  .super-sidebar-nav-item {
-    font-weight: 425;
-    min-height: 1.75rem;
-
-    &:hover,
-    &:focus,
-    &.with-mouse-over-flyout {
-      @apply gl-text-default;
-      background-color: var(--super-sidebar-nav-item-hover-bg);
-    }
-
-    &:has(.gl-button-text.gl-hidden) .gl-button-icon {
-      @apply gl-mr-0 #{!important};
-    }
-
-    .badge {
-      font-size: 10px;
-      @apply gl-font-semibold;
-      color: var(--super-sidebar-accent-color-fg);
-      background: var(--super-sidebar-accent-color-bg);
-
-      .gl-dark & {
-        color: var(--gl-color-neutral-950);
-        background: var(--gl-color-neutral-300);
-      }
-    }
-
-    &.super-sidebar-nav-item-current:not(:hover) {
-      background-color: var(--super-sidebar-nav-item-current-bg);
-
-      [data-testid="nav-item-link-label"] {
-        @apply gl-font-semibold;
-        color: var(--super-sidebar-accent-color-fg);
-      }
-
-      > span,
-      .super-sidebar-nav-item-icon {
-        color: var(--super-sidebar-accent-color-fg);
-      }
-
-      .badge {
-        background: var(--body-background-color);
-
-        .gl-dark & {
-          color: var(--gl-color-neutral-950);
-          background: var(--gl-color-neutral-300);
-        }
-      }
-    }
-
-    &:active,
-    &:focus:active {
-      background-color: var(--super-sidebar-nav-item-active-bg);
-    }
-  }
-
   hr {
-    border-color: var(--gl-color-alpha-light-16);
+    border-color: var(--super-sidebar-hr-border-color);
     mix-blend-mode: var(--super-sidebar-hr-mix-blend-mode);
   }
 
   .btn-with-notification {
     position: relative;
-
-    .notification-dot-info {
-      @include notification-dot(var(--gl-status-info-text-color), 6px, 5px, 17px);
-      border: 0;
-    }
   }
 
   .super-sidebar-help-center-toggle[aria-expanded='true'] {
@@ -310,14 +279,61 @@ html:not(.application-chrome) .super-sidebar {
   }
 }
 
-.super-sidebar-context-header {
-  color: var(--super-sidebar-accent-color-fg);
+@include media-breakpoint-down(lg) {
+  .page-with-super-sidebar:not(.super-sidebar-has-css-transitions-blocked) .super-sidebar {
+    position: fixed;
+    @apply gl-rounded-r-[1rem];
+  }
 }
 
+/**
+ * Context header
+ */
+.super-sidebar-context-header {
+  color: var(--super-sidebar-accent-foreground-color);
+}
+
+/**
+ * Nav item
+ */
+.super-sidebar .super-sidebar-nav-item {
+  font-weight: 425;
+  min-height: 1.75rem;
+
+  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific button within the sidebar
+  &:has(.gl-button-text.gl-hidden) .gl-button-icon {
+    @apply gl-mr-0 #{!important};
+  }
+
+  &.super-sidebar-nav-item-current:not(:hover) {
+    .nav-item-link-label {
+      @apply gl-font-semibold;
+    }
+  }
+}
+
+/**
+ * What's new badge
+ */
+.super-sidebar-whats-new-badge {
+  color: var(--gl-color-neutral-0) !important;
+  background-color: var(--super-sidebar-theme-accent-badge-color) !important;
+
+  .gl-dark & {
+    color: var(--gl-color-neutral-900) !important;
+  }
+}
+
+/**
+ * Overlay
+ */
 .super-sidebar-overlay {
   display: none;
 }
 
+/**
+ * Peek
+ */
 .super-sidebar-has-peeked {
   margin-top: calc(#{$header-height} - #{$gl-spacing-scale-2});
   margin-bottom: #{$gl-spacing-scale-2};
@@ -343,9 +359,10 @@ html:not(.application-chrome) .super-sidebar {
   @apply gl-rounded-base;
 }
 
+/**
+ * Page with super sidebar
+ */
 .page-with-super-sidebar {
-  padding-left: 0;
-
   @media (prefers-reduced-motion: no-preference) {
     @apply gl-transition-padding;
   }
@@ -368,8 +385,6 @@ html:not(.application-chrome) .super-sidebar {
   }
 
   @include media-breakpoint-up(xl) {
-    padding-left: $super-sidebar-width;
-
     .super-sidebar-toggle {
       display: none;
     }
@@ -378,6 +393,7 @@ html:not(.application-chrome) .super-sidebar {
 
 .page-with-super-sidebar-collapsed {
   .super-sidebar {
+    @apply gl-m-0;
     transform: translate3d(-100%, 0, 0);
 
     &.super-sidebar-peek {
@@ -408,6 +424,9 @@ html:not(.application-chrome) .super-sidebar {
   }
 }
 
+/**
+ * Global search modal
+ */
 .global-search-modal {
   padding: var(--performance-bar-height) 0.5rem 0;
 
@@ -478,7 +497,6 @@ html:not(.application-chrome) .super-sidebar {
     padding: $command-palette-spacing;
   }
 
-  /* stylelint-disable scss/at-rule-no-unknown */
   @media (prefers-reduced-motion: no-preference) {
     transition-property: opacity;
     transition-timing-function: $gl-easing-out-cubic;
@@ -520,6 +538,9 @@ html:not(.application-chrome) .super-sidebar {
   }
 }
 
+/**
+ * Utilities
+ */
 .transition-opacity-on-hover--context {
   .transition-opacity-on-hover--target {
     @apply gl-transition-opacity;
@@ -550,10 +571,6 @@ html:not(.application-chrome) .super-sidebar {
 
   &:hover,
   &:focus-within {
-    .show-on-focus-or-hover--control {
-      background-color: var(--super-sidebar-nav-item-hover-bg);
-    }
-
     .show-on-focus-or-hover--target {
       opacity: 1;
     }
@@ -689,3 +706,39 @@ $scroll-scrim-height: 2.25rem;
   background: linear-gradient(90deg, #ffb177 0%, #936fff 100%);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .super-sidebar-animatable {
+    .nav-item-link-label,
+    .menu-section-button-label {
+      transition-duration: .15s;
+      transition-timing-function: $gl-easing-out-cubic;
+      transition-property: opacity, translate;
+
+      @starting-style {
+        opacity: 0;
+        translate: -30% 0;
+      }
+    }
+
+    .super-sidebar-context-header {
+      transition-duration: .15s;
+      transition-timing-function: $gl-easing-out-cubic;
+      transition-property: opacity, translate;
+
+      @starting-style {
+        opacity: 0;
+        translate: 0 -30%;
+      }
+    }
+
+    .nav-item-link-badge {
+      transition-duration: .15s;
+      transition-timing-function: $gl-easing-out-cubic;
+      transition-property: opacity;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+}

@@ -9,6 +9,6 @@ fragment CatalogResourceVersionFields on CiCatalogResourceVersion {
     id
     name
     state
-    webUrl
+    webPath
   }
 }

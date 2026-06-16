@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'for auto_merge strategy context' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, maintainers: user) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :repository, maintainers: user) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request,

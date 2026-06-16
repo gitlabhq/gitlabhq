@@ -53,7 +53,7 @@ RSpec.describe 'Subscriptions::Notes::Created', feature_category: :team_planning
     end
 
     context 'when a new note is created as a reply' do
-      let_it_be(:note, refind: true) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
+      let_it_be_with_refind(:note) { create(:note, noteable: task, project: project, type: 'DiscussionNote') }
 
       let(:new_note) do
         create(:note, noteable: task, project: project, in_reply_to: note, discussion_id: note.discussion_id)
@@ -84,7 +84,7 @@ RSpec.describe 'Subscriptions::Notes::Created', feature_category: :team_planning
         end
 
         context 'and replying' do
-          let_it_be(:note, refind: true) do
+          let_it_be_with_refind(:note) do
             create(:note, :confidential, noteable: task, project: project, type: 'DiscussionNote')
           end
 

@@ -7,6 +7,9 @@ identifiers:
 - user
 - namespace
 product_group: optimize
+product_categories:
+- value_stream_management
+- devops_reports
 milestone: "15.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94369
 tiers:

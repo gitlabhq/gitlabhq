@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def diff_files
-        strong_memoize(:diff_files) { map(&:raw_diff_file) }
+        strong_memoize(:diff_files) { filter_map(&:raw_diff_file) }
       end
 
       # Processes the diff lines highlighting for diff files matching the given

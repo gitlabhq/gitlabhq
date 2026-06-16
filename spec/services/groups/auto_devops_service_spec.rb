@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::AutoDevopsService, '#execute', feature_category: :auto_devops do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:user) { create(:user) }
 
   let(:group_params) { { auto_devops_enabled: '0' } }

@@ -1320,6 +1320,7 @@ Parameters:
 | `wiki_access_level`                  | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
 | `duo_availability` | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
+| `ai_settings_attributes` | hash | no | AI-related settings for this group. For available options, see [Options for `ai_settings_attributes`](#options-for-ai_settings_attributes). GitLab Duo features must be enabled. |
 
 #### Options for `default_branch_protection`
 
@@ -1798,6 +1799,7 @@ Returns `204` and no content on success.
 - `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 - `allow_personal_snippets` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
 - `allow_personal_snippets` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
+- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
 
 {{< /history >}}
 
@@ -1823,6 +1825,8 @@ PUT /groups/:id
 | `path`                                               | string            | no       | The path of the group. |
 | `auto_devops_enabled`                                | boolean           | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `avatar`                                             | mixed             | no       | Image file for avatar of the group. |
+| `built_in_project_templates_enabled`                | boolean           | no       | Enable built-in project templates when users create projects in the group. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
+| `lock_built_in_project_templates_enabled`           | boolean           | no       | Enforce the `built_in_project_templates_enabled` setting for all subgroups. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
 | `default_branch`                                     | string            | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                          | integer           | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
 | `default_branch_protection_defaults`                 | hash              | no       | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
@@ -1857,6 +1861,7 @@ PUT /groups/:id
 | `wiki_access_level`                                  | string            | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
 | `duo_availability`                                   | string | no | GitLab Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled`                        | boolean | no | Enable experiment features for this group. |
+| `ai_settings_attributes`                             | hash | no | AI-related settings for this group. For available options, see [Options for `ai_settings_attributes`](#options-for-ai_settings_attributes). GitLab Duo features must be enabled. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
 | `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
@@ -1969,6 +1974,40 @@ The `shared_runners_setting` attribute determines whether instance runners are e
 | `disabled_and_overridable`   | Disables instance runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 | `disabled_and_unoverridable` | Disables instance runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
 | `disabled_with_override`     | (Deprecated. Use `disabled_and_overridable`) Disables instance runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+
+### Options for `ai_settings_attributes`
+
+{{< history >}}
+
+- `duo_workflow_mcp_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193041) in GitLab 18.1.
+- `foundational_agents_default_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212111) in GitLab 18.6.
+- `duo_agent_platform_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216143) in GitLab 18.7.
+- `minimum_access_level_execute`, `minimum_access_level_execute_async`, `minimum_access_level_manage`, and `minimum_access_level_enable_on_projects` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212521) in GitLab 18.7.
+- `prompt_injection_protection_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216829) in GitLab 18.8.
+- `ai_usage_data_collection_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222459) in GitLab 18.9.
+- `include_recommended_allowed`, `allow_all_unix_sockets`, and `allow_project_extension` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234867) in GitLab 19.0.
+- `ai_catalog_restricted_to_group_hierarchy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233914) in GitLab 19.0.
+
+{{< /history >}}
+
+The `ai_settings_attributes` hash configures AI-related settings for the group.
+All attributes are optional.
+
+| Attribute | Type | Description |
+|-----|------|-------------|
+| `ai_catalog_restricted_to_group_hierarchy` | boolean | When `true`, restricts the AI Catalog to items in this top-level group hierarchy. Can only be set on top-level groups. Premium and Ultimate only. |
+| `ai_usage_data_collection_enabled` | boolean | When `true`, enables AI usage data collection for this group. GitLab.com only. |
+| `allow_all_unix_sockets` | boolean | When `true`, allows all Unix sockets for GitLab Duo Agent Platform network access. Available when the `dap_group_network_access_controls` feature flag is enabled. |
+| `allow_project_extension` | boolean | When `true`, allows projects to extend the network access domain allowlist for GitLab Duo Agent Platform. Available when the `dap_group_network_access_controls` feature flag is enabled. |
+| `duo_agent_platform_enabled` | boolean | When `true`, enables GitLab Duo Agent Platform features for this group. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `duo_workflow_mcp_enabled` | boolean | When `true`, enables MCP support for GitLab Duo Agent Platform. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `foundational_agents_default_enabled` | boolean | When `true`, new foundational agents are enabled by default for this group. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `include_recommended_allowed` | boolean | When `true`, includes recommended domains in the network access allowlist for GitLab Duo Agent Platform. Available when the `dap_group_network_access_controls` feature flag is enabled. |
+| `minimum_access_level_enable_on_projects` | integer | The minimum access level required to enable GitLab Duo Agent Platform on projects. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_execute` | integer | The minimum access level required for users to use GitLab Duo Agent Platform features. Valid values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_execute_async` | integer | The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_manage` | integer | The minimum access level required to manage GitLab Duo Agent Platform. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `prompt_injection_protection_level` | string | The prompt injection protection level. Valid values: `no_checks`, `log_only`, `interrupt`. |
 
 ## Update group avatars
 

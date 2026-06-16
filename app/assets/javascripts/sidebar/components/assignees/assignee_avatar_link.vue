@@ -5,6 +5,7 @@ import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import AssigneeAvatar from './assignee_avatar.vue';
 
 export default {
+  name: 'AssigneeAvatarLink',
   components: {
     AssigneeAvatar,
     GlLink,

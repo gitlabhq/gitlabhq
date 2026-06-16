@@ -15,9 +15,9 @@ RSpec.describe API::Users, feature_category: :user_profile do
         }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['view_diffs_file_by_file']).to eq(true)
-        expect(json_response['show_whitespace_in_diffs']).to eq(true)
-        expect(json_response['pass_user_identities_to_ci_jwt']).to eq(true)
+        expect(json_response['view_diffs_file_by_file']).to be(true)
+        expect(json_response['show_whitespace_in_diffs']).to be(true)
+        expect(json_response['pass_user_identities_to_ci_jwt']).to be(true)
 
         user.reload
 

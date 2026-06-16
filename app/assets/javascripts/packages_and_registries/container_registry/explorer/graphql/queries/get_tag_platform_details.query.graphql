@@ -1,0 +1,17 @@
+# @feature_category: container_registry
+query getTagPlatformDetails($id: ContainerRepositoryID!, $tagName: String!) {
+  containerRepository(id: $id) {
+    id
+    tagDetails(name: $tagName) {
+      manifests {
+        digest
+        platform {
+          os
+          architecture
+          variant
+          osVersion
+        }
+      }
+    }
+  }
+}

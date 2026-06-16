@@ -26,7 +26,7 @@ module Organizations
       attr_reader :organization_user, :current_user, :params
 
       def allowed?
-        current_user&.can?(:admin_organization, organization_user.organization)
+        current_user&.can?(:update_organization, organization_user.organization)
       end
 
       def error_response

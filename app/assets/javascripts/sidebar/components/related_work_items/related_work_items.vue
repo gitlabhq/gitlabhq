@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -18,6 +19,7 @@ import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_r
 import { DETAIL_VIEW_QUERY_PARAM_NAME, VIEW_CONTEXT } from '~/work_items/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
+import RelatedWorkItemsAddForm from './related_work_items_add_form.vue';
 
 export default {
   name: 'MRRelatedWorkItems',
@@ -30,30 +32,34 @@ export default {
     GlPopover,
     GlSprintf,
     WorkItemDetailPanel,
+    RelatedWorkItemsAddForm,
   },
   viewContext: VIEW_CONTEXT.drawerMergeRequest,
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath', 'id'],
   data() {
     return {
       activeItem: null,
       isCollapsed: true,
       params: null,
-      allItems: [],
+      mergeRequest: null,
+      isAddModalVisible: false,
     };
   },
   apollo: {
-    allItems: {
+    mergeRequest: {
       query: mergeRequestRelatedWorkItemsQuery,
       variables() {
         return {
           id: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.id),
+          explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
         };
       },
       update(data) {
-        return data?.mergeRequest?.linkedWorkItems || [];
+        return data?.mergeRequest || null;
       },
       result() {
         this.checkDetailPanelParams();
@@ -67,7 +73,13 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.allItems.loading;
+      return this.$apollo.queries.mergeRequest.loading;
+    },
+    allItems() {
+      return (this.mergeRequest?.linkedWorkItems || []).filter((i) => i.workItem);
+    },
+    canAdminMergeRequest() {
+      return this.mergeRequest?.userPermissions?.adminMergeRequest || false;
     },
     closingWorkItems() {
       return this.allItems
@@ -149,6 +161,26 @@ export default {
     <div class="gl-flex gl-items-center gl-font-bold gl-leading-24 gl-text-default">
       <span data-testid="title" class="hide-collapsed">{{ __('Work items') }}</span>
       <gl-loading-icon v-if="isLoading" size="sm" inline class="hide-collapsed gl-ml-2" />
+      <div class="gl-ml-auto gl-flex gl-items-center gl-gap-1">
+        <gl-icon
+          v-if="!isLoading && allItems.length === 0"
+          id="related-work-items-info"
+          name="information-o"
+          class="gl-cursor-pointer gl-text-subtle"
+        />
+        <gl-button
+          v-if="canAdminMergeRequest"
+          v-gl-tooltip
+          :title="__('Add a work item')"
+          :aria-label="__('Add a work item')"
+          category="tertiary"
+          icon="plus"
+          size="small"
+          class="!gl-p-0"
+          data-testid="add-work-item-button"
+          @click="isAddModalVisible = true"
+        />
+      </div>
       <gl-button
         v-if="showCollapsedState"
         v-show="!isCollapsed"
@@ -158,14 +190,8 @@ export default {
         category="tertiary"
         icon="chevron-down"
         size="small"
-        class="-gl-mr-2 gl-ml-auto !gl-p-0"
+        :class="['-gl-mr-2 !gl-p-0', { 'gl-ml-auto': !canAdminMergeRequest }]"
         @click="isCollapsed = true"
-      />
-      <gl-icon
-        v-if="!isLoading && allItems.length === 0"
-        id="related-work-items-info"
-        name="information-o"
-        class="gl-ml-auto gl-cursor-pointer gl-text-subtle"
       />
     </div>
     <template v-if="!isLoading && allItems.length > 0">
@@ -241,6 +267,13 @@ export default {
       :open="activeItem !== null"
       issuable-type="Issue"
       @close="activeItem = null"
+    />
+    <related-work-items-add-form
+      v-if="canAdminMergeRequest"
+      :full-path="fullPath"
+      :visible="isAddModalVisible"
+      @hide="isAddModalVisible = false"
+      @link="isAddModalVisible = false"
     />
   </div>
 </template>

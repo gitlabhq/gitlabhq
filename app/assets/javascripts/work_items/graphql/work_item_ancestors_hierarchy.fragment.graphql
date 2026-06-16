@@ -1,0 +1,57 @@
+fragment WorkItemAncestorsHierarchy on WorkItemWidgetHierarchy {
+  type
+  hasParent
+  parent {
+    id
+    iid
+    title
+    confidential
+    namespace {
+      id
+      fullPath
+    }
+    webUrl
+    workItemType {
+      id
+      name
+      iconName
+    }
+  }
+  ancestors {
+    nodes {
+      id
+      iid
+      confidential
+      workItemType {
+        id
+        name
+        iconName
+      }
+      title
+      state
+      reference(full: true)
+      createdAt
+      closedAt
+      webUrl
+      widgets @skip(if: $useWorkItemFeatures) {
+        type
+        ... on WorkItemWidgetHierarchy {
+          type
+          hasParent
+          parent {
+            id
+          }
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        hierarchy {
+          type
+          hasParent
+          parent {
+            id
+          }
+        }
+      }
+    }
+  }
+}

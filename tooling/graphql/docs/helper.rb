@@ -26,14 +26,14 @@ module Tooling
       CONNECTION_ARGS = %w[after before first last].to_set
 
       FIELD_HEADER = <<~MD
-        #### Fields
+        Fields:
 
         | Name | Type | Description |
         | ---- | ---- | ----------- |
       MD
 
       ARG_HEADER = <<~MD
-        # Arguments
+        Arguments:
 
         | Name | Type | Description |
         | ---- | ---- | ----------- |
@@ -86,23 +86,15 @@ module Tooling
             render_return_type(field),
             render_input_type(field),
             render_connection_note(field),
-            render_argument_table(heading_level, args, arg_owner),
+            render_argument_table(args, arg_owner),
             render_return_fields(field, owner: owner)
           ]
 
           join(:block, chunks)
         end
 
-        def render_argument_table(level, args, owner)
-          arg_header =
-
-            # Only permit heading levels valid in CommonMark
-            if level < 6
-              ('#' * level) + ARG_HEADER
-            else
-              ARG_HEADER.sub("# Arguments", "Arguments:")
-            end
-
+        def render_argument_table(args, owner)
+          arg_header = ARG_HEADER
           render_field_table(arg_header, args, owner)
         end
 
@@ -125,7 +117,7 @@ module Tooling
           type_name = owner[:name] if owner
           header_prefix = '#' * level_bump
           sections = [
-            render_simple_fields(no_args, type_name, header_prefix),
+            render_simple_fields(no_args, type_name),
             render_fields_with_arguments(with_args, type_name, header_prefix)
           ]
 
@@ -210,8 +202,8 @@ module Tooling
           "Returns #{render_field_type(query[:type])}."
         end
 
-        def render_simple_fields(fields, type_name, header_prefix)
-          render_field_table(header_prefix + FIELD_HEADER, fields, type_name)
+        def render_simple_fields(fields, type_name)
+          render_field_table(FIELD_HEADER, fields, type_name)
         end
 
         def render_fields_with_arguments(fields, type_name, header_prefix)
@@ -325,18 +317,16 @@ module Tooling
         end
 
         def render_deprecation(object, owner, context)
-          buff = []
           deprecation = schema_deprecation(owner, object[:name])
-          original_description = deprecation&.original_description || render_description_of(object, owner)
 
-          buff << if deprecation
-                    deprecation.markdown(context: context)
-                  else
-                    "**Deprecated**: #{object[:deprecation_reason]}"
-                  end
+          assert!(deprecation,
+            "Expected deprecation for #{[*Array.wrap(owner), object[:name]].join('.')} but none was found.")
 
+          original_description = deprecation.original_description
+
+          buff = [deprecation.markdown(context: context)]
           buff << original_description if context == :block
-          buff << original_description if context == :inline && deprecation&.experiment?
+          buff << original_description if context == :inline && deprecation.experiment?
 
           join(context, buff)
         end
@@ -427,20 +417,50 @@ module Tooling
 
             schema.types.each do |type_name, type|
               if type.kind.fields?
+                map_deprecatables(mapping, type.fields, prefix: type_name)
                 type.fields.each do |field_name, field|
-                  mapping["#{type_name}.#{field_name}"] = field.try(:deprecation)
-                  field.arguments.each do |arg_name, arg|
-                    mapping["#{type_name}.#{field_name}.#{arg_name}"] = arg.try(:deprecation)
-                  end
+                  map_deprecatables(mapping, field.arguments, prefix: "#{type_name}.#{field_name}")
                 end
+              elsif type.kind.input_object?
+                map_deprecatables(mapping, type.arguments, prefix: type_name)
               elsif type.kind.enum?
-                type.values.each do |member_name, enum|
-                  mapping["#{type_name}.#{member_name}"] = enum.try(:deprecation)
-                end
+                map_deprecatables(mapping, type.values, prefix: type_name)
               end
             end
 
+            map_mutation_inputs_and_payloads(mapping)
+
             mapping.compact
+          end
+        end
+
+        # Mutation arguments live as input fields on the auto-generated input type,
+        # and mutation return fields live on the auto-generated payload type. The
+        # renderer looks them up under the mutation's owner, not the input/payload
+        # type's name, so we mirror those keys here.
+        def map_mutation_inputs_and_payloads(mapping)
+          return unless schema.mutation
+
+          mutation_type_name = schema.mutation.graphql_name
+
+          schema.mutation.fields.each do |mutation_field_name, mutation_field|
+            input_type = mutation_field.arguments['input']&.type&.unwrap
+            if input_type.respond_to?(:arguments)
+              prefix = "#{mutation_type_name}.#{mutation_field_name}"
+              map_deprecatables(mapping, input_type.arguments, prefix: prefix)
+            end
+
+            type = mutation_field.type.unwrap
+            if type.kind.fields?
+              prefix = "#{mutation_type_name}-#{mutation_field_name}"
+              map_deprecatables(mapping, type.fields, prefix: prefix)
+            end
+          end
+        end
+
+        def map_deprecatables(mapping, deprecatables, prefix:)
+          deprecatables.each do |name, deprecatable|
+            mapping["#{prefix}.#{name}"] = deprecatable.try(:deprecation)
           end
         end
 

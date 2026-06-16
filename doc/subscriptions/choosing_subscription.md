@@ -43,6 +43,7 @@ You can purchase the following add-ons:
 - [GitLab Duo](subscription-add-ons.md): Get access to AI-native features like Code Suggestions,
   GitLab Duo Chat, and more.
 - [GitLab Credits](gitlab_credits.md): Buy credits to get access to GitLab Duo Agent Platform.
+- [GitLab Flex](gitlab_flex.md): Adjust your seat allocation and GitLab Credits month-to-month with a single annual dollar commitment that covers all GitLab capabilities.
 - [Enterprise Agile Planning](manage_seats.md#enterprise-agile-planning): Increase collaboration between
   technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
   measure impact with Value Stream Analytics, and gain visibility into software development velocity.
@@ -56,7 +57,7 @@ Some add-ons are only available to specific subscription tiers and offerings.
 
 ## Contact Support
 
-- See the tiers of [GitLab Support](https://about.gitlab.com/support/).
+- See the tiers of [GitLab Support](https://support.gitlab.com/).
 - [Submit a request](https://support.gitlab.com/hc/en-us/requests/new) through the Support Portal.
 
 We also encourage all users to search our project trackers for known issues and existing feature requests in the [GitLab project](https://gitlab.com/gitlab-org/gitlab/-/issues/).

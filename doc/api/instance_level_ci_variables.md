@@ -104,7 +104,7 @@ curl \
 
 Creates a new instance-level variable.
 
-The [maximum number of instance-level variables](../administration/instance_limits.md#cicd-variable-limits) can be changed.
+The [maximum number of instance-level variables](../administration/cicd/limits.md#instance-cicd-variable-limit) can be changed.
 
 ```plaintext
 POST /admin/ci/variables

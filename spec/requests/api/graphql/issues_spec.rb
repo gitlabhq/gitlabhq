@@ -11,21 +11,21 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   let_it_be(:current_user) { developer }
   let_it_be(:group1) { create(:group, developers: developer) }
   let_it_be(:group2) { create(:group, developers: developer, reporters: reporter) }
-  let_it_be(:project_a) { create(:project, :repository, :public, group: group1) }
+  let_it_be(:project_a, freeze: false) { create(:project, :repository, :public, group: group1) }
   let_it_be(:project_b) { create(:project, :repository, :private, group: group1) }
-  let_it_be(:project_c) { create(:project, :repository, :public, group: group2) }
+  let_it_be(:project_c, freeze: false) { create(:project, :repository, :public, group: group2) }
   let_it_be(:project_d) { create(:project, :repository, :private, group: group2) }
   let_it_be(:archived_project) { create(:project, :repository, :archived, group: group2) }
   let_it_be(:milestone1) { create(:milestone, project: project_c, due_date: 10.days.from_now) }
   let_it_be(:milestone2) { create(:milestone, project: project_d, due_date: 20.days.from_now) }
   let_it_be(:milestone3) { create(:milestone, project: project_d, due_date: 30.days.from_now) }
   let_it_be(:milestone4) { create(:milestone, project: project_a, due_date: 40.days.from_now) }
-  let_it_be(:priority1) { create(:label, project: project_c, priority: 1) }
-  let_it_be(:priority2) { create(:label, project: project_d, priority: 5) }
-  let_it_be(:priority3) { create(:label, project: project_a, priority: 10) }
-  let_it_be(:priority4) { create(:label, project: project_d, priority: 15) }
+  let_it_be(:priority1, freeze: false) { create(:label, project: project_c, priority: 1) }
+  let_it_be(:priority2, freeze: false) { create(:label, project: project_d, priority: 5) }
+  let_it_be(:priority3, freeze: false) { create(:label, project: project_a, priority: 10) }
+  let_it_be(:priority4, freeze: false) { create(:label, project: project_d, priority: 15) }
 
-  let_it_be(:issue_a) do
+  let_it_be(:issue_a, freeze: false) do
     create(
       :issue,
       project: project_a,
@@ -36,7 +36,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 
-  let_it_be(:issue_b) do
+  let_it_be(:issue_b, freeze: false) do
     create(
       :issue,
       :with_alert,
@@ -60,7 +60,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 
-  let_it_be(:issue_d) do
+  let_it_be(:issue_d, freeze: false) do
     create(
       :issue,
       :with_alert,
@@ -72,7 +72,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     )
   end
 
-  let_it_be(:issue_e) do
+  let_it_be(:issue_e, freeze: false) do
     create(
       :issue,
       :confidential,
@@ -85,7 +85,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   end
 
   let_it_be(:archived_issue) { create(:issue, project: archived_project) }
-  let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
+  let_it_be_with_reload(:issues) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
   # we need to always provide at least one filter to the query so it doesn't fail
   let_it_be(:base_params) { { iids: issues.map { |issue| issue.iid.to_s } } }
 

@@ -8,7 +8,7 @@ module Gitlab
 
         def prometheus_labels
           @prometheus_labels ||= {
-            migration_id: format("%s/%s", *id),
+            migration_id: format("%s/%s", partition, id),
             migration_identifier: format("%s/%s.%s", job_class_name, table_name, column_name)
           }
         end

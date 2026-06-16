@@ -8,6 +8,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 const domParser = new DOMParser();
 
 export default {
+  name: 'JsonTable',
   directives: {
     SafeHtml,
   },

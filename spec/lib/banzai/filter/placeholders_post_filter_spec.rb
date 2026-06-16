@@ -40,7 +40,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:private_group) { create(:group, :private) }
-  let_it_be(:project, reload: true) do
+  let_it_be_with_reload(:project) do
     create(:project, :small_repo, :public, group: group, create_tag: 'test', path: 'project-img')
   end
 
@@ -186,7 +186,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
   end
 
   context 'when private project' do
-    let_it_be(:project, reload: true) { create(:project, :small_repo, group: group, create_tag: 'test') }
+    let_it_be_with_reload(:project) { create(:project, :small_repo, group: group, create_tag: 'test') }
 
     context 'with no access' do
       it_behaves_like 'placeholders with no access'
@@ -216,7 +216,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
   end
 
   context 'when private group, private project' do
-    let_it_be(:project, reload: true) { create(:project, :small_repo, group: private_group, create_tag: 'test') }
+    let_it_be_with_reload(:project) { create(:project, :small_repo, group: private_group, create_tag: 'test') }
 
     context 'with no access' do
       it_behaves_like 'placeholders with no access, no group'
@@ -240,13 +240,13 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
   end
 
   context 'when project has a disabled repository' do
-    let_it_be(:project, reload: true) { create(:project, :public, :repository_disabled, group: group) }
+    let_it_be_with_reload(:project) { create(:project, :public, :repository_disabled, group: group) }
 
     it_behaves_like 'placeholders with access, no code access'
   end
 
   context 'when project has no repository' do
-    let_it_be(:project, reload: true) { create(:project, :public, group: group) }
+    let_it_be_with_reload(:project) { create(:project, :public, group: group) }
 
     it_behaves_like 'placeholders with access, no code access'
   end

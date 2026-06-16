@@ -33,9 +33,12 @@ import {
   MEMBERSHIP_RADIO_GROUP_LABEL,
   MEMBERSHIP_THIS_GROUP_OR_PROJECT,
   MEMBERSHIP_ALL_GROUPS_AND_PROJECTS,
+  INVALID_ENTRIES_FEEDBACK,
+  EMPTY_INVITES_FEEDBACK,
+  INVITE_CAP_REACHED_TEXT,
+  MAX_INVITES,
 } from '../constants';
 import eventHub from '../event_hub';
-import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
   displaySuccessfulInvitationAlert,
   reloadOnMemberInvitationSuccess,
@@ -154,9 +157,9 @@ export default {
       mode: 'default',
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
-      shouldShowEmptyInvitesAlert: false,
       hasIncompleteMemberInput: false,
       inviteToRootGroup: false,
+      hasReachedInviteCap: false,
     };
   },
   computed: {
@@ -192,6 +195,9 @@ export default {
       return this.isProject
         ? helpPagePath('user/project/members/_index', { anchor: 'add-users-to-a-project' })
         : helpPagePath('user/group/_index', { anchor: 'add-users-to-a-group' });
+    },
+    inviteCapReachedText() {
+      return sprintf(INVITE_CAP_REACHED_TEXT, { max: MAX_INVITES });
     },
     hasInvites() {
       return Boolean(this.newUsersToInvite.length);
@@ -244,9 +250,6 @@ export default {
         count: this.errorsExpanded.length,
       });
     },
-    formGroupDescription() {
-      return this.invalidFeedbackMessage ? null : this.$options.labels.placeHolder;
-    },
     shouldShowSeatOverageNotification() {
       return this.errorReason === BLOCKED_SEAT_OVERAGES_ERROR_REASON && this.addSeatsHref;
     },
@@ -259,8 +262,8 @@ export default {
   },
   watch: {
     hasEmptyOrIncompleteInvites(hasEmptyOrIncomplete) {
-      if (!hasEmptyOrIncomplete && this.shouldShowEmptyInvitesAlert) {
-        this.clearEmptyInviteError();
+      if (!hasEmptyOrIncomplete && this.invalidFeedbackMessage) {
+        this.clearValidation();
       }
     },
   },
@@ -277,8 +280,14 @@ export default {
     handleTokenizationStateChange(hasPendingInput) {
       this.hasIncompleteMemberInput = hasPendingInput;
     },
-    showInvalidFeedbackMessage(response) {
-      this.invalidFeedbackMessage = getInvalidFeedbackMessage(response);
+    handleInviteCapReached(isReached) {
+      this.hasReachedInviteCap = isReached;
+    },
+    showInvalidFeedbackMessage() {
+      this.invalidFeedbackMessage = INVALID_ENTRIES_FEEDBACK;
+      this.$nextTick(() => {
+        this.$refs.alerts?.focus();
+      });
     },
     partitionNewUsersToInvite() {
       const [usersToInviteByEmail, usersToAddById] = partition(
@@ -301,10 +310,15 @@ export default {
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
     },
-    showEmptyInvitesAlert() {
-      this.invalidFeedbackMessage = this.$options.labels.placeHolder;
-      this.shouldShowEmptyInvitesAlert = true;
-      this.$refs.alerts.focus();
+    showInvalidInputFeedback() {
+      if (!this.hasInvites && !this.hasIncompleteMemberInput) {
+        this.invalidFeedbackMessage = EMPTY_INVITES_FEEDBACK;
+      } else {
+        this.invalidFeedbackMessage = INVALID_ENTRIES_FEEDBACK;
+      }
+      this.$nextTick(() => {
+        this.$refs.alerts?.focus();
+      });
     },
     getInvitePayload({ accessLevel, expiresAt, memberRoleId }) {
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
@@ -326,7 +340,7 @@ export default {
       this.clearValidation();
 
       if (this.hasEmptyOrIncompleteInvites) {
-        this.showEmptyInvitesAlert();
+        this.showInvalidInputFeedback();
         return;
       }
 
@@ -364,7 +378,7 @@ export default {
     },
     showErrors(message) {
       if (isString(message)) {
-        this.invalidFeedbackMessage = message;
+        this.invalidFeedbackMessage = INVALID_ENTRIES_FEEDBACK;
       } else {
         this.invalidMembers = message;
         this.$refs.alerts.focus();
@@ -383,10 +397,10 @@ export default {
     resetFields() {
       this.clearValidation();
       this.isLoading = false;
-      this.shouldShowEmptyInvitesAlert = false;
       this.newUsersToInvite = [];
       this.hasIncompleteMemberInput = false;
       this.inviteToRootGroup = false;
+      this.hasReachedInviteCap = false;
     },
     onInviteSuccess() {
       this.track('invite_successful', { label: this.source });
@@ -409,10 +423,6 @@ export default {
       this.invalidFeedbackMessage = '';
       this.usersWithWarning = {};
       this.invalidMembers = {};
-    },
-    clearEmptyInviteError() {
-      this.invalidFeedbackMessage = '';
-      this.shouldShowEmptyInvitesAlert = false;
     },
     removeToken(token) {
       delete this.invalidMembers[memberName(token)];
@@ -441,7 +451,6 @@ export default {
     :access-expiration-help-link="accessExpirationHelpLink"
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
-    :form-group-description="formGroupDescription"
     :invalid-feedback-message="invalidFeedbackMessage"
     :has-incomplete-member-input="hasIncompleteMemberInput"
     :is-loading="isLoading"
@@ -459,16 +468,6 @@ export default {
   >
     <template #alert>
       <div ref="alerts" tabindex="-1">
-        <gl-alert
-          v-if="shouldShowEmptyInvitesAlert"
-          id="empty-invites-alert"
-          class="gl-mb-4"
-          variant="danger"
-          :dismissible="false"
-          data-testid="empty-invites-alert"
-        >
-          {{ $options.labels.emptyInvitesAlertText }}
-        </gl-alert>
         <gl-alert
           v-if="hasInvalidMembers"
           class="gl-mb-4"
@@ -550,7 +549,6 @@ export default {
       <members-token-select
         v-model="newUsersToInvite"
         class="gl-mb-2"
-        aria-labelledby="empty-invites-alert"
         :input-id="inputId"
         :exception-state="exceptionState"
         :users-with-warning="usersWithWarning"
@@ -558,7 +556,16 @@ export default {
         @clear="clearValidation"
         @token-remove="removeToken"
         @tokenization-state-change="handleTokenizationStateChange"
+        @invite-cap-reached="handleInviteCapReached"
       />
+      <span
+        v-if="hasReachedInviteCap"
+        class="gl-mt-2 gl-block gl-text-warning"
+        data-testid="invite-cap-reached"
+        role="status"
+      >
+        {{ inviteCapReachedText }}
+      </span>
     </template>
 
     <template #after-members-input>

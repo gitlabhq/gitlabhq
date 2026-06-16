@@ -40,12 +40,6 @@ and target branches, and shows the results in the merge request.
 
 ## Configure browser performance testing
 
-{{< history >}}
-
-- `SITESPEED_DOCKER_OPTIONS` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134024) in GitLab 16.6.
-
-{{< /history >}}
-
 Prerequisites:
 
 - [GitLab Runner configured with Docker-in-Docker](../docker/using_docker_build.md#use-docker-in-docker).

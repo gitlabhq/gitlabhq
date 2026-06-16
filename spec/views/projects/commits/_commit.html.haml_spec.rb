@@ -96,6 +96,50 @@ RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_c
     expect(rendered).not_to have_css('#js-commit-history-link')
   end
 
+  context 'with agent session badge' do
+    let(:ref) { 'master' }
+    let(:badge_selector) { "[data-testid='commit-agent-session-badge']" }
+
+    before do
+      allow(view).to receive(:project_commits_path).and_return('/commits/123')
+    end
+
+    subject(:render_commit) do
+      render partial: template, formats: :html, locals: {
+        project: project,
+        ref: ref,
+        commit: commit
+      }
+      rendered
+    end
+
+    context 'when commit responds to has_agent_session? and returns true' do
+      before do
+        allow(commit).to receive_messages(has_agent_session?: true)
+      end
+
+      it 'renders the agent session badge' do
+        expect(render_commit).to have_css(badge_selector)
+      end
+    end
+
+    context 'when commit responds to has_agent_session? and returns false' do
+      before do
+        allow(commit).to receive_messages(has_agent_session?: false)
+      end
+
+      it 'does not render the agent session badge' do
+        expect(render_commit).not_to have_css(badge_selector)
+      end
+    end
+
+    context 'when commit does not respond to has_agent_session?' do
+      it 'does not render the agent session badge' do
+        expect(render_commit).not_to have_css(badge_selector)
+      end
+    end
+  end
+
   context 'when it is blob page' do
     let(:ref) { 'master' }
 

@@ -48,6 +48,7 @@ export default {
       if (!this.info?.pathToArtifact) return null;
       return convertToGraphQLId(
         TYPENAME_PACKAGES_PACKAGE,
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- parsing a server-provided path to extract the package ID segment
         this.info.pathToArtifact.split('/packages/')[1],
       );
     },

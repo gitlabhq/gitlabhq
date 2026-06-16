@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe IssuablePolicy, :models do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:planner) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:guest, freeze: false) { create(:user) }
+  let_it_be(:planner, freeze: false) { create(:user) }
+  let_it_be(:reporter, freeze: false) { create(:user) }
+  let_it_be(:developer, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
 
   let(:issue) { create(:issue, project: project) }
   let(:policies) { described_class.new(user, issue) }
@@ -58,7 +58,7 @@ RSpec.describe IssuablePolicy, :models do
       end
 
       context 'when project is private' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project, freeze: false) { create(:project, :private) }
 
         before_all do
           project.add_developer(developer)
@@ -195,7 +195,7 @@ RSpec.describe IssuablePolicy, :models do
     end
 
     context 'when subject is a Merge Request' do
-      let_it_be(:issuable) { create(:merge_request) }
+      let_it_be(:issuable, freeze: false) { create(:merge_request) }
       let(:policy) { permissions(user, issuable) }
 
       before do
@@ -222,7 +222,7 @@ RSpec.describe IssuablePolicy, :models do
     end
 
     context 'when subject is an Issue' do
-      let_it_be(:issuable) { create(:issue) }
+      let_it_be(:issuable, freeze: false) { create(:issue) }
       let(:policy) { permissions(user, issuable) }
 
       before do

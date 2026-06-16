@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe CaseSensitivity do
   describe '.iwhere' do
-    let_it_be(:connection) { Namespace.connection }
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:model) do
+    let_it_be(:connection, freeze: false) { Namespace.connection }
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:model, freeze: false) do
       Class.new(ActiveRecord::Base) do
         include CaseSensitivity
         self.table_name = 'namespaces'
@@ -14,12 +14,12 @@ RSpec.describe CaseSensitivity do
       end
     end
 
-    let_it_be(:model_1) do
+    let_it_be(:model_1, freeze: false) do
       model.create!(path: 'mOdEl-1', name: 'mOdEl 1', type: Namespaces::UserNamespace.sti_name,
         organization_id: organization.id)
     end
 
-    let_it_be(:model_2) do
+    let_it_be(:model_2, freeze: false) do
       model.create!(path: 'mOdEl-2', name: 'mOdEl 2', type: Group.sti_name, organization_id: organization.id)
     end
 

@@ -116,4 +116,22 @@ RSpec.describe Ci::HidableVariable, feature_category: :pipeline_composition do
   context 'with Ci::GroupVariable' do
     it_behaves_like 'HiddenVariableValidations', Ci::GroupVariable, :group
   end
+
+  context 'with Ci::InstanceVariable' do
+    # InstanceVariable has no association like :project or :group,
+    # so we test it directly without the shared examples
+    let(:variable_key) { 'INSTANCE_TEST_KEY' }
+    let(:variable_value) { 'INSTANCE_TEST_VALUE' }
+
+    it 'allows creating a masked and hidden variable' do
+      variable = Ci::InstanceVariable.new(masked: true, hidden: true, key: variable_key, value: variable_value)
+      expect(variable).to be_valid
+    end
+
+    it 'rejects creating a hidden but not masked variable' do
+      variable = Ci::InstanceVariable.new(masked: false, hidden: true, key: variable_key, value: variable_value)
+      expect(variable).not_to be_valid
+      expect(variable.errors[:masked]).to include('should be true when variable is hidden')
+    end
+  end
 end

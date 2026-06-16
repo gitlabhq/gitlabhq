@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 機能フラグユーザーリストAPI
 ---
 
@@ -14,26 +14,23 @@ title: 機能フラグユーザーリストAPI
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/205409)されたのは、[GitLab Premium](https://about.gitlab.com/pricing/) 12.10です。
-- [移行](https://gitlab.com/gitlab-org/gitlab/-/issues/212318)したのは13.5のGitLab Freeです。
+- [Premium](https://about.gitlab.com/pricing/) 12.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/205409)
+- 13.5でGitLab Freeに[移行](https://gitlab.com/gitlab-org/gitlab/-/issues/212318)。
 
 {{< /history >}}
 
-このAPIを使用して、GitLabの機能フラグの[ユーザーリスト](../operations/feature_flags.md#user-list)を操作します。
+GitLabの機能フラグ（[ユーザーリスト](../operations/feature_flags.md#user-list)用）を操作するには、このAPIを使用します。
 
-前提要件: 
+前提条件: 
 
-- デベロッパーロール以上が必要です。
+- デベロッパー、メンテナー、またはオーナーロールが必要です。
 
-{{< alert type="note" >}}
+> [!note]
+> 全ユーザーの機能フラグを操作するには、[機能フラグAPI](feature_flags.md)を参照してください。
 
-すべてのユーザーの機能フラグを操作するには、[Feature flag API](feature_flags.md)を参照してください。
+## プロジェクトのすべての機能フラグユーザーリストを一覧表示 {#list-all-feature-flag-user-lists-for-a-project}
 
-{{< /alert >}}
-
-## プロジェクトのすべての機能フラグユーザーリストをリスト表示します {#list-all-feature-flag-user-lists-for-a-project}
-
-リクエストされたプロジェクトのすべての機能フラグユーザーリストを取得します。
+指定されたプロジェクトのすべての機能フラグユーザーリストを一覧表示します。
 
 ```plaintext
 GET /projects/:id/feature_flags_user_lists
@@ -51,7 +48,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -76,9 +73,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 機能フラグユーザーリストを作成します {#create-a-feature-flag-user-list}
+## 機能フラグユーザーリストを作成 {#create-a-feature-flag-user-list}
 
-機能フラグユーザーリストを作成します。
+指定されたプロジェクトに機能フラグユーザーリストを作成します。
 
 ```plaintext
 POST /projects/:id/feature_flags_user_lists
@@ -88,7 +85,7 @@ POST /projects/:id/feature_flags_user_lists
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | 整数または文字列   | はい        | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。       |
 | `name`              | 文字列           | はい        | リストの名前。 |
-| `user_xids`         | 文字列           | はい        | 外部ユーザーIDのカンマ区切りリスト。 |
+| `user_xids`         | 文字列           | はい        | 外部ユーザーIDのコンマ区切りリスト。 |
 
 ```shell
 curl --request POST \
@@ -103,7 +100,7 @@ curl --request POST \
 EOF
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -117,9 +114,9 @@ EOF
 }
 ```
 
-## 機能フラグのユーザーリストを取得 {#get-a-feature-flag-user-list}
+## 機能フラグユーザーリストを取得する {#retrieve-a-feature-flag-user-list}
 
-機能フラグユーザーリストを取得します。
+指定された機能フラグユーザーリストを取得する。
 
 ```plaintext
 GET /projects/:id/feature_flags_user_lists/:iid
@@ -137,7 +134,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -151,9 +148,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 機能フラグユーザーリストを更新します {#update-a-feature-flag-user-list}
+## 機能フラグユーザーリストを更新 {#update-a-feature-flag-user-list}
 
-機能フラグユーザーリストを更新します。
+指定された機能フラグユーザーリストを更新します。
 
 ```plaintext
 PUT /projects/:id/feature_flags_user_lists/:iid
@@ -164,7 +161,7 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 | `id`                | 整数または文字列   | はい        | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。       |
 | `iid`               | 整数または文字列   | はい        | プロジェクトの機能フラグユーザーリストの内部ID。                               |
 | `name`              | 文字列           | いいえ         | リストの名前。                                                          |
-| `user_xids`         | 文字列           | いいえ         | 外部ユーザーIDのカンマ区切りリスト。                                                    |
+| `user_xids`         | 文字列           | いいえ         | 外部ユーザーIDのコンマ区切りリスト。                                                    |
 
 ```shell
 curl --request PUT \
@@ -178,7 +175,7 @@ curl --request PUT \
 EOF
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -192,9 +189,9 @@ EOF
 }
 ```
 
-## 機能フラグユーザーリストを削除します {#delete-feature-flag-user-list}
+## 機能フラグユーザーリストを削除 {#delete-feature-flag-user-list}
 
-機能フラグユーザーリストを削除します。
+指定された機能フラグユーザーリストを削除します。
 
 ```plaintext
 DELETE /projects/:id/feature_flags_user_lists/:iid

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupLink::GroupGroupLinkSerializer do
+RSpec.describe GroupLink::GroupGroupLinkSerializer, feature_category: :groups_and_projects do
   include_context 'group_group_link'
 
   subject(:json) { described_class.new.represent(shared_group.shared_with_group_links).to_json }

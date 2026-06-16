@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Timelog, feature_category: :team_planning do
   subject { create(:timelog) }
 
-  let_it_be(:issue) { create(:issue) }
+  let_it_be(:issue, freeze: false) { create(:issue) }
   let_it_be(:merge_request) { create(:merge_request) }
 
   it { is_expected.to belong_to(:project) }
@@ -113,22 +113,22 @@ RSpec.describe Timelog, feature_category: :team_planning do
   describe 'scopes' do
     let_it_be(:group) { create(:group) }
     let_it_be(:group_project) { create(:project, :empty_repo, group: group) }
-    let_it_be(:group_issue) { create(:issue, project: group_project) }
-    let_it_be(:group_merge_request) { create(:merge_request, source_project: group_project) }
+    let_it_be(:group_issue, freeze: false) { create(:issue, project: group_project) }
+    let_it_be(:group_merge_request, freeze: false) { create(:merge_request, source_project: group_project) }
 
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:subgroup_project) { create(:project, :empty_repo, group: subgroup) }
-    let_it_be(:subgroup_issue) { create(:issue, project: subgroup_project) }
-    let_it_be(:subgroup_merge_request) { create(:merge_request, source_project: subgroup_project) }
+    let_it_be(:subgroup_issue, freeze: false) { create(:issue, project: subgroup_project) }
+    let_it_be(:subgroup_merge_request, freeze: false) { create(:merge_request, source_project: subgroup_project) }
 
     let_it_be(:short_time_ago) { 5.days.ago }
-    let_it_be(:medium_time_ago) { 15.days.ago }
+    let_it_be(:medium_time_ago, freeze: false) { 15.days.ago }
     let_it_be(:long_time_ago) { 65.days.ago }
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:timelog) { create(:issue_timelog, spent_at: long_time_ago, user: user) }
-    let_it_be(:timelog1) { create(:issue_timelog, spent_at: medium_time_ago, issue: group_issue, user: user) }
-    let_it_be(:timelog2) { create(:issue_timelog, spent_at: short_time_ago, issue: subgroup_issue) }
+    let_it_be(:timelog1, freeze: false) { create(:issue_timelog, spent_at: medium_time_ago, issue: group_issue, user: user) }
+    let_it_be(:timelog2, freeze: false) { create(:issue_timelog, spent_at: short_time_ago, issue: subgroup_issue) }
     let_it_be(:timelog3) { create(:merge_request_timelog, spent_at: long_time_ago) }
     let_it_be(:timelog4) { create(:merge_request_timelog, spent_at: medium_time_ago, merge_request: group_merge_request) }
     let_it_be(:timelog5) { create(:merge_request_timelog, spent_at: short_time_ago, merge_request: subgroup_merge_request) }
@@ -206,7 +206,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
   end
 
   describe 'sorting' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user, freeze: false) { create(:user) }
 
     let_it_be(:timelog_a) do
       create(

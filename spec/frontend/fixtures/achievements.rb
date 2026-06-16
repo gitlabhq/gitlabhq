@@ -9,7 +9,7 @@ RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_pro
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
 
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group, freeze: false) { create(:group, :public) }
 
     describe 'get_group_achievements.query.graphql' do
       let(:query_path) { 'achievements/components/graphql/get_group_achievements.query.graphql' }
@@ -48,8 +48,8 @@ RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_pro
     end
 
     describe 'create_achievement.mutation.graphql' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:achievement) { create(:achievement, namespace: group, name: 'Hero') }
+      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:achievement, freeze: false) { create(:achievement, namespace: group, name: 'Hero') }
 
       let(:mutation_path) { 'achievements/components/graphql/create_achievement.mutation.graphql' }
       let(:mutation) { get_graphql_query_as_string(mutation_path) }
@@ -81,8 +81,8 @@ RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_pro
     end
 
     describe 'award_achievement.mutation.graphql' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:achievement) { create(:achievement, namespace: group, name: 'Hero') }
+      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:achievement, freeze: false) { create(:achievement, namespace: group, name: 'Hero') }
 
       let(:mutation_path) { 'achievements/components/graphql/award_achievement.mutation.graphql' }
       let(:mutation) { get_graphql_query_as_string(mutation_path) }

@@ -4,7 +4,6 @@ import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { formatAsyncCount } from '~/super_sidebar/utils';
 import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY, MAX_OPEN_WORK_ITEMS_COUNT } from '../constants';
@@ -19,7 +18,6 @@ export default {
     NavItem,
     PinnedSection,
   },
-  mixins: [glFeatureFlagsMixin()],
   i18n: {
     pinAdded: s__('Navigation|%{title} added to pinned items'),
     pinRemoved: s__('Navigation|%{title} removed from pinned items'),
@@ -88,11 +86,7 @@ export default {
         const result = {};
 
         for (const [key, value] of Object.entries(values)) {
-          if (
-            key === 'openWorkItemsCount' &&
-            value >= MAX_OPEN_WORK_ITEMS_COUNT &&
-            this.glFeatures.showWorkItemsSidebarCount
-          ) {
+          if (key === 'openWorkItemsCount' && value >= MAX_OPEN_WORK_ITEMS_COUNT) {
             result[key] = `${formatAsyncCount(MAX_OPEN_WORK_ITEMS_COUNT)}+`;
           } else {
             const formatted = formatAsyncCount(value);

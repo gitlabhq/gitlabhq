@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::TagPolicy, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Git::TagPolicy, feature_category: :source_code_management
     it { is_expected.to be_allowed(:delete_tag) }
 
     context 'when the tag is protected' do
-      let_it_be(:protected_tag) { create(:protected_tag, project: project, name: tag.name) }
+      let_it_be(:protected_tag, freeze: false) { create(:protected_tag, project: project, name: tag.name) }
 
       it { is_expected.to be_disallowed(:delete_tag) }
     end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Git::TagPolicy, feature_category: :source_code_management
     it { is_expected.to be_allowed(:delete_tag) }
 
     context 'when the tag is protected' do
-      let_it_be(:protected_tag) { create(:protected_tag, project: project, name: tag.name) }
+      let_it_be(:protected_tag, freeze: false) { create(:protected_tag, project: project, name: tag.name) }
 
       it { is_expected.to be_allowed(:delete_tag) }
     end
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Git::TagPolicy, feature_category: :source_code_management
     it { is_expected.to be_allowed(:delete_tag) }
 
     context 'when the tag is protected' do
-      let_it_be(:protected_tag) { create(:protected_tag, project: project, name: tag.name) }
+      let_it_be(:protected_tag, freeze: false) { create(:protected_tag, project: project, name: tag.name) }
 
       it { is_expected.to be_allowed(:delete_tag) }
     end

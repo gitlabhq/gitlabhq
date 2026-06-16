@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Packages::Conan::MetadataExtractionService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:package_reference, refind: true) { create(:conan_package_reference, info: {}) }
-  let_it_be(:package_file, refind: true) do
+  let_it_be_with_refind(:package_reference) { create(:conan_package_reference, info: {}) }
+  let_it_be_with_refind(:package_file) do
     create(:conan_package_file, :conan_package_info, conan_package_reference: package_reference)
   end
 

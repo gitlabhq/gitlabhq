@@ -169,7 +169,7 @@ module QA
           abort if status.nonzero?
         end
 
-        $stdout.puts "Saved to file: #{output_file}"
+        puts "Saved to file: #{output_file}"
       end
 
       def configure_default_formatters!(args)

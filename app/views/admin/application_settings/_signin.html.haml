@@ -50,6 +50,13 @@
         _('Enable email notification'),
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
+      = f.label :email_otp_enabled, _('Email-based one-time password (OTP)'), class: 'label-bold'
+      - email_otp_help_text = _('Allow users to verify sign-ins using an email-based one-time password as a multi-factor authentication method.')
+      - help_link = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'enable-email-otp'), target: '_blank', rel: 'noopener noreferrer'
+      = f.gitlab_ui_checkbox_component :email_otp_enabled,
+        _('Enable email-based one-time passwords'),
+        help_text: '%{help_text} %{help_link}'.html_safe % { help_text: email_otp_help_text, help_link: help_link }
+    .form-group
       = f.label :require_email_verification_on_account_locked, _('Email verification for locked accounts'), class: 'label-bold'
       - help_text = _('Require users to verify their email address when their account is locked.')
       - help_link = link_to _('Learn more.'), help_page_path('security/email_verification.md'), target: '_blank', rel: 'noopener noreferrer'

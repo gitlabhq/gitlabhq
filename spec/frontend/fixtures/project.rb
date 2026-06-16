@@ -9,8 +9,8 @@ RSpec.describe 'Project (GraphQL fixtures)', feature_category: :groups_and_proje
     include JavaScriptFixturesHelpers
     include ProjectForksHelper
 
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:current_user, freeze: false) { create(:user) }
 
     describe 'writable forks' do
       writeable_forks_query_path = 'vue_shared/components/web_ide/get_writable_forks.query.graphql'
@@ -32,8 +32,8 @@ RSpec.describe 'Project (GraphQL fixtures)', feature_category: :groups_and_proje
       end
 
       context 'with some' do
-        let_it_be(:fork1) { fork_project(project, nil, repository: true) }
-        let_it_be(:fork2) { fork_project(project, nil, repository: true) }
+        let_it_be(:fork1, freeze: false) { fork_project(project, nil, repository: true) }
+        let_it_be(:fork2, freeze: false) { fork_project(project, nil, repository: true) }
 
         before_all do
           fork1.add_developer(current_user)

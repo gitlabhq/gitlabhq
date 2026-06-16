@@ -21,10 +21,6 @@ module API
         SystemHook
       end
 
-      def webhook_signing_token_actor
-        :instance
-      end
-
       params :hook_parameters do
         optional :name, type: String, desc: 'Name of the hook'
         optional :description, type: String, desc: 'Description of the hook'
@@ -51,8 +47,8 @@ module API
       mount ::API::Hooks::UrlVariables, with: { boundary_type: :instance }
       mount ::API::Hooks::CustomHeaders, with: { boundary_type: :instance }
 
-      desc 'List system hooks' do
-        detail 'Get a list of all system hooks'
+      desc 'List all system hooks' do
+        detail 'Lists all system hooks for the instance.'
         success Entities::Hook
         is_array true
         tags system_hooks_tags
@@ -65,8 +61,8 @@ module API
         present paginate(SystemHook.all), with: Entities::Hook
       end
 
-      desc 'Get system hook' do
-        detail 'Get a system hook by its ID. Introduced in GitLab 14.9.'
+      desc 'Retrieve a system hook' do
+        detail 'Retrieves a specified system hook.'
         success Entities::Hook
         failure [
           { code: 404, message: 'Not found' }
@@ -81,8 +77,8 @@ module API
         present find_hook, with: Entities::Hook
       end
 
-      desc 'Add new system hook' do
-        detail 'Add a new system hook'
+      desc 'Create a system hook' do
+        detail 'Creates a system hook.'
         success Entities::Hook
         failure [
           { code: 400, message: 'Validation error' },
@@ -108,8 +104,8 @@ module API
         end
       end
 
-      desc 'Edit system hook' do
-        detail 'Edits a system hook'
+      desc 'Update a system hook' do
+        detail 'Updates a specified system hook.'
         success Entities::Hook
         failure [
           { code: 400, message: 'Validation error' },
@@ -140,8 +136,8 @@ module API
         kind: 'system_hooks'
       }
 
-      desc 'Delete system hook' do
-        detail 'Deletes a system hook'
+      desc 'Delete a system hook' do
+        detail 'Deletes a specified system hook. Administrators only.'
         success Entities::Hook
         failure [
           { code: 404, message: 'Not found' }

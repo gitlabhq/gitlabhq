@@ -6,7 +6,7 @@ RSpec.shared_examples 'issues link quick action' do |command|
   let_it_be_with_reload(:second_issue) { create(:issue, project: project) }
   let_it_be_with_reload(:third_issue) { create(:issue, project: project) }
   let_it_be_with_reload(:work_item_issue) { create(:work_item, project: project) }
-  let_it_be(:work_item_issue_link) { Issue.find(work_item_issue.id) }
+  let_it_be(:work_item_issue_link, freeze: false) { Issue.find(work_item_issue.id) }
 
   let(:link_type) { command == :relate ? 'relates_to' : 'blocks' }
   let(:links_query) do
@@ -109,7 +109,7 @@ RSpec.shared_examples 'issues link quick action' do |command|
       end
 
       context 'when linking a private issue' do
-        let_it_be(:private_issue) { create(:issue, project: create(:project, :private)) }
+        let_it_be(:private_issue, freeze: false) { create(:issue, project: create(:project, :private)) }
         let(:issues_linked) { [] }
         let(:content) { "/#{command} #{private_issue.to_reference(project)}" }
 

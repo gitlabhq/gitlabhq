@@ -43,7 +43,7 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
     perform
 
     export_job = project.export_jobs.last
-    expect(export_job.started?).to eq(true)
+    expect(export_job.started?).to be(true)
   end
 
   it 'creates relation export records and enqueues a worker for each relation to be exported' do

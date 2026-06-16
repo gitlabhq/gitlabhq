@@ -35,6 +35,8 @@ export default {
       import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
     WorkItemStatusBadge: () =>
       import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    BoardCardSessionBadge: () =>
+      import('ee_component/boards/components/board_card_session_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -431,6 +433,12 @@ export default {
             >{{ assigneeCounterLabel }}</span
           >
         </div>
+        <board-card-session-badge
+          v-if="!isEpicBoard"
+          :item="item"
+          class="gl-isolate gl-whitespace-nowrap"
+          @view-all-sessions="$emit('view-all-sessions')"
+        />
         <work-item-relationship-icons
           v-if="hasBlockingRelationships"
           class="gl-isolate gl-whitespace-nowrap"

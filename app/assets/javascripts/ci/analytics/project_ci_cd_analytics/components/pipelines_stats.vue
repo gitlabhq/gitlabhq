@@ -3,7 +3,12 @@ import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { formatBigInt } from '~/analytics/shared/utils';
 import { s__ } from '~/locale';
-import { formatPipelineCountPercentage, formatPipelineDuration } from '../../utils';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import {
+  calculateRateDenominator,
+  formatPipelineCountPercentage,
+  formatPipelineDuration,
+} from '../../utils';
 
 export default {
   name: 'PipelinesStats',
@@ -11,6 +16,7 @@ export default {
     GlSkeletonLoader,
     GlLink,
     GlSingleStat,
+    HelpPopover,
   },
   props: {
     aggregate: {
@@ -29,6 +35,12 @@ export default {
       default: null,
     },
   },
+  failureRatePopover: {
+    title: s__('PipelineCharts|How this is calculated?'),
+    content: s__(
+      "PipelineCharts|Rate = failed_pipelines / (success + failed). Canceled and skipped pipelines aren't included. Success rate is the inverse.",
+    ),
+  },
   computed: {
     failureRatioPath() {
       try {
@@ -39,6 +51,7 @@ export default {
     },
     stats() {
       const { count, successCount, failedCount, durationStatistics } = this.aggregate || {};
+      const rateDenominator = calculateRateDenominator(successCount, failedCount, count);
 
       return [
         {
@@ -54,13 +67,14 @@ export default {
         {
           label: s__('PipelineCharts|Failure rate'),
           identifier: 'failure-ratio',
-          value: formatPipelineCountPercentage(failedCount, count),
+          value: formatPipelineCountPercentage(failedCount, rateDenominator),
           path: this.failureRatioPath,
+          popover: this.$options.failureRatePopover,
         },
         {
           label: s__('PipelineCharts|Success rate'),
           identifier: 'success-ratio',
-          value: formatPipelineCountPercentage(successCount, count),
+          value: formatPipelineCountPercentage(successCount, rateDenominator),
         },
       ];
     },
@@ -77,13 +91,22 @@ export default {
     </gl-skeleton-loader>
     <template v-else>
       <div v-for="stat in stats" :key="stat.identifier">
-        <gl-single-stat
-          :id="stat.identifier"
-          :value="stat.value"
-          :title="stat.label"
-          :aria-busy="loading"
-          should-animate
-        />
+        <div class="gl-flex gl-items-start">
+          <gl-single-stat
+            :id="stat.identifier"
+            :value="stat.value"
+            :title="stat.label"
+            :aria-busy="loading"
+            should-animate
+          />
+          <help-popover
+            v-if="stat.popover"
+            :options="stat.popover"
+            icon="information-o"
+            trigger-class="gl-text-subtle"
+            :data-testid="`${stat.identifier}-help-popover`"
+          />
+        </div>
         <gl-link
           v-if="stat.path"
           class="gl-p-2"

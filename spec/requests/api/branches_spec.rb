@@ -467,17 +467,24 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
     end
 
     context 'when requesting page 2 with the new branches finder' do
-      it 'returns correct branches for the second page' do
-        get api(route, user), params: { per_page: 5, page: 1 }
+      it 'returns correct branches and pagination headers for the second page' do
+        total_branches = project.repository.branch_count
+        per_page = 5
+        expected_total_pages = (total_branches / per_page.to_f).ceil
+
+        get api(route, user), params: { per_page: per_page, page: 1 }
         first_page_names = json_response.map { |b| b['name'] }
 
-        get api(route, user), params: { per_page: 5, page: 2 }
+        get api(route, user), params: { per_page: per_page, page: 2 }
         second_page_names = json_response.map { |b| b['name'] }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(second_page_names).not_to be_empty
         expect(second_page_names).not_to include(*first_page_names)
         expect(response.headers['X-Page']).to eq('2')
+        expect(response.headers['X-Prev-Page']).to eq('1')
+        expect(response.headers['X-Total']).to eq(total_branches.to_s)
+        expect(response.headers['X-Total-Pages']).to eq(expected_total_pages.to_s)
       end
     end
 
@@ -495,6 +502,16 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         get api(route, user), params: { per_page: 100, search: 'no_such_branch_name_entropy_of_jabadabadu' }
 
         expect(json_response).to eq []
+      end
+
+      it 'does not return X-Total and X-Total-Pages headers', :aggregate_failures do
+        get api(route, user), params: { per_page: 5, search: branch_name }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers).not_to have_key('X-Total')
+        expect(response.headers).not_to have_key('X-Total-Pages')
+        expect(response.headers['X-Page']).to eq('1')
+        expect(response.headers['X-Per-Page']).to eq('5')
       end
     end
 

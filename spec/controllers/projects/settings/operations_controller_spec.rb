@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Settings::OperationsController, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, maintainers: user) }
+  let_it_be_with_reload(:project) { create(:project, maintainers: user) }
 
   before do
     sign_in(user)

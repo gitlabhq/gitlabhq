@@ -103,6 +103,11 @@ To allow your local environment to access external MCP tools on GitLab Self-Mana
 To integrate MCP with the Language Server, set up workspace configuration, user configuration, or both.
 The GitLab Language Server loads and merges the configuration files.
 
+> [!note]
+> Workspace configuration applies to your IDE workspace folder or current working directory when
+> you use the GitLab Duo CLI. This is separate from [GitLab Workspaces](../../../user/workspace/_index.md),
+> which are virtual development environments.
+
 ### Version compatibility
 
 | MCP support | GitLab for VS Code | GitLab Duo plugin <br>for JetBrains IDEs | GitLab Duo CLI |
@@ -112,12 +117,12 @@ The GitLab Language Server loads and merges the configuration files.
 
 ### Create workspace configuration
 
-Workspace configuration applies to this project only, and overrides any user configuration for the
-same server.
+Workspace configuration applies to your IDE workspace folder or current working directory, and
+overrides any user configuration for the same server.
 
 To set up workspace configuration:
 
-1. In your project workspace, create the file `<workspace>/.gitlab/duo/mcp.json`.
+1. In your IDE workspace folder or current working directory, create the file `.gitlab/duo/mcp.json`.
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
@@ -125,8 +130,8 @@ To set up workspace configuration:
 
 ### Create user configuration
 
-User configuration settings are good for personal tools and commonly-used servers. They apply to all
-workspaces, but any workspace settings for the same server override the user configuration.
+User configuration settings are good for personal tools and commonly-used servers. They apply across
+all workspace configurations, but a workspace configuration for the same server takes precedence.
 
 To set up user configuration:
 

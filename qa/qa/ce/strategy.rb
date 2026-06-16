@@ -17,6 +17,8 @@ module QA
           initialize_admin_api_client!
           # Initialize global test user and it's api client
           initialize_test_user!
+          # Ensure at least one group exists before any admin signs in via the UI
+          ensure_initial_group_exists!
 
           if Runtime::Env.rspec_retried?
             Runtime::Logger.info('Skipping further global hooks due to retry process')
@@ -80,6 +82,33 @@ module QA
 
           Runtime::User::Store.initialize_user_api_client
           Runtime::User::Store.initialize_test_user
+        end
+
+        # Pre-create the e2e sandbox group via the API so that at least one group exists
+        # before any admin signs in through the UI.
+        #
+        # On a fresh self-managed instance with no groups, admin sign-in is redirected to the
+        # welcome onboarding flow (/admin/registrations/...), which renders the minimal layout
+        # without the super sidebar and breaks Page::Main::Menu validation. The redirect is
+        # gated on `!Group.exists?` (a system-wide check), so creating any group here disables
+        # it for the whole run. Doing it via the API also avoids the first lazy Sandbox
+        # fabrication taking the UI path and hitting the same redirect.
+        # See app/controllers/sessions_controller.rb#should_redirect_to_sm_onboarding?
+        #
+        # @return [void]
+        def ensure_initial_group_exists!
+          # Live environments already have groups and use SaaS onboarding, which is not affected.
+          return if Runtime::Env.running_on_live_env?
+          # Requires an admin client; without one the redirect can't be pre-empted here.
+          return unless Runtime::User::Store.admin_api_client
+
+          Resource::Sandbox.fabricate_via_api! do |sandbox|
+            sandbox.api_client = Runtime::User::Store.admin_api_client
+          end
+        rescue StandardError => e
+          Runtime::Logger.warn(
+            "Failed to pre-create sandbox group: #{e.message}. Admin welcome onboarding redirect may occur."
+          )
         end
       end
     end

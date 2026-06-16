@@ -38,7 +38,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   end
 
   describe 'delegation' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project) }
 
     include_context 'pipeline and build for project'
 
@@ -48,7 +48,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
   describe 'artifacts access config with access keyword' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public, developers: user) }
+    let_it_be(:project, freeze: false) { create(:project, :public, developers: user) }
 
     include_context 'public pipelines disabled'
 
@@ -160,7 +160,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     context 'when no job artifacts on the build' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, :public, developers: user) }
+      let_it_be(:project, freeze: false) { create(:project, :public, developers: user) }
 
       it 'allows read_job_artifacts to project members' do
         expect(policy).to be_allowed :read_job_artifacts
@@ -200,7 +200,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
   describe '#rules' do
     context 'when user does not have access to the project' do
-      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project, freeze: false) { create(:project, :private) }
 
       include_context 'pipeline and build for project'
 
@@ -301,13 +301,13 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         context 'on a public project' do
-          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:project, freeze: false) { create(:project, :public) }
 
           it { expect_allowed(:cancel_build, *described_class.all_job_update_abilities) }
         end
 
         context 'on an internal project' do
-          let_it_be(:project) { create(:project, :internal) }
+          let_it_be(:project, freeze: false) { create(:project, :internal) }
 
           it { expect_allowed(:cancel_build, *described_class.all_job_update_abilities) }
 
@@ -319,7 +319,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         context 'on a private project' do
-          let_it_be(:project) { create(:project, :private) }
+          let_it_be(:project, freeze: false) { create(:project, :private) }
 
           it { expect_disallowed(:cancel_build) }
         end
@@ -538,7 +538,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     let_it_be(:developer) { create(:user) }
     let_it_be(:reporter) { create(:user) }
     let_it_be(:guest) { create(:user) }
-    let_it_be(:project) { create(:project, :public, namespace: owner.namespace, maintainers: maintainer, developers: developer, reporters: reporter, guests: guest) }
+    let_it_be(:project, freeze: false) { create(:project, :public, namespace: owner.namespace, maintainers: maintainer, developers: developer, reporters: reporter, guests: guest) }
 
     let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, source: :webide) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -656,7 +656,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     let_it_be(:user) { create(:user) }
 
     context 'when user can update_build' do
-      let_it_be(:project) { create(:project, :private, maintainers: user) }
+      let_it_be(:project, freeze: false) { create(:project, :private, maintainers: user) }
 
       context 'when job has terminal' do
         before do
@@ -687,7 +687,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     context 'when user cannot update build' do
-      let_it_be(:project) { create(:project, :private, guests: user) }
+      let_it_be(:project, freeze: false) { create(:project, :private, guests: user) }
 
       before do
         allow(build).to receive(:has_terminal?).and_return(true)

@@ -52,6 +52,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
           https: false
         },
         ingress: {
+          enabled: true,
           configureCertmanager: false,
           tls: {
             enabled: false
@@ -64,14 +65,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
           }
         }
       },
-      postgresql: {
-        metrics: { enabled: false },
-        primary: {
-          extraEnvVars: [
-            { name: "POSTGRESQL_MAX_CONNECTIONS", value: "200" }
-          ]
-        }
-      },
       gitlab: {
         "gitlab-exporter": { enabled: false },
         "gitlab-shell": {
@@ -79,7 +72,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
           config: { proxyProtocol: true }
         }
       },
-      redis: { metrics: { enabled: false } },
       prometheus: { install: false },
       "gitlab-runner": { install: false },
       installCertmanager: false

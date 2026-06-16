@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Mutations::Boards::Lists::Destroy, feature_category: :portfolio_management do
   include GraphqlHelpers
 
-  let_it_be(:current_user, reload: true) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
 
   it_behaves_like 'board lists destroy request' do
-    let_it_be(:group, reload: true) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:board) { create(:board, group: group) }
-    let_it_be(:list, refind: true) { create(:list, board: board) }
+    let_it_be_with_refind(:list) { create(:list, board: board) }
 
     let(:variables) do
       {

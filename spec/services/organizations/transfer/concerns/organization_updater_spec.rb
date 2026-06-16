@@ -170,5 +170,39 @@ RSpec.describe Organizations::Transfer::Concerns::OrganizationUpdater, feature_c
         expect(note2.reload.organization_id).to eq(new_organization.id)
       end
     end
+
+    context 'with custom organization_key' do
+      let_it_be(:user1) { create(:user, organization: old_organization) }
+      let_it_be(:user2) { create(:user, organization: old_organization) }
+      let_it_be(:snippet1) { create(:personal_snippet, author: user1, organization: old_organization) }
+      let_it_be(:snippet2) { create(:personal_snippet, author: user2, organization: old_organization) }
+      let_it_be(:new_org_snippet) { create(:personal_snippet, author: user1, organization: new_organization) }
+
+      let_it_be(:repo1) { create(:snippet_repository, snippet: snippet1) }
+      let_it_be(:repo2) { create(:snippet_repository, snippet: snippet2) }
+      let_it_be(:new_org_repo) { create(:snippet_repository, snippet: new_org_snippet) }
+
+      it 'updates records using the custom organization key column' do
+        service.update_organization_id_for(SnippetRepository, organization_key: :snippet_organization_id)
+
+        expect(repo1.reload.snippet_organization_id).to eq(new_organization.id)
+        expect(repo2.reload.snippet_organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update records in other organizations' do
+        service.update_organization_id_for(SnippetRepository, organization_key: :snippet_organization_id)
+
+        expect(new_org_repo.reload.snippet_organization_id).to eq(new_organization.id)
+      end
+
+      it 'works with a block scope and custom key' do
+        service.update_organization_id_for(SnippetRepository, organization_key: :snippet_organization_id) do |relation|
+          relation.where(snippet_id: snippet1.id)
+        end
+
+        expect(repo1.reload.snippet_organization_id).to eq(new_organization.id)
+        expect(repo2.reload.snippet_organization_id).to eq(old_organization.id)
+      end
+    end
   end
 end

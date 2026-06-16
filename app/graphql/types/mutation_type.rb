@@ -130,6 +130,7 @@ module Types
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
+    mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
@@ -150,6 +151,8 @@ module Types
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock
+    mount_mutation Mutations::Terraform::StateProtectionRule::Create, experiment: { milestone: '19.1' }
+    mount_mutation Mutations::Terraform::StateProtectionRule::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Terraform::StateProtectionRule::Update, experiment: { milestone: '18.11' }
     mount_mutation Mutations::Timelogs::Create
     mount_mutation Mutations::Timelogs::Delete

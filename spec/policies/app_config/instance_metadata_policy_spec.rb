@@ -6,7 +6,7 @@ RSpec.describe AppConfig::InstanceMetadataPolicy, feature_category: :api do
   subject { described_class.new(user, AppConfig::InstanceMetadata.new) }
 
   context 'for any logged-in user' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     specify { expect_allowed(:read_instance_metadata) }
   end

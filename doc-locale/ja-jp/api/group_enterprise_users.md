@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループエンタープライズユーザーAPI
 ---
 
@@ -12,15 +12,15 @@ title: グループエンタープライズユーザーAPI
 
 {{< /details >}}
 
-これらのAPIエンドポイントを使用して、エンタープライズユーザーアカウントを操作します。詳細については、[エンタープライズユーザー](../user/enterprise_user/_index.md)を参照してください。
+これらのAPIエンドポイントを使用して、エンタープライズユーザーと対話します。詳細については、[エンタープライズユーザー](../user/enterprise_user/_index.md)を参照してください。
 
 これらのAPIエンドポイントは、トップレベルグループでのみ機能します。ユーザーはグループのメンバーである必要はありません。
 
-前提要件:
+前提条件: 
 
-- トップレベルグループのオーナーロールを持っている必要があります。
+- トップレベルグループでオーナーロールを持っている必要があります。
 
-## すべてのエンタープライズユーザーをリストする {#list-all-enterprise-users}
+## すべてのエンタープライズユーザーを一覧表示 {#list-all-enterprise-users}
 
 {{< history >}}
 
@@ -28,7 +28,7 @@ title: グループエンタープライズユーザーAPI
 
 {{< /history >}}
 
-指定されたトップレベルグループのすべてのエンタープライズユーザーをリストします。
+指定されたトップレベルグループのすべてのエンタープライズユーザーを一覧表示します。
 
 結果をフィルタリングするには、`page`および`per_page` [ページネーションパラメータ](rest/_index.md#offset-based-pagination)を使用します。
 
@@ -36,7 +36,7 @@ title: グループエンタープライズユーザーAPI
 GET /groups/:id/enterprise_users
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
@@ -45,17 +45,19 @@ GET /groups/:id/enterprise_users
 | `search`         | 文字列         | いいえ       | 一致する名前、メール、またはユーザー名を持つユーザーを返します。部分的な値を使用すると、結果が増えます。 |
 | `active`         | ブール値        | いいえ       | アクティブユーザーのみを返します。 |
 | `blocked`        | ブール値        | いいえ       | ブロックされたユーザーのみを返します。 |
-| `created_after`  | 日時       | いいえ       | 指定された時刻以降に作成されたユーザーを返します。形式は、: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
-| `created_before` | 日時       | いいえ       | 指定された時刻よりも前に作成されたユーザーを返します。形式は、: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
-| `two_factor`     | 文字列         | いいえ       | 2要素認証（2FA）の登録ステータスに基づいてユーザーを返します。使用可能な値：`enabled`、`disabled`。 |
+| `created_after`  | 日時       | いいえ       | 指定された時刻以降に作成されたユーザーを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
+| `created_before` | 日時       | いいえ       | 指定された時刻よりも前に作成されたユーザーを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）です。 |
+| `two_factor`     | 文字列         | いいえ       | ユーザーの2要素認証 (2FA) の登録ステータスに基づいてユーザーを返します。可能な値: `enabled`、`disabled`。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -116,7 +118,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## エンタープライズユーザーの詳細を取得 {#get-details-on-an-enterprise-user}
+## エンタープライズユーザーを取得する {#retrieve-an-enterprise-user}
 
 {{< history >}}
 
@@ -124,26 +126,28 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 {{< /history >}}
 
-指定されたエンタープライズユーザーの詳細を取得します。
+指定されたエンタープライズユーザーを取得します。
 
 ```plaintext
 GET /groups/:id/enterprise_users/:user_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | 整数または文字列 | はい      | トップレベルグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`        | 整数        | はい      | ユーザーアカウントのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -201,38 +205,42 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## エンタープライズユーザーを修正する {#modify-an-enterprise-user}
+## エンタープライズユーザーを更新 {#update-an-enterprise-user}
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199248)されたのはGitLab 18.6です。
+- GitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199248)されました。
 
 {{< /history >}}
 
-指定されたエンタープライズユーザーの属性を更新します。
+指定されたエンタープライズユーザーを更新します。
 
 ```plaintext
 PATCH /groups/:id/enterprise_users/:user_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | 整数または文字列 | はい      | トップレベルグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`        | 整数        | はい      | ユーザーアカウントのID。 |
 | `name`           | 文字列         | いいえ       | ユーザーアカウントの名前。 |
-| `email`          | 文字列         | いいえ       | ユーザーアカウントのメールアドレス。確認済みの[グループドメイン](../user/enterprise_user/_index.md#manage-group-domains)からのものでなければなりません。 |
+| `email`          | 文字列         | いいえ       | ユーザーアカウントのメールアドレス。検証済みの[グループドメイン](../user/enterprise_user/_index.md#manage-group-domains)である必要があります。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email=new-email@example.com" --data "name=New name" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "email=new-email@example.com" \
+  --data "name=New name" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
 成功した場合、`200 OK`を返します。
 
-成功したレスポンスの例:
+成功した応答の例:
 
 ```json
 {
@@ -293,7 +301,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email
 その他の発生しうる応答:
 
 - `400 Bad Request`: 検証エラー。
-- `403 Forbidden`: 認証済みのユーザーはオーナーではありません。
+- `403 Forbidden`: 認証済みユーザーがオーナーではありません。
 - `404 Not found`: ユーザーが見つかりません。
 
 ## エンタープライズユーザーを削除する {#delete-an-enterprise-user}
@@ -302,7 +310,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email
 
 - GitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199646)されました。
 
-{{</ history >}}
+{{< /history >}}
 
 指定されたエンタープライズユーザーを削除します。
 
@@ -310,27 +318,29 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email
 DELETE /groups/:id/enterprise_users/:user_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性     | 型           | 必須 | 説明                                                                                                                                                                                                                                                                              |
 |:--------------|:---------------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`          | 整数または文字列 | はい      | トップレベルグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                                                                                                                                                                                                          |
 | `user_id`     | 整数        | はい      | ユーザーアカウントのID。                                                                                                                                                                                                                                                                      |
-| `hard_delete` | ブール値        | いいえ       | `false`の場合、ユーザーを削除し、コントリビューションを[システム全体の「Ghostユーザー」](../user/profile/account/delete_account.md#associated-records)に移動します。`true`の場合、ユーザー、関連するコントリビューション、およびユーザーのみがオーナーになっているグループを削除します。デフォルト値: `false`。  |
+| `hard_delete` | ブール値        | いいえ       | `false`の場合、ユーザーを削除し、そのコントリビュートを[ゴーストユーザー](../user/profile/account/delete_account.md#associated-records)に移動します。`true`の場合、ユーザー、その関連するコントリビュート、およびユーザーのみが所有するすべてのグループを削除します。デフォルト値: `false`。  |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
 ```
 
 成功した場合、`204 No content`を返します。
 
 その他の発生しうる応答:
 
-- `403 Forbidden`: 認証済みのユーザーはオーナーではありません。
+- `403 Forbidden`: 認証済みユーザーがオーナーではありません。
 - `404 Not found`: ユーザーが見つかりません。
-- `409 Conflict`: グループの唯一のオーナーであるユーザーは削除できません。
+- `409 Conflict`: グループの唯一のオーナーであるユーザーを削除することはできません。
 
 ## エンタープライズユーザーの2要素認証を無効にする {#disable-two-factor-authentication-for-an-enterprise-user}
 
@@ -340,29 +350,31 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 {{< /history >}}
 
-指定されたエンタープライズユーザーの2要素認証（2FA）を無効にします。
+指定されたエンタープライズユーザーの2要素認証 (2FA) を無効にします。
 
 ```plaintext
 PATCH /groups/:id/enterprise_users/:user_id/disable_two_factor
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型           | 必須 | 説明 |
 |:-----------------|:---------------|:---------|:------------|
 | `id`             | 整数または文字列 | はい      | トップレベルグループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `user_id`        | 整数        | はい      | ユーザーアカウントのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id/disable_two_factor"
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id/disable_two_factor"
 ```
 
 成功した場合、`204 No content`を返します。
 
 その他の発生しうる応答:
 
-- `400 Bad request`: 指定されたユーザーに対して2FAが有効になっていません。
-- `403 Forbidden`: 認証済みのユーザーはオーナーではありません。
+- `400 Bad request`: 指定されたユーザーに対して2FAは有効になっていません。
+- `403 Forbidden`: 認証済みユーザーがオーナーではありません。
 - `404 Not found`: ユーザーが見つかりません。
