@@ -30,6 +30,7 @@ export default {
           text: this.$options.i18n.legacyToken,
           href: this.accessTokenLegacyNewUrl,
           description: this.$options.i18n.legacyTokenDescription,
+          extraAttrs: { 'data-testid': 'create-legacy-token-item' },
         });
       }
 
@@ -58,6 +59,7 @@ export default {
     size="small"
     placement="bottom-end"
     fluid-width
+    data-testid="create-token-dropdown"
   >
     <template #list-item="{ item }">
       <div class="gl-mx-3 gl-w-34">

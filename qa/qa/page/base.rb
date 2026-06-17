@@ -554,7 +554,7 @@ module QA
         wait_for_requests
 
         return element_when_flag_enabled if has_element?(element_when_flag_enabled, wait: 1, visible: visibility)
-        return element_when_flag_disabled if has_element?(element_when_flag_disabled, wait: 1, visibile: visibility)
+        return element_when_flag_disabled if has_element?(element_when_flag_disabled, wait: 1, visible: visibility)
 
         # Check both options again, this time waiting for the default duration
         return element_when_flag_enabled if has_element?(element_when_flag_enabled, visible: visibility)
