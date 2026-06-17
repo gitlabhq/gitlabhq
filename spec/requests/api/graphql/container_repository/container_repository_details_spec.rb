@@ -163,6 +163,38 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
   end
 
+  context 'when a tag is multi-arch (manifest list or image index)' do
+    let(:tags) { %w[latest] }
+    let(:tag_sizes_response) { graphql_data_at('containerRepository', 'tags', 'nodes', 'totalSize') }
+    let(:image_index) do
+      {
+        'schemaVersion' => 2,
+        'mediaType' => 'application/vnd.oci.image.index.v1+json',
+        'manifests' => [
+          {
+            'mediaType' => 'application/vnd.oci.image.manifest.v1+json',
+            'size' => 7777,
+            'digest' => 'sha256:7777',
+            'platform' => { 'architecture' => 'amd64', 'os' => 'linux' }
+          }
+        ]
+      }
+    end
+
+    before do
+      allow_next_instance_of(ContainerRegistry::Client) do |client|
+        allow(client).to receive(:repository_manifest).and_return(image_index)
+      end
+    end
+
+    it 'returns the tag with a null size instead of erroring', :aggregate_failures do
+      subject
+
+      expect(graphql_errors).to be_nil
+      expect(tag_sizes_response).to eq([nil])
+    end
+  end
+
   context 'limiting the number of tags' do
     let(:limit) { 2 }
     let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
