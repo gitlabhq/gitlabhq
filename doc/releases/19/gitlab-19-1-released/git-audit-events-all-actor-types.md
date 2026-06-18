@@ -1,13 +1,12 @@
 ---
 title: Git operation audit events for all actor types
 stage: create
-weight:
 level: secondary
-tier: [ ultimate ]
+tier: [ Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 documentation_link: "../../../administration/compliance/audit_event_reports/"
 work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/20506"
-ignore_in_report: true
+categories: [ Source Code Management ]
 ---
 
 <!-- categories: Source Code Management -->

@@ -7,7 +7,6 @@ documentation_link: "../../../user/project/merge_requests/reviews/stacked_merge_
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/22211
 categories: [ Code Review Workflow ]
 level: secondary
-ignore_in_report: true
 ---
 
 <!-- categories: Code Review Workflow -->

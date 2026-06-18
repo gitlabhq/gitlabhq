@@ -7,7 +7,6 @@ documentation_link: "../../../user/duo_agent_platform/model_selection/#supported
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/598322
 categories: [ Duo Agent Platform, Duo Code Review ]
 level: secondary
-ignore_in_report: true
 ---
 
 <!-- categories: Duo Agent Platform, Duo Code Review -->

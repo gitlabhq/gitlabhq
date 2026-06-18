@@ -8,7 +8,6 @@ categories: [ AI Catalog ]
 stage: ai-powered
 level: secondary
 weight: 50
-ignore_in_report: true
 ---
 The AI Catalog now validates your custom flow configuration before saving or triggering it.
 

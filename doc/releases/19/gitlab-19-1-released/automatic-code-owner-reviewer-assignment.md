@@ -7,7 +7,6 @@ documentation_link: "../../../user/project/merge_requests/reviews/automatic_revi
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/20708
 categories: [ Code Review Workflow ]
 level: primary
-ignore_in_report: true
 ---
 
 <!-- categories: Code Review Workflow -->

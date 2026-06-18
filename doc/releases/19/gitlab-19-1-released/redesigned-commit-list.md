@@ -1,12 +1,12 @@
 ---
 title: Redesigned repository commit list
 stage: create
-weight:
 level: secondary
-tier: [ free, premium, ultimate ]
+tier: [ Free, Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 documentation_link: "../../../user/project/repository/commits/"
 work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/17482"
+categories: [ Source Code Management ]
 ---
 
 <!-- categories: Source Code Management -->

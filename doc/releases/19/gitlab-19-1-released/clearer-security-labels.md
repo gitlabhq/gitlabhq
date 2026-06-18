@@ -7,7 +7,6 @@ offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 documentation_link: "../../../user/application_security/vulnerabilities/"
 work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/21978"
 categories: [ Vulnerability Management ]
-ignore_in_report: true
 ---
 
 <!-- categories: Vulnerability Management -->

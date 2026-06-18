@@ -8,7 +8,6 @@ work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/595060
 categories: [ Security Testing Integrations ]
 level: secondary
 weight: 50
-ignore_in_report: true
 ---
 
 <!-- Category: Security Testing Integrations -->

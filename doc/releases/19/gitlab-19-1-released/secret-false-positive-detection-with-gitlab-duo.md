@@ -8,7 +8,6 @@ documentation_link: "../../../user/application_security/vulnerabilities/secret_f
 work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/21233"
 categories: [ Vulnerability Management ]
 weight: 10
-ignore_in_report: true
 ---
 
 <!-- categories: Vulnerability Management -->

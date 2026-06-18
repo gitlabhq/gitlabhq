@@ -7,7 +7,6 @@ documentation_link: "../../../user/duo_agent_platform/model_selection/#select-a-
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/22028
 categories: [ Duo Agent Platform ]
 level: secondary
-ignore_in_report: true
 ---
 
 For GitLab Duo Agentic Chat, you can now configure an allowlist of approved models, and set an organization-wide default, if you are:

@@ -7,7 +7,6 @@ documentation_link: "../../../user/compliance/compliance_frameworks/#create-a-co
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/16808
 categories: [ Compliance Management ]
 level: primary
-ignore_in_report: true
 ---
 
 <!-- categories: Compliance Management -->

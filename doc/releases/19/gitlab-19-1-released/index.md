@@ -1,12 +1,12 @@
 ---
 stage: Release Notes
 group: Monthly Release
-title: "GitLab 19.1 release notes - not yet released"
-description: "Summary of features included in 19.1"
+title: "GitLab 19.1 release notes"
+description: GitLab 19.1 released with secret false positive detection with GitLab Duo.
+date: 2026-06-18
 ---
 
-The following features are being delivered for GitLab 19.1.
-These features are now available on GitLab.com.
+On June 18, 2026, GitLab 19.1 was released with the following features.
 
 We'd also like to announce this month's [Notable Contributor](https://contributors.gitlab.com/notable-contributors): Pishel65!
 

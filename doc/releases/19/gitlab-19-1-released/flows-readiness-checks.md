@@ -7,7 +7,6 @@ documentation_link: "../../administration/gitlab_duo/configure/#run-a-health-che
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/599536
 categories: [ Duo Agent Platform ]
 level: secondary
-ignore_in_report: true
 ---
 
 <!-- categories: Duo Agent Platform  -->

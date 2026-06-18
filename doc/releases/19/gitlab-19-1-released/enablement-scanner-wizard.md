@@ -8,7 +8,6 @@ work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21626
 categories: [ Security Asset Inventories ]
 level: secondary
 weight: 50
-ignore_in_report: true
 ---
 
 <!-- Category: Security Asset Inventories -->

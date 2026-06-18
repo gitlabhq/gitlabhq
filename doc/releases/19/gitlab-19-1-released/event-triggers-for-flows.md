@@ -7,7 +7,6 @@ categories: [ Duo Agent Platform ]
 level: secondary
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21997
 stage: ai-powered
-ignore_in_report: true
 ---
 
 <!-- categories: Duo Agent Platform -->
@@ -22,4 +21,4 @@ You can now configure triggers for four additional events:
 - **Merge request approved**: A merge request receives all its required approvals.
 - **Work item created**: A user creates a work item in the project.
 
-To configure a trigger, go to **AI** > **Triggers** in your project, or select one when you enable a flow. 
+To configure a trigger, go to **AI** > **Triggers** in your project, or select one when you enable a flow.

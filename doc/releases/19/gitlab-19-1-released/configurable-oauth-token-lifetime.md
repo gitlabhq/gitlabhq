@@ -8,7 +8,6 @@ work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/595570
 categories: [ System Access ]
 level: secondary
 weight: 50
-ignore_in_report: true
 ---
 
 

@@ -8,7 +8,6 @@ categories: [ AI Catalog ]
 stage: ai-powered
 level: secondary
 weight: 50
-ignore_in_report: true
 ---
 
 Administrators and top-level group Owners can now control which AI agents and flows are available within their organization. They can:

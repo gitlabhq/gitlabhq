@@ -1,7 +1,7 @@
 ---
 title: Security Manager role generally available
-tier: [ gitlab_com, self_managed, gitlab_dedicated ]
-offering: [ Free, Premium, Ultimate ]
+offering: [ gitlab_com, self_managed, gitlab_dedicated ]
+tier: [ Free, Premium, Ultimate ]
 stage: security_risk_management
 documentation_link: "../../../user/permissions/"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/16399
