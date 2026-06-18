@@ -83,6 +83,9 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
           :aggregate_failures do
           api_path = "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items"
 
+          # Warmup so first-request lazy writes don't skew the baseline.
+          get api(api_path, user), params: request_params
+
           baseline = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api(api_path, user), params: request_params
           end
@@ -121,6 +124,9 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
 
         it 'preloads the parent association so adding children does not cause N+1 queries' do
           api_path = "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items"
+
+          # Warmup so first-request lazy writes don't skew the baseline.
+          get api(api_path, user), params: request_params
 
           baseline = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api(api_path, user), params: request_params
