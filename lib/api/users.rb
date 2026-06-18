@@ -74,6 +74,12 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        # Auditors can :read_all_resources while admins can :read_all_resources and
+        # read_admin_users. In EE, a regular user can read_admin_users through custom admin roles.
+        def can_read_admin_user_data?
+          current_user&.can?(:read_admin_users) || current_user&.can_read_all_resources?
+        end
+
         params :optional_attributes do
           optional :linkedin, type: String, desc: 'The LinkedIn username'
           optional :twitter, type: String, desc: 'The Twitter username'
@@ -221,7 +227,7 @@ module API
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
 
-        unless current_user&.can?(:read_admin_users)
+        unless can_read_admin_user_data?
           index_params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
@@ -239,7 +245,7 @@ module API
         users = UsersFinder.new(current_user, index_params).execute
         users = reorder_users(users)
 
-        entity = current_user&.can?(:read_admin_users) ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = can_read_admin_user_data? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
           users = users.preload(:identities, :second_factor_webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
@@ -278,7 +284,7 @@ module API
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user.can?(:read_admin_users) ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: can_read_admin_user_data? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts

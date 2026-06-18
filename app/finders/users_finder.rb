@@ -98,7 +98,11 @@ class UsersFinder
   end
 
   def by_admins(users)
-    return users unless params[:admins] && current_user&.can?(:read_admin_users)
+    return users unless params[:admins]
+
+    # Auditors can :read_all_resources while admins can :read_all_resources and
+    # read_admin_users. In EE, a regular user can read_admin_users through custom admin roles.
+    return users unless current_user&.can?(:read_admin_users) || current_user&.can_read_all_resources?
 
     users.admins
   end
