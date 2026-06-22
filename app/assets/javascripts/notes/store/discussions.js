@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { merge } from 'lodash-es';
+import { mergeWith } from 'lodash-es';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 
 function addReactiveNoteProps(note) {
@@ -75,7 +75,10 @@ export const useDiscussions = defineStore('discussions', {
       discussion.notes.push(addReactiveNoteProps(note));
     },
     updateNote(note) {
-      merge(this.allNotesById[note.id], note);
+      mergeWith(this.allNotesById[note.id], note, (_, srcValue) => {
+        if (Array.isArray(srcValue)) return srcValue;
+        return undefined;
+      });
     },
     updateNoteTextById(noteId, noteBody) {
       const note = this.allNotesById[noteId];
