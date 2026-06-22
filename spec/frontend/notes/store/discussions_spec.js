@@ -160,6 +160,84 @@ describe('discussions store', () => {
       useDiscussions().updateNote({ id: 'foo', discussion_id: 'abc', note: 'Hello world!' });
       expect(useDiscussions().discussions[0].notes[0].note).toBe('Hello world!');
     });
+
+    it('replaces arrays wholesale so removed items disappear', () => {
+      useDiscussions().discussions = [
+        {
+          id: 'abc',
+          notes: [
+            {
+              id: 'foo',
+              discussion_id: 'abc',
+              award_emoji: [
+                { name: 'thumbsup', user: { id: 1 } },
+                { name: 'rocket', user: { id: 2 } },
+              ],
+            },
+          ],
+        },
+      ];
+
+      useDiscussions().updateNote({
+        id: 'foo',
+        discussion_id: 'abc',
+        award_emoji: [{ name: 'rocket', user: { id: 2 } }],
+      });
+
+      expect(useDiscussions().discussions[0].notes[0].award_emoji).toStrictEqual([
+        { name: 'rocket', user: { id: 2 } },
+      ]);
+    });
+
+    it('preserves existing properties not present in the update', () => {
+      useDiscussions().discussions = [
+        {
+          id: 'abc',
+          notes: [
+            {
+              id: 'foo',
+              discussion_id: 'abc',
+              note: 'Hello!',
+              isEditing: true,
+              editedNote: 'draft',
+            },
+          ],
+        },
+      ];
+
+      useDiscussions().updateNote({ id: 'foo', discussion_id: 'abc', note: 'Hello world!' });
+
+      const note = useDiscussions().discussions[0].notes[0];
+      expect(note.note).toBe('Hello world!');
+      expect(note.isEditing).toBe(true);
+      expect(note.editedNote).toBe('draft');
+    });
+
+    it('deep-merges nested objects', () => {
+      useDiscussions().discussions = [
+        {
+          id: 'abc',
+          notes: [
+            {
+              id: 'foo',
+              discussion_id: 'abc',
+              current_user: { can_edit: true, can_award_emoji: true },
+            },
+          ],
+        },
+      ];
+
+      useDiscussions().updateNote({
+        id: 'foo',
+        discussion_id: 'abc',
+        current_user: { can_edit: false },
+      });
+
+      expect(useDiscussions().discussions[0].notes[0].current_user).toStrictEqual({
+        can_edit: false,
+        can_award_emoji: true,
+      });
+    });
   });
 
   describe('updateNoteTextById', () => {
