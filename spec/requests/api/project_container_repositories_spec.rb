@@ -669,6 +669,37 @@ RSpec.describe API::ProjectContainerRepositories, :with_current_organization, fe
             end
 
             it_behaves_like 'returning the tag'
+
+            context 'when the tag is multi-arch (manifest list or image index)' do
+              let(:image_index) do
+                {
+                  'schemaVersion' => 2,
+                  'mediaType' => 'application/vnd.oci.image.index.v1+json',
+                  'manifests' => [
+                    {
+                      'mediaType' => 'application/vnd.oci.image.manifest.v1+json',
+                      'size' => 7777,
+                      'digest' => 'sha256:7777',
+                      'platform' => { 'architecture' => 'amd64', 'os' => 'linux' }
+                    }
+                  ]
+                }
+              end
+
+              before do
+                allow_next_instance_of(ContainerRegistry::Client) do |client|
+                  allow(client).to receive(:repository_manifest).and_return(image_index)
+                end
+              end
+
+              it 'returns the tag with a blank size instead of 500', :aggregate_failures do
+                subject
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response).to include('name' => 'rootA')
+                expect(json_response['total_size']).to be_nil
+              end
+            end
           end
         end
       end

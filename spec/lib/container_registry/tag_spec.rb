@@ -410,6 +410,126 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         end
       end
     end
+
+    context 'for a Docker manifest list' do
+      before do
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
+          .with(headers: headers)
+          .to_return(
+            status: 200,
+            body: <<~JSON,
+              {
+                "schemaVersion": 2,
+                "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+                "manifests": [
+                  {
+                    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+                    "size": 6666,
+                    "digest": "sha256:6666",
+                    "platform": { "architecture": "arm64", "os": "linux" }
+                  }
+                ]
+              }
+            JSON
+            headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.list.v2+json' })
+      end
+
+      describe '#layers' do
+        subject { tag.layers }
+
+        it { is_expected.to eq([]) }
+      end
+
+      describe '#total_size' do
+        subject { tag.total_size }
+
+        it { is_expected.to be_nil }
+      end
+
+      it 'does not raise when reading config-derived fields', :aggregate_failures do
+        expect { tag.created_at }.not_to raise_error
+        expect { tag.revision }.not_to raise_error
+        expect { tag.config_blob }.not_to raise_error
+      end
+    end
+
+    context 'for a Docker manifest list whose body contains image-manifest substrings' do
+      # A manifest list is returned as an unparsed String (its media type is not
+      # JSON-registered in BaseClient), so manifest['layers'] / manifest['config']
+      # are String#[] substring matches, not key lookups. A body that happens to
+      # contain "layers", "fsLayers", or "config" would feed a truthy substring to
+      # #layers and #config_blob and resurrect the issue 603051 500 without the
+      # is_a?(Hash) guards. This pins those guards as load-bearing.
+      before do
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
+          .with(headers: headers)
+          .to_return(
+            status: 200,
+            body: <<~JSON,
+              {
+                "schemaVersion": 2,
+                "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+                "manifests": [
+                  {
+                    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+                    "size": 6666,
+                    "digest": "sha256:6666",
+                    "platform": { "architecture": "arm64", "os": "linux" },
+                    "annotations": { "regression.note": "embeds layers, fsLayers, and config substrings" }
+                  }
+                ]
+              }
+            JSON
+            headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.list.v2+json' })
+      end
+
+      it 'reports no layers and a null size instead of raising on the substring match', :aggregate_failures do
+        expect(tag.layers).to eq([])
+        expect(tag.total_size).to be_nil
+      end
+
+      it 'returns nil for config-derived fields instead of raising on the substring match', :aggregate_failures do
+        expect(tag.config_blob).to be_nil
+        expect(tag.revision).to be_nil
+        expect(tag.created_at).to be_nil
+      end
+    end
+
+    context 'for an OCI image index' do
+      before do
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
+          .with(headers: headers)
+          .to_return(
+            status: 200,
+            body: <<~JSON,
+              {
+                "schemaVersion": 2,
+                "mediaType": "application/vnd.oci.image.index.v1+json",
+                "manifests": [
+                  {
+                    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+                    "size": 7777,
+                    "digest": "sha256:7777",
+                    "platform": { "architecture": "amd64", "os": "linux" }
+                  }
+                ]
+              }
+            JSON
+            headers: { 'Content-Type' => 'application/vnd.oci.image.index.v1+json' })
+      end
+
+      describe '#layers' do
+        subject { tag.layers }
+
+        it { is_expected.to eq([]) }
+      end
+
+      describe '#total_size' do
+        subject { tag.total_size }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   context 'with stubbed digest' do

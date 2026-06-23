@@ -76,7 +76,10 @@ module ContainerRegistry
     end
 
     def config_blob
-      return unless manifest && manifest['config']
+      # Like #layers, guard against a non-Hash (fat) manifest: on a manifest
+      # list String, manifest['config'] is a substring match, not a key lookup,
+      # so an unguarded access would build a bogus blob and raise downstream.
+      return unless manifest.is_a?(Hash) && manifest['config']
 
       strong_memoize(:config_blob) do
         repository.blob(manifest['config'])
@@ -124,11 +127,14 @@ module ContainerRegistry
 
     def layers
       return unless manifest
+      # A multi-arch tag resolves to a manifest list (returned as an unparsed
+      # String) or an OCI image index (a Hash with no `layers`). Neither carries
+      # image layers, so report none instead of raising on nil.map. See
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/603051
+      return [] unless manifest.is_a?(Hash)
 
       strong_memoize(:layers) do
-        layers = manifest['layers'] || manifest['fsLayers']
-
-        layers.map do |layer|
+        (manifest['layers'] || manifest['fsLayers'] || []).map do |layer|
           repository.blob(layer)
         end
       end
@@ -141,7 +147,7 @@ module ContainerRegistry
     def total_size
       return @total_size if @total_size
 
-      return unless layers
+      return if layers.blank?
 
       layers.sum(&:size) if v2?
     end
