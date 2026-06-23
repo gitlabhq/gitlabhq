@@ -424,9 +424,10 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = commit.notes.with_api_entity_associations.order_created_at_id_asc
+        notes = paginate(commit.notes.with_api_entity_associations.order_created_at_id_asc)
+        notes = prepare_and_filter_notes(notes)
 
-        present paginate(notes), with: Entities::CommitNote
+        present notes, with: Entities::CommitNote
       end
 
       desc 'Retrieve a commit sequence' do

@@ -15,6 +15,39 @@ RSpec.describe 'getting a package list for a group', feature_category: :package_
 
   it_behaves_like 'group and project packages query'
 
+  context 'when a project has the package registry disabled' do
+    let_it_be(:enabled_project) { create(:project, :private, group: resource) }
+    let_it_be(:disabled_project) do
+      create(:project, :private, group: resource,
+        package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
+    end
+
+    let_it_be(:visible_package) { create(:generic_package, project: enabled_project) }
+    let_it_be(:hidden_package) { create(:generic_package, project: disabled_project) }
+
+    let(:package_names) { graphql_data_at(resource_type, :packages, :nodes, :name) }
+    let(:packages_count) { graphql_data_at(resource_type, :packages, :count) }
+
+    let(:query) do
+      graphql_query_for(
+        resource_type,
+        { 'fullPath' => resource.full_path },
+        query_graphql_field('packages', {}, 'count nodes { name }')
+      )
+    end
+
+    before_all do
+      resource.add_reporter(current_user)
+    end
+
+    it 'does not return packages from the registry-disabled project', :aggregate_failures do
+      post_graphql(query, current_user: current_user)
+
+      expect(package_names).to contain_exactly(visible_package.name)
+      expect(packages_count).to eq(1)
+    end
+  end
+
   context 'with a batched query' do
     let_it_be(:group_two_project) { create(:project, :repository, group: group_two) }
     let_it_be(:group_one_package) { create(:npm_package, project: project1) }
