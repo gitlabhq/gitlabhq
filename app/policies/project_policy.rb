@@ -614,6 +614,7 @@ class ProjectPolicy < BasePolicy
     prevent :destroy_build
     prevent :manage_trigger
     prevent :admin_cicd_variables
+    prevent :admin_protected_environments
 
     prevent :read_pipeline_schedule
     prevent :create_pipeline_schedule

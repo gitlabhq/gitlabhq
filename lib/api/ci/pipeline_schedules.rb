@@ -293,6 +293,7 @@ module API
         end
 
         route_setting :authorization, permissions: :create_pipeline_schedule_variable, boundary_type: :project
+        route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
         post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
           authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -350,6 +351,7 @@ module API
         end
 
         route_setting :authorization, permissions: :update_pipeline_schedule_variable, boundary_type: :project
+        route_setting :log_safety, { safe: [], unsafe: %w[value] }
         put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule

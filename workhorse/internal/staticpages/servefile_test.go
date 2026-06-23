@@ -412,3 +412,57 @@ func TestResolveCorsHeaders(t *testing.T) {
 		})
 	}
 }
+
+func TestResolveAssetAuthorizationDoubleSlash(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		path              string
+		expectedRailsPath string
+	}{
+		{
+			desc:              "Double-slash vscode-workbench path is normalized before sending to Rails",
+			path:              "//assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			expectedRailsPath: "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+		},
+		{
+			desc:              "Double-slash gitlab-mono path is normalized before sending to Rails",
+			path:              "//assets/gitlab-mono/test.woff2",
+			expectedRailsPath: "/assets/gitlab-mono/test.woff2",
+		},
+		{
+			desc:              "Double-slash vscode-workbench path is normalized before sending to Rails",
+			path:              "/%2fassets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			expectedRailsPath: "/assets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+		},
+		{
+			desc:              "Double-slash gitlab-mono path is normalized before sending to Rails",
+			path:              "/%2fassets/gitlab-mono/test.woff2",
+			expectedRailsPath: "/assets/gitlab-mono/test.woff2",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			testhelper.ConfigureSecret()
+
+			var receivedPath string
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				receivedPath = r.URL.Path
+				w.WriteHeader(http.StatusOK)
+			}))
+			defer ts.Close()
+
+			backend := helper.URLMustParse(ts.URL)
+			rt := roundtripper.NewTestBackendRoundTripper(backend)
+			apiClient := api.NewAPI(backend, "123", rt)
+
+			httpRequest := httptest.NewRequest("GET", tc.path, nil)
+
+			st := &Static{API: apiClient}
+			st.resolveAssetAuthorization(httpRequest)
+
+			require.Equal(t, tc.expectedRailsPath, receivedPath,
+				"Rails should receive the normalized path, not the double-slash path")
+		})
+	}
+}
