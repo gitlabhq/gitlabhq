@@ -1141,6 +1141,26 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           it_behaves_like params[:shared_examples_name]
         end
       end
+
+      context 'when uploading a versionless maven-metadata.xml' do
+        # Regression: the package name used to be derived with an unconditional
+        # rpartition('/'), so a versionless metadata path (which is itself the full
+        # package name) was checked under the wrong name and bypassed the rule.
+        subject do
+          put api("/projects/#{project.id}/packages/maven/#{maven_package_name}/maven-metadata.xml/authorize"),
+            headers: headers_with_token
+          response
+        end
+
+        where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:maven_package_name)          | :maintainer | 'protected package'
+          ref(:maven_package_name_no_match) | :maintainer | 'authorized package'
+        end
+
+        with_them do
+          it_behaves_like params[:shared_examples_name]
+        end
+      end
     end
 
     it_behaves_like 'updating personal access token last used' do
