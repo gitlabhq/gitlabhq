@@ -53,20 +53,103 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
 
     context 'when the URL is blocked' do
       before do
-        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:blocked_url?).and_return(true)
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_raise(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, 'URL is blocked')
       end
 
-      it 'hard retries and returns error status' do
-        expect(execute!).to eq(status: :error, message: 'The remote mirror URL is invalid.')
+      it 'hard retries and returns error status', :aggregate_failures do
+        result = execute!
+
+        expect(result).to eq(status: :error, message: 'The remote mirror URL is invalid: URL is blocked')
         expect(remote_mirror).to be_to_retry
       end
 
       context 'when retries are exceeded' do
         let(:retries) { 4 }
 
-        it 'hard fails and returns error status' do
-          expect(execute!).to eq(status: :error, message: 'The remote mirror URL is invalid.')
+        it 'hard fails and returns error status', :aggregate_failures do
+          result = execute!
+
+          expect(result).to eq(status: :error, message: 'The remote mirror URL is invalid: URL is blocked')
           expect(remote_mirror).to be_failed
+        end
+      end
+    end
+
+    describe 'resolved_address' do
+      let(:import_url) { 'https://example.com/repo.git' }
+      let(:resolved_ip) { '93.184.216.34' }
+
+      before do
+        allow(remote_mirror).to receive(:url).and_return(import_url)
+
+        # Mock validate! to return the validated URI with hostname replaced by IP.
+        # In reality, validate! modifies the URI to have the resolved IP as hostname.
+        #
+        validated_uri = Addressable::URI.parse(import_url)
+        validated_uri.hostname = resolved_ip
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([validated_uri, 'example.com'])
+      end
+
+      it 'passes resolved_address to remote_mirror.update_repository' do
+        expect(remote_mirror).to receive(:update_repository)
+          .with(resolved_address: resolved_ip)
+          .and_return(double(divergent_refs: []))
+
+        execute!
+      end
+
+      context 'when the URL uses git protocol' do
+        let(:import_url) { 'git://example.com/repo.git' }
+
+        before do
+          validated_uri = Addressable::URI.parse(import_url)
+          validated_uri.hostname = resolved_ip
+          allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+            .and_return([validated_uri, 'example.com'])
+        end
+
+        it 'passes resolved_address for git:// URLs' do
+          expect(remote_mirror).to receive(:update_repository)
+            .with(resolved_address: resolved_ip)
+            .and_return(double(divergent_refs: []))
+
+          execute!
+        end
+      end
+
+      context 'when the URL is SSH' do
+        let(:import_url) { 'ssh://git@example.com/repo.git' }
+
+        before do
+          validated_uri = Addressable::URI.parse(import_url)
+          allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+            .and_return([validated_uri, nil])
+        end
+
+        it 'passes empty resolved_address for SSH URLs' do
+          expect(remote_mirror).to receive(:update_repository)
+            .with(resolved_address: '')
+            .and_return(double(divergent_refs: []))
+
+          execute!
+        end
+      end
+
+      context 'when resolved_host is nil' do
+        before do
+          validated_uri = Addressable::URI.parse(import_url)
+          allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+            .and_return([validated_uri, nil])
+        end
+
+        it 'passes empty resolved_address' do
+          expect(remote_mirror).to receive(:update_repository)
+            .with(resolved_address: '')
+            .and_return(double(divergent_refs: []))
+
+          execute!
         end
       end
     end
@@ -102,7 +185,7 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
 
         it "fails and returns error status" do
           expect(execute![:status]).to eq(:error)
-          expect(execute![:message]).to eq('The remote mirror URL is invalid.')
+          expect(execute![:message]).to include('The remote mirror URL is invalid:')
         end
       end
     end

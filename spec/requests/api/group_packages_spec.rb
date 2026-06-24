@@ -210,6 +210,32 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     it_behaves_like 'with status param'
     it_behaves_like 'does not cause n^2 queries'
 
+    context 'when a project has the package registry disabled', :aggregate_failures do
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:enabled_project) { create(:project, :private, group: group) }
+      let_it_be(:disabled_project) do
+        create(:project, :private, group: group,
+          package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
+      end
+
+      let_it_be(:visible_package) { create(:generic_package, project: enabled_project) }
+      let_it_be(:hidden_package) { create(:generic_package, project: disabled_project) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_reporter(user)
+      end
+
+      subject { get api(url, user) }
+
+      it 'does not return packages from the registry-disabled project' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(visible_package.id)
+      end
+    end
+
     context 'when group permission gates listing of descendant project packages' do
       let_it_be(:group) { create(:group, :private) }
       let_it_be(:subproject) { create(:project, :private, group: group) }

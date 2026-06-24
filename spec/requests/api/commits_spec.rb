@@ -2888,6 +2888,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       let_it_be(:project) { create(:project, :public, :repository) }
 
       it_behaves_like 'ref comments'
+
+      context 'when a system note references a confidential issue' do
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: project) }
+
+        it 'filters out the system note', :aggregate_failures do
+          create(:note_on_commit, :system, project: project, commit_id: commit.id,
+            note: "mentioned in issue #{confidential_issue.to_reference(project)}")
+
+          get api(route)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is private' do

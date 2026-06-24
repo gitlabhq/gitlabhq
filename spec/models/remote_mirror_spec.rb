@@ -208,9 +208,29 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
       expect(git_remote_mirror).to have_received(:new).with(
         mirror.project.repository.raw,
         mirror.url,
+        resolved_address: '',
         keep_divergent_refs: true
       )
       expect(git_remote_mirror).to have_received(:update)
+    end
+
+    context 'when resolved_address is provided' do
+      it 'passes resolved_address to Gitlab::Git::RemoteMirror' do
+        git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)
+        mirror = build(:remote_mirror)
+        resolved_address = '93.184.216.34'
+
+        expect(mirror).to receive(:options_for_update).and_return(keep_divergent_refs: true)
+        mirror.update_repository(resolved_address: resolved_address)
+
+        expect(git_remote_mirror).to have_received(:new).with(
+          mirror.project.repository.raw,
+          mirror.url,
+          resolved_address: resolved_address,
+          keep_divergent_refs: true
+        )
+        expect(git_remote_mirror).to have_received(:update)
+      end
     end
   end
 

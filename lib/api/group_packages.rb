@@ -16,7 +16,11 @@ module API
     helpers do
       def projects
         ::Packages::ProjectsFinder
-          .new(current_user: current_user, group: user_group, params: declared(params).slice(:exclude_subgroups))
+          .new(
+            current_user: current_user,
+            group: user_group,
+            params: declared(params).slice(:exclude_subgroups).merge(with_package_registry_enabled: true)
+          )
           .execute
       end
     end

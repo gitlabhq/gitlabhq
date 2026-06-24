@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.1.1 (2026-06-23)
+
+### Security (13 changes)
+
+- [Fix versionless Maven metadata protected package bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/522aceab3f9c6a3a56aa2d13b68dabd3f3ba7a6b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6311))
+- [Filter notes by readable_by? in Rapid Diffs commit discussions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b8c1c9c956868b1f684e475f212575f66987a57) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6332))
+- [Detect encoding collisions in snippet hidden file detection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/252d4f8a0adf69660cbc3ac5e841a542ca4c3473) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6333))
+- [Fix DNS rebinding SSRF in pull and push mirror services](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e919da396a41d469672b709f34d4f62f2abdb997) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6325))
+- [Fix IDOR in virtual registry cleanup policy REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53e496196f225c657d648865489a023dd6f69bda) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6268))
+- [Exclude registry-disabled projects from group packages endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4b48f0e56b60618ccbfcbba6ef0d0756eb0630b5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6310))
+- [Restrict DAST site profile modification when secrets are present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/61f2de60e6855b89174b6dde843f6398a62651af) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6313))
+- [Fix Web IDE asset security header bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/67ee069d28bcb27fedff3e76bfa0927d257794a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6319))
+- [Restrict value_stream data source filters to known fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ceb85436fb4ef92c0ea6ab6745c28f683fe60e10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6327))
+- [Mask pipeline schedule variable values in API logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/20ae47a84dc72ef8da2c65c78f27a4b259bede75) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6321))
+- [Prevent protected environments access when CI/CD is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/12d276718c5b74a8de1d3158d51ec06c2d02ca92) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6309))
+- [Stop leaking detected secrets in Duo workflow job traces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/607f18426b61f75b3793e33874f005b97317a9c3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6314))
+- [Fix authorization bypass in securityMetrics.riskScore.byProject](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dddbb92e8653b5609a92814613dd70742c59363f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6326))
+
 ## 19.1.0 (2026-06-17)
 
 ### Added (258 changes)

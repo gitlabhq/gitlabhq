@@ -9,16 +9,15 @@ module Projects
     def execute(remote_mirror, tries)
       return success unless remote_mirror.enabled?
 
+      @remote_mirror = remote_mirror
+
       # Blocked URLs are a hard failure, no need to attempt to retry
-      if Gitlab::HTTP_V2::UrlBlocker.blocked_url?(
-        normalized_url(remote_mirror.url),
-        schemes: Project::VALID_MIRROR_PROTOCOLS,
-        allow_localhost: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
-        allow_local_network: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
-        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-        outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
-      )
-        hard_retry_or_fail(remote_mirror, _('The remote mirror URL is invalid.'), tries)
+      #
+      begin
+        validate_remote_url!
+      rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
+        message = format(_('The remote mirror URL is invalid: %{message}'), message: e.message)
+        hard_retry_or_fail(remote_mirror, message, tries)
         return error(remote_mirror.last_error)
       end
 
@@ -44,13 +43,60 @@ module Projects
       end
     end
 
+    # Validates the remote mirror URL and memoizes the result.
+    # Returns [validated_url, resolved_host] or nil if URL is blank.
+    # Raises BlockedUrlError if URL is blocked.
+    #
+    strong_memoize_attr def validated_url_result
+      return unless @remote_mirror&.url
+
+      Gitlab::HTTP_V2::UrlBlocker.validate!(
+        normalized_url(@remote_mirror.url),
+        schemes: Project::VALID_MIRROR_PROTOCOLS,
+        allow_localhost: allow_local_requests?,
+        allow_local_network: allow_local_requests?,
+        dns_rebind_protection: dns_rebind_protection?,
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+        outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
+    end
+
+    def validate_remote_url!
+      validated_url_result # raises BlockedUrlError if blocked
+    end
+
+    # Returns the resolved IP address for HTTP/HTTPS/Git URLs to prevent DNS rebinding attacks.
+    # For SSH URLs or when resolved_host is nil, returns an empty string.
+    #
+    # Note: SSH URLs don't need DNS rebinding protection because SSH connections
+    # verify the host key, which is tied to the server's identity.
+    #
+    def resolved_address
+      result = validated_url_result
+      return '' unless result
+
+      validated_url, resolved_host = result
+      return '' if resolved_host.nil? || !validated_url.scheme.in?(%w[http https git])
+
+      validated_url.hostname.to_s
+    end
+
+    def allow_local_requests?
+      Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+    end
+
+    def dns_rebind_protection?
+      return false if Gitlab.http_proxy_env?
+
+      Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
+    end
+
     def update_mirror(remote_mirror)
       remote_mirror.update_start!
 
       # LFS objects must be sent first, or the push has dangling pointers
       lfs_status = send_lfs_objects!(remote_mirror)
 
-      response = remote_mirror.update_repository
+      response = remote_mirror.update_repository(resolved_address: resolved_address)
       failed, failure_message = failure_status(lfs_status, response, remote_mirror)
 
       # When the issue https://gitlab.com/gitlab-org/gitlab/-/issues/349262 is closed,

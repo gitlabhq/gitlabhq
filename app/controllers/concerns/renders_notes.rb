@@ -13,6 +13,11 @@ module RendersNotes
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  def prepare_and_filter_notes(notes)
+    notes = prepare_notes_for_rendering(notes)
+    notes.select { |note| note.readable_by?(current_user) }
+  end
+
   private
 
   def preload_note_namespace(notes)

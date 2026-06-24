@@ -245,7 +245,7 @@ module API
       put ':id/packages/maven/*path/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_upload!
 
-        package_name, _, version = params[:path].rpartition('/')
+        package_name, version = extract_maven_package_name_and_version(params[:path], params[:file_name])
         protect_package!(package_name, :maven)
 
         enforce_dependency_firewall_on_upload!(package_name, version)
