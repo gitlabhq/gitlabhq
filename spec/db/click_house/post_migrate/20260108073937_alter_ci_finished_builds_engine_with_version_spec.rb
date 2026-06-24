@@ -96,16 +96,15 @@ RSpec.describe AlterCiFinishedBuildsEngineWithVersion, :click_house, feature_cat
     # The CREATE TABLE ... AS source ENGINE = ... SETTINGS ... syntax fully
     # replaces (rather than merges) the source's SETTINGS, so the migration
     # must restate every setting it wants to keep on the swapped table.
+    #
+    # The exact SETTINGS string format varies by ClickHouse version (booleans
+    # render as `true`/`false` on 24+, `1`/`0` on 23.x; `deduplicate_merge_projection_mode`
+    # only exists on 24.1+). We don't pin the expected value; we just assert
+    # the clause doesn't change across the swap, which catches accidental
+    # drops or additions of settings regardless of CH version.
     context 'with engine-level SETTINGS on the source table' do
-      let(:expected_settings_clause) do
-        "index_granularity = 8192, use_async_block_ids_cache = true, " \
-          "deduplicate_merge_projection_mode = 'rebuild'"
-      end
-
       it 'keeps the SETTINGS clause identical on the swapped table' do
-        expect { migration.up }
-          .not_to change { current_settings_clause }
-          .from(expected_settings_clause)
+        expect { migration.up }.not_to change { current_settings_clause }
       end
     end
 
