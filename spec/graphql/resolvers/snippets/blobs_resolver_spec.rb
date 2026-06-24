@@ -63,6 +63,20 @@ RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_cod
         end
       end
     end
+
+    context 'when snippet has ambiguous files from encoding collision #security' do
+      let(:fake_blobs) { [instance_double(Gitlab::Git::Blob), instance_double(Gitlab::Git::Blob)] }
+
+      before do
+        allow(snippet).to receive_messages(all_files: %w[€xecute.sh €xecute.sh], blobs: fake_blobs)
+      end
+
+      it 'flags unretrievable blobs even when all blobs are returned' do
+        resolve_blobs(snippet, args: {})
+
+        expect(query_context[:unretrievable_blobs?]).to eq(true)
+      end
+    end
   end
 
   def resolve_blobs(snippet, user: current_user, paths: [], args: { paths: paths }, has_unretrievable_blobs: false)

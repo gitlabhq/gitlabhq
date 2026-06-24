@@ -71398,7 +71398,7 @@ msgstr ""
 msgid "The related CI build failed."
 msgstr ""
 
-msgid "The remote mirror URL is invalid."
+msgid "The remote mirror URL is invalid: %{message}"
 msgstr ""
 
 msgid "The remote mirror took to long to complete."

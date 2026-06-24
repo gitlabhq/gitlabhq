@@ -97,10 +97,11 @@ class RemoteMirror < ApplicationRecord
     update_status == 'started'
   end
 
-  def update_repository
+  def update_repository(resolved_address: '')
     Gitlab::Git::RemoteMirror.new(
       project.repository.raw,
       remote_url,
+      resolved_address: resolved_address,
       **options_for_update
     ).update
   end

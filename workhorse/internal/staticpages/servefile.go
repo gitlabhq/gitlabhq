@@ -160,9 +160,13 @@ func (s *Static) resolveAssetAuthorization(r *http.Request) AssetAuthorizationRe
 		return allowedAssetAuthorizationResult
 	}
 
-	preflightRequest := &http.Request{Method: "OPTIONS", URL: r.URL, Header: r.Header.Clone()}
+	normalizedURL := *r.URL
+	normalizedURL.Path = normalizedPath
+	normalizedURL.RawPath = ""
+
+	preflightRequest := &http.Request{Method: "OPTIONS", URL: &normalizedURL, Header: r.Header.Clone()}
 	preflightRequest.Host = r.Host
-	httpResponse, _, err := s.API.PreAuthorize(r.RequestURI, preflightRequest)
+	httpResponse, _, err := s.API.PreAuthorize("", preflightRequest)
 
 	if err != nil {
 		log.WithContextFields(r.Context(), log.Fields{

@@ -1004,6 +1004,14 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(json_response['message']).to have_key('key')
         end
       end
+
+      it 'masks the value when logging' do
+        masked_params = { 'key' => params[:key], 'value' => '[FILTERED]' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        post api(url, developer), params: params
+      end
     end
 
     context 'authenticated user with invalid permissions' do
@@ -1264,6 +1272,14 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           it_behaves_like 'updates pipeline_schedule_variable'
         end
       end
+    end
+
+    it 'masks the value when logging' do
+      masked_params = { 'value' => '[FILTERED]' }
+
+      expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+      put api(url, developer), params: params
     end
 
     context 'authenticated user with invalid permissions' do

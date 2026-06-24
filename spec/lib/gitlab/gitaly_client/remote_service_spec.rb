@@ -50,6 +50,29 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
       client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
     end
 
+    context 'when resolved_address is provided' do
+      let(:resolved_address) { '93.184.216.34' }
+      let(:expected_params) do
+        { remote: Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: url, resolved_address: resolved_address) }
+      end
+
+      it 'includes resolved_address in the Remote message' do
+        expect_any_instance_of(Gitaly::RemoteService::Stub)
+          .to receive(:update_remote_mirror)
+          .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
+          .and_return(double(:update_remote_mirror_response))
+
+        client.update_remote_mirror(
+          url,
+          only_branches_matching,
+          ssh_key: ssh_key,
+          known_hosts: known_hosts,
+          keep_divergent_refs: true,
+          resolved_address: resolved_address
+        )
+      end
+    end
+
     context 'when matching branches include non-ASCII characters' do
       let(:only_branches_matching) { %w[Äpfel] }
 

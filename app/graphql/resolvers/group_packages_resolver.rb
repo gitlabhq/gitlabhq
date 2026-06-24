@@ -30,7 +30,11 @@ module Resolvers
     private
 
     def projects
-      ::Packages::ProjectsFinder.new(current_user: current_user, group: object).execute
+      ::Packages::ProjectsFinder.new(
+        current_user: current_user,
+        group: object,
+        params: { with_package_registry_enabled: true }
+      ).execute
     end
   end
 end

@@ -65,8 +65,12 @@ class Projects::CommitController < Projects::ApplicationController
 
     all_discussions = (@grouped_diff_discussions.values.flatten + @discussions)
 
-    all_notes = all_discussions.flat_map(&:notes)
-    prepare_notes_for_rendering(all_notes)
+    readable_notes = prepare_and_filter_notes(all_discussions.flat_map(&:notes)).to_set
+
+    all_discussions = all_discussions.filter_map do |discussion|
+      discussion.notes.select! { |note| readable_notes.include?(note) }
+      discussion unless discussion.notes.empty?
+    end
 
     serialized_discussions = RapidDiffs::DiscussionSerializer.new(
       project: @project,

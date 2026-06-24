@@ -34,6 +34,19 @@ module API
           end
         end
 
+        # Mirrors the derivation in Packages::Maven::FindOrCreatePackageService:
+        # a versionless maven-metadata.xml (and its checksums) carries no version
+        # segment, so the whole path is the package name. Every other path ends
+        # with the version.
+        def extract_maven_package_name_and_version(path, file_name)
+          versionless_metadata = file_name.include?(::Packages::Maven::Metadata.filename) &&
+            !path.end_with?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
+
+          return [path, nil] if versionless_metadata
+
+          path.rpartition('/').values_at(0, 2)
+        end
+
         def fetch_package(file_name:, project: nil, group: nil)
           order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
             params[:path].exclude?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
