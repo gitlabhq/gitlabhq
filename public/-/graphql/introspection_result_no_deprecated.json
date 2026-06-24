@@ -156637,7 +156637,7 @@
             },
             {
               "name": "duoWorkflowEvents",
-              "description": "Checkpoints for GitLab Duo Agent Platform flows, for all users (remote flows only).",
+              "description": "Checkpoints for GitLab Duo Agent Platform flows, for all users (remote flows only). Returns only the latest checkpoint by default. Use `first` and `after` to page through history.",
               "args": [
                 {
                   "name": "workflowId",
