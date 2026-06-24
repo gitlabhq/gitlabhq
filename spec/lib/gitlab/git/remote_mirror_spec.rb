@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Git::RemoteMirror do
     it 'delegates to the Gitaly client' do
       expect(repository.gitaly_remote_client)
         .to receive(:update_remote_mirror)
-        .with(url, ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true)
+        .with(url, ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true, resolved_address: '')
 
       remote_mirror.update # rubocop:disable Rails/SaveBang
     end
@@ -25,6 +25,34 @@ RSpec.describe Gitlab::Git::RemoteMirror do
         .and_raise(StandardError)
 
       expect { remote_mirror.update }.to raise_error(StandardError) # rubocop:disable Rails/SaveBang
+    end
+
+    context 'when resolved_address is provided' do
+      let(:resolved_address) { '93.184.216.34' }
+      let(:options) do
+        {
+          only_branches_matching: ['master'],
+          ssh_key: 'KEY',
+          known_hosts: 'KNOWN HOSTS',
+          keep_divergent_refs: true,
+          resolved_address: resolved_address
+        }
+      end
+
+      it 'passes resolved_address to the Gitaly client' do
+        expect(repository.gitaly_remote_client)
+          .to receive(:update_remote_mirror)
+          .with(
+            url,
+            ['master'],
+            ssh_key: 'KEY',
+            known_hosts: 'KNOWN HOSTS',
+            keep_divergent_refs: true,
+            resolved_address: resolved_address
+          )
+
+        remote_mirror.update # rubocop:disable Rails/SaveBang -- This is not an ActiveRecord model
+      end
     end
   end
 end

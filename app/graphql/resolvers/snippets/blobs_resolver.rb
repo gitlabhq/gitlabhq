@@ -22,13 +22,12 @@ module Resolvers
         paths = snippet.all_files if paths.empty?
         blobs = snippet.blobs(paths)
 
-        # TODO: Some blobs, e.g. those with non-utf8 filenames, are returned as nil from the
-        # repository. We need to provide a flag to notify the user of this until we come up with a
-        # way to retrieve and display these blobs. We will be exploring a more holistic solution for
-        # this general problem of making all blobs retrievable as part
-        # of https://gitlab.com/gitlab-org/gitlab/-/issues/323082, at which point this attribute may
-        # be removed.
-        context[:unretrievable_blobs?] = blobs.size < paths.size
+        # Flag snippets that may contain hidden or suspicious files:
+        # - blobs.size < paths.size: some blobs (e.g. those with non-utf8 filenames) are returned
+        #   as nil from the repository and compacted out.
+        # - paths.size != paths.uniq.size: distinct raw-byte filenames can normalize to the same
+        #   UTF-8 string via EncodingHelper.encode!, hiding files from the UI.
+        context[:unretrievable_blobs?] = blobs.size < paths.size || paths.size != paths.uniq.size
 
         blobs
       end

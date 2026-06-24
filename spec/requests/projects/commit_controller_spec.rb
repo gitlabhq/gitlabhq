@@ -110,6 +110,86 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       end
     end
 
+    context 'when a system note references a confidential issue' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+      let_it_be(:confidential_issue) { create(:issue, :confidential, project: public_project) }
+      let_it_be(:public_sha) { RepoHelpers.sample_commit.id }
+
+      let(:params) do
+        {
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          id: public_sha
+        }
+      end
+
+      it 'filters out the system note for users who cannot see the confidential issue', :aggregate_failures do
+        create(:note_on_commit, :system, project: public_project, commit_id: public_sha,
+          note: "mentioned in issue #{confidential_issue.to_reference(public_project)}")
+
+        non_member = create(:user)
+        sign_in(non_member)
+
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response['discussions']).to be_empty
+      end
+
+      it 'keeps readable notes and filters unreadable ones from the response', :aggregate_failures do
+        readable_note = create(:note_on_commit, project: public_project, commit_id: public_sha, note: "regular comment")
+        create(:note_on_commit, :system, project: public_project, commit_id: public_sha,
+          note: "mentioned in issue #{confidential_issue.to_reference(public_project)}")
+
+        non_member = create(:user)
+        sign_in(non_member)
+
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response['discussions'].length).to eq(1)
+        note_ids = json_response['discussions'].flat_map { |d| d['notes'].map { |n| n['id'] } }
+        expect(note_ids).to include(readable_note.id.to_s)
+      end
+
+      it 'filters out the system note for anonymous users', :aggregate_failures do
+        create(:note_on_commit, :system, project: public_project, commit_id: public_sha,
+          note: "mentioned in issue #{confidential_issue.to_reference(public_project)}")
+
+        sign_out(user)
+
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response['discussions']).to be_empty
+      end
+
+      context 'when user can see the confidential issue' do
+        before_all do
+          public_project.add_developer(user)
+        end
+
+        before do
+          sign_in(user)
+        end
+
+        it 'includes the system note', :aggregate_failures do
+          note = create(:note_on_commit, :system, project: public_project, commit_id: public_sha,
+            note: "mentioned in issue #{confidential_issue.to_reference(public_project)}")
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+          note_ids = json_response['discussions'].flat_map { |d| d['notes'].map { |n| n['id'] } }
+          expect(note_ids).to include(note.id.to_s)
+        end
+      end
+    end
+
     context 'with a non-existent commit' do
       let(:params) do
         {
