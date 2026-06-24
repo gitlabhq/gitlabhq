@@ -1135,7 +1135,7 @@ Returns [`DuoSettings`](#duosettings).
 **Status**: Experiment.
 {{< /details >}}
 
-List the events for a Duo Agent Platform.
+List the events for a Duo Agent Platform. Returns only the latest checkpoint by default. Use `first` and `after` to page through history.
 
 Returns [`DuoWorkflowEventConnection!`](#duoworkfloweventconnection).
 
@@ -50335,7 +50335,7 @@ Arguments:
 
 ##### `Project.duoWorkflowEvents`
 
-Checkpoints for GitLab Duo Agent Platform flows, for all users (remote flows only).
+Checkpoints for GitLab Duo Agent Platform flows, for all users (remote flows only). Returns only the latest checkpoint by default. Use `first` and `after` to page through history.
 
 Returns [`DuoWorkflowEventConnection`](#duoworkfloweventconnection).
 
