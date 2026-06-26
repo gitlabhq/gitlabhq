@@ -299,7 +299,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
   end
 
   describe '#release_host' do
-    it 'releases the host and its connection' do
+    it 'releases the cached host and its connection' do
       host = lb.host
 
       expect(host).to receive(:disable_query_cache!)
@@ -307,6 +307,101 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
       lb.release_host
 
       expect(request_cache[described_class::CACHE_KEY]).to be_nil
+    end
+
+    context 'when force: true' do
+      it 'releases the cached host and any other host with an active connection' do
+        cached_host = lb.host
+        all_hosts = lb.host_list.hosts
+        other_hosts = all_hosts.reject { |h| h == cached_host }
+
+        other_hosts.each do |h|
+          allow(h.pool).to receive(:active_connection?).and_return(true)
+
+          expect(h).to receive(:disable_query_cache!)
+          expect(h).to receive(:clear_query_cache)
+          expect(h).to receive(:release_connection)
+        end
+
+        expect(cached_host).to receive(:disable_query_cache!)
+        expect(cached_host).to receive(:clear_query_cache)
+        expect(cached_host).to receive(:release_connection)
+
+        lb.release_host(force: true)
+
+        expect(request_cache[described_class::CACHE_KEY]).to be_nil
+      end
+
+      it 'logs hosts_force_released and hosts_force_query_cache_cleared', :skip_disconnect do
+        cached_host = lb.host
+
+        host_with_conn = instance_double(Gitlab::Database::LoadBalancing::Host,
+          pool: double(:pool, active_connection?: true, query_cache: double(:qc, empty?: true)))
+
+        host_with_cache = instance_double(Gitlab::Database::LoadBalancing::Host,
+          pool: double(:pool, active_connection?: false, query_cache: double(:qc, empty?: false)))
+
+        [host_with_conn, host_with_cache].each do |h|
+          allow(h).to receive(:disable_query_cache!)
+          allow(h).to receive(:clear_query_cache)
+          allow(h).to receive(:release_connection)
+        end
+
+        allow(lb.host_list).to receive(:hosts).and_return([cached_host, host_with_conn, host_with_cache])
+
+        expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(
+          hash_including(
+            event: :force_released_hosts,
+            hosts_force_released: 2,
+            hosts_force_query_cache_cleared: 1
+          )
+        )
+
+        lb.release_host(force: true)
+      end
+
+      it 'does not log when no extra hosts need releasing' do
+        lb.host
+
+        expect(Gitlab::Database::LoadBalancing::Logger).not_to receive(:warn)
+
+        lb.release_host(force: true)
+      end
+
+      it 'releases hosts with non-empty query cache even without active connection', :skip_disconnect do
+        cached_host = lb.host
+        inactive_host_with_cache = instance_double(Gitlab::Database::LoadBalancing::Host,
+          pool: double(:pool, active_connection?: false, query_cache: double(:qc, empty?: false)))
+
+        allow(lb.host_list).to receive(:hosts).and_return([cached_host, inactive_host_with_cache])
+
+        expect(cached_host).to receive(:disable_query_cache!)
+        expect(cached_host).to receive(:clear_query_cache)
+        expect(cached_host).to receive(:release_connection)
+
+        expect(inactive_host_with_cache).to receive(:disable_query_cache!)
+        expect(inactive_host_with_cache).to receive(:clear_query_cache)
+        expect(inactive_host_with_cache).to receive(:release_connection)
+
+        lb.release_host(force: true)
+      end
+
+      it 'skips hosts that do not respond to pool', :skip_disconnect do
+        cached_host = lb.host
+        primary_host = Gitlab::Database::LoadBalancing::PrimaryHost.new(lb)
+
+        allow(lb.host_list).to receive(:hosts).and_return([cached_host, primary_host])
+
+        expect(cached_host).to receive(:disable_query_cache!)
+        expect(cached_host).to receive(:clear_query_cache)
+        expect(cached_host).to receive(:release_connection)
+
+        expect(primary_host).not_to receive(:disable_query_cache!)
+        expect(primary_host).not_to receive(:clear_query_cache)
+        expect(primary_host).not_to receive(:release_connection)
+
+        expect { lb.release_host(force: true) }.not_to raise_error
+      end
     end
   end
 

@@ -49,12 +49,31 @@ module Gitlab
           setup_class_attribute(:connection, ConnectionProxy.new(load_balancer))
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
 
-          @model.singleton_class.alias_method(:lease_connection, :connection)
-          @model.singleton_class.define_method(:with_connection) do |*_args, **_kwargs, &block|
-            # The original rails with_connection would return the connection to the pool,
-            # but here we don't know if it's a primary or replica connection yet, so we keep it checked out for
-            # the duration of the request
-            block&.call(connection)
+          # By default all base models use LB,
+          # this is disabled using SkipLoadBalancer in Feature::FlipperRecord
+          setup_class_attribute(:uses_load_balancer, true)
+
+          # By default gets LoadBalancing::ConnectionProxy instance from the above defined class attribute,
+          # then overwrites if a particular class (eg: Feature::FlipperRecord) extends SkipLoadBalancer.
+          # 'retrieve_connection' connection is used since the default 'connection' got deprecated.
+          connection_proxy = @model.connection
+          @model.singleton_class.define_method(:connection) do
+            uses_load_balancer ? connection_proxy : retrieve_connection
+          end
+
+          @model.singleton_class.define_method(:lease_connection) do
+            uses_load_balancer ? connection : super()
+          end
+
+          @model.singleton_class.define_method(:with_connection) do |*args, **kwargs, &block|
+            if uses_load_balancer
+              # The original rails with_connection would return the connection to the pool,
+              # but here we don't know if it's a primary or replica connection yet, so we keep it checked out for
+              # the duration of the request
+              block&.call(connection)
+            else
+              super(*args, **kwargs, &block)
+            end
           end
         end
 

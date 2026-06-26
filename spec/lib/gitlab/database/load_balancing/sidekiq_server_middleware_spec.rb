@@ -472,6 +472,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     end
   end
 
+  describe '#clear' do
+    it 'force releases hosts' do
+      expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts).with(force: true)
+
+      middleware.send(:clear)
+    end
+  end
+
   def process_job(job)
     Sidekiq::JobRetry.new(Sidekiq).local(worker_class, job.to_json, 'default') do
       worker_class.process_job(job)
