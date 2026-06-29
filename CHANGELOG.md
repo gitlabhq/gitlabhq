@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.11 (2026-06-29)
+
+### Other (1 change)
+
+- [Backports dead connection fixes to 18.8](https://gitlab.com/gitlab-org/gitlab/-/commit/55bd3a2d82fd9178d7cf1c893aad39059dda8a59) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233826))
+
 ## 18.8.10 (2026-05-25)
 
 ### Fixed (3 changes)
