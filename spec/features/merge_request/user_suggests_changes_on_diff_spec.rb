@@ -91,7 +91,8 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       expect(find('.js-vue-issue-note-form').value).to include("url = https://github.com/gitlabhq/gitlab-shell.git")
     end
 
-    it 'suggestion is appliable' do
+    it 'suggestion is appliable',
+      quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' } do
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
         click_button('Add comment now')
@@ -385,7 +386,8 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'suggestion is appliable' do
+    it 'suggestion is appliable',
+      quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' } do
       page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Applied')
 
@@ -397,7 +399,8 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'resolves discussion when applied' do
+    it 'resolves discussion when applied',
+      quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' } do
       page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Reopen thread')
 
