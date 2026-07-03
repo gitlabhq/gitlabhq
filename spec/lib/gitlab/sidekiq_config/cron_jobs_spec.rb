@@ -35,7 +35,7 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobs, feature_category: :build do
         result = loader.load
 
         expect(result).to include('pipeline_schedule_worker')
-        expect(result).to include('active_user_count_threshold_worker')
+        expect(result).to include('geo_registry_sync_worker')
       end
 
       it 'does not include SaaS-only jobs' do
