@@ -72,6 +72,9 @@ module Types
       value 'TITLE_NOT_MATCHING',
         value: :title_regex,
         description: 'Merge request title does not match required regex.'
+      value 'CODE_OWNERS_APPROVAL',
+        value: :code_owners_approval,
+        description: 'Merge request must be approved by all required CODEOWNERS.'
     end
   end
 end
