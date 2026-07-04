@@ -55,21 +55,17 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       let(:message) { 'Access denied: This operation requires a fine-grained personal access token' }
 
       before do
-        skip 'namespace has no root ancestor' unless root_ancestor
+        skip 'namespace has no top-level group' unless root_ancestor&.group_namespace?
 
         # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/594556
         skip 'not applicable for GraphQL' if is_graphql
 
         stub_feature_flags(granular_personal_access_tokens_enforcement_saas: root_ancestor)
 
-        root_ancestor.create_namespace_settings! unless root_ancestor.namespace_settings
-
-        root_ancestor.namespace_settings.update!(
+        ::NamespaceSetting.find_by!(namespace_id: root_ancestor.id).update!(
           enforce_granular_tokens: true,
           granular_tokens_enforced_after: Date.current
         )
-
-        root_ancestor.reload
       end
 
       it_behaves_like 'denying access'
