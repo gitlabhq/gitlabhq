@@ -1660,7 +1660,8 @@ class MergeRequest < ApplicationRecord
         ::MergeRequests::Mergeability::CheckLfsFileLocksService,
         ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
         ::MergeRequests::Mergeability::CheckCiStatusService,
-        ::MergeRequests::Mergeability::CheckCommitsStatusService
+        ::MergeRequests::Mergeability::CheckCommitsStatusService,
+        ::MergeRequests::Mergeability::CheckCodeOwnersApprovalService
       ]
     }
   end
