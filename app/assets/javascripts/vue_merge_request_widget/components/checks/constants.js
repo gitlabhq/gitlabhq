@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 
 export const COMPONENTS = {
+  code_owners_approval: () => import('./code_owners.vue'),
   conflict: () => import('./conflicts.vue'),
   discussions_not_resolved: () => import('./unresolved_discussions.vue'),
   draft_status: () => import('./draft.vue'),
@@ -28,6 +29,7 @@ export const COMPONENTS = {
 };
 
 export const FAILURE_REASONS = {
+  code_owners_approval: __('All required CODEOWNERS must approve.'),
   commits_status: __('Source branch exists and contains commits.'),
   ci_must_pass: __('Pipeline must succeed.'),
   conflict: __('Merge conflicts must be resolved.'),

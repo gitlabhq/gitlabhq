@@ -16,12 +16,21 @@ module Types
         null: false,
         description: 'Status of the mergeability check.'
 
+      field :missing_owners,
+        [GraphQL::Types::String],
+        null: true,
+        description: 'Owners whose approval is still required (populated only for the code_owners_approval check).'
+
       def status
         object.status.to_s
       end
 
       def identifier
         object.identifier.to_s
+      end
+
+      def missing_owners
+        object.payload[:missing_owners]
       end
     end
   end

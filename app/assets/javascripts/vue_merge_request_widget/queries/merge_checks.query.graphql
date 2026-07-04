@@ -9,6 +9,7 @@ query mergeChecks($projectPath: ID!, $iid: String!) {
       mergeabilityChecks {
         identifier
         status
+        missingOwners
       }
     }
   }
