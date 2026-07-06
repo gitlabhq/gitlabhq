@@ -1562,7 +1562,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_merge_request do
-      let(:boundary_object) { group }
+      let(:boundary_object) { Group.find(group.id) }
       let(:request) do
         get api(endpoint_path, personal_access_token: pat)
       end
