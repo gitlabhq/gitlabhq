@@ -1,5 +1,7 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { nextTick } from 'vue';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
@@ -25,6 +27,22 @@ describe('CommitListItem', () => {
       propsData: {
         commit: mockCommit,
         ...props,
+      },
+    });
+  };
+
+  const createFullComponent = (props = {}) => {
+    wrapper = mountExtended(CommitListItem, {
+      attachTo: document.body,
+      propsData: {
+        commit: mockCommit,
+        ...props,
+      },
+      provide: {
+        projectRootPath: '/project/path',
+      },
+      mocks: {
+        $toast: { show: jest.fn() },
       },
     });
   };
@@ -244,6 +262,40 @@ describe('CommitListItem', () => {
 
       it('does not set aria-expanded', () => {
         expect(findCommitRow().attributes('aria-expanded')).toBeUndefined();
+      });
+    });
+
+    // Regression: the copy-to-clipboard button (and the overflow menu's "Copy
+    // commit SHA" item) rely on the click event bubbling all the way up to the
+    // global clipboard.js listener delegated on `document`. The action controls
+    // must therefore NOT stop propagation, and the row's click handler must
+    // ignore clicks that originate from interactive controls so they don't
+    // toggle the description.
+    describe('when an interactive control inside the row is clicked', () => {
+      beforeEach(() => {
+        createFullComponent();
+      });
+
+      const findClipboardButtonEl = () =>
+        wrapper.findComponent(ClipboardButton).find('button').element;
+
+      it('does not toggle the description', async () => {
+        findClipboardButtonEl().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        await nextTick();
+
+        expect(findActionButtons().props('isCollapsed')).toBe(true);
+        expect(findDescription().exists()).toBe(false);
+      });
+
+      it('lets the click event bubble up to the document (clipboard.js delegation)', () => {
+        const documentClickSpy = jest.fn();
+        document.addEventListener('click', documentClickSpy);
+
+        findClipboardButtonEl().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+        expect(documentClickSpy).toHaveBeenCalledTimes(1);
+
+        document.removeEventListener('click', documentClickSpy);
       });
     });
   });

@@ -73,7 +73,11 @@ export default {
         label: this.isCollapsed ? 'collapse' : 'expand',
       });
     },
-    onRowClick() {
+    onRowClick(event) {
+      // Ignore clicks originating from interactive controls (links, buttons).
+      // We can't use `@click.stop` on their wrapper because clipboard.js relies
+      // on the click event bubbling up to its delegated listener on `document`.
+      if (event.target.closest('a, button')) return;
       if (!this.commit.description) return;
       this.onClick();
     },
@@ -161,8 +165,7 @@ export default {
             }}</span>
           </div>
         </h3>
-        <!-- Prevent the description toggle -->
-        <div class="gl-flex gl-items-center gl-gap-4" @click.stop>
+        <div class="gl-flex gl-items-center gl-gap-4">
           <badges :commit="commit" />
           <action-buttons
             :is-collapsed="isCollapsed"
@@ -187,12 +190,10 @@ export default {
           @click="onClick"
         />
       </div>
-      <!-- Prevent the description toggle -->
       <overflow-menu
         :commit="commit"
         class="gl-block @md/panel:gl-hidden"
         data-testid="overflow-menu"
-        @click.stop
       />
     </div>
 
