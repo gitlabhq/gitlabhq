@@ -394,14 +394,15 @@ class Repository
     Gitlab::Git::KeepAround.execute(self, shas, source: source)
   end
 
-  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
+  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
     raw_repository.archive_metadata(
       ref,
       storage_path,
       project&.path,
       format,
       append_sha: append_sha,
-      path: path
+      path: path,
+      ref_type: ref_type
     )
   end
 

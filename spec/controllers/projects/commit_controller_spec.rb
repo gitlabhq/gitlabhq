@@ -55,6 +55,40 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
           expect(assigns(:diffs)).to be_present
         end
+
+        context 'with cross-reference system note from a private project' do
+          let_it_be(:private_project) { create(:project, :private) }
+          let_it_be(:private_issue) { create(:issue, project: private_project) }
+          let(:cross_reference) { "mentioned in #{private_issue.to_reference(project)}" }
+
+          before do
+            create(:note_on_commit, :system,
+              project: project,
+              commit_id: commit.id,
+              note: cross_reference)
+          end
+
+          it 'excludes the system note from discussions for users without access to the private project' do
+            go(id: commit.id)
+
+            aggregate_failures do
+              expect(assigns(:discussions)).to be_empty
+              expect(assigns(:grouped_diff_discussions).values.flatten).to be_empty
+            end
+          end
+
+          context 'when the user has access to the private project' do
+            before do
+              private_project.add_guest(user)
+            end
+
+            it 'includes the system note in discussions' do
+              go(id: commit.id)
+
+              expect(assigns(:discussions)).not_to be_empty
+            end
+          end
+        end
       end
 
       context 'when a pipeline job is running' do

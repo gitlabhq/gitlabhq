@@ -54,6 +54,7 @@ describe('CommitListItem', () => {
           imgSrc: mockCommit.author.avatarUrl,
           imgSize: 32,
           imgAlt: `${mockCommit.author.name}'s avatar`,
+          lazy: true,
         });
       });
 
@@ -72,6 +73,7 @@ describe('CommitListItem', () => {
         expect(avatarImage.props()).toMatchObject({
           imgSrc: mockCommitWithoutAuthor.authorGravatar,
           size: 32,
+          lazy: true,
         });
       });
 
@@ -247,6 +249,16 @@ describe('CommitListItem', () => {
   });
 
   describe('description', () => {
+    it('does not mount the description component while collapsed', () => {
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('mounts the description component once the row is expanded', async () => {
+      await findActionButtons().vm.$emit('click');
+
+      expect(findDescription().exists()).toBe(true);
+    });
+
     it('passes commit sha to description component', async () => {
       await findActionButtons().vm.$emit('click');
       expect(findDescription().props('commitSha')).toBe(mockCommit.sha);

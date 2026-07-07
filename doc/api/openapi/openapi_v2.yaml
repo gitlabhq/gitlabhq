@@ -38138,6 +38138,14 @@ paths:
         required: false
         example: 7d70e02340bac451f281cecf0a980907974bd8be
       - in: query
+        name: ref_type
+        description: Type of ref in sha, heads (branch) or tags (tag)
+        type: string
+        enum:
+        - heads
+        - tags
+        required: false
+      - in: query
         name: format
         description: The archive format
         type: string

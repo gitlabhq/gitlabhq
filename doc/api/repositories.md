@@ -216,6 +216,7 @@ Supported attributes:
 | `include_lfs_blobs` | boolean           | No       | If `true`, LFS objects are included in the archive. When set to `false`, LFS objects are excluded. Default is `true`. |
 | `path`              | string            | No       | Subpath of the repository to download. If an empty string, defaults to the whole repository. |
 | `sha`               | string            | No       | Commit SHA to download. Accepts a tag, branch reference, or SHA. If not specified, defaults to the tip of the default branch. |
+| `ref_type`          | string            | No       | Type of ref in `sha`. Use to select the correct ref when a branch and tag share a name. |
 
 Example request:
 

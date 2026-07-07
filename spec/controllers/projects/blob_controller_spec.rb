@@ -134,6 +134,31 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
       end
 
+      context 'when the ref is an ambiguous branch and tag' do
+        # 'v1.1.0' exists as both a branch and a tag in the test repository.
+        # 'bar/branch-test.txt' only exists on the branch, so resolving the
+        # last commit against the unqualified ref incorrectly targets the tag.
+        let(:id) { 'v1.1.0/bar/branch-test.txt' }
+        let(:ref_type) { 'heads' }
+
+        before do
+          get :show, params: params, format: :json
+        end
+
+        it 'resolves the last commit using the fully qualified branch ref', :aggregate_failures do
+          branch_sha = Gitlab::Git::Commit.last_for_path(
+            project.repository, 'refs/heads/v1.1.0', 'bar/branch-test.txt', literal_pathspec: true
+          ).sha
+          tag_sha = Gitlab::Git::Commit.last_for_path(
+            project.repository, 'refs/tags/v1.1.0', 'bar/branch-test.txt', literal_pathspec: true
+          )&.sha
+
+          expect(response).to be_ok
+          expect(json_response['last_commit_sha']).to eq(branch_sha)
+          expect(json_response['last_commit_sha']).not_to eq(tag_sha)
+        end
+      end
+
       context "with viewer=none" do
         let(:id) { 'master/README.md' }
 

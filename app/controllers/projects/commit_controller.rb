@@ -327,7 +327,9 @@ class Projects::CommitController < Projects::ApplicationController
     }
 
     @grouped_diff_discussions = commit.grouped_diff_discussions
-    @discussions = commit.discussions
+      .transform_values { |discussions| discussions.select { |d| d.system_note_visible_for?(current_user) } }
+      .reject { |_, discussions| discussions.empty? }
+    @discussions = commit.discussions.select { |d| d.system_note_visible_for?(current_user) }
 
     if merge_request_iid = commit_params_safe[:merge_request_iid]
       @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)

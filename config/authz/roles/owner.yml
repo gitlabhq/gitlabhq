@@ -49,6 +49,7 @@ project:
   - set_show_diff_preview_in_email
   - set_warn_about_potentially_unwanted_characters
   - update_ai_tool_rule
+  - update_compliance_violations_report
   - update_group_link
   - update_security_orchestration_policy_project
 group:
@@ -164,6 +165,7 @@ group:
   - update_ai_domain_settings
   - update_ai_tool_rule
   - update_approval_rule
+  - update_compliance_violations_report
   - update_default_branch_protection
   - update_enterprise_user
   - update_git_access_protocol
