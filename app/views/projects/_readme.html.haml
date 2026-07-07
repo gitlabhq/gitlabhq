@@ -27,10 +27,10 @@
     .js-file-title.file-title-flex-parent.gl-px-4.gl-py-3
       .file-header-content
         = blob_icon readme.mode, readme.name
-        = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
+        = link_to project_blob_path(@project, tree_join(@ref, readme.path), ref_type: @ref_type) do
           %strong
             = readme.name
-    = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json)
+    = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json, ref_type: @ref_type)
 
 - else
   .row-content-block.second-block.center

@@ -965,7 +965,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         ssh_url: ssh_clone_url_to_repo(project),
         http_url: http_clone_url_to_repo(project),
         xcode_url: 'xcode://example.com/project.git',
-        download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}").to_json,
+        download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}", ref_type).to_json,
         web_ide_button_options: helper.web_ide_button_data({ blob: blob }).merge(helper.fork_modal_options(project, blob)).to_json,
         web_ide_button_default_branch: project.default_branch_or_main,
         show_no_ssh_key_message: '',
@@ -1045,6 +1045,18 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       expect(links.pluck(:text)).to eq(Gitlab::Workhorse::ARCHIVE_FORMATS)
       expect(links.pluck(:path)).to all(start_with('download/'))
       expect(links).to all(include(:text, :path))
+    end
+
+    it 'includes the ref_type in the download links when provided' do
+      links = helper.send(:archive_download_links, project, 'master', 'prefix', :heads)
+
+      expect(links.pluck(:path)).to all(include('ref_type=heads'))
+    end
+
+    it 'omits the ref_type from the download links when not provided' do
+      links = helper.send(:archive_download_links, project, 'master', 'prefix')
+
+      expect(links.pluck(:path)).to all(exclude('ref_type'))
     end
   end
 end

@@ -95,6 +95,97 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
     end
   end
 
+  describe 'GET show with an ambiguous branch and tag ref' do
+    # When a branch and a tag share a name, the displayed ref and the download links
+    # must stay anchored to the same ref so they cannot resolve to different content
+    # (https://gitlab.com/gitlab-org/gitlab/-/issues/578988). The blob page threads
+    # ref_type through its download links to keep them consistent.
+    #
+    # 'v1.1.0' exists as both a branch and a tag in the test repository, and
+    # 'bar/branch-test.txt' only exists on the branch (it is absent from the tag).
+    let_it_be(:public_project) { create(:project, :public, :repository) }
+
+    let(:file_path) { 'v1.1.0/bar/branch-test.txt' }
+
+    before do
+      # 'v1.1.0' is expected to exist as both a branch and a tag in the test repository.
+      raise 'fixture changed: v1.1.0 must be both a branch and a tag' unless
+        public_project.repository.branch_exists?('v1.1.0') &&
+          public_project.repository.tag_exists?('v1.1.0')
+
+      # Render the page anonymously so the authenticated fork-button path, which is
+      # unrelated to this regression, is not exercised.
+      sign_out(user)
+    end
+
+    def get_show(ref_type:)
+      get project_blob_path(public_project, file_path, ref_type: ref_type)
+    end
+
+    context 'when ref_type is heads' do
+      it 'renders the branch blob with the ref type marker' do
+        get_show(ref_type: 'heads')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-ref-type="heads"')
+      end
+
+      it_behaves_like 'archive download links anchored to the ref_type', ref_type: 'heads'
+    end
+
+    context 'when ref_type is tags' do
+      it 'does not show the branch blob, redirecting to the tag tree instead' do
+        get_show(ref_type: 'tags')
+
+        # The file is absent from the tag, so the blob view cannot render the
+        # branch content under the tag ref - it redirects to the tag tree.
+        expect(response).to redirect_to(project_tree_path(public_project, 'v1.1.0'))
+      end
+    end
+
+    context 'when ref_type is omitted' do
+      it 'resolves the unqualified ref to the tag and redirects to the tag tree' do
+        get_show(ref_type: nil)
+
+        expect(response).to redirect_to(project_tree_path(public_project, 'v1.1.0'))
+      end
+    end
+  end
+
+  describe 'GET show for an ambiguous branch and tag whose names embed a ref prefix' do
+    before do
+      # Render anonymously so the authenticated fork-button path, which is unrelated
+      # to this regression, is not exercised.
+      sign_out(user)
+    end
+
+    def get_show(ref_type:)
+      get project_blob_path(ambiguous_project, "#{ambiguous_ref}/#{file_path}", ref_type: ref_type)
+    end
+
+    context 'with a branch named "refs/tags/release" alongside a tag "release"' do
+      include_context 'with an ambiguous branch and tag fixture',
+        branch_name: 'refs/tags/release', tag_name: 'release'
+
+      let(:ambiguous_ref) { 'refs/tags/release' }
+
+      it_behaves_like 'an ambiguous ref with divergent branch and tag content'
+      it_behaves_like 'archive download links anchored to the ref_type', ref_type: 'heads'
+      it_behaves_like 'archive download links not anchored to a ref_type'
+    end
+
+    context 'with a tag named "refs/heads/release" alongside a branch "release"' do
+      include_context 'with an ambiguous branch and tag fixture',
+        branch_name: 'release', tag_name: 'refs/heads/release'
+
+      let(:ambiguous_ref) { 'refs/heads/release' }
+
+      it_behaves_like 'an ambiguous ref with divergent branch and tag content'
+      it_behaves_like 'archive download links anchored to the ref_type', ref_type: 'tags'
+      it_behaves_like 'archive download links not anchored to a ref_type'
+    end
+  end
+
   describe 'POST preview' do
     let(:content) { 'Some content' }
 

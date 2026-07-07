@@ -93,9 +93,17 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(
-        repository, ref:, format:, append_sha:, path: nil, include_lfs_blobs: true,
-        exclude_paths: [], client_name: nil)
+      def send_git_archive( # rubocop:disable Metrics/ParameterLists -- each parameter is a distinct, required part of the archive request. Switching to **kwargs would mask complexity and make it harder to understand the method signature.
+        repository,
+        ref:,
+        format:,
+        append_sha:,
+        path: nil,
+        include_lfs_blobs: true,
+        exclude_paths: [],
+        client_name: nil,
+        ref_type: nil
+      )
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -104,7 +112,8 @@ module Gitlab
           Gitlab.config.gitlab.repository_downloads_path,
           format,
           append_sha: append_sha,
-          path: path
+          path: path,
+          ref_type: ref_type
         )
 
         raise "Repository or ref not found" if metadata.empty?
