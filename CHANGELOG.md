@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.0.4 (2026-07-07)
+
+### Fixed (2 changes)
+
+- [Backfill NULL organization_id on oauth_applications](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5039efa471f24b04100c341ffdd02d2ce77fa0d7)
+- [Fix ci_finished_builds engine swap on deferred post-deploy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48ae73d20a63fdca3f2bf9bedc14c0e37b661cfc)
+
+### Security (9 changes)
+
+- [Clear stored password when pull mirror destination changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45e312b5f880d429ede2c619fae4a4a1f15e8e61) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6401))
+- [Address private project cross-references visibility issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a52af8917fb092e2936d2d6ffb0c8edaf41b7e59) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6347))
+- [Treat failing markup renders as plain text](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26696f5a945b2732e36873b896d1d5af8608b5b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6386))
+- [Sanitize vulnerability detail keys to prevent XSS via thAttr injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0f021447503643d0dbf13d6da7f7117c5a3b4eaa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6388))
+- [Fix tag/branch ambiguity in blob view](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52db017dc08d1798228162d8671cbfcfe307376c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6424))
+- [Don't attempt placeholder replacement without a URL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16fabd43663ccca14cc044136194916cbc5ec14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6375))
+- [Fix auditor write access to compliance violation mutations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb568daf697fdabbb1f99cc9adf4ec312922d5b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6381))
+- [Enforce group-level approval rule lock in approval policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cacfca9e16fd72668bd8e879997760d3a2f8f299) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6350))
+- [Fix WorkItems auth bypass for Minimal Access users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cfc024612cb9bd1479e65cf43bf71e22735f1841) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6223))
+
 ## 19.0.3 (2026-06-23)
 
 ### Fixed (5 changes)
