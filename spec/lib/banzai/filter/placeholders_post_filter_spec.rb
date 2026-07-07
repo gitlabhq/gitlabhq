@@ -348,6 +348,16 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       expect(a['data-placeholder']).to eq(expected_data_placeholder)
       expect(a['href']).to eq(expected_href)
     end
+
+    it 'does not crash when the href is missing' do
+      # We use run_filter to isolate the failing case in PlaceholdersPostFilter.
+      # run_pipeline reproduces the problem too, but only because the current full
+      # pipeline *happens* not to permute the tag too heavily before post-processing.
+      # If that changed in future, the test might become non-load-bearing.
+      expect do
+        run_filter('<a data-placeholder>')
+      end.not_to raise_error
+    end
   end
 
   context 'when placeholders in image' do
@@ -406,6 +416,18 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
         expect(result)
           .to include '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="'
       end
+    end
+
+    it 'does not crash when the src is missing' do
+      # We use run_filter to isolate the failing case in PlaceholdersPostFilter.
+      # run_pipeline does *not* reproduce the issue here because ImageLazyLoadFilter
+      # ensures a valid src is on every <img> tag, even if it was lacking one in the
+      # first place! Thus this spec tests an `if` in #replace_image_placeholders which
+      # is not currently load-bearing in production, but could become so if e.g. image
+      # lazy loading became configurable in the future.
+      expect do
+        run_filter('<img data-placeholder>')
+      end.not_to raise_error
     end
   end
 

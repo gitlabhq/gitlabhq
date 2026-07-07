@@ -208,7 +208,7 @@ module Banzai
         #
         # Note that this function was once the site of an XSS vector, and great care
         # must be taken to ensure no text is accidentally promoted to HTML.  We do not
-        # do anything about `node.to_html` or `node.inner_html` on purpose.
+        # do anything with `node.to_html` or `node.inner_html` on purpose.
         #
         # `node.content` gives text and `node.content=` sets text.
         # Don't mix the use of `#content` and `#inner_html` indiscriminately.
@@ -224,6 +224,7 @@ module Banzai
 
       def replace_link_placeholders(node, limit: 0)
         href = link_href(node)
+        return unless href
 
         node['href'] = replace_placeholders_within_url_attr(href, limit:)
         node['data-canonical-src'] = href
@@ -234,6 +235,7 @@ module Banzai
 
       def replace_image_placeholders(node, limit: 0)
         url = img_src(node)
+        return unless url
 
         new_url = replace_placeholders_within_url_attr(url, limit:)
 

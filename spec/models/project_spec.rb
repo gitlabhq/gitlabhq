@@ -5039,6 +5039,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#import_url=' do
+    context 'when the URL is changed without a new password' do
+      let(:project) do
+        create(:project).tap do |p|
+          p.import_url = 'https://olduser:oldpass@old.example.com/repo.git'
+          p.save!
+        end
+      end
+
+      it 'does not carry over the stored password to the new destination' do
+        project.import_url = 'https://olduser@new.example.com/repo.git'
+
+        expect(project.import_data.credentials[:password]).to be_blank
+        expect(project.unsafe_import_url).to eq('https://olduser@new.example.com/repo.git')
+      end
+    end
+  end
+
   describe '#safe_import_url' do
     let_it_be(:import_url) { 'https://example.com' }
     let_it_be(:project) do

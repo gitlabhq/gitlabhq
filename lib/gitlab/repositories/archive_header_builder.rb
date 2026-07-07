@@ -6,12 +6,13 @@ module Gitlab
     # Used by both the API and web controller to ensure consistent
     # Content-Type and Content-Disposition headers for HEAD and GET requests.
     class ArchiveHeaderBuilder
-      def initialize(repository, ref:, format:, append_sha:, path: nil)
+      def initialize(repository, ref:, format:, append_sha:, path: nil, ref_type: nil)
         @repository = repository
         @ref = ref
         @format = (format || 'tar.gz').downcase
         @append_sha = append_sha
         @path = path
+        @ref_type = ref_type
       end
 
       def metadata
@@ -20,7 +21,8 @@ module Gitlab
           '', # Storage path not needed for header generation
           format,
           append_sha: append_sha,
-          path: path
+          path: path,
+          ref_type: ref_type
         )
       end
 
@@ -47,7 +49,7 @@ module Gitlab
 
       private
 
-      attr_reader :repository, :ref, :format, :append_sha, :path
+      attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type
 
       def validate_metadata!
         raise "Repository or ref not found" if metadata.empty?

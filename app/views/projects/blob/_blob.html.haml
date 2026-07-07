@@ -21,7 +21,7 @@
 
 #blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if @code_navigation_path
-    #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
+    #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref, ref_type: @ref_type) } }
   - if !expanded
     -# Data info will be removed once we migrate this to use GraphQL
     -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
