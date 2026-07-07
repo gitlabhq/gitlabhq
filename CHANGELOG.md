@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.1.2 (2026-07-07)
+
+### Fixed (4 changes)
+
+- [Fix approval rule override regression for Developer MR authors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21bb811451fd8effd7d3b9a8ab77cbee0b1cfeaa) **GitLab Enterprise Edition**
+- [Remove ActiveUserCountThresholdWorker cron schedule](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46e8e5343eed6d2fcbb38feaf2ea6a9ff2d8c600) **GitLab Enterprise Edition**
+- [Backfill NULL organization_id on oauth_applications](https://gitlab.com/gitlab-org/security/gitlab/-/commit/50c1398ee852267b549378768a9cff26d83ad47e)
+- [Make ci_finished_builds engine swap work on ClickHouse 23.x](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ba255adf09bcee5c5af4c9098969d4db77217aa)
+
+### Security (9 changes)
+
+- [Clear stored password when pull mirror destination changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b4882686c5d25b4b86cca5bd8063da68d185a9bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6399))
+- [Address private project cross-references visibility issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b94fcf3247df6dd53955363f8c70d04dc37907e7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6346))
+- [Treat failing markup renders as plain text](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ccee03b0c5a362c97fe3a5e9d6ac126faa03fbac) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6387))
+- [Sanitize vulnerability detail keys to prevent XSS via thAttr injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c7491f66c45ee9309ae6a3b61a9593c796302e0e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6397))
+- [Fix tag/branch ambiguity in blob view](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36bf9a651fea9953878fc21ed6676b2ddc00b4a4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6423))
+- [Don't attempt placeholder replacement without a URL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e7f6f708e1060359f2fab9cbf2f8dcce836ac89d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6376))
+- [Fix auditor write access to compliance violation mutations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5eaccd504fecc48f660e7c09ec7b3aaca94f4d48) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6380))
+- [Enforce group-level approval rule lock in approval policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c0e536dea72ae59c143a9c928e6164b11f816ea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6349))
+- [Fix WorkItems auth bypass for Minimal Access users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b5d349eb526df9d04a0eb743969aa9100dbbd9b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6225))
+
 ## 19.1.1 (2026-06-23)
 
 ### Security (13 changes)
