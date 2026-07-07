@@ -55,7 +55,8 @@ To configure access between your GitLab instance and your local AI Gateway:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567878) in GitLab 18.7.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567878) in GitLab 18.7 for Self-Managed.
+- [Available on GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/603860) in GitLab 19.2.
 
 {{< /history >}}
 

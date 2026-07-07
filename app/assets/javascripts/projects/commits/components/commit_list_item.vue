@@ -98,6 +98,7 @@ export default {
       <!-- Prevent the description toggle -->
       <user-avatar-link
         v-if="commit.author"
+        lazy
         :link-href="commit.author.webPath"
         :img-src="commit.author.avatarUrl"
         :img-alt="avatarLinkAltText"
@@ -107,6 +108,7 @@ export default {
       />
       <user-avatar-image
         v-else
+        lazy
         class="gl-my-2 gl-mr-5 gl-hidden @md/panel:gl-block"
         :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
         :size="32"
@@ -196,7 +198,12 @@ export default {
 
     <gl-collapse :visible="!isCollapsed">
       <div class="gl-border-t gl-bg-subtle gl-px-4 gl-py-3">
-        <description :id="anchorId" :commit-sha="commit.sha" class="gl-display gl-block" />
+        <description
+          v-if="!isCollapsed"
+          :id="anchorId"
+          :commit-sha="commit.sha"
+          class="gl-display gl-block"
+        />
       </div>
     </gl-collapse>
   </li>
