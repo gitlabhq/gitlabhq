@@ -523,6 +523,25 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'when ref_type is provided' do
+      it 'forwards ref_type to send_git_archive' do
+        expect(Gitlab::Workhorse).to receive(:send_git_archive).with(
+          project.repository,
+          hash_including(ref_type: 'heads')
+        ).and_call_original
+
+        get api("#{route}?ref_type=heads", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'rejects invalid ref_type values' do
+        get api("#{route}?ref_type=invalid", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_repository_archive do
       let(:boundary_object) { project }
       let(:request) do

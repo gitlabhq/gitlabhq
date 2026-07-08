@@ -206,6 +206,10 @@ class Projects::BlobController < Projects::ApplicationController
   end
   strong_memoize_attr :commit
 
+  def ref
+    @fully_qualified_ref || @ref
+  end
+
   def require_commit
     render_404 unless commit
   end
@@ -289,7 +293,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
-      .last_for_path(@repository, @ref, @path, literal_pathspec: true).sha
+      .last_for_path(@repository, ref, @path, literal_pathspec: true).sha
   end
 
   def show_html
@@ -320,10 +324,10 @@ class Projects::BlobController < Projects::ApplicationController
       rich_viewer: blob.rich_viewer&.class&.partial_name,
       show_viewer_switcher: !!blob.show_viewer_switcher?,
       render_error: blob.simple_viewer&.render_error || blob.rich_viewer&.render_error,
-      raw_path: project_raw_path(project, @id),
-      blame_path: project_blame_path(project, @id),
-      commits_path: project_commits_path(project, @id),
-      tree_path: project_tree_path(project, File.join(@ref, tree_path)),
+      raw_path: project_raw_path(project, @id, ref_type: @ref_type),
+      blame_path: project_blame_path(project, @id, ref_type: @ref_type),
+      commits_path: project_commits_path(project, @id, ref_type: @ref_type),
+      tree_path: project_tree_path(project, File.join(@ref, tree_path), ref_type: @ref_type),
       permalink: project_blob_path(project, File.join(commit.id, @path))
     )
 

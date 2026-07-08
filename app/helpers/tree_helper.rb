@@ -162,7 +162,7 @@ module TreeHelper
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
-      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix, ref_type).to_json : [],
+      download_links: download_links(project, ref, archive_prefix, ref_type).to_json,
       download_artifacts: pipeline &&
         (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
@@ -195,6 +195,8 @@ module TreeHelper
   end
 
   def download_links(project, ref, archive_prefix, ref_type)
+    return [] if project.empty_repo?
+
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
         text: fmt,
@@ -205,24 +207,15 @@ module TreeHelper
     end
   end
 
-  def directory_download_links(project, ref, archive_prefix)
-    Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
-      {
-        text: fmt,
-        path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
-      }
-    end
-  end
-
   def compact_code_dropdown_data(project, ref, ref_type)
     archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
-    download_links = !project.empty_repo? ? download_links(project, ref, archive_prefix, ref_type).to_json : []
+
     {
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
-      directory_download_links: download_links,
+      directory_download_links: download_links(project, ref, archive_prefix, ref_type).to_json,
       show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
       user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
     }

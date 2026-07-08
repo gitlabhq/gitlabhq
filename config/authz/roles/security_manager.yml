@@ -41,6 +41,7 @@ project:
   - read_security_scan_profiles
   - read_security_settings
   - read_vulnerability
+  - update_compliance_violations_report
   - update_cvs_for_container_scanning
   - update_cvs_for_dependency_scanning
   - update_on_demand_dast_scan
@@ -74,4 +75,5 @@ group:
   - read_security_scan_profiles
   - read_vulnerability
   - read_vulnerability_statistics
+  - update_compliance_violations_report
   - update_security_orchestration_policy_project

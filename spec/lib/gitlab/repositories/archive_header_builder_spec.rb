@@ -28,7 +28,8 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
         '',
         format,
         append_sha: append_sha,
-        path: path
+        path: path,
+        ref_type: nil
       ).and_return(metadata)
 
       builder.metadata

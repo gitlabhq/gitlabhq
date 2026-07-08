@@ -54,8 +54,6 @@ module Markup
 
     def other_markup_unsafe
       Gitlab::OtherMarkup.render(file_name, text, context)
-    rescue GitHub::Markup::CommandError
-      ActionController::Base.helpers.simple_format(text)
     end
 
     def postprocess(html)

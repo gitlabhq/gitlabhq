@@ -97,6 +97,41 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         expect(regular_discussions).not_to be_empty
       end
 
+      context 'with cross-reference system note from a private project' do
+        let_it_be(:private_project) { create(:project, :private) }
+        let_it_be(:private_issue) { create(:issue, project: private_project) }
+        let(:cross_reference) { "mentioned in #{private_issue.to_reference(project)}" }
+
+        before do
+          create(:note_on_commit, :system,
+            project: project,
+            commit_id: sha,
+            note: cross_reference)
+        end
+
+        it 'excludes the system note for users without access to the private project' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+          expect(json_response['discussions']).to be_empty
+        end
+
+        context 'when the user has access to the private project' do
+          before_all do
+            private_project.add_guest(user)
+          end
+
+          it 'includes the system note' do
+            send_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            json_response = Gitlab::Json.parse(response.body)
+            expect(json_response['discussions'].size).to eq(1)
+          end
+        end
+      end
+
       context 'when feature flag is disabled' do
         before do
           stub_feature_flags(rapid_diffs_on_commit_show: false)

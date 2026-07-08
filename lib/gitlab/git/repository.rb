@@ -263,10 +263,10 @@ module Gitlab
         end
       end
 
-      def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil)
+      def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
         ref ||= root_ref
 
-        commit_id = extract_commit_id_from_ref(ref)
+        commit_id = extract_commit_id_from_ref(ref, ref_type: ref_type)
         return {} if commit_id.nil?
 
         commit = Gitlab::Git::Commit.find(self, commit_id)
@@ -1382,14 +1382,30 @@ module Gitlab
       # 1. Commit
       # 2. Tag
       # 3. Branch
-      def extract_commit_id_from_ref(ref)
+      #
+      # When ref_type is present, ref is the fully-qualified form
+      # (refs/tags/<short> or refs/heads/<short>) produced by
+      # ExtractsRef::RefExtractor.qualify_ref. Use unqualify_ref to strip the
+      # prefix before passing to find_tag/find_branch, which expect the short
+      # name only (per the Gitaly FindTag/FindBranch RPC contracts).
+      def extract_commit_id_from_ref(ref, ref_type: nil)
         return ref if Gitlab::Git.commit_id?(ref)
 
-        tag = find_tag(ref)
-        return tag.dereferenced_target.sha if tag
+        if ref_type == ExtractsRef::RefExtractor::TAG_REF_TYPE
+          short_ref = ExtractsRef::RefExtractor.unqualify_ref(ref, ref_type)
+          tag = find_tag(short_ref)
+          return tag.dereferenced_target.sha if tag
+        elsif ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE
+          short_ref = ExtractsRef::RefExtractor.unqualify_ref(ref, ref_type)
+          branch = find_branch(short_ref)
+          return branch.dereferenced_target.sha if branch
+        else
+          tag = find_tag(ref)
+          return tag.dereferenced_target.sha if tag
 
-        branch = find_branch(ref)
-        return branch.dereferenced_target.sha if branch
+          branch = find_branch(ref)
+          return branch.dereferenced_target.sha if branch
+        end
 
         ref
       end
