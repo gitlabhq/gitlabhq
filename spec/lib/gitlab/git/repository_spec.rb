@@ -262,6 +262,41 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           expect(metadata).to eq({})
         end
       end
+
+      context 'when ref_type disambiguates a branch named like a tag namespace' do
+        let_it_be(:tag_sha) { ambiguous_project.repository.find_tag('v1.0.0').dereferenced_target.id }
+
+        before do
+          ambiguous_project.repository.raw_repository.write_ref(
+            'refs/heads/refs/tags/v1.0.0',
+            ambiguous_project.repository.find_branch('master').dereferenced_target.id
+          )
+          ambiguous_project.repository.expire_all_method_caches
+        end
+
+        after do
+          ambiguous_project.repository.raw_repository.delete_refs('refs/heads/refs/tags/v1.0.0')
+          ambiguous_project.repository.expire_all_method_caches
+        end
+
+        it 'resolves to the tag when ref_type is tags' do
+          result = repository.archive_metadata(
+            'refs/tags/v1.0.0', storage_path, 'gitlab-git-test', nil,
+            append_sha: true, ref_type: ExtractsRef::RefExtractor::TAG_REF_TYPE
+          )
+
+          expect(result['CommitId']).to eq(tag_sha)
+        end
+
+        it 'resolves to the branch when ref_type is heads' do
+          result = repository.archive_metadata(
+            'refs/heads/refs/tags/v1.0.0', storage_path, 'gitlab-git-test', nil,
+            append_sha: true, ref_type: ExtractsRef::RefExtractor::BRANCH_REF_TYPE
+          )
+
+          expect(result['CommitId']).to eq(branch_master_commit_id)
+        end
+      end
     end
   end
 

@@ -1049,13 +1049,14 @@ module API
     # Respond to HEAD requests for archive endpoints without generating the archive.
     # Sets appropriate Content-Type and Content-Disposition headers.
     # Raises an exception if the ref is not found, matching send_git_archive behavior.
-    def send_git_archive_head(repository, ref:, format:, append_sha:, path: nil)
+    def send_git_archive_head(repository, ref:, format:, append_sha:, path: nil, ref_type: nil)
       builder = Gitlab::Repositories::ArchiveHeaderBuilder.new(
         repository,
         ref: ref,
         format: format,
         append_sha: append_sha,
-        path: path
+        path: path,
+        ref_type: ref_type
       )
 
       content_type builder.content_type

@@ -2995,6 +2995,69 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(json_response.first['author']['id']).to eq(guest.id)
       end
     end
+
+    context 'with cross-reference system note from a private project' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+      let_it_be(:private_project) { create(:project, :private) }
+      let_it_be(:private_issue) { create(:issue, project: private_project) }
+      let(:commit) { public_project.repository.commit }
+
+      let(:project_id) { public_project.id }
+      let(:commit_id) { commit.id }
+
+      before do
+        create(:note_on_commit, :system,
+          project: public_project,
+          commit_id: commit.id,
+          note: "mentioned in #{private_issue.to_reference(public_project)}")
+      end
+
+      it 'excludes the system note for unauthenticated users' do
+        get api(route)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+
+      it 'excludes the system note for users without access to the private project' do
+        other_user = create(:user)
+        get api(route, other_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+
+      context 'when the user has access to the private project' do
+        before do
+          private_project.add_guest(user)
+        end
+
+        it 'includes the system note' do
+          get api(route, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['note']).to include(private_issue.to_reference(public_project))
+        end
+      end
+
+      context 'when there is also a regular comment' do
+        before do
+          create(:note_on_commit,
+            project: public_project,
+            commit_id: commit.id,
+            note: "a normal comment")
+        end
+
+        it 'returns only the regular comment and excludes the private cross-reference' do
+          get api(route)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['note']).to eq("a normal comment")
+        end
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/sequence' do

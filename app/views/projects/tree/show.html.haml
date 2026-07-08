@@ -16,7 +16,7 @@
 
   = render 'projects/last_push'
 
-  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id, ref_type: @ref_type)
 
   = render 'shared/web_ide_path'
 

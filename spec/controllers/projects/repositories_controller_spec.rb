@@ -389,6 +389,52 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
     end
   end
 
+  describe 'GET archive with an ambiguous branch and tag ref' do
+    include WorkhorseHelpers
+
+    let_it_be(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+      allow(controller).to receive(:archive_rate_limit_reached?).and_return(false)
+    end
+
+    context 'with a branch named "refs/tags/release" alongside a tag "release"' do
+      include_context 'with an ambiguous branch and tag fixture',
+        branch_name: 'refs/tags/release', tag_name: 'release'
+
+      it 'passes ref_type=tags to send_git_archive so the archive resolves to the tag' do
+        expect(Gitlab::Workhorse).to receive(:send_git_archive)
+          .with(anything, hash_including(ref_type: 'tags'))
+          .and_return([Gitlab::Workhorse::SEND_DATA_HEADER, 'git-archive:stub'])
+
+        get :archive,
+          params: {
+            namespace_id: ambiguous_project.namespace,
+            project_id: ambiguous_project,
+            id: "release/#{ambiguous_project.path}-release",
+            ref_type: 'tags'
+          },
+          format: 'zip'
+      end
+
+      it 'passes ref_type=heads to send_git_archive so the archive resolves to the branch' do
+        expect(Gitlab::Workhorse).to receive(:send_git_archive)
+          .with(anything, hash_including(ref_type: 'heads'))
+          .and_return([Gitlab::Workhorse::SEND_DATA_HEADER, 'git-archive:stub'])
+
+        get :archive,
+          params: {
+            namespace_id: ambiguous_project.namespace,
+            project_id: ambiguous_project,
+            id: "refs/tags/release/#{ambiguous_project.path}-refs-tags-release",
+            ref_type: 'heads'
+          },
+          format: 'zip'
+      end
+    end
+  end
+
   describe 'HEAD archive' do
     let_it_be(:user, freeze: false) { create(:user) }
 

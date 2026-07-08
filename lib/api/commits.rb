@@ -426,6 +426,7 @@ module API
         not_found! 'Commit' unless commit
         notes = paginate(commit.notes.with_api_entity_associations.order_created_at_id_asc)
         notes = prepare_and_filter_notes(notes)
+        notes = notes.select { |n| n.readable_by?(current_user) }
 
         present notes, with: Entities::CommitNote
       end

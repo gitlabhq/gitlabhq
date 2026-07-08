@@ -130,7 +130,7 @@ class IssuesFinder < IssuableFinder
   def user_can_access_all_subgroup_items?
     return false unless ancestor_group
 
-    Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user)
+    Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user, ::Gitlab::Access::GUEST)
   end
 
   def ancestor_group

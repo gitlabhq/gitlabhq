@@ -162,8 +162,8 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         allow(project).to receive(:empty_repo?).and_return(true)
       end
 
-      it 'does not include download_links' do
-        expect(subject[:download_links]).to eq([])
+      it 'returns an empty JSON array for download_links' do
+        expect(subject[:download_links]).to eq('[]')
       end
     end
 
@@ -412,8 +412,8 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
           allow(project).to receive(:empty_repo?).and_return(true)
         end
 
-        it 'includes empty directory download links' do
-          expect(subject[:directory_download_links]).to be_empty
+        it 'returns an empty JSON array for directory download links' do
+          expect(subject[:directory_download_links]).to eq('[]')
         end
       end
     end

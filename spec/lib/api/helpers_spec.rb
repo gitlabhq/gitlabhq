@@ -1193,6 +1193,56 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#send_git_archive_head' do
+    let(:project) { instance_double(Project, path: 'my-project') }
+    let(:repository) { instance_double(Repository, project: project) }
+    let(:ref) { 'main' }
+    let(:format) { 'zip' }
+    let(:builder) { instance_double(Gitlab::Repositories::ArchiveHeaderBuilder) }
+
+    before do
+      allow(helper).to receive(:content_type)
+      allow(helper).to receive(:header)
+      allow(helper).to receive(:body).and_return('')
+      allow(helper).to receive(:check_download_permission!)
+      allow(builder).to receive(:content_type).and_return('application/zip')
+      allow(builder).to receive(:content_disposition).and_return('attachment; filename="my-project-main.zip"')
+    end
+
+    it 'builds ArchiveHeaderBuilder without ref_type by default' do
+      expect(Gitlab::Repositories::ArchiveHeaderBuilder).to receive(:new).with(
+        repository,
+        ref: ref,
+        format: format,
+        append_sha: true,
+        path: nil,
+        ref_type: nil
+      ).and_return(builder)
+
+      helper.send(:send_git_archive_head, repository, ref: ref, format: format, append_sha: true)
+    end
+
+    it 'forwards ref_type to ArchiveHeaderBuilder' do
+      expect(Gitlab::Repositories::ArchiveHeaderBuilder).to receive(:new).with(
+        repository,
+        ref: 'refs/tags/v1.0.0',
+        format: format,
+        append_sha: true,
+        path: nil,
+        ref_type: ExtractsRef::RefExtractor::TAG_REF_TYPE
+      ).and_return(builder)
+
+      helper.send(
+        :send_git_archive_head,
+        repository,
+        ref: 'refs/tags/v1.0.0',
+        format: format,
+        append_sha: true,
+        ref_type: ExtractsRef::RefExtractor::TAG_REF_TYPE
+      )
+    end
+  end
+
   describe '#increment_unique_values' do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
     let(:event_name) { 'g_compliance_dashboard' }

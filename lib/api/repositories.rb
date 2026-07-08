@@ -203,6 +203,7 @@ module API
         optional :sha, type: String,
           desc: 'The commit sha of the archive to be downloaded',
           documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+        optional :ref_type, type: String, values: %w[heads tags], desc: 'Type of ref in sha, heads (branch) or tags (tag)'
         optional :format, type: String, desc: 'The archive format', documentation: { example: 'tar.gz' }
         optional :path, type: String,
           desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
@@ -223,9 +224,9 @@ module API
 
         # Return early for HEAD requests to avoid generating archives.
         if request.head?
-          send_git_archive_head(user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path])
+          send_git_archive_head(user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type])
         else
-          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
         end
       rescue StandardError
         not_found!('File')

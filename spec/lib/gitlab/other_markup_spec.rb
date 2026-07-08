@@ -235,13 +235,12 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       stub_const('Gitlab::OtherMarkup::RENDER_TIMEOUT', 0.1)
       allow(GitHub::Markup).to receive(:render) do
         sleep(0.2)
-        text
+        'never reached in practice'
       end
     end
 
     it 'times out' do
-      # expect at least 2 times because of timeout in SyntaxHighlightFilter
-      expect(Gitlab::RenderTimeout).to receive(:timeout).at_least(:twice).and_call_original
+      expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         instance_of(Timeout::Error),
         project_id: context[:project].id, file_name: file_name,
@@ -249,6 +248,61 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       )
 
       expect(render(file_name, text, context)).to eq("<p>#{text}</p>")
+    end
+
+    it 'renders the input as escaped plain text, not as markup' do
+      allow(GitHub::Markup).to receive(:render) do
+        sleep(0.2)
+        'never reached in practice'
+      end
+
+      rendered = render(file_name, +'<div class="js-infinite-scrolling-root">x</div>', context)
+      doc = Nokogiri::HTML5.fragment(rendered)
+
+      expect(doc.css('div')).to be_empty
+      expect(rendered).to include('&lt;div')
+    end
+  end
+
+  context 'when the markup renderer raises a command error' do
+    let(:file_name) { 'unimportant_name.rst' }
+    let(:context) { {} }
+
+    before do
+      allow(GitHub::Markup).to receive(:render).and_raise(GitHub::Markup::CommandError)
+    end
+
+    it 'renders the input as escaped plain text instead of failing' do
+      input = <<~RST
+        first line
+        second line
+
+        new paragraph
+      RST
+
+      rendered = render(file_name, input, context)
+
+      expect(rendered).to eq_html("<p>first line\n<br />second line</p>\n\n<p>new paragraph\n</p>")
+    end
+
+    it 'does not interpret the input as HTML' do
+      input = <<~RST
+        ++++
+        <div class="project-show-activity">
+            <div class="content_list" data-href="/test">
+                <div class="js-infinite-scrolling-root"></div>
+            </div>
+        </div>
+      RST
+
+      rendered = render(file_name, input, context)
+      doc = Nokogiri::HTML5.fragment(rendered)
+
+      %w[project-show-activity content_list js-infinite-scrolling-root].each do |klass|
+        expect(doc.css(".#{klass}")).to be_empty
+      end
+      expect(doc.css('[data-href]')).to be_empty
+      expect(rendered).to include('&lt;div')
     end
   end
 
