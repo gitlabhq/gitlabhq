@@ -114,6 +114,33 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
           expect(diff_line_content(' new line')).to eq('new line')
         end
 
+        context 'when the line is blank after the prefix' do
+          it 'returns a non breaking space so the diff row keeps visible height', :aggregate_failures do
+            expect(diff_line_content('+')).to eq('&nbsp;')
+            expect(diff_line_content('-')).to eq('&nbsp;')
+            expect(diff_line_content(' ')).to eq('&nbsp;')
+          end
+
+          it 'returns an HTML-safe string', :aggregate_failures do
+            expect(diff_line_content('+')).to be_html_safe
+            expect(diff_line_content('-')).to be_html_safe
+            expect(diff_line_content(' ')).to be_html_safe
+          end
+        end
+
+        context 'when the line has only spaces after the prefix' do
+          it 'returns the spaces, not a non-breaking space', :aggregate_failures do
+            expect(diff_line_content('+     ')).to eq('     ')
+            expect(diff_line_content('-     ')).to eq('     ')
+          end
+        end
+
+        context 'when the line is only whitespace' do
+          it 'returns a non breaking space' do
+            expect(diff_line_content('      ')).to eq('&nbsp;')
+          end
+        end
+
         context 'when the line is HTML-safe' do
           it 'returns an HTML-safe string' do
             expect(diff_line_content('+new line'.html_safe)).to be_html_safe

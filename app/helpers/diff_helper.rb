@@ -96,7 +96,12 @@ module DiffHelper
       "&nbsp;".html_safe
     elsif line.start_with?('+', '-', ' ')
       # `sub` and substring-ing would destroy HTML-safeness of `line`
-      line[1, line.length]
+      content = line[1, line.length]
+      # A line containing only the diff prefix (e.g. "+") isn't `blank?`, but
+      # becomes empty after stripping the prefix. Fall back to a non-breaking
+      # space so the diff row keeps visible height in the blob preview.
+      # Whitespace-only lines (e.g. "+     ") are preserved as-is.
+      content.empty? ? "&nbsp;".html_safe : content
     else
       line
     end
