@@ -27198,6 +27198,16 @@ paths:
           nullable: true
         in: query
         example: 7d70e02340bac451f281cecf0a980907974bd8be
+      - name: ref_type
+        required: false
+        description: Type of ref in sha, heads (branch) or tags (tag)
+        schema:
+          type: string
+          enum:
+          - heads
+          - tags
+          nullable: true
+        in: query
       - name: format
         required: false
         description: The archive format

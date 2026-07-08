@@ -94,8 +94,15 @@ module Gitlab
       end
 
       def send_git_archive(
-        repository, ref:, format:, append_sha:, path: nil, include_lfs_blobs: true,
-        exclude_paths: [])
+        repository,
+        ref:,
+        format:,
+        append_sha:,
+        path: nil,
+        include_lfs_blobs: true,
+        exclude_paths: [],
+        ref_type: nil
+      )
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -104,7 +111,8 @@ module Gitlab
           Gitlab.config.gitlab.repository_downloads_path,
           format,
           append_sha: append_sha,
-          path: path
+          path: path,
+          ref_type: ref_type
         )
 
         raise "Repository or ref not found" if metadata.empty?

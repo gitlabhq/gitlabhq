@@ -57,7 +57,13 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def repo_params
-    @repo_params ||= { ref: ref, path: params[:path], format: params[:format], append_sha: @append_sha }
+    @repo_params ||= {
+      ref: ref,
+      path: params[:path],
+      format: params[:format],
+      append_sha: @append_sha,
+      ref_type: @ref_type
+    }
   end
 
   def set_cache_headers
@@ -96,7 +102,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
       ref: repo_params[:ref],
       format: repo_params[:format],
       append_sha: repo_params[:append_sha],
-      path: repo_params[:path]
+      path: repo_params[:path],
+      ref_type: repo_params[:ref_type]
     )
   end
 
