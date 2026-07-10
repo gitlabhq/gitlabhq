@@ -50,6 +50,7 @@ query getCommitList(
             avatarUrl
             webPath
           }
+          committedDate
           signature {
             ... on GpgSignature {
               gpgKeyPrimaryKeyid

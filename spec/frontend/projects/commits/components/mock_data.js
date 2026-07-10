@@ -12,6 +12,7 @@ export const mockCommit = {
   webPath: '/gitlab-org/gitlab-shell/-/commit/8e3336548a7aa36b7cae362fbd8c694793ecc110',
   webUrl: '/gitlab-org/gitlab-shell/-/tree/8e3336548a7aa36b7cae362fbd8c694793ecc110',
   authoredDate: '2025-06-23T18:03:33+00:00',
+  committedDate: '2025-06-23T18:03:33+00:00',
   authorName: 'Administrator with very very long name',
   authorGravatar:
     'https://secure.gravatar.com/avatar/7272d4da0ca779e0ca6fdb7fdc7a17b232462e054839e1060934d03f6ded8609?s=80&d=identicon',
@@ -67,6 +68,7 @@ const mockCommitSecond = {
   webPath: '/gitlab-org/gitlab-test/-/commit/5f923865dde3436854e9ceb9cdb7815618d4e849',
   webUrl: '/gitlab-org/gitlab-test/-/commit/5f923865dde3436854e9ceb9cdb7815618d4e849',
   authoredDate: '2025-06-23T07:27:12+00:00',
+  committedDate: '2025-06-23T07:27:12+00:00',
   authorName: 'Stan Hu',
   authorGravatar:
     'https://secure.gravatar.com/avatar/0234fd3e726423a4d0b21773b3f2ae487b04bfad5d299f8a6e50fe29ca55c667?s=80&d=identicon',
@@ -112,6 +114,7 @@ const mockCommitThird = {
   webPath: '/gitlab-org/gitlab-test/-/commit/abc123def456',
   webUrl: '/gitlab-org/gitlab-test/-/commit/abc123def456',
   authoredDate: '2025-06-21T18:03:33+00:00',
+  committedDate: '2025-06-21T18:03:33+00:00',
   authorName: 'Alfonzo Dickinson',
   authorGravatar:
     'https://secure.gravatar.com/avatar/95ed2ed013f50a00587f6715b6f1e0d0ea50a6bb77bfd6e00556254f3efe25cd?s=80&d=identicon&width=96',

@@ -11,9 +11,9 @@ describe('groupCommitsByDay', () => {
 
   it('groups commits by date', () => {
     const commits = [
-      { id: '1', authoredDate: '2025-06-23T18:00:00+00:00' },
-      { id: '2', authoredDate: '2025-06-23T10:00:00+00:00' },
-      { id: '3', authoredDate: '2025-06-21T12:00:00+00:00' },
+      { id: '1', committedDate: '2025-06-23T18:00:00+00:00' },
+      { id: '2', committedDate: '2025-06-23T10:00:00+00:00' },
+      { id: '3', committedDate: '2025-06-21T12:00:00+00:00' },
     ];
 
     const result = groupCommitsByDay(commits);
@@ -30,8 +30,8 @@ describe('groupCommitsByDay', () => {
 
   it('preserves commit order within each day', () => {
     const commits = [
-      { id: 'first', authoredDate: '2025-06-23T18:00:00+00:00' },
-      { id: 'second', authoredDate: '2025-06-23T10:00:00+00:00' },
+      { id: 'first', committedDate: '2025-06-23T18:00:00+00:00' },
+      { id: 'second', committedDate: '2025-06-23T10:00:00+00:00' },
     ];
 
     const result = groupCommitsByDay(commits);
@@ -40,10 +40,10 @@ describe('groupCommitsByDay', () => {
     expect(result[0].commits[1].id).toBe('second');
   });
 
-  it('falls back to the raw authoredDate when it is outside the JS Date range', () => {
+  it('falls back to the raw committedDate when it is outside the JS Date range', () => {
     const commits = [
-      { id: '1', authoredDate: '+292278994-08-17T07:12:55+00:00' },
-      { id: '2', authoredDate: '2025-06-21T12:00:00+00:00' },
+      { id: '1', committedDate: '+292278994-08-17T07:12:55+00:00' },
+      { id: '2', committedDate: '2025-06-21T12:00:00+00:00' },
     ];
 
     const result = groupCommitsByDay(commits);
