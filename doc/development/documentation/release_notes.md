@@ -55,6 +55,15 @@ and assign to a Technical Writer for review.
 
 To remove a feature release note, you only need to delete the associated file. No other files need to be adjusted.
 
+### Skip category validation
+
+When a merge request changes a release note, the `docs-lint release-note-categories` CI/CD job validates the
+`categories` values against `categories.yml`.
+Categories are sometimes renamed or removed, so an older release note might use a category that no longer exists,
+which causes the job to fail.
+
+To skip this validation, add the `pipeline:skip-release-note-categories` label to your merge request.
+
 ## Add a notable contributor
 
 Developer Relations creates a merge request for each release that adds a few sentences about the notable contributor.
