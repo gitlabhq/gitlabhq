@@ -423,6 +423,20 @@ describe('Blob content viewer component', () => {
         },
       );
 
+      it('passes the fetched HTML as content when blame is active on load', async () => {
+        const type = 'go_mod';
+        mockAxios
+          .onGet(`/${type}?format=json&viewer=blame`)
+          .replyOnce(HTTP_STATUS_OK, { html: 'test', binary: false });
+        await createComponent({
+          blob: { ...simpleViewerMock, fileType: type, webPath: type },
+          urlParams: { path: '/', query: { blame: '1' } },
+        });
+
+        expect(mockAxios.history.get[0].url).toBe(`/${type}?format=json&viewer=blame`);
+        expect(findBlobContent().props('content')).toBe('test');
+      });
+
       describe('code navigation', () => {
         const setup = async (viewer, viewerType) => {
           jest.spyOn(eventHub, '$emit').mockImplementation();

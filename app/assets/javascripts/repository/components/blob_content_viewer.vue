@@ -348,7 +348,7 @@ export default {
         .then(async ({ data: { html, binary } }) => {
           this.isRenderingLegacyTextViewer = true;
 
-          if (type === SIMPLE_BLOB_VIEWER) {
+          if (type === SIMPLE_BLOB_VIEWER || type === BLAME_VIEWER) {
             this.legacySimpleViewer = html;
           } else {
             this.legacyRichViewer = html;
