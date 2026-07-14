@@ -111,6 +111,16 @@ module Gitlab
           import_source_user.save!
           import_source_user
         end
+      rescue ::Cells::TransactionRecord::AlreadyClaimedError => e
+        ::Import::Framework::Logger.warn(
+          message: 'Source user creation encountered a transient self-collision, retrying as duplicate',
+          source_user_identifier: source_user_identifier,
+          namespace_id: namespace.id,
+          import_type: import_type,
+          exception_class: e.class.name
+        )
+
+        raise DuplicatedUserError.new(e.message), cause: e
       rescue PG::UniqueViolation, ActiveRecord::RecordNotUnique => e
         raise DuplicatedUserError.new(e.message), cause: e
       rescue ActiveRecord::RecordInvalid => e
